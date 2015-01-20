@@ -543,7 +543,7 @@ bool RC2UI::makeDialog()
 
                             const int bmpId = widgetText.toInt(&isId);
 
-                            if (isId) {
+                            if (isId && bmpIds.contains(bmpId)) {
                                 widgetText = bmpIds.value(bmpId);
                             }
                         }
