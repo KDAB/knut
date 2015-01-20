@@ -28,6 +28,7 @@
 #include "rc2ui.h"
 
 #include <QDir>
+#include <QDebug>
 
 /// some little helpers ///
 
