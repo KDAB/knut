@@ -71,7 +71,7 @@ QString RC2UI::parseNext(QString &arg, char sep)
 {
     QString next = arg.left(arg.indexOf(sep));
     arg = arg.right(arg.length() - next.length() - 1);
-    return next;
+    return next.trimmed();
 }
 
 void RC2UI::writeClass(const QString &name)
@@ -79,26 +79,31 @@ void RC2UI::writeClass(const QString &name)
     wi(); *out << "<class>" << name << "</class>" << endl;
 }
 
+void RC2UI::writeWidget(const QString &className, const QString &name)
+{
+    wi(); *out << "<widget class=\""
+        << className << "\" name=\""
+        << name << "\">"
+        << endl;
+}
+
 void RC2UI::writeCString(const QString &name, const QString &value)
 {
-    wi(); *out << "<property>" << endl; indent();
-    wi(); *out << "<name>" << name << "</name>" << endl;
+    wi(); *out << "<property name=\"" << name << "\">" << endl; indent();
     wi(); *out << "<cstring>" << value << "</cstring>" << endl; undent();
     wi(); *out << "</property>" << endl;
 }
 
 void RC2UI::writeString(const QString &name, const QString &value)
 {
-    wi(); *out << "<property>" << endl; indent();
-    wi(); *out << "<name>" << name << "</name>" << endl;
+    wi(); *out << "<property name=\"" << name << "\">" << endl; indent();
     wi(); *out << "<string>" << value << "</string>" << endl; undent();
     wi(); *out << "</property>" << endl;
 }
 
 void RC2UI::writeRect(const QString &name, int x, int y, int w, int h)
 {
-    wi(); *out << "<property>" << endl; indent();
-    wi(); *out << "<name>" << name << "</name>" << endl;
+    wi(); *out << "<property name=\"" << name << "\">" << endl; indent();
     wi(); *out << "<rect>" << endl; indent();
     wi(); *out << "<x>" << int(double(x)*1.5) << "</x>" << endl;
     wi(); *out << "<y>" << int(double(y)*1.65) << "</y>" << endl;
@@ -110,8 +115,7 @@ void RC2UI::writeRect(const QString &name, int x, int y, int w, int h)
 
 void RC2UI::writeFont(const QString &family, int pointsize)
 {
-    wi(); *out << "<property>" << endl; indent();
-    wi(); *out << "<name>font</name>" << endl;
+    wi(); *out << "<property name=\"font\">" << endl; indent();
     wi(); *out << "<font>" << endl; indent();
     wi(); *out << "<family>" << family << "</family>" << endl;
     wi(); *out << "<pointsize>" << pointsize << "</pointsize>" << endl; undent();
@@ -121,32 +125,28 @@ void RC2UI::writeFont(const QString &family, int pointsize)
 
 void RC2UI::writeBool(const QString &name, bool value)
 {
-    wi(); *out << "<property>" << endl; indent();
-    wi(); *out << "<name>" << name << "</name>" << endl;
+    wi(); *out << "<property name=\"" << name << "\">" << endl; indent();
     wi(); *out << "<bool>" << (value ? "true" : "false") << "</bool>" << endl; undent();
     wi(); *out << "</property>" << endl;
 }
 
 void RC2UI::writeNumber(const QString &name, int value)
 {
-    wi(); *out << "<property>" << endl; indent();
-    wi(); *out << "<name>" << name << "</name>" << endl;
+    wi(); *out << "<property name=\"" << name << "\">" << endl; indent();
     wi(); *out << "<number>" << value << "</number>" << endl; undent();
     wi(); *out << "</property>" << endl;
 }
 
 void RC2UI::writeEnum(const QString &name, const QString &value)
 {
-    wi(); *out << "<property>" << endl; indent();
-    wi(); *out << "<name>" << name << "</name>" << endl;
+    wi(); *out << "<property name=\"" << name << "\">" << endl; indent();
     wi(); *out << "<enum>" << value << "</enum>" << endl; undent();
     wi(); *out << "</property>" << endl;
 }
 
 void RC2UI::writeSet(const QString &name, const QString &value)
 {
-    wi(); *out << "<property>" << endl; indent();
-    wi(); *out << "<name>" << name << "</name>" << endl;
+    wi(); *out << "<property name=\"" << name << "\">" << endl; indent();
     wi(); *out << "<set>" << value << "</set>" << endl; undent();
     wi(); *out << "</property>" << endl;
 }
@@ -155,29 +155,36 @@ void RC2UI::writeStyles(const QStringList styles, bool isFrame)
 {
     if (isFrame) {
         bool defineFrame = false;
-        QString shadow = "NoFrame";
-        QString shape = "StyledPanel";
+        QString shadow = "QFrame::Plain";
+        QString shape = "QFrame::StyledPanel";
         int width = 2;
         if (styles.contains( "WS_EX_STATICEDGE")) {
-            shadow = "Plain";
-            width = 1;
+            shadow = "QFrame::Sunken";
+            width = 2;
             defineFrame = true;
+            shape = "QFrame::StyledPanel";
         }
         if (styles.contains( "WS_EX_CLIENTEDGE")) {
-            shadow = "Sunken";
+            shadow = "QFrame::Sunken";
+            width = 2;
             defineFrame = true;
+            shape = "QFrame::Panel";
         }
         if (styles.contains( "WS_EX_DLGMODALFRAME")) {
-            shadow = "Raised";
+            shadow = "QFrame::Raised";
+            width = 2;
             defineFrame = true;
+            shape = "QFrame::Panel";
         }
         if (!styles.contains( "WS_BORDER")) {
-            shape = "NoFrame";
+            shadow = "QFrame::Sunken";
+            width = 1;
             defineFrame = true;
+            shape = "QFrame::Panel";
         }
 
         if (defineFrame) {
-            writeEnum("frameShape", "StyledPanel");
+            writeEnum("frameShape", shape);
             writeEnum("frameShadow", shadow);
             writeNumber("lineWidth", width);
         }
@@ -190,7 +197,7 @@ void RC2UI::writeStyles(const QStringList styles, bool isFrame)
     if (styles.contains("WS_EX_TRANSPARENT"))
         writeBool("autoMask", true);
     if (!styles.contains("WS_TABSTOP"))
-        writeEnum("focusPolicy", "NoFocus");
+        writeEnum("focusPolicy", "Qt::NoFocus");
 }
 
 /*!
@@ -381,11 +388,11 @@ bool RC2UI::makeDialog()
             out = new QTextStream(&buffer, QIODevice::WriteOnly);
         }
 
-        *out << "<!DOCTYPE UI><UI>" << endl;
+        *out << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl;
+        *out << "<ui version=\"4.0\">" << endl;
         writeClass(className);
-        wi(); *out << "<widget>"<< endl; indent();
-        writeClass(baseClass);
-        writeCString("name", className);
+        writeWidget(baseClass, className);
+        indent();
         writeRect("geometry", x, y, w, h);
         writeString("caption", caption);
         writeFont(fontname, pointsize);
@@ -404,7 +411,7 @@ bool RC2UI::makeDialog()
                     arguments[(int)arguments.length()-1] == '|')
                 arguments += " "+in->readLine().trimmed();
 
-            wi(); *out << "<widget>" << endl; indent();
+            indent();
 
             WidgetType ID = IDUnknown;
             QString controlType;
@@ -514,8 +521,7 @@ bool RC2UI::makeDialog()
                     break;
                 case IDPushButton:
                     {
-                        writeClass("QPushButton");
-                        writeCString("name", useName("PushButton_"+widgetID));
+                        writeWidget("QPushButton", useName("PushButton_" + widgetID));
                         writeRect("geometry", x, y, w, h);
                         writeString("text", widgetText);
                         if (widgetType == "DEFPUSHBUTTON")
@@ -524,30 +530,28 @@ bool RC2UI::makeDialog()
                     break;
                 case IDLabel:
                     {
-                        isFrame = true,
-                                writeClass("QLabel");
-                        writeCString("name", useName("Label_"+widgetID));
+                        isFrame = true;
+                        writeWidget("QLabel", useName("Label_" + widgetID));
                         writeRect("geometry", x,y,w,h);
                         writeString("text", widgetText);
                         QString align;
                         if (!styles.contains("SS_CENTERIMAGE"))
-                            align += "|AlignTop";
+                            align += "Qt::AlignTop";
                         else
-                            align += "|AlignVCenter";
+                            align += "Qt::AlignVCenter";
                         if (widgetType == "LTEXT") {
-                            align += "|AlignLeft";
+                            align += "|Qt::AlignLeft";
                         } else if ( widgetType == "CTEXT") {
-                            align += "|AlignHCenter";
+                            align += "|Qt::AlignHCenter";
                         } else if ( widgetType == "RTEXT") {
-                            align += "|AlignRight";
+                            align += "|Qt::AlignRight";
                         }
                         writeSet("alignment", align);
                     }
                     break;
                 case IDCheckBox:
                     {
-                        writeClass("QCheckBox");
-                        writeCString("name", useName("CheckBox_"+widgetID));
+                        writeWidget("QCheckBox", useName("CheckBox_" + widgetID));
                         writeRect("geometry", x,y,w,h);
                         writeString("text", widgetText);
                         if (styles.contains( "BS_3STATE"))
@@ -556,8 +560,7 @@ bool RC2UI::makeDialog()
                     break;
                 case IDRadioButton:
                     {
-                        writeClass("QRadioButton");
-                        writeCString("name", useName("RadioButton_"+widgetID));
+                        writeWidget("QRadioButton", useName("RadioButton_" + widgetID));
                         writeRect("geometry", x,y,w,h);
                         writeString("text", widgetText);
                     }
@@ -565,8 +568,7 @@ bool RC2UI::makeDialog()
                 case IDGroupBox:
                     {
                         isFrame = true;
-                        writeClass("QGroupBox");
-                        writeCString("name", useName("GroupBox_"+widgetID));
+                        writeWidget("QGroupBox", useName("GroupBox_" + widgetID));
                         writeRect("geometry", x,y,w,h);
                         writeString("title", widgetText);
                         if (!styles.contains( "WS_BORDER"))
@@ -576,11 +578,9 @@ bool RC2UI::makeDialog()
                 case IDLineEdit:
                     {
                         if (!styles.contains("ES_MULTILINE")) {
-                            writeClass("QLineEdit");
-                            writeCString("name", useName("LineEdit_"+widgetID));
+                            writeWidget("QLineEdit", useName("LineEdit_" + widgetID));
                         } else {
-                            writeClass("QMultiLineEdit");
-                            writeCString("name", useName("MultiLineEdit_"+widgetID));
+                            writeWidget("QMultiLineEdit", useName("MultiLineEdit_" + widgetID));
                         }
                         writeRect("geometry", x,y,w,h);
                         QString align = "AlignTop";
@@ -595,16 +595,14 @@ bool RC2UI::makeDialog()
                     break;
                 case IDMultiLineEdit:
                     {
-                        writeClass("QMultiLineEdit");
-                        writeCString("name", useName("MultiLineEdit_"+widgetID));
+                        writeWidget("QMultiLineEdit", useName("MultiLineEdit_" + widgetID));
                         writeRect("geometry", x,y,w,h);
                     }
                     break;
                 case IDIconView:
                     {
                         isFrame = true;
-                        writeClass("QIconView");
-                        writeCString("name", useName("IconView_"+widgetID));
+                        writeWidget("QIconView", useName("IconView_" + widgetID));
                         writeRect("geometry", x,y,w,h);
                         if (!styles.contains( "LVS_SINGLESEL"))
                             writeEnum("selectionMode", "Extended");
@@ -615,8 +613,7 @@ bool RC2UI::makeDialog()
                 case IDListView:
                     {
                         isFrame = true;
-                        writeClass("QListView");
-                        writeCString("name", useName("ListView_"+widgetID));
+                        writeWidget("QListView", useName("ListView_" + widgetID));
                         writeRect("geometry", x,y,w,h);
                         if (styles.contains( "TVS_LINESATROOT"))
                             writeBool("rootIsDecorated", true);
@@ -627,8 +624,7 @@ bool RC2UI::makeDialog()
                 case IDProgressBar:
                     {
                         isFrame = true;
-                        writeClass("QProgressBar");
-                        writeCString("name", useName("ProgressBar_"+widgetID));
+                        writeWidget("QProgressBar", useName("ProgressBar_" + widgetID));
                         writeRect("geometry", x,y,w,h);
                         if (styles.contains("TBS_VERT"))
                             writeEnum("orientation", "Vertical");
@@ -638,13 +634,10 @@ bool RC2UI::makeDialog()
                     break;
                 case IDTabWidget:
                     {
-                        writeClass("QTabWidget");
-                        writeCString("name", useName("TabWidget_"+widgetID));
+                        writeWidget("QTabWidget", useName("TabWidget_" + widgetID));
                         writeRect("geometry", x,y,w,h);
-                        wi(); *out << "<widget>" << endl; indent();
-                        writeClass("QWidget");
+                        wi(); writeWidget("QWidget", "title"); indent();
                         wi(); *out << "<attribute>" << endl; indent();
-                        wi(); *out << "<name>title</name>" << endl;
                         wi(); *out << "<string>Tab1</string>" << endl; undent();
                         wi(); *out << "</attribute>" << endl; undent();
                         wi(); *out << "</widget>" << endl;
@@ -653,15 +646,13 @@ bool RC2UI::makeDialog()
                 case IDSpinBox:
                     {
                         isFrame = true;
-                        writeClass("QSpinBox");
-                        writeCString("name", useName("SpinBox_"+widgetID));
+                        writeWidget("QSpinBox", useName("SpinBox_" + widgetID));
                         writeRect("geometry", x,y,w,h);
                     }
                     break;
                 case IDSlider:
                     {
-                        writeClass("QSlider");
-                        writeCString("name", useName("Slider_"+widgetID));
+                        writeWidget("QSlider", useName("Slider_" + widgetID));
                         writeRect("geometry", x,y,w,h);
                         if (styles.contains("TBS_VERT"))
                             writeEnum("orientation", "Vertical");
@@ -673,8 +664,7 @@ bool RC2UI::makeDialog()
                     break;
                 case IDComboBox:
                     {
-                        writeClass("QComboBox");
-                        writeCString("name", useName("ComboBox_"+widgetID));
+                        writeWidget("QComboBox", useName("ComboBox_" + widgetID));
                         if (isControl)
                             writeRect("geometry", x,y,w,14);
                         else
@@ -684,8 +674,7 @@ bool RC2UI::makeDialog()
                 case IDListBox:
                     {
                         isFrame = true;
-                        writeClass("QListBox");
-                        writeCString("name", useName("ListBox_"+widgetID));
+                        writeWidget("QListBox", useName("ListBox_" + widgetID));
                         writeRect("geometry", x,y,w,h);
                         if (styles.contains("WS_HSCROLL"))
                             writeEnum("hScrollBarMode", "Auto");
@@ -709,8 +698,7 @@ bool RC2UI::makeDialog()
                     break;
                 case IDScrollBar:
                     {
-                        writeClass("QScrollBar");
-                        writeCString("name", useName("ScrollBar_"+widgetID));
+                        writeWidget("QScrollBar", useName("ScrollBar_" + widgetID));
                         writeRect("geometry", x,y,w,h);
                         if (styles.contains("SBS_VERT"))
                             writeEnum("orientation", "Vertical");
@@ -720,15 +708,13 @@ bool RC2UI::makeDialog()
                     break;
                 case IDCustom:
                     {
-                        writeClass("QLabel");
-                        writeCString("name", useName("Custom_"+widgetID));
+                        writeWidget("QLabel", useName("Custom_" + widgetID));
                         writeRect("geometry", x,y,w,h);
                         writeString("text", "Create a custom widget and place it here.");
                     }
                 default:
                     {
-                        writeClass("QLabel");
-                        writeCString("name", useName("Unknown_"+widgetID));
+                        writeWidget("QLabel", useName("Unknown_" + widgetID));
                         writeRect("geometry", x,y,w,h);
                         writeString("text", QString("No support for %1.").arg(controlType));
                     }
@@ -745,7 +731,7 @@ bool RC2UI::makeDialog()
 
         undent();
         wi(); *out << "</widget>" << endl;
-        *out << "</UI>" << endl;
+        *out << "</ui>" << endl;
 
         do {
             line = in->readLine();

@@ -70,6 +70,7 @@ protected:
     void wi();
 
     void writeClass(const QString &name);
+    void writeWidget(const QString &className, const QString &name);
     void writeCString(const QString &name, const QString &value);
     void writeString(const QString &name, const QString &value);
     void writeRect(const QString &name, int x, int y, int w, int h);
