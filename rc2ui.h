@@ -36,7 +36,9 @@ class QTextStream;
 class RC2UI
 {
 public:
-    RC2UI(QTextStream *input, const QHash<int, QString> &bmpIds);
+    RC2UI(QTextStream *input,
+            const QHash<int, QString> &bmpIds,
+            const QHash<QString, QString> &bmpPaths);
     ~RC2UI();
 
     bool parse();
@@ -74,6 +76,7 @@ protected:
     void writeWidget(const QString &className, const QString &name);
     void writeCString(const QString &name, const QString &value);
     void writeString(const QString &name, const QString &value);
+    void writePixmap(const QString &path);
     void writeRect(const QString &name, int x, int y, int w, int h);
     void writeFont(const QString &family, int pointsize);
     void writeBool(const QString &name, bool value);
@@ -95,6 +98,7 @@ private:
     const QString blockStart2;
 
     QHash<int, QString> bmpIds;
+    QHash<QString, QString> bmpPaths;
 };
 
 #endif

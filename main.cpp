@@ -97,26 +97,65 @@ static QHash<int, QString> extractBMPIds(const QString &filename)
     return ids;
 }
 
-static QStringList import(const QString &filename, const QString &headerFile)
+static QHash<QString, QString> extractBMPPaths(const QString &filename)
 {
+    QHash<QString, QString> paths;
+
+    QFile file(filename);
+
+    if (!file.open(QIODevice::ReadOnly))
+        panic("Cannot open rcfile file '%s'", filename.toLatin1().constData());
+
+    QTextStream stream(&file);
+
+    while (!stream.atEnd()) {
+        const QString line = stream.readLine();
+
+        if (!line.startsWith(QStringLiteral("IDB_")))
+            continue;
+
+        QStringList fields = line.split(QStringLiteral(" "), QString::SkipEmptyParts);
+
+        if (fields.size() < 3)
+            continue;
+
+        if (fields.at(1) != QStringLiteral("BITMAP"))
+            continue;
+
+        QString path = fields.at(2);
+        path.remove(QStringLiteral("\""));
+        path.replace(QStringLiteral("\\\\"), QStringLiteral("/"));
+
+        paths.insert(fields.at(0), path);
+    }
+
+    return paths;
+}
+
+static QStringList import(const QString &rcFileName, const QString &headerFile)
+{
+    if (!QFileInfo::exists(rcFileName))
+        panic("Could not find rcfile '%s' ", rcFileName.toLatin1().constData());
+
     QHash<int, QString> bmpIds;
+    QHash<QString, QString> bmpPaths;
 
     if (!headerFile.isEmpty()) {
         if(!QFileInfo::exists(headerFile))
             panic("Cannot find header file '%s'", headerFile.toLatin1().constData());
 
         bmpIds = extractBMPIds(headerFile);
+        bmpPaths = extractBMPPaths(rcFileName);
     }
 
-
-    QFile rcFile(filename);
+    QFile rcFile(rcFileName);
 
     if (!rcFile.open(QIODevice::ReadOnly))
-        panic("Could not open rcFile '%s' ", filename.toLatin1().constData());
+        panic("Could not open rcFile '%s' ", rcFileName.toLatin1().constData());
 
     QTextStream in(&rcFile);
 
-    RC2UI c(&in, bmpIds);
+    RC2UI c(&in, bmpIds, bmpPaths);
     QStringList files;
     c.parse();
     return c.targetFiles;

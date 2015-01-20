@@ -104,6 +104,13 @@ void RC2UI::writeString(const QString &name, const QString &value)
     wi(); *out << "</property>" << endl;
 }
 
+void RC2UI::writePixmap(const QString &path)
+{
+    wi(); *out << "<property name=\"pixmap\">" << endl; indent();
+    wi(); *out << "<pixmap>" << path << "</pixmap>" << endl; undent();
+    wi(); *out << "</property>" << endl;
+}
+
 void RC2UI::writeRect(const QString &name, int x, int y, int w, int h)
 {
     wi(); *out << "<property name=\"" << name << "\">" << endl; indent();
@@ -207,10 +214,13 @@ void RC2UI::writeStyles(const QStringList styles, bool isFrame)
   Constructs a RC2UI object
   */
 
-RC2UI::RC2UI(QTextStream *input, const QHash<int, QString> &ids)
+RC2UI::RC2UI(QTextStream *input,
+        const QHash<int, QString> &ids,
+        const QHash<QString, QString> &paths)
     : blockStart1("/////////////////////////////////////////////////////////////////////////////"),
         blockStart2("//"),
-        bmpIds(ids)
+        bmpIds(ids),
+        bmpPaths(paths)
 {
     writeToFile = true;
     in = input;
@@ -544,14 +554,22 @@ bool RC2UI::makeDialog()
                             const int bmpId = widgetText.toInt(&isId);
 
                             if (isId && bmpIds.contains(bmpId)) {
-                                widgetText = bmpIds.value(bmpId);
+                                const QString id = bmpIds.value(bmpId);
+
+                                if (bmpPaths.contains(id))
+                                    widgetText = bmpPaths.value(id);
                             }
                         }
 
                         isFrame = true;
                         writeWidget("QLabel", useName("Label_" + widgetID));
                         writeRect("geometry", x,y,w,h);
-                        writeString("text", widgetText);
+
+                        if (isBitmap)
+                            writePixmap(widgetText);
+                        else
+                            writeString("text", widgetText);
+
                         QString align;
 
                         if (isBitmap && styles.contains("SS_CENTERIMAGE"))
