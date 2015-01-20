@@ -105,10 +105,10 @@ void RC2UI::writeRect(const QString &name, int x, int y, int w, int h)
 {
     wi(); *out << "<property name=\"" << name << "\">" << endl; indent();
     wi(); *out << "<rect>" << endl; indent();
-    wi(); *out << "<x>" << int(double(x)*1.5) << "</x>" << endl;
-    wi(); *out << "<y>" << int(double(y)*1.65) << "</y>" << endl;
-    wi(); *out << "<width>" << int(double(w)*1.5) << "</width>" << endl;
-    wi(); *out << "<height>" << int(double(h)*1.65) << "</height>" << endl; undent();
+    wi(); *out << "<x>" << x << "</x>" << endl;
+    wi(); *out << "<y>" << y << "</y>" << endl;
+    wi(); *out << "<width>" << w << "</width>" << endl;
+    wi(); *out << "<height>" << h << "</height>" << endl; undent();
     wi(); *out << "</rect>" << endl; undent();
     wi(); *out << "</property>" << endl;
 }
@@ -176,7 +176,7 @@ void RC2UI::writeStyles(const QStringList styles, bool isFrame)
             defineFrame = true;
             shape = "QFrame::Panel";
         }
-        if (!styles.contains( "WS_BORDER")) {
+        if (styles.contains( "WS_BORDER")) {
             shadow = "QFrame::Sunken";
             width = 1;
             defineFrame = true;
@@ -535,7 +535,7 @@ bool RC2UI::makeDialog()
                         writeRect("geometry", x,y,w,h);
                         writeString("text", widgetText);
                         QString align;
-                        if (!styles.contains("SS_CENTERIMAGE"))
+                        if (styles.contains("SS_BITMAP") && !styles.contains("SS_CENTERIMAGE"))
                             align += "Qt::AlignTop";
                         else
                             align += "Qt::AlignVCenter";
@@ -567,12 +567,9 @@ bool RC2UI::makeDialog()
                     break;
                 case IDGroupBox:
                     {
-                        isFrame = true;
                         writeWidget("QGroupBox", useName("GroupBox_" + widgetID));
                         writeRect("geometry", x,y,w,h);
                         writeString("title", widgetText);
-                        if (!styles.contains( "WS_BORDER"))
-                            styles.append("WS_BORDER");
                     }
                     break;
                 case IDLineEdit:
