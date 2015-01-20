@@ -456,7 +456,9 @@ bool RC2UI::makeDialog()
                 hasText = true;
             } else if (widgetType == "CONTROL") {
                 isControl = true;
-                widgetText = stripQM(parseNext( arguments));
+                widgetText = parseNext(arguments);
+                if (widgetText.startsWith('"') && widgetText.endsWith('"'))
+                    widgetText = stripQM(widgetText);
                 widgetID = parseNext(arguments);
                 controlType = stripQM(parseNext( arguments));
                 styles = splitStyles(parseNext( arguments));
