@@ -28,14 +28,15 @@
 #ifndef RC2UI_H
 #define RC2UI_H
 
-#include <qtextstream.h>
-#include <qfile.h>
-#include <qstringlist.h>
+#include <QStringList>
+#include <QHash>
+
+class QTextStream;
 
 class RC2UI
 {
 public:
-    RC2UI(QTextStream *input);
+    RC2UI(QTextStream *input, const QHash<int, QString> &bmpIds);
     ~RC2UI();
 
     bool parse();
@@ -92,6 +93,8 @@ private:
 
     const QString blockStart1;
     const QString blockStart2;
+
+    QHash<int, QString> bmpIds;
 };
 
 #endif

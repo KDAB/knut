@@ -25,23 +25,98 @@
 **
 **********************************************************************/
 
-#include <QCoreApplication>
 #include <QStringList>
 #include <QString>
 #include <QFile>
+#include <QFileInfo>
+#include <QDebug>
+
+#include <cstdlib>
+#include <cstdio>
 
 #include "rc2ui.h"
 
-static QStringList import(const QString &filename)
+using namespace std;
+
+static void panic(const char *fmt, ...)
 {
+    va_list args;
+
+    va_start(args, fmt);
+    vfprintf(stderr, fmt, args);
+    va_end(args);
+
+    fprintf(stderr, "\n");
+
+    exit(EXIT_FAILURE);
+}
+
+static void usage()
+{
+    panic("Usage: rc2ui resource <include file>");
+}
+
+static QHash<int, QString> extractBMPIds(const QString &filename)
+{
+    QHash<int, QString> ids;
+
     QFile file(filename);
 
     if (!file.open(QIODevice::ReadOnly))
-        qWarning("Could not open file '%s' ", filename.toLatin1().constData());
+        panic("Cannot open header file '%s'", filename.toLatin1().constData());
 
-    QTextStream in(&file);
+    QTextStream stream(&file);
 
-    RC2UI c(&in);
+    while (!stream.atEnd()) {
+        const QString line = stream.readLine();
+
+        if (!line.startsWith(QStringLiteral("#define")))
+            continue;
+
+        if (!line.contains(QStringLiteral("IDB_")))
+            continue;
+
+        QStringList fields = line.split(QStringLiteral(" "), QString::SkipEmptyParts);
+
+        if (fields.size() < 3)
+            continue;
+
+        if (fields.at(2).isEmpty())
+            continue;
+
+        bool ok;
+
+        const int key = fields.at(2).toInt(&ok);
+
+        if (!ok)
+            continue;
+
+        ids.insert(key, fields.at(1));
+    }
+
+    return ids;
+}
+
+static QStringList import(const QString &filename, const QString &headerFile)
+{
+    QHash<int, QString> bmpIds;
+
+    if (!headerFile.isEmpty()) {
+        if(!QFileInfo::exists(headerFile))
+            panic("Cannot find header file '%s'", headerFile.toLatin1().constData());
+
+        bmpIds = extractBMPIds(headerFile);
+    }
+
+
+    QFile rcFile(filename);
+
+    if (!rcFile.open(QIODevice::ReadOnly))
+        panic("Could not open rcFile '%s' ", filename.toLatin1().constData());
+
+    QTextStream in(&rcFile);
+
+    RC2UI c(&in, bmpIds);
     QStringList files;
     c.parse();
     return c.targetFiles;
@@ -49,9 +124,13 @@ static QStringList import(const QString &filename)
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication app(argc, argv);
+    if (argc < 2)
+        usage();
 
-    import(app.arguments().at(1));
+    const QString rcFile = argv[1];
+    const QString headerFile = (argc > 2) ? argv[2] : "";
+
+    import(rcFile, headerFile);
 
     return 0;
 }

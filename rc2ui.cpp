@@ -28,7 +28,9 @@
 #include "rc2ui.h"
 
 #include <QDir>
+#include <QFile>
 #include <QDebug>
+#include <QTextStream>
 
 /// some little helpers ///
 
@@ -205,9 +207,10 @@ void RC2UI::writeStyles(const QStringList styles, bool isFrame)
   Constructs a RC2UI object
   */
 
-RC2UI::RC2UI(QTextStream *input)
+RC2UI::RC2UI(QTextStream *input, const QHash<int, QString> &ids)
     : blockStart1("/////////////////////////////////////////////////////////////////////////////"),
-        blockStart2("//")
+        blockStart2("//"),
+        bmpIds(ids)
 {
     writeToFile = true;
     in = input;
@@ -533,12 +536,25 @@ bool RC2UI::makeDialog()
                     break;
                 case IDLabel:
                     {
+                        const bool isBitmap = (styles.contains("SS_BITMAP"));
+
+                        if (isBitmap) {
+                            bool isId;
+
+                            const int bmpId = widgetText.toInt(&isId);
+
+                            if (isId) {
+                                widgetText = bmpIds.value(bmpId);
+                            }
+                        }
+
                         isFrame = true;
                         writeWidget("QLabel", useName("Label_" + widgetID));
                         writeRect("geometry", x,y,w,h);
                         writeString("text", widgetText);
                         QString align;
-                        if (styles.contains("SS_BITMAP") && !styles.contains("SS_CENTERIMAGE"))
+
+                        if (isBitmap && styles.contains("SS_CENTERIMAGE"))
                             align += "Qt::AlignTop";
                         else
                             align += "Qt::AlignVCenter";
