@@ -115,10 +115,10 @@ void RC2UI::writeRect(const QString &name, int x, int y, int w, int h)
 {
     wi(); *out << "<property name=\"" << name << "\">" << endl; indent();
     wi(); *out << "<rect>" << endl; indent();
-    wi(); *out << "<x>" << x << "</x>" << endl;
-    wi(); *out << "<y>" << y << "</y>" << endl;
-    wi(); *out << "<width>" << w << "</width>" << endl;
-    wi(); *out << "<height>" << h << "</height>" << endl; undent();
+    wi(); *out << "<x>" << int(double(x)*1.5) << "</x>" << endl;
+    wi(); *out << "<y>" << int(double(y)*1.65) << "</y>" << endl;
+    wi(); *out << "<width>" << int(double(w)*1.5) << "</width>" << endl;
+    wi(); *out << "<height>" << int(double(h)*1.65) << "</height>" << endl; undent();
     wi(); *out << "</rect>" << endl; undent();
     wi(); *out << "</property>" << endl;
 }
