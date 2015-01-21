@@ -699,10 +699,9 @@ bool RC2UI::makeDialog()
                 case IDComboBox:
                     {
                         writeWidget("QComboBox", useName("ComboBox_" + widgetID));
-                        if (isControl)
-                            writeRect("geometry", x,y,w,14);
-                        else
-                            writeRect("geometry", x,y,w,h);
+                        // The height in the resource file is the height of the combobox
+                        // with a drop-down list fully expanded.
+                        writeRect("geometry", x,y,w,14);
                     }
                     break;
                 case IDListBox:
