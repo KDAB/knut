@@ -60,6 +60,7 @@ static QJsonObject geometryObject(int x, int y, int width, int height)
 %type<joval> control
 %type<javal> styles
 %type<qsval> control_text
+%type<qsval> style_identifier
 %type<sval> class
 %type<javal> controls
 %type<javal> control_statements
@@ -115,6 +116,7 @@ static QJsonObject geometryObject(int x, int y, int width, int height)
 %token MENUEX
 %token MENUITEM
 %token MESSAGETABLE
+%token NOT
 %token<ival> NUMBER
 %token OPERATOR_OR
 %token POPUP
@@ -469,22 +471,43 @@ optionlist:
     ;
 
 styles:
-    styles OPERATOR_OR IDENTIFIER
+    styles OPERATOR_OR style_identifier
     {
         QJsonArray *a = $$;
-        a->append(QLatin1String($3));
-        free($3);
+        a->append(*$3);
+
+        delete $3;
 
         $$ = a;
     }
-    | IDENTIFIER
+    | style_identifier
     {
-        QJsonArray *a = new QJsonArray;
-        a->append(QLatin1String($1));
-        free($1);
+        QJsonArray *a = new QJsonArray {*$1};
+
+        delete $1;
 
         $$ = a;
-    };
+    }
+    ;
+
+style_identifier:
+    IDENTIFIER
+    {
+        QString *s = new QString {$1};
+
+        free($1);
+
+        $$ = s;
+    }
+    | NOT style_identifier
+    {
+        QString *s = $2;
+        s->prepend("NOT ");
+
+        $$ = s;
+    }
+    ;
+
 
 control:
     auto3state_control { $$ = $1; }
