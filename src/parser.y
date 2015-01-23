@@ -65,6 +65,8 @@ static QJsonObject geometryObject(int x, int y, int width, int height)
 %type<javal> control_statements
 %type<javal> optionlist
 %type<javal> statements
+%type<javal> dialogs
+%type<joval> dialogex
 %type<joval> dialogex_params
 %type<joval> caption_statement
 %type<joval> characteristics_statement
@@ -132,6 +134,33 @@ static QJsonObject geometryObject(int x, int y, int width, int height)
 
 %%
 
+rcfile:
+    dialogs
+    {
+        qDebug() << QJsonDocument(*$1).toJson();
+    }
+    ;
+
+dialogs:
+    dialogs dialogex
+    {
+        QJsonArray *a = $1;
+        a->append(*$2);
+
+        delete $2;
+
+        $$ = a;
+    }
+    | dialogex
+    {
+        QJsonArray *a = new QJsonArray {*$1};
+
+        delete $1;
+
+        $$ = a;
+    }
+    ;
+
 dialogex:
     dialogex_params control_statements
     {
@@ -149,8 +178,6 @@ dialogex:
         o->insert("children", children);
 
         delete $2;
-
-        qDebug() << QJsonDocument(*o).toJson();
     }
 
 dialogex_params:
