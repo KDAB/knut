@@ -7,6 +7,7 @@
 extern FILE *yyin;
 extern int yylex(void);
 extern int yyparse(void);
+extern int yydebug;
 
 int linenum;
 
@@ -42,12 +43,14 @@ int main(int argc, char *argv[])
 
     INFILE = argv[1];
 
+    yydebug = 0;
+
     if ((rcfile = fopen(INFILE, "r")) == NULL) {
         panic("cannot open %s: %s", INFILE, strerror(errno));
     }
 
 
-    linenum = 0;
+    linenum = 1;
 
     yyin = rcfile;
 
