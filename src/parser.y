@@ -143,7 +143,7 @@ dialogex:
 
         Q_FOREACH (const QJsonValue &obj, *controls) {
             QJsonObject control = obj.toObject();
-            children.insert(control.value(QStringLiteral("id")).toString(), control);
+            children.insert(control.value("id").toString(), control);
         }
 
         o->insert("children", children);
@@ -169,7 +169,7 @@ dialogex_params:
     | dialogex_params COMMA NUMBER
     {
         QJsonObject *o = $1;
-        o->insert(QStringLiteral("helpid"), $3);
+        o->insert("helpid", $3);
 
         $$ = o;
     }
@@ -179,7 +179,7 @@ dialogex_params:
 
         Q_FOREACH (const QJsonValue &value, *$2) {
             QJsonObject s = value.toObject();
-            o->insert(s.value(QStringLiteral("type")).toString(), s);
+            o->insert(s.value("type").toString(), s);
         }
 
         delete $2;
@@ -485,7 +485,7 @@ auto3state_control:
     AUTO3STATE control_parameters_text
     {
         QJsonObject *o = $2;
-        o->insert(QStringLiteral("type"), QStringLiteral("AUTO3STATE"));
+        o->insert("type", "AUTO3STATE");
 
         $$ = o;
     }
@@ -495,7 +495,7 @@ autocheckbox_control:
     AUTOCHECKBOX control_parameters_text
     {
         QJsonObject *o = $2;
-        o->insert(QStringLiteral("type"), QStringLiteral("AUTOCHECKBOX"));
+        o->insert("type", "AUTOCHECKBOX");
 
         $$ = o;
     }
@@ -505,7 +505,7 @@ autoradiobutton_control:
     AUTORADIOBUTTON control_parameters_text
     {
         QJsonObject *o = $2;
-        o->insert(QStringLiteral("type"), QStringLiteral("AUTORADIOBUTTON"));
+        o->insert("type", "AUTORADIOBUTTON");
 
         $$ = o;
     }
@@ -515,7 +515,7 @@ checkbox_control:
     CHECKBOX control_parameters_text
     {
         QJsonObject *o = $2;
-        o->insert(QStringLiteral("type"), QStringLiteral("CHECKBOX"));
+        o->insert("type", "CHECKBOX");
 
         $$ = o;
     }
@@ -525,7 +525,7 @@ combobox_control:
     COMBOBOX control_parameters
     {
         QJsonObject *o = $2;
-        o->insert(QStringLiteral("type"), QStringLiteral("COMBOBOX"));
+        o->insert("type", "COMBOBOX");
 
         $$ = o;
     }
@@ -534,14 +534,14 @@ combobox_control:
 control_control:
     CONTROL control_text COMMA IDENTIFIER COMMA class COMMA styles COMMA NUMBER COMMA NUMBER COMMA NUMBER COMMA NUMBER
     {
-        QJsonObject *o = new QJsonObject;
-        o->insert(QStringLiteral("type"), QStringLiteral("CONTROL"));
-        o->insert(QStringLiteral("text"), *$2);
-        o->insert(QStringLiteral("id"), QLatin1String($4));
-        o->insert(QStringLiteral("class"), QLatin1String($6));
-        o->insert(QStringLiteral("style"), *$8);
-        o->insert(QStringLiteral("geometry"),
-                    geometryObject($10, $12, $14, $16));
+        QJsonObject *o = new QJsonObject {
+            {"type", "CONTROL"},
+            {"text", *$2},
+            {"id", $4},
+            {"class", $6},
+            {"style", *$8},
+            {"geometry", geometryObject($10, $12, $14, $16)}
+        };
 
         free($4);
         free($6);
@@ -555,9 +555,9 @@ control_control:
     {
         QJsonObject *o = $1;
 
-        QJsonArray a = o->value(QStringLiteral("style")).toArray();
+        QJsonArray a = o->value("style").toArray();
         a += *$2;
-        o->insert(QStringLiteral("style"), a);
+        o->insert("style", a);
 
         delete $2;
 
@@ -569,7 +569,7 @@ defpushbutton_control:
     DEFPUSHBUTTON control_parameters_text
     {
         QJsonObject *o = $2;
-        o->insert(QStringLiteral("type"), QStringLiteral("DEFPUSHBUTTON"));
+        o->insert("type", "DEFPUSHBUTTON");
 
         $$ = o;
     }
@@ -579,7 +579,7 @@ edittext_control:
     EDITTEXT control_parameters
     {
         QJsonObject *o = $2;
-        o->insert(QStringLiteral("type"), QStringLiteral("EDITTEXT"));
+        o->insert("type", "EDITTEXT");
 
         $$ = o;
     }
@@ -589,7 +589,7 @@ ctext_control:
     CTEXT control_parameters_text
     {
         QJsonObject *o = $2;
-        o->insert(QStringLiteral("type"), QStringLiteral("CTEXT"));
+        o->insert("type", "CTEXT");
 
         $$ = o;
     }
@@ -599,7 +599,7 @@ groupbox_control:
     GROUPBOX control_parameters_text
     {
         QJsonObject *o = $2;
-        o->insert(QStringLiteral("type"), QStringLiteral("GROUPBOX"));
+        o->insert("type", "GROUPBOX");
 
         $$ = o;
     }
@@ -608,12 +608,12 @@ groupbox_control:
 icon_control:
     ICON STRING_LITERAL COMMA IDENTIFIER COMMA NUMBER COMMA NUMBER
     {
-        QJsonObject *o = new QJsonObject;
-        o->insert(QStringLiteral("type"), QStringLiteral("ICON"));
-        o->insert(QStringLiteral("text"), QLatin1String($2));
-        o->insert(QStringLiteral("id"), QLatin1String($4));
-        o->insert(QStringLiteral("geometry"),
-                    geometryObject($6, $8, 0, 0));
+        QJsonObject *o = new QJsonObject{
+            {"type", "ICON"},
+            {"text", $2},
+            {"id", $4},
+            {"geometry", geometryObject($6, $8, 0, 0)}
+        };
 
         free($2);
         free($4);
@@ -624,11 +624,11 @@ icon_control:
     {
         QJsonObject *o = $1;
 
-        QJsonObject geometry = o->value(QStringLiteral("geometry")).toObject();
+        QJsonObject geometry = o->value("geometry").toObject();
 
-        o->insert(QStringLiteral("geometry"),
-                geometryObject(geometry.value(QStringLiteral("x")).toInt(),
-                geometry.value(QStringLiteral("y")).toInt(), $3, $5));
+        o->insert("geometry",
+                geometryObject(geometry.value("x").toInt(),
+                geometry.value("y").toInt(), $3, $5));
 
         $$ = o;
     }
@@ -636,7 +636,7 @@ icon_control:
     {
         QJsonObject *o = $1;
 
-        o->insert(QStringLiteral("style"), *$2);
+        o->insert("style", *$2);
 
         delete $2;
 
@@ -648,7 +648,7 @@ listbox_control:
     LISTBOX control_parameters
     {
         QJsonObject *o = $2;
-        o->insert(QStringLiteral("type"), QStringLiteral("LISTBOX"));
+        o->insert("type", "LISTBOX");
 
         $$ = o;
     }
@@ -658,7 +658,7 @@ ltext_control:
     LTEXT control_parameters_text
     {
         QJsonObject *o = $2;
-        o->insert(QStringLiteral("type"), QStringLiteral("LTEXT"));
+        o->insert("type", "LTEXT");
 
         $$ = o;
     }
@@ -668,7 +668,7 @@ pushbox_control:
     PUSHBOX control_parameters_text
     {
         QJsonObject *o = $2;
-        o->insert(QStringLiteral("type"), QStringLiteral("PUSHBOX"));
+        o->insert("type", "PUSHBOX");
 
         $$ = o;
     }
@@ -678,7 +678,7 @@ pushbutton_control:
     PUSHBUTTON control_parameters_text
     {
         QJsonObject *o = $2;
-        o->insert(QStringLiteral("type"), QStringLiteral("PUSHBUTTON"));
+        o->insert("type", "PUSHBUTTON");
 
         $$ = o;
     }
@@ -688,7 +688,7 @@ radiobutton_control:
     RADIOBUTTON control_parameters_text
     {
         QJsonObject *o = $2;
-        o->insert(QStringLiteral("type"), QStringLiteral("RADIOBUTTON"));
+        o->insert("type", "RADIOBUTTON");
 
         $$ = o;
     }
@@ -698,7 +698,7 @@ rtext_control:
     RTEXT control_parameters_text
     {
         QJsonObject *o = $2;
-        o->insert(QStringLiteral("type"), QStringLiteral("RTEXT"));
+        o->insert("type", "RTEXT");
 
         $$ = o;
     }
@@ -708,7 +708,7 @@ scrollbar_control:
     SCROLLBAR control_parameters
     {
         QJsonObject *o = $2;
-        o->insert(QStringLiteral("type"), QStringLiteral("SCROLLBAR"));
+        o->insert("type", "SCROLLBAR");
 
         $$ = o;
     }
@@ -718,7 +718,7 @@ state3_control:
     STATE3 control_parameters_text
     {
         QJsonObject *o = $2;
-        o->insert(QStringLiteral("type"), QStringLiteral("STATE3"));
+        o->insert("type", "STATE3");
 
         $$ = o;
     }
@@ -727,10 +727,10 @@ state3_control:
 control_parameters:
     IDENTIFIER COMMA NUMBER COMMA NUMBER COMMA NUMBER COMMA NUMBER
     {
-        QJsonObject *params = new QJsonObject;
-        params->insert(QStringLiteral("id"), QLatin1String($1));
-        params->insert(QStringLiteral("geometry"),
-                        geometryObject($3, $5, $7, $9));
+        QJsonObject *params = new QJsonObject {
+            {"id", $1},
+            {"geometry", geometryObject($3, $5, $7, $9)}
+        };
 
         $$ = params;
     }
@@ -738,7 +738,7 @@ control_parameters:
     {
         QJsonObject *params = $1;
 
-        params->insert(QStringLiteral("style"), *$3);
+        params->insert("style", *$3);
 
         delete $3;
 
@@ -750,7 +750,7 @@ control_parameters_text:
     STRING_LITERAL COMMA control_parameters
     {
         QJsonObject *p = $3;
-        p->insert(QStringLiteral("text"), $1);
+        p->insert("text", $1);
 
         free($1);
 
@@ -771,7 +771,7 @@ class:
 control_text:
     IDENTIFIER
     {
-        QString *s = new QString(QLatin1String($1));
+        QString *s = new QString($1);
         free($1);
 
         $$ = s;
@@ -785,7 +785,7 @@ control_text:
     }
     | STRING_LITERAL
     {
-        QString *s = new QString(QLatin1String($1));
+        QString *s = new QString($1);
         free($1);
 
         $$ = s;
