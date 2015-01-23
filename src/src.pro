@@ -3,6 +3,7 @@ SOURCES += main.cpp
 FLEXSOURCES = lexer.l
 BISONSOURCES = parser.y
 CONFIG += C++11
+TARGET = ../bin/knut
 
 OTHER_FILES += \
     $$FLEXSOURCES \
