@@ -63,6 +63,7 @@ static QJsonObject geometryObject(int x, int y, int width, int height)
 %type<sval> class
 %type<javal> controls
 %type<javal> control_statements
+%type<joval> dialogex_params
 
 %token ACCELERATORS
 %token AUTO3STATE
@@ -117,12 +118,44 @@ static QJsonObject geometryObject(int x, int y, int width, int height)
 %%
 
 dialogex:
-    dialogex_params control_statements;
+    dialogex_params control_statements
+    {
+        QJsonObject *o = $1;
+
+        QJsonArray *controls = $2;
+
+        Q_FOREACH (const QJsonValue &obj, *controls) {
+            QJsonObject control = obj.toObject();
+            o->insert(control.value(QStringLiteral("id")).toString(), control);
+        }
+
+        delete $2;
+
+        qDebug() << QJsonDocument(*o).toJson();
+    }
 
 dialogex_params:
     IDENTIFIER DIALOGEX NUMBER COMMA NUMBER COMMA NUMBER COMMA NUMBER
-    | dialogex COMMA NUMBER
-    | dialogex statements;
+    {
+        QJsonObject *o = new QJsonObject {
+            {"id", $1},
+            {"type", "DIALOGEX"},
+            {"geometry", geometryObject($3, $5, $7, $9)}
+        };
+
+        free($1);
+
+        $$ = o;
+    }
+    | dialogex_params COMMA NUMBER
+    {
+        QJsonObject *o = $1;
+        o->insert(QStringLiteral("helpid"), $3);
+
+        $$ = o;
+    }
+    | dialogex_params statements;
+    ;
 
 statements:
     statements statement | statement;
@@ -130,7 +163,6 @@ statements:
 control_statements:
     BBEGIN controls BEND
     {
-        qDebug() << QJsonDocument(*$2).toJson();
         $$ = $2;
     }
     ;
