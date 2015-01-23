@@ -53,6 +53,7 @@ RADIOBUTTON             { return RADIOBUTTON; };
 RCDATA                  { return RCDATA; };
 RTEXT                   { return RTEXT; };
 SCROLLBAR               { return SCROLLBAR; };
+SEPARATOR               { return SEPARATOR; };
 STATE3                  { return STATE3; };
 STRINGTABLE             { return STRINGTABLE; };
 STYLE                   { return STYLE; };

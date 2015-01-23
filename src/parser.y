@@ -63,7 +63,21 @@ static QJsonObject geometryObject(int x, int y, int width, int height)
 %type<sval> class
 %type<javal> controls
 %type<javal> control_statements
+%type<javal> optionlist
+%type<javal> statements
 %type<joval> dialogex_params
+%type<joval> caption_statement
+%type<joval> characteristics_statement
+%type<joval> class_statement
+%type<joval> exstyle_statement
+%type<joval> font_statement
+%type<joval> language_statement
+%type<joval> menu_statement
+%type<joval> menuitem_statement
+%type<joval> menuitem_separator_statement
+%type<joval> style_statement
+%type<joval> version_statement
+%type<joval> statement
 
 %token ACCELERATORS
 %token AUTO3STATE
@@ -108,6 +122,7 @@ static QJsonObject geometryObject(int x, int y, int width, int height)
 %token RCDATA
 %token RTEXT
 %token SCROLLBAR
+%token SEPARATOR
 %token STATE3
 %token<sval> STRING_LITERAL
 %token STRINGTABLE
@@ -124,10 +139,14 @@ dialogex:
 
         QJsonArray *controls = $2;
 
+        QJsonObject children;
+
         Q_FOREACH (const QJsonValue &obj, *controls) {
             QJsonObject control = obj.toObject();
-            o->insert(control.value(QStringLiteral("id")).toString(), control);
+            children.insert(control.value(QStringLiteral("id")).toString(), control);
         }
+
+        o->insert("children", children);
 
         delete $2;
 
@@ -154,11 +173,39 @@ dialogex_params:
 
         $$ = o;
     }
-    | dialogex_params statements;
+    | dialogex_params statements
+    {
+        QJsonObject *o = $1;
+
+        Q_FOREACH (const QJsonValue &value, *$2) {
+            QJsonObject s = value.toObject();
+            o->insert(s.value(QStringLiteral("type")).toString(), s);
+        }
+
+        delete $2;
+        $$ = o;
+    }
     ;
 
 statements:
-    statements statement | statement;
+    statements statement
+    {
+        QJsonArray *a = $1;
+        a->append(*$2);
+
+        delete $2;
+
+        $$ = a;
+    }
+    | statement
+    {
+        QJsonArray *a = new QJsonArray { *$1 };
+
+        delete $1;
+
+        $$ = a;
+    }
+    ;
 
 control_statements:
     BBEGIN controls BEND
@@ -189,51 +236,210 @@ controls:
     ;
 
 statement:
-    caption_statement
-    | style_statement
-    | characteristics_statement
-    | class_statement
-    | exstyle_statement
-    | font_statement
-    | language_statement
-    | menu_statement
-    | menuitem_statement
-    | version_statement
+    caption_statement { $$ = $1; }
+    | style_statement { $$ = $1; }
+    | characteristics_statement { $$ = $1; }
+    | class_statement { $$ = $1; }
+    | exstyle_statement { $$ = $1; }
+    | font_statement { $$ = $1; }
+    | language_statement { $$ = $1; }
+    | menu_statement { $$ = $1; }
+    | menuitem_statement { $$ = $1; }
+    | menuitem_separator_statement { $$ = $1; }
+    | version_statement { $$ = $1; }
     ;
 
 caption_statement:
-    CAPTION STRING_LITERAL;
+    CAPTION STRING_LITERAL
+    {
+        QJsonObject *o = new QJsonObject {
+            {"type", "CAPTION"},
+            {"text", $2}
+        };
+
+        free($2);
+
+        $$ = o;
+    }
+    ;
 
 characteristics_statement:
-    CHARACTERISTICS NUMBER;
+    CHARACTERISTICS NUMBER
+    {
+        QJsonObject *o = new QJsonObject {
+            {"type", "CHARACTERISTICS"},
+            {"dword", $2}
+        };
+
+        $$ = o;
+    }
+    ;
 
 class_statement:
-    CLASS NUMBER | CLASS STRING_LITERAL;
+    CLASS NUMBER
+    {
+        QJsonObject *o = new QJsonObject {
+            {"type", "CLASS"},
+            {"class", $2}
+        };
+
+        $$ = o;
+    }
+    | CLASS STRING_LITERAL
+    {
+        QJsonObject *o = new QJsonObject {
+            {"type", "CLASS"},
+            {"class", $2}
+        };
+
+        free($2);
+
+        $$ = o;
+    }
+    ;
 
 exstyle_statement:
-    EXSTYLE styles;
+    EXSTYLE styles
+    {
+        QJsonObject *o = new QJsonObject {
+            {"type", "EXSTYLE"},
+            {"style", *$2}
+        };
+
+        delete $2;
+
+        $$ = o;
+    }
+    ;
 
 font_statement:
-   FONT NUMBER COMMA STRING_LITERAL COMMA NUMBER COMMA NUMBER COMMA NUMBER;
+    FONT NUMBER COMMA STRING_LITERAL COMMA NUMBER COMMA NUMBER COMMA NUMBER
+    {
+        QJsonObject *o = new QJsonObject {
+            {"type", "FONT"},
+            {"pointsize", $2},
+            {"typeface", $4},
+            {"weight", $6},
+            {"italic", static_cast<bool>($6)},
+            {"charset", $8}
+        };
+
+        free($4);
+
+        $$ = o;
+    }
+    ;
 
 language_statement:
-    LANGUAGE IDENTIFIER COMMA IDENTIFIER;
+    LANGUAGE IDENTIFIER COMMA IDENTIFIER
+    {
+        QJsonObject *o = new QJsonObject {
+            {"type", "LANGUAGE"},
+            {"language", $2},
+            {"sublanguage", $4}
+        };
+
+        free($2);
+        free($4);
+
+        $$ = o;
+    }
+    ;
 
 menu_statement:
-    MENU STRING_LITERAL;
+    MENU STRING_LITERAL
+    {
+        QJsonObject *o = new QJsonObject {
+            {"type", "MENU"},
+            {"menuname", $2}
+        };
+
+        free($2);
+
+        $$ = o;
+    }
+    ;
 
 menuitem_statement:
     MENUITEM STRING_LITERAL COMMA NUMBER
-    | MENUITEM STRING_LITERAL COMMA NUMBER COMMA optionlist;
+    {
+        QJsonObject *o = new QJsonObject {
+            {"type", "MENUITEM"},
+            {"text", $2},
+            {"result", $4}
+        };
+
+        free($2);
+
+        $$ = o;
+    }
+    | menuitem_statement optionlist
+    {
+        QJsonObject *o = $1;
+        o->insert("optionlist", *$2);
+
+        delete $2;
+
+        $$ = o;
+    }
+    ;
+
+menuitem_separator_statement:
+    MENUITEM SEPARATOR
+    {
+        QJsonObject *o = new QJsonObject {
+            {"type", "MENUITEM_SEPARATOR"}
+        };
+
+        $$ = o;
+    }
+    ;
 
 style_statement:
-    STYLE styles;
+    STYLE styles
+    {
+        QJsonObject *o = new QJsonObject {
+            {"type", "STYLE"},
+            {"style", *$2}
+        };
+
+        delete $2;
+
+        $$ = o;
+    }
+    ;
 
 version_statement:
-    VERSION NUMBER;
+    VERSION NUMBER
+    {
+        QJsonObject *o = new QJsonObject {
+            {"type", "VERSION"},
+            {"dword", $2}
+        };
+
+        $$ = o;
+    }
+    ;
 
 optionlist:
-    optionlist IDENTIFIER | IDENTIFIER;
+    optionlist IDENTIFIER
+    {
+        QJsonArray *a = $1;
+        a->append($2);
+
+        free($2);
+
+        $$ = a;
+    }
+    | IDENTIFIER
+    {
+        QJsonArray *a = new QJsonArray {$1};
+
+        free($1);
+
+        $$ = a;
+    }
+    ;
 
 styles:
     styles OPERATOR_OR IDENTIFIER
