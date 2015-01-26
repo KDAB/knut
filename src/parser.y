@@ -88,6 +88,7 @@ static QJsonObject controlArrayToObject(const QJsonArray *controls)
 %type<javal> controls
 %type<javal> control_statements
 %type<javal> optionlist
+%type<javal> optional_optionlist
 %type<javal> statements
 %type<javal> optional_statements
 %type<javal> dialogs
@@ -111,6 +112,7 @@ static QJsonObject controlArrayToObject(const QJsonArray *controls)
 %type<joval> statement
 %type<ival> dialogex_helpid
 %type<ival> font_statement_optional_number
+%type<ival> style_optional_not
 
 %token ACCELERATORS
 %token AUTO3STATE
@@ -525,7 +527,7 @@ menu_statement:
     ;
 
 menuitem_statement:
-    MENUITEM STRING_LITERAL COMMA NUMBER
+    MENUITEM STRING_LITERAL COMMA NUMBER optional_optionlist
     {
         QJsonObject *o = new QJsonObject {
             {"type", "MENUITEM"},
@@ -533,16 +535,12 @@ menuitem_statement:
             {"result", $4}
         };
 
+        if ($5) {
+            o->insert("optionlist", *$5);
+            delete $5;
+        }
+
         free($2);
-
-        $$ = o;
-    }
-    | menuitem_statement optionlist
-    {
-        QJsonObject *o = $1;
-        o->insert("optionlist", *$2);
-
-        delete $2;
 
         $$ = o;
     }
@@ -582,6 +580,16 @@ version_statement:
         };
 
         $$ = o;
+    }
+    ;
+
+optional_optionlist:
+    {
+        $$ = 0;
+    }
+    | optionlist
+    {
+        $$ = $1;
     }
     ;
 
@@ -626,27 +634,36 @@ styles:
     ;
 
 style_identifier:
-    IDENTIFIER
+    style_optional_not IDENTIFIER
     {
-        QString *s = new QString {$1};
+        QString *s = new QString {$2};
 
-        free($1);
+        free($2);
+
+        if ($1)
+            s->prepend("NOT ");
 
         $$ = s;
     }
-    | NUMBER
+    | style_optional_not NUMBER
     {
         QString *s = new QString;
-        s->setNum($1);
+        s->setNum($2);
+
+        if ($1)
+            s->prepend("NOT ");
 
         $$ = s;
     }
-    | NOT style_identifier
-    {
-        QString *s = $2;
-        s->prepend("NOT ");
+    ;
 
-        $$ = s;
+style_optional_not:
+    {
+        $$ = 0;
+    }
+    | NOT
+    {
+        $$ = 1;
     }
     ;
 
