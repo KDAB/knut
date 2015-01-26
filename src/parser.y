@@ -55,6 +55,7 @@ static QJsonObject controlArrayToObject(const QJsonArray *controls)
 }
 
 %type<joval> control_parameters
+%type<joval> control_parameters_base
 %type<joval> control_parameters_text
 %type<joval> auto3state_control
 %type<joval> autocheckbox_control
@@ -63,6 +64,7 @@ static QJsonObject controlArrayToObject(const QJsonArray *controls)
 %type<joval> combobox_control
 %type<joval> control_control
 %type<joval> ctext_control
+%type<joval> ctext_control_base
 %type<joval> defpushbutton_control
 %type<joval> edittext_control
 %type<joval> groupbox_control
@@ -77,6 +79,8 @@ static QJsonObject controlArrayToObject(const QJsonArray *controls)
 %type<joval> state3_control
 %type<joval> control
 %type<javal> styles
+%type<javal> ctext_styles
+%type<javal> ctext_extended_style
 %type<qsval> control_text
 %type<qsval> style_identifier
 %type<sval> class
@@ -637,6 +641,13 @@ style_identifier:
 
         $$ = s;
     }
+    | NUMBER
+    {
+        QString *s = new QString;
+        s->setNum($1);
+
+        $$ = s;
+    }
     | NOT style_identifier
     {
         QString *s = $2;
@@ -774,12 +785,67 @@ edittext_control:
     ;
 
 ctext_control:
-    CTEXT control_parameters_text
+    ctext_control_base ctext_styles
     {
-        QJsonObject *o = $2;
-        o->insert("type", "CTEXT");
+        QJsonObject *o = $1;
+
+        QJsonArray *styles = $2;
+
+        if (styles) {
+            o->insert("style", styles->takeAt(0).toArray());
+
+            /* check if extended style is also there */
+            if (!styles->isEmpty())
+                o->insert("extended_style", styles->takeAt(0).toArray());
+
+            delete $2;
+        }
 
         $$ = o;
+    }
+    ;
+
+ctext_control_base:
+    CTEXT STRING_LITERAL COMMA control_parameters_base
+    {
+        QJsonObject *o = $4;
+        o->insert("type", "CTEXT");
+        o->insert("text", $2);
+
+        free($2);
+
+        $$ = o;
+    }
+    ;
+
+ctext_styles:
+    /* empty */
+    {
+        $$ = 0;
+    }
+    | COMMA styles ctext_extended_style
+    {
+        QJsonArray *a = new QJsonArray {*$2};
+
+        delete $2;
+
+        if ($3) {
+            a->append(*$3);
+            delete $3;
+        }
+
+        $$ = a;
+    }
+    ;
+
+ctext_extended_style:
+    /* empty */
+    {
+        $$ = 0;
+    }
+    | COMMA styles
+    {
+        $$ = $2;
     }
     ;
 
@@ -913,14 +979,9 @@ state3_control:
     ;
 
 control_parameters:
-    IDENTIFIER COMMA NUMBER COMMA NUMBER COMMA NUMBER COMMA NUMBER
+    control_parameters_base
     {
-        QJsonObject *params = new QJsonObject {
-            {"id", $1},
-            {"geometry", geometryObject($3, $5, $7, $9)}
-        };
-
-        $$ = params;
+        $$ = $1;
     }
     | control_parameters COMMA styles
     {
@@ -944,6 +1005,18 @@ control_parameters_text:
 
         $$ = p;
     };
+
+control_parameters_base:
+    IDENTIFIER COMMA NUMBER COMMA NUMBER COMMA NUMBER COMMA NUMBER
+    {
+        QJsonObject *params = new QJsonObject {
+            {"id", $1},
+            {"geometry", geometryObject($3, $5, $7, $9)}
+        };
+
+        $$ = params;
+    }
+    ;
 
 class:
     IDENTIFIER
