@@ -20,6 +20,24 @@ static QJsonObject geometryObject(int x, int y, int width, int height)
     };
 }
 
+static QJsonObject arrayToObject(const QString &keyField,
+                                    const QJsonArray *array)
+{
+    QJsonObject object;
+
+    Q_FOREACH (const QJsonValue &obj, *array) {
+        QJsonObject o = obj.toObject();
+        object.insert(o.value(keyField).toString(), o);
+    }
+
+    return object;
+}
+
+static QJsonObject controlArrayToObject(const QJsonArray *controls)
+{
+    return arrayToObject("id", controls);
+}
+
 %}
 
 %code requires {
@@ -67,13 +85,17 @@ static QJsonObject geometryObject(int x, int y, int width, int height)
 %type<javal> optionlist
 %type<javal> statements
 %type<javal> dialogs
+%type<joval> dialog
+%type<joval> dialog_base
+%type<joval> dialog_geometry
 %type<joval> dialogex
-%type<joval> dialogex_params
+%type<joval> dialogex_base
 %type<joval> caption_statement
 %type<joval> characteristics_statement
 %type<joval> class_statement
 %type<joval> exstyle_statement
 %type<joval> font_statement
+%type<joval> font_statement_base
 %type<joval> language_statement
 %type<joval> menu_statement
 %type<joval> menuitem_statement
@@ -153,7 +175,24 @@ dialogs:
 
         $$ = a;
     }
+    | dialogs dialog
+    {
+        QJsonArray *a = $1;
+        a->append(*$2);
+
+        delete $2;
+
+        $$ = a;
+    }
     | dialogex
+    {
+        QJsonArray *a = new QJsonArray {*$1};
+
+        delete $1;
+
+        $$ = a;
+    }
+    | dialog
     {
         QJsonArray *a = new QJsonArray {*$1};
 
@@ -163,48 +202,22 @@ dialogs:
     }
     ;
 
-dialogex:
-    dialogex_params control_statements
+dialog:
+    dialog_base control_statements
     {
         QJsonObject *o = $1;
 
-        QJsonArray *controls = $2;
-
-        QJsonObject children;
-
-        Q_FOREACH (const QJsonValue &obj, *controls) {
-            QJsonObject control = obj.toObject();
-            children.insert(control.value("id").toString(), control);
-        }
-
-        o->insert("children", children);
+        o->insert("children", controlArrayToObject($2));
 
         delete $2;
-    }
-
-dialogex_params:
-    IDENTIFIER DIALOGEX NUMBER COMMA NUMBER COMMA NUMBER COMMA NUMBER
-    {
-        QJsonObject *o = new QJsonObject {
-            {"id", $1},
-            {"type", "DIALOGEX"},
-            {"geometry", geometryObject($3, $5, $7, $9)}
-        };
-
-        free($1);
 
         $$ = o;
     }
-    | dialogex_params COMMA NUMBER
+    | dialog_base statements control_statements
     {
         QJsonObject *o = $1;
-        o->insert("helpid", $3);
 
-        $$ = o;
-    }
-    | dialogex_params statements
-    {
-        QJsonObject *o = $1;
+        o->insert("children", controlArrayToObject($3));
 
         Q_FOREACH (const QJsonValue &value, *$2) {
             QJsonObject s = value.toObject();
@@ -212,6 +225,103 @@ dialogex_params:
         }
 
         delete $2;
+        delete $3;
+
+        $$ = o;
+    }
+    ;
+
+dialog_base:
+    IDENTIFIER DIALOG dialog_geometry
+    {
+        QJsonObject *o = $3;
+        o->insert("type", "DIALOG");
+        o->insert("id", $1);
+
+        free($1);
+
+        $$ = o;
+    }
+    ;
+
+dialogex:
+    dialogex_base control_statements
+    {
+        QJsonObject *o = $1;
+
+        o->insert("children", controlArrayToObject($2));
+
+        delete $2;
+
+        $$ = o;
+    }
+    | dialogex_base COMMA NUMBER control_statements
+    {
+        QJsonObject *o = $1;
+
+        o->insert("children", controlArrayToObject($4));
+        o->insert("helpid", $3);
+
+        delete $4;
+
+        $$ = o;
+    }
+    | dialogex_base statements control_statements
+    {
+        QJsonObject *o = $1;
+
+        o->insert("children", controlArrayToObject($3));
+
+        Q_FOREACH (const QJsonValue &value, *$2) {
+            QJsonObject s = value.toObject();
+            o->insert(s.value("type").toString(), s);
+        }
+
+        delete $2;
+        delete $3;
+
+        $$ = o;
+    }
+    | dialogex_base COMMA NUMBER statements control_statements
+    {
+        QJsonObject *o = $1;
+
+        o->insert("children", controlArrayToObject($5));
+        o->insert("helpid", $3);
+
+        Q_FOREACH (const QJsonValue &value, *$4) {
+            QJsonObject s = value.toObject();
+            o->insert(s.value("type").toString(), s);
+        }
+
+        delete $4;
+        delete $5;
+
+        $$ = o;
+    }
+    ;
+
+dialogex_base:
+    IDENTIFIER DIALOGEX dialog_geometry
+    {
+        QJsonObject *o = $3;
+
+        o->insert("type", "DIALOGEX");
+        o->insert("id", $1);
+
+        free($1);
+
+        $$ = o;
+    }
+    ;
+
+dialog_geometry:
+    NUMBER COMMA NUMBER COMMA NUMBER COMMA NUMBER
+    {
+        QJsonObject *o = new QJsonObject {
+            {"geometry", geometryObject($1, $3, $5, $7)}
+        };
+
         $$ = o;
     }
     ;
@@ -342,15 +452,43 @@ exstyle_statement:
     ;
 
 font_statement:
-    FONT NUMBER COMMA STRING_LITERAL COMMA NUMBER COMMA NUMBER COMMA NUMBER
+    font_statement_base
+    {
+        $$ = $1;
+    }
+    | font_statement_base COMMA NUMBER
+    {
+        QJsonObject *o = $1;
+        o->insert("weight", $3);
+
+        $$ = 0;
+    }
+    | font_statement_base COMMA NUMBER COMMA NUMBER
+    {
+        QJsonObject *o = $1;
+        o->insert("weight", $3);
+        o->insert("italic", $5);
+
+        $$ = 0;
+    }
+    | font_statement_base COMMA NUMBER COMMA NUMBER COMMA NUMBER
+    {
+        QJsonObject *o = $1;
+        o->insert("weight", $3);
+        o->insert("italic", $5);
+        o->insert("italic", $7);
+
+        $$ = o;
+    }
+    ;
+
+font_statement_base:
+    FONT NUMBER COMMA STRING_LITERAL
     {
         QJsonObject *o = new QJsonObject {
             {"type", "FONT"},
             {"pointsize", $2},
-            {"typeface", $4},
-            {"weight", $6},
-            {"italic", static_cast<bool>($6)},
-            {"charset", $8}
+            {"typeface", $4}
         };
 
         free($4);
