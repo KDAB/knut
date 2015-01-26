@@ -739,15 +739,15 @@ control_control:
 
         $$ = o;
     }
-    | control_control styles
+    | control_control COMMA styles
     {
         QJsonObject *o = $1;
 
         QJsonArray a = o->value("style").toArray();
-        a += *$2;
+        a += *$3;
         o->insert("style", a);
 
-        delete $2;
+        delete $3;
 
         $$ = o;
     }
