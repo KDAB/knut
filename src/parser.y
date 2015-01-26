@@ -112,6 +112,7 @@ static QJsonObject controlArrayToObject(const QJsonArray *controls)
 %type<joval> statement
 %type<ival> dialogex_helpid
 %type<ival> font_statement_optional_number
+%type<ival> icon_control_optional_number
 %type<ival> style_optional_not
 
 %token ACCELERATORS
@@ -869,40 +870,41 @@ groupbox_control:
 
 icon_control:
     ICON IDENTIFIER COMMA IDENTIFIER COMMA NUMBER COMMA NUMBER
+    icon_control_optional_number icon_control_optional_number optional_styles
+    optional_styles
     {
         QJsonObject *o = new QJsonObject{
             {"type", "ICON"},
             {"text", $2},
             {"id", $4},
-            {"geometry", geometryObject($6, $8, 0, 0)}
+            {"geometry", geometryObject($6, $8, $9, $10)}
         };
+
+        if ($11) {
+            o->insert("style", *$11);
+            delete $11;
+        }
+
+        if ($12) {
+            o->insert("extended_style", *$12);
+            delete $12;
+        }
 
         free($2);
         free($4);
 
         $$ = o;
     }
-    | icon_control COMMA NUMBER COMMA NUMBER
+    ;
+
+icon_control_optional_number:
+    /* empty */
     {
-        QJsonObject *o = $1;
-
-        QJsonObject geometry = o->value("geometry").toObject();
-
-        o->insert("geometry",
-                geometryObject(geometry.value("x").toInt(),
-                geometry.value("y").toInt(), $3, $5));
-
-        $$ = o;
+        $$ = 0;
     }
-    | icon_control styles
+    | COMMA NUMBER
     {
-        QJsonObject *o = $1;
-
-        o->insert("style", *$2);
-
-        delete $2;
-
-        $$ = o;
+        $$ = $2;
     }
     ;
 
