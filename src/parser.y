@@ -89,6 +89,7 @@ static QJsonObject controlArrayToObject(const QJsonArray *controls)
 %type<javal> control_statements
 %type<javal> optionlist
 %type<javal> statements
+%type<javal> optional_statements
 %type<javal> dialogs
 %type<joval> dialog
 %type<joval> dialog_base
@@ -108,6 +109,7 @@ static QJsonObject controlArrayToObject(const QJsonArray *controls)
 %type<joval> style_statement
 %type<joval> version_statement
 %type<joval> statement
+%type<ival> dialogex_helpid
 
 %token ACCELERATORS
 %token AUTO3STATE
@@ -208,32 +210,23 @@ dialogs:
     ;
 
 dialog:
-    dialog_base control_statements
+    dialog_base optional_statements control_statements
     {
         QJsonObject *o = $1;
 
         if ($2) {
-            o->insert("children", controlArrayToObject($2));
+            Q_FOREACH (const QJsonValue &value, *$2) {
+                QJsonObject s = value.toObject();
+                o->insert(s.value("type").toString(), s);
+            }
+
             delete $2;
         }
-
-        $$ = o;
-    }
-    | dialog_base statements control_statements
-    {
-        QJsonObject *o = $1;
 
         if ($3) {
             o->insert("children", controlArrayToObject($3));
             delete $3;
         }
-
-        Q_FOREACH (const QJsonValue &value, *$2) {
-            QJsonObject s = value.toObject();
-            o->insert(s.value("type").toString(), s);
-        }
-
-        delete $2;
 
         $$ = o;
     }
@@ -253,67 +246,39 @@ dialog_base:
     ;
 
 dialogex:
-    dialogex_base control_statements
+    dialogex_base dialogex_helpid optional_statements control_statements
     {
         QJsonObject *o = $1;
 
-        if ($2) {
-            o->insert("children", controlArrayToObject($2));
-            delete $2;
+        if ($2)
+            o->insert("helpid", $2);
+
+        if ($3) {
+            Q_FOREACH (const QJsonValue &value, *$3) {
+                QJsonObject s = value.toObject();
+                o->insert(s.value("type").toString(), s);
+            }
+
+            delete $3;
         }
-
-        $$ = o;
-    }
-    | dialogex_base COMMA NUMBER control_statements
-    {
-        QJsonObject *o = $1;
 
         if ($4) {
             o->insert("children", controlArrayToObject($4));
             delete $4;
         }
 
-        o->insert("helpid", $3);
-
         $$ = o;
     }
-    | dialogex_base statements control_statements
+    ;
+
+dialogex_helpid:
+    /* empty */
     {
-        QJsonObject *o = $1;
-
-        if ($3) {
-            o->insert("children", controlArrayToObject($3));
-            delete $3;
-        }
-
-        Q_FOREACH (const QJsonValue &value, *$2) {
-            QJsonObject s = value.toObject();
-            o->insert(s.value("type").toString(), s);
-        }
-
-        delete $2;
-
-        $$ = o;
+        $$ = 0;
     }
-    | dialogex_base COMMA NUMBER statements control_statements
+    | COMMA NUMBER
     {
-        QJsonObject *o = $1;
-
-        if ($5) {
-            o->insert("children", controlArrayToObject($5));
-            delete $5;
-        }
-
-        o->insert("helpid", $3);
-
-        Q_FOREACH (const QJsonValue &value, *$4) {
-            QJsonObject s = value.toObject();
-            o->insert(s.value("type").toString(), s);
-        }
-
-        delete $4;
-
-        $$ = o;
+        $$ = $2;
     }
     ;
 
@@ -339,6 +304,17 @@ dialog_geometry:
         };
 
         $$ = o;
+    }
+    ;
+
+optional_statements:
+    /* empty */
+    {
+        $$ = 0;
+    }
+    | statements
+    {
+        $$ = $1;
     }
     ;
 
