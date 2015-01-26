@@ -80,7 +80,7 @@ static QJsonObject controlArrayToObject(const QJsonArray *controls)
 %type<joval> control
 %type<javal> styles
 %type<javal> ctext_styles
-%type<javal> ctext_extended_style
+%type<javal> optional_styles
 %type<qsval> control_identifier
 %type<qsval> control_text
 %type<qsval> style_identifier
@@ -633,6 +633,18 @@ styles:
     }
     ;
 
+optional_styles:
+    /* empty */
+    {
+        $$ = 0;
+    }
+    | COMMA styles
+    {
+        $$ = $2;
+    }
+    ;
+
+
 style_identifier:
     style_optional_not IDENTIFIER
     {
@@ -741,7 +753,8 @@ combobox_control:
     ;
 
 control_control:
-    CONTROL control_text COMMA control_identifier COMMA class COMMA styles COMMA NUMBER COMMA NUMBER COMMA NUMBER COMMA NUMBER
+    CONTROL control_text COMMA control_identifier COMMA class COMMA styles
+    COMMA NUMBER COMMA NUMBER COMMA NUMBER COMMA NUMBER optional_styles
     {
         QJsonObject *o = new QJsonObject {
             {"type", "CONTROL"},
@@ -752,23 +765,19 @@ control_control:
             {"geometry", geometryObject($10, $12, $14, $16)}
         };
 
+        if ($17) {
+            QJsonArray a = o->value("style").toArray();
+            a += *$17;
+            o->insert("style", a);
+
+            delete $17;
+        }
+
         free($6);
 
         delete $2;
         delete $4;
         delete $8;
-
-        $$ = o;
-    }
-    | control_control COMMA styles
-    {
-        QJsonObject *o = $1;
-
-        QJsonArray a = o->value("style").toArray();
-        a += *$3;
-        o->insert("style", a);
-
-        delete $3;
 
         $$ = o;
     }
@@ -833,7 +842,7 @@ ctext_styles:
     {
         $$ = 0;
     }
-    | COMMA styles ctext_extended_style
+    | COMMA styles optional_styles
     {
         QJsonArray *a = new QJsonArray {*$2};
 
@@ -845,17 +854,6 @@ ctext_styles:
         }
 
         $$ = a;
-    }
-    ;
-
-ctext_extended_style:
-    /* empty */
-    {
-        $$ = 0;
-    }
-    | COMMA styles
-    {
-        $$ = $2;
     }
     ;
 
