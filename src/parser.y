@@ -81,6 +81,7 @@ static QJsonObject controlArrayToObject(const QJsonArray *controls)
 %type<javal> styles
 %type<javal> ctext_styles
 %type<javal> ctext_extended_style
+%type<qsval> control_identifier
 %type<qsval> control_text
 %type<qsval> style_identifier
 %type<sval> class
@@ -1022,14 +1023,33 @@ control_parameters_text:
     };
 
 control_parameters_base:
-    IDENTIFIER COMMA NUMBER COMMA NUMBER COMMA NUMBER COMMA NUMBER
+    control_identifier COMMA NUMBER COMMA NUMBER COMMA NUMBER COMMA NUMBER
     {
         QJsonObject *params = new QJsonObject {
-            {"id", $1},
+            {"id", *$1},
             {"geometry", geometryObject($3, $5, $7, $9)}
         };
 
+        delete $1;
+
         $$ = params;
+    }
+    ;
+
+control_identifier:
+    IDENTIFIER
+    {
+        QString *s = new QString($1);
+        free($1);
+
+        $$ = s;
+    }
+    | NUMBER
+    {
+        QString *s = new QString;
+        s->setNum($1);
+
+        $$ = s;
     }
     ;
 
