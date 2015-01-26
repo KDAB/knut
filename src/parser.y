@@ -110,6 +110,7 @@ static QJsonObject controlArrayToObject(const QJsonArray *controls)
 %type<joval> version_statement
 %type<joval> statement
 %type<ival> dialogex_helpid
+%type<ival> font_statement_optional_number
 
 %token ACCELERATORS
 %token AUTO3STATE
@@ -448,31 +449,20 @@ exstyle_statement:
     ;
 
 font_statement:
-    font_statement_base
-    {
-        $$ = $1;
-    }
-    | font_statement_base COMMA NUMBER
-    {
-        QJsonObject *o = $1;
-        o->insert("weight", $3);
+    font_statement_base font_statement_optional_number
+    font_statement_optional_number font_statement_optional_number
 
-        $$ = 0;
-    }
-    | font_statement_base COMMA NUMBER COMMA NUMBER
     {
         QJsonObject *o = $1;
-        o->insert("weight", $3);
-        o->insert("italic", $5);
 
-        $$ = 0;
-    }
-    | font_statement_base COMMA NUMBER COMMA NUMBER COMMA NUMBER
-    {
-        QJsonObject *o = $1;
-        o->insert("weight", $3);
-        o->insert("italic", $5);
-        o->insert("italic", $7);
+        if ($2 > 0)
+            o->insert("weight", $2);
+
+        if ($3 > 0)
+            o->insert("italic", $3);
+
+        if ($4 > 0)
+            o->insert("italic", $4);
 
         $$ = o;
     }
@@ -490,6 +480,17 @@ font_statement_base:
         free($4);
 
         $$ = o;
+    }
+    ;
+
+font_statement_optional_number:
+    /* empty */
+    {
+        $$ = -1;
+    }
+    | COMMA NUMBER
+    {
+        $$ = $2;
     }
     ;
 
