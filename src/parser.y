@@ -747,21 +747,21 @@ combobox_control:
     ;
 
 control_control:
-    CONTROL control_text COMMA IDENTIFIER COMMA class COMMA styles COMMA NUMBER COMMA NUMBER COMMA NUMBER COMMA NUMBER
+    CONTROL control_text COMMA control_identifier COMMA class COMMA styles COMMA NUMBER COMMA NUMBER COMMA NUMBER COMMA NUMBER
     {
         QJsonObject *o = new QJsonObject {
             {"type", "CONTROL"},
             {"text", *$2},
-            {"id", $4},
+            {"id", *$4},
             {"class", $6},
             {"style", *$8},
             {"geometry", geometryObject($10, $12, $14, $16)}
         };
 
-        free($4);
         free($6);
 
         delete $2;
+        delete $4;
         delete $8;
 
         $$ = o;
