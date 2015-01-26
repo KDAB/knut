@@ -211,9 +211,10 @@ dialog:
     {
         QJsonObject *o = $1;
 
-        o->insert("children", controlArrayToObject($2));
-
-        delete $2;
+        if ($2) {
+            o->insert("children", controlArrayToObject($2));
+            delete $2;
+        }
 
         $$ = o;
     }
@@ -221,7 +222,10 @@ dialog:
     {
         QJsonObject *o = $1;
 
-        o->insert("children", controlArrayToObject($3));
+        if ($3) {
+            o->insert("children", controlArrayToObject($3));
+            delete $3;
+        }
 
         Q_FOREACH (const QJsonValue &value, *$2) {
             QJsonObject s = value.toObject();
@@ -229,7 +233,6 @@ dialog:
         }
 
         delete $2;
-        delete $3;
 
         $$ = o;
     }
@@ -253,9 +256,10 @@ dialogex:
     {
         QJsonObject *o = $1;
 
-        o->insert("children", controlArrayToObject($2));
-
-        delete $2;
+        if ($2) {
+            o->insert("children", controlArrayToObject($2));
+            delete $2;
+        }
 
         $$ = o;
     }
@@ -263,10 +267,12 @@ dialogex:
     {
         QJsonObject *o = $1;
 
-        o->insert("children", controlArrayToObject($4));
-        o->insert("helpid", $3);
+        if ($4) {
+            o->insert("children", controlArrayToObject($4));
+            delete $4;
+        }
 
-        delete $4;
+        o->insert("helpid", $3);
 
         $$ = o;
     }
@@ -274,7 +280,10 @@ dialogex:
     {
         QJsonObject *o = $1;
 
-        o->insert("children", controlArrayToObject($3));
+        if ($3) {
+            o->insert("children", controlArrayToObject($3));
+            delete $3;
+        }
 
         Q_FOREACH (const QJsonValue &value, *$2) {
             QJsonObject s = value.toObject();
@@ -282,7 +291,6 @@ dialogex:
         }
 
         delete $2;
-        delete $3;
 
         $$ = o;
     }
@@ -290,7 +298,11 @@ dialogex:
     {
         QJsonObject *o = $1;
 
-        o->insert("children", controlArrayToObject($5));
+        if ($5) {
+            o->insert("children", controlArrayToObject($5));
+            delete $5;
+        }
+
         o->insert("helpid", $3);
 
         Q_FOREACH (const QJsonValue &value, *$4) {
@@ -299,7 +311,6 @@ dialogex:
         }
 
         delete $4;
-        delete $5;
 
         $$ = o;
     }
@@ -358,7 +369,11 @@ control_statements:
     ;
 
 controls:
-    controls control
+    /* empty */
+    {
+        $$ = 0;
+    }
+    | controls control
     {
         QJsonArray *a = $1;
         a->append(*$2);
