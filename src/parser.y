@@ -876,7 +876,7 @@ groupbox_control:
     ;
 
 icon_control:
-    ICON STRING_LITERAL COMMA IDENTIFIER COMMA NUMBER COMMA NUMBER
+    ICON IDENTIFIER COMMA IDENTIFIER COMMA NUMBER COMMA NUMBER
     {
         QJsonObject *o = new QJsonObject{
             {"type", "ICON"},
