@@ -62,7 +62,7 @@ VERSION                 { return VERSION; };
 VERSIONINFO             { return VERSIONINFO; };
 [A-Za-z_][A-Za-z0-9_]*  { yylval.sval = strdup(yytext); return IDENTIFIER; };
 \"(\\.|[^"])*\"         { yylval.sval = strdup(yytext); return STRING_LITERAL; };
-(0x)*[0-9]+             { bool ok; yylval.ival = QString(yytext).toInt(&ok, 0); return NUMBER; };
+[+|-]?(0x)?[0-9]+       { bool ok; yylval.ival = QString(yytext).toInt(&ok, 0); return NUMBER; };
 [ \t]                   {};
 \n                      { ++linenum; };
 \|                      { return OPERATOR_OR; };
