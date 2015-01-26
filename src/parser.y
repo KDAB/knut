@@ -55,8 +55,10 @@ static QJsonObject controlArrayToObject(const QJsonArray *controls)
 }
 
 %type<joval> control_parameters
+%type<joval> control_parameters_extended
 %type<joval> control_parameters_base
 %type<joval> control_parameters_text
+%type<joval> control_parameters_text_extended
 %type<joval> auto3state_control
 %type<joval> autocheckbox_control
 %type<joval> autoradiobutton_control
@@ -795,7 +797,7 @@ defpushbutton_control:
     ;
 
 edittext_control:
-    EDITTEXT control_parameters
+    EDITTEXT control_parameters_extended
     {
         QJsonObject *o = $2;
         o->insert("type", "EDITTEXT");
@@ -919,7 +921,7 @@ listbox_control:
     ;
 
 ltext_control:
-    LTEXT control_parameters_text
+    LTEXT control_parameters_text_extended
     {
         QJsonObject *o = $2;
         o->insert("type", "LTEXT");
@@ -989,17 +991,33 @@ state3_control:
     ;
 
 control_parameters:
-    control_parameters_base
-    {
-        $$ = $1;
-    }
-    | control_parameters COMMA styles
+    control_parameters_base optional_styles
     {
         QJsonObject *params = $1;
 
-        params->insert("style", *$3);
+        if ($2) {
+            params->insert("style", *$2);
+            delete $2;
+        }
 
-        delete $3;
+        $$ = params;
+    }
+    ;
+
+control_parameters_extended:
+    control_parameters_base optional_styles optional_styles
+    {
+        QJsonObject *params = $1;
+
+        if ($2) {
+            params->insert("style", *$2);
+            delete $2;
+        }
+
+        if ($3) {
+            params->insert("extended_style", *$3);
+            delete $3;
+        }
 
         $$ = params;
     }
@@ -1007,6 +1025,17 @@ control_parameters:
 
 control_parameters_text:
     STRING_LITERAL COMMA control_parameters
+    {
+        QJsonObject *p = $3;
+        p->insert("text", $1);
+
+        free($1);
+
+        $$ = p;
+    };
+
+control_parameters_text_extended:
+    STRING_LITERAL COMMA control_parameters_extended
     {
         QJsonObject *p = $3;
         p->insert("text", $1);
