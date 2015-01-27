@@ -5,7 +5,7 @@
 
 #include <QString>
 
-#include "parser.h"
+#include "rcparser.h"
 
 extern int linenum;
 
