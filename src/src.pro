@@ -15,7 +15,7 @@ flex.commands = flex -o rclexer.cpp ${QMAKE_FILE_IN}
 win32-msvc*:flex.commands = win_flex --wincompat -o rclexer.cpp ${QMAKE_FILE_IN}
 flex.variable_out = SOURCES
 flex.name = Flex ${QMAKE_FILE_IN}
-flex.depends = rcparser.h
+flex.depends = rcparser.cpp
 flex.CONFIG += target_predeps
 
 QMAKE_EXTRA_COMPILERS += flex
@@ -33,10 +33,9 @@ QMAKE_EXTRA_COMPILERS += bison
 bisonheader.input = BISONSOURCES
 bisonheader.output = rcparser.h
 bisonheader.commands = @true
-win32-msvc*:bisonheader.commands =
+msvc:bisonheader.commands = @echo >NUL
 bisonheader.variable_out = HEADERS
 bisonheader.name = Bison Headers {$QMAKE_FILE_IN}
-bisonheader.depends = rcparser.cpp
 bisonheader.CONFIG += target_predeps no_link
 
 QMAKE_EXTRA_COMPILERS += bisonheader
