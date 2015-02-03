@@ -56,6 +56,7 @@ SEPARATOR               { return SEPARATOR; };
 STATE3                  { return STATE3; };
 STRINGTABLE             { return STRINGTABLE; };
 STYLE                   { return STYLE; };
+TEXTINCLUDE             { return TEXTINCLUDE; };
 VERSION                 { return VERSION; };
 VERSIONINFO             { return VERSIONINFO; };
 [A-Za-z_][A-Za-z0-9_]*  { yylval.qsval = new QString(yytext);

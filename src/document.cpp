@@ -9,7 +9,7 @@
 #include <QFileInfo>
 
 
-extern QJsonDocument yydialogs;
+extern QJsonArray yydialogs;
 
 Q_LOGGING_CATEGORY(parser, "parser")
 int linenum = 1;
@@ -53,7 +53,8 @@ void Document::parse(const QString &fileName)
         // and release the buffer.
         yy_delete_buffer(bufferState);
 
-        m_dialogs = yydialogs;
+        m_dialogs = QJsonDocument(yydialogs);
+        qDebug() << m_dialogs.toJson();
     } else {
         qCCritical(parser) << "Can't read " << fileName;
     }

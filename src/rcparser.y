@@ -7,7 +7,8 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 
-QJsonDocument yydialogs; /* resulting dialogs */
+QJsonArray yydialogs; /* resulting dialogs */
+QJsonArray yybitmaps;
 
 extern int yylex(void);
 extern void yyerror(const char *s);
@@ -78,9 +79,8 @@ static void unite(QJsonObject *obj1, QJsonObject *obj2)
 %type<qsval> class
 %type<javal> controls
 %type<javal> control_statements
-%type<joval> statements
-%type<joval> optional_statements
-%type<javal> dialogs
+%type<joval> dialog_statements
+%type<joval> dialog_optional_statements
 %type<joval> dialog
 %type<joval> dialog_base
 %type<joval> dialog_geometry
@@ -92,11 +92,12 @@ static void unite(QJsonObject *obj1, QJsonObject *obj2)
 %type<joval> exstyle_statement
 %type<joval> font_statement
 %type<joval> font_statement_base
+%type<joval> icon
 %type<joval> language_statement
 %type<joval> menu_statement
 %type<joval> style_statement
 %type<joval> version_statement
-%type<joval> statement
+%type<joval> dialog_statement
 %type<ival> dialogex_helpid
 %type<ival> font_statement_optional_number
 %type<ival> icon_control_optional_number
@@ -148,6 +149,7 @@ static void unite(QJsonObject *obj1, QJsonObject *obj2)
 %token<qsval> STRING_LITERAL
 %token STRINGTABLE
 %token STYLE
+%token TEXTINCLUDE
 %token VERSION
 %token VERSIONINFO
 
@@ -156,51 +158,30 @@ static void unite(QJsonObject *obj1, QJsonObject *obj2)
 %%
 
 rcfile:
-    dialogs
-    {
-        yydialogs = QJsonDocument(*$1);
-    }
+    rcfile resources
+    | rcfile ignored_statement
+    | ignored_statement
+    | resources
     ;
 
-dialogs:
-    dialogs dialogex
-    {
-        QJsonArray *a = $1;
-        a->append(*$2);
+ignored_statement:
+    language_statement
+    | textinclude
+    ;
 
-        delete $2;
+resources:
+    resources resource | resource
+    ;
 
-        $$ = a;
-    }
-    | dialogs dialog
-    {
-        QJsonArray *a = $1;
-        a->append(*$2);
-
-        delete $2;
-
-        $$ = a;
-    }
+resource:
+    dialog
     | dialogex
-    {
-        QJsonArray *a = new QJsonArray {*$1};
-
-        delete $1;
-
-        $$ = a;
-    }
-    | dialog
-    {
-        QJsonArray *a = new QJsonArray {*$1};
-
-        delete $1;
-
-        $$ = a;
-    }
+    | bitmap
+    | icon
     ;
 
 dialog:
-    dialog_base optional_statements control_statements
+    dialog_base dialog_optional_statements control_statements
     {
         QJsonObject *o = $1;
 
@@ -214,7 +195,8 @@ dialog:
             delete $3;
         }
 
-        $$ = o;
+        yydialogs.append(*o);
+        delete o;
     }
     ;
 
@@ -232,7 +214,7 @@ dialog_base:
     ;
 
 dialogex:
-    dialogex_base dialogex_helpid optional_statements control_statements
+    dialogex_base dialogex_helpid dialog_optional_statements control_statements
     {
         QJsonObject *o = $1;
 
@@ -249,7 +231,8 @@ dialogex:
             delete $4;
         }
 
-        $$ = o;
+        yydialogs.append(*o);
+        delete o;
     }
     ;
 
@@ -289,19 +272,19 @@ dialog_geometry:
     }
     ;
 
-optional_statements:
+dialog_optional_statements:
     /* empty */
     {
         $$ = 0;
     }
-    | statements
+    | dialog_statements
     {
         $$ = $1;
     }
     ;
 
-statements:
-    statements statement
+dialog_statements:
+    dialog_statements dialog_statement
     {
         QJsonObject *o = $1;
         unite(o, $2);
@@ -310,7 +293,7 @@ statements:
 
         $$ = o;
     }
-    | statement
+    | dialog_statement
     {
         $$ = $1;
     }
@@ -348,7 +331,7 @@ controls:
     }
     ;
 
-statement:
+dialog_statement:
     caption_statement { $$ = $1; }
     | style_statement { $$ = $1; }
     | characteristics_statement { $$ = $1; }
@@ -990,5 +973,45 @@ control_text:
     | STRING_LITERAL
     {
         $$ = $1;
+    }
+    ;
+
+textinclude:
+    /* empty */
+    | NUMBER TEXTINCLUDE BBEGIN string_list BEND
+    ;
+
+string_list:
+    string_list STRING_LITERAL | STRING_LITERAL;
+
+bitmap:
+    control_text BITMAP STRING_LITERAL
+    {
+        QJsonObject o {
+            {"type", "BITMAP"},
+            {"nameID", *$1},
+            {"filename", *$3}
+        };
+
+        yybitmaps.append(o);
+
+        delete $1;
+        delete $3;
+    }
+    ;
+
+icon:
+    control_text ICON STRING_LITERAL
+    {
+        QJsonObject o {
+            {"type", "ICON"},
+            {"nameID", *$1},
+            {"filename", *$3}
+        };
+
+        yybitmaps.append(o);
+
+        delete $1;
+        delete $3;
     }
     ;
