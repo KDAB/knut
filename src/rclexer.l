@@ -72,7 +72,7 @@ VERSIONINFO             { return VERSIONINFO; };
 \n                      { ++linenum; };
 \|                      { return OPERATOR_OR; };
 \/\/.*                  {};
-#[A-Za-z]+              { return DIRECTIVE; };
+^#.*                    { /* ignore directives*/ };
 ,                       { return COMMA; };
 
 %%

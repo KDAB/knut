@@ -118,7 +118,6 @@ static QJsonObject geometryObject(int x, int y, int width, int height)
 %token DEFPUSHBUTTON
 %token DIALOG
 %token DIALOGEX
-%token DIRECTIVE
 %token EDITTEXT
 %token BEND
 %token EXSTYLE
