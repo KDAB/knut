@@ -1,22 +1,30 @@
 TEMPLATE = app
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    document.cpp
 FLEXSOURCES = rclexer.l
 BISONSOURCES = rcparser.y
-CONFIG += C++11
+CONFIG += c++11 console
 TARGET = ../bin/knut
-
-OTHER_FILES += \
-    $$FLEXSOURCES \
-    $$BISONSOURCES
 
 flex.input = FLEXSOURCES
 flex.output = rclexer.cpp
-flex.commands = flex -o rclexer.cpp ${QMAKE_FILE_IN}
-win32-msvc*:flex.commands = win_flex --wincompat -o rclexer.cpp ${QMAKE_FILE_IN}
+flex.commands = flex --header-file=rclexer.h -o rclexer.cpp ${QMAKE_FILE_IN}
+win32-msvc*:flex.commands = win_flex --wincompat --header-file=rclexer.h -o rclexer.cpp ${QMAKE_FILE_IN}
 flex.variable_out = SOURCES
 flex.name = Flex ${QMAKE_FILE_IN}
 flex.depends = rcparser.cpp
 flex.CONFIG += target_predeps
+
+QMAKE_EXTRA_COMPILERS += flex
+
+flexheader.input = FLEXSOURCES
+flexheader.output = rclexer.h
+flexheader.commands = @true
+msvc:flexheader.commands = @echo >NUL
+flexheader.variable_out = SOURCES
+flexheader.name = Flex ${QMAKE_FILE_IN}
+flexheader.depends = rcparser.cpp
+flexheader.CONFIG += target_predeps no_link
 
 QMAKE_EXTRA_COMPILERS += flex
 
@@ -39,4 +47,7 @@ bisonheader.name = Bison Headers {$QMAKE_FILE_IN}
 bisonheader.CONFIG += target_predeps no_link
 
 QMAKE_EXTRA_COMPILERS += bisonheader
+
+HEADERS += \
+    document.h
 

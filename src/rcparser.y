@@ -7,6 +7,8 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 
+QJsonDocument yydialogs; /* resulting dialogs */
+
 extern int yylex(void);
 extern void yyerror(const char *s);
 
@@ -169,12 +171,14 @@ static QJsonObject controlArrayToObject(const QJsonArray *controls)
 %token VERSION
 %token VERSIONINFO
 
+%start rcfile
+
 %%
 
 rcfile:
     dialogs
     {
-        qDebug() << QJsonDocument(*$1).toJson();
+        yydialogs = QJsonDocument(*$1);
     }
     ;
 
