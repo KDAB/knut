@@ -22,24 +22,6 @@ static QJsonObject geometryObject(int x, int y, int width, int height)
     };
 }
 
-static QJsonObject arrayToObject(const QString &keyField,
-                                    const QJsonArray *array)
-{
-    QJsonObject object;
-
-    Q_FOREACH (const QJsonValue &obj, *array) {
-        QJsonObject o = obj.toObject();
-        object.insert(o.value(keyField).toString(), o);
-    }
-
-    return object;
-}
-
-static QJsonObject controlArrayToObject(const QJsonArray *controls)
-{
-    return arrayToObject("id", controls);
-}
-
 %}
 
 %code requires {
@@ -233,7 +215,7 @@ dialog:
         }
 
         if ($3) {
-            o->insert("children", controlArrayToObject($3));
+            o->insert("children", *$3);
             delete $3;
         }
 
@@ -272,7 +254,7 @@ dialogex:
         }
 
         if ($4) {
-            o->insert("children", controlArrayToObject($4));
+            o->insert("children", *$4);
             delete $4;
         }
 
