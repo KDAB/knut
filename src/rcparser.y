@@ -47,7 +47,6 @@ static QJsonObject controlArrayToObject(const QJsonArray *controls)
 };
 
 %union {
-    char *sval;
     int ival;
     QJsonObject *joval;
     QJsonArray *javal;
@@ -86,7 +85,7 @@ static QJsonObject controlArrayToObject(const QJsonArray *controls)
 %type<qsval> control_identifier
 %type<qsval> control_text
 %type<qsval> style_identifier
-%type<sval> class
+%type<qsval> class
 %type<javal> controls
 %type<javal> control_statements
 %type<javal> optionlist
@@ -143,7 +142,7 @@ static QJsonObject controlArrayToObject(const QJsonArray *controls)
 %token GROUPBOX
 %token HTML
 %token ICON
-%token<sval> IDENTIFIER
+%token<qsval> IDENTIFIER
 %token LANGUAGE
 %token LISTBOX
 %token LTEXT
@@ -163,7 +162,7 @@ static QJsonObject controlArrayToObject(const QJsonArray *controls)
 %token SCROLLBAR
 %token SEPARATOR
 %token STATE3
-%token<sval> STRING_LITERAL
+%token<qsval> STRING_LITERAL
 %token STRINGTABLE
 %token STYLE
 %token VERSION
@@ -243,9 +242,9 @@ dialog_base:
     {
         QJsonObject *o = $3;
         o->insert("type", "DIALOG");
-        o->insert("id", $1);
+        o->insert("id", *$1);
 
-        free($1);
+        delete $1;
 
         $$ = o;
     }
@@ -294,9 +293,9 @@ dialogex_base:
         QJsonObject *o = $3;
 
         o->insert("type", "DIALOGEX");
-        o->insert("id", $1);
+        o->insert("id", *$1);
 
-        free($1);
+        delete $1;
 
         $$ = o;
     }
@@ -395,10 +394,10 @@ caption_statement:
     {
         QJsonObject *o = new QJsonObject {
             {"type", "CAPTION"},
-            {"text", $2}
+            {"text", *$2}
         };
 
-        free($2);
+        delete $2;
 
         $$ = o;
     }
@@ -430,10 +429,10 @@ class_statement:
     {
         QJsonObject *o = new QJsonObject {
             {"type", "CLASS"},
-            {"class", $2}
+            {"class", *$2}
         };
 
-        free($2);
+        delete $2;
 
         $$ = o;
     }
@@ -456,7 +455,6 @@ exstyle_statement:
 font_statement:
     font_statement_base font_statement_optional_number
     font_statement_optional_number font_statement_optional_number
-
     {
         QJsonObject *o = $1;
 
@@ -479,10 +477,10 @@ font_statement_base:
         QJsonObject *o = new QJsonObject {
             {"type", "FONT"},
             {"pointsize", $2},
-            {"typeface", $4}
+            {"typeface", *$4}
         };
 
-        free($4);
+        delete $4;
 
         $$ = o;
     }
@@ -504,12 +502,12 @@ language_statement:
     {
         QJsonObject *o = new QJsonObject {
             {"type", "LANGUAGE"},
-            {"language", $2},
-            {"sublanguage", $4}
+            {"language", *$2},
+            {"sublanguage", *$4}
         };
 
-        free($2);
-        free($4);
+        delete $2;
+        delete $4;
 
         $$ = o;
     }
@@ -520,10 +518,10 @@ menu_statement:
     {
         QJsonObject *o = new QJsonObject {
             {"type", "MENU"},
-            {"menuname", $2}
+            {"menuname", *$2}
         };
 
-        free($2);
+        delete $2;
 
         $$ = o;
     }
@@ -534,7 +532,7 @@ menuitem_statement:
     {
         QJsonObject *o = new QJsonObject {
             {"type", "MENUITEM"},
-            {"text", $2},
+            {"text", *$2},
             {"result", $4}
         };
 
@@ -543,7 +541,7 @@ menuitem_statement:
             delete $5;
         }
 
-        free($2);
+        delete $2;
 
         $$ = o;
     }
@@ -600,17 +598,17 @@ optionlist:
     optionlist IDENTIFIER
     {
         QJsonArray *a = $1;
-        a->append($2);
+        a->append(*$2);
 
-        free($2);
+        delete $2;
 
         $$ = a;
     }
     | IDENTIFIER
     {
-        QJsonArray *a = new QJsonArray {$1};
+        QJsonArray *a = new QJsonArray{*$1};
 
-        free($1);
+        delete $1;
 
         $$ = a;
     }
@@ -651,14 +649,10 @@ optional_styles:
 style_identifier:
     style_optional_not IDENTIFIER
     {
-        QString *s = new QString {$2};
-
-        free($2);
-
         if ($1)
-            s->prepend("NOT ");
+            $2->prepend("NOT ");
 
-        $$ = s;
+        $$ = $2;
     }
     | style_optional_not NUMBER
     {
@@ -763,7 +757,7 @@ control_control:
             {"type", "CONTROL"},
             {"text", *$2},
             {"id", *$4},
-            {"class", $6},
+            {"class", *$6},
             {"style", *$8},
             {"geometry", geometryObject($10, $12, $14, $16)}
         };
@@ -776,10 +770,9 @@ control_control:
             delete $17;
         }
 
-        free($6);
-
         delete $2;
         delete $4;
+        delete $6;
         delete $8;
 
         $$ = o;
@@ -832,9 +825,9 @@ ctext_control_base:
     {
         QJsonObject *o = $4;
         o->insert("type", "CTEXT");
-        o->insert("text", $2);
+        o->insert("text", *$2);
 
-        free($2);
+        delete $2;
 
         $$ = o;
     }
@@ -877,8 +870,8 @@ icon_control:
     {
         QJsonObject *o = new QJsonObject{
             {"type", "ICON"},
-            {"text", $2},
-            {"id", $4},
+            {"text", *$2},
+            {"id", *$4},
             {"geometry", geometryObject($6, $8, $9, $10)}
         };
 
@@ -892,8 +885,8 @@ icon_control:
             delete $12;
         }
 
-        free($2);
-        free($4);
+        delete $2;
+        delete $4;
 
         $$ = o;
     }
@@ -1027,9 +1020,9 @@ control_parameters_text:
     STRING_LITERAL COMMA control_parameters
     {
         QJsonObject *p = $3;
-        p->insert("text", $1);
+        p->insert("text", *$1);
 
-        free($1);
+        delete $1;
 
         $$ = p;
     };
@@ -1038,9 +1031,9 @@ control_parameters_text_extended:
     STRING_LITERAL COMMA control_parameters_extended
     {
         QJsonObject *p = $3;
-        p->insert("text", $1);
+        p->insert("text", *$1);
 
-        free($1);
+        delete $1;
 
         $$ = p;
     };
@@ -1062,15 +1055,11 @@ control_parameters_base:
 control_identifier:
     IDENTIFIER
     {
-        QString *s = new QString($1);
-        free($1);
-
-        $$ = s;
+        $$ = $1;
     }
     | NUMBER
     {
-        QString *s = new QString;
-        s->setNum($1);
+        QString *s = new QString(QString::number($1));
 
         $$ = s;
     }
@@ -1090,23 +1079,16 @@ class:
 control_text:
     IDENTIFIER
     {
-        QString *s = new QString($1);
-        free($1);
-
-        $$ = s;
+        $$ = $1;
     }
     | NUMBER
     {
-        QString *s = new QString;
-        s->setNum($1);
+        QString *s = new QString(QString::number($1));
 
         $$ = s;
     }
     | STRING_LITERAL
     {
-        QString *s = new QString($1);
-        free($1);
-
-        $$ = s;
+        $$ = $1;
     }
     ;
