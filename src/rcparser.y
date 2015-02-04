@@ -74,7 +74,7 @@ static void unite(QJsonObject *obj1, QJsonObject *obj2)
 %type<joval> ctext_styles
 %type<javal> optional_styles
 %type<qsval> control_identifier
-%type<qsval> control_text
+%type<qsval> common_identifier
 %type<qsval> style_identifier
 %type<qsval> class
 %type<javal> controls
@@ -109,6 +109,7 @@ static void unite(QJsonObject *obj1, QJsonObject *obj2)
 %token AUTORADIOBUTTON
 %token BBEGIN
 %token BITMAP
+%token BUTTON
 %token CAPTION
 %token CHARACTERISTICS
 %token CHECKBOX
@@ -150,6 +151,7 @@ static void unite(QJsonObject *obj1, QJsonObject *obj2)
 %token STRINGTABLE
 %token STYLE
 %token TEXTINCLUDE
+%token TOOLBAR
 %token VERSION
 %token VERSIONINFO
 
@@ -173,8 +175,7 @@ ignored_statement:
     | textinclude
     ;
 
-resources:
-    resources resource | resource
+resources: resources resource | resource
     ;
 
 resource:
@@ -182,7 +183,26 @@ resource:
     | dialogex
     | bitmap
     | icon
+    | toolbar
     ;
+
+common_identifier:
+    IDENTIFIER
+    {
+        $$ = $1;
+    }
+    | NUMBER
+    {
+        QString *s = new QString(QString::number($1));
+
+        $$ = s;
+    }
+    | STRING_LITERAL
+    {
+        $$ = $1;
+    }
+    ;
+
 
 /*
  * DIALOG and DIALOGEX
@@ -656,7 +676,7 @@ combobox_control:
     ;
 
 control_control:
-    CONTROL control_text COMMA control_identifier COMMA class COMMA styles
+    CONTROL common_identifier COMMA control_identifier COMMA class COMMA styles
     COMMA NUMBER COMMA NUMBER COMMA NUMBER COMMA NUMBER optional_styles
     {
         QJsonObject *o = new QJsonObject {
@@ -976,23 +996,6 @@ class:
     }
     ;
 
-control_text:
-    IDENTIFIER
-    {
-        $$ = $1;
-    }
-    | NUMBER
-    {
-        QString *s = new QString(QString::number($1));
-
-        $$ = s;
-    }
-    | STRING_LITERAL
-    {
-        $$ = $1;
-    }
-    ;
-
 /*
  * TEXTINCLUDE
  */
@@ -1010,7 +1013,7 @@ string_list:
  */
 
 bitmap:
-    control_text BITMAP STRING_LITERAL
+    common_identifier BITMAP STRING_LITERAL
     {
         QJsonObject o {
             {"type", "BITMAP"},
@@ -1030,7 +1033,7 @@ bitmap:
  */
 
 icon:
-    control_text ICON STRING_LITERAL
+    common_identifier ICON STRING_LITERAL
     {
         QJsonObject o {
             {"type", "ICON"},
@@ -1043,4 +1046,25 @@ icon:
         delete $1;
         delete $3;
     }
+    ;
+
+/*
+ * TOOLBAR
+ */
+
+toolbar:
+    common_identifier TOOLBAR NUMBER COMMA NUMBER
+    BBEGIN toolbar_statements BEND
+    ;
+
+toolbar_statements:
+    toolbar_statements toolbar_statement | toolbar_statement
+    ;
+
+toolbar_statement:
+    button_statement | SEPARATOR
+    ;
+
+button_statement:
+    BUTTON IDENTIFIER
     ;
