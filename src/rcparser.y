@@ -186,6 +186,7 @@ resource:
     | icon
     | toolbar
     | menu
+    | accelerators
     ;
 
 common_identifier:
@@ -1122,4 +1123,36 @@ popup:
 
 popup_optionlist:
     menuitem_optional_optionlist
+    ;
+
+/*
+ * ACCELERATORS
+ */
+
+accelerators:
+    common_identifier ACCELERATORS common_optional_statements
+    BBEGIN accelerators_list BEND
+    ;
+
+accelerators_list:
+    accelerators_list accel | accel
+    ;
+
+accel:
+    common_identifier COMMA common_identifier accel_type accel_options
+    ;
+
+accel_type:
+    /* empty */
+    | COMMA IDENTIFIER
+    ;
+
+accel_options:
+    /* empty */
+    | accel_options COMMA accel_option_identifier
+    | COMMA accel_option_identifier
+    ;
+
+accel_option_identifier:
+    IDENTIFIER | CONTROL
     ;
