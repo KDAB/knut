@@ -44,6 +44,7 @@ LANGUAGE                { return LANGUAGE; };
 LISTBOX                 { return LISTBOX; };
 LTEXT                   { return LTEXT; };
 MENU                    { return MENU; };
+MENUITEM                { return MENUITEM; };
 NOT                     { return NOT; };
 MESSAGETABLE            { return MESSAGETABLE; };
 POPUP                   { return POPUP; };

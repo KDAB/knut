@@ -134,6 +134,7 @@ static void unite(QJsonObject *obj1, QJsonObject *obj2)
 %token LISTBOX
 %token LTEXT
 %token MENU
+%token MENUITEM
 %token MESSAGETABLE
 %token NOT
 %token<ival> NUMBER
@@ -184,6 +185,7 @@ resource:
     | bitmap
     | icon
     | toolbar
+    | menu
     ;
 
 common_identifier:
@@ -387,6 +389,17 @@ class_statement:
 
         $$ = o;
     }
+    ;
+
+common_optional_statements:
+    common_optional_statements common_optional_statement | common_optional_statement
+    ;
+
+common_optional_statement:
+    /* empty */
+    | characteristics_statement { delete $1; }
+    | language_statement { delete $1; }
+    | version_statement { delete $1; }
     ;
 
 exstyle_statement:
@@ -1067,4 +1080,46 @@ toolbar_statement:
 
 button_statement:
     BUTTON IDENTIFIER
+    ;
+
+/*
+ * MENU and POPUP
+ */
+
+menu:
+    common_identifier MENU common_optional_statements
+    BBEGIN menu_item_definitions BEND
+    ;
+
+menu_item_definitions:
+    menu_item_definitions menu_item_definition | menu_item_definition
+    ;
+
+menu_item_definition:
+    menuitem_statement | menuitem_separator_statement | popup
+    ;
+
+menuitem_statement:
+    MENUITEM STRING_LITERAL COMMA common_identifier menuitem_optional_optionlist
+    ;
+
+menuitem_separator_statement:
+    MENUITEM SEPARATOR
+    ;
+
+menuitem_optional_optionlist:
+    /* empty */
+    | menuitem_optionlist
+    ;
+
+menuitem_optionlist:
+    menuitem_optionlist IDENTIFIER | IDENTIFIER
+    ;
+
+popup:
+    POPUP STRING_LITERAL popup_optionlist BBEGIN menu_item_definitions BEND
+    ;
+
+popup_optionlist:
+    menuitem_optional_optionlist
     ;
