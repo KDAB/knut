@@ -157,6 +157,10 @@ static void unite(QJsonObject *obj1, QJsonObject *obj2)
 
 %%
 
+/*
+ * GENERAL RULE FOR RCFILE
+ */
+
 rcfile:
     rcfile resources
     | rcfile ignored_statement
@@ -179,6 +183,10 @@ resource:
     | bitmap
     | icon
     ;
+
+/*
+ * DIALOG and DIALOGEX
+ */
 
 dialog:
     dialog_base dialog_optional_statements control_statements
@@ -299,38 +307,6 @@ dialog_statements:
     }
     ;
 
-control_statements:
-    BBEGIN controls BEND
-    {
-        $$ = $2;
-    }
-    ;
-
-controls:
-    /* empty */
-    {
-        $$ = 0;
-    }
-    | controls control
-    {
-        QJsonArray *a = $1;
-        a->append(*$2);
-
-        delete $2;
-
-        $$ = a;
-    }
-    | control
-    {
-        QJsonArray *a = new QJsonArray;
-        a->append(*$1);
-
-        delete $1;
-
-        $$ = a;
-    }
-    ;
-
 dialog_statement:
     caption_statement { $$ = $1; }
     | style_statement { $$ = $1; }
@@ -342,6 +318,11 @@ dialog_statement:
     | menu_statement { $$ = $1; }
     | version_statement { $$ = $1; }
     ;
+
+
+/*
+ * Statements
+ */
 
 caption_statement:
     CAPTION STRING_LITERAL
@@ -565,6 +546,42 @@ style_optional_not:
     }
     ;
 
+
+/*
+ * Controls
+ */
+
+control_statements:
+    BBEGIN controls BEND
+    {
+        $$ = $2;
+    }
+    ;
+
+controls:
+    /* empty */
+    {
+        $$ = 0;
+    }
+    | controls control
+    {
+        QJsonArray *a = $1;
+        a->append(*$2);
+
+        delete $2;
+
+        $$ = a;
+    }
+    | control
+    {
+        QJsonArray *a = new QJsonArray;
+        a->append(*$1);
+
+        delete $1;
+
+        $$ = a;
+    }
+    ;
 
 control:
     auto3state_control { $$ = $1; }
@@ -976,6 +993,10 @@ control_text:
     }
     ;
 
+/*
+ * TEXTINCLUDE
+ */
+
 textinclude:
     /* empty */
     | NUMBER TEXTINCLUDE BBEGIN string_list BEND
@@ -983,6 +1004,10 @@ textinclude:
 
 string_list:
     string_list STRING_LITERAL | STRING_LITERAL;
+
+/*
+ * BITMAP
+ */
 
 bitmap:
     control_text BITMAP STRING_LITERAL
@@ -999,6 +1024,10 @@ bitmap:
         delete $3;
     }
     ;
+
+/*
+ * ICON
+ */
 
 icon:
     control_text ICON STRING_LITERAL
