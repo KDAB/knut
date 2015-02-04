@@ -22,6 +22,12 @@ static QJsonObject geometryObject(int x, int y, int width, int height)
     };
 }
 
+static void unite(QJsonObject *obj1, QJsonObject *obj2)
+{
+    for (auto it = obj2->constBegin(); it != obj2->constEnd(); ++it)
+        obj1->insert(it.key(), it.value());
+}
+
 %}
 
 %code requires {
@@ -64,7 +70,7 @@ static QJsonObject geometryObject(int x, int y, int width, int height)
 %type<joval> state3_control
 %type<joval> control
 %type<javal> styles
-%type<javal> ctext_styles
+%type<joval> ctext_styles
 %type<javal> optional_styles
 %type<qsval> control_identifier
 %type<qsval> control_text
@@ -72,10 +78,8 @@ static QJsonObject geometryObject(int x, int y, int width, int height)
 %type<qsval> class
 %type<javal> controls
 %type<javal> control_statements
-%type<javal> optionlist
-%type<javal> optional_optionlist
-%type<javal> statements
-%type<javal> optional_statements
+%type<joval> statements
+%type<joval> optional_statements
 %type<javal> dialogs
 %type<joval> dialog
 %type<joval> dialog_base
@@ -90,8 +94,6 @@ static QJsonObject geometryObject(int x, int y, int width, int height)
 %type<joval> font_statement_base
 %type<joval> language_statement
 %type<joval> menu_statement
-%type<joval> menuitem_statement
-%type<joval> menuitem_separator_statement
 %type<joval> style_statement
 %type<joval> version_statement
 %type<joval> statement
@@ -130,8 +132,6 @@ static QJsonObject geometryObject(int x, int y, int width, int height)
 %token LISTBOX
 %token LTEXT
 %token MENU
-%token MENUEX
-%token MENUITEM
 %token MESSAGETABLE
 %token NOT
 %token<ival> NUMBER
@@ -205,11 +205,7 @@ dialog:
         QJsonObject *o = $1;
 
         if ($2) {
-            Q_FOREACH (const QJsonValue &value, *$2) {
-                QJsonObject s = value.toObject();
-                o->insert(s.value("type").toString(), s);
-            }
-
+            unite(o, $2);
             delete $2;
         }
 
@@ -244,11 +240,7 @@ dialogex:
             o->insert("helpid", $2);
 
         if ($3) {
-            Q_FOREACH (const QJsonValue &value, *$3) {
-                QJsonObject s = value.toObject();
-                o->insert(s.value("type").toString(), s);
-            }
-
+            unite(o, $3);
             delete $3;
         }
 
@@ -311,20 +303,16 @@ optional_statements:
 statements:
     statements statement
     {
-        QJsonArray *a = $1;
-        a->append(*$2);
+        QJsonObject *o = $1;
+        unite(o, $2);
 
         delete $2;
 
-        $$ = a;
+        $$ = o;
     }
     | statement
     {
-        QJsonArray *a = new QJsonArray { *$1 };
-
-        delete $1;
-
-        $$ = a;
+        $$ = $1;
     }
     ;
 
@@ -369,8 +357,6 @@ statement:
     | font_statement { $$ = $1; }
     | language_statement { $$ = $1; }
     | menu_statement { $$ = $1; }
-    | menuitem_statement { $$ = $1; }
-    | menuitem_separator_statement { $$ = $1; }
     | version_statement { $$ = $1; }
     ;
 
@@ -378,8 +364,7 @@ caption_statement:
     CAPTION STRING_LITERAL
     {
         QJsonObject *o = new QJsonObject {
-            {"type", "CAPTION"},
-            {"text", *$2}
+            {"caption", *$2}
         };
 
         delete $2;
@@ -392,8 +377,7 @@ characteristics_statement:
     CHARACTERISTICS NUMBER
     {
         QJsonObject *o = new QJsonObject {
-            {"type", "CHARACTERISTICS"},
-            {"dword", $2}
+            {"characteristics", $2}
         };
 
         $$ = o;
@@ -404,7 +388,6 @@ class_statement:
     CLASS NUMBER
     {
         QJsonObject *o = new QJsonObject {
-            {"type", "CLASS"},
             {"class", $2}
         };
 
@@ -413,7 +396,6 @@ class_statement:
     | CLASS STRING_LITERAL
     {
         QJsonObject *o = new QJsonObject {
-            {"type", "CLASS"},
             {"class", *$2}
         };
 
@@ -427,8 +409,7 @@ exstyle_statement:
     EXSTYLE styles
     {
         QJsonObject *o = new QJsonObject {
-            {"type", "EXSTYLE"},
-            {"style", *$2}
+            {"exstyle", *$2}
         };
 
         delete $2;
@@ -441,16 +422,20 @@ font_statement:
     font_statement_base font_statement_optional_number
     font_statement_optional_number font_statement_optional_number
     {
-        QJsonObject *o = $1;
+        if ($2 >= 0)
+            $1->insert("weight", $2);
 
-        if ($2 > 0)
-            o->insert("weight", $2);
+        if ($3 >= 0)
+            $1->insert("italic", $3);
 
-        if ($3 > 0)
-            o->insert("italic", $3);
+        if ($4 >= 0)
+            $1->insert("charset", $4);
 
-        if ($4 > 0)
-            o->insert("italic", $4);
+        QJsonObject *o = new QJsonObject {
+            {"font", *$1}
+        };
+
+        delete $1;
 
         $$ = o;
     }
@@ -460,7 +445,6 @@ font_statement_base:
     FONT NUMBER COMMA STRING_LITERAL
     {
         QJsonObject *o = new QJsonObject {
-            {"type", "FONT"},
             {"pointsize", $2},
             {"typeface", *$4}
         };
@@ -486,9 +470,10 @@ language_statement:
     LANGUAGE IDENTIFIER COMMA IDENTIFIER
     {
         QJsonObject *o = new QJsonObject {
-            {"type", "LANGUAGE"},
-            {"language", *$2},
-            {"sublanguage", *$4}
+            {"language", QJsonObject {
+                {"language", *$2},
+                {"sublanguage", *$4}}
+            }
         };
 
         delete $2;
@@ -502,42 +487,10 @@ menu_statement:
     MENU STRING_LITERAL
     {
         QJsonObject *o = new QJsonObject {
-            {"type", "MENU"},
-            {"menuname", *$2}
+            {"menu", *$2}
         };
 
         delete $2;
-
-        $$ = o;
-    }
-    ;
-
-menuitem_statement:
-    MENUITEM STRING_LITERAL COMMA NUMBER optional_optionlist
-    {
-        QJsonObject *o = new QJsonObject {
-            {"type", "MENUITEM"},
-            {"text", *$2},
-            {"result", $4}
-        };
-
-        if ($5) {
-            o->insert("optionlist", *$5);
-            delete $5;
-        }
-
-        delete $2;
-
-        $$ = o;
-    }
-    ;
-
-menuitem_separator_statement:
-    MENUITEM SEPARATOR
-    {
-        QJsonObject *o = new QJsonObject {
-            {"type", "MENUITEM_SEPARATOR"}
-        };
 
         $$ = o;
     }
@@ -547,7 +500,6 @@ style_statement:
     STYLE styles
     {
         QJsonObject *o = new QJsonObject {
-            {"type", "STYLE"},
             {"style", *$2}
         };
 
@@ -561,41 +513,10 @@ version_statement:
     VERSION NUMBER
     {
         QJsonObject *o = new QJsonObject {
-            {"type", "VERSION"},
-            {"dword", $2}
+            {"version", $2}
         };
 
         $$ = o;
-    }
-    ;
-
-optional_optionlist:
-    {
-        $$ = 0;
-    }
-    | optionlist
-    {
-        $$ = $1;
-    }
-    ;
-
-optionlist:
-    optionlist IDENTIFIER
-    {
-        QJsonArray *a = $1;
-        a->append(*$2);
-
-        delete $2;
-
-        $$ = a;
-    }
-    | IDENTIFIER
-    {
-        QJsonArray *a = new QJsonArray{*$1};
-
-        delete $1;
-
-        $$ = a;
     }
     ;
 
@@ -748,9 +669,7 @@ control_control:
         };
 
         if ($17) {
-            QJsonArray a = o->value("style").toArray();
-            a += *$17;
-            o->insert("style", a);
+            o->insert("exstyle", *$17);
 
             delete $17;
         }
@@ -789,14 +708,8 @@ ctext_control:
     {
         QJsonObject *o = $1;
 
-        QJsonArray *styles = $2;
-
-        if (styles) {
-            o->insert("style", styles->takeAt(0).toArray());
-
-            /* check if extended style is also there */
-            if (!styles->isEmpty())
-                o->insert("extended_style", styles->takeAt(0).toArray());
+        if ($2) {
+            unite(o, $2);
 
             delete $2;
         }
@@ -825,16 +738,18 @@ ctext_styles:
     }
     | COMMA styles optional_styles
     {
-        QJsonArray *a = new QJsonArray {*$2};
+        QJsonObject *o = new QJsonObject {
+            {"style", *$2}
+        };
 
         delete $2;
 
         if ($3) {
-            a->append(*$3);
+            o->insert("exstyle", *$3);
             delete $3;
         }
 
-        $$ = a;
+        $$ = o;
     }
     ;
 
@@ -857,7 +772,7 @@ icon_control:
             {"type", "ICON"},
             {"text", *$2},
             {"id", *$4},
-            {"geometry", geometryObject($6, $8, $9, $10)}
+            {"geometry", geometryObject($6, $8, 0, 0)}
         };
 
         if ($11) {
@@ -866,7 +781,7 @@ icon_control:
         }
 
         if ($12) {
-            o->insert("extended_style", *$12);
+            o->insert("exstyle", *$12);
             delete $12;
         }
 

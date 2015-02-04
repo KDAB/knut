@@ -43,8 +43,6 @@ LANGUAGE                { return LANGUAGE; };
 LISTBOX                 { return LISTBOX; };
 LTEXT                   { return LTEXT; };
 MENU                    { return MENU; };
-MENUEX                  { return MENUEX; };
-MENUITEM                { return MENUITEM; };
 NOT                     { return NOT; };
 MESSAGETABLE            { return MESSAGETABLE; };
 POPUP                   { return POPUP; };
