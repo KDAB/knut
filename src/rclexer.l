@@ -31,6 +31,7 @@ CONTROL                 { return CONTROL; };
 CTEXT                   { return CTEXT; };
 CURSOR                  { return CURSOR; };
 DEFPUSHBUTTON           { return DEFPUSHBUTTON; };
+DESIGNINFO              { return DESIGNINFO; };
 DIALOG                  { return DIALOG; };
 DIALOGEX                { return DIALOGEX; };
 EDITTEXT                { return EDITTEXT; };

@@ -120,6 +120,7 @@ static void unite(QJsonObject *obj1, QJsonObject *obj2)
 %token CTEXT
 %token CURSOR
 %token DEFPUSHBUTTON
+%token DESIGNINFO
 %token DIALOG
 %token DIALOGEX
 %token EDITTEXT
@@ -187,6 +188,7 @@ resource:
     | toolbar
     | menu
     | accelerators
+    | designinfo
     ;
 
 common_identifier:
@@ -1155,4 +1157,35 @@ accel_options:
 
 accel_option_identifier:
     IDENTIFIER | CONTROL
+    ;
+
+/*
+ * DESIGNINFO
+ */
+
+designinfo:
+    IDENTIFIER DESIGNINFO BBEGIN designinfo_list BEND
+    ;
+
+designinfo_list:
+    /* empty */
+    | designinfo_list designinfo_item
+    | designinfo_item
+    ;
+
+designinfo_item:
+    IDENTIFIER COMMA designinfo_item_type BBEGIN designinfo_item_properties BEND
+    ;
+
+designinfo_item_type:
+    IDENTIFIER | DIALOG
+    ;
+
+designinfo_item_properties:
+    designinfo_item_properties designinfo_item_property
+    | designinfo_item_property
+    ;
+
+designinfo_item_property:
+    IDENTIFIER COMMA NUMBER
     ;
