@@ -75,6 +75,7 @@ static void unite(QJsonObject *obj1, QJsonObject *obj2)
 %type<javal> optional_styles
 %type<qsval> control_identifier
 %type<qsval> common_identifier
+%type<qsval> language_identifier
 %type<qsval> style_identifier
 %type<qsval> class
 %type<javal> controls
@@ -169,14 +170,7 @@ static void unite(QJsonObject *obj1, QJsonObject *obj2)
 
 rcfile:
     rcfile resources
-    | rcfile ignored_statement
-    | ignored_statement
     | resources
-    ;
-
-ignored_statement:
-    language_statement
-    | textinclude
     ;
 
 resources: resources resource | resource
@@ -194,6 +188,9 @@ resource:
     | dlginit
     | wiget
     | cursor
+    | stringtable
+    | language
+    | textinclude
     ;
 
 common_identifier:
@@ -468,23 +465,6 @@ font_statement_optional_number:
     | COMMA NUMBER
     {
         $$ = $2;
-    }
-    ;
-
-language_statement:
-    LANGUAGE IDENTIFIER COMMA IDENTIFIER
-    {
-        QJsonObject *o = new QJsonObject {
-            {"language", QJsonObject {
-                {"language", *$2},
-                {"sublanguage", *$4}}
-            }
-        };
-
-        delete $2;
-        delete $4;
-
-        $$ = o;
     }
     ;
 
@@ -1225,4 +1205,59 @@ wiget:
 
 cursor:
     common_identifier CURSOR STRING_LITERAL
+    ;
+
+
+/*
+ * STRINGTABLE
+ */
+
+stringtable:
+    STRINGTABLE common_optional_statements BBEGIN stringtable_items BEND
+    ;
+
+stringtable_items:
+    stringtable_items stringtable_item | stringtable_item
+    ;
+
+stringtable_item:
+    common_identifier STRING_LITERAL
+    ;
+
+/*
+ * LANGUAGE
+ */
+
+language:
+    language_statement
+    ;
+
+language_statement:
+    LANGUAGE language_identifier COMMA language_identifier
+    {
+        QJsonObject *o = new QJsonObject {
+            {"language", QJsonObject {
+                {"language", *$2},
+                {"sublanguage", *$4}}
+            }
+        };
+
+        delete $2;
+        delete $4;
+
+        $$ = o;
+    }
+    ;
+
+language_identifier:
+    IDENTIFIER
+    {
+        $$ = $1;
+    }
+    | NUMBER
+    {
+        QString *s = new QString(QString::number($1));
+
+        $$ = s;
+    }
     ;
