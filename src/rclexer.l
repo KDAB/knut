@@ -34,6 +34,7 @@ DEFPUSHBUTTON           { return DEFPUSHBUTTON; };
 DESIGNINFO              { return DESIGNINFO; };
 DIALOG                  { return DIALOG; };
 DIALOGEX                { return DIALOGEX; };
+DLGINIT                 { return DLGINIT; };
 EDITTEXT                { return EDITTEXT; };
 END                     { return BEND; };
 EXSTYLE                 { return EXSTYLE; };

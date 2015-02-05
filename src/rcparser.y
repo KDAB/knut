@@ -123,6 +123,7 @@ static void unite(QJsonObject *obj1, QJsonObject *obj2)
 %token DESIGNINFO
 %token DIALOG
 %token DIALOGEX
+%token DLGINIT
 %token EDITTEXT
 %token BEND
 %token EXSTYLE
@@ -189,6 +190,7 @@ resource:
     | menu
     | accelerators
     | designinfo
+    | dlginit
     ;
 
 common_identifier:
@@ -1188,4 +1190,20 @@ designinfo_item_properties:
 
 designinfo_item_property:
     IDENTIFIER COMMA NUMBER
+    ;
+
+/*
+ * DLGINIT
+ */
+
+dlginit:
+    IDENTIFIER DLGINIT BBEGIN dlginit_params BEND
+    ;
+
+dlginit_params:
+    dlginit_params dlginit_param | dlginit_param
+    ;
+
+dlginit_param:
+    dlginit_param COMMA common_identifier | common_identifier
     ;
