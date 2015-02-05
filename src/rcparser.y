@@ -193,6 +193,7 @@ resource:
     | designinfo
     | dlginit
     | wiget
+    | cursor
     ;
 
 common_identifier:
@@ -1216,4 +1217,12 @@ dlginit_param:
 
 wiget:
     IDENTIFIER WIGETS STRING_LITERAL
+    ;
+
+/*
+ * CURSOR
+ */
+
+cursor:
+    common_identifier CURSOR STRING_LITERAL
     ;
