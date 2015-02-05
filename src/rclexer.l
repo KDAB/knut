@@ -64,6 +64,7 @@ TEXTINCLUDE             { return TEXTINCLUDE; };
 TOOLBAR                 { return TOOLBAR; };
 VERSION                 { return VERSION; };
 VERSIONINFO             { return VERSIONINFO; };
+WIGETS                  { return WIGETS; };
 [A-Za-z_][A-Za-z0-9_]*  { yylval.qsval = new QString(yytext);
                           return IDENTIFIER; };
 \"(\\.|[^"])*\"         { QString text(yytext);

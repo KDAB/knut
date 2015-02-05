@@ -157,6 +157,7 @@ static void unite(QJsonObject *obj1, QJsonObject *obj2)
 %token TOOLBAR
 %token VERSION
 %token VERSIONINFO
+%token WIGETS
 
 %start rcfile
 
@@ -191,6 +192,7 @@ resource:
     | accelerators
     | designinfo
     | dlginit
+    | wiget
     ;
 
 common_identifier:
@@ -1206,4 +1208,12 @@ dlginit_params:
 
 dlginit_param:
     dlginit_param COMMA common_identifier | common_identifier
+    ;
+
+/*
+ * WIDGETS
+ */
+
+wiget:
+    IDENTIFIER WIGETS STRING_LITERAL
     ;
