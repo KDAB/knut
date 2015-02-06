@@ -1,23 +1,33 @@
 #ifndef DOCUMENT_H
 #define DOCUMENT_H
 
+#include <QVariant>
+#include <QVariantList>
+#include <QVariantMap>
 #include <QJsonObject>
 
-class Document
+struct Document
 {
-public:
-    Document(const QString &fileName);
-    ~Document();
+    Document() = default;
+    Document(const QJsonObject &data);
 
-    QString getAsset(const QString &id);
-    QJsonObject getDialog(const QString &id);
+    // Dialogs
+    QVariantMap dialogs;
+    QJsonObject dialog(const QString &id);
 
-private:
-    void parse(const QString &fileName);
+    // List of assets
+    QVariantMap assets;
+    QString assetPath(const QString &id);
 
-private:
-    // List of dialogs
-    QJsonObject m_data;
+    bool hasError = true;
 };
+
+// Reader
+Document readFromRcFile(const QString &rcFile, const QString &resourceFile = QString{});
+Document readFomrJsonFile(const QString &jsonFile);
+
+// Writer
+QJsonDocument createJsonDocument(const Document &doc);
+void writeToJsonFile(const Document &doc, const QString &jsonFile);
 
 #endif // DOCUMENT_H
