@@ -7,15 +7,19 @@
 #include <QFile>
 #include <QTextStream>
 #include <QFileInfo>
+#include <QJsonDocument>
 
 
-extern QJsonArray yydialogs;
+extern QJsonObject yydata;
 
 Q_LOGGING_CATEGORY(parser, "parser")
+Q_LOGGING_CATEGORY(data, "data")
 int linenum = 1;
 
 namespace {
 QString rcFile;
+const QString AssetsKey = QStringLiteral("assets");
+const QString DialogsKey = QStringLiteral("dialogs");
 }
 
 void yyerror(const char *s)
@@ -36,6 +40,22 @@ Document::~Document()
 
 }
 
+QString Document::getAsset(const QString &id)
+{
+    auto value = m_data.value(AssetsKey).toObject().value(id);
+    if (value.isUndefined())
+        qCCritical(data, "Asset %s does not exist\n", id);
+    return value.toString();
+}
+
+QJsonObject Document::getDialog(const QString &id)
+{
+    auto value = m_data.value(DialogsKey).toObject().value(id);
+    if (value.isUndefined())
+        qCCritical(data, "Dialog %s does not exist\n", id);
+    return value.toObject();
+}
+
 void Document::parse(const QString &fileName)
 {
     QFile file(fileName);
@@ -53,8 +73,8 @@ void Document::parse(const QString &fileName)
         // and release the buffer.
         yy_delete_buffer(bufferState);
 
-        m_dialogs = QJsonDocument(yydialogs);
-        qDebug() << m_dialogs.toJson();
+        m_data = yydata;
+        qDebug() << QJsonDocument(m_data).toJson();
     } else {
         qCCritical(parser) << "Can't read " << fileName;
     }

@@ -7,8 +7,7 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 
-QJsonArray yydialogs; /* resulting dialogs */
-QJsonArray yybitmaps;
+QJsonObject yydata; /* resulting data */
 
 extern int yylex(void);
 extern void yyerror(const char *s);
@@ -27,6 +26,21 @@ static void unite(QJsonObject *obj1, QJsonObject *obj2)
 {
     for (auto it = obj2->constBegin(); it != obj2->constEnd(); ++it)
         obj1->insert(it.key(), it.value());
+}
+
+static void appendDialog(const QJsonObject &dialog)
+{
+    auto dialogs = yydata.take("dialogs").toObject();
+    dialogs.insert(dialog.value("id").toString(), dialog);
+    yydata.insert("dialogs", dialogs);
+}
+
+static void appendAsset(const QString &id, const QString &path)
+{
+    auto assets = yydata.take("assets").toObject();
+    auto qtPath = path;
+    assets.insert(id, qtPath.replace("\\\\", "/"));
+    yydata.insert("assets", assets);
 }
 
 %}
@@ -230,7 +244,7 @@ dialog:
             delete $3;
         }
 
-        yydialogs.append(*o);
+        appendDialog(*o);
         delete o;
     }
     ;
@@ -266,7 +280,7 @@ dialogex:
             delete $4;
         }
 
-        yydialogs.append(*o);
+        appendDialog(*o);
         delete o;
     }
     ;
@@ -1016,14 +1030,7 @@ string_list:
 bitmap:
     common_identifier BITMAP STRING_LITERAL
     {
-        QJsonObject o {
-            {"type", "BITMAP"},
-            {"nameID", *$1},
-            {"filename", *$3}
-        };
-
-        yybitmaps.append(o);
-
+        appendAsset(*$1, *$3);
         delete $1;
         delete $3;
     }
@@ -1036,14 +1043,7 @@ bitmap:
 icon:
     common_identifier ICON STRING_LITERAL
     {
-        QJsonObject o {
-            {"type", "ICON"},
-            {"nameID", *$1},
-            {"filename", *$3}
-        };
-
-        yybitmaps.append(o);
-
+        appendAsset(*$1, *$3);
         delete $1;
         delete $3;
     }
