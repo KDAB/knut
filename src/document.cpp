@@ -8,57 +8,53 @@
 #include <QTextStream>
 #include <QFileInfo>
 #include <QJsonDocument>
+#include <QJsonObject>
 
 
 extern QJsonObject yydata;
 
-Q_LOGGING_CATEGORY(parser, "parser")
-Q_LOGGING_CATEGORY(data, "data")
+Q_LOGGING_CATEGORY(reader, "reader")
+Q_LOGGING_CATEGORY(writer, "writer")
 int linenum = 1;
 
 namespace {
-QString rcFile;
-const QString AssetsKey = QStringLiteral("assets");
-const QString DialogsKey = QStringLiteral("dialogs");
+QString RcFile;
+bool Error = false;
+static const auto AssetsKey = QStringLiteral("assets");
+static const auto DialogsKey = QStringLiteral("dialogs");
 }
+
+
+Document::Document(const QJsonObject &data)
+{
+    dialogs = data.value(DialogsKey).toObject().toVariantMap();
+    assets = data.value(AssetsKey).toObject().toVariantMap();
+    hasError = false;
+}
+
+QJsonObject Document::dialog(const QString &id)
+{
+    return dialogs.value(id).toJsonObject();
+}
+
+QString Document::assetPath(const QString &id)
+{
+    return assets.value(id).toString();
+}
+
 
 void yyerror(const char *s)
 {
-    qCCritical(parser, "%s:%d: %s\n", rcFile.toLatin1().constData(), linenum, s);
+    qCCritical(reader, "%s:%d: %s\n", RcFile.toLatin1().constData(), linenum, s);
+    Error = true;
 }
 
 
-Document::Document(const QString &fileName)
+Document readFromRcFile(const QString &rcFile,
+                        const QString &resourceFile)
 {
-    QFileInfo fi(fileName);
-    rcFile = fi.fileName();
-    parse(fileName);
-}
-
-Document::~Document()
-{
-
-}
-
-QString Document::getAsset(const QString &id)
-{
-    auto value = m_data.value(AssetsKey).toObject().value(id);
-    if (value.isUndefined())
-        qCCritical(data, "Asset %s does not exist\n", id);
-    return value.toString();
-}
-
-QJsonObject Document::getDialog(const QString &id)
-{
-    auto value = m_data.value(DialogsKey).toObject().value(id);
-    if (value.isUndefined())
-        qCCritical(data, "Dialog %s does not exist\n", id);
-    return value.toObject();
-}
-
-void Document::parse(const QString &fileName)
-{
-    QFile file(fileName);
+    RcFile = rcFile;
+    QFile file(rcFile);
 
     if (file.open(QIODevice::ReadOnly)) {
         QTextStream stream(&file);
@@ -73,10 +69,47 @@ void Document::parse(const QString &fileName)
         // and release the buffer.
         yy_delete_buffer(bufferState);
 
-        m_data = yydata;
-        qDebug() << QJsonDocument(m_data).toJson();
-    } else {
-        qCCritical(parser) << "Can't read " << fileName;
+        // No error, return the document
+        if (!Error)
+            return Document(yydata);
     }
+
+    qCCritical(reader) << "Can't read " << rcFile;
+    return Document();
 }
 
+Document readFomrJsonFile(const QString &jsonFile)
+{
+    QFile file(jsonFile);
+
+    if (file.open(QIODevice::ReadOnly)) {
+        auto jsonDoc = QJsonDocument::fromBinaryData(file.readAll());
+
+        if (!jsonDoc.isNull())
+            return Document(jsonDoc.object());
+    }
+
+    qCCritical(reader) << "Can't read " << jsonFile;
+    return Document();
+}
+
+
+QJsonDocument createJsonDocument(const Document &doc)
+{
+    QJsonObject obj;
+    obj.insert(AssetsKey, QJsonObject::fromVariantMap(doc.assets));
+    obj.insert(DialogsKey, QJsonObject::fromVariantMap(doc.dialogs));
+
+    return QJsonDocument(obj);
+}
+
+void writeToJsonFile(const Document &doc, const QString &jsonFile)
+{
+    QFile file(jsonFile);
+
+    if (file.open(QIODevice::WriteOnly)) {
+        auto jsonDoc = createJsonDocument(doc);
+        file.write(jsonDoc.toJson());
+    }
+    qCCritical(writer) << "Can't write " << jsonFile;
+}
