@@ -24,7 +24,7 @@ struct Document
 
 // Reader
 Document readFromRcFile(const QString &rcFile, const QString &resourceFile = QString{});
-Document readFomrJsonFile(const QString &jsonFile);
+Document readFromJsonFile(const QString &jsonFile);
 
 // Writer
 QJsonDocument createJsonDocument(const Document &doc);
