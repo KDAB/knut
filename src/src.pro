@@ -1,6 +1,7 @@
 TEMPLATE = app
 SOURCES += main.cpp \
-    document.cpp
+    document.cpp \
+    converter.cpp
 FLEXSOURCES = rclexer.l
 BISONSOURCES = rcparser.y
 CONFIG += c++11 console
@@ -49,5 +50,6 @@ bisonheader.CONFIG += target_predeps no_link
 QMAKE_EXTRA_COMPILERS += bisonheader
 
 HEADERS += \
-    document.h
+    document.h \
+    converter.h
 
