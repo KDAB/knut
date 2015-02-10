@@ -28,6 +28,12 @@ static void unite(QJsonObject *obj1, QJsonObject *obj2)
         obj1->insert(it.key(), it.value());
 }
 
+static void unite(QJsonArray *obj1, QJsonArray *obj2)
+{
+    foreach (QJsonValue &val, *obj2)
+        obj1->append(val);
+}
+
 static void appendDialog(const QJsonObject &dialog)
 {
     auto dialogs = yydata.take("dialogs").toObject();
@@ -336,6 +342,14 @@ dialog_statements:
     dialog_statements dialog_statement
     {
         QJsonObject *o = $1;
+
+        if ($2->contains("style") && o->contains("style")) {
+            auto s1 = $2->value("style").toArray();
+            auto s2 = o->value("style").toArray();
+            unite(&s1, &s2);
+            $2->insert("style", s1);
+        }
+
         unite(o, $2);
 
         delete $2;
@@ -425,7 +439,7 @@ exstyle_statement:
     EXSTYLE styles
     {
         QJsonObject *o = new QJsonObject {
-            {"exstyle", *$2}
+            {"style", *$2}
         };
 
         delete $2;
@@ -704,7 +718,8 @@ control_control:
         };
 
         if ($17) {
-            o->insert("exstyle", *$17);
+            unite($8, $17);
+            o->insert("style", *$8);
 
             delete $17;
         }
@@ -777,12 +792,13 @@ ctext_styles:
             {"style", *$2}
         };
 
-        delete $2;
-
         if ($3) {
-            o->insert("exstyle", *$3);
+            unite($2, $3);
+            o->insert("style", *$2);
             delete $3;
         }
+
+        delete $2;
 
         $$ = o;
     }
@@ -812,12 +828,14 @@ icon_control:
 
         if ($11) {
             o->insert("style", *$11);
-            delete $11;
-        }
 
-        if ($12) {
-            o->insert("exstyle", *$12);
-            delete $12;
+            if ($12) {
+                unite($11, $12);
+                o->insert("style", *$11);
+                delete $12;
+            }
+
+            delete $11;
         }
 
         delete $2;
@@ -939,12 +957,14 @@ control_parameters_extended:
 
         if ($2) {
             params->insert("style", *$2);
-            delete $2;
-        }
 
-        if ($3) {
-            params->insert("extended_style", *$3);
-            delete $3;
+            if ($3) {
+                unite($2, $3);
+                params->insert("style", *$2);
+                delete $3;
+            }
+
+            delete $2;
         }
 
         $$ = params;
