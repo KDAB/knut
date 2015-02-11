@@ -46,12 +46,21 @@ int main(int argc, char *argv[])
     parser.process(app);
 
     // Get the rc/json file
-    const QString input = parser.positionalArguments().first();
+
+    const auto arguments = parser.positionalArguments();
+
+    if (arguments.isEmpty()) {
+        qCritical() << QObject::tr("Error: Missing input file.");
+        parser.showHelp(-1);
+    }
+
+    const QString input = arguments.first();
     QFileInfo fi(input);
     if (!fi.exists()) {
         qCritical() << QObject::tr("Input file %1 not found").arg(input);
         return -1;
     }
+
     bool useJson = fi.completeSuffix() == "json";
 
     // Get resource file
