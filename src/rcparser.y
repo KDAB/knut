@@ -30,7 +30,7 @@ static void unite(QJsonObject *obj1, QJsonObject *obj2)
 
 static void unite(QJsonArray *obj1, QJsonArray *obj2)
 {
-    foreach (QJsonValue &val, *obj2)
+    foreach (const QJsonValue &val, *obj2)
         obj1->append(val);
 }
 

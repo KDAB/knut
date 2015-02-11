@@ -32,7 +32,8 @@ static QJsonObject convertFont(QJsonObject font, const QString &id)
     // Remove charset - Unused for now
     if (font.contains(KeyCharset)) {
         auto charset = font.take(KeyCharset).toString();
-        qCDebug(converter, "%s: Unused charset %s", id, charset);
+        qCDebug(converter)
+            << QObject::tr("%1: Unused charset %2").arg(id).arg(charset);
     }
 
     // Transform typeface into family
@@ -67,12 +68,14 @@ QJsonObject convertDialog(const Document &doc, QJsonObject dialog)
 {
     auto id = dialog.value(KeyId).toString();
 
-    qCDebug(converter, "=== %s ===", id);
+    qCDebug(converter) << QObject::tr("=== %1 ===").arg(id);
 
     // Sanity check
     auto type = dialog.value(KeyType).toString();
-    if (type != "DIALOG" && type != "DIALOGEX")
-        qCWarning(converter, "%s: Don't know type %s", id, type);
+    if (type != "DIALOG" && type != "DIALOGEX") {
+        qCWarning(converter)
+            << QObject::tr("%1: Don't know type %2").arg(id).arg(type);
+    }
 
     dialog["class"] = "QDialog";
     dialog.remove(KeyType);
@@ -103,8 +106,11 @@ QJsonObject convertDialog(const Document &doc, QJsonObject dialog)
         styles.removeOne("DS_SETFONT");
         styles.removeOne("DS_SHELLFONT");
 
-        if (!styles.isEmpty())
-            qCDebug(converter, "%s: Unused styles: %s", id, styles.join(" | "));
+        if (!styles.isEmpty()) {
+            qCDebug(converter)
+                << QObject::tr("%1: Unused styles: %2")
+                    .arg(id).arg(styles.join(" | "));
+        }
     }
 
     return dialog;

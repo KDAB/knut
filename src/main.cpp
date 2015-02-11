@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
     const QString input = parser.positionalArguments().first();
     QFileInfo fi(input);
     if (!fi.exists()) {
-        qCritical("Input file %s not found", input);
+        qCritical() << QObject::tr("Input file %1 not found").arg(input);
         return -1;
     }
     bool useJson = fi.completeSuffix() == "json";
@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
         if (file.open(QIODevice::WriteOnly)) {
             file.write(result);
         } else {
-            qCritical("can't write file %s", output);
+            qCritical() << QObject::tr("can't write file %1").arg(output);
             return -1;
         }
     }
