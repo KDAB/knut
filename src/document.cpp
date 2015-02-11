@@ -78,7 +78,7 @@ Document readFromRcFile(const QString &rcFile,
     return Document();
 }
 
-Document readFomrJsonFile(const QString &jsonFile)
+Document readFromJsonFile(const QString &jsonFile)
 {
     QFile file(jsonFile);
 
