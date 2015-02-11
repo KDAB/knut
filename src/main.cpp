@@ -7,14 +7,8 @@
 #include <QFileInfo>
 #include <QFile>
 
-int main(int argc, char *argv[])
+static void parseArgs(QCommandLineParser &parser)
 {
-    QCoreApplication app(argc, argv);
-    QCoreApplication::setApplicationName("knut");
-    QCoreApplication::setApplicationVersion("1.0");
-
-    // Create command line parser
-    QCommandLineParser parser;
     parser.setApplicationDescription("Rc to Qt converter");
     parser.addHelpOption();
     parser.addVersionOption();
@@ -41,20 +35,30 @@ int main(int argc, char *argv[])
                                     "Output file",
                                     "file");
     parser.addOption(outputOption);
-
+    //
     // Process the actual command line arguments given by the user
-    parser.process(app);
+    parser.process(QCoreApplication::arguments());
 
     // Get the rc/json file
 
-    const auto arguments = parser.positionalArguments();
-
-    if (arguments.isEmpty()) {
+    if (parser.positionalArguments().isEmpty()) {
         qCritical() << QObject::tr("Error: Missing input file.");
         parser.showHelp(-1);
     }
+}
 
-    const QString input = arguments.first();
+int main(int argc, char *argv[])
+{
+    QCoreApplication app(argc, argv);
+    QCoreApplication::setApplicationName("knut");
+    QCoreApplication::setApplicationVersion("1.0");
+
+    // Create command line parser
+    QCommandLineParser parser;
+
+    parseArgs(parser);
+
+    const QString input = parser.positionalArguments().first();
     QFileInfo fi(input);
     if (!fi.exists()) {
         qCritical() << QObject::tr("Input file %1 not found").arg(input);
