@@ -21,8 +21,71 @@ static const auto KeyWeight = QStringLiteral("weight");
 static const auto KeyCharset = QStringLiteral("charset");
 }
 
+static QString labelAlignment(const QString &type, const QStringList &styles)
+{
+    QStringList alignments;
+
+    if (type == "LTEXT")
+        alignments << "Qt::AlignLeft";
+    else if (type == "RTEXT")
+        alignments << "Qt::AlignRight";
+    else if (type == "CTEXT")
+        alignments << "Qt::AlignHCenter";
+
+    if (styles.contains("SS_LEFT"))
+        alignments << "Qt::AlignLeft";
+
+    if (styles.contains("SS_LEFT"))
+        alignments << "Qt::AlignLeft";
+    else if (styles.contains("SS_RIGHT"))
+         alignments << "Qt::AlignRight";
+    else if (styles.contains("SS_CENTER"))
+        alignments << "Qt::AlignHCenter" << "Qt::AlignVCenter";
+
+    if (styles.contains("SS_CENTERIMAGE"))
+        alignments << "Qt::AlignVCenter";
+    else
+        alignments << "Qt::AlignTop";
+
+    alignments.removeDuplicates();
+
+    return alignments.join(" | ");
+}
+
+static QJsonObject convertLabel(const QJsonObject &widget)
+{
+    QJsonObject label = widget;
+
+    label["class"] = "QLabel";
+
+    const auto id = widget.value(KeyId).toString();
+
+    label["objectName"] = id;
+    label.remove(KeyId);
+
+    const auto styles = label.value(KeyStyle).toVariant().toStringList();
+    const auto type = widget.value(KeyType).toString();
+
+    label.remove(KeyType);
+    label.remove(KeyStyle);
+
+    label["alignment"] = labelAlignment(type, styles);
+    label["wordWrap"] = styles.contains("SS_LEFTNOWORDWRAP") ? "false" : "true";
+
+    return label;
+}
+
 static QJsonObject convertWidget(const QJsonObject &widget)
 {
+    const auto type = widget.value(KeyType).toString();
+
+    if (type == "LTEXT")
+        return convertLabel(widget);
+    else if (type == "CTEXT")
+        return convertLabel(widget);
+    else if (type == "RTEXT")
+        return convertLabel(widget);
+
     return widget;
 }
 
