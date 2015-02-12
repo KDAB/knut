@@ -3,9 +3,8 @@
 
 #include <QJsonObject>
 
-struct Document;
-
-QJsonObject convertDialog(const Document &doc, QJsonObject dialog);
+QJsonObject convertDialog(const QJsonObject &dialog);
+QJsonObject convertDialogs(const QJsonObject &rootObject);
 
 #endif // CONVERTER
 

@@ -7,7 +7,7 @@
 
 #include "rcparser.h"
 
-extern int linenum;
+int yylinenum = 1;
 
 %}
 
@@ -74,7 +74,7 @@ WIGETS                  { return WIGETS; };
                           yylval.ival = QString(yytext).toInt(&ok, 0);
                           return NUMBER; };
 [ \t]                   {};
-\n                      { ++linenum; };
+\n                      { ++yylinenum; };
 \|                      { return OPERATOR_OR; };
 \/\/.*                  {};
 ^#.*                    { /* ignore directives*/ };

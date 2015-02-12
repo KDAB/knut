@@ -1,11 +1,71 @@
+#include "commandlineparser.h"
+#include "documentloader.h"
 #include "document.h"
 
 #include <QDebug>
-#include <QJsonDocument>
+#include <QCoreApplication>
 #include <QCommandLineParser>
-#include <QCommandLineOption>
-#include <QFileInfo>
 #include <QFile>
+
+#include <cstdlib>
+
+static int parseArgs(Arguments *args)
+{
+    QCommandLineParser parser;
+
+    const auto ret = parseArguments(parser, args);
+
+    switch (ret) {
+    case MissingInputFile:
+        qCritical() << QObject::tr("Error: Missing input file.");
+        parser.showHelp(EXIT_FAILURE);
+    case InputFileNotFound:
+        qCritical()
+            << QObject::tr("Input file %1 not found").arg(args->inputFile);
+        exit(EXIT_FAILURE);
+    default:
+        break;
+    }
+
+    return ret;
+}
+
+static void writeResult(const QByteArray &result,
+        const QString &filename = QString())
+{
+    // TODO: if filename is empty then set it to resource id
+    if (filename.isEmpty()) {
+        qDebug() << result;
+        return;
+    }
+
+    QFile file(filename);
+
+    if (file.open(QIODevice::WriteOnly))
+        file.write(result);
+    else
+        qCritical() << QObject::tr("can't write file %1").arg(filename);
+}
+
+static void writeResults(const QByteArrayList &results, const QString &filename)
+{
+    foreach (const QByteArray &b, results)
+        writeResult(b, filename);
+}
+
+static inline QByteArray handleDialog(
+        const QJsonObject &root, const QString &id)
+{
+    return documentToByteArray(documentDialog(root, id));
+}
+
+static inline QByteArrayList handleDefault(const QJsonObject &o)
+{
+    QByteArrayList l;
+    l << documentToByteArray(documentDialogs(o));
+
+    return l;
+}
 
 int main(int argc, char *argv[])
 {
@@ -13,104 +73,31 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("knut");
     QCoreApplication::setApplicationVersion("1.0");
 
-    // Create command line parser
-    QCommandLineParser parser;
-    parser.setApplicationDescription("Rc to Qt converter");
-    parser.addHelpOption();
-    parser.addVersionOption();
+    Arguments args;
 
-    parser.addPositionalArgument("input", "Input file, either rc file or json file");
+    const auto action = parseArgs(&args);
 
-    QCommandLineOption resourceOption("resource", "Define resource header",
-                                      "file");
-    parser.addOption(resourceOption);
+    QJsonObject rootObject = loadDocument(args.inputFile, args.resourceFile);
 
-    QCommandLineOption assetOption("asset", "Return the asset path for <id>", "id");
-    parser.addOption(assetOption);
+    QByteArrayList results;
 
-    QCommandLineOption uiOption("ui", "Create ui file for <id>", "id");
-    parser.addOption(uiOption);
-
-    QCommandLineOption stringOption("string", "Return the string for <id>", "id");
-    parser.addOption(stringOption);
-
-    QCommandLineOption qrcOption("qrc", "Create or use qrc file");
-    parser.addOption(qrcOption);
-
-    QCommandLineOption outputOption(QStringList() << "o" << "output",
-                                    "Output file",
-                                    "file");
-    parser.addOption(outputOption);
-
-    // Process the actual command line arguments given by the user
-    parser.process(app);
-
-    // Get the rc/json file
-
-    const auto arguments = parser.positionalArguments();
-
-    if (arguments.isEmpty()) {
-        qCritical() << QObject::tr("Error: Missing input file.");
-        parser.showHelp(-1);
+    switch (action) {
+    case AssetPath:
+    case Dialog:
+        results << handleDialog(rootObject, args.ui);
+        break;
+    case String:
+        //TODO
+        break;
+    case QrcFile:
+        //TODO
+        break;
+    case Default:
+        results << handleDefault(rootObject);
+        break;
     }
 
-    const QString input = arguments.first();
-    QFileInfo fi(input);
-    if (!fi.exists()) {
-        qCritical() << QObject::tr("Input file %1 not found").arg(input);
-        return -1;
-    }
-
-    bool useJson = fi.completeSuffix() == "json";
-
-    // Get resource file
-    QString resource = parser.value(resourceOption);
-    if (resource.isEmpty()) {
-        if (QFileInfo::exists(fi.canonicalPath() + "/Resource.h"))
-            resource = fi.canonicalPath() + "/Resource.h";
-        if (QFileInfo::exists(fi.canonicalPath() + "/resource.h"))
-            resource = fi.canonicalPath() + "/resource.h";
-    }
-
-    Document doc;
-    if (useJson)
-        doc = readFromJsonFile(input);
-    else
-        doc = readFromRcFile(input, resource);
-
-    const QString asset = parser.value(assetOption);
-    const QString ui = parser.value(uiOption);
-    const QString string = parser.value(stringOption);
-    const bool hasQrc = parser.isSet(qrcOption);
-
-    const QString output = parser.value(outputOption);
-
-    // Do the actual work
-    QByteArray result;
-
-    if (!asset.isEmpty()) {
-        // TODO: return asset path
-    } else if (!ui.isEmpty()) {
-        // TODO: return only one dialog
-    } else if (!string.isEmpty()) {
-        // TODO: return string
-    } else if (hasQrc) {
-        // TODO: save qrc file
-    } else {
-        result = createJsonDocument(doc).toJson();
-    }
-
-    if (output.isEmpty()) {
-        qDebug() << result;
-    } else {
-        QFile file(output);
-        if (file.open(QIODevice::WriteOnly)) {
-            file.write(result);
-        } else {
-            qCritical() << QObject::tr("can't write file %1").arg(output);
-            return -1;
-        }
-    }
+    writeResults(results, args.outputFile);
 
     return 0;
 }

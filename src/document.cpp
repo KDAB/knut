@@ -1,115 +1,46 @@
 #include "document.h"
 
-#include "rclexer.h"
-#include "rcparser.h"
-
-#include <QLoggingCategory>
-#include <QFile>
-#include <QTextStream>
-#include <QFileInfo>
 #include <QJsonDocument>
-#include <QJsonObject>
-
-
-extern QJsonObject yydata;
-
-Q_LOGGING_CATEGORY(reader, "reader")
-Q_LOGGING_CATEGORY(writer, "writer")
-int linenum = 1;
 
 namespace {
-QString RcFile;
-bool Error = false;
 static const auto AssetsKey = QStringLiteral("assets");
 static const auto DialogsKey = QStringLiteral("dialogs");
 }
 
-
-Document::Document(const QJsonObject &data)
+static inline QJsonObject valueForObject(const QJsonObject &object,
+        const QString &key)
 {
-    dialogs = data.value(DialogsKey).toObject().toVariantMap();
-    assets = data.value(AssetsKey).toObject().toVariantMap();
-    hasError = false;
+    return object.value(key).toObject();
 }
 
-QJsonObject Document::dialog(const QString &id)
+QJsonObject documentDialogs(const QJsonObject &root)
 {
-    return dialogs.value(id).toJsonObject();
+    return valueForObject(root, DialogsKey);
 }
 
-QString Document::assetPath(const QString &id)
+QJsonObject documentAssets(const QJsonObject &root)
 {
-    return assets.value(id).toString();
+    return valueForObject(root, AssetsKey);
 }
 
-
-void yyerror(const char *s)
+QJsonObject documentDialog(const QJsonObject &root, const QString &id)
 {
-    qCCritical(reader, "%s:%d: %s\n", RcFile.toLatin1().constData(), linenum, s);
-    Error = true;
+    auto dialogs = documentDialogs(root);
+    return valueForObject(dialogs, id);
 }
 
-
-Document readFromRcFile(const QString &rcFile,
-                        const QString &resourceFile)
+QJsonObject documentAsset(const QJsonObject &root, const QString &id)
 {
-    RcFile = rcFile;
-    QFile file(rcFile);
-
-    if (file.open(QIODevice::ReadOnly)) {
-        QTextStream stream(&file);
-
-        // Bison take the standard input (command line) as input.
-        // yy_scan_string will switch the input to a string.
-        YY_BUFFER_STATE bufferState = yy_scan_string(stream.readAll().toUtf8().constData());
-
-        // Parse the string.
-        yyparse();
-
-        // and release the buffer.
-        yy_delete_buffer(bufferState);
-
-        // No error, return the document
-        if (!Error)
-            return Document(yydata);
-    }
-
-    qCCritical(reader) << "Can't read " << rcFile;
-    return Document();
+    auto assets = documentAssets(root);
+    return valueForObject(assets, id);
 }
 
-Document readFromJsonFile(const QString &jsonFile)
+void documentSetDialogs(QJsonObject &root, const QJsonObject &dialogs)
 {
-    QFile file(jsonFile);
-
-    if (file.open(QIODevice::ReadOnly)) {
-        auto jsonDoc = QJsonDocument::fromBinaryData(file.readAll());
-
-        if (!jsonDoc.isNull())
-            return Document(jsonDoc.object());
-    }
-
-    qCCritical(reader) << "Can't read " << jsonFile;
-    return Document();
+    root.insert(DialogsKey, dialogs);
 }
 
-
-QJsonDocument createJsonDocument(const Document &doc)
+QByteArray documentToByteArray(const QJsonObject &o)
 {
-    QJsonObject obj;
-    obj.insert(AssetsKey, QJsonObject::fromVariantMap(doc.assets));
-    obj.insert(DialogsKey, QJsonObject::fromVariantMap(doc.dialogs));
-
-    return QJsonDocument(obj);
-}
-
-void writeToJsonFile(const Document &doc, const QString &jsonFile)
-{
-    QFile file(jsonFile);
-
-    if (file.open(QIODevice::WriteOnly)) {
-        auto jsonDoc = createJsonDocument(doc);
-        file.write(jsonDoc.toJson());
-    }
-    qCCritical(writer) << "Can't write " << jsonFile;
+    return QJsonDocument(o).toJson();
 }

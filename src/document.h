@@ -1,33 +1,17 @@
 #ifndef DOCUMENT_H
 #define DOCUMENT_H
 
-#include <QVariant>
-#include <QVariantList>
-#include <QVariantMap>
 #include <QJsonObject>
+#include <QByteArray>
+#include <QByteArrayList>
 
-struct Document
-{
-    Document() = default;
-    Document(const QJsonObject &data);
+QJsonObject documentDialogs(const QJsonObject &root);
+QJsonObject documentAssets(const QJsonObject &root);
+QJsonObject documentDialog(const QJsonObject &root, const QString &id);
+QJsonObject documentAsset(const QJsonObject &root, const QString &id);
 
-    // Dialogs
-    QVariantMap dialogs;
-    QJsonObject dialog(const QString &id);
+void documentSetDialogs(QJsonObject &root, const QJsonObject &dialogs);
 
-    // List of assets
-    QVariantMap assets;
-    QString assetPath(const QString &id);
-
-    bool hasError = true;
-};
-
-// Reader
-Document readFromRcFile(const QString &rcFile, const QString &resourceFile = QString{});
-Document readFromJsonFile(const QString &jsonFile);
-
-// Writer
-QJsonDocument createJsonDocument(const Document &doc);
-void writeToJsonFile(const Document &doc, const QString &jsonFile);
+QByteArray documentToByteArray(const QJsonObject &o);
 
 #endif // DOCUMENT_H

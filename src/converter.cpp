@@ -17,12 +17,11 @@ static const auto KeyGeometry = QStringLiteral("geometry");
 static const auto KeyId = QStringLiteral("id");
 static const auto KeyStyle = QStringLiteral("style");
 static const auto KeyType = QStringLiteral("type");
-
 static const auto KeyWeight = QStringLiteral("weight");
 static const auto KeyCharset = QStringLiteral("charset");
 }
 
-static QJsonObject convertWidget(const Document &doc, QJsonObject widget, const QString &id)
+static QJsonObject convertWidget(const QJsonObject &widget)
 {
     return widget;
 }
@@ -64,14 +63,16 @@ static QJsonObject convertFont(QJsonObject font, const QString &id)
     return font;
 }
 
-QJsonObject convertDialog(const Document &doc, QJsonObject dialog)
+QJsonObject convertDialog(const QJsonObject &d)
 {
-    auto id = dialog.value(KeyId).toString();
+    QJsonObject dialog = d;
+
+    const auto id = dialog.value(KeyId).toString();
 
     qCDebug(converter) << QObject::tr("=== %1 ===").arg(id);
 
     // Sanity check
-    auto type = dialog.value(KeyType).toString();
+    const auto type = dialog.value(KeyType).toString();
     if (type != "DIALOG" && type != "DIALOGEX") {
         qCWarning(converter)
             << QObject::tr("%1: Don't know type %2").arg(id).arg(type);
@@ -86,15 +87,15 @@ QJsonObject convertDialog(const Document &doc, QJsonObject dialog)
 
     // Font conversion
     if (dialog.contains(KeyFont)) {
-        auto font = dialog.value(KeyFont).toObject();
+        const auto font = dialog.value(KeyFont).toObject();
         dialog[KeyFont] = convertFont(font, id);
     }
 
     // Widget conversion
     auto children = dialog.value(KeyChildren).toArray();
     for (int i = 0; i < children.count(); ++i) {
-        auto widget = children.at(i).toObject();
-        children[i] = convertWidget(doc, widget, id);
+        const auto widget = children.at(i).toObject();
+        children[i] = convertWidget(widget);
     }
     dialog[KeyChildren] = children;
 
@@ -114,4 +115,15 @@ QJsonObject convertDialog(const Document &doc, QJsonObject dialog)
     }
 
     return dialog;
+}
+
+QJsonObject convertDialogs(const QJsonObject &dialogs)
+{
+    QJsonObject result;
+
+    foreach (const QString &key, dialogs.keys()) {
+        result[key] = convertDialog(dialogs.value(key).toObject());
+    }
+
+    return result;
 }
