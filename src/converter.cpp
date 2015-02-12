@@ -19,6 +19,7 @@ static const auto KeyStyle = QStringLiteral("style");
 static const auto KeyType = QStringLiteral("type");
 static const auto KeyWeight = QStringLiteral("weight");
 static const auto KeyCharset = QStringLiteral("charset");
+static const auto KeyClass = QStringLiteral("class");
 }
 
 static QString labelAlignment(const QString &type, const QStringList &styles)
@@ -75,6 +76,22 @@ static QJsonObject convertLabel(const QJsonObject &widget)
     return label;
 }
 
+static QJsonObject convertStatic(const QJsonObject &widget)
+{
+    //FIXME switch on the control style (not ex style)
+    return widget;
+}
+
+static QJsonObject convertControl(const QJsonObject &widget)
+{
+    const auto controlClass = widget.value(KeyClass).toVariant().toString();
+
+    if (controlClass == "Static")
+        return convertStatic(widget);
+
+    return widget;
+}
+
 static QJsonObject convertWidget(const QJsonObject &widget)
 {
     const auto type = widget.value(KeyType).toString();
@@ -85,6 +102,8 @@ static QJsonObject convertWidget(const QJsonObject &widget)
         return convertLabel(widget);
     else if (type == "RTEXT")
         return convertLabel(widget);
+    else if (type == "CONTROL")
+        return convertControl(widget);
 
     return widget;
 }
