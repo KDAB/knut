@@ -34,6 +34,8 @@ static QJsonObject normalizeRc(const QJsonObject &root,
     QJsonObject o = root;
     QJsonObject dialogs = convertDialogs(documentDialogs(o));
 
+    // TODO: use resource file to change resource names
+
     documentSetDialogs(o, dialogs);
 
     return o;
@@ -53,8 +55,6 @@ QJsonObject loadDocument(const QString &filename,
         QFileInfo fi(filename);
         type = (fi.completeSuffix() == "json") ? JsonFile : RcFile;
     }
-
-    QJsonObject document;
 
     switch (type) {
     case RcFile:

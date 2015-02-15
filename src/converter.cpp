@@ -18,7 +18,10 @@ static const auto KeyId = QStringLiteral("id");
 static const auto KeyStyle = QStringLiteral("style");
 static const auto KeyType = QStringLiteral("type");
 static const auto KeyWeight = QStringLiteral("weight");
+static const auto KeyItalic = QStringLiteral("italic");
 static const auto KeyCharset = QStringLiteral("charset");
+static const auto KeyTypeface = QStringLiteral("typeface");
+static const auto KeyPointsize = QStringLiteral("pointsize");
 static const auto KeyClass = QStringLiteral("class");
 }
 
@@ -172,10 +175,25 @@ static QJsonObject convertWidget(QJsonObject widget, const QString &id)
     return widget;
 }
 
+static bool isDefaultFont(QJsonObject font)
+{
+    auto typeface = font.value(KeyTypeface).toString();
+    if (typeface == "MS Sans Serif" ||
+            typeface == "MS Shell Dlg" ||
+            typeface == "Microsoft Sans Serif") {
+        auto weight = font.value(KeyWeight).toInt();
+        return font.value(KeyPointsize).toInt() == 8 &&
+                font.value(KeyItalic).toInt() == 0 &&
+                (weight == 0 || weight == 400);
+    }
+    return false;
+}
+
 // FONT
 // https://msdn.microsoft.com/en-us/library/windows/desktop/aa381013(v=vs.85).aspx
 static QJsonObject convertFont(QJsonObject font, const QString &id)
 {
+
     // Remove charset - Unused for now
     if (font.contains(KeyCharset)) {
         auto charset = font.take(KeyCharset).toInt();
@@ -184,7 +202,12 @@ static QJsonObject convertFont(QJsonObject font, const QString &id)
     }
 
     // Transform typeface into family
-    font[QStringLiteral("family")] = font.take("typeface").toString();
+    font[QStringLiteral("family")] = font.take(KeyTypeface).toString();
+
+    // Remove italic if unused
+    if (!font.value(KeyItalic).toInt(0)) {
+        font.take(KeyItalic);
+    }
 
     // Transform weight
     if (font.contains(KeyWeight)) {
@@ -236,7 +259,10 @@ QJsonObject convertDialog(const QJsonObject &d)
     // Font conversion
     if (dialog.contains(KeyFont)) {
         const auto font = dialog.value(KeyFont).toObject();
-        dialog[KeyFont] = convertFont(font, id);
+        if (isDefaultFont(font))
+            dialog.take(KeyFont);
+        else
+            dialog[KeyFont] = convertFont(font, id);
     }
 
     // Widget conversion
