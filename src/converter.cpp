@@ -34,13 +34,6 @@ static QStringList getStyle(const QJsonObject &widget)
     return widget.value(KeyStyle).toVariant().toStringList();
 }
 
-static void removeStyle(QJsonObject &widget, const QString &style)
-{
-    auto s = getStyle(widget);
-    s.removeOne(style);
-    widget[KeyStyle] = QJsonArray::fromStringList(s);
-}
-
 static void removeStyles(QJsonObject &widget, const QStringList &styles)
 {
     auto s = getStyle(widget);
@@ -222,6 +215,39 @@ static void convertRadioButton(QJsonObject &radioButton)
     convertGeneralStyle(radioButton);
 }
 
+// EDITTEXT CONTROL
+// Style: https://msdn.microsoft.com/en-us/library/windows/desktop/bb775464(v=vs.85).aspx
+static void convertEditText(QJsonObject &editText)
+{
+    const auto controlClass = editText.value(KeyClass).toString();
+
+    if (takeStyle(editText, "ES_MULTILINE") || controlClass == "RICHEDIT")
+        editText["class"] = "QTextEdit";
+    else
+        editText["class"] = "QLineEdit";
+
+    QString align;
+
+    if (takeStyle(editText, "ES_CENTER"))
+        align = "Qt::AlignCenter";
+    else if (takeStyle(editText, "ES_LEFT"))
+        align = "Qt::AlignLeft";
+    else if (takeStyle(editText, "ES_RIGHT"))
+        align = "Qt::AlignRight";
+    else
+        align = "Qt::AlignLeft";
+
+    align += " | Qt::AlignVCenter";
+
+    editText["alignment"] = align;
+
+    if (takeStyle(editText, "ES_PASSWORD"))
+        editText["echoMode"] = "QLineEdit::Password";
+
+    if (takeStyle(editText, "ES_READONLY"))
+        editText["readOnly"] = true;
+}
+
 // BUTTON CONTROL
 // Style: https://msdn.microsoft.com/en-us/library/windows/desktop/bb775951(v=vs.85).aspx
 static void convertButton(QJsonObject &widget)
@@ -258,6 +284,10 @@ static bool convertControl(QJsonObject &widget)
         convertButton(widget);
     else if (controlClass == "ComboBoxEx32")
         convertComboBox(widget);
+    else if (controlClass == "Edit")
+        convertEditText(widget);
+    else if (controlClass == "RICHEDIT")
+        convertEditText(widget);
     else
         return false;
     return true;
@@ -285,6 +315,8 @@ static QJsonObject convertWidget(QJsonObject widget, const QString &id)
         convertPushButton(widget);
     } else if (type == "CHECKBOX") {
         convertCheckBox(widget);
+    } else if (type == "EDITTEXT") {
+        convertEditText(widget);
     } else if (type == "GROUPBOX") {
         convertGroupBox(widget);
     } else if (type == "DEFPUSHBUTTON") {
