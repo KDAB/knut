@@ -48,25 +48,36 @@ static void removeStyles(QJsonObject &widget, const QStringList &styles)
     widget[KeyStyle] = QJsonArray::fromStringList(s);
 }
 
+static bool takeStyle(QJsonObject &widget, const QString &style)
+{
+    auto s = getStyle(widget);
+
+    if (!s.contains(style))
+        return false;
+
+    s.removeAll(style);
+
+    widget[KeyStyle] = QJsonArray::fromStringList(s);
+
+    return true;
+}
+
 // Extended and Window styles
 // https://msdn.microsoft.com/en-us/library/windows/desktop/ms632600(v=vs.85).aspx
 // https://msdn.microsoft.com/en-us/library/windows/desktop/ff700543(v=vs.85).aspx
 static void convertGeneralStyle(QJsonObject &widget)
 {
-
     const auto styles = getStyle(widget);
 
-    if (styles.contains("WS_EX_CLIENTEDGE")) {
+    if (takeStyle(widget, "WS_EX_CLIENTEDGE")) {
         widget["frameshape"] = "QFrame::Plain";
         widget["frameShadow"] = "QFrame::Sunken";
     }
-    if (styles.contains("WS_BORDER"))
-        widget["frameshape"] = "QFrame::Box";
-    if (styles.contains("WS_DISABLED"))
-        widget["enabled"] = false;
 
-    // WS_TABSTOP is handled by Qt widgets (focus navigation)
-    removeStyles(widget, {"WS_EX_CLIENTEDGE", "WS_BORDER", "WS_DISABLED", "WS_TABSTOP"});
+    if (takeStyle(widget, "WS_BORDER"))
+        widget["frameshape"] = "QFrame::Box";
+    if (takeStyle(widget, "WS_DISABLED"))
+        widget["enabled"] = false;
 }
 
 // LTEXT, CTEXT and RTEXT
@@ -126,37 +137,116 @@ static void convertStatic(QJsonObject &widget)
 {
     widget["class"] = "QLabel";
     convertGeneralStyle(widget);
-    const auto styles = getStyle(widget);
 
     // Alignement
-    if (styles.contains("SS_RIGHT"))
+    if (takeStyle(widget, "SS_RIGHT"))
         widget["alignment"] = "Qt::AlignRight";
-    if (styles.contains("SS_CENTER"))
+    if (takeStyle(widget, "SS_CENTER"))
         widget["alignment"] = "Qt::AlignHCenter";
-    if (styles.contains("SS_CENTERIMAGE"))
+    if (takeStyle(widget, "SS_CENTERIMAGE"))
         widget["alignment"] = "Qt::AlignCenter";
 
     // Frame
-    if (styles.contains("SS_SUNKEN"))
+    if (takeStyle(widget, "SS_SUNKEN")) {
         widget["frameshape"] = "QFrame::Plain";
         widget["frameShadow"] = "QFrame::Sunken";
-    if (styles.contains("SS_BLACKFRAME"))
+    }
+
+    if (takeStyle(widget, "SS_BLACKFRAME"))
         widget["frameshape"] = "QFrame::Box";
 
-    if (styles.contains("SS_REALSIZECONTROL"))
+    if (takeStyle(widget, "SS_REALSIZECONTROL"))
         widget["scaledContents"] = true;
 
-    if (styles.contains("SS_BITMAP") || styles.contains("SS_ICON"))
+    if (takeStyle(widget, "SS_BITMAP") || takeStyle(widget, "SS_ICON"))
         widget["pixmap"] = idToPath(widget.take("text").toString().toInt());
 
-    if (!styles.contains("SS_LEFTNOWORDWRAP"))
+    if (!takeStyle(widget, "SS_LEFTNOWORDWRAP"))
         widget["wordWrap"] = true;
 
-    removeStyles(widget, {"SS_LEFT", "SS_RIGHT", "SS_CENTER", "SS_CENTERIMAGE",
-                 "SS_SUNKEN", "SS_BLACKFRAME", "SS_REALSIZECONTROL",
-                 "SS_BITMAP", "SS_ICON", "SS_LEFTNOWORDWRAP"});
+    takeStyle(widget, "SS_LEFT");
 }
 
+static void convertPushButton(QJsonObject &button)
+{
+    button["class"] = "QPushButton";
+
+    convertGeneralStyle(button);
+
+    if (takeStyle(button, "BS_AUTO3STATE") || takeStyle(button, "BS_3STATE"))
+        button["checkable"] = "true";
+
+    if (takeStyle(button, "BS_DEFPUSHBUTTON"))
+        button["default"] = "true";
+
+    const bool hasIcon = (takeStyle(button, "BS_BITMAP")
+            || takeStyle(button, "BS_ICON"));
+
+    if (hasIcon)
+        button["icon"] = "FIXME";
+
+    if (takeStyle(button, "BS_FLAT"))
+        button["flat"] = "true";
+}
+
+static void convertCheckBox(QJsonObject &checkbox)
+{
+    if (takeStyle(checkbox, "BS_PUSHLIKE")) {
+        // treat like a push button
+        convertPushButton(checkbox);
+        return;
+    }
+
+    checkbox["class"] = "QCheckBox";
+
+    convertGeneralStyle(checkbox);
+
+    if (takeStyle(checkbox, "BS_3STATE"))
+        checkbox["tristate"] = "true";
+}
+
+static void convertGroupBox(QJsonObject &groupBox)
+{
+    groupBox["class"] = "QGroupBox";
+    groupBox["title"] = groupBox.take("text");
+
+    convertGeneralStyle(groupBox);
+}
+
+static void convertRadioButton(QJsonObject &radioButton)
+{
+    const auto styles = getStyle(radioButton);
+
+    radioButton["class"] = "QRadioButton";
+
+    convertGeneralStyle(radioButton);
+}
+
+// BUTTON CONTROL
+// Style: https://msdn.microsoft.com/en-us/library/windows/desktop/bb775951(v=vs.85).aspx
+static void convertButton(QJsonObject &widget)
+{
+    const auto styles = widget.value(KeyStyle).toVariant().toStringList();
+
+    if (styles.contains("BS_3STATE"))
+        convertCheckBox(widget);
+    else if (styles.contains("BS_AUTO3STATE"))
+        convertCheckBox(widget);
+    else if (styles.contains("BS_AUTOCHECKBOX"))
+        convertCheckBox(widget);
+    else if (styles.contains("BS_AUTORADIOBUTTON"))
+        convertRadioButton(widget);
+    else if (styles.contains("BS_CHECKBOX"))
+        convertCheckBox(widget);
+    else if (styles.contains("BS_GROUPBOX"))
+        convertGroupBox(widget);
+    else if (styles.contains("BS_DEFPUSHBUTTON"))
+        convertPushButton(widget);
+    else if (styles.contains("BS_PUSHBUTTON"))
+        convertPushButton(widget);
+    else if (styles.contains("BS_RADIOBUTTON"))
+        convertRadioButton(widget);
+}
 
 static bool convertControl(QJsonObject &widget)
 {
@@ -164,6 +254,8 @@ static bool convertControl(QJsonObject &widget)
 
     if (controlClass == "Static")
         convertStatic(widget);
+    else if (controlClass == "Button")
+        convertButton(widget);
     else if (controlClass == "ComboBoxEx32")
         convertComboBox(widget);
     else
@@ -187,6 +279,18 @@ static QJsonObject convertWidget(QJsonObject widget, const QString &id)
                    .arg(id).arg(wid).arg(widget.value(KeyClass).toString());
             return widget;
         }
+    } else if (type == "AUTO3STATE") {
+        convertPushButton(widget);
+    } else if (type == "AUTOCHECKBOX") {
+        convertPushButton(widget);
+    } else if (type == "CHECKBOX") {
+        convertCheckBox(widget);
+    } else if (type == "GROUPBOX") {
+        convertGroupBox(widget);
+    } else if (type == "DEFPUSHBUTTON") {
+        convertPushButton(widget);
+    } else if (type == "PUSHBUTTON") {
+        convertPushButton(widget);
     } else {
         qCWarning(converter)
             << QObject::tr("%1: Unknow widget %2 type %3").arg(id).arg(wid).arg(type);
