@@ -22,97 +22,163 @@ static const auto KeyCharset = QStringLiteral("charset");
 static const auto KeyClass = QStringLiteral("class");
 }
 
-static QString labelAlignment(const QString &type, const QStringList &styles)
+static QStringList getStyle(const QJsonObject &widget)
 {
-    QStringList alignments;
-
-    if (type == "LTEXT")
-        alignments << "Qt::AlignLeft";
-    else if (type == "RTEXT")
-        alignments << "Qt::AlignRight";
-    else if (type == "CTEXT")
-        alignments << "Qt::AlignHCenter";
-
-    if (styles.contains("SS_LEFT"))
-        alignments << "Qt::AlignLeft";
-
-    if (styles.contains("SS_LEFT"))
-        alignments << "Qt::AlignLeft";
-    else if (styles.contains("SS_RIGHT"))
-         alignments << "Qt::AlignRight";
-    else if (styles.contains("SS_CENTER"))
-        alignments << "Qt::AlignHCenter" << "Qt::AlignVCenter";
-
-    if (styles.contains("SS_CENTERIMAGE"))
-        alignments << "Qt::AlignVCenter";
-    else
-        alignments << "Qt::AlignTop";
-
-    alignments.removeDuplicates();
-
-    return alignments.join(" | ");
+    return widget.value(KeyStyle).toVariant().toStringList();
 }
 
-static QJsonObject convertLabel(const QJsonObject &widget)
+static void removeStyle(QJsonObject &widget, const QString &style)
 {
-    QJsonObject label = widget;
+    auto s = getStyle(widget);
+    s.removeOne(style);
+    widget[KeyStyle] = QJsonArray::fromStringList(s);
+}
 
-    label["class"] = "QLabel";
+static void removeStyles(QJsonObject &widget, const QStringList &styles)
+{
+    auto s = getStyle(widget);
+    std::for_each(styles.cbegin(), styles.cend(), [&](const QString &style){ s.removeOne(style); });
+    widget[KeyStyle] = QJsonArray::fromStringList(s);
+}
 
-    const auto id = widget.value(KeyId).toString();
+// Extended and Window styles
+// https://msdn.microsoft.com/en-us/library/windows/desktop/ms632600(v=vs.85).aspx
+// https://msdn.microsoft.com/en-us/library/windows/desktop/ff700543(v=vs.85).aspx
+static void convertGeneralStyle(QJsonObject &widget)
+{
 
-    label["objectName"] = id;
-    label.remove(KeyId);
+    const auto styles = getStyle(widget);
 
-    const auto styles = label.value(KeyStyle).toVariant().toStringList();
+    if (styles.contains("WS_EX_CLIENTEDGE")) {
+        widget["frameshape"] = "QFrame::Plain";
+        widget["frameShadow"] = "QFrame::Sunken";
+    }
+    if (styles.contains("WS_BORDER"))
+        widget["frameshape"] = "QFrame::Box";
+
+    removeStyles(widget, {"WS_EX_CLIENTEDGE", "WS_BORDER"});
+}
+
+// LTEXT, CTEXT and RTEXT
+// https://msdn.microsoft.com/en-us/library/windows/desktop/aa381021%28v=vs.85%29.aspx
+// https://msdn.microsoft.com/en-us/library/windows/desktop/aa380915(v=vs.85).aspx
+// https://msdn.microsoft.com/en-us/library/windows/desktop/aa381044(v=vs.85).aspx
+static void convertLabel(QJsonObject &widget)
+{
+    widget["class"] = "QLabel";
+    convertGeneralStyle(widget);
+
+    // Alignment
     const auto type = widget.value(KeyType).toString();
+    QString align;
+    if (getStyle(widget).contains("SS_CENTERIMAGE"))
+        align = "Qt::AlignVCenter";
+    else
+        align = "Qt::AlignTop";
+    if (type == "LTEXT")
+        align += "|Qt::AlignLeft";
+    if (type == "RTEXT")
+        align += "|Qt::AlignRight";
+    else if (type == "CTEXT")
+        align += "|Qt::AlignHCenter";
 
-    label.remove(KeyType);
-    label.remove(KeyStyle);
+    widget["alignment"] = align;
 
-    label["alignment"] = labelAlignment(type, styles);
-    label["wordWrap"] = styles.contains("SS_LEFTNOWORDWRAP") ? "false" : "true";
-
-    return label;
+    // Those are known by the type of the label, just remove them
+    removeStyles(widget, {"SS_CENTERIMAGE", "SS_LEFT", "SS_CENTER", "SS_RIGHT"});
 }
 
-static QJsonObject convertStatic(const QJsonObject &widget)
+// STATIC CONTROL
+// Style: https://msdn.microsoft.com/en-us/library/windows/desktop/bb760773(v=vs.85).aspx
+static void convertStatic(QJsonObject &widget)
 {
-    //FIXME switch on the control style (not ex style)
-    return widget;
+    widget["class"] = "QLabel";
+    convertGeneralStyle(widget);
+    const auto styles = getStyle(widget);
+
+    // Alignement
+    if (styles.contains("SS_RIGHT"))
+        widget["alignment"] = "Qt::AlignRight";
+    if (styles.contains("SS_CENTER"))
+        widget["alignment"] = "Qt::AlignHCenter";
+    if (styles.contains("SS_CENTERIMAGE"))
+        widget["alignment"] = "Qt::AlignCenter";
+
+    // Frame
+    if (styles.contains("SS_SUNKEN"))
+        widget["frameshape"] = "QFrame::Plain";
+        widget["frameShadow"] = "QFrame::Sunken";
+    if (styles.contains("SS_BLACKFRAME"))
+        widget["frameshape"] = "QFrame::Box";
+
+    if (styles.contains("SS_REALSIZECONTROL"))
+        widget["scaledContents"] = true;
+
+    if (styles.contains("SS_BITMAP") || styles.contains("SS_ICON"))
+        widget["pixmap"] = widget.take("text");
+
+    if (!styles.contains("SS_LEFTNOWORDWRAP"))
+        widget["wordWrap"] = true;
+
+    removeStyles(widget, {"SS_LEFT", "SS_RIGHT", "SS_CENTER", "SS_CENTERIMAGE",
+                 "SS_SUNKEN", "SS_BLACKFRAME", "SS_REALSIZECONTROL",
+                 "SS_BITMAP", "SS_ICON", "SS_LEFTNOWORDWRAP"});
 }
 
-static QJsonObject convertControl(const QJsonObject &widget)
+
+static bool convertControl(QJsonObject &widget)
 {
-    const auto controlClass = widget.value(KeyClass).toVariant().toString();
+    const auto controlClass = widget.value(KeyClass).toString();
 
     if (controlClass == "Static")
-        return convertStatic(widget);
-
-    return widget;
+        convertStatic(widget);
+    else
+        return false;
+    return true;
 }
 
-static QJsonObject convertWidget(const QJsonObject &widget)
+static QJsonObject convertWidget(QJsonObject widget, const QString &id)
 {
     const auto type = widget.value(KeyType).toString();
+    const auto wid = widget.take(KeyId).toString();
 
-    if (type == "LTEXT")
-        return convertLabel(widget);
-    else if (type == "CTEXT")
-        return convertLabel(widget);
-    else if (type == "RTEXT")
-        return convertLabel(widget);
-    else if (type == "CONTROL")
-        return convertControl(widget);
+    if (type == "LTEXT" || type == "CTEXT" || type == "RTEXT") {
+        convertLabel(widget);
+    } else if (type == "CONTROL") {
+        if (!convertControl(widget)) {
+            qCWarning(converter)
+                << QObject::tr("%1: Unknow control %2 class %3")
+                   .arg(id).arg(wid).arg(widget.value(KeyClass).toString());
+            return widget;
+        }
+    } else {
+        qCWarning(converter)
+            << QObject::tr("%1: Unknow widget %2 type %3").arg(id).arg(wid).arg(type);
+        return widget;
+    }
+
+    // Remove used keys
+    widget.remove(KeyType);
+    const auto styles = widget.take(KeyStyle).toVariant().toStringList();
+    if (!styles.isEmpty()) {
+        qCDebug(converter)
+            << QObject::tr("%1: Unused styles for widget %2: %3")
+                .arg(id).arg(wid).arg(styles.join(" | "));
+    }
+
+    // Set the object name
+    widget["objectName"] = wid;
 
     return widget;
 }
 
+// FONT
+// https://msdn.microsoft.com/en-us/library/windows/desktop/aa381013(v=vs.85).aspx
 static QJsonObject convertFont(QJsonObject font, const QString &id)
 {
     // Remove charset - Unused for now
     if (font.contains(KeyCharset)) {
-        auto charset = font.take(KeyCharset).toString();
+        auto charset = font.take(KeyCharset).toInt();
         qCDebug(converter)
             << QObject::tr("%1: Unused charset %2").arg(id).arg(charset);
     }
@@ -177,18 +243,16 @@ QJsonObject convertDialog(const QJsonObject &d)
     auto children = dialog.value(KeyChildren).toArray();
     for (int i = 0; i < children.count(); ++i) {
         const auto widget = children.at(i).toObject();
-        children[i] = convertWidget(widget);
+        children[i] = convertWidget(widget, id);
     }
     dialog[KeyChildren] = children;
 
     // Remove Style - Unused for now
     if (dialog.contains(KeyStyle)) {
         // Remove known styles
-        auto styles = dialog.value(KeyStyle).toVariant().toStringList();
-        styles.removeOne("WS_CAPTION");
-        styles.removeOne("DS_SETFONT");
-        styles.removeOne("DS_SHELLFONT");
+        removeStyles(dialog, {"WS_CAPTION", "DS_SETFONT", "DS_SHELLFONT"});
 
+        const auto styles = dialog.take(KeyStyle).toVariant().toStringList();
         if (!styles.isEmpty()) {
             qCDebug(converter)
                 << QObject::tr("%1: Unused styles: %2")
