@@ -55,8 +55,11 @@ static void convertGeneralStyle(QJsonObject &widget)
     }
     if (styles.contains("WS_BORDER"))
         widget["frameshape"] = "QFrame::Box";
+    if (styles.contains("WS_DISABLED"))
+        widget["enabled"] = false;
 
-    removeStyles(widget, {"WS_EX_CLIENTEDGE", "WS_BORDER"});
+    // WS_TABSTOP is handled by Qt widgets (focus navigation)
+    removeStyles(widget, {"WS_EX_CLIENTEDGE", "WS_BORDER", "WS_DISABLED", "WS_TABSTOP"});
 }
 
 // LTEXT, CTEXT and RTEXT
@@ -86,6 +89,28 @@ static void convertLabel(QJsonObject &widget)
 
     // Those are known by the type of the label, just remove them
     removeStyles(widget, {"SS_CENTERIMAGE", "SS_LEFT", "SS_CENTER", "SS_RIGHT"});
+}
+
+// COMBOBOX
+// https://msdn.microsoft.com/en-us/library/windows/desktop/aa380889(v=vs.85).aspx
+// https://msdn.microsoft.com/en-us/library/windows/desktop/bb775796(v=vs.85).aspx
+static void convertComboBox(QJsonObject &widget)
+{
+    widget["class"] = "QComboBox";
+    convertGeneralStyle(widget);
+    const auto styles = getStyle(widget);
+
+    // Type CBS_DROPDOWNLIST is the default QComboBox
+    if (styles.contains("CBS_SIMPLE")) {
+        // It's more a QListWidget than a QComboBox
+        widget["class"] = "QListWidget";
+    } else if (styles.contains("CBS_DROPDOWN")) {
+        widget["editable"] = true;
+        widget["insertPolicy"] = "QComboBox::NoInsert";
+    }
+
+    removeStyles(widget, {"CBS_SIMPLE", "CBS_DROPDOWN", "CBS_DROPDOWNLIST",
+                          "WS_VSCROLL"});
 }
 
 // STATIC CONTROL
@@ -132,6 +157,8 @@ static bool convertControl(QJsonObject &widget)
 
     if (controlClass == "Static")
         convertStatic(widget);
+    else if (controlClass == "ComboBoxEx32")
+        convertComboBox(widget);
     else
         return false;
     return true;
@@ -144,6 +171,8 @@ static QJsonObject convertWidget(QJsonObject widget, const QString &id)
 
     if (type == "LTEXT" || type == "CTEXT" || type == "RTEXT") {
         convertLabel(widget);
+    } else if (type == "COMBOBOX") {
+        convertComboBox(widget);
     } else if (type == "CONTROL") {
         if (!convertControl(widget)) {
             qCWarning(converter)
