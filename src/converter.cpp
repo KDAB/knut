@@ -71,6 +71,9 @@ static void convertGeneralStyle(QJsonObject &widget)
         widget["frameshape"] = "QFrame::Box";
     if (takeStyle(widget, "WS_DISABLED"))
         widget["enabled"] = false;
+
+    // WS_TABSTOP is handled by Qt widgets (focus navigation)
+    takeStyle(widget, "WS_TABSTOP");
 }
 
 // LTEXT, CTEXT and RTEXT
