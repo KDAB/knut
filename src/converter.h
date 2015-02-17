@@ -4,7 +4,7 @@
 #include <QJsonObject>
 
 QJsonObject convertDialog(const QJsonObject &dialog);
-QJsonObject convertDialogs(const QJsonObject &rootObject);
+QJsonObject convertDialogs(const QJsonObject &root);
 
 #endif // CONVERTER
 

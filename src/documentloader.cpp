@@ -9,7 +9,7 @@
 #include <QFileInfo>
 #include <QFile>
 #include <QLoggingCategory>
-
+#include <QTextStream>
 
 Q_LOGGING_CATEGORY(loader, "loader")
 
@@ -28,24 +28,59 @@ static QJsonObject loadJsonFile(const QString &jsonFile)
     return QJsonObject();
 }
 
-static QJsonObject normalizeRc(const QJsonObject &root,
-        const QString &resourceFile)
+static QJsonObject normalizeRc(QJsonObject root)
 {
-    QJsonObject o = root;
-    QJsonObject dialogs = convertDialogs(documentDialogs(o));
+    QJsonObject dialogs = convertDialogs(root);
+    documentSetDialogs(root, dialogs);
+    return root;
+}
 
-    // TODO: use resource file to change resource names
+static QJsonObject loadResourceFile(const QJsonObject &root,
+                                    const QString &resourceFile)
+{
+    QFile file(resourceFile);
+    if (!file.open(QIODevice::ReadOnly))
+        qCCritical(loader) << "Can't load " << resourceFile;
 
-    documentSetDialogs(o, dialogs);
+    auto assets = documentAssets(root);
+    QJsonObject resource;
+    QTextStream stream(&file);
 
-    return o;
+    while (!stream.atEnd()) {
+        const QString line = stream.readLine();
+        if (!line.startsWith(QStringLiteral("#define")))
+            continue;
+
+        QStringList fields = line.split(QStringLiteral(" "), QString::SkipEmptyParts);
+        if (fields.size() < 3)
+            continue;
+        if (fields.at(2).isEmpty())
+            continue;
+
+        // Check that the value is an asset
+        const auto value = fields.at(1);
+        if (!assets.contains(value))
+            continue;
+
+        // Get the key
+        bool ok;
+        const int key = fields.at(2).toInt(&ok);
+        if (!ok)
+            continue;
+
+        // Store the result
+        resource.insert(QString::number(key), value);
+    }
+    return resource;
 }
 
 static QJsonObject loadRcFile(const QString &rcFile,
                         const QString &resourceFile)
 {
     auto root = parseRcFile(rcFile);
-    return normalizeRc(root, resourceFile);
+    if (!resourceFile.isEmpty())
+        root.insert("resources", loadResourceFile(root, resourceFile));
+    return normalizeRc(root);
 }
 
 QJsonObject loadDocument(const QString &filename,

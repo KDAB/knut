@@ -5,6 +5,7 @@
 namespace {
 static const auto AssetsKey = QStringLiteral("assets");
 static const auto DialogsKey = QStringLiteral("dialogs");
+static const auto ResourcesKey = QStringLiteral("resources");
 }
 
 static inline QJsonObject valueForObject(const QJsonObject &object,
@@ -23,16 +24,35 @@ QJsonObject documentAssets(const QJsonObject &root)
     return valueForObject(root, AssetsKey);
 }
 
+QJsonObject documentResources(const QJsonObject &root)
+{
+    return valueForObject(root, ResourcesKey);
+}
+
 QJsonObject documentDialog(const QJsonObject &root, const QString &id)
 {
     auto dialogs = documentDialogs(root);
     return valueForObject(dialogs, id);
 }
 
-QJsonObject documentAsset(const QJsonObject &root, const QString &id)
+QString documentAsset(const QJsonObject &root, const QString &id)
 {
     auto assets = documentAssets(root);
-    return valueForObject(assets, id);
+    if (!assets.contains(id))
+        return id;
+    return assets.value(id).toString();
+}
+
+QString documentAsset(const QJsonObject &root, int id)
+{
+    auto key = QString::number(id);
+    if (!root.contains(ResourcesKey))
+        return key;
+    auto resources = documentResources(root);
+    auto assetId = resources.value(key).toString();
+    if (assetId.isEmpty())
+        return key;
+    return documentAsset(root, assetId);
 }
 
 void documentSetDialogs(QJsonObject &root, const QJsonObject &dialogs)

@@ -7,6 +7,8 @@
 #include <QJsonArray>
 #include <QFont>
 
+#include <functional>
+
 Q_LOGGING_CATEGORY(converter, "converter")
 
 namespace {
@@ -23,6 +25,8 @@ static const auto KeyCharset = QStringLiteral("charset");
 static const auto KeyTypeface = QStringLiteral("typeface");
 static const auto KeyPointsize = QStringLiteral("pointsize");
 static const auto KeyClass = QStringLiteral("class");
+
+std::function<QString(int)> idToPath = [](int id) { return QString::number(id); };
 }
 
 static QStringList getStyle(const QJsonObject &widget)
@@ -118,7 +122,7 @@ static void convertStatic(QJsonObject &widget)
         widget["scaledContents"] = true;
 
     if (styles.contains("SS_BITMAP") || styles.contains("SS_ICON"))
-        widget["pixmap"] = widget.take("text");
+        widget["pixmap"] = idToPath(widget.take("text").toString().toInt());
 
     if (!styles.contains("SS_LEFTNOWORDWRAP"))
         widget["wordWrap"] = true;
@@ -289,10 +293,14 @@ QJsonObject convertDialog(const QJsonObject &d)
     return dialog;
 }
 
-QJsonObject convertDialogs(const QJsonObject &dialogs)
+QJsonObject convertDialogs(const QJsonObject &root)
 {
     QJsonObject result;
 
+    // Set the local function idToPath
+    idToPath = [&root](int id) { return documentAsset(root, id);};
+
+    auto dialogs = documentDialogs(root);
     foreach (const QString &key, dialogs.keys()) {
         result[key] = convertDialog(dialogs.value(key).toObject());
     }
