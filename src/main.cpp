@@ -62,7 +62,7 @@ static inline QByteArray handleDialog(
 static inline QByteArrayList handleDefault(const QJsonObject &o)
 {
     QByteArrayList l;
-    l << documentToByteArray(documentDialogs(o));
+    l << documentToByteArray(o);
 
     return l;
 }
