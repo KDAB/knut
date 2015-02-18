@@ -74,6 +74,9 @@ static void convertGeneralStyle(QJsonObject &widget)
 
     // WS_TABSTOP is handled by Qt widgets (focus navigation)
     takeStyle(widget, "WS_TABSTOP");
+
+    // 0 means there's no style (used with the extended styles)
+    takeStyle(widget, "0");
 }
 
 // LTEXT, CTEXT and RTEXT
@@ -199,6 +202,9 @@ static void convertCheckBox(QJsonObject &checkbox)
 
     if (takeStyle(checkbox, "BS_3STATE"))
         checkbox["tristate"] = "true";
+
+    // Default behavior for a checkbox
+    takeStyle(checkbox, "BS_AUTOCHECKBOX");
 }
 
 static void convertGroupBox(QJsonObject &groupBox)
@@ -277,6 +283,33 @@ static void convertButton(QJsonObject &widget)
         convertRadioButton(widget);
 }
 
+// Style: https://msdn.microsoft.com/en-us/library/windows/desktop/bb760147%28v=vs.85%29.aspx
+static void convertSlider(QJsonObject &widget)
+{
+    widget["class"] = "QSlider";
+    widget.take("text");
+    convertGeneralStyle(widget);
+
+    if (takeStyle(widget, "TBS_HORZ"))
+        widget["orientation"] = "Qt::Horizontal";
+    else
+        widget["orientation"] = "Qt::Vertical";
+    takeStyle(widget, "TBS_VERT");
+
+    if (takeStyle(widget, "TBS_NOTICKS"))
+        widget["tickPosition"] = "QSlider::NoTicks";
+    if (takeStyle(widget, "TBS_BOTH"))
+        widget["tickPosition"] = "QSlider::TicksBothSides";
+    if (takeStyle(widget, "TBS_LEFT"))
+        widget["tickPosition"] = "QSlider::TicksLeft";
+    if (takeStyle(widget, "TBS_RIGHT"))
+        widget["tickPosition"] = "QSlider::TicksRight";
+    if (takeStyle(widget, "TBS_TOP"))
+        widget["tickPosition"] = "QSlider::TicksAbove";
+    if (takeStyle(widget, "TBS_BOTTOM"))
+        widget["tickPosition"] = "QSlider::TicksBelow";
+}
+
 static bool convertControl(QJsonObject &widget)
 {
     const auto controlClass = widget.value(KeyClass).toString();
@@ -291,6 +324,8 @@ static bool convertControl(QJsonObject &widget)
         convertEditText(widget);
     else if (controlClass == "RICHEDIT")
         convertEditText(widget);
+    else if (controlClass == "msctls_trackbar32")
+        convertSlider(widget);
     else
         return false;
     return true;
