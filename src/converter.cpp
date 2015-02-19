@@ -217,8 +217,6 @@ static void convertGroupBox(QJsonObject &groupBox)
 
 static void convertRadioButton(QJsonObject &radioButton)
 {
-    const auto styles = getStyle(radioButton);
-
     radioButton["class"] = "QRadioButton";
 
     convertGeneralStyle(radioButton);
@@ -310,6 +308,40 @@ static void convertSlider(QJsonObject &widget)
         widget["tickPosition"] = "QSlider::TicksBelow";
 }
 
+// LISTBOX
+// Style: https://msdn.microsoft.com/en-us/library/windows/desktop/bb775149(v=vs.85).aspx#LBS_MULTIPLESEL
+static void convertListWidget(QJsonObject &widget)
+{
+    widget["class"] = "QListWidget";
+    convertGeneralStyle(widget);
+
+    if (takeStyle(widget, "LBS_NOSEL"))
+        widget["selectionMode"] = "QAbstractItemView::NoSelection";
+    else if (takeStyle(widget, "LBS_MULTIPLESEL"))
+        widget["selectionMode"] = "QAbstractItemView::MultiSelection";
+    else if (takeStyle(widget, "LBS_EXTENDEDSEL"))
+        widget["selectionMode"] = "QAbstractItemView::ExtendedSelection";
+    else
+        widget["selectionMode"] = "QAbstractItemView::SingleSelection";
+
+    if (takeStyle(widget, "LBS_SORT"))
+        widget["sortingEnabled"] = true;
+    if (takeStyle(widget, "LBS_STANDARD"))
+        widget["sortingEnabled"] = true;
+
+    bool alwaysOn = takeStyle(widget, "LBS_DISABLENOSCROLL");
+    if (takeStyle(widget, "WS_HSCROLL"))
+        widget["horizontalScrollBarPolicy"] =
+                alwaysOn ? "Qt::ScrollBarAlwaysOn" : "Qt::ScrollBarAsNeeded";
+    else
+        widget["horizontalScrollBarPolicy"] = "Qt::ScrollBarAlwaysOff";
+    if (takeStyle(widget, "WS_VSCROLL"))
+        widget["verticalScrollBarPolicy"] =
+                alwaysOn ? "Qt::ScrollBarAlwaysOn" : "Qt::ScrollBarAsNeeded";
+    else
+        widget["verticalScrollBarPolicy"] = "Qt::ScrollBarAlwaysOff";
+}
+
 static bool convertControl(QJsonObject &widget)
 {
     const auto controlClass = widget.value(KeyClass).toString();
@@ -336,8 +368,12 @@ static QJsonObject convertWidget(QJsonObject widget, const QString &id)
     const auto type = widget.value(KeyType).toString();
     const auto wid = widget.take(KeyId).toString();
 
-    if (type == "LTEXT" || type == "CTEXT" || type == "RTEXT") {
-        convertLabel(widget);
+    if (type == "AUTO3STATE") {
+        convertPushButton(widget);
+    } else if (type == "AUTOCHECKBOX") {
+        convertPushButton(widget);
+    } else if (type == "CHECKBOX") {
+        convertCheckBox(widget);
     } else if (type == "COMBOBOX") {
         convertComboBox(widget);
     } else if (type == "CONTROL") {
@@ -347,20 +383,24 @@ static QJsonObject convertWidget(QJsonObject widget, const QString &id)
                    .arg(id).arg(wid).arg(widget.value(KeyClass).toString());
             return widget;
         }
-    } else if (type == "AUTO3STATE") {
-        convertPushButton(widget);
-    } else if (type == "AUTOCHECKBOX") {
-        convertPushButton(widget);
-    } else if (type == "CHECKBOX") {
-        convertCheckBox(widget);
-    } else if (type == "EDITTEXT") {
-        convertEditText(widget);
-    } else if (type == "GROUPBOX") {
-        convertGroupBox(widget);
+    } else if (type == "CTEXT") {
+        convertLabel(widget);
     } else if (type == "DEFPUSHBUTTON") {
         convertPushButton(widget);
+    } else if (type == "EDITTEXT") {
+        convertEditText(widget);
+    } else if (type == "LISTBOX") {
+        convertListWidget(widget);
+    } else if (type == "LTEXT") {
+        convertLabel(widget);
+    } else if (type == "GROUPBOX") {
+        convertGroupBox(widget);
     } else if (type == "PUSHBUTTON") {
         convertPushButton(widget);
+    } else if (type == "RADIOBUTTON") {
+        convertRadioButton(widget);
+    } else if (type == "RTEXT") {
+        convertLabel(widget);
     } else {
         qCWarning(converter)
             << QObject::tr("%1: Unknow widget %2 type %3").arg(id).arg(wid).arg(type);
