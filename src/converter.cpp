@@ -60,8 +60,6 @@ static bool takeStyle(QJsonObject &widget, const QString &style)
 // https://msdn.microsoft.com/en-us/library/windows/desktop/ff700543(v=vs.85).aspx
 static void convertGeneralStyle(QJsonObject &widget)
 {
-    const auto styles = getStyle(widget);
-
     if (takeStyle(widget, "WS_EX_CLIENTEDGE")) {
         widget["frameshape"] = "QFrame::Plain";
         widget["frameShadow"] = "QFrame::Sunken";
@@ -157,7 +155,8 @@ static void convertStatic(QJsonObject &widget)
     if (takeStyle(widget, "SS_REALSIZECONTROL"))
         widget["scaledContents"] = true;
 
-    if (takeStyle(widget, "SS_BITMAP") || takeStyle(widget, "SS_ICON"))
+    const auto type = widget.value(KeyType).toString();
+    if (takeStyle(widget, "SS_BITMAP") || takeStyle(widget, "SS_ICON") || type == "ICON")
         widget["pixmap"] = idToPath(widget.take("text").toString().toInt());
 
     if (!takeStyle(widget, "SS_LEFTNOWORDWRAP"))
@@ -184,8 +183,12 @@ static void convertPushButton(QJsonObject &button)
     if (hasIcon)
         button["icon"] = "FIXME";
 
-    if (takeStyle(button, "BS_FLAT"))
+    const auto type = button.value(KeyType).toString();
+    if (takeStyle(button, "BS_FLAT") || type == "PUSHBOX")
         button["flat"] = "true";
+
+    // Already taken care of with PUSHBOX type
+    takeStyle(button, "BS_PUSHBOX");
 }
 
 static void convertCheckBox(QJsonObject &checkbox)
@@ -200,7 +203,8 @@ static void convertCheckBox(QJsonObject &checkbox)
 
     convertGeneralStyle(checkbox);
 
-    if (takeStyle(checkbox, "BS_3STATE"))
+    const auto type = checkbox.value(KeyType).toString();
+    if (takeStyle(checkbox, "BS_3STATE") || type == "STATE3")
         checkbox["tristate"] = "true";
 
     // Default behavior for a checkbox
@@ -387,6 +391,8 @@ static QJsonObject convertWidget(QJsonObject widget, const QString &id)
         convertPushButton(widget);
     } else if (type == "AUTOCHECKBOX") {
         convertPushButton(widget);
+    } else if (type == "AUTORADIOBUTTON") {
+        convertRadioButton(widget);
     } else if (type == "CHECKBOX") {
         convertCheckBox(widget);
     } else if (type == "COMBOBOX") {
@@ -406,10 +412,14 @@ static QJsonObject convertWidget(QJsonObject widget, const QString &id)
         convertEditText(widget);
     } else if (type == "GROUPBOX") {
         convertGroupBox(widget);
+    } else if (type == "ICON") {
+        convertStatic(widget); // the only possible style is SS_ICON
     } else if (type == "LISTBOX") {
         convertListWidget(widget);
     } else if (type == "LTEXT") {
         convertLabel(widget);
+    } else if (type == "PUSHBOX") {
+        convertPushButton(widget);
     } else if (type == "PUSHBUTTON") {
         convertPushButton(widget);
     } else if (type == "RADIOBUTTON") {
@@ -418,6 +428,8 @@ static QJsonObject convertWidget(QJsonObject widget, const QString &id)
         convertLabel(widget);
     } else if (type == "SCROLLBAR") {
         convertScrollBar(widget);
+    } else if (type == "STATE3") {
+        convertCheckBox(widget);
     } else {
         qCWarning(converter)
             << QObject::tr("%1: Unknow widget %2 type %3").arg(id).arg(wid).arg(type);
