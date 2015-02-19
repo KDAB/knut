@@ -342,6 +342,21 @@ static void convertListWidget(QJsonObject &widget)
         widget["verticalScrollBarPolicy"] = "Qt::ScrollBarAlwaysOff";
 }
 
+// SCROLLBAR
+// Style: https://msdn.microsoft.com/en-us/library/windows/desktop/bb787533%28v=vs.85%29.aspx
+static void convertScrollBar(QJsonObject &widget)
+{
+    widget["class"] = "QScrollBar";
+    convertGeneralStyle(widget);
+
+    if (takeStyle(widget, "SBS_VERT"))
+        widget["orientation"] = "Qt::Vertical";
+    else
+        widget["orientation"] = "Qt::Horizontal";
+
+    takeStyle(widget, "SBS_HORZ");
+}
+
 static bool convertControl(QJsonObject &widget)
 {
     const auto controlClass = widget.value(KeyClass).toString();
@@ -389,18 +404,20 @@ static QJsonObject convertWidget(QJsonObject widget, const QString &id)
         convertPushButton(widget);
     } else if (type == "EDITTEXT") {
         convertEditText(widget);
+    } else if (type == "GROUPBOX") {
+        convertGroupBox(widget);
     } else if (type == "LISTBOX") {
         convertListWidget(widget);
     } else if (type == "LTEXT") {
         convertLabel(widget);
-    } else if (type == "GROUPBOX") {
-        convertGroupBox(widget);
     } else if (type == "PUSHBUTTON") {
         convertPushButton(widget);
     } else if (type == "RADIOBUTTON") {
         convertRadioButton(widget);
     } else if (type == "RTEXT") {
         convertLabel(widget);
+    } else if (type == "SCROLLBAR") {
+        convertScrollBar(widget);
     } else {
         qCWarning(converter)
             << QObject::tr("%1: Unknow widget %2 type %3").arg(id).arg(wid).arg(type);
