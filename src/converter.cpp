@@ -312,12 +312,18 @@ static void convertSlider(QJsonObject &widget)
         widget["tickPosition"] = "QSlider::TicksBelow";
 }
 
-// LISTBOX
+// LISTBOX or SysListView32 CONTROL
 // Style: https://msdn.microsoft.com/en-us/library/windows/desktop/bb775149(v=vs.85).aspx#LBS_MULTIPLESEL
 static void convertListWidget(QJsonObject &widget)
 {
     widget["class"] = "QListWidget";
+    widget.take("text");
     convertGeneralStyle(widget);
+
+    // The control is an icon view
+    const auto type = widget.value(KeyType).toString();
+    if (type == "CONTROL")
+        widget["viewMode"] = "QListView::IconMode";
 
     if (takeStyle(widget, "LBS_NOSEL"))
         widget["selectionMode"] = "QAbstractItemView::NoSelection";
@@ -361,6 +367,80 @@ static void convertScrollBar(QJsonObject &widget)
     takeStyle(widget, "SBS_HORZ");
 }
 
+// Style: https://msdn.microsoft.com/en-us/library/windows/desktop/bb759885%28v=vs.85%29.aspx
+static void convertSpinBox(QJsonObject &widget)
+{
+    widget["class"] = "QSpinBox";
+    widget.take("text");
+    convertGeneralStyle(widget);
+}
+
+// Style: https://msdn.microsoft.com/en-us/library/windows/desktop/bb760820(v=vs.85).aspx
+static void convertProgressBar(QJsonObject &widget)
+{
+    widget["class"] = "QProgressBar";
+    widget.take("text");
+    convertGeneralStyle(widget);
+
+}
+
+static void convertCalendarWidget(QJsonObject &widget)
+{
+    widget["class"] = "QCalendarWidget";
+    widget.take("text");
+    convertGeneralStyle(widget);
+}
+
+// Style: https://msdn.microsoft.com/en-us/library/windows/desktop/bb761728%28v=vs.85%29.aspx?f=255&MSPPError=-2147217396
+static void convertDateTime(QJsonObject &widget)
+{
+    widget["class"] = "QDateTimeEdit";
+    widget.take("text");
+    convertGeneralStyle(widget);
+
+    if (takeStyle(widget, "DTS_LONGDATEFORMAT"))
+        widget["displayFormat"] = "dddd, MMMM dd, yyyy";
+    if (takeStyle(widget, "DTS_SHORTDATEFORMAT"))
+        widget["displayFormat"] = "M/d/yy";
+    if (takeStyle(widget, "DTS_SHORTDATECENTURYFORMAT"))
+        widget["displayFormat"] = "M/d/yyyy";
+    if (takeStyle(widget, "DTS_TIMEFORMAT"))
+        widget["displayFormat"] = "hh:mm:ss";
+
+    widget["calendarPopup"] = true;
+}
+
+static void convertIpAddress(QJsonObject &widget)
+{
+    widget["class"] = "QLineEdit";
+    convertGeneralStyle(widget);
+
+    widget["inputMask"] = "000.000.000.000;_";
+}
+
+// Style: https://msdn.microsoft.com/en-us/library/windows/desktop/bb760013%28v=vs.85%29.aspx
+static void convertTreeWidget(QJsonObject &widget)
+{
+    widget["class"] = "QTreeWidget";
+    widget.take("text");
+    convertGeneralStyle(widget);
+}
+
+// Style: https://msdn.microsoft.com/en-us/library/windows/desktop/bb760549%28v=vs.85%29.aspx
+static void convertTabWidget(QJsonObject &widget)
+{
+    widget["class"] = "QTabWidget";
+    widget.take("text");
+    convertGeneralStyle(widget);
+
+    if (takeStyle(widget, "TCS_BOTTOM"))
+        widget["tabPosition"] = "QTabWidget::South";
+    if (takeStyle(widget, "TCS_VERTICAL"))
+        widget["tabPosition"] = "QTabWidget::West";
+    if (takeStyle(widget, "TCS_RIGHT"))
+        widget["tabPosition"] = "QTabWidget::East";
+}
+
 static bool convertControl(QJsonObject &widget)
 {
     const auto controlClass = widget.value(KeyClass).toString();
@@ -369,14 +449,48 @@ static bool convertControl(QJsonObject &widget)
         convertStatic(widget);
     else if (controlClass == "Button")
         convertButton(widget);
+    else if (controlClass == "ComboBox")
+        convertComboBox(widget);
     else if (controlClass == "ComboBoxEx32")
         convertComboBox(widget);
     else if (controlClass == "Edit")
         convertEditText(widget);
-    else if (controlClass == "RICHEDIT")
+    else if (controlClass == "RichEdit20W")
         convertEditText(widget);
+    else if (controlClass == "msctls_trackbar")
+        convertSlider(widget);
     else if (controlClass == "msctls_trackbar32")
         convertSlider(widget);
+    else if (controlClass == "msctls_updown")
+        convertSpinBox(widget);
+    else if (controlClass == "msctls_updown32")
+        convertSpinBox(widget);
+    else if (controlClass == "msctls_progress")
+        convertProgressBar(widget);
+    else if (controlClass == "msctls_progress32")
+        convertProgressBar(widget);
+    else if (controlClass == "ScrollBar")
+        convertScrollBar(widget);
+    else if (controlClass == "SysMonthCal32")
+        convertCalendarWidget(widget);
+    else if (controlClass == "SysDateTimePick32")
+        convertDateTime(widget);
+    else if (controlClass == "SysIPAddress32")
+        convertIpAddress(widget);
+    else if (controlClass == "SysListView")
+        convertListWidget(widget);
+    else if (controlClass == "SysListView32")
+        convertListWidget(widget);
+    else if (controlClass == "SysTreeView")
+        convertTreeWidget(widget);
+    else if (controlClass == "SysTreeView32")
+        convertTreeWidget(widget);
+    else if (controlClass == "SysTabControl")
+        convertTabWidget(widget);
+    else if (controlClass == "SysTabControl32")
+        convertTabWidget(widget);
+    else if (controlClass == "SysLink")
+        convertLabel(widget);
     else
         return false;
     return true;
