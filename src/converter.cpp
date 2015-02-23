@@ -385,7 +385,7 @@ static bool convertControl(QJsonObject &widget)
 static QJsonObject convertWidget(QJsonObject widget, const QString &id)
 {
     const auto type = widget.value(KeyType).toString();
-    const auto wid = widget.take(KeyId).toString();
+    const auto wid = widget.value(KeyId).toString();
 
     if (type == "AUTO3STATE") {
         convertPushButton(widget);
@@ -444,9 +444,6 @@ static QJsonObject convertWidget(QJsonObject widget, const QString &id)
             << QObject::tr("%1: Unused styles for widget %2: %3")
                 .arg(id).arg(wid).arg(styles.join(" | "));
     }
-
-    // Set the object name
-    widget["objectName"] = wid;
 
     return widget;
 }
