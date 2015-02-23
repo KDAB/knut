@@ -61,12 +61,12 @@ static bool takeStyle(QJsonObject &widget, const QString &style)
 static void convertGeneralStyle(QJsonObject &widget)
 {
     if (takeStyle(widget, "WS_EX_CLIENTEDGE")) {
-        widget["frameshape"] = "QFrame::Plain";
+        widget["frameShape"] = "QFrame::Plain";
         widget["frameShadow"] = "QFrame::Sunken";
     }
 
     if (takeStyle(widget, "WS_BORDER"))
-        widget["frameshape"] = "QFrame::Box";
+        widget["frameShape"] = "QFrame::Box";
     if (takeStyle(widget, "WS_DISABLED"))
         widget["enabled"] = false;
 
@@ -145,12 +145,12 @@ static void convertStatic(QJsonObject &widget)
 
     // Frame
     if (takeStyle(widget, "SS_SUNKEN")) {
-        widget["frameshape"] = "QFrame::Plain";
+        widget["frameShape"] = "QFrame::Plain";
         widget["frameShadow"] = "QFrame::Sunken";
     }
 
     if (takeStyle(widget, "SS_BLACKFRAME"))
-        widget["frameshape"] = "QFrame::Box";
+        widget["frameShape"] = "QFrame::Box";
 
     if (takeStyle(widget, "SS_REALSIZECONTROL"))
         widget["scaledContents"] = true;
@@ -380,8 +380,12 @@ static void convertProgressBar(QJsonObject &widget)
 {
     widget["class"] = "QProgressBar";
     widget.take("text");
+
     convertGeneralStyle(widget);
 
+    // QProgressBar does not support these
+    widget.take("frameShape");
+    widget.take("frameShadow");
 }
 
 static void convertCalendarWidget(QJsonObject &widget)

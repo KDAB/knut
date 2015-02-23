@@ -64,3 +64,8 @@ QByteArray documentToByteArray(const QJsonObject &o)
 {
     return QJsonDocument(o).toJson();
 }
+
+QString dialogId(const QJsonObject &dialog)
+{
+    return dialog.value("id").toString();
+}

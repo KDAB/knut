@@ -4,7 +4,8 @@ SOURCES += main.cpp \
     converter.cpp \
     commandlineparser.cpp \
     documentloader.cpp \
-    rcfileparser.cpp
+    rcfileparser.cpp \
+    xmlwriter.cpp
 
 FLEXSOURCES = rclexer.l
 BISONSOURCES = rcparser.y
@@ -58,4 +59,5 @@ HEADERS += \
     converter.h \
     commandlineparser.h \
     documentloader.h \
-    rcfileparser.h
+    rcfileparser.h \
+    xmlwriter.h

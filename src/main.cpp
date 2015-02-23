@@ -1,13 +1,18 @@
 #include "commandlineparser.h"
 #include "documentloader.h"
 #include "document.h"
+#include "xmlwriter.h"
 
 #include <QDebug>
 #include <QCoreApplication>
 #include <QCommandLineParser>
 #include <QFile>
+#include <QPair>
 
 #include <cstdlib>
+
+using Result = QPair<QString, QByteArray>;
+using ResultList = QList<Result>;
 
 static int parseArgs(Arguments *args)
 {
@@ -30,15 +35,8 @@ static int parseArgs(Arguments *args)
     return ret;
 }
 
-static void writeResult(const QByteArray &result,
-        const QString &filename = QString())
+static void writeResult(const QByteArray &result, const QString &filename)
 {
-    // TODO: if filename is empty then set it to resource id
-    if (filename.isEmpty()) {
-        qDebug() << result;
-        return;
-    }
-
     QFile file(filename);
 
     if (file.open(QIODevice::WriteOnly))
@@ -47,22 +45,47 @@ static void writeResult(const QByteArray &result,
         qCritical() << QObject::tr("can't write file %1").arg(filename);
 }
 
-static void writeResults(const QByteArrayList &results, const QString &filename)
+static void writeResults(const ResultList &results)
 {
-    foreach (const QByteArray &b, results)
-        writeResult(b, filename);
+    for (const Result &r : results)
+        writeResult(r.second, r.first);
 }
 
-static inline QByteArray handleDialog(
-        const QJsonObject &root, const QString &id)
+static Result handleDialog(const QJsonObject &dialog)
 {
-    return documentToByteArray(documentDialog(root, id));
+    Result result;
+
+    result.first = dialogId(dialog) + ".ui";
+    result.second = dialogToUi(dialog);
+
+    return result;
 }
 
-static inline QByteArrayList handleDefault(const QJsonObject &o)
+static Result handleDialog(const QJsonObject &root, const QString &id,
+        const QString &filename = QString())
 {
-    QByteArrayList l;
-    l << documentToByteArray(o);
+    const auto dialog = documentDialog(root, id);
+
+    Result r = handleDialog(dialog);
+
+    if (!filename.isEmpty())
+        r.first = filename;
+
+    return r;
+}
+
+static ResultList handleDefault(const QJsonObject &o)
+{
+    QJsonObject dialogs = documentDialogs(o);
+
+    ResultList l;
+
+    Q_FOREACH (const QJsonValue &value, dialogs) {
+        const auto dialog = value.toObject();
+
+        Result r = handleDialog(dialog);
+        l.append(r);
+    }
 
     return l;
 }
@@ -79,25 +102,24 @@ int main(int argc, char *argv[])
 
     QJsonObject rootObject = loadDocument(args.inputFile, args.resourceFile);
 
-    QByteArrayList results;
+    ResultList results;
 
     switch (action) {
     case AssetPath:
     case Dialog:
-        results << handleDialog(rootObject, args.ui);
+        results << handleDialog(rootObject, args.ui, args.outputFile);
         break;
     case String:
         //TODO
         break;
     case QrcFile:
-        //TODO
         break;
     case Default:
         results << handleDefault(rootObject);
         break;
     }
 
-    writeResults(results, args.outputFile);
+    writeResults(results);
 
     return 0;
 }
