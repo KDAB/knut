@@ -232,28 +232,32 @@ static void convertEditText(QJsonObject &editText)
 {
     const auto controlClass = editText.value(KeyClass).toString();
 
-    if (takeStyle(editText, "ES_MULTILINE") || controlClass == "RICHEDIT")
+    if (takeStyle(editText, "ES_MULTILINE") || controlClass == "RICHEDIT") {
         editText["class"] = "QTextEdit";
-    else
+
+        removeStyles(editText,
+                {"ES_CENTER", "ES_LEFT", "ES_RIGHT", "ES_PASSWORD"});
+    } else {
         editText["class"] = "QLineEdit";
 
-    QString align;
+        QString align;
 
-    if (takeStyle(editText, "ES_CENTER"))
-        align = "Qt::AlignCenter";
-    else if (takeStyle(editText, "ES_LEFT"))
-        align = "Qt::AlignLeft";
-    else if (takeStyle(editText, "ES_RIGHT"))
-        align = "Qt::AlignRight";
-    else
-        align = "Qt::AlignLeft";
+        if (takeStyle(editText, "ES_CENTER"))
+            align = "Qt::AlignCenter";
+        else if (takeStyle(editText, "ES_LEFT"))
+            align = "Qt::AlignLeft";
+        else if (takeStyle(editText, "ES_RIGHT"))
+            align = "Qt::AlignRight";
+        else
+            align = "Qt::AlignLeft";
 
-    align += " | Qt::AlignVCenter";
+        align += " | Qt::AlignVCenter";
 
-    editText["alignment"] = align;
+        editText["alignment"] = align;
 
-    if (takeStyle(editText, "ES_PASSWORD"))
-        editText["echoMode"] = "QLineEdit::Password";
+        if (takeStyle(editText, "ES_PASSWORD"))
+            editText["echoMode"] = "QLineEdit::Password";
+    }
 
     if (takeStyle(editText, "ES_READONLY"))
         editText["readOnly"] = true;
