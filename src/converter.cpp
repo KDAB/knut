@@ -251,7 +251,7 @@ static void convertEditText(QJsonObject &editText)
         else
             align = "Qt::AlignLeft";
 
-        align += " | Qt::AlignVCenter";
+        align += "|Qt::AlignVCenter";
 
         editText["alignment"] = align;
 
