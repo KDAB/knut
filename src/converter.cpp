@@ -68,7 +68,7 @@ static void convertGeneralStyle(QJsonObject &widget)
     if (takeStyle(widget, "WS_BORDER"))
         widget["frameShape"] = "QFrame::Box";
     if (takeStyle(widget, "WS_DISABLED"))
-        widget["enabled"] = false;
+        widget["enabled"] = "false";
 
     // WS_TABSTOP is handled by Qt widgets (focus navigation)
     takeStyle(widget, "WS_TABSTOP");
@@ -120,7 +120,7 @@ static void convertComboBox(QJsonObject &widget)
         // It's more a QListWidget than a QComboBox
         widget["class"] = "QListWidget";
     } else if (styles.contains("CBS_DROPDOWN")) {
-        widget["editable"] = true;
+        widget["editable"] = "true";
         widget["insertPolicy"] = "QComboBox::NoInsert";
     }
 
@@ -153,14 +153,14 @@ static void convertStatic(QJsonObject &widget)
         widget["frameShape"] = "QFrame::Box";
 
     if (takeStyle(widget, "SS_REALSIZECONTROL"))
-        widget["scaledContents"] = true;
+        widget["scaledContents"] = "true";
 
     const auto type = widget.value(KeyType).toString();
     if (takeStyle(widget, "SS_BITMAP") || takeStyle(widget, "SS_ICON") || type == "ICON")
         widget["pixmap"] = idToPath(widget.take("text").toString().toInt());
 
     if (!takeStyle(widget, "SS_LEFTNOWORDWRAP"))
-        widget["wordWrap"] = true;
+        widget["wordWrap"] = "true";
 
     takeStyle(widget, "SS_LEFT");
 }
@@ -260,7 +260,7 @@ static void convertEditText(QJsonObject &editText)
     }
 
     if (takeStyle(editText, "ES_READONLY"))
-        editText["readOnly"] = true;
+        editText["readOnly"] = "true";
 }
 
 // BUTTON CONTROL
@@ -339,9 +339,9 @@ static void convertListWidget(QJsonObject &widget)
         widget["selectionMode"] = "QAbstractItemView::SingleSelection";
 
     if (takeStyle(widget, "LBS_SORT"))
-        widget["sortingEnabled"] = true;
+        widget["sortingEnabled"] = "true";
     if (takeStyle(widget, "LBS_STANDARD"))
-        widget["sortingEnabled"] = true;
+        widget["sortingEnabled"] = "true";
 
     bool alwaysOn = takeStyle(widget, "LBS_DISABLENOSCROLL");
     if (takeStyle(widget, "WS_HSCROLL"))
@@ -415,7 +415,7 @@ static void convertDateTime(QJsonObject &widget)
     if (takeStyle(widget, "DTS_TIMEFORMAT"))
         widget["displayFormat"] = "hh:mm:ss";
 
-    widget["calendarPopup"] = true;
+    widget["calendarPopup"] = "true";
 }
 
 static void convertIpAddress(QJsonObject &widget)
