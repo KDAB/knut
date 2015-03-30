@@ -90,6 +90,17 @@ static ResultList handleDefault(const QJsonObject &o)
     return l;
 }
 
+static QTextStream &qStdOut()
+{
+    static QTextStream s(stdout);
+    return s;
+}
+
+static void handleAsset(const QJsonObject &o, const QString &assetId)
+{
+    qStdOut() << documentAsset(o, assetId) << "\n";
+}
+
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
@@ -106,6 +117,8 @@ int main(int argc, char *argv[])
 
     switch (action) {
     case AssetPath:
+        handleAsset(rootObject, args.asset);
+        break;
     case Dialog:
         results << handleDialog(rootObject, args.ui, args.outputFile);
         break;
