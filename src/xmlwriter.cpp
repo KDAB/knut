@@ -297,3 +297,26 @@ QByteArray dialogToUi(const QJsonObject &dialog)
 
     return buffer;
 }
+
+QByteArray assetsToQrc(const QJsonObject &assets)
+{
+    QByteArray buffer;
+
+    QXmlStreamWriter w(&buffer);
+
+    w.setAutoFormatting(true);
+
+    w.writeDTD("<!DOCTYPE RCC>");
+    w.writeStartElement("RCC");
+    w.writeAttribute("version", "1.0");
+
+    w.writeStartElement("qresource");
+
+    for (const auto &value : assets)
+        w.writeTextElement("file", value.toString());
+
+    w.writeEndElement(); // qresource
+    w.writeEndElement(); // RCC
+
+    return buffer;
+}

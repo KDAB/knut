@@ -90,6 +90,18 @@ static ResultList handleDefault(const QJsonObject &o)
     return l;
 }
 
+static ResultList handleQrcFile(const QJsonObject &o, const QString &outputFile)
+{
+    QJsonObject assets = documentAssets(o);
+
+    Result result;
+
+    result.first = outputFile;
+    result.second = assetsToQrc(assets);
+
+    return ResultList() << result;
+}
+
 static QTextStream &qStdOut()
 {
     static QTextStream s(stdout);
@@ -126,6 +138,8 @@ int main(int argc, char *argv[])
         //TODO
         break;
     case QrcFile:
+        if (args.qrcFile.isEmpty()) // generate qrc file
+            results << handleQrcFile(rootObject, args.outputFile);
         break;
     case Default:
         results << handleDefault(rootObject);

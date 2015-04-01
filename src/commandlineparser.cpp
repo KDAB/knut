@@ -71,6 +71,7 @@ int parseArguments(QCommandLineParser &parser, Arguments *args)
     args->asset = parser.value(assetOption);
     args->ui = parser.value(uiOption);
     args->string = parser.value(stringOption);
+    args->qrcFile = parser.value(qrcOption);
     args->hasQrc = parser.isSet(qrcOption);
     args->outputFile = parser.value(outputOption);
 

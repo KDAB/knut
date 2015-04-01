@@ -13,6 +13,7 @@ struct Arguments
     QString ui;
     QString string;
     QString outputFile;
+    QString qrcFile;
     bool hasQrc;
 };
 
