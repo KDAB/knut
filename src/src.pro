@@ -32,7 +32,7 @@ flexheader.name = Flex ${QMAKE_FILE_IN}
 flexheader.depends = rcparser.cpp
 flexheader.CONFIG += target_predeps no_link
 
-QMAKE_EXTRA_COMPILERS += flex
+QMAKE_EXTRA_COMPILERS += flexheader
 
 bison.input = BISONSOURCES
 bison.output = rcparser.cpp
