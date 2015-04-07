@@ -16,6 +16,8 @@ static bool error = false;
 
 extern int yylinenum;
 
+extern int yyparse();
+
 void yyerror(const char *s)
 {
     qCCritical(rcparser, "%s:%d: %s\n", filename, yylinenum, s);
