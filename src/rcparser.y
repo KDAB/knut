@@ -120,7 +120,6 @@ static void appendAsset(const QString &id, const QString &path)
 %type<joval> version_statement
 %type<joval> dialog_statement
 %type<ival> dialogex_helpid
-%type<ival> font_statement_optional_number
 %type<ival> icon_control_optional_number
 %type<ival> style_optional_not
 
@@ -425,12 +424,12 @@ class_statement:
     ;
 
 common_optional_statements:
-    common_optional_statements common_optional_statement | common_optional_statement
+    /* empty */
+    | common_optional_statements common_optional_statement | common_optional_statement
     ;
 
 common_optional_statement:
-    /* empty */
-    | characteristics_statement { delete $1; }
+    characteristics_statement { delete $1; }
     | language_statement { delete $1; }
     | version_statement { delete $1; }
     ;
@@ -449,17 +448,46 @@ exstyle_statement:
     ;
 
 font_statement:
-    font_statement_base font_statement_optional_number
-    font_statement_optional_number font_statement_optional_number
+    font_statement_base
     {
-        if ($2 >= 0)
-            $1->insert("weight", $2);
+        QJsonObject *o = new QJsonObject {
+            {"font", *$1}
+        };
 
-        if ($3 >= 0)
-            $1->insert("italic", $3);
+        delete $1;
 
-        if ($4 >= 0)
-            $1->insert("charset", $4);
+        $$ = o;
+    }
+    | font_statement_base COMMA NUMBER
+    {
+        $1->insert("weight", $3);
+
+        QJsonObject *o = new QJsonObject {
+            {"font", *$1}
+        };
+
+        delete $1;
+
+        $$ = o;
+    }
+    | font_statement_base COMMA NUMBER COMMA NUMBER
+    {
+        $1->insert("weight", $3);
+        $1->insert("italic", $5);
+
+        QJsonObject *o = new QJsonObject {
+            {"font", *$1}
+        };
+
+        delete $1;
+
+        $$ = o;
+    }
+    | font_statement_base COMMA NUMBER COMMA NUMBER COMMA NUMBER
+    {
+        $1->insert("weight", $3);
+        $1->insert("italic", $5);
+        $1->insert("charset", $7);
 
         QJsonObject *o = new QJsonObject {
             {"font", *$1}
@@ -482,17 +510,6 @@ font_statement_base:
         delete $4;
 
         $$ = o;
-    }
-    ;
-
-font_statement_optional_number:
-    /* empty */
-    {
-        $$ = -1;
-    }
-    | COMMA NUMBER
-    {
-        $$ = $2;
     }
     ;
 
@@ -951,21 +968,27 @@ control_parameters:
     ;
 
 control_parameters_extended:
-    control_parameters_base optional_styles optional_styles
+    control_parameters_base
+    {
+        $$ = $1;
+    }
+    | control_parameters_base COMMA styles
     {
         QJsonObject *params = $1;
 
-        if ($2) {
-            params->insert("style", *$2);
+        params->insert("style", *$3);
+        delete $3;
 
-            if ($3) {
-                unite($2, $3);
-                params->insert("style", *$2);
-                delete $3;
-            }
+        $$ = params;
+    }
+    | control_parameters_base COMMA styles COMMA styles
+    {
+        QJsonObject *params = $1;
 
-            delete $2;
-        }
+        unite($3, $5);
+        params->insert("style", *$3);
+        delete $5;
+        delete $3;
 
         $$ = params;
     }
@@ -1036,8 +1059,7 @@ class:
  */
 
 textinclude:
-    /* empty */
-    | NUMBER TEXTINCLUDE BBEGIN string_list BEND
+    NUMBER TEXTINCLUDE BBEGIN string_list BEND
     ;
 
 string_list:
@@ -1146,17 +1168,18 @@ accelerators_list:
     ;
 
 accel:
-    common_identifier COMMA common_identifier accel_type accel_options
+    common_identifier COMMA common_identifier
+    | common_identifier COMMA common_identifier accel_options
+    | common_identifier COMMA common_identifier accel_type
+    | common_identifier COMMA common_identifier accel_type accel_options
     ;
 
 accel_type:
-    /* empty */
-    | COMMA IDENTIFIER
+    COMMA IDENTIFIER
     ;
 
 accel_options:
-    /* empty */
-    | accel_options COMMA accel_option_identifier
+    accel_options COMMA accel_option_identifier
     | COMMA accel_option_identifier
     ;
 
@@ -1170,11 +1193,11 @@ accel_option_identifier:
 
 designinfo:
     IDENTIFIER DESIGNINFO BBEGIN designinfo_list BEND
+    | IDENTIFIER DESIGNINFO BBEGIN BEND
     ;
 
 designinfo_list:
-    /* empty */
-    | designinfo_list designinfo_item
+    designinfo_list designinfo_item
     | designinfo_item
     ;
 
