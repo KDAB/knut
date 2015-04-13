@@ -49,6 +49,7 @@ MENU                    { return MENU; };
 MENUITEM                { return MENUITEM; };
 NOT                     { return NOT; };
 MESSAGETABLE            { return MESSAGETABLE; };
+PNG                     { return PNG; };
 POPUP                   { return POPUP; };
 PUSHBOX                 { return PUSHBOX; };
 PUSHBUTTON              { return PUSHBUTTON; };

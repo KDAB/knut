@@ -116,6 +116,7 @@ static void appendAsset(const QString &id, const QString &path)
 %type<joval> icon
 %type<joval> language_statement
 %type<joval> menu_statement
+%type<joval> png
 %type<joval> style_statement
 %type<joval> version_statement
 %type<joval> dialog_statement
@@ -161,6 +162,7 @@ static void appendAsset(const QString &id, const QString &path)
 %token NOT
 %token<ival> NUMBER
 %token OPERATOR_OR
+%token PNG
 %token POPUP
 %token PUSHBOX
 %token PUSHBUTTON
@@ -210,6 +212,7 @@ resource:
     | stringtable
     | language
     | textinclude
+    | png
     ;
 
 common_identifier:
@@ -1090,6 +1093,19 @@ icon:
         delete $3;
     }
     ;
+
+/*
+ * PNG
+ */
+png:
+    common_identifier PNG STRING_LITERAL
+    {
+        appendAsset(*$1, *$3);
+        delete $1;
+        delete $3;
+    }
+    ;
+
 
 /*
  * TOOLBAR
