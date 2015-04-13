@@ -119,9 +119,16 @@ static void convertComboBox(QJsonObject &widget)
     if (styles.contains("CBS_SIMPLE")) {
         // It's more a QListWidget than a QComboBox
         widget["class"] = "QListWidget";
-    } else if (styles.contains("CBS_DROPDOWN")) {
-        widget["editable"] = "true";
-        widget["insertPolicy"] = "QComboBox::NoInsert";
+    } else {
+
+        auto geometry = widget.value(KeyGeometry).toObject();
+        geometry["height"] = 22;
+        widget["geometry"] = geometry;
+
+        if (styles.contains("CBS_DROPDOWN")) {
+            widget["editable"] = "true";
+            widget["insertPolicy"] = "QComboBox::NoInsert";
+        }
     }
 
     removeStyles(widget, {"CBS_SIMPLE", "CBS_DROPDOWN", "CBS_DROPDOWNLIST",
