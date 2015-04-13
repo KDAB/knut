@@ -470,6 +470,8 @@ static bool convertControl(QJsonObject &widget)
         convertComboBox(widget);
     else if (controlClass == "Edit")
         convertEditText(widget);
+    else if (controlClass == "RICHEDIT")
+        convertEditText(widget);
     else if (controlClass == "RichEdit20W")
         convertEditText(widget);
     else if (controlClass == "msctls_trackbar")
@@ -529,7 +531,7 @@ static QJsonObject convertWidget(QJsonObject widget, const QString &id)
     } else if (type == "CONTROL") {
         if (!convertControl(widget)) {
             qCWarning(converter)
-                << QObject::tr("%1: Unknow control %2 class %3")
+                << QObject::tr("%1: Unknown control %2 class %3")
                    .arg(id).arg(wid).arg(widget.value(KeyClass).toString());
             return widget;
         }
