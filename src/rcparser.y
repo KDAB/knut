@@ -835,7 +835,7 @@ groupbox_control:
     ;
 
 icon_control:
-    ICON IDENTIFIER COMMA IDENTIFIER COMMA NUMBER COMMA NUMBER
+    ICON common_identifier COMMA IDENTIFIER COMMA NUMBER COMMA NUMBER
     icon_control_optional_number icon_control_optional_number optional_styles
     optional_styles
     {
