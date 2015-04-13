@@ -517,7 +517,7 @@ font_statement_base:
     ;
 
 menu_statement:
-    MENU STRING_LITERAL
+    MENU common_identifier
     {
         QJsonObject *o = new QJsonObject {
             {"menu", *$2}
