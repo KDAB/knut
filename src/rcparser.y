@@ -1219,6 +1219,7 @@ designinfo_list:
 
 designinfo_item:
     IDENTIFIER COMMA designinfo_item_type BBEGIN designinfo_item_properties BEND
+    | IDENTIFIER COMMA designinfo_item_type BBEGIN BEND
     ;
 
 designinfo_item_type:
