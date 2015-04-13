@@ -70,7 +70,7 @@ WIGETS                  { return WIGETS; };
 \"(\\.|[^"])*\"         { QString text(yytext);
                           yylval.qsval = new QString(text.mid(1, text.count()-2));
                           return STRING_LITERAL; };
-[+|-]?(0x)?[0-9]+       { bool ok;
+[+|-]?(0x)?[0-9A-Fa-f]+ { bool ok;
                           yylval.ival = QString(yytext).toInt(&ok, 0);
                           return NUMBER; };
 [ \t]                   {};
