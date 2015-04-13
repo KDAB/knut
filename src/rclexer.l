@@ -68,7 +68,7 @@ VERSIONINFO             { return VERSIONINFO; };
 WIGETS                  { return WIGETS; };
 [A-Za-z_][A-Za-z0-9_]*  { yylval.qsval = new QString(yytext);
                           return IDENTIFIER; };
-\"(\\.|[^"])*\"         { QString text(yytext);
+\"(\\.|\"\"|[^"])*\"    { QString text(yytext);
                           yylval.qsval = new QString(text.mid(1, text.count()-2));
                           return STRING_LITERAL; };
 [+|-]?(0x)?[0-9A-Fa-f]+ { bool ok;
