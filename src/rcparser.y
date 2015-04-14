@@ -213,6 +213,7 @@ resource:
     | language
     | textinclude
     | png
+    | html
     ;
 
 common_identifier:
@@ -1106,6 +1107,17 @@ png:
     }
     ;
 
+/*
+ * HTML
+ */
+html:
+    common_identifier HTML STRING_LITERAL
+    {
+        appendAsset(*$1, *$3);
+        delete $1;
+        delete $3;
+    }
+    ;
 
 /*
  * TOOLBAR
