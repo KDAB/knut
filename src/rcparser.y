@@ -1171,7 +1171,7 @@ menuitem_optional_optionlist:
     ;
 
 menuitem_optionlist:
-    menuitem_optionlist IDENTIFIER | IDENTIFIER
+    menuitem_optionlist COMMA IDENTIFIER | COMMA IDENTIFIER
     ;
 
 popup:
