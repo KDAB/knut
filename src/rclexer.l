@@ -78,7 +78,7 @@ WIGETS                  { return WIGETS; };
 \n                      { ++yylinenum; };
 \|                      { return OPERATOR_OR; };
 \/\/.*                  {};
-^#.*                    { /* ignore directives*/ };
+^[ \n\t\r]*#.*          { /* ignore directives*/ };
 ,                       { return COMMA; };
 
 %%
