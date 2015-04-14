@@ -835,7 +835,7 @@ groupbox_control:
     ;
 
 icon_control:
-    ICON common_identifier COMMA IDENTIFIER COMMA NUMBER COMMA NUMBER
+    ICON common_identifier COMMA common_identifier COMMA NUMBER COMMA NUMBER
     icon_control_optional_number icon_control_optional_number optional_styles
     optional_styles
     {
@@ -877,7 +877,7 @@ icon_control_optional_number:
     ;
 
 listbox_control:
-    LISTBOX control_parameters
+    LISTBOX control_parameters_extended
     {
         QJsonObject *o = $2;
         o->insert("type", "LISTBOX");
@@ -907,7 +907,7 @@ pushbox_control:
     ;
 
 pushbutton_control:
-    PUSHBUTTON control_parameters_text
+    PUSHBUTTON control_parameters_text_extended
     {
         QJsonObject *o = $2;
         o->insert("type", "PUSHBUTTON");
