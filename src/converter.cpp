@@ -61,7 +61,7 @@ static bool takeStyle(QJsonObject &widget, const QString &style)
 static void convertGeneralStyle(QJsonObject &widget)
 {
     if (takeStyle(widget, "WS_EX_CLIENTEDGE")) {
-        widget["frameShape"] = "QFrame::Plain";
+        widget["frameShape"] = "QFrame::Panel";
         widget["frameShadow"] = "QFrame::Sunken";
     }
 
