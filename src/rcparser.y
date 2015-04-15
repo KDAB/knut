@@ -130,6 +130,7 @@ static void appendAsset(const QString &id, const QString &path)
 %token AUTORADIOBUTTON
 %token BBEGIN
 %token BITMAP
+%token BLOCK
 %token BUTTON
 %token CAPTION
 %token CHARACTERISTICS
@@ -146,6 +147,12 @@ static void appendAsset(const QString &id, const QString &path)
 %token DIALOGEX
 %token DLGINIT
 %token EDITTEXT
+%token FILEFLAGS
+%token FILEFLAGSMASK
+%token FILEOS
+%token FILESUBTYPE
+%token FILETYPE
+%token FILEVERSION
 %token BEND
 %token EXSTYLE
 %token FONT
@@ -164,6 +171,7 @@ static void appendAsset(const QString &id, const QString &path)
 %token OPERATOR_OR
 %token PNG
 %token POPUP
+%token PRODUCTVERSION
 %token PUSHBOX
 %token PUSHBUTTON
 %token RADIOBUTTON
@@ -177,6 +185,7 @@ static void appendAsset(const QString &id, const QString &path)
 %token STYLE
 %token TEXTINCLUDE
 %token TOOLBAR
+%token VALUE
 %token VERSION
 %token VERSIONINFO
 %token WIGETS
@@ -214,6 +223,7 @@ resource:
     | textinclude
     | png
     | html
+    | versioninfo
     ;
 
 common_identifier:
@@ -1118,6 +1128,39 @@ html:
         delete $3;
     }
     ;
+
+/*
+ * VERSIONINFO
+ */
+versioninfo:
+    common_identifier VERSIONINFO FILEVERSION version
+    PRODUCTVERSION version FILEFLAGSMASK NUMBER
+    FILEFLAGS NUMBER FILEOS NUMBER FILETYPE NUMBER
+    FILESUBTYPE NUMBER BBEGIN versioninfo_blocks BEND
+    ;
+
+version:
+    NUMBER COMMA NUMBER COMMA NUMBER COMMA NUMBER
+    ;
+
+versioninfo_blocks:
+    versioninfo_blocks versioninfo_block
+    | versioninfo_block
+    ;
+
+versioninfo_block:
+    BLOCK STRING_LITERAL BBEGIN versioninfo_block BEND
+    | BLOCK STRING_LITERAL BBEGIN versioninfo_value_blocks BEND
+    ;
+
+versioninfo_value_blocks:
+    versioninfo_value_blocks versioninfo_value_block
+    | versioninfo_value_block
+    ;
+
+versioninfo_value_block:
+    VALUE STRING_LITERAL COMMA STRING_LITERAL
+    | VALUE STRING_LITERAL COMMA NUMBER COMMA NUMBER
 
 /*
  * TOOLBAR
