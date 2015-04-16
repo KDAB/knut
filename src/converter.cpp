@@ -6,6 +6,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QFont>
+#include <QRect>
 
 #include <functional>
 
@@ -638,6 +639,151 @@ static QJsonObject convertFont(QJsonObject font, const QString &id)
     return font;
 }
 
+static QRect widgetGeometry(const QJsonObject &widget)
+{
+    QJsonObject geometry = widget.value(KeyGeometry).toObject();
+
+    return QRect { geometry.value("x").toInt(),
+                   geometry.value("y").toInt(),
+                   geometry.value("width").toInt(),
+                   geometry.value("height").toInt() };
+}
+
+static QJsonObject geometryObject(const QRect &r)
+{
+    return QJsonObject {
+        {"x", r.x()},
+        {"y", r.y()},
+        {"width", r.width()},
+        {"height", r.height()},
+    };
+}
+
+static inline QJsonObject mapToParent(const QJsonObject &parent,
+        const QJsonObject &child)
+{
+    const QRect childGeometry = widgetGeometry(child);
+    const QRect parentGeometry = widgetGeometry(parent);
+
+    return geometryObject(childGeometry.translated(-parentGeometry.topLeft()));
+}
+
+struct BoundingBox
+{
+    BoundingBox(const QRect &g, BoundingBox *p = nullptr) : geometry(g), parent(p) {}
+
+    QRect geometry;
+    BoundingBox *parent;
+
+    int arrayIndex;
+};
+
+static bool moveChildToParent(const BoundingBox *childBoundingBox,
+        QJsonArray *array)
+{
+    if (!childBoundingBox->parent)
+        return false;
+
+    const int parentIndex =  childBoundingBox->parent->arrayIndex;
+    const int childIndex = childBoundingBox->arrayIndex;
+
+    // first get parent object
+    QJsonObject parent = array->at(parentIndex).toObject();
+
+    // then its children array
+    QJsonArray parentChildren = parent.contains(KeyChildren)
+        ? parent.value(KeyChildren).toArray() : QJsonArray();
+
+    QJsonObject child = array->at(childIndex).toObject();
+
+    // map to parent's coordinate
+    child[KeyGeometry] = mapToParent(parent, child);
+
+    parentChildren.append(child);
+
+    parent.insert(KeyChildren, parentChildren);
+
+    array->replace(parentIndex, parent);
+
+    return true;
+}
+
+static QList<BoundingBox *> arrayToBoundingBoxList(const QJsonArray *array)
+{
+    QList<BoundingBox *> boxes;
+
+    for (int i = 0; i < array->size(); ++i) {
+        QJsonObject o = array->at(i).toObject();
+
+        BoundingBox *b = new BoundingBox(widgetGeometry(o));
+        b->arrayIndex = i;
+
+        boxes.append(b);
+    }
+
+    auto boxDescendingSort =
+        [](const BoundingBox *b1, const BoundingBox *b2) -> bool
+    {
+        const int area1 = b1->geometry.width()*b1->geometry.height();
+        const int area2 = b2->geometry.width()*b2->geometry.height();
+
+        return area1 > area2;
+    };
+
+    qSort(boxes.begin(), boxes.end(), boxDescendingSort);
+
+    return boxes;
+}
+
+static void adjustHierarchy(QJsonArray *widgets)
+{
+    /* NOTE TO SELF:
+     * Remind to never use value semantic classes
+     * to store objects again. This leads to ugly
+     * algorithms like this.
+     * This should have been just a matter of swapping pointers
+     */
+
+    // boxes is sorted from the  biggest area to the smallest area
+    QList<BoundingBox *> boxes = arrayToBoundingBoxList(widgets);
+
+    // find out who the parent might be
+    for (BoundingBox *i : boxes) {
+
+        for (BoundingBox *j : boxes) {
+            if (i == j)
+                continue;
+
+            if (i->geometry.contains(j->geometry))
+                j->parent = i;
+        }
+    }
+
+    QList<int> toBeRemoved;
+
+    for (int j = boxes.size() - 1; j >= 0; --j) {
+        BoundingBox *child = boxes.at(j);
+
+        if (!moveChildToParent(child, widgets))
+            continue;
+
+        toBeRemoved.append(child->arrayIndex);
+    }
+
+    // sort before removing, otherwise the offset trick won't work
+    qSort(toBeRemoved.begin(), toBeRemoved.end());
+
+    int offset = 0;
+
+    for (int i : toBeRemoved) {
+        widgets->removeAt(i - offset);
+        offset++;
+    }
+
+    while (!boxes.isEmpty())
+        delete boxes.takeFirst();
+}
+
 QJsonObject convertDialog(const QJsonObject &d)
 {
     QJsonObject dialog = d;
@@ -675,6 +821,8 @@ QJsonObject convertDialog(const QJsonObject &d)
         const auto widget = children.at(i).toObject();
         children[i] = convertWidget(widget, id);
     }
+
+    adjustHierarchy(&children);
     dialog[KeyChildren] = children;
 
     // Remove Style - Unused for now
