@@ -324,11 +324,11 @@ static void convertSlider(QJsonObject &widget)
     widget.take("text");
     convertGeneralStyle(widget);
 
-    if (takeStyle(widget, "TBS_HORZ"))
-        widget["orientation"] = "Qt::Horizontal";
-    else
+    if (takeStyle(widget, "TBS_VERT"))
         widget["orientation"] = "Qt::Vertical";
-    takeStyle(widget, "TBS_VERT");
+    else
+        widget["orientation"] = "Qt::Horizontal";
+    takeStyle(widget, "TBS_HORZ");
 
     if (takeStyle(widget, "TBS_NOTICKS"))
         widget["tickPosition"] = "QSlider::NoTicks";
