@@ -28,7 +28,7 @@ int parseArguments(QCommandLineParser &parser, Arguments *args)
     QCommandLineOption stringOption("string", "Return the string for <id>", "id");
     parser.addOption(stringOption);
 
-    QCommandLineOption qrcOption("qrc", "Create or use qrc file");
+    QCommandLineOption qrcOption("qrc", "Create qrc file");
     parser.addOption(qrcOption);
 
     QCommandLineOption outputOption(QStringList() << "o" << "output",
@@ -71,9 +71,8 @@ int parseArguments(QCommandLineParser &parser, Arguments *args)
     args->asset = parser.value(assetOption);
     args->ui = parser.value(uiOption);
     args->string = parser.value(stringOption);
-    args->qrcFile = parser.value(qrcOption);
-    args->hasQrc = parser.isSet(qrcOption);
     args->outputFile = parser.value(outputOption);
+    args->createQrc = parser.isSet(qrcOption);
 
     if (!args->asset.isEmpty())
         return AssetPath;
@@ -81,7 +80,7 @@ int parseArguments(QCommandLineParser &parser, Arguments *args)
         return Dialog;
     else if (!args->string.isEmpty())
         return String;
-    else if (args->hasQrc)
+    else if (args->createQrc)
         return QrcFile;
 
     return Default;

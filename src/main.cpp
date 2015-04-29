@@ -8,6 +8,7 @@
 #include <QCommandLineParser>
 #include <QFile>
 #include <QPair>
+#include <QFileInfo>
 
 #include <cstdlib>
 
@@ -132,14 +133,14 @@ int main(int argc, char *argv[])
         handleAsset(rootObject, args.asset);
         break;
     case Dialog:
-        results << handleDialog(rootObject, args.ui, args.outputFile);
+        results << handleDialog(rootObject, args.ui);
         break;
     case String:
         //TODO
         break;
     case QrcFile:
-        if (args.qrcFile.isEmpty()) // generate qrc file
-            results << handleQrcFile(rootObject, args.outputFile);
+        results << handleQrcFile(rootObject,
+                QFileInfo(args.inputFile).baseName() + ".qrc");
         break;
     case Default:
         results << handleDefault(rootObject);
