@@ -114,7 +114,8 @@ static void handleAsset(const QJsonObject &o, const QString &assetId)
 
 static ResultList loadDocument(const Arguments &args)
 {
-    QJsonObject rootObject = loadDocument(args.inputFile, args.resourceFile);
+    QJsonObject rootObject = loadDocument(args.inputFile,
+            args.resourceFile, Auto, args.createQrc);
 
     ResultList results;
 

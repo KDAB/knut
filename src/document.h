@@ -14,6 +14,7 @@ QString documentAsset(const QJsonObject &root, int id);
 QString dialogId(const QJsonObject &dialog);
 
 void documentSetDialogs(QJsonObject &root, const QJsonObject &dialogs);
+void documentSetAssets(QJsonObject &root, const QJsonObject &assets);
 
 QByteArray documentToByteArray(const QJsonObject &o);
 

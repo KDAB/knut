@@ -11,5 +11,6 @@ enum FileType
 };
 
 QJsonObject loadDocument(const QString &filename,
-        const QString &resourceFile = QString(), FileType type = Auto);
+        const QString &resourceFile = QString(),
+        FileType type = Auto, bool useQrc = false);
 #endif // DOCUMENTLOADER_H

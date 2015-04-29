@@ -841,12 +841,20 @@ QJsonObject convertDialog(const QJsonObject &d)
     return dialog;
 }
 
-QJsonObject convertDialogs(const QJsonObject &root)
+QJsonObject convertDialogs(const QJsonObject &root, bool useQrc)
 {
     QJsonObject result;
 
     // Set the local function idToPath
-    idToPath = [&root](int id) { return documentAsset(root, id);};
+    idToPath = [&root, useQrc](int id) {
+
+        const QString assetPath = documentAsset(root, id);
+
+        if (useQrc)
+            return ":/" + assetPath;
+
+        return assetPath;
+    };
 
     auto dialogs = documentDialogs(root);
     foreach (const QString &key, dialogs.keys()) {
