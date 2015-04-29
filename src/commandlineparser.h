@@ -4,6 +4,21 @@
 #include <QStringList>
 #include <QString>
 
+enum Action
+{
+    AssetPath,
+    Dialog,
+    String,
+    Default
+};
+
+enum ReturnCode
+{
+    MissingInputFile,
+    InputFileNotFound,
+    Success
+};
+
 struct Arguments
 {
     QStringList positionalArguments;
@@ -13,18 +28,10 @@ struct Arguments
     QString ui;
     QString string;
     QString outputFile;
-    bool createQrc;
-};
 
-enum
-{
-    MissingInputFile,
-    InputFileNotFound,
-    AssetPath,
-    Dialog,
-    String,
-    QrcFile,
-    Default
+    bool createQrc;
+
+    Action action;
 };
 
 class QCommandLineParser;

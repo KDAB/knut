@@ -15,7 +15,7 @@
 using Result = QPair<QString, QByteArray>;
 using ResultList = QList<Result>;
 
-static int parseArgs(Arguments *args)
+static void parseArgs(Arguments *args)
 {
     QCommandLineParser parser;
 
@@ -29,11 +29,9 @@ static int parseArgs(Arguments *args)
         qCritical()
             << QObject::tr("Input file %1 not found").arg(args->inputFile);
         exit(EXIT_FAILURE);
-    default:
+    case Success:
         break;
     }
-
-    return ret;
 }
 
 static void writeResult(const QByteArray &result, const QString &filename)
@@ -114,21 +112,18 @@ static void handleAsset(const QJsonObject &o, const QString &assetId)
     qStdOut() << documentAsset(o, assetId) << "\n";
 }
 
-int main(int argc, char *argv[])
+static ResultList loadDocument(const Arguments &args)
 {
-    QCoreApplication app(argc, argv);
-    QCoreApplication::setApplicationName("knut");
-    QCoreApplication::setApplicationVersion("1.0");
-
-    Arguments args;
-
-    const auto action = parseArgs(&args);
-
     QJsonObject rootObject = loadDocument(args.inputFile, args.resourceFile);
 
     ResultList results;
 
-    switch (action) {
+    if (args.createQrc) {
+        results << handleQrcFile(rootObject,
+                QFileInfo(args.inputFile).baseName() + ".qrc");
+    }
+
+    switch (args.action) {
     case AssetPath:
         handleAsset(rootObject, args.asset);
         break;
@@ -138,14 +133,25 @@ int main(int argc, char *argv[])
     case String:
         //TODO
         break;
-    case QrcFile:
-        results << handleQrcFile(rootObject,
-                QFileInfo(args.inputFile).baseName() + ".qrc");
-        break;
     case Default:
         results << handleDefault(rootObject);
         break;
     }
+
+    return results;
+}
+
+int main(int argc, char *argv[])
+{
+    QCoreApplication app(argc, argv);
+    QCoreApplication::setApplicationName("knut");
+    QCoreApplication::setApplicationVersion("1.0");
+
+    Arguments args;
+
+    parseArgs(&args);
+
+    ResultList results = loadDocument(args);
 
     writeResults(results);
 

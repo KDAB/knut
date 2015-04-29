@@ -75,13 +75,13 @@ int parseArguments(QCommandLineParser &parser, Arguments *args)
     args->createQrc = parser.isSet(qrcOption);
 
     if (!args->asset.isEmpty())
-        return AssetPath;
+        args->action = AssetPath;
     else if (!args->ui.isEmpty())
-        return Dialog;
+        args->action = Dialog;
     else if (!args->string.isEmpty())
-        return String;
-    else if (args->createQrc)
-        return QrcFile;
+        args->action = String;
+    else
+        args->action = Default;
 
-    return Default;
+    return Success;
 }
