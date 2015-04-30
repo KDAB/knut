@@ -5,6 +5,7 @@ SOURCES += main.cpp \
     commandlineparser.cpp \
     documentcacher.cpp \
     documentloader.cpp \
+    messagehandler.cpp \
     rcfileparser.cpp \
     xmlwriter.cpp
 
@@ -61,5 +62,6 @@ HEADERS += \
     commandlineparser.h \
     documentcacher.h \
     documentloader.h \
+    messagehandler.h \
     rcfileparser.h \
     xmlwriter.h
