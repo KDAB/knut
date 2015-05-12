@@ -28,7 +28,25 @@ static const auto KeyPointsize = QStringLiteral("pointsize");
 static const auto KeyClass = QStringLiteral("class");
 
 std::function<QString(int)> idToPath = [](int id) { return QString::number(id); };
+
+static const double xFactor = 1.5;
+static const double yFactor = 1.65;
 }
+
+
+// We need to change the coordinate a bit
+// Values are taken from existing converter), I couldn't find any information about it...
+static void updateGeometry(QJsonObject &widget)
+{
+    auto geometry = widget.value(KeyGeometry).toObject();
+    geometry["x"] = int(geometry.value("x").toDouble() * xFactor);
+    geometry["y"] = int(geometry.value("y").toDouble() * yFactor);
+    geometry["width"] = int(geometry.value("width").toDouble() * xFactor);
+    geometry["height"] = int(geometry.value("height").toDouble() * yFactor);
+
+    widget["geometry"] = geometry;
+}
+
 
 static QStringList getStyle(const QJsonObject &widget)
 {
@@ -123,6 +141,8 @@ static void convertComboBox(QJsonObject &widget)
     } else {
 
         auto geometry = widget.value(KeyGeometry).toObject();
+        // In MFC, the height is not the height of the combobox
+        // So we take the default height
         geometry["height"] = 22;
         widget["geometry"] = geometry;
 
@@ -516,6 +536,8 @@ static bool convertControl(QJsonObject &widget)
 
 static QJsonObject convertWidget(QJsonObject widget, const QString &id)
 {
+    updateGeometry(widget);
+
     const auto type = widget.value(KeyType).toString();
     const auto wid = widget.value(KeyId).toString();
 
@@ -787,6 +809,7 @@ static void adjustHierarchy(QJsonArray *widgets)
 QJsonObject convertDialog(const QJsonObject &d)
 {
     QJsonObject dialog = d;
+    updateGeometry(dialog);
 
     const auto id = dialog.value(KeyId).toString();
 
