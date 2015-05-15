@@ -1,5 +1,6 @@
 #include "commandlineparser.h"
 #include "documentloader.h"
+#include "documentcacher.h"
 #include "document.h"
 #include "xmlwriter.h"
 
@@ -117,11 +118,14 @@ static ResultList loadDocument(const Arguments &args)
     QJsonObject rootObject = loadDocument(args.inputFile,
             args.resourceFile, Auto, args.createQrc);
 
+    const QString baseName = QFileInfo(args.inputFile).baseName();
+
+    cacheDocument(baseName + ".json", rootObject);
+
     ResultList results;
 
     if (args.createQrc) {
-        results << handleQrcFile(rootObject,
-                QFileInfo(args.inputFile).baseName() + ".qrc");
+        results << handleQrcFile(rootObject, baseName + ".qrc");
     }
 
     switch (args.action) {

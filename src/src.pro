@@ -3,6 +3,7 @@ SOURCES += main.cpp \
     document.cpp \
     converter.cpp \
     commandlineparser.cpp \
+    documentcacher.cpp \
     documentloader.cpp \
     rcfileparser.cpp \
     xmlwriter.cpp
@@ -58,6 +59,7 @@ HEADERS += \
     document.h \
     converter.h \
     commandlineparser.h \
+    documentcacher.h \
     documentloader.h \
     rcfileparser.h \
     xmlwriter.h

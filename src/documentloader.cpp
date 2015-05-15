@@ -5,6 +5,7 @@
 
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QJsonParseError>
 #include <QString>
 #include <QFileInfo>
 #include <QFile>
@@ -83,10 +84,51 @@ static QJsonObject loadRcFile(const QString &rcFile,
     return normalizeRc(root, useQrc);
 }
 
+static QJsonObject loadFromCache(const QString &filename)
+{
+    QFile f(filename);
+
+    if (!f.exists())
+        return QJsonObject();
+
+    if (!f.open(QIODevice::ReadOnly)) {
+        qCritical()
+            << QObject::tr("Error loading cache file: %1").arg(f.errorString());
+
+        return QJsonObject();
+    }
+
+    const QByteArray data = f.readAll();
+
+    f.close();
+
+    QJsonParseError parserError;
+
+    QJsonDocument doc = QJsonDocument::fromJson(data, &parserError);
+
+    if (parserError.error != QJsonParseError::NoError) {
+        qCritical()
+            << QObject::tr("Error parsing cache file: %1")
+                .arg(parserError.errorString());
+
+        return QJsonObject();
+
+    }
+
+    return doc.object();
+}
+
 QJsonObject loadDocument(const QString &filename,
         const QString &resourceFile, FileType type,
         bool useQrc)
 {
+    const QString baseName = QFileInfo(filename).baseName();
+
+    QJsonObject root;
+
+    if ((root = loadFromCache(baseName + ".json")) != QJsonObject())
+        return root;
+
     if (type == Auto) {
         QFileInfo fi(filename);
         type = (fi.completeSuffix() == "json") ? JsonFile : RcFile;
