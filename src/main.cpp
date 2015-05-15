@@ -2,6 +2,7 @@
 #include "documentloader.h"
 #include "documentcacher.h"
 #include "document.h"
+#include "messagehandler.h"
 #include "xmlwriter.h"
 
 #include <QDebug>
@@ -151,6 +152,8 @@ int main(int argc, char *argv[])
     QCoreApplication app(argc, argv);
     QCoreApplication::setApplicationName("knut");
     QCoreApplication::setApplicationVersion("1.0");
+
+    qInstallMessageHandler(messageHandler);
 
     Arguments args;
 
