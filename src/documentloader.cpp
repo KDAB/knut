@@ -28,9 +28,9 @@ static QJsonObject loadJsonFile(const QString &jsonFile)
     return QJsonObject();
 }
 
-static QJsonObject normalizeRc(QJsonObject root)
+static QJsonObject normalizeRc(QJsonObject root, bool useQrc)
 {
-    QJsonObject dialogs = convertDialogs(root);
+    QJsonObject dialogs = convertDialogs(root, useQrc);
     documentSetDialogs(root, dialogs);
     return root;
 }
@@ -75,16 +75,17 @@ static QJsonObject loadResourceFile(const QJsonObject &root,
 }
 
 static QJsonObject loadRcFile(const QString &rcFile,
-                        const QString &resourceFile)
+                        const QString &resourceFile, bool useQrc)
 {
     auto root = parseRcFile(rcFile);
     if (!resourceFile.isEmpty())
         root.insert("resources", loadResourceFile(root, resourceFile));
-    return normalizeRc(root);
+    return normalizeRc(root, useQrc);
 }
 
 QJsonObject loadDocument(const QString &filename,
-        const QString &resourceFile, FileType type)
+        const QString &resourceFile, FileType type,
+        bool useQrc)
 {
     if (type == Auto) {
         QFileInfo fi(filename);
@@ -93,7 +94,7 @@ QJsonObject loadDocument(const QString &filename,
 
     switch (type) {
     case RcFile:
-        return loadRcFile(filename, resourceFile);
+        return loadRcFile(filename, resourceFile, useQrc);
     case JsonFile:
         return loadJsonFile(filename);
     default:
