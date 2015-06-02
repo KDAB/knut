@@ -495,6 +495,8 @@ static bool convertControl(QJsonObject &widget)
         convertEditText(widget);
     else if (controlClass == "RichEdit20W")
         convertEditText(widget);
+    else if (controlClass == "RichEdit20A")
+        convertEditText(widget);
     else if (controlClass == "msctls_trackbar")
         convertSlider(widget);
     else if (controlClass == "msctls_trackbar32")
