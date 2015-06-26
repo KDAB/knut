@@ -1,0 +1,14 @@
+1. Install the Qt VS addin
+
+2. Add the Keyword "Qt4VSv1.0" into the PropertyGroup Globals of your vcxproj (see Example.vcxproj)
+
+3. You also need to create a *.vcxproj.user with the QTDIR value defined (see Example.vcxproj.user)
+
+4. Now, in Visual Studio, right click on the project and select "Convert project to Qt add-in project"
+
+=> you can now add ui files, headers with Q_OBJECT, qrc files and the compilation steps for uic, moc and rcc will be added automatically for you
+Warning: it won't add those steps for existing files in the project, you may need to remove and add the file again
+
+5. Finally, add the property sheet:
+* either using Visual Studio GUI
+* or changing the vcxproj and adding an Import (see Example.vcxproj)
