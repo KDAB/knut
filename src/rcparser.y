@@ -836,7 +836,7 @@ ctext_styles:
     ;
 
 groupbox_control:
-    GROUPBOX control_parameters_text
+    GROUPBOX control_parameters_text_extended
     {
         QJsonObject *o = $2;
         o->insert("type", "GROUPBOX");
