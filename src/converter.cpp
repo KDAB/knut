@@ -27,12 +27,12 @@ static const auto KeyTypeface = QStringLiteral("typeface");
 static const auto KeyPointsize = QStringLiteral("pointsize");
 static const auto KeyClass = QStringLiteral("class");
 
-std::function<QString(int)> idToPath = [](int id) { return QString::number(id); };
+std::function<QString(const QJsonValue &)> idToPath = [](const QJsonValue &id)
+    -> QString { return id.toString(); };
 
 static const double xFactor = 1.5;
 static const double yFactor = 1.65;
 }
-
 
 // We need to change the coordinate a bit
 // Values are taken from existing converter), I couldn't find any information about it...
@@ -184,8 +184,10 @@ static void convertStatic(QJsonObject &widget)
         widget["scaledContents"] = "true";
 
     const auto type = widget.value(KeyType).toString();
-    if (takeStyle(widget, "SS_BITMAP") || takeStyle(widget, "SS_ICON") || type == "ICON")
-        widget["pixmap"] = idToPath(widget.take("text").toString().toInt());
+
+    if (takeStyle(widget, "SS_BITMAP") || takeStyle(widget, "SS_ICON") || type == "ICON") {
+        widget["pixmap"] = idToPath(widget.take("text"));
+    }
 
     if (!takeStyle(widget, "SS_LEFTNOWORDWRAP"))
         widget["wordWrap"] = "true";
@@ -871,9 +873,15 @@ QJsonObject convertDialogs(const QJsonObject &root, bool useQrc)
     QJsonObject result;
 
     // Set the local function idToPath
-    idToPath = [&root, useQrc](int id) {
+    idToPath = [&root, useQrc](const QJsonValue &id) -> QString {
 
-        const QString assetPath = documentAsset(root, id);
+        QString assetPath;
+
+        if (id.isDouble())
+            assetPath = documentAsset(root, id.toInt());
+        else
+            assetPath = documentAsset(root, id.toString());
+
 
         if (useQrc)
             return ":/" + assetPath;
