@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-  <PropertyGroup Label="Globals">
-    <Keyword>Qt4VSv1.0</Keyword>
-  </PropertyGroup>
-  <Import Project="Qt.props" />
-</Project>
