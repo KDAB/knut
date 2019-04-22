@@ -5,5 +5,3 @@ SOURCES += childview.cpp mainframe.cpp qtmfc.cpp
 HEADERS += childview.h   mainframe.h
 FORMS	+= ../step4/optionsdialog.ui
 RC_FILE = qtmfc.rc
-
-contains(QT_MAJOR_VERSION, 5): QT += widgets

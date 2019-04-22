@@ -38,7 +38,7 @@
 **
 ****************************************************************************/
 
-#include <QtWidgets>
+#include <QtGui>
 
 #include "mainframe.h"
 #include "childview.h"
