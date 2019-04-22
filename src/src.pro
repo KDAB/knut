@@ -1,67 +1,51 @@
+include(../knut.pri)
+
 TEMPLATE = app
-SOURCES += main.cpp \
-    document.cpp \
-    converter.cpp \
-    commandlineparser.cpp \
-    documentcacher.cpp \
-    documentloader.cpp \
-    messagehandler.cpp \
-    rcfileparser.cpp \
-    xmlwriter.cpp
+TARGET   = $$KNUT_APP_TARGET
+DESTDIR  = $$KNUT_APP_PATH
 
-FLEXSOURCES = rclexer.l
-BISONSOURCES = rcparser.y
-CONFIG += c++11 console
-TARGET = ../bin/knut
+QT       += core gui widgets qml
 
-flex.input = FLEXSOURCES
-flex.output = rclexer.cpp
-flex.commands = flex --header-file=rclexer.h -o rclexer.cpp ${QMAKE_FILE_IN}
-win32-msvc*:flex.commands = win_flex --wincompat --header-file=rclexer.h -o rclexer.cpp ${QMAKE_FILE_IN}
-flex.variable_out = SOURCES
-flex.name = Flex ${QMAKE_FILE_IN}
-flex.depends = rcparser.cpp
-flex.CONFIG += target_predeps
+# The following define makes your compiler emit warnings if you use
+# any feature of Qt which has been marked as deprecated (the exact warnings
+# depend on your compiler). Please consult the documentation of the
+# deprecated API in order to know how to port your code away from it.
+DEFINES += QT_DEPRECATED_WARNINGS
 
-QMAKE_EXTRA_COMPILERS += flex
+# You can also make your code fail to compile if you use deprecated APIs.
+# In order to do so, uncomment the following line.
+# You can also select to disable deprecated APIs only up to a certain version of Qt.
+#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-flexheader.input = FLEXSOURCES
-flexheader.output = rclexer.h
-flexheader.commands = @true
-msvc:flexheader.commands = @echo >NUL
-flexheader.variable_out = SOURCES
-flexheader.name = Flex ${QMAKE_FILE_IN}
-flexheader.depends = rcparser.cpp
-flexheader.CONFIG += target_predeps no_link
+CONFIG += c++17
 
-QMAKE_EXTRA_COMPILERS += flexheader
+include (core/core.pri)
 
-bison.input = BISONSOURCES
-bison.output = rcparser.cpp
-bison.commands = bison --debug --verbose --defines=rcparser.h -o rcparser.cpp ${QMAKE_FILE_IN}
-win32-msvc*:bison.commands = win_bison --debug --verbose --defines=rcparser.h -o rcparser.cpp ${QMAKE_FILE_IN}
-bison.variable_out = SOURCES
-bison.name = Bison {$QMAKE_FILE_IN}
-bison.CONFIG += target_predeps
-
-QMAKE_EXTRA_COMPILERS += bison
-
-bisonheader.input = BISONSOURCES
-bisonheader.output = rcparser.h
-bisonheader.commands = @true
-msvc:bisonheader.commands = @echo >NUL
-bisonheader.variable_out = HEADERS
-bisonheader.name = Bison Headers {$QMAKE_FILE_IN}
-bisonheader.CONFIG += target_predeps no_link
-
-QMAKE_EXTRA_COMPILERS += bisonheader
+SOURCES += \
+        actiondialog.cpp \
+        contenttree.cpp \
+        fileselector.cpp \
+        jsrunner.cpp \
+        main.cpp \
+        mainwindow.cpp \
+        menudialog.cpp \
+        menumodel.cpp \
+        overviewmodel.cpp \
+        overviewtree.cpp
 
 HEADERS += \
-    document.h \
-    converter.h \
-    commandlineparser.h \
-    documentcacher.h \
-    documentloader.h \
-    messagehandler.h \
-    rcfileparser.h \
-    xmlwriter.h
+        actiondialog.h \
+        contenttree.h \
+        fileselector.h \
+        global.h \
+        jsrunner.h \
+        mainwindow.h \
+        menudialog.h \
+        menumodel.h \
+        overviewmodel.h \
+        overviewtree.h
+
+FORMS += \
+        actiondialog.ui \
+        mainwindow.ui \
+        menudialog.ui

@@ -1,2 +1,6 @@
+include(knut.pri)
+
 TEMPLATE = subdirs
-SUBDIRS += src
+
+SUBDIRS += src \
+    tests

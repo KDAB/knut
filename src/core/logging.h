@@ -1,0 +1,9 @@
+#ifndef LOGGING_H
+#define LOGGING_H
+
+#include <QLoggingCategory>
+
+Q_DECLARE_LOGGING_CATEGORY(TOKENIZER)
+Q_DECLARE_LOGGING_CATEGORY(PARSER)
+
+#endif // LOGGING_H
