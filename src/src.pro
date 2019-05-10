@@ -20,40 +20,29 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++17
 
 include (core/core.pri)
+include (models/models.pri)
 
 SOURCES += \
-        acceleratormodel.cpp \
         actiondialog.cpp \
-        assetmodel.cpp \
         contenttree.cpp \
         fileselector.cpp \
-        includemodel.cpp \
         jsrunner.cpp \
         main.cpp \
         mainwindow.cpp \
         menudialog.cpp \
-        menumodel.cpp \
         overviewmodel.cpp \
         overviewtree.cpp \
-        stringmodel.cpp \
-        toolbarmodel.cpp
 
 HEADERS += \
-        acceleratormodel.h \
         actiondialog.h \
-        assetmodel.h \
         contenttree.h \
         fileselector.h \
         global.h \
-        includemodel.h \
         jsrunner.h \
         mainwindow.h \
         menudialog.h \
-        menumodel.h \
         overviewmodel.h \
         overviewtree.h \
-        stringmodel.h \
-        toolbarmodel.h
 
 FORMS += \
         actiondialog.ui \
