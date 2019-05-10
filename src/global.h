@@ -23,7 +23,7 @@ enum DataType {
     IncludeData,
 };
 
-template<typename T, typename Compare>
+template <typename T, typename Compare>
 void sort(T &container, Compare func)
 {
     std::sort(container.begin(), container.end(), func);

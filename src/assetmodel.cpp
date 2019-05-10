@@ -8,9 +8,7 @@ AssetModel::AssetModel(const QHash<QString, Data::Asset> &assets, QObject *paren
     : QAbstractTableModel(parent)
     , m_assets(assets.values())
 {
-    Knut::sort(m_assets, [](const auto &left, const auto &right) {
-        return left.id < right.id;
-    });
+    Knut::sort(m_assets, [](const auto &left, const auto &right) { return left.id < right.id; });
 }
 
 int AssetModel::rowCount(const QModelIndex &parent) const
@@ -31,8 +29,10 @@ QVariant AssetModel::data(const QModelIndex &index, int role) const
     if (role == Qt::DisplayRole || role == Qt::ToolTipRole) {
         const auto &asset = m_assets.at(index.row());
         switch (index.column()) {
-        case ID: return asset.id;
-        case FileName: return asset.fileName;
+        case ID:
+            return asset.id;
+        case FileName:
+            return asset.fileName;
         }
     }
 

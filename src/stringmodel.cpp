@@ -6,9 +6,7 @@ StringModel::StringModel(Data *data, QObject *parent)
     : QAbstractTableModel(parent)
     , m_strings(data->strings.values())
 {
-    Knut::sort(m_strings, [](const auto &left, const auto &right) {
-        return left.id < right.id;
-    });
+    Knut::sort(m_strings, [](const auto &left, const auto &right) { return left.id < right.id; });
 }
 
 int StringModel::rowCount(const QModelIndex &parent) const
@@ -29,8 +27,10 @@ QVariant StringModel::data(const QModelIndex &index, int role) const
     if (role == Qt::DisplayRole || role == Qt::ToolTipRole) {
         const auto &asset = m_strings.at(index.row());
         switch (index.column()) {
-        case ID: return asset.id;
-        case Text: return asset.text;
+        case ID:
+            return asset.id;
+        case Text:
+            return asset.text;
         }
     }
 

@@ -1,10 +1,10 @@
 #include "contenttree.h"
 
-#include "global.h"
-#include "menumodel.h"
 #include "assetmodel.h"
-#include "stringmodel.h"
+#include "global.h"
 #include "includemodel.h"
+#include "menumodel.h"
+#include "stringmodel.h"
 
 #include <QHeaderView>
 
