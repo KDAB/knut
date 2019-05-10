@@ -22,7 +22,7 @@ public:
     };
 
 public:
-    explicit MenuModel(Data *file, Data::MenuItem *menu, QObject *parent = nullptr);
+    explicit MenuModel(Data *data, Data::MenuItem *menu, QObject *parent = nullptr);
 
     QModelIndex index(int row, int column,
                       const QModelIndex &parent = QModelIndex()) const override;

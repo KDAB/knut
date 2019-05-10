@@ -23,6 +23,7 @@ include (core/core.pri)
 
 SOURCES += \
         actiondialog.cpp \
+        assetmodel.cpp \
         contenttree.cpp \
         fileselector.cpp \
         jsrunner.cpp \
@@ -35,6 +36,7 @@ SOURCES += \
 
 HEADERS += \
         actiondialog.h \
+        assetmodel.h \
         contenttree.h \
         fileselector.h \
         global.h \

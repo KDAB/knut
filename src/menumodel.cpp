@@ -56,7 +56,7 @@ int MenuModel::columnCount(const QModelIndex &parent) const
 QVariant MenuModel::data(const QModelIndex &index, int role) const
 {
     auto menu = indexToMenu(index);
-    if (role == Qt::DisplayRole) {
+    if (role == Qt::DisplayRole || role == Qt::ToolTipRole) {
         switch (index.column()) {
         case Title:
             if (menu->text.isEmpty())
