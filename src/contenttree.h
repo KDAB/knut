@@ -1,11 +1,16 @@
 #ifndef CONTENTTREE_H
 #define CONTENTTREE_H
 
-#include <QTreeView>
+#include "data.h"
+
+#include <QWidget>
 
 struct Data;
+class QAbstractItemModel;
+class QTreeView;
+class QTreeWidget;
 
-class ContentTree : public QTreeView
+class ContentTree : public QWidget
 {
     Q_OBJECT
 
@@ -21,8 +26,11 @@ signals:
 
 private:
     void changeCurrentItem(const QModelIndex &current);
+    void updateDialogProperty(const Data::Dialog &dialog);
 
 private:
+    QTreeView *m_contentView;
+    QTreeWidget *m_propertyView;
     QAbstractItemModel *m_model = nullptr;
     Data *m_data = nullptr;
 };
