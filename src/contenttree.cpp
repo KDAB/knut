@@ -2,6 +2,7 @@
 
 #include "acceleratormodel.h"
 #include "assetmodel.h"
+#include "dialogmodel.h"
 #include "global.h"
 #include "includemodel.h"
 #include "menumodel.h"
@@ -51,6 +52,9 @@ void ContentTree::setData(int type, int index)
             m_model = new ToolBarModel(m_data->toolBars.at(index), this);
         break;
     case Knut::DialogData:
+        if (index != -1)
+            m_model = new DialogModel(m_data->dialogs.at(index), this);
+        break;
     case Knut::NoData:
         break;
     }

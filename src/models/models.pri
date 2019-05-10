@@ -1,6 +1,7 @@
 HEADERS += \
     $$PWD/acceleratormodel.h \
     $$PWD/assetmodel.h \
+    $$PWD/dialogmodel.h \
     $$PWD/includemodel.h \
     $$PWD/menumodel.h \
     $$PWD/stringmodel.h \
@@ -9,6 +10,7 @@ HEADERS += \
 SOURCES += \
     $$PWD/acceleratormodel.cpp \
     $$PWD/assetmodel.cpp \
+    $$PWD/dialogmodel.cpp \
     $$PWD/includemodel.cpp \
     $$PWD/menumodel.cpp \
     $$PWD/stringmodel.cpp \
