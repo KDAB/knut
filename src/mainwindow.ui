@@ -35,14 +35,17 @@
        </attribute>
       </widget>
       <widget class="ContentTree" name="contentTree"/>
-      <widget class="QPlainTextEdit" name="rcText">
+      <widget class="QTextEdit" name="rcText">
+       <property name="font">
+        <font>
+         <family>Courier New</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
        <property name="lineWrapMode">
-        <enum>QPlainTextEdit::NoWrap</enum>
+        <enum>QTextEdit::NoWrap</enum>
        </property>
        <property name="readOnly">
-        <bool>true</bool>
-       </property>
-       <property name="centerOnScroll">
         <bool>true</bool>
        </property>
       </widget>

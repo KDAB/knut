@@ -32,6 +32,7 @@ SOURCES += \
         menudialog.cpp \
         overviewmodel.cpp \
         overviewtree.cpp \
+        rcsyntaxhighlighter.cpp
 
 HEADERS += \
         actiondialog.h \
@@ -43,6 +44,7 @@ HEADERS += \
         menudialog.h \
         overviewmodel.h \
         overviewtree.h \
+        rcsyntaxhighlighter.h
 
 FORMS += \
         actiondialog.ui \

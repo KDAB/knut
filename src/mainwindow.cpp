@@ -8,6 +8,7 @@
 #include "menumodel.h"
 #include "overviewmodel.h"
 #include "parser.h"
+#include "rcsyntaxhighlighter.h"
 
 #include <QApplication>
 #include <QFileDialog>
@@ -37,6 +38,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openData);
     connect(ui->actionExtractActions, &QAction::triggered, this, &MainWindow::extractActions);
     connect(ui->actionExtractMenus, &QAction::triggered, this, &MainWindow::extractMenus);
+
+    new RcSyntaxHighlighter(ui->rcText->document());
 }
 
 MainWindow::~MainWindow()
