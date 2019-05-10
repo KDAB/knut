@@ -1,72 +1,16 @@
 #include "rcsyntaxhighlighter.h"
 
+#include "lexer.h"
+
 RcSyntaxHighlighter::RcSyntaxHighlighter(QTextDocument *parent)
     : QSyntaxHighlighter(parent)
 {
     HighlightingRule rule;
 
-    const QStringList keywordPatterns = {
-        "ACCELERATORS",
-        "AFX_DIALOG_LAYOUT",
-        "ALT",
-        "ASCII",
-        "AUTO3STATE",
-        "AUTOCHECKBOX",
-        "AUTORADIOBUTTON",
-        "BEGIN",
-        "BITMAP",
-        "BUTTON",
-        "CAPTION",
-        "CHARACTERISTICS",
-        "CHECKBOX",
-        "CLASS",
-        "COMBOBOX",
-        "CONTROL",
-        "CTEXT",
-        "CURSOR",
-        "DEFPUSHBUTTON",
-        "DESIGNINFO",
-        "DIALOG",
-        "DIALOGEX",
-        "DLGINIT",
-        "EDITTEXT",
-        "END",
-        "EXSTYLE",
-        "FONT",
-        "GROUPBOX",
-        "HTML",
-        "ICON",
-        "LANGUAGE",
-        "LISTBOX",
-        "LTEXT",
-        "MENU",
-        "MENUEX",
-        "MENUITEM",
-        "MESSAGETABLE",
-        "NOT",
-        "PNG",
-        "POPUP",
-        "PUSHBOX",
-        "PUSHBUTTON",
-        "RADIOBUTTON",
-        "RCDATA",
-        "RTEXT",
-        "SCROLLBAR",
-        "SEPARATOR",
-        "SHIFT",
-        "STATE3",
-        "STRINGTABLE",
-        "STYLE",
-        "TEXTINCLUDE",
-        "TOOLBAR",
-        "VERSION",
-        "VERSIONINFO",
-    };
-
     QTextCharFormat keywordFormat;
     keywordFormat.setForeground(Qt::blue);
 
-    for (const auto &pattern : keywordPatterns) {
+    for (const auto &pattern : Parser::Lexer::keywords()) {
         rule.pattern = QRegularExpression("\\b" + pattern + "\\b");
         rule.format = keywordFormat;
         m_highlightingRules.append(rule);
@@ -74,7 +18,7 @@ RcSyntaxHighlighter::RcSyntaxHighlighter(QTextDocument *parent)
 
     QTextCharFormat numberFormat;
     numberFormat.setForeground(Qt::magenta);
-    rule.pattern = QRegularExpression(R"([-+]?\d+)");
+    rule.pattern = QRegularExpression(R"(\b-?\d+\b)");
     rule.format = numberFormat;
     m_highlightingRules.append(rule);
 

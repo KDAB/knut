@@ -184,6 +184,11 @@ std::optional<Token> Lexer::peek()
     return m_current;
 }
 
+QList<QString> Lexer::keywords()
+{
+    return KeywordMap.keys();
+}
+
 std::optional<Token> Lexer::readNext()
 {
     skipSpace();

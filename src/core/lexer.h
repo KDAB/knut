@@ -133,6 +133,8 @@ public:
     std::optional<Token> next();
     std::optional<Token> peek();
 
+    static QList<QString> keywords();
+
 private:
     std::optional<Token> readNext();
 
