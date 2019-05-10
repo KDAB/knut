@@ -76,6 +76,16 @@ struct Data
         int height = 0;
         QVector<ToolBarItem> children;
     };
+    struct Control
+    {
+        int line;
+        QString type;
+        QString text;
+        QString id;
+        QString className;
+        QRect geometry;
+        QStringList styles;
+    };
     struct Dialog
     {
         int line;
@@ -84,6 +94,7 @@ struct Data
         QString caption;
         QString menu;
         QStringList styles;
+        QVector<Control> controls;
     };
 
     QString fileName;

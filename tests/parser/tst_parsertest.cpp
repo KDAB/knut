@@ -78,7 +78,7 @@ private slots:
         QCOMPARE(debugPopup.children.at(1).id, "");
         QCOMPARE(data.menus.first().children.at(4).text, "&Help");
 
-        // TOolbar
+        // ToolBars
         QCOMPARE(data.toolBars.size(), 1);
         QCOMPARE(data.toolBars.first().id, "IDC_LUADBG");
         QCOMPARE(data.toolBars.first().width, 16);
@@ -90,6 +90,23 @@ private slots:
         QCOMPARE(barChildren.at(2).id, "IDM_EXIT");
         QVERIFY(barChildren.at(3).id.isNull());
         QCOMPARE(barChildren.at(9).id, "IDM_ABOUT");
+
+        // Dialogs
+        QCOMPARE(data.dialogs.size(), 3);
+        const auto gotoFuncDialog = data.dialogs.first();
+        QCOMPARE(gotoFuncDialog.id, "IDD_GOTO_FUNC");
+        const QStringList styles = {"DS_SETFONT",  "DS_MODALFRAME",
+                                    "DS_FIXEDSYS", "WS_POPUP",
+                                    "WS_CAPTION",  "WS_SYSMENU"};
+        QCOMPARE(gotoFuncDialog.styles, styles);
+        QCOMPARE(gotoFuncDialog.caption, "Go To Function");
+        QCOMPARE(gotoFuncDialog.geometry, QRect(0, 0, 262, 314));
+        QCOMPARE(gotoFuncDialog.controls.size(), 3);
+        QCOMPARE(gotoFuncDialog.controls.at(2).id, "IDC_LIST_FUNC");
+        QCOMPARE(gotoFuncDialog.controls.at(2).geometry, QRect(7, 7, 248, 280));
+        const QStringList styles2 = {"LBS_SORT", "LBS_NOINTEGRALHEIGHT",
+                                     "!WS_VSCROLL", "WS_TABSTOP"};
+        QCOMPARE(gotoFuncDialog.controls.at(2).styles, styles2);
     }
 
     void test2048Game() {

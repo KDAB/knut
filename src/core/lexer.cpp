@@ -32,6 +32,7 @@ static QHash<QString, Keywords> KeywordMap = {
     {"END", Keywords::END},
     {"SEPARATOR", Keywords::SEPARATOR},
     {"BUTTON", Keywords::BUTTON},
+    {"NOT", Keywords::NOT},
     {"CHECKED", Keywords::CHECKED},
     {"GRAYED", Keywords::GRAYED},
     {"HELP", Keywords::HELP},
@@ -115,11 +116,13 @@ Lexer::Lexer(Stream input)
 void Lexer::skipSpace()
 {
     skipWhile([](const auto &c) { return c.isSpace(); });
+    m_current.reset();
 }
 
 void Lexer::skipLine()
 {
     skipWhile([](const auto &c) { return c != '\n'; });
+    m_current.reset();
 }
 
 void Lexer::skipComma()
@@ -127,6 +130,7 @@ void Lexer::skipComma()
     skipSpace();
     if (m_stream.peek() == ',')
         m_stream.next();
+    m_current.reset();
 }
 
 void Lexer::skipScope()
@@ -146,6 +150,7 @@ void Lexer::skipScope()
         }
         skipLine();
     }
+    m_current.reset();
 }
 
 void Lexer::skipToBegin()
@@ -160,6 +165,7 @@ void Lexer::skipToBegin()
         }
         skipLine();
     }
+    m_current.reset();
 }
 
 std::optional<Token> Lexer::next()
@@ -199,6 +205,8 @@ std::optional<Token> Lexer::readNext()
     } else if (ch == '#') {
         return readDirective();
     } else if (ch.isNumber()) {
+        return readNumber();
+    } else if (ch == '-') {
         return readNumber();
     } else if (ch.isLetter()) {
         return readWord();

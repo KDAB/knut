@@ -43,6 +43,7 @@ enum class Keywords {
     END,
     SEPARATOR,
     BUTTON,
+    NOT,
 
     // MenuItem
     CHECKED,

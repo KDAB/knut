@@ -71,10 +71,21 @@ static QString toId(const std::optional<Token> &token, const Data &data)
 static QStringList readStyles(Lexer &lexer)
 {
     QStringList result;
-    result.push_back(lexer.next()->toString());
-    while (lexer.peek()->type == Token::Operator_Or) {
-        lexer.next();
-        result.push_back(lexer.next()->toString());
+    bool hasNot = false;
+    bool readNext = true;
+    while (readNext) {
+        const auto token = lexer.next();
+        if (token->type == Token::Word) {
+            const QString item = (hasNot ? "!" : "") + token->toString();
+            result.push_back(item);
+            hasNot = false;
+        } else if (token->type == Token::Keyword && token->toKeyword() == Keywords::NOT) {
+            hasNot = true;
+            continue;
+        }
+        readNext = (lexer.peek()->type == Token::Operator_Or);
+        if (readNext)
+            lexer.next();
     }
     return result;
 }
@@ -376,7 +387,7 @@ static Data::Accelerator readAccelerator(Lexer &lexer)
     bool isAscii = true;
     Qt::KeyboardModifiers modifiers;
     while (lexer.peek()->type == Token::Operator_Comma) {
-        lexer.next(); // skip comma
+        lexer.skipComma();
         switch (lexer.next()->toKeyword()) {
         case Keywords::ASCII:
             isAscii = true;
@@ -397,7 +408,6 @@ static Data::Accelerator readAccelerator(Lexer &lexer)
             break;
         }
     }
-    lexer.skipComma();
     accelerator.shortcut = toShortcut(event, isAscii, modifiers);
     if (accelerator.shortcut.isEmpty())
         qCWarning(PARSER) << "Unknown accelerator:" << lexer.line() << "- event: " << event;
@@ -487,7 +497,7 @@ static Data::MenuItem readMenuItem(Lexer &lexer, Data &data)
         lexer.skipComma();
         item.id = toId(lexer.next(), data);
         while (lexer.peek()->type == Token::Operator_Comma) {
-            lexer.next(); // skip comma
+            lexer.skipComma();
             const auto flagToken = lexer.next();
             switch (flagToken->toKeyword()) {
             case Keywords::CHECKED:
@@ -607,6 +617,103 @@ static void readToolBar(Lexer &lexer, Data &data, const QString &id)
     qCInfo(PARSER) << toolBar.line << "- ToolBar:" << id;
 }
 
+static Data::Control readControl(Lexer &lexer, Data &data, const std::optional<Token> &token)
+{
+    //  AUTO3STATE text, id, x, y, width, height [, style [, extended-style]]
+    //	AUTOCHECKBOX text, id, x, y, width, height [, style [, extended-style]]
+    //	AUTORADIOBUTTON text, id, x, y, width, height [, style [, extended-style]]
+    //	CHECKBOX text, id, x, y, width, height [, style [, extended-style]]
+    //	COMBOBOX id, x, y, width, height [, style [, extended-style]]
+    //	CONTROL text, id, class, style, x, y, width, height [, extended-style]
+    //	CTEXT text, id, x, y, width, height [, style [, extended-style]]
+    //	DEFPUSHBUTTON text, id, x, y, width, height [, style [, extended-style]]
+    //	EDITTEXT id, x, y, width, height [, style [, extended-style]]
+    //	GROUPBOX text, id, x, y, width, height [, style [, extended-style]]
+    //	ICON text, id, x, y [, width, height, style [, extended-style]]
+    //	LISTBOX id, x, y, width, height [, style [, extended-style]]
+    //	LTEXT text, id, x, y, width, height [, style [, extended-style]]
+    //	PUSHBOX text, id, x, y, width, height [, style [, extended-style]]
+    //	PUSHBUTTON text, id, x, y, width, height [, style [, extended-style]]
+    //	RADIOBUTTON text, id, x, y, width, height [, style [, extended-style]]
+    //	SCROLLBAR id, x, y, width, height [, style [, extended-style]]
+    //	STATE3 text, id, x, y, width, height [, style [, extended-style]]
+
+    static QVector<Keywords> knownControls = {
+        Keywords::AUTO3STATE,  Keywords::AUTOCHECKBOX,  Keywords::AUTORADIOBUTTON,
+        Keywords::CHECKBOX,    Keywords::COMBOBOX,      Keywords::CONTROL,
+        Keywords::CTEXT,       Keywords::DEFPUSHBUTTON, Keywords::EDITTEXT,
+        Keywords::GROUPBOX,    Keywords::ICON,          Keywords::LISTBOX,
+        Keywords::LTEXT,       Keywords::PUSHBOX,       Keywords::PUSHBUTTON,
+        Keywords::RADIOBUTTON, Keywords::RTEXT,         Keywords::SCROLLBAR,
+        Keywords::STATE3,
+    };
+
+    const auto controlType = token->toKeyword();
+    Data::Control control;
+    control.line = lexer.line();
+    control.type = token->toString();
+
+    if (!knownControls.contains(controlType)) {
+        qCWarning(PARSER) << "Control unknown:" << lexer.line()
+                          << "- token:" << token->prettyPrint();
+        return control;
+    }
+
+    // Only a limited number of controls have a text
+    static QVector<Keywords> textControl = {
+        Keywords::AUTO3STATE, Keywords::AUTOCHECKBOX, Keywords::AUTORADIOBUTTON,
+        Keywords::CHECKBOX,   Keywords::CTEXT,        Keywords::DEFPUSHBUTTON,
+        Keywords::GROUPBOX,   Keywords::ICON,         Keywords::LTEXT,
+        Keywords::PUSHBOX,    Keywords::PUSHBUTTON,   Keywords::RADIOBUTTON,
+        Keywords::RTEXT,      Keywords::STATE3,       Keywords::CONTROL};
+
+    if (textControl.contains(controlType)) {
+        if (controlType == Keywords::ICON)
+            control.text = toId(lexer.next(), data);
+        else
+            control.text = lexer.next()->toString();
+        lexer.skipComma();
+    }
+
+    control.id = toId(lexer.next(), data);
+    lexer.skipComma();
+
+    // CONTROL has styles before geometry
+    if (controlType == Keywords::CONTROL) {
+        control.className = lexer.next()->toString();
+        lexer.skipComma();
+        control.styles = readStyles(lexer);
+        lexer.skipComma();
+    }
+
+    QRect geometry;
+    geometry.setX(lexer.next()->toInt());
+    lexer.skipComma();
+    geometry.setY(lexer.next()->toInt());
+    lexer.skipComma();
+    geometry.setWidth(lexer.next()->toInt());
+    lexer.skipComma();
+    geometry.setHeight(lexer.next()->toInt());
+    control.geometry = geometry;
+
+    if (lexer.peek()->type == Token::Operator_Comma) {
+        lexer.skipComma();
+        control.styles += readStyles(lexer);
+    }
+
+    // CONTROL has no extended styles here
+    if (controlType != Keywords::CONTROL && lexer.peek()->type == Token::Operator_Comma) {
+        lexer.skipComma();
+        control.styles += readStyles(lexer);
+    }
+
+    if (lexer.peek()->type == Token::Operator_Comma) {
+        lexer.skipComma();
+        lexer.skipLine();
+    }
+    return control;
+}
+
 static void readDialog(Lexer &lexer, Data &data, const QString &id)
 {
     //    nameID DIALOG x, y, width, height [, helpID]
@@ -631,12 +738,12 @@ static void readDialog(Lexer &lexer, Data &data, const QString &id)
 
     readDialogStatements(lexer, dialog, data);
 
-    // TODO
-    //    auto token = lexer.next();
-    //    while (token->toKeyword() != Keywords::END) {
-    //        token = lexer.next();
-    //    }
-    lexer.skipScope();
+    lexer.next(); // BEGIN
+    auto token = lexer.next();
+    while (token->toKeyword() != Keywords::END) {
+        dialog.controls.push_back(readControl(lexer, data, token));
+        token = lexer.next();
+    }
 
     data.dialogs.push_back(dialog);
     qCInfo(PARSER) << dialog.line << "- Dialog:" << id;
@@ -672,8 +779,7 @@ static void readKeyWord(Lexer &lexer, Data &data, const std::optional<Token> &to
         break;
     case Keywords::DIALOG:
     case Keywords::DIALOGEX:
-        // readDialog(lexer, data, id->toString());
-        lexer.skipScope();
+        readDialog(lexer, data, id->toString());
         break;
     case Keywords::DLGINIT:
         readDialogInit(lexer, data, id->toString());

@@ -64,24 +64,29 @@ private slots:
     }
 
     void testControl() {
-        Parser::Stream stream("    COMBOBOX         \"Text\",CLASS,1,234,STYLE_1 |"
-                           "                       STYLE_2 | STYLE_3");
-        Parser::Lexer lexer(stream);
-        QCOMPARE(lexer.peek()->type, Parser::Token::Keyword);
-        QCOMPARE(lexer.next()->toKeyword(), Parser::Keywords::COMBOBOX);
-        QCOMPARE(lexer.next()->toString(), "Text");
-        QCOMPARE(lexer.next()->type, Parser::Token::Operator_Comma);
-        QCOMPARE(lexer.next()->toKeyword(), Parser::Keywords::CLASS);
-        QCOMPARE(lexer.next()->type, Parser::Token::Operator_Comma);
-        QCOMPARE(lexer.next()->toInt(), 1);
-        QCOMPARE(lexer.next()->type, Parser::Token::Operator_Comma);
-        QCOMPARE(lexer.next()->toInt(), 234);
-        QCOMPARE(lexer.next()->type, Parser::Token::Operator_Comma);
-        QCOMPARE(lexer.next()->toString(), "STYLE_1");
-        QCOMPARE(lexer.next()->type, Parser::Token::Operator_Or);
-        QCOMPARE(lexer.next()->toString(), "STYLE_2");
-        QCOMPARE(lexer.next()->type, Parser::Token::Operator_Or);
-        QCOMPARE(lexer.next()->toString(), "STYLE_3");
+      Parser::Stream stream(
+          "    COMBOBOX         \"Text\",CLASS, -1, 05, 1, 234,STYLE_1 |"
+          "                       STYLE_2 | STYLE_3");
+      Parser::Lexer lexer(stream);
+      QCOMPARE(lexer.peek()->type, Parser::Token::Keyword);
+      QCOMPARE(lexer.next()->toKeyword(), Parser::Keywords::COMBOBOX);
+      QCOMPARE(lexer.next()->toString(), "Text");
+      QCOMPARE(lexer.next()->type, Parser::Token::Operator_Comma);
+      QCOMPARE(lexer.next()->toKeyword(), Parser::Keywords::CLASS);
+      QCOMPARE(lexer.next()->type, Parser::Token::Operator_Comma);
+      QCOMPARE(lexer.next()->toInt(), -1);
+      QCOMPARE(lexer.next()->type, Parser::Token::Operator_Comma);
+      QCOMPARE(lexer.next()->toInt(), 5);
+      QCOMPARE(lexer.next()->type, Parser::Token::Operator_Comma);
+      QCOMPARE(lexer.next()->toInt(), 1);
+      QCOMPARE(lexer.next()->type, Parser::Token::Operator_Comma);
+      QCOMPARE(lexer.next()->toInt(), 234);
+      QCOMPARE(lexer.next()->type, Parser::Token::Operator_Comma);
+      QCOMPARE(lexer.next()->toString(), "STYLE_1");
+      QCOMPARE(lexer.next()->type, Parser::Token::Operator_Or);
+      QCOMPARE(lexer.next()->toString(), "STYLE_2");
+      QCOMPARE(lexer.next()->type, Parser::Token::Operator_Or);
+      QCOMPARE(lexer.next()->toString(), "STYLE_3");
     }
 
     void testDirective() {
