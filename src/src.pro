@@ -35,7 +35,8 @@ SOURCES += \
         menumodel.cpp \
         overviewmodel.cpp \
         overviewtree.cpp \
-        stringmodel.cpp
+        stringmodel.cpp \
+        toolbarmodel.cpp
 
 HEADERS += \
         acceleratormodel.h \
@@ -51,7 +52,8 @@ HEADERS += \
         menumodel.h \
         overviewmodel.h \
         overviewtree.h \
-        stringmodel.h
+        stringmodel.h \
+        toolbarmodel.h
 
 FORMS += \
         actiondialog.ui \

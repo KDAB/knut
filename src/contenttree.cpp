@@ -6,6 +6,7 @@
 #include "includemodel.h"
 #include "menumodel.h"
 #include "stringmodel.h"
+#include "toolbarmodel.h"
 
 #include <QHeaderView>
 
@@ -45,8 +46,11 @@ void ContentTree::setData(int type, int index)
         if (index != -1)
             m_model = new AcceleratorModel(m_data->acceleratorTables.at(index), this);
         break;
-    case Knut::DialogData:
     case Knut::ToolBarData:
+        if (index != -1)
+            m_model = new ToolBarModel(m_data->toolBars.at(index), this);
+        break;
+    case Knut::DialogData:
     case Knut::NoData:
         break;
     }
