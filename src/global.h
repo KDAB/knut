@@ -3,6 +3,8 @@
 
 #include <QMetaType>
 
+#include <algorithm>
+
 namespace Knut {
 
 enum Roles {
@@ -20,6 +22,12 @@ enum DataType {
     StringData,
     IncludeData,
 };
+
+template<typename T, typename Compare>
+void sort(T &container, Compare func)
+{
+    std::sort(container.begin(), container.end(), func);
+}
 
 }
 

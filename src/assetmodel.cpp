@@ -7,7 +7,9 @@ AssetModel::AssetModel(Data *data, const QHash<QString, Data::Asset> &assets, QO
     , m_data(data)
     , m_assets(assets.values())
 {
-}
+    Knut::sort(m_assets, [](const auto &left, const auto &right) {
+        return left.id < right.id;
+    });}
 
 int AssetModel::rowCount(const QModelIndex &parent) const
 {

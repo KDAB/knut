@@ -101,8 +101,8 @@ void createActionForMenu(Data *file, QVariantList &actions, QHash<QString, int> 
         if (!menu.shortcut.isEmpty())
             action.shortcuts.push_back(menu.shortcut);
         const auto &text = file->strings.value(menu.id);
-        if (!text.value.isEmpty()) {
-            const auto tips = text.value.split('\n');
+        if (!text.text.isEmpty()) {
+            const auto tips = text.text.split('\n');
             action.statusTip = tips.first();
             if (tips.size() > 1)
                 action.toolTip = tips.value(1);

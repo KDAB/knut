@@ -3,6 +3,7 @@
 #include "global.h"
 #include "menumodel.h"
 #include "assetmodel.h"
+#include "stringmodel.h"
 
 #include <QHeaderView>
 
@@ -32,10 +33,12 @@ void ContentTree::setData(int type, int index)
     case Knut::AssetData:
         m_model = new AssetModel(m_data, m_data->assets, this);
         break;
+    case Knut::StringData:
+        m_model = new StringModel(m_data, this);
+        break;
     case Knut::DialogData:
     case Knut::ToolBarData:
     case Knut::AcceleratorData:
-    case Knut::StringData:
     case Knut::IncludeData:
     case Knut::NoData:
         setModel(nullptr);

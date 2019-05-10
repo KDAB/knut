@@ -351,9 +351,10 @@ static void readStringTable(Lexer &lexer, Data &data)
 
     lexer.skipToBegin();
     while (lexer.peek()->type != Token::Keyword) {
+        const int line = lexer.line();
         const auto id = lexer.next()->toString();
         const auto string = lexer.next()->toString();
-        data.strings[id] = {lexer.line(), id, string};
+        data.strings[id] = {line, id, string};
     }
     lexer.next(); // END
 }

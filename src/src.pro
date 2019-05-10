@@ -32,7 +32,8 @@ SOURCES += \
         menudialog.cpp \
         menumodel.cpp \
         overviewmodel.cpp \
-        overviewtree.cpp
+        overviewtree.cpp \
+        stringmodel.cpp
 
 HEADERS += \
         actiondialog.h \
@@ -45,7 +46,8 @@ HEADERS += \
         menudialog.h \
         menumodel.h \
         overviewmodel.h \
-        overviewtree.h
+        overviewtree.h \
+        stringmodel.h
 
 FORMS += \
         actiondialog.ui \

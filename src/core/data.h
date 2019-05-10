@@ -26,7 +26,7 @@ struct Data
     {
         int line;
         QString id;
-        QString value;
+        QString text;
     };
     struct DialogData
     {

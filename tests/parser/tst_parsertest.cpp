@@ -22,7 +22,7 @@ private slots:
         QCOMPARE(data.icons.value("IDR_MAINFRAME").fileName, SAMPLES "dialog/dialog/res/dialog.ico");
 
         QCOMPARE(data.strings.size(), 1);
-        QCOMPARE(data.strings.value("IDS_ABOUTBOX").value, "&About dialog...");
+        QCOMPARE(data.strings.value("IDS_ABOUTBOX").text, "&About dialog...");
 
         QCOMPARE(data.dialogData.size(), 1);
         const auto &inits = data.dialogData.first().values.value("IDC_COMBO1");
