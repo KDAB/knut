@@ -1,33 +1,29 @@
-#ifndef ASSETMODEL_H
-#define ASSETMODEL_H
+#ifndef INCLUDEMODEL_H
+#define INCLUDEMODEL_H
 
 #include "data.h"
 
-#include <QAbstractTableModel>
-#include <QHash>
-#include <QList>
+#include <QAbstractListModel>
 
-class AssetModel : public QAbstractTableModel
+class IncludeModel : public QAbstractListModel
 {
     Q_OBJECT
 
 public:
     enum Columns {
-        ID,
         FileName,
     };
 
 public:
-    explicit AssetModel(const QHash<QString, Data::Asset> &assets, QObject *parent = nullptr);
+    explicit IncludeModel(Data *data, QObject *parent = nullptr);
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QVariant headerData(int section, Qt::Orientation orientation,
                         int role = Qt::DisplayRole) const override;
 
 private:
-    QList<Data::Asset> m_assets;
+    const QVector<Data::Include> &m_includes;
 };
 
-#endif // ASSETMODEL_H
+#endif // INCLUDEMODEL_H

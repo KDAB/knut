@@ -4,6 +4,7 @@
 #include "menumodel.h"
 #include "assetmodel.h"
 #include "stringmodel.h"
+#include "includemodel.h"
 
 #include <QHeaderView>
 
@@ -28,18 +29,20 @@ void ContentTree::setData(int type, int index)
             m_model = new MenuModel(m_data, &(m_data->menus[index]), this);
         break;
     case Knut::IconData:
-        m_model = new AssetModel(m_data, m_data->icons, this);
+        m_model = new AssetModel(m_data->icons, this);
         break;
     case Knut::AssetData:
-        m_model = new AssetModel(m_data, m_data->assets, this);
+        m_model = new AssetModel(m_data->assets, this);
         break;
     case Knut::StringData:
         m_model = new StringModel(m_data, this);
         break;
+    case Knut::IncludeData:
+        m_model = new IncludeModel(m_data, this);
+        break;
     case Knut::DialogData:
     case Knut::ToolBarData:
     case Knut::AcceleratorData:
-    case Knut::IncludeData:
     case Knut::NoData:
         setModel(nullptr);
         return;

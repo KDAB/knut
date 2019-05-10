@@ -26,6 +26,7 @@ SOURCES += \
         assetmodel.cpp \
         contenttree.cpp \
         fileselector.cpp \
+        includemodel.cpp \
         jsrunner.cpp \
         main.cpp \
         mainwindow.cpp \
@@ -41,6 +42,7 @@ HEADERS += \
         contenttree.h \
         fileselector.h \
         global.h \
+        includemodel.h \
         jsrunner.h \
         mainwindow.h \
         menudialog.h \

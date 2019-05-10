@@ -2,14 +2,16 @@
 
 #include "global.h"
 
-AssetModel::AssetModel(Data *data, const QHash<QString, Data::Asset> &assets, QObject *parent)
+#include <QColor>
+
+AssetModel::AssetModel(const QHash<QString, Data::Asset> &assets, QObject *parent)
     : QAbstractTableModel(parent)
-    , m_data(data)
     , m_assets(assets.values())
 {
     Knut::sort(m_assets, [](const auto &left, const auto &right) {
         return left.id < right.id;
-    });}
+    });
+}
 
 int AssetModel::rowCount(const QModelIndex &parent) const
 {
@@ -37,7 +39,7 @@ QVariant AssetModel::data(const QModelIndex &index, int role) const
     if (role == Qt::ForegroundRole) {
         const auto &asset = m_assets.at(index.row());
         if (!asset.exist)
-            return QVariant::fromValue(Qt::darkRed);
+            return QVariant::fromValue(QColor(Qt::red));
     }
 
     if (role == Knut::LineRole) {
