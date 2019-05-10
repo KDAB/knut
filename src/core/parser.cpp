@@ -290,6 +290,8 @@ static QString toShortcut(QString event, bool isAscii, Qt::KeyboardModifiers mod
     int key;
     if (keyMap.contains(event)) {
         key = keyMap.value(event);
+        if (key == Qt::Key_unknown)
+            modifiers = Qt::NoModifier;
     } else {
         if (event.startsWith('^') && event.size() > 1) {
             modifiers |= Qt::ControlModifier;
@@ -397,6 +399,8 @@ static Data::Accelerator readAccelerator(Lexer &lexer)
     }
     lexer.skipComma();
     accelerator.shortcut = toShortcut(event, isAscii, modifiers);
+    if (accelerator.shortcut.isEmpty())
+        qCWarning(PARSER) << "Unknown accelerator:" << lexer.line() << "- event: " << event;
     return accelerator;
 }
 

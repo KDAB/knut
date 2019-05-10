@@ -22,6 +22,7 @@ CONFIG += c++17
 include (core/core.pri)
 
 SOURCES += \
+        acceleratormodel.cpp \
         actiondialog.cpp \
         assetmodel.cpp \
         contenttree.cpp \
@@ -37,6 +38,7 @@ SOURCES += \
         stringmodel.cpp
 
 HEADERS += \
+        acceleratormodel.h \
         actiondialog.h \
         assetmodel.h \
         contenttree.h \

@@ -1,5 +1,6 @@
 #include "contenttree.h"
 
+#include "acceleratormodel.h"
 #include "assetmodel.h"
 #include "global.h"
 #include "includemodel.h"
@@ -40,21 +41,25 @@ void ContentTree::setData(int type, int index)
     case Knut::IncludeData:
         m_model = new IncludeModel(m_data, this);
         break;
+    case Knut::AcceleratorData:
+        if (index != -1)
+            m_model = new AcceleratorModel(m_data->acceleratorTables.at(index), this);
+        break;
     case Knut::DialogData:
     case Knut::ToolBarData:
-    case Knut::AcceleratorData:
     case Knut::NoData:
-        setModel(nullptr);
-        return;
+        break;
     }
 
     setModel(m_model);
 
-    // Need to be done after setting the model
-    header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
-    expandAll();
-    connect(selectionModel(), &QItemSelectionModel::currentChanged, this,
-            &ContentTree::changeCurrentItem);
+    if (m_model) {
+        // Need to be done after setting the model
+        header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+        expandAll();
+        connect(selectionModel(), &QItemSelectionModel::currentChanged, this,
+                &ContentTree::changeCurrentItem);
+    }
 }
 
 void ContentTree::clear()
