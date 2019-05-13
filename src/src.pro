@@ -30,6 +30,7 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
         menudialog.cpp \
+        overviewfiltermodel.cpp \
         overviewmodel.cpp \
         overviewtree.cpp \
         rcsyntaxhighlighter.cpp
@@ -42,6 +43,7 @@ HEADERS += \
         jsrunner.h \
         mainwindow.h \
         menudialog.h \
+        overviewfiltermodel.h \
         overviewmodel.h \
         overviewtree.h \
         rcsyntaxhighlighter.h

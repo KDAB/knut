@@ -8,7 +8,7 @@ class ActionDialog;
 }
 
 struct Data;
-class ActionFilterModel;
+class OverviewFilterModel;
 
 struct Action
 {
@@ -44,7 +44,7 @@ private:
 private:
     Ui::ActionDialog *ui;
     Data *m_data = nullptr;
-    ActionFilterModel *m_filterModel;
+    OverviewFilterModel *m_filterModel;
 };
 
 #endif // ACTIONDIALOG_H

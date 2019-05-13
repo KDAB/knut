@@ -9,7 +9,7 @@ class MenuDialog;
 }
 
 struct Data;
-class MenuFilterModel;
+class OverviewFilterModel;
 
 struct Menu
 {
@@ -43,7 +43,7 @@ private:
 private:
     Ui::MenuDialog *ui;
     Data *m_data = nullptr;
-    MenuFilterModel *m_filterModel;
+    OverviewFilterModel *m_filterModel;
 };
 
 #endif // MENUDIALOG_H
