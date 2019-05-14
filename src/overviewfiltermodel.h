@@ -3,8 +3,8 @@
 
 #include "global.h"
 
-#include <QSortFilterProxyModel>
 #include <QHash>
+#include <QSortFilterProxyModel>
 
 class OverviewFilterModel : public QSortFilterProxyModel
 {

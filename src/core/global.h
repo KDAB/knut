@@ -1,8 +1,8 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#include <QMetaType>
 #include <QList>
+#include <QMetaType>
 #include <QPair>
 
 #include <algorithm>

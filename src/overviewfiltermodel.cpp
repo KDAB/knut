@@ -66,8 +66,8 @@ bool OverviewFilterModel::setData(const QModelIndex &index, const QVariant &valu
 Knut::DataCollection OverviewFilterModel::selectedData() const
 {
     auto collection = m_checkStates.keys(true);
-    Knut::sort(collection, [](const auto left, const auto right){
-       return left.first == right.first ? left.second < right.second : left.first < right.first;
+    Knut::sort(collection, [](const auto left, const auto right) {
+        return left.first == right.first ? left.second < right.second : left.first < right.first;
     });
     return collection;
 }

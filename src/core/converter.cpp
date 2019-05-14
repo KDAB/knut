@@ -19,7 +19,7 @@ static void fillTips(Data *data, const QString &id, Action &action)
 }
 
 static void createActionForMenu(Data *data, QVariantList &actions, QHash<QString, int> &actionIdMap,
-                         const Data::MenuItem &menu)
+                                const Data::MenuItem &menu)
 {
     if (menu.children.size()) {
         for (const auto &child : menu.children)
@@ -35,7 +35,7 @@ static void createActionForMenu(Data *data, QVariantList &actions, QHash<QString
         action.title = menu.text;
         action.checked = menu.flags & Data::MenuItem::Checked;
         if (!menu.shortcut.isEmpty())
-            action.shortcuts.push_back(QVariant::fromValue(Shortcut{menu.shortcut}));
+            action.shortcuts.push_back(QVariant::fromValue(Shortcut {menu.shortcut}));
         fillTips(data, menu.id, action);
         actionIdMap[menu.id] = actions.size();
         actions.push_back(QVariant::fromValue(action));
@@ -46,14 +46,15 @@ static QVariant createShortcut(const Data::Accelerator &accelerator)
 {
     if (accelerator.isUnknown()) {
         qCWarning(CONVERTER) << "Unknown shortcut:" << accelerator.id;
-        return QVariant::fromValue(Shortcut{accelerator.shortcut, true});
+        return QVariant::fromValue(Shortcut {accelerator.shortcut, true});
     } else {
-        return QVariant::fromValue(Shortcut{accelerator.shortcut});
+        return QVariant::fromValue(Shortcut {accelerator.shortcut});
     }
 }
 
-static void createActionForAccelerator(Data *data, QVariantList &actions, QHash<QString, int> &actionIdMap,
-                                const Data::AcceleratorTable &item)
+static void createActionForAccelerator(Data *data, QVariantList &actions,
+                                       QHash<QString, int> &actionIdMap,
+                                       const Data::AcceleratorTable &item)
 {
     for (const auto &accelerator : item.accelerators) {
 
@@ -80,7 +81,8 @@ QVariantList convertActions(Data *data, const Knut::DataCollection &collection)
         if (item.first == Knut::MenuData) {
             createActionForMenu(data, actions, actionIdMap, data->menus.value(item.second));
         } else {
-            createActionForAccelerator(data, actions, actionIdMap, data->acceleratorTables.value(item.second));
+            createActionForAccelerator(data, actions, actionIdMap,
+                                       data->acceleratorTables.value(item.second));
         }
     }
     return actions;

@@ -1,11 +1,11 @@
 #include "menudialog.h"
 #include "ui_menudialog.h"
 
+#include "converter.h"
 #include "data.h"
 #include "jsrunner.h"
-#include "overviewmodel.h"
 #include "overviewfiltermodel.h"
-#include "converter.h"
+#include "overviewmodel.h"
 
 MenuDialog::MenuDialog(Data *data, QWidget *parent)
     : QDialog(parent)

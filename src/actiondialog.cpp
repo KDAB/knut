@@ -1,12 +1,11 @@
 #include "actiondialog.h"
 #include "ui_actiondialog.h"
 
+#include "converter.h"
 #include "data.h"
 #include "jsrunner.h"
-#include "overviewmodel.h"
 #include "overviewfiltermodel.h"
-#include "converter.h"
-
+#include "overviewmodel.h"
 
 ActionDialog::ActionDialog(Data *data, QWidget *parent)
     : QDialog(parent)

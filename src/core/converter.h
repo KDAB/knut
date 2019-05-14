@@ -7,8 +7,7 @@
 
 struct Data;
 
-namespace Converter
-{
+namespace Converter {
 
 struct Shortcut
 {
@@ -56,7 +55,6 @@ public:
     bool isAction = false;
     QVariantList children;
 };
-
 
 QVariantList convertActions(Data *data, const Knut::DataCollection &collection);
 Menu convertMenus(Data *data, const Knut::DataCollection &collection);
