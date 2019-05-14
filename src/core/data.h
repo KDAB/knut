@@ -39,6 +39,8 @@ struct Data
         int line;
         QString id;
         QString shortcut;
+
+        bool isUnknown() const { return shortcut.contains("VK_"); }
     };
     struct AcceleratorTable
     {

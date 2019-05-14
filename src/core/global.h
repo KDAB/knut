@@ -2,6 +2,8 @@
 #define TYPES_H
 
 #include <QMetaType>
+#include <QList>
+#include <QPair>
 
 #include <algorithm>
 
@@ -22,6 +24,8 @@ enum DataType {
     StringData,
     IncludeData,
 };
+
+using DataCollection = QList<QPair<int, int>>;
 
 template <typename T, typename Compare>
 void sort(T &container, Compare func)

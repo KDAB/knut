@@ -2,10 +2,10 @@
 #include "ui_menudialog.h"
 
 #include "data.h"
-#include "global.h"
 #include "jsrunner.h"
 #include "overviewmodel.h"
 #include "overviewfiltermodel.h"
+#include "converter.h"
 
 MenuDialog::MenuDialog(Data *data, QWidget *parent)
     : QDialog(parent)
@@ -33,31 +33,12 @@ MenuDialog::~MenuDialog()
     delete ui;
 }
 
-Menu createMenu(const Data::MenuItem &item)
-{
-    Menu menu;
-    menu.id = item.id;
-    menu.title = item.text;
-    if (item.id.isEmpty() && item.text.isEmpty())
-        menu.isSeparator = true;
-    else if (item.children.isEmpty())
-        menu.isAction = true;
-
-    for (const auto &child : item.children)
-        menu.children.push_back(QVariant::fromValue(createMenu(child)));
-
-    return menu;
-}
-
 void MenuDialog::run()
 {
     if (ui->fileSelector->fileName().isEmpty())
         return;
 
-    const auto &dataList = m_filterModel->selectedData();
-    Q_ASSERT(dataList.size() == 1);
-    const int index = dataList.first().second;
-    Menu menu = createMenu(m_data->menus.value(index));
+    const auto menu = Converter::convertMenus(m_data, m_filterModel->selectedData());
 
     JsRunner runner(this);
     runner.setContextProperty("menu", QVariant::fromValue(menu));

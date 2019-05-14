@@ -301,8 +301,16 @@ static QString toShortcut(QString event, bool isAscii, Qt::KeyboardModifiers mod
     int key;
     if (keyMap.contains(event)) {
         key = keyMap.value(event);
-        if (key == Qt::Key_unknown)
-            modifiers = Qt::NoModifier;
+        if (key == Qt::Key_unknown) {
+            // We keep a text of the shortcut to follow on that in the code
+            if (modifiers & Qt::AltModifier)
+                event.prepend("Alt+");
+            if (modifiers & Qt::ControlModifier)
+                event.prepend("Ctrl+");
+            if (modifiers & Qt::ShiftModifier)
+                event.prepend("Shift+");
+            return event;
+        }
     } else {
         if (event.startsWith('^') && event.size() > 1) {
             modifiers |= Qt::ControlModifier;

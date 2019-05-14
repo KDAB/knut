@@ -37,7 +37,7 @@ QVariant AcceleratorModel::data(const QModelIndex &index, int role) const
 
     if (role == Qt::ForegroundRole) {
         const auto &accelerator = m_accelerators.at(index.row());
-        if (accelerator.shortcut.isEmpty())
+        if (accelerator.isUnknown())
             return QVariant::fromValue(QColor(Qt::red));
     }
 

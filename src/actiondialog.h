@@ -10,26 +10,6 @@ class ActionDialog;
 struct Data;
 class OverviewFilterModel;
 
-struct Action
-{
-    Q_GADGET
-    Q_PROPERTY(QString id MEMBER id)
-    Q_PROPERTY(QString title MEMBER title)
-    Q_PROPERTY(QStringList shortcuts MEMBER shortcuts)
-    Q_PROPERTY(QString toolTip MEMBER toolTip)
-    Q_PROPERTY(QString statusTip MEMBER statusTip)
-    Q_PROPERTY(bool checkable MEMBER checkable)
-
-public:
-    QString id;
-    QString title;
-    QStringList shortcuts;
-    QString toolTip;
-    QString statusTip;
-    bool checkable;
-};
-Q_DECLARE_METATYPE(Action);
-
 class ActionDialog : public QDialog
 {
     Q_OBJECT

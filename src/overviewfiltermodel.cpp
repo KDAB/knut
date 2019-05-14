@@ -63,9 +63,13 @@ bool OverviewFilterModel::setData(const QModelIndex &index, const QVariant &valu
     return QSortFilterProxyModel::setData(index, value, role);
 }
 
-QList<QPair<int, int> > OverviewFilterModel::selectedData() const
+Knut::DataCollection OverviewFilterModel::selectedData() const
 {
-    return m_checkStates.keys(true);
+    auto collection = m_checkStates.keys(true);
+    Knut::sort(collection, [](const auto left, const auto right){
+       return left.first == right.first ? left.second < right.second : left.first < right.first;
+    });
+    return collection;
 }
 
 bool OverviewFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
