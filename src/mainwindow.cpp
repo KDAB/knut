@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->contentTree, &ContentTree::rcLineChanged, this, &MainWindow::highlightLine);
     connect(ui->overviewTree, &OverviewTree::dataSelected, ui->contentTree, &ContentTree::setData);
 
+    connect(ui->actionClose, &QAction::triggered, this, &MainWindow::closeFile);
     connect(ui->actionExit, &QAction::triggered, QApplication::instance(), &QApplication::quit);
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openData);
     connect(ui->actionExtractActions, &QAction::triggered, this, &MainWindow::extractActions);
@@ -45,6 +46,14 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::closeFile()
+{
+    m_data = {};
+    ui->contentTree->clear();
+    ui->rcText->clear();
+    ui->overviewTree->updateModel();
 }
 
 void MainWindow::highlightLine(int line)
