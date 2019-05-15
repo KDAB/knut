@@ -27,6 +27,7 @@ private:
     void openData();
     void extractActions();
     void extractMenus();
+    void closeFile();
 
 private:
     Ui::MainWindow *ui;
