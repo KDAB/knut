@@ -83,13 +83,13 @@ QVector<JsResult::Document> JsRunner::runJavaScript(const QString &scriptName)
 {
     const QUrl fileUrl = QUrl::fromLocalFile(QFileInfo(scriptName).absoluteFilePath());
     const QString wrapperQml =
-        QString(QLatin1String("import QtQml 2.2\n"
+        QStringLiteral("import QtQml 2.2\n"
                               "import \"%1\" as Script\n"
-                              "QtObject { function run() { return Script.main(); } }"))
+                              "QtObject { function run() { return Script.main(); } }")
             .arg(fileUrl.toString());
 
     JsResult result;
-    m_engine->rootContext()->setContextProperty("result", &result);
+    m_engine->rootContext()->setContextProperty(QStringLiteral("result"), &result);
 
     QQmlComponent component(m_engine);
     component.setData(wrapperQml.toUtf8(), fileUrl);

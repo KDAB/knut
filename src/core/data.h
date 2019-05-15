@@ -40,7 +40,7 @@ struct Data
         QString id;
         QString shortcut;
 
-        bool isUnknown() const { return shortcut.contains("VK_"); }
+        bool isUnknown() const { return shortcut.contains(QLatin1String("VK_")); }
     };
     struct AcceleratorTable
     {

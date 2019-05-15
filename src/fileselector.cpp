@@ -16,7 +16,7 @@ FileSelector::FileSelector(QWidget *parent)
     connect(m_lineEdit, &QLineEdit::textChanged, this, &FileSelector::fileNameChanged);
 
     QToolButton *button = new QToolButton(this);
-    button->setText("...");
+    button->setText(QStringLiteral("..."));
     layout->addWidget(button);
     connect(button, &QToolButton::clicked, this, &FileSelector::chooseFile);
 
