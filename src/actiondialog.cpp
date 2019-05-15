@@ -14,7 +14,7 @@ ActionDialog::ActionDialog(Data *data, QWidget *parent)
 {
     ui->setupUi(this);
 
-    ui->fileSelector->setFilter("*.js");
+    ui->fileSelector->setFilter(QStringLiteral("*.js"));
 
     auto model = new OverviewModel(this);
     model->setResourceData(m_data);
@@ -40,7 +40,7 @@ void ActionDialog::run()
     QVariantList actions = Converter::convertActions(m_data, m_filterModel->selectedData());
 
     JsRunner runner(this);
-    runner.setContextProperty("actions", actions);
+    runner.setContextProperty(QStringLiteral("actions"), actions);
     auto results = runner.runJavaScript(ui->fileSelector->fileName());
     ui->resultWidget->setResult(results);
 }

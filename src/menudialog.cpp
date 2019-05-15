@@ -14,7 +14,7 @@ MenuDialog::MenuDialog(Data *data, QWidget *parent)
 {
     ui->setupUi(this);
 
-    ui->fileSelector->setFilter("*.js");
+    ui->fileSelector->setFilter(QStringLiteral("*.js"));
 
     auto model = new OverviewModel(this);
     model->setResourceData(m_data);
@@ -41,7 +41,7 @@ void MenuDialog::run()
     const auto menu = Converter::convertMenus(m_data, m_filterModel->selectedData());
 
     JsRunner runner(this);
-    runner.setContextProperty("menu", QVariant::fromValue(menu));
+    runner.setContextProperty(QStringLiteral("menu"), QVariant::fromValue(menu));
     auto results = runner.runJavaScript(ui->fileSelector->fileName());
     ui->resultWidget->setResult(results);
 }

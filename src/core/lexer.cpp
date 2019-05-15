@@ -88,13 +88,13 @@ QString Token::prettyPrint() const
 {
     switch (type) {
     case Token::Operator_Comma:
-        return ",";
+        return QStringLiteral(",");
     case Token::Operator_Or:
-        return "|";
+        return QStringLiteral("|");
     case Token::Directive:
-        return QString("#%1").arg(toString());
+        return QStringLiteral("#%1").arg(toString());
     case Token::String:
-        return QString("\"%1\"").arg(toString());
+        return QStringLiteral("\"%1\"").arg(toString());
     case Token::Integer:
         return QString::number(toInt());
     case Token::Keyword:
@@ -142,10 +142,10 @@ void Lexer::skipScope()
         const QChar &ch = m_stream.peek();
         if (ch == 'B' || ch == 'E') {
             const QString word = readWhile([](const auto &c) { return c.isLetter(); });
-            if (word == "BEGIN") {
+            if (word == QLatin1String("BEGIN")) {
                 ++scope;
                 inScope = true;
-            } else if (word == "END")
+            } else if (word == QLatin1String("END"))
                 --scope;
         }
         skipLine();
@@ -160,7 +160,7 @@ void Lexer::skipToBegin()
         const QChar &ch = m_stream.peek();
         if (ch == 'B') {
             const QString word = readWhile([](const auto &c) { return c.isLetter(); });
-            if (word == "BEGIN")
+            if (word == QLatin1String("BEGIN"))
                 return;
         }
         skipLine();

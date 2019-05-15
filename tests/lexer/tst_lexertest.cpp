@@ -90,7 +90,7 @@ private slots:
     }
 
     void testDirective() {
-        Parser::Stream stream(R"(#include "inc\\resource.h" //Comment)");
+        Parser::Stream stream(QStringLiteral(R"(#include "inc\\resource.h" //Comment)"));
         Parser::Lexer lexer(stream);
         QCOMPARE(lexer.peek()->toString(), "include");
         QCOMPARE(lexer.next()->toString(), "include");

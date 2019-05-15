@@ -473,10 +473,10 @@ static void readDialogInit(Lexer &lexer, Data &data, const QString &id)
         QString text;
         while (size > 0) {
             const auto bytes = lexer.next()->toString();
-            if (bytes.startsWith("0x"))
+            if (bytes.startsWith(QLatin1String("0x")))
                 text += QString(bytes.at(4)) + bytes.at(5) + bytes.at(2) + bytes.at(3);
             else
-                text += "00";
+                text += QLatin1String("00");
             lexer.skipComma();
             size -= 2;
         }
@@ -818,7 +818,7 @@ static void readKeyWord(Lexer &lexer, Data &data, const std::optional<Token> &to
 static void readDirective(Lexer &lexer, Data &data, const QString directive)
 {
     // Only the include directive is handled here
-    if (directive == "include") {
+    if (directive == QLatin1String("include")) {
         Data::Include include;
         include.line = lexer.line();
 
@@ -826,7 +826,7 @@ static void readDirective(Lexer &lexer, Data &data, const QString directive)
         if (const auto fullPath = computeFilePath(data.fileName, fileName)) {
             include.fileName = fullPath.value();
             include.exist = true;
-            if (fullPath.value().endsWith(".h"))
+            if (fullPath.value().endsWith(QLatin1String(".h")))
                 data.resourceMap.unite(loadResourceFile(include.fileName));
         } else {
             include.fileName = fileName;
@@ -889,7 +889,7 @@ Data parse(const QString &fileName)
         qCWarning(PARSER) << "Parser error line:" << lexer.line();
         return {};
     }
-    qCInfo(PARSER) << QString("Parsing done in: %1 ms").arg(time.elapsed());
+    qCInfo(PARSER) << QStringLiteral("Parsing done in: %1 ms").arg(time.elapsed());
     data.isValid = true;
     return data;
 }

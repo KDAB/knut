@@ -61,7 +61,7 @@ void MainWindow::highlightLine(int line)
 
 void MainWindow::openData()
 {
-    const QString &fileName = QFileDialog::getOpenFileName(this, "Open Resource File", ".", "*.rc");
+    const QString &fileName = QFileDialog::getOpenFileName(this, QStringLiteral("Open Resource File"), QStringLiteral("."), QStringLiteral("*.rc"));
     if (fileName.isEmpty())
         return;
 
@@ -69,8 +69,8 @@ void MainWindow::openData()
 
     m_data = Parser::parse(fileName);
 
-    setWindowTitle(QString("Knut - %1").arg(fileName));
-    ui->rcText->setPlainText(m_data.content.replace("\t", "    "));
+    setWindowTitle(QStringLiteral("Knut - %1").arg(fileName));
+    ui->rcText->setPlainText(m_data.content.replace(QLatin1String("\t"), QLatin1String("    ")));
     ui->overviewTree->updateModel();
 }
 

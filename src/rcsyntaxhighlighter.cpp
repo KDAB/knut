@@ -18,13 +18,13 @@ RcSyntaxHighlighter::RcSyntaxHighlighter(QTextDocument *parent)
 
     QTextCharFormat numberFormat;
     numberFormat.setForeground(Qt::magenta);
-    rule.pattern = QRegularExpression(R"(\b-?\d+\b)");
+    rule.pattern = QRegularExpression(QStringLiteral(R"(\b-?\d+\b)"));
     rule.format = numberFormat;
     m_highlightingRules.append(rule);
 
     QTextCharFormat quotationFormat;
     quotationFormat.setForeground(Qt::darkGray);
-    rule.pattern = QRegularExpression(R"("[^"\\]*(\\.[^"\\]*)*")");
+    rule.pattern = QRegularExpression(QStringLiteral(R"("[^"\\]*(\\.[^"\\]*)*")"));
     rule.format = quotationFormat;
     m_highlightingRules.append(rule);
 
@@ -33,7 +33,7 @@ RcSyntaxHighlighter::RcSyntaxHighlighter(QTextDocument *parent)
 
 void RcSyntaxHighlighter::highlightBlock(const QString &text)
 {
-    if (text.startsWith("//")) {
+    if (text.startsWith(QLatin1String("//"))) {
         setFormat(0, text.size(), m_commentFormat);
     } else {
         for (const auto &rule : m_highlightingRules) {

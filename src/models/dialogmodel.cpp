@@ -33,7 +33,7 @@ QVariant DialogModel::data(const QModelIndex &index, int role) const
         case ID:
             return control.id;
         case Geometry:
-            return QString("(%1, %2 %3x%4)")
+            return QStringLiteral("(%1, %2 %3x%4)")
                 .arg(control.geometry.x())
                 .arg(control.geometry.y())
                 .arg(control.geometry.width())

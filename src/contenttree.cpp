@@ -109,7 +109,7 @@ void ContentTree::updateDialogProperty(const Data::Dialog &dialog)
     m_propertyView->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
 
     m_propertyView->addTopLevelItem(new QTreeWidgetItem({"Id", dialog.id}));
-    const auto geometry = QString("(%1, %2 %3x%4)")
+    const auto geometry = QStringLiteral("(%1, %2 %3x%4)")
                               .arg(dialog.geometry.x())
                               .arg(dialog.geometry.y())
                               .arg(dialog.geometry.width())
