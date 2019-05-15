@@ -20,7 +20,7 @@ static std::optional<QString> computeFilePath(const QString &absolutePath, const
     QFileInfo fi(path);
     if (!fi.isAbsolute()) {
         fi.setFile(absolutePath);
-        fi.setFile(fi.absolutePath() + '/' + path);
+        fi.setFile(fi.absolutePath() + QLatin1Char('/') + path);
     }
     if (fi.exists())
         return fi.absoluteFilePath();
@@ -42,7 +42,7 @@ static QHash<int, QString> loadResourceFile(const QString &resourceFile)
         if (!line.startsWith(QStringLiteral("#define")))
             continue;
 
-        QStringList fields = line.split(QStringLiteral(" "), QString::SkipEmptyParts);
+        QStringList fields = line.split(QLatin1Char(' '), QString::SkipEmptyParts);
         if (fields.size() < 3)
             continue;
         const auto value = fields.at(1);
@@ -312,7 +312,7 @@ static QString toShortcut(QString event, bool isAscii, Qt::KeyboardModifiers mod
             return event;
         }
     } else {
-        if (event.startsWith('^') && event.size() > 1) {
+        if (event.startsWith(QLatin1Char('^')) && event.size() > 1) {
             modifiers |= Qt::ControlModifier;
             isAscii = false;
             event = event.mid(1);
