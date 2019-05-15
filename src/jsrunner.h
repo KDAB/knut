@@ -19,7 +19,7 @@ public:
     };
 
 public:
-    JsResult(QObject *parent = nullptr);
+    explicit JsResult(QObject *parent = nullptr);
 
     Q_INVOKABLE QVariant createDocument(const QString &title);
     QVector<Document> documents() const;
@@ -35,7 +35,7 @@ class JsResultDocumentWrapper
     Q_PROPERTY(QString content READ content WRITE setContent)
 
 public:
-    JsResultDocumentWrapper(JsResult::Document *document = nullptr);
+    explicit JsResultDocumentWrapper(JsResult::Document *document = nullptr);
 
     QString title() const;
     void setTitle(const QString &text);
