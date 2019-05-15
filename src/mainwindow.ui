@@ -65,6 +65,7 @@
     </property>
     <addaction name="actionExtractActions"/>
     <addaction name="actionExtractMenus"/>
+    <addaction name="actionExtractToolBars"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menuExtract"/>
@@ -77,6 +78,11 @@
     <string>Ctrl+O</string>
    </property>
   </action>
+  <action name="actionClose">
+   <property name="text">
+    <string>Close</string>
+   </property>
+  </action>	  
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
@@ -95,9 +101,9 @@
     <string>Extract Menus...</string>
    </property>
   </action>
-  <action name="actionClose">
+  <action name="actionExtractToolBars">
    <property name="text">
-    <string>Close</string>
+    <string>Extract ToolBars...</string>
    </property>
   </action>
   <action name="actionOpenRecent">

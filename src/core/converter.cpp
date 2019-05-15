@@ -110,4 +110,32 @@ Menu convertMenu(Data *data, const Knut::DataCollection &collection)
     return createMenu(data->menus.value(index));
 }
 
+ToolBarItem createToolBarItem(const Data::ToolBarItem &child)
+{
+    ToolBarItem item;
+    if (child.id.isEmpty()) {
+        item.isSeparator = true;
+    } else {
+        item.id = child.id;
+    }
+    //TODO add icon
+
+    return item;
+}
+
+ToolBar convertToolbar(Data *data, const Knut::DataCollection &collection)
+{
+    Q_ASSERT(collection.size() == 1);
+    const int index = collection.first().second;
+    Data::ToolBar item = data->toolBars.value(index);
+    ToolBar toolbar;
+    toolbar.id = item.id;
+    toolbar.iconSize = QSize(item.width, item.height);
+
+    for (const auto &child : item.children)
+        toolbar.children.push_back(QVariant::fromValue(createToolBarItem(child)));
+
+    return toolbar;
+}
+
 }

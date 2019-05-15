@@ -56,9 +56,32 @@ public:
     QVariantList children;
 };
 
+struct ToolBarItem
+{
+    Q_GADGET
+    Q_PROPERTY(bool isSeparator MEMBER isSeparator)
+    Q_PROPERTY(QString id MEMBER id)
+public:
+    QString id;
+    bool isSeparator = false;
+};
+
+struct ToolBar
+{
+    Q_GADGET
+    Q_PROPERTY(QString id MEMBER id)
+    Q_PROPERTY(QVariantList children MEMBER children)
+    Q_PROPERTY(QSize iconSize MEMBER iconSize)
+public:
+    QString id;
+    QSize iconSize;
+    QVariantList children;
+};
+
+
 QVariantList convertActions(Data *data, const Knut::DataCollection &collection);
 Menu convertMenu(Data *data, const Knut::DataCollection &collection);
-
+ToolBar convertToolbar(Data *data, const Knut::DataCollection &collection);
 }
 
 Q_DECLARE_METATYPE(Converter::Shortcut)

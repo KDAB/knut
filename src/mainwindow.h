@@ -31,6 +31,7 @@ private:
     void updateRecentFileActions();
     void openFile(const QString &fileName);
     void updateRecentFiles(const QString &fileName);
+    void extractToolbars();
 
 private:
     Ui::MainWindow *ui;

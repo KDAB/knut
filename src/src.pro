@@ -35,8 +35,8 @@ SOURCES += \
         overviewtree.cpp \
         rcsyntaxhighlighter.cpp \
         resultwidget.cpp\
-        textedit.cpp
-
+        textedit.cpp \
+	toolbardialog.cpp
 
 HEADERS += \
         actiondialog.h \
@@ -50,9 +50,11 @@ HEADERS += \
         overviewtree.h \
         rcsyntaxhighlighter.h \
         resultwidget.h\
-        textedit.h
+        textedit.h \
+	toolbardialog.h
 
 FORMS += \
         actiondialog.ui \
         mainwindow.ui \
-        menudialog.ui
+        menudialog.ui \
+	toolbardialog.ui
