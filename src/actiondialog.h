@@ -16,7 +16,7 @@ class ActionDialog : public QDialog
 
 public:
     explicit ActionDialog(Data *data, QWidget *parent = nullptr);
-    ~ActionDialog();
+    ~ActionDialog() override;
 
 private:
     void run();

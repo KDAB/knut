@@ -12,7 +12,7 @@ class OverviewTree : public QTreeView
 public:
     explicit OverviewTree(QWidget *parent = nullptr);
 
-    void setResourceData(Data *file);
+    void setResourceData(Data *data);
     void updateModel();
 
 signals:

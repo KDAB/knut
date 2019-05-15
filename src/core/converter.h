@@ -36,7 +36,7 @@ public:
     QVariantList shortcuts;
     QString toolTip;
     QString statusTip;
-    bool checked;
+    bool checked = false;
 };
 
 struct Menu

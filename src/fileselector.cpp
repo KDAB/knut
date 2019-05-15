@@ -8,14 +8,14 @@
 FileSelector::FileSelector(QWidget *parent)
     : QWidget(parent)
 {
-    QHBoxLayout *layout = new QHBoxLayout(this);
+    auto layout = new QHBoxLayout(this);
     layout->setMargin(0);
 
     m_lineEdit = new QLineEdit(this);
     layout->addWidget(m_lineEdit);
     connect(m_lineEdit, &QLineEdit::textChanged, this, &FileSelector::fileNameChanged);
 
-    QToolButton *button = new QToolButton(this);
+    auto button = new QToolButton(this);
     button->setText(QStringLiteral("..."));
     layout->addWidget(button);
     connect(button, &QToolButton::clicked, this, &FileSelector::chooseFile);

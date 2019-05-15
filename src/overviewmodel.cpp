@@ -4,7 +4,7 @@
 #include "global.h"
 
 namespace {
-static const char *DataTypeStr[] = {
+const char *DataTypeStr[] = {
     "Dialogs", "Menus", "ToolBars", "Accelerators", "Assets", "Icons", "Strings", "Includes",
 };
 }
@@ -128,16 +128,14 @@ QVariant OverviewModel::data(const QModelIndex &index, int role) const
         const int data = static_cast<int>(index.internalId());
         if (data == Knut::NoData)
             return index.row();
-        else
-            return index.parent().row();
+        return index.parent().row();
     }
 
     if (role == IndexRole) {
         const int data = static_cast<int>(index.internalId());
         if (data == Knut::NoData)
             return -1;
-        else
-            return index.row();
+        return index.row();
     }
     return {};
 }

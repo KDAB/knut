@@ -17,7 +17,7 @@ class ContentTree : public QWidget
 public:
     explicit ContentTree(QWidget *parent = nullptr);
 
-    void setResourceData(Data *file);
+    void setResourceData(Data *data);
     void setData(int type, int index);
     void clear();
 

@@ -80,8 +80,7 @@ QString Token::toString() const
 {
     if (data.index() == 1)
         return std::get<QString>(data);
-    else
-        return KeywordMap.key(std::get<Keywords>(data));
+    return KeywordMap.key(std::get<Keywords>(data));
 }
 
 QString Token::prettyPrint() const
@@ -199,25 +198,27 @@ std::optional<Token> Lexer::readNext()
     if (ch == '/') { // Skip comments
         skipLine();
         return readNext();
-    } else if (ch == '"') {
+    }
+    if (ch == '"')
         return readString();
-    } else if (ch == ',') {
+    if (ch == ',') {
         m_stream.next();
         return Token {Token::Operator_Comma, {}};
-    } else if (ch == '|') {
+    }
+    if (ch == '|') {
         m_stream.next();
         return Token {Token::Operator_Or, {}};
-    } else if (ch == '#') {
-        return readDirective();
-    } else if (ch.isNumber()) {
-        return readNumber();
-    } else if (ch == '-') {
-        return readNumber();
-    } else if (ch.isLetter()) {
-        return readWord();
-    } else {
-        qCCritical(TOKENIZER) << "Lexer error line:" << m_stream.line();
     }
+    if (ch == '#')
+        return readDirective();
+    if (ch.isNumber())
+        return readNumber();
+    if (ch == '-')
+        return readNumber();
+    if (ch.isLetter())
+        return readWord();
+
+    qCCritical(TOKENIZER) << "Lexer error line:" << m_stream.line();
     return {};
 }
 

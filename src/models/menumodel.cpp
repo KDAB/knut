@@ -106,6 +106,5 @@ Data::MenuItem *MenuModel::indexToMenu(const QModelIndex &index) const
 {
     if (index.isValid())
         return reinterpret_cast<Data::MenuItem *>(index.internalPointer());
-    else
-        return m_menu;
+    return m_menu;
 }

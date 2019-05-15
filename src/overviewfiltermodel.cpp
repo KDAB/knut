@@ -20,15 +20,14 @@ bool OverviewFilterModel::isExclusive() const
 
 void OverviewFilterModel::setDataType(QVector<Knut::DataType> types)
 {
-    m_types = types;
+    m_types = std::move(types);
 }
 
 Qt::ItemFlags OverviewFilterModel::flags(const QModelIndex &index) const
 {
     if (index.parent().isValid())
         return QSortFilterProxyModel::flags(index) | Qt::ItemIsUserCheckable;
-    else
-        return QSortFilterProxyModel::flags(index);
+    return QSortFilterProxyModel::flags(index);
 }
 
 QVariant OverviewFilterModel::data(const QModelIndex &index, int role) const

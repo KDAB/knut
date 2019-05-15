@@ -45,7 +45,7 @@ static QHash<int, QString> loadResourceFile(const QString &resourceFile)
         QStringList fields = line.split(QLatin1Char(' '), QString::SkipEmptyParts);
         if (fields.size() < 3)
             continue;
-        const auto value = fields.at(1);
+        const auto &value = fields.at(1);
         bool ok;
         const int key = fields.at(2).toInt(&ok);
         if (!ok)
@@ -63,9 +63,8 @@ static QString toId(const std::optional<Token> &token, const Data &data)
         if (value == 0)
             return {};
         return data.resourceMap.value(value, QString::number(value));
-    } else {
-        return token->toString();
     }
+    return token->toString();
 }
 
 static QStringList readStyles(Lexer &lexer)
@@ -815,7 +814,7 @@ static void readKeyWord(Lexer &lexer, Data &data, const std::optional<Token> &to
     }
 }
 
-static void readDirective(Lexer &lexer, Data &data, const QString directive)
+static void readDirective(Lexer &lexer, Data &data, const QString &directive)
 {
     // Only the include directive is handled here
     if (directive == QLatin1String("include")) {

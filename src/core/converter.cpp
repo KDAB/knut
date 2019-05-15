@@ -21,7 +21,7 @@ static void fillTips(Data *data, const QString &id, Action &action)
 static void createActionForMenu(Data *data, QVariantList &actions, QHash<QString, int> &actionIdMap,
                                 const Data::MenuItem &menu)
 {
-    if (menu.children.size()) {
+    if (!menu.children.empty()) {
         for (const auto &child : menu.children)
             createActionForMenu(data, actions, actionIdMap, child);
     } else if (!menu.id.isEmpty()) {
@@ -47,9 +47,8 @@ static QVariant createShortcut(const Data::Accelerator &accelerator)
     if (accelerator.isUnknown()) {
         qCWarning(CONVERTER) << "Unknown shortcut:" << accelerator.id;
         return QVariant::fromValue(Shortcut {accelerator.shortcut, true});
-    } else {
-        return QVariant::fromValue(Shortcut {accelerator.shortcut});
     }
+    return QVariant::fromValue(Shortcut {accelerator.shortcut});
 }
 
 static void createActionForAccelerator(Data *data, QVariantList &actions,

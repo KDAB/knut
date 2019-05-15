@@ -11,32 +11,32 @@ struct Data
 {
     struct Include
     {
-        int line;
+        int line = -1;
         QString fileName;
-        bool exist;
+        bool exist = false;
     };
     struct Asset
     {
-        int line;
+        int line = -1;
         QString id;
         QString fileName;
-        bool exist;
+        bool exist = false;
     };
     struct String
     {
-        int line;
+        int line = -1;
         QString id;
         QString text;
     };
     struct DialogData
     {
-        int line;
+        int line = -1;
         QString id;
         QHash<QString, QStringList> values;
     };
     struct Accelerator
     {
-        int line;
+        int line = -1;
         QString id;
         QString shortcut;
 
@@ -44,7 +44,7 @@ struct Data
     };
     struct AcceleratorTable
     {
-        int line;
+        int line = -1;
         QString id;
         QVector<Accelerator> accelerators;
     };
@@ -58,7 +58,7 @@ struct Data
             MenuBarBreak = 0x10,
             MenuBreak = 0x20,
         };
-        int line;
+        int line = -1;
         QString id;
         QString text;
         QString shortcut;
@@ -67,12 +67,12 @@ struct Data
     };
     struct ToolBarItem
     {
-        int line;
+        int line = -1;
         QString id;
     };
     struct ToolBar
     {
-        int line;
+        int line = -1;
         QString id;
         int width = 0;
         int height = 0;
@@ -80,7 +80,7 @@ struct Data
     };
     struct Control
     {
-        int line;
+        int line = -1;
         QString type;
         QString text;
         QString id;
@@ -90,7 +90,7 @@ struct Data
     };
     struct Dialog
     {
-        int line;
+        int line = -1;
         QString id;
         QRect geometry;
         QString caption;
