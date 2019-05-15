@@ -85,10 +85,9 @@ QVariant MenuModel::data(const QModelIndex &index, int role) const
     if (role == Knut::LineRole)
         return menu->line;
 
-    if (role == Qt::CheckStateRole && index.column() == Checkable) {
+    if (role == Qt::CheckStateRole && index.column() == Checked) {
         if (menu->flags & Data::MenuItem::Checked)
             return Qt::Checked;
-        return Qt::Unchecked;
     }
 
     return {};
@@ -96,7 +95,7 @@ QVariant MenuModel::data(const QModelIndex &index, int role) const
 
 QVariant MenuModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    static QStringList headers = {"Title", "Checkable", "ID", "Shortcut", "ToolTip", "StatusTip"};
+    static QStringList headers = {"Title", "Checked", "ID", "Shortcut", "ToolTip", "StatusTip"};
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         return headers.value(section);
     }

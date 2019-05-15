@@ -42,6 +42,6 @@ void MenuDialog::run()
 
     JsRunner runner(this);
     runner.setContextProperty("menu", QVariant::fromValue(menu));
-    QString value = runner.runJavaScript(ui->fileSelector->fileName()).toString();
-    ui->resultText->setText(value);
+    auto results = runner.runJavaScript(ui->fileSelector->fileName());
+    ui->resultWidget->setResult(results);
 }

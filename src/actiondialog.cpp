@@ -41,6 +41,6 @@ void ActionDialog::run()
 
     JsRunner runner(this);
     runner.setContextProperty("actions", actions);
-    QString value = runner.runJavaScript(ui->fileSelector->fileName()).toString();
-    ui->resultText->setText(value);
+    auto results = runner.runJavaScript(ui->fileSelector->fileName());
+    ui->resultWidget->setResult(results);
 }

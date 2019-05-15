@@ -13,7 +13,7 @@ class MenuModel : public QAbstractItemModel
 public:
     enum Columns {
         Title,
-        Checkable,
+        Checked,
         ID,
         Shortcut,
         ToolTip,

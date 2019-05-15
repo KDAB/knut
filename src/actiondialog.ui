@@ -92,7 +92,7 @@ p, li { white-space: pre-wrap; }
     </widget>
    </item>
    <item>
-    <widget class="QTextEdit" name="resultText"/>
+    <widget class="ResultWidget" name="resultWidget"/>
    </item>
   </layout>
  </widget>
@@ -101,6 +101,12 @@ p, li { white-space: pre-wrap; }
    <class>FileSelector</class>
    <extends>QWidget</extends>
    <header>fileselector.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ResultWidget</class>
+   <extends>QTabWidget</extends>
+   <header>resultwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
