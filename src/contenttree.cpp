@@ -117,5 +117,5 @@ void ContentTree::updateDialogProperty(const Data::Dialog &dialog)
     m_propertyView->addTopLevelItem(new QTreeWidgetItem({"Geometry", geometry}));
     m_propertyView->addTopLevelItem(new QTreeWidgetItem({"Caption", dialog.caption}));
     m_propertyView->addTopLevelItem(new QTreeWidgetItem({"Menu", dialog.menu}));
-    m_propertyView->addTopLevelItem(new QTreeWidgetItem({"Styles", dialog.styles.join(',')}));
+    m_propertyView->addTopLevelItem(new QTreeWidgetItem({"Styles", dialog.styles.join(QLatin1Char(','))}));
 }

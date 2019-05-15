@@ -43,7 +43,7 @@ QVariant DialogModel::data(const QModelIndex &index, int role) const
         case ClassName:
             return control.className;
         case Styles:
-            return control.styles.join(',');
+            return control.styles.join(QLatin1Char(','));
         }
     }
 

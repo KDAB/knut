@@ -68,14 +68,14 @@ QVariant MenuModel::data(const QModelIndex &index, int role) const
             return menu->shortcut;
         case ToolTip: {
             const auto &text = m_data->strings.value(menu->id);
-            if (text.text.contains('\n'))
-                return text.text.split('\n').value(1);
+            if (text.text.contains(QLatin1Char('\n')))
+                return text.text.split(QLatin1Char('\n')).value(1);
             break;
         }
         case StatusTip: {
             const auto &text = m_data->strings.value(menu->id);
             if (!text.text.isEmpty())
-                return text.text.split('\n').first();
+                return text.text.split(QLatin1Char('\n')).first();
             break;
         }
         }

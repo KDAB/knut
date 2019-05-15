@@ -11,7 +11,7 @@ static void fillTips(Data *data, const QString &id, Action &action)
 {
     const auto &text = data->strings.value(id);
     if (!text.text.isEmpty()) {
-        const auto tips = text.text.split('\n');
+        const auto tips = text.text.split(QLatin1Char('\n'));
         action.statusTip = tips.first();
         if (tips.size() > 1)
             action.toolTip = tips.value(1);
