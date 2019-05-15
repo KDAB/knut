@@ -59,10 +59,10 @@ public:
 QVariantList convertActions(Data *data, const Knut::DataCollection &collection);
 Menu convertMenus(Data *data, const Knut::DataCollection &collection);
 
-};
+}
 
-Q_DECLARE_METATYPE(Converter::Shortcut);
-Q_DECLARE_METATYPE(Converter::Action);
-Q_DECLARE_METATYPE(Converter::Menu);
+Q_DECLARE_METATYPE(Converter::Shortcut)
+Q_DECLARE_METATYPE(Converter::Action)
+Q_DECLARE_METATYPE(Converter::Menu)
 
 #endif // CONVERTER_H

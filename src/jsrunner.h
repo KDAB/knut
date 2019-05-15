@@ -46,7 +46,7 @@ public:
 private:
     JsResult::Document *m_document = nullptr;
 };
-Q_DECLARE_METATYPE(JsResultDocumentWrapper);
+Q_DECLARE_METATYPE(JsResultDocumentWrapper)
 
 class JsRunner : public QObject
 {
