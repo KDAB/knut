@@ -12,13 +12,20 @@
 
 #include <QApplication>
 #include <QFileDialog>
+#include <QSettings>
 #include <QTextBlock>
 #include <QTextCursor>
 #include <QTextDocument>
 #include <QShortcut>
 #include <QPushButton>
 #include <QTextEdit>
+#include <QMenu>
+#include <QDebug>
 
+namespace {
+int maximumRecentFile = 5;
+const char RecentFileKey[] = "recentFileList";
+}
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -44,6 +51,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionExtractMenus, &QAction::triggered, this, &MainWindow::extractMenus);
 
     new RcSyntaxHighlighter(ui->texteditwidget->textEdit()->document());
+    m_recentMenu = new QMenu(this);
+    ui->actionOpenRecent->setMenu(m_recentMenu);
+    updateRecentFileActions();
 }
 
 MainWindow::~MainWindow()
@@ -76,14 +86,21 @@ void MainWindow::openData()
     const QString &fileName = QFileDialog::getOpenFileName(this, QStringLiteral("Open Resource File"), QStringLiteral("."), QStringLiteral("*.rc"));
     if (fileName.isEmpty())
         return;
+    openFile(fileName);
+    updateRecentFiles(fileName);
+}
 
-    ui->contentTree->clear();
+void MainWindow::updateRecentFiles(const QString &fileName)
+{
+    QSettings settings;
+    QStringList files = settings.value(RecentFileKey).toStringList();
+    files.removeAll(fileName);
+    files.prepend(fileName);
+    while (files.size() > maximumRecentFile)
+        files.removeLast();
 
-    m_data = Parser::parse(fileName);
-
-    setWindowTitle(QStringLiteral("Knut - %1").arg(fileName));
-    ui->texteditwidget->textEdit()->setPlainText(m_data.content.replace(QLatin1Char('\t'), QLatin1String("    ")));
-    ui->overviewTree->updateModel();
+    settings.setValue(RecentFileKey, files);
+    updateRecentFileActions();
 }
 
 void MainWindow::extractActions()
@@ -96,4 +113,32 @@ void MainWindow::extractMenus()
 {
     MenuDialog dialog(&m_data, this);
     dialog.exec();
+}
+
+void MainWindow::openFile(const QString &fileName)
+{
+    ui->contentTree->clear();
+
+    m_data = Parser::parse(fileName);
+
+    setWindowTitle(QStringLiteral("Knut - %1").arg(fileName));
+    ui->texteditwidget->textEdit()->setPlainText(m_data.content.replace(QLatin1String("\t"), QLatin1String("    ")));
+    ui->overviewTree->updateModel();
+}
+
+void MainWindow::updateRecentFileActions()
+{
+    QSettings settings;
+    const QStringList files = settings.value(RecentFileKey).toStringList();
+
+    const int numRecentFiles = qMin(files.count(), maximumRecentFile);
+    m_recentMenu->clear();
+    for (int i = 0; i < numRecentFiles; ++i) {
+        const QString text = files[i];
+        QAction *act = m_recentMenu->addAction(text);
+        connect(act, &QAction::triggered, this, [this, text]() {
+            openFile(text);
+        });
+    }
+    ui->actionOpenRecent->setEnabled(maximumRecentFile > 0);
 }

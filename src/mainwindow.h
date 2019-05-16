@@ -11,7 +11,7 @@ class OverviewModel;
 namespace Ui {
 class MainWindow;
 }
-
+class QMenu;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -28,9 +28,13 @@ private:
     void extractActions();
     void extractMenus();
     void closeFile();
+    void updateRecentFileActions();
+    void openFile(const QString &fileName);
+    void updateRecentFiles(const QString &fileName);
 
 private:
     Ui::MainWindow *ui;
+    QMenu *m_recentMenu = nullptr;
     Data m_data;
 };
 

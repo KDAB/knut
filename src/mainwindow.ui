@@ -54,6 +54,7 @@
      <string>&amp;File</string>
     </property>
     <addaction name="actionOpen"/>
+    <addaction name="actionOpenRecent"/>
     <addaction name="actionClose"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
@@ -97,6 +98,14 @@
   <action name="actionClose">
    <property name="text">
     <string>Close</string>
+   </property>
+  </action>
+  <action name="actionOpenRecent">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Open Recent...</string>
    </property>
   </action>
  </widget>
