@@ -35,20 +35,7 @@
        </attribute>
       </widget>
       <widget class="ContentTree" name="contentTree"/>
-      <widget class="QTextEdit" name="rcText">
-       <property name="font">
-        <font>
-         <family>Courier New</family>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="lineWrapMode">
-        <enum>QTextEdit::NoWrap</enum>
-       </property>
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
+      <widget class="TextEdit" name="texteditwidget"/>
      </widget>
     </item>
    </layout>
@@ -124,6 +111,11 @@
    <class>ContentTree</class>
    <extends>QTreeView</extends>
    <header>contenttree.h</header>
+  </customwidget>
+  <customwidget>
+   <class>TextEdit</class>
+   <extends>QWidget</extends>
+   <header>textedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

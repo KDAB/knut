@@ -34,7 +34,9 @@ SOURCES += \
         overviewmodel.cpp \
         overviewtree.cpp \
         rcsyntaxhighlighter.cpp \
-        resultwidget.cpp
+        resultwidget.cpp\
+        textedit.cpp
+
 
 HEADERS += \
         actiondialog.h \
@@ -47,7 +49,8 @@ HEADERS += \
         overviewmodel.h \
         overviewtree.h \
         rcsyntaxhighlighter.h \
-        resultwidget.h
+        resultwidget.h\
+        textedit.h
 
 FORMS += \
         actiondialog.ui \

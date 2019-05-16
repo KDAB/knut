@@ -15,6 +15,9 @@
 #include <QTextBlock>
 #include <QTextCursor>
 #include <QTextDocument>
+#include <QShortcut>
+#include <QPushButton>
+#include <QTextEdit>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -25,10 +28,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->overviewTree->setResourceData(&m_data);
     ui->contentTree->setResourceData(&m_data);
 
-    auto palette = ui->rcText->palette();
+    auto palette = ui->texteditwidget->textEdit()->palette();
     palette.setColor(QPalette::Highlight, palette.color(QPalette::Highlight));
     palette.setColor(QPalette::HighlightedText, palette.color(QPalette::HighlightedText));
-    ui->rcText->setPalette(palette);
+    ui->texteditwidget->textEdit()->setPalette(palette);
 
     connect(ui->overviewTree, &OverviewTree::rcLineChanged, this, &MainWindow::highlightLine);
     connect(ui->contentTree, &ContentTree::rcLineChanged, this, &MainWindow::highlightLine);
@@ -40,7 +43,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionExtractActions, &QAction::triggered, this, &MainWindow::extractActions);
     connect(ui->actionExtractMenus, &QAction::triggered, this, &MainWindow::extractMenus);
 
-    new RcSyntaxHighlighter(ui->rcText->document());
+    new RcSyntaxHighlighter(ui->texteditwidget->textEdit()->document());
 }
 
 MainWindow::~MainWindow()
@@ -52,20 +55,20 @@ void MainWindow::closeFile()
 {
     m_data = {};
     ui->contentTree->clear();
-    ui->rcText->clear();
+    ui->texteditwidget->textEdit()->clear();
     ui->overviewTree->updateModel();
 }
 
 void MainWindow::highlightLine(int line)
 {
     if (line == -1) {
-        ui->rcText->setTextCursor({});
+        ui->texteditwidget->textEdit()->setTextCursor({});
         return;
     }
 
-    QTextCursor cursor(ui->rcText->document()->findBlockByLineNumber(line - 1));
+    QTextCursor cursor(ui->texteditwidget->textEdit()->document()->findBlockByLineNumber(line - 1));
     cursor.select(QTextCursor::LineUnderCursor);
-    ui->rcText->setTextCursor(cursor);
+    ui->texteditwidget->textEdit()->setTextCursor(cursor);
 }
 
 void MainWindow::openData()
@@ -79,7 +82,7 @@ void MainWindow::openData()
     m_data = Parser::parse(fileName);
 
     setWindowTitle(QStringLiteral("Knut - %1").arg(fileName));
-    ui->rcText->setPlainText(m_data.content.replace(QLatin1String("\t"), QLatin1String("    ")));
+    ui->texteditwidget->textEdit()->setPlainText(m_data.content.replace(QLatin1Char('\t'), QLatin1String("    ")));
     ui->overviewTree->updateModel();
 }
 
