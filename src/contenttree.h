@@ -21,7 +21,7 @@ public:
     void setData(int type, int index);
     void clear();
 
-signals:
+Q_SIGNALS:
     void rcLineChanged(int line);
 
 private:

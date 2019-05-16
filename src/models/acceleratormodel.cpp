@@ -51,7 +51,7 @@ QVariant AcceleratorModel::data(const QModelIndex &index, int role) const
 
 QVariant AcceleratorModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    static QStringList headers = {"Id", "Shortcut"};
+    static QStringList headers = {tr("Id"), tr("Shortcut")};
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         return headers.value(section);
     }

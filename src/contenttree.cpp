@@ -105,17 +105,17 @@ void ContentTree::updateDialogProperty(const Data::Dialog &dialog)
 {
     m_propertyView->clear();
     m_propertyView->setVisible(true);
-    m_propertyView->setHeaderLabels({"Property", "Value"});
+    m_propertyView->setHeaderLabels({tr("Property"), tr("Value")});
     m_propertyView->header()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
 
-    m_propertyView->addTopLevelItem(new QTreeWidgetItem({"Id", dialog.id}));
+    m_propertyView->addTopLevelItem(new QTreeWidgetItem({tr("Id"), dialog.id}));
     const auto geometry = QStringLiteral("(%1, %2 %3x%4)")
                               .arg(dialog.geometry.x())
                               .arg(dialog.geometry.y())
                               .arg(dialog.geometry.width())
                               .arg(dialog.geometry.height());
-    m_propertyView->addTopLevelItem(new QTreeWidgetItem({"Geometry", geometry}));
-    m_propertyView->addTopLevelItem(new QTreeWidgetItem({"Caption", dialog.caption}));
-    m_propertyView->addTopLevelItem(new QTreeWidgetItem({"Menu", dialog.menu}));
-    m_propertyView->addTopLevelItem(new QTreeWidgetItem({"Styles", dialog.styles.join(QLatin1Char(','))}));
+    m_propertyView->addTopLevelItem(new QTreeWidgetItem({tr("Geometry"), geometry}));
+    m_propertyView->addTopLevelItem(new QTreeWidgetItem({tr("Caption"), dialog.caption}));
+    m_propertyView->addTopLevelItem(new QTreeWidgetItem({tr("Menu"), dialog.menu}));
+    m_propertyView->addTopLevelItem(new QTreeWidgetItem({tr("Styles"), dialog.styles.join(QLatin1Char(','))}));
 }

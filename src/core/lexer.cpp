@@ -7,69 +7,69 @@
 namespace Parser {
 
 static QHash<QString, Keywords> KeywordMap = {
-    {"ACCELERATORS", Keywords::ACCELERATORS},
-    {"AFX_DIALOG_LAYOUT", Keywords::AFX_DIALOG_LAYOUT},
-    {"BITMAP", Keywords::BITMAP},
-    {"CURSOR", Keywords::CURSOR},
-    {"DESIGNINFO", Keywords::DESIGNINFO},
-    {"DIALOG", Keywords::DIALOG},
-    {"DIALOGEX", Keywords::DIALOGEX},
-    {"DLGINIT", Keywords::DLGINIT},
-    {"FONT", Keywords::FONT},
-    {"HTML", Keywords::HTML},
-    {"ICON", Keywords::ICON},
-    {"MENU", Keywords::MENU},
-    {"MENUEX", Keywords::MENUEX},
-    {"MESSAGETABLE", Keywords::MESSAGETABLE},
-    {"PNG", Keywords::PNG},
-    {"POPUP", Keywords::POPUP},
-    {"RCDATA", Keywords::RCDATA},
-    {"STRINGTABLE", Keywords::STRINGTABLE},
-    {"TEXTINCLUDE", Keywords::TEXTINCLUDE},
-    {"TOOLBAR", Keywords::TOOLBAR},
-    {"VERSIONINFO", Keywords::VERSIONINFO},
-    {"BEGIN", Keywords::BEGIN},
-    {"END", Keywords::END},
-    {"SEPARATOR", Keywords::SEPARATOR},
-    {"BUTTON", Keywords::BUTTON},
-    {"NOT", Keywords::NOT},
-    {"CHECKED", Keywords::CHECKED},
-    {"GRAYED", Keywords::GRAYED},
-    {"HELP", Keywords::HELP},
-    {"INACTIVE", Keywords::INACTIVE},
-    {"MENUBARBREAK", Keywords::MENUBARBREAK},
-    {"MENUBREAK", Keywords::MENUBREAK},
-    {"ALT", Keywords::ALT},
-    {"ASCII", Keywords::ASCII},
-    {"NOINVERT", Keywords::NOINVERT},
-    {"SHIFT", Keywords::SHIFT},
-    {"VIRTKEY", Keywords::VIRTKEY},
-    {"CAPTION", Keywords::CAPTION},
-    {"CHARACTERISTICS", Keywords::CHARACTERISTICS},
-    {"CLASS", Keywords::CLASS},
-    {"EXSTYLE", Keywords::EXSTYLE},
-    {"LANGUAGE", Keywords::LANGUAGE},
-    {"MENUITEM", Keywords::MENUITEM},
-    {"STYLE", Keywords::STYLE},
-    {"VERSION", Keywords::VERSION},
-    {"AUTO3STATE", Keywords::AUTO3STATE},
-    {"AUTOCHECKBOX", Keywords::AUTOCHECKBOX},
-    {"AUTORADIOBUTTON", Keywords::AUTORADIOBUTTON},
-    {"CHECKBOX", Keywords::CHECKBOX},
-    {"COMBOBOX", Keywords::COMBOBOX},
-    {"CONTROL", Keywords::CONTROL},
-    {"CTEXT", Keywords::CTEXT},
-    {"DEFPUSHBUTTON", Keywords::DEFPUSHBUTTON},
-    {"EDITTEXT", Keywords::EDITTEXT},
-    {"GROUPBOX", Keywords::GROUPBOX},
-    {"LISTBOX", Keywords::LISTBOX},
-    {"LTEXT", Keywords::LTEXT},
-    {"PUSHBOX", Keywords::PUSHBOX},
-    {"PUSHBUTTON", Keywords::PUSHBUTTON},
-    {"RADIOBUTTON", Keywords::RADIOBUTTON},
-    {"RTEXT", Keywords::RTEXT},
-    {"SCROLLBAR", Keywords::SCROLLBAR},
-    {"STATE3", Keywords::STATE3},
+    {QStringLiteral("ACCELERATORS"), Keywords::ACCELERATORS},
+    {QStringLiteral("AFX_DIALOG_LAYOUT"), Keywords::AFX_DIALOG_LAYOUT},
+    {QStringLiteral("BITMAP"), Keywords::BITMAP},
+    {QStringLiteral("CURSOR"), Keywords::CURSOR},
+    {QStringLiteral("DESIGNINFO"), Keywords::DESIGNINFO},
+    {QStringLiteral("DIALOG"), Keywords::DIALOG},
+    {QStringLiteral("DIALOGEX"), Keywords::DIALOGEX},
+    {QStringLiteral("DLGINIT"), Keywords::DLGINIT},
+    {QStringLiteral("FONT"), Keywords::FONT},
+    {QStringLiteral("HTML"), Keywords::HTML},
+    {QStringLiteral("ICON"), Keywords::ICON},
+    {QStringLiteral("MENU"), Keywords::MENU},
+    {QStringLiteral("MENUEX"), Keywords::MENUEX},
+    {QStringLiteral("MESSAGETABLE"), Keywords::MESSAGETABLE},
+    {QStringLiteral("PNG"), Keywords::PNG},
+    {QStringLiteral("POPUP"), Keywords::POPUP},
+    {QStringLiteral("RCDATA"), Keywords::RCDATA},
+    {QStringLiteral("STRINGTABLE"), Keywords::STRINGTABLE},
+    {QStringLiteral("TEXTINCLUDE"), Keywords::TEXTINCLUDE},
+    {QStringLiteral("TOOLBAR"), Keywords::TOOLBAR},
+    {QStringLiteral("VERSIONINFO"), Keywords::VERSIONINFO},
+    {QStringLiteral("BEGIN"), Keywords::BEGIN},
+    {QStringLiteral("END"), Keywords::END},
+    {QStringLiteral("SEPARATOR"), Keywords::SEPARATOR},
+    {QStringLiteral("BUTTON"), Keywords::BUTTON},
+    {QStringLiteral("NOT"), Keywords::NOT},
+    {QStringLiteral("CHECKED"), Keywords::CHECKED},
+    {QStringLiteral("GRAYED"), Keywords::GRAYED},
+    {QStringLiteral("HELP"), Keywords::HELP},
+    {QStringLiteral("INACTIVE"), Keywords::INACTIVE},
+    {QStringLiteral("MENUBARBREAK"), Keywords::MENUBARBREAK},
+    {QStringLiteral("MENUBREAK"), Keywords::MENUBREAK},
+    {QStringLiteral("ALT"), Keywords::ALT},
+    {QStringLiteral("ASCII"), Keywords::ASCII},
+    {QStringLiteral("NOINVERT"), Keywords::NOINVERT},
+    {QStringLiteral("SHIFT"), Keywords::SHIFT},
+    {QStringLiteral("VIRTKEY"), Keywords::VIRTKEY},
+    {QStringLiteral("CAPTION"), Keywords::CAPTION},
+    {QStringLiteral("CHARACTERISTICS"), Keywords::CHARACTERISTICS},
+    {QStringLiteral("CLASS"), Keywords::CLASS},
+    {QStringLiteral("EXSTYLE"), Keywords::EXSTYLE},
+    {QStringLiteral("LANGUAGE"), Keywords::LANGUAGE},
+    {QStringLiteral("MENUITEM"), Keywords::MENUITEM},
+    {QStringLiteral("STYLE"), Keywords::STYLE},
+    {QStringLiteral("VERSION"), Keywords::VERSION},
+    {QStringLiteral("AUTO3STATE"), Keywords::AUTO3STATE},
+    {QStringLiteral("AUTOCHECKBOX"), Keywords::AUTOCHECKBOX},
+    {QStringLiteral("AUTORADIOBUTTON"), Keywords::AUTORADIOBUTTON},
+    {QStringLiteral("CHECKBOX"), Keywords::CHECKBOX},
+    {QStringLiteral("COMBOBOX"), Keywords::COMBOBOX},
+    {QStringLiteral("CONTROL"), Keywords::CONTROL},
+    {QStringLiteral("CTEXT"), Keywords::CTEXT},
+    {QStringLiteral("DEFPUSHBUTTON"), Keywords::DEFPUSHBUTTON},
+    {QStringLiteral("EDITTEXT"), Keywords::EDITTEXT},
+    {QStringLiteral("GROUPBOX"), Keywords::GROUPBOX},
+    {QStringLiteral("LISTBOX"), Keywords::LISTBOX},
+    {QStringLiteral("LTEXT"), Keywords::LTEXT},
+    {QStringLiteral("PUSHBOX"), Keywords::PUSHBOX},
+    {QStringLiteral("PUSHBUTTON"), Keywords::PUSHBUTTON},
+    {QStringLiteral("RADIOBUTTON"), Keywords::RADIOBUTTON},
+    {QStringLiteral("RTEXT"), Keywords::RTEXT},
+    {QStringLiteral("SCROLLBAR"), Keywords::SCROLLBAR},
+    {QStringLiteral("STATE3"), Keywords::STATE3},
 };
 
 //=============================================================================
@@ -120,14 +120,14 @@ void Lexer::skipSpace()
 
 void Lexer::skipLine()
 {
-    skipWhile([](const auto &c) { return c != '\n'; });
+    skipWhile([](const auto &c) { return c != QLatin1Char('\n'); });
     m_current.reset();
 }
 
 void Lexer::skipComma()
 {
     skipSpace();
-    if (m_stream.peek() == ',')
+    if (m_stream.peek() == QLatin1Char(','))
         m_stream.next();
     m_current.reset();
 }
@@ -139,7 +139,7 @@ void Lexer::skipScope()
     while (!m_stream.atEnd() && (scope != 0 || !inScope)) {
         skipSpace();
         const QChar &ch = m_stream.peek();
-        if (ch == 'B' || ch == 'E') {
+        if (ch == QLatin1Char('B') || ch == QLatin1Char('E')) {
             const QString word = readWhile([](const auto &c) { return c.isLetter(); });
             if (word == QLatin1String("BEGIN")) {
                 ++scope;
@@ -157,7 +157,7 @@ void Lexer::skipToBegin()
     while (!m_stream.atEnd()) {
         skipSpace();
         const QChar &ch = m_stream.peek();
-        if (ch == 'B') {
+        if (ch == QLatin1Char('B')) {
             const QString word = readWhile([](const auto &c) { return c.isLetter(); });
             if (word == QLatin1String("BEGIN"))
                 return;
@@ -195,25 +195,25 @@ std::optional<Token> Lexer::readNext()
         return {};
 
     const QChar &ch = m_stream.peek();
-    if (ch == '/') { // Skip comments
+    if (ch == QLatin1Char('/')) { // Skip comments
         skipLine();
         return readNext();
     }
-    if (ch == '"')
+    if (ch == QLatin1Char('"'))
         return readString();
-    if (ch == ',') {
+    if (ch == QLatin1Char(',')) {
         m_stream.next();
         return Token {Token::Operator_Comma, {}};
     }
-    if (ch == '|') {
+    if (ch == QLatin1Char('|')) {
         m_stream.next();
         return Token {Token::Operator_Or, {}};
     }
-    if (ch == '#')
+    if (ch == QLatin1Char('#'))
         return readDirective();
     if (ch.isNumber())
         return readNumber();
-    if (ch == '-')
+    if (ch == QLatin1Char('-'))
         return readNumber();
     if (ch.isLetter())
         return readWord();
@@ -236,20 +236,20 @@ Token Lexer::readString()
     while (!m_stream.atEnd()) {
         const QChar &ch = m_stream.next();
         if (escaped) {
-            if (ch == 'n')
-                str += '\n';
-            else if (ch == 't')
-                str += '\t';
-            else if (ch == '"')
-                str += '"';
+            if (ch == QLatin1Char('n'))
+                str += QLatin1Char('\n');
+            else if (ch == QLatin1Char('t'))
+                str += QLatin1Char('\t');
+            else if (ch == QLatin1Char('"'))
+                str += QLatin1Char('"');
             else
-                str += '\\' + ch;
+                str += QLatin1Char('\\') + ch;
             escaped = false;
-        } else if (ch == '\\') {
+        } else if (ch == QLatin1Char('\\')) {
             escaped = true;
-        } else if (ch == '"') {
+        } else if (ch == QLatin1Char('"')) {
             // " are escaped with "" in RC files
-            if (m_stream.peek() == '"')
+            if (m_stream.peek() == QLatin1Char('"'))
                 escaped = true;
             else
                 break;
@@ -263,7 +263,7 @@ Token Lexer::readString()
 Token Lexer::readNumber()
 {
     QString text = m_stream.next();
-    if (text[0] == '0' && m_stream.peek() == 'x') {
+    if (text[0] == QLatin1Char('0') && m_stream.peek() == QLatin1Char('x')) {
         text += m_stream.next();
         text += readWhile([](const auto &c) { return c.isLetterOrNumber(); });
         return {Token::Word, text};
@@ -275,7 +275,7 @@ Token Lexer::readNumber()
 
 Token Lexer::readWord()
 {
-    const QString word = readWhile([](const auto &c) { return c.isLetterOrNumber() || c == "_"; });
+    const QString word = readWhile([](const auto &c) { return c.isLetterOrNumber() || c == QLatin1Char('_'); });
     if (auto it = KeywordMap.find(word); it != KeywordMap.end())
         return {Token::Keyword, it.value()};
     return {Token::Word, word};

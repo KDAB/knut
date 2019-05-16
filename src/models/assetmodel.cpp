@@ -52,7 +52,7 @@ QVariant AssetModel::data(const QModelIndex &index, int role) const
 
 QVariant AssetModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    static QStringList headers = {"Id", "FileName"};
+    static QStringList headers = {tr("Id"), tr("FileName")};
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         return headers.value(section);
     }
