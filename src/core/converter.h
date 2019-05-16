@@ -57,7 +57,7 @@ public:
 };
 
 QVariantList convertActions(Data *data, const Knut::DataCollection &collection);
-Menu convertMenus(Data *data, const Knut::DataCollection &collection);
+Menu convertMenu(Data *data, const Knut::DataCollection &collection);
 
 }
 
