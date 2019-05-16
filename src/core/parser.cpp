@@ -705,13 +705,17 @@ static Data::Control readControl(Lexer &lexer, Data &data, const std::optional<T
 
     if (lexer.peek()->type == Token::Operator_Comma) {
         lexer.skipComma();
-        control.styles += readStyles(lexer);
+        // Sometimes, there's a comma but the control is done
+        if (lexer.peek()->type != Token::Keyword || lexer.peek()->toKeyword() == Keywords::NOT)
+            control.styles += readStyles(lexer);
     }
 
     // CONTROL has no extended styles here
     if (controlType != Keywords::CONTROL && lexer.peek()->type == Token::Operator_Comma) {
         lexer.skipComma();
-        control.styles += readStyles(lexer);
+        // Sometimes, there's a comma but the control is done
+        if (lexer.peek()->type != Token::Keyword || lexer.peek()->toKeyword() == Keywords::NOT)
+            control.styles += readStyles(lexer);
     }
 
     if (lexer.peek()->type == Token::Operator_Comma) {

@@ -41,7 +41,7 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,125,36,50,14
     DEFPUSHBUTTON   "OK",IDOK,64,36,50,14
-    LTEXT           "Line Number:",IDC_STATIC,7,7,78,8
+    LTEXT           "Line Number:",IDC_STATIC,7,7,78,8,
     EDITTEXT        IDC_EDIT1,7,20,168,12,ES_AUTOHSCROLL
 END
 
