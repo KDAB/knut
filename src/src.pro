@@ -40,7 +40,6 @@ HEADERS += \
         actiondialog.h \
         contenttree.h \
         fileselector.h \
-        global.h \
         jsrunner.h \
         mainwindow.h \
         menudialog.h \
