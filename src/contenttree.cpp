@@ -22,7 +22,7 @@ ContentTree::ContentTree(QWidget *parent)
     m_contentView = new QTreeView(this);
 
     auto layout = new QVBoxLayout(this);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
 
     layout->addWidget(m_propertyView);
     layout->addWidget(m_contentView);
