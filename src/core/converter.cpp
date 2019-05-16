@@ -103,7 +103,7 @@ Menu createMenu(const Data::MenuItem &item)
     return menu;
 }
 
-Menu convertMenus(Data *data, const Knut::DataCollection &collection)
+Menu convertMenu(Data *data, const Knut::DataCollection &collection)
 {
     Q_ASSERT(collection.size() == 1);
     const int index = collection.first().second;

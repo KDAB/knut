@@ -38,7 +38,7 @@ void MenuDialog::run()
     if (ui->fileSelector->fileName().isEmpty())
         return;
 
-    const auto menu = Converter::convertMenus(m_data, m_filterModel->selectedData());
+    const auto menu = Converter::convertMenu(m_data, m_filterModel->selectedData());
 
     JsRunner runner(this);
     runner.setContextProperty(QStringLiteral("menu"), QVariant::fromValue(menu));
