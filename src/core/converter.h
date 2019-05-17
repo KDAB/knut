@@ -39,20 +39,36 @@ public:
     bool checked = false;
 };
 
-struct Menu
+struct MenuItem
 {
     Q_GADGET
     Q_PROPERTY(QString id MEMBER id)
     Q_PROPERTY(QString title MEMBER title)
     Q_PROPERTY(bool isSeparator MEMBER isSeparator)
     Q_PROPERTY(bool isAction MEMBER isAction)
+    Q_PROPERTY(bool isTopLevel MEMBER isTopLevel)
     Q_PROPERTY(QVariantList children MEMBER children)
+    Q_PROPERTY(QVariantList actions MEMBER actions)
 
 public:
     QString id;
     QString title;
     bool isSeparator = false;
     bool isAction = false;
+    bool isTopLevel = false;
+    QVariantList children;
+    // Actions are only available from topLevel menus
+    QVariantList actions;
+};
+
+struct Menu
+{
+    Q_GADGET
+    Q_PROPERTY(QString id MEMBER id)
+    Q_PROPERTY(QVariantList children MEMBER children)
+
+public:
+    QString id;
     QVariantList children;
 };
 

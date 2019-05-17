@@ -87,9 +87,9 @@ QVariantList convertActions(Data *data, const Knut::DataCollection &collection)
     return actions;
 }
 
-Menu createMenu(const Data::MenuItem &item)
+MenuItem createMenuItem(const Data::MenuItem &item)
 {
-    Menu menu;
+    MenuItem menu;
     menu.id = item.id;
     menu.title = item.text;
     if (item.id.isEmpty() && item.text.isEmpty())
@@ -98,7 +98,7 @@ Menu createMenu(const Data::MenuItem &item)
         menu.isAction = true;
 
     for (const auto &child : item.children)
-        menu.children.push_back(QVariant::fromValue(createMenu(child)));
+        menu.children.push_back(QVariant::fromValue(createMenuItem(child)));
 
     return menu;
 }
@@ -107,7 +107,20 @@ Menu convertMenu(Data *data, const Knut::DataCollection &collection)
 {
     Q_ASSERT(collection.size() == 1);
     const int index = collection.first().second;
-    return createMenu(data->menus.value(index));
+
+    const auto menuBar = data->menus.value(index);
+    Menu result;
+    result.id = menuBar.id;
+
+    QHash<QString, int> actionIdMap;
+    for (const auto &childMenu : menuBar.children) {
+        auto topMenu = createMenuItem(childMenu);
+        topMenu.isTopLevel = true;
+        createActionForMenu(data, topMenu.actions, actionIdMap, childMenu);
+        result.children.push_back(QVariant::fromValue(topMenu));
+    }
+
+    return result;
 }
 
 ToolBarItem createToolBarItem(const Data::ToolBarItem &child)
