@@ -30,7 +30,7 @@ QChar Stream::next()
     if (atEnd())
         return {};
     const QChar &ch = m_content.at(m_pos++);
-    if (ch == '\n')
+    if (ch == QLatin1Char('\n'))
         ++m_line;
     return ch;
 }

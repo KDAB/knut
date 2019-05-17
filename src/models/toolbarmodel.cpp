@@ -22,7 +22,7 @@ QVariant ToolBarModel::data(const QModelIndex &index, int role) const
     if (role == Qt::DisplayRole || role == Qt::ToolTipRole) {
         const auto &item = m_items.at(index.row());
         if (item.id.isEmpty())
-            return "--------";
+            return tr("--------");
         return item.id;
     }
 
@@ -36,7 +36,7 @@ QVariant ToolBarModel::data(const QModelIndex &index, int role) const
 
 QVariant ToolBarModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    static QStringList headers = {"Id"};
+    static QStringList headers = {tr("Id")};
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         return headers.value(section);
     }

@@ -88,7 +88,7 @@ QVariant OverviewModel::data(const QModelIndex &index, int role) const
     if (role == Qt::DisplayRole) {
         int data = static_cast<int>(index.internalId());
         if (data == Knut::NoData)
-            return DataTypeStr[index.row()];
+            return QLatin1String(DataTypeStr[index.row()]);
 
         switch (data) {
         case Knut::DialogData:

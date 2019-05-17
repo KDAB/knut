@@ -44,7 +44,7 @@ QVariant StringModel::data(const QModelIndex &index, int role) const
 
 QVariant StringModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    static QStringList headers = {"Id", "Text"};
+    static QStringList headers = {tr("Id"), tr("Text")};
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         return headers.value(section);
     }

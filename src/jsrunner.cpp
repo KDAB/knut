@@ -19,7 +19,7 @@ JsResult::JsResult(QObject *parent)
 
 QVariant JsResult::createDocument(const QString &title)
 {
-    m_documents.push_back({title, ""});
+    m_documents.push_back({title, QString()});
     JsResultDocumentWrapper doc(&m_documents.last());
     return QVariant::fromValue(doc);
 }

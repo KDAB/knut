@@ -40,7 +40,7 @@ QVariant IncludeModel::data(const QModelIndex &index, int role) const
 
 QVariant IncludeModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    static QStringList headers = {"FileName"};
+    static QStringList headers = {tr("FileName")};
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         return headers.value(section);
     }

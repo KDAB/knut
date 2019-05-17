@@ -11,7 +11,7 @@ RcSyntaxHighlighter::RcSyntaxHighlighter(QTextDocument *parent)
     keywordFormat.setForeground(Qt::blue);
 
     for (const auto &pattern : Parser::Lexer::keywords()) {
-        rule.pattern = QRegularExpression("\\b" + pattern + "\\b");
+        rule.pattern = QRegularExpression(QStringLiteral("\\b") + pattern + QStringLiteral("\\b"));
         rule.format = keywordFormat;
         m_highlightingRules.append(rule);
     }
