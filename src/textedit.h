@@ -5,7 +5,9 @@
 
 class QTextEdit;
 class QLineEdit;
-class QPushButton;
+class QToolButton;
+class QTextDocument;
+class QTextCursor;
 
 class TextEdit : public QWidget
 {
@@ -13,7 +15,20 @@ class TextEdit : public QWidget
 public:
     explicit TextEdit(QWidget *parent = nullptr);
 
-    QTextEdit *textEdit() const;
+    bool isReadOnly() const;
+    void setReadOnly(bool value);
+
+    QTextDocument *document() const;
+    void setDocument(QTextDocument *document);
+
+    QTextCursor textCursor() const;
+    void setTextCursor(const QTextCursor &cursor);
+
+    QString text() const;
+
+public Q_SLOTS:
+    void clear();
+    void setText(const QString &text);
 
 private:
     void slotSearchLineEditChanged(const QString &str);
@@ -24,8 +39,8 @@ private:
 
     QTextEdit *m_textEdit = nullptr;
     QLineEdit *m_searchText = nullptr;
-    QPushButton *m_searchPreviewButton = nullptr;
-    QPushButton *m_searchNextButton = nullptr;
+    QToolButton *m_searchPreviewButton = nullptr;
+    QToolButton *m_searchNextButton = nullptr;
     QWidget *m_searchWidget = nullptr;
 };
 
