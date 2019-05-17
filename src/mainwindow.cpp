@@ -24,8 +24,8 @@
 #include <QTextEdit>
 
 namespace {
-int MaximumRecentFile = 5;
-const QString RecentFileKey = QStringLiteral("recentFileList");
+constexpr int MaximumRecentFile = 5;
+constexpr char RecentFileKey[] = "recentFileList";
 }
 
 MainWindow::MainWindow(QWidget *parent)
@@ -97,13 +97,13 @@ void MainWindow::openData()
 void MainWindow::updateRecentFiles(const QString &fileName)
 {
     QSettings settings;
-    QStringList files = settings.value(RecentFileKey).toStringList();
+    QStringList files = settings.value(QLatin1String(RecentFileKey)).toStringList();
     files.removeAll(fileName);
     files.prepend(fileName);
     while (files.size() > MaximumRecentFile)
         files.removeLast();
 
-    settings.setValue(RecentFileKey, files);
+    settings.setValue(QLatin1String(RecentFileKey), files);
     updateRecentFileActions();
 }
 
@@ -134,7 +134,7 @@ void MainWindow::openFile(const QString &fileName)
 void MainWindow::updateRecentFileActions()
 {
     QSettings settings;
-    const QStringList files = settings.value(RecentFileKey).toStringList();
+    const QStringList files = settings.value(QLatin1String(RecentFileKey)).toStringList();
 
     const int numRecentFiles = qMin(files.count(), MaximumRecentFile);
     m_recentMenu->clear();
