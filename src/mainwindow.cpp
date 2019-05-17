@@ -25,7 +25,7 @@
 
 namespace {
 int maximumRecentFile = 5;
-const char RecentFileKey[] = "recentFileList";
+const QString RecentFileKey = QStringLiteral("recentFileList");
 }
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
