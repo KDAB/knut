@@ -23,7 +23,7 @@ private:
     void changeCurrentItem(const QModelIndex &current);
 
 private:
-    OverviewModel *m_model;
+    OverviewModel *m_model = nullptr;
 };
 
 #endif // OVERVIEWTREE_H

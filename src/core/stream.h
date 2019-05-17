@@ -11,7 +11,7 @@ namespace Parser {
 class Stream
 {
 public:
-    Stream(QIODevice *device);
+    explicit Stream(QIODevice *device);
     Stream(const QString &text);
 
     bool atEnd() const;

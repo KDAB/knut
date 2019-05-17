@@ -29,8 +29,8 @@ private:
     void updateDialogProperty(const Data::Dialog &dialog);
 
 private:
-    QTreeView *m_contentView;
-    QTreeWidget *m_propertyView;
+    QTreeView *m_contentView = nullptr;
+    QTreeWidget *m_propertyView = nullptr;
     QAbstractItemModel *m_model = nullptr;
     Data *m_data = nullptr;
 };

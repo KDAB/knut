@@ -33,7 +33,7 @@ private:
     void updateRecentFiles(const QString &fileName);
 
 private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow *ui = nullptr;
     QMenu *m_recentMenu = nullptr;
     Data m_data;
 };
