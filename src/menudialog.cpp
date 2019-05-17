@@ -26,6 +26,10 @@ MenuDialog::MenuDialog(Data *data, QWidget *parent)
     ui->treeView->expandAll();
 
     connect(ui->runButton, &QPushButton::clicked, this, &MenuDialog::run);
+    connect(ui->fileSelector, &FileSelector::fileNameChanged, this, [this](const QString &text) {
+        ui->runButton->setEnabled(!text.trimmed().isEmpty());
+    });
+    ui->runButton->setEnabled(false);
 }
 
 MenuDialog::~MenuDialog()
