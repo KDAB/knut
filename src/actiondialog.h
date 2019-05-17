@@ -22,7 +22,7 @@ private:
     void run();
 
 private:
-    Ui::ActionDialog *ui;
+    Ui::ActionDialog *ui = nullptr;
     Data *m_data = nullptr;
     OverviewFilterModel *m_filterModel;
 };

@@ -23,9 +23,9 @@ private:
     void run();
 
 private:
-    Ui::MenuDialog *ui;
+    Ui::MenuDialog *ui = nullptr;
     Data *m_data = nullptr;
-    OverviewFilterModel *m_filterModel;
+    OverviewFilterModel *m_filterModel = nullptr;
 };
 
 #endif // MENUDIALOG_H

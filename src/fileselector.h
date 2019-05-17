@@ -26,7 +26,7 @@ private:
     void chooseFile();
 
 private:
-    QLineEdit *m_lineEdit;
+    QLineEdit *m_lineEdit = nullptr;
     QString m_filter;
 };
 

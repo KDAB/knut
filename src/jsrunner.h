@@ -62,7 +62,7 @@ public:
     QList<QQmlError> errors() const;
 
 protected:
-    QQmlEngine *m_engine;
+    QQmlEngine *m_engine = nullptr;
     QList<QQmlError> m_errors;
 };
 
