@@ -2,15 +2,16 @@
 #define TEXTEDIT_H
 
 #include <QWidget>
+
 class QTextEdit;
 class QLineEdit;
 class QPushButton;
+
 class TextEdit : public QWidget
 {
     Q_OBJECT
 public:
     explicit TextEdit(QWidget *parent = nullptr);
-    ~TextEdit();
 
     QTextEdit *textEdit() const;
 

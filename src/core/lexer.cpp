@@ -275,7 +275,8 @@ Token Lexer::readNumber()
 
 Token Lexer::readWord()
 {
-    const QString word = readWhile([](const auto &c) { return c.isLetterOrNumber() || c == QLatin1Char('_'); });
+    const QString word =
+        readWhile([](const auto &c) { return c.isLetterOrNumber() || c == QLatin1Char('_'); });
     if (auto it = KeywordMap.find(word); it != KeywordMap.end())
         return {Token::Keyword, it.value()};
     return {Token::Word, word};

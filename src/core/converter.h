@@ -94,7 +94,6 @@ public:
     QVariantList children;
 };
 
-
 QVariantList convertActions(Data *data, const Knut::DataCollection &collection);
 Menu convertMenu(Data *data, const Knut::DataCollection &collection);
 ToolBar convertToolbar(Data *data, const Knut::DataCollection &collection);

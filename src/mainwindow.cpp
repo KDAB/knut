@@ -12,21 +12,22 @@
 #include "toolbardialog.h"
 
 #include <QApplication>
+#include <QDebug>
 #include <QFileDialog>
+#include <QMenu>
+#include <QPushButton>
 #include <QSettings>
+#include <QShortcut>
 #include <QTextBlock>
 #include <QTextCursor>
 #include <QTextDocument>
-#include <QShortcut>
-#include <QPushButton>
 #include <QTextEdit>
-#include <QMenu>
-#include <QDebug>
 
 namespace {
-int maximumRecentFile = 5;
+int MaximumRecentFile = 5;
 const QString RecentFileKey = QStringLiteral("recentFileList");
 }
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -85,7 +86,8 @@ void MainWindow::highlightLine(int line)
 
 void MainWindow::openData()
 {
-    const QString &fileName = QFileDialog::getOpenFileName(this, QStringLiteral("Open Resource File"), QStringLiteral("."), QStringLiteral("*.rc"));
+    const QString &fileName = QFileDialog::getOpenFileName(
+        this, QStringLiteral("Open Resource File"), QStringLiteral("."), QStringLiteral("*.rc"));
     if (fileName.isEmpty())
         return;
     openFile(fileName);
@@ -98,7 +100,7 @@ void MainWindow::updateRecentFiles(const QString &fileName)
     QStringList files = settings.value(RecentFileKey).toStringList();
     files.removeAll(fileName);
     files.prepend(fileName);
-    while (files.size() > maximumRecentFile)
+    while (files.size() > MaximumRecentFile)
         files.removeLast();
 
     settings.setValue(RecentFileKey, files);
@@ -124,7 +126,8 @@ void MainWindow::openFile(const QString &fileName)
     m_data = Parser::parse(fileName);
 
     setWindowTitle(QStringLiteral("Knut - %1").arg(fileName));
-    ui->texteditwidget->textEdit()->setPlainText(m_data.content.replace(QLatin1String("\t"), QLatin1String("    ")));
+    ui->texteditwidget->textEdit()->setPlainText(
+        m_data.content.replace(QLatin1String("\t"), QLatin1String("    ")));
     ui->overviewTree->updateModel();
 }
 
@@ -133,16 +136,14 @@ void MainWindow::updateRecentFileActions()
     QSettings settings;
     const QStringList files = settings.value(RecentFileKey).toStringList();
 
-    const int numRecentFiles = qMin(files.count(), maximumRecentFile);
+    const int numRecentFiles = qMin(files.count(), MaximumRecentFile);
     m_recentMenu->clear();
     for (int i = 0; i < numRecentFiles; ++i) {
         const QString text = files[i];
         QAction *act = m_recentMenu->addAction(text);
-        connect(act, &QAction::triggered, this, [this, text]() {
-            openFile(text);
-        });
+        connect(act, &QAction::triggered, this, [this, text]() { openFile(text); });
     }
-    ui->actionOpenRecent->setEnabled(maximumRecentFile > 0);
+    ui->actionOpenRecent->setEnabled(MaximumRecentFile > 0);
 }
 
 void MainWindow::extractToolbars()

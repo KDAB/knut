@@ -63,7 +63,8 @@ QVariant DialogModel::data(const QModelIndex &index, int role) const
 
 QVariant DialogModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    static QStringList headers = {tr("Type"), tr("Id"), tr("Geometry"), tr("Text"), tr("Class Name"), tr("Styles")};
+    static QStringList headers = {tr("Type"), tr("Id"),         tr("Geometry"),
+                                  tr("Text"), tr("Class Name"), tr("Styles")};
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         return headers.value(section);
     }

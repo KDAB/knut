@@ -95,7 +95,8 @@ QVariant MenuModel::data(const QModelIndex &index, int role) const
 
 QVariant MenuModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    static QStringList headers = {tr("Title"), tr("Checked"), tr("ID"), tr("Shortcut"), tr("ToolTip"), tr("StatusTip")};
+    static QStringList headers = {tr("Title"),    tr("Checked"), tr("ID"),
+                                  tr("Shortcut"), tr("ToolTip"), tr("StatusTip")};
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         return headers.value(section);
     }

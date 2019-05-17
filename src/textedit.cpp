@@ -1,15 +1,15 @@
 #include "textedit.h"
-#include <QVBoxLayout>
-#include <QTextEdit>
+#include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QShortcut>
-#include <QLabel>
+#include <QTextEdit>
+#include <QVBoxLayout>
 
 TextEdit::TextEdit(QWidget *parent)
     : QWidget(parent)
 {
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    auto mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0, 0, 0, 0);
 
     m_textEdit = new QTextEdit(this);
@@ -20,9 +20,8 @@ TextEdit::TextEdit(QWidget *parent)
     m_searchWidget = new QWidget(this);
     mainLayout->addWidget(m_searchWidget);
 
-    QHBoxLayout *searchLayout = new QHBoxLayout(m_searchWidget);
+    auto searchLayout = new QHBoxLayout(m_searchWidget);
     searchLayout->setContentsMargins(0, 0, 0, 0);
-
 
     QLabel *label = new QLabel(QStringLiteral("Search:"), this);
     searchLayout->addWidget(label);
@@ -50,10 +49,6 @@ TextEdit::TextEdit(QWidget *parent)
     QShortcut *escape = new QShortcut(QKeySequence(Qt::Key_Escape), m_textEdit);
     escape->setContext(Qt::WidgetShortcut);
     connect(escape, &QShortcut::activated, this, &TextEdit::slotCloseSearchText);
-}
-
-TextEdit::~TextEdit()
-{
 }
 
 void TextEdit::slotSearchLineEditChanged(const QString &str)

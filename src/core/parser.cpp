@@ -479,7 +479,8 @@ static void readDialogInit(Lexer &lexer, Data &data, const QString &id)
             lexer.skipComma();
             size -= 2;
         }
-        dialogData.values[controlId].push_back(QString::fromLocal8Bit(QByteArray::fromHex(text.toLocal8Bit())));
+        dialogData.values[controlId].push_back(
+            QString::fromLocal8Bit(QByteArray::fromHex(text.toLocal8Bit())));
     }
     lexer.next(); // END
 

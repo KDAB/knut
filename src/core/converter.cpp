@@ -131,7 +131,7 @@ ToolBarItem createToolBarItem(const Data::ToolBarItem &child)
     } else {
         item.id = child.id;
     }
-    //TODO add icon
+    // TODO add icon
 
     return item;
 }

@@ -84,8 +84,8 @@ QVector<JsResult::Document> JsRunner::runJavaScript(const QString &scriptName)
     const QUrl fileUrl = QUrl::fromLocalFile(QFileInfo(scriptName).absoluteFilePath());
     const QString wrapperQml =
         QStringLiteral("import QtQml 2.2\n"
-                              "import \"%1\" as Script\n"
-                              "QtObject { function run() { return Script.main(); } }")
+                       "import \"%1\" as Script\n"
+                       "QtObject { function run() { return Script.main(); } }")
             .arg(fileUrl.toString());
 
     JsResult result;
