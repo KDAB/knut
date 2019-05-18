@@ -81,7 +81,7 @@ struct Data
     struct Control
     {
         int line = -1;
-        QString type;
+        int type;
         QString text;
         QString id;
         QString className;

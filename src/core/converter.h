@@ -94,13 +94,34 @@ public:
     QVariantList children;
 };
 
+struct Widget
+{
+    Q_GADGET
+    Q_PROPERTY(QString id MEMBER id)
+    Q_PROPERTY(QString className MEMBER className)
+    Q_PROPERTY(QRect geometry MEMBER geometry)
+    Q_PROPERTY(QVariantMap properties MEMBER properties)
+    Q_PROPERTY(QVariantList children MEMBER children)
+public:
+    QString id;
+    QString className;
+    QRect geometry;
+    QVariantMap properties;
+    QVariantList children;
+};
+
 QVariantList convertActions(Data *data, const Knut::DataCollection &collection);
 Menu convertMenu(Data *data, const Knut::DataCollection &collection);
 ToolBar convertToolbar(Data *data, const Knut::DataCollection &collection);
+Widget convertDialog(Data *data, const Knut::DataCollection &collection);
+
 }
 
 Q_DECLARE_METATYPE(Converter::Shortcut)
 Q_DECLARE_METATYPE(Converter::Action)
+Q_DECLARE_METATYPE(Converter::MenuItem)
 Q_DECLARE_METATYPE(Converter::Menu)
+Q_DECLARE_METATYPE(Converter::ToolBar)
+Q_DECLARE_METATYPE(Converter::Widget)
 
 #endif // CONVERTER_H

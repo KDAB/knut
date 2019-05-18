@@ -659,7 +659,7 @@ static Data::Control readControl(Lexer &lexer, Data &data, const std::optional<T
     const auto controlType = token->toKeyword();
     Data::Control control;
     control.line = lexer.line();
-    control.type = token->toString();
+    control.type = static_cast<int>(controlType);
 
     if (!knownControls.contains(controlType)) {
         qCWarning(PARSER) << "Control unknown:" << lexer.line()

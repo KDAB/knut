@@ -9,6 +9,7 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/converter.cpp \
+    $$PWD/dialogconverter.cpp \
     $$PWD/logging.cpp \
     $$PWD/lexer.cpp \
     $$PWD/parser.cpp \

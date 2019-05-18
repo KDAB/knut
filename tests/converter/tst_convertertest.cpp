@@ -106,6 +106,32 @@ private slots:
         item = result.children.last().value<Converter::ToolBarItem>();
         QCOMPARE(item.id, QStringLiteral("ID_SORTING_GROUPBYTYPE"));
     }
+
+    void testConvertDialog()
+    {
+        auto data = getData();
+        Knut::DataCollection collection = {{Knut::DialogData, 1}};
+        auto result = Converter::convertDialog(&data, collection);
+
+        QCOMPARE(result.id, QStringLiteral("IDD_ABOUTBOX"));
+        QCOMPARE(result.geometry, QRect(0, 0, 255, 102));
+        QCOMPARE(result.className, QStringLiteral("QDialog"));
+        QCOMPARE(result.properties[QStringLiteral("windowTitle")].toString(),
+                 QStringLiteral("About 2048Game"));
+
+        collection = {{Knut::DialogData, 0}};
+        result = Converter::convertDialog(&data, collection);
+        QCOMPARE(result.children.size(), 6);
+        auto item = result.children.at(2).value<Converter::Widget>();
+        QCOMPARE(item.className, QStringLiteral("QPushButton"));
+        QCOMPARE(item.properties.value(QStringLiteral("text")).toString(), QStringLiteral("OK"));
+        QCOMPARE(item.geometry, QRect(96, 108, 75, 23));
+        item = result.children.last().value<Converter::Widget>();
+        QCOMPARE(item.className, QStringLiteral("QComboBox"));
+        QStringList values = {QStringLiteral("3"), QStringLiteral("4"), QStringLiteral("5"),
+                              QStringLiteral("6")};
+        QCOMPARE(item.properties.value(QStringLiteral("text")).toStringList(), values);
+    }
 };
 
 QTEST_APPLESS_MAIN(ConverterTest)
