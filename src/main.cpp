@@ -4,8 +4,9 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    QCoreApplication::setApplicationName(QStringLiteral("knut"));
-    QCoreApplication::setApplicationVersion(QStringLiteral("2.0"));
+    QCoreApplication::setOrganizationName(QStringLiteral("KDAB"));
+    QCoreApplication::setApplicationName(QStringLiteral("Knut"));
+    QCoreApplication::setApplicationVersion(QStringLiteral("3.0"));
 
     MainWindow w;
     w.show();
