@@ -1,9 +1,10 @@
 function main() {
     var doc = result.createDocument("CreateToolbars")
-	
-    doc.content = "QToolbar *toolbar = nullptr;\n\n"
-    for (var i = 0; i < toolbars.children.length; ++i) {
-        var toolbarAction = toolbars.children[i]
+
+    doc.content = qsTr("QToolBar *toolbar = m_actionManager->CreateToolBar(%1);\n").arg(toolbar.id)
+	doc.content += "addToolBar(toolbar);\n\n"
+    for (var i = 0; i < toolbar.children.length; ++i) {
+        var toolbarAction = toolbar.children[i]
         if (toolbarAction.isSeparator) {
              doc.content += "toolbar->addSeparator();\n"
         } else {

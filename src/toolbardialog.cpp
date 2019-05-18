@@ -44,7 +44,7 @@ void ToolbarDialog::run()
     const auto toolbar = Converter::convertToolbar(m_data, m_filterModel->selectedData());
 
     JsRunner runner(this);
-    runner.setContextProperty(QStringLiteral("toolbars"), QVariant::fromValue(toolbar));
+    runner.setContextProperty(QStringLiteral("toolbar"), QVariant::fromValue(toolbar));
     auto results = runner.runJavaScript(ui->fileSelector->fileName());
     ui->resultWidget->setResult(results);
 }
