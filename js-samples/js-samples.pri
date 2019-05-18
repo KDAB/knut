@@ -1,0 +1,1 @@
+DEFINES += JSSAMPLES=\\\"$$PWD/\\\"
