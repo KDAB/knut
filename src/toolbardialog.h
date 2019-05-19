@@ -28,4 +28,4 @@ private:
     OverviewFilterModel *m_filterModel = nullptr;
 };
 
-#endif // MENUDIALOG_H
+#endif // TOOLBARDIALOG_H

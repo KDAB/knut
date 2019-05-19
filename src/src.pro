@@ -23,38 +23,41 @@ include (core/core.pri)
 include (models/models.pri)
 
 SOURCES += \
-        actiondialog.cpp \
-        contenttree.cpp \
-        fileselector.cpp \
-        jsrunner.cpp \
-        main.cpp \
-        mainwindow.cpp \
-        menudialog.cpp \
-        overviewfiltermodel.cpp \
-        overviewmodel.cpp \
-        overviewtree.cpp \
-        rcsyntaxhighlighter.cpp \
-        resultwidget.cpp\
-        textedit.cpp \
-	toolbardialog.cpp
+    actiondialog.cpp \
+    contenttree.cpp \
+    fileselector.cpp \
+    jsrunner.cpp \
+    main.cpp \
+    mainwindow.cpp \
+    menudialog.cpp \
+    overviewfiltermodel.cpp \
+    overviewmodel.cpp \
+    overviewtree.cpp \
+    rcsyntaxhighlighter.cpp \
+    resultwidget.cpp\
+    textedit.cpp \
+    toolbardialog.cpp \
+    widgetdialog.cpp
 
 HEADERS += \
-        actiondialog.h \
-        contenttree.h \
-        fileselector.h \
-        jsrunner.h \
-        mainwindow.h \
-        menudialog.h \
-        overviewfiltermodel.h \
-        overviewmodel.h \
-        overviewtree.h \
-        rcsyntaxhighlighter.h \
-        resultwidget.h\
-        textedit.h \
-	toolbardialog.h
+    actiondialog.h \
+    contenttree.h \
+    fileselector.h \
+    jsrunner.h \
+    mainwindow.h \
+    menudialog.h \
+    overviewfiltermodel.h \
+    overviewmodel.h \
+    overviewtree.h \
+    rcsyntaxhighlighter.h \
+    resultwidget.h\
+    textedit.h \
+    toolbardialog.h \
+    widgetdialog.h
 
 FORMS += \
-        actiondialog.ui \
-        mainwindow.ui \
-        menudialog.ui \
-	toolbardialog.ui
+    actiondialog.ui \
+    mainwindow.ui \
+    menudialog.ui \
+    toolbardialog.ui \
+    widgetdialog.ui

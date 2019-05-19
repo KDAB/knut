@@ -32,6 +32,7 @@ private:
     void openFile(const QString &fileName);
     void updateRecentFiles(const QString &fileName);
     void extractToolbars();
+    void extractWidgets();
 
 private:
     Ui::MainWindow *ui = nullptr;

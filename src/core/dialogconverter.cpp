@@ -695,10 +695,8 @@ static QVariantList adjustHierarchy(QVector<Widget> widgets)
     return children;
 }
 
-Widget convertDialog(Data *data, const Knut::DataCollection &collection)
+Widget convertDialog(Data *data, int index)
 {
-    Q_ASSERT(collection.size() == 1);
-    const int index = collection.first().second;
     Data::Dialog item = data->dialogs.value(index);
     Widget widget;
     widget.id = item.id;
@@ -729,4 +727,11 @@ Widget convertDialog(Data *data, const Knut::DataCollection &collection)
     return widget;
 }
 
+QVariantList convertDialogs(Data *data, const Knut::DataCollection &collection)
+{
+    QVariantList result;
+    for (const auto &item : collection)
+        result.push_back(QVariant::fromValue(convertDialog(data, item.second)));
+    return result;
+}
 }

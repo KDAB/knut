@@ -58,6 +58,11 @@ TextEdit::TextEdit(QWidget *parent)
     QShortcut *escape = new QShortcut(QKeySequence(Qt::Key_Escape), this);
     escape->setContext(Qt::WidgetWithChildrenShortcut);
     connect(escape, &QShortcut::activated, this, &TextEdit::slotCloseSearchText);
+
+    auto f = font();
+    f.setFamily(QStringLiteral("Courier New"));
+    f.setPointSize(10);
+    setFont(f);
 }
 
 bool TextEdit::isReadOnly() const

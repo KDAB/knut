@@ -10,6 +10,7 @@
 #include "parser.h"
 #include "rcsyntaxhighlighter.h"
 #include "toolbardialog.h"
+#include "widgetdialog.h"
 
 #include <QApplication>
 #include <QDebug>
@@ -47,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionExtractActions, &QAction::triggered, this, &MainWindow::extractActions);
     connect(ui->actionExtractMenus, &QAction::triggered, this, &MainWindow::extractMenus);
     connect(ui->actionExtractToolBars, &QAction::triggered, this, &MainWindow::extractToolbars);
+    connect(ui->actionExtractWidgets, &QAction::triggered, this, &MainWindow::extractWidgets);
 
     new RcSyntaxHighlighter(ui->texteditwidget->document());
     m_recentMenu = new QMenu(this);
@@ -143,5 +145,11 @@ void MainWindow::updateRecentFileActions()
 void MainWindow::extractToolbars()
 {
     ToolbarDialog dialog(&m_data, this);
+    dialog.exec();
+}
+
+void MainWindow::extractWidgets()
+{
+    WidgetDialog dialog(&m_data, this);
     dialog.exec();
 }

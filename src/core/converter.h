@@ -113,8 +113,9 @@ public:
 QVariantList convertActions(Data *data, const Knut::DataCollection &collection);
 Menu convertMenu(Data *data, const Knut::DataCollection &collection);
 ToolBar convertToolbar(Data *data, const Knut::DataCollection &collection);
-Widget convertDialog(Data *data, const Knut::DataCollection &collection);
 
+Widget convertDialog(Data *data, int index);
+QVariantList convertDialogs(Data *data, const Knut::DataCollection &collection);
 }
 
 Q_DECLARE_METATYPE(Converter::Shortcut)

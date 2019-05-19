@@ -1,5 +1,5 @@
-#include "toolbardialog.h"
-#include "ui_toolbardialog.h"
+#include "widgetdialog.h"
+#include "ui_widgetdialog.h"
 
 #include "converter.h"
 #include "data.h"
@@ -7,9 +7,9 @@
 #include "overviewfiltermodel.h"
 #include "overviewmodel.h"
 
-ToolbarDialog::ToolbarDialog(Data *data, QWidget *parent)
+WidgetDialog::WidgetDialog(Data *data, QWidget *parent)
     : QDialog(parent)
-    , ui(new Ui::ToolbarDialog)
+    , ui(new Ui::WidgetDialog)
     , m_data(data)
 {
     ui->setupUi(this);
@@ -19,32 +19,31 @@ ToolbarDialog::ToolbarDialog(Data *data, QWidget *parent)
     auto model = new OverviewModel(this);
     model->setResourceData(m_data);
     m_filterModel = new OverviewFilterModel(this);
-    m_filterModel->setExclusive(true);
-    m_filterModel->setDataType({Knut::ToolBarData});
+    m_filterModel->setDataType({Knut::DialogData});
     m_filterModel->setSourceModel(model);
     ui->treeView->setModel(m_filterModel);
     ui->treeView->expandAll();
 
-    connect(ui->runButton, &QPushButton::clicked, this, &ToolbarDialog::run);
+    connect(ui->runButton, &QPushButton::clicked, this, &WidgetDialog::run);
     connect(ui->fileSelector, &FileSelector::fileNameChanged, this,
             [this](const QString &text) { ui->runButton->setEnabled(!text.trimmed().isEmpty()); });
     ui->runButton->setEnabled(false);
 }
 
-ToolbarDialog::~ToolbarDialog()
+WidgetDialog::~WidgetDialog()
 {
     delete ui;
 }
 
-void ToolbarDialog::run()
+void WidgetDialog::run()
 {
     if (ui->fileSelector->fileName().isEmpty())
         return;
 
-    const auto toolbar = Converter::convertToolbar(m_data, m_filterModel->selectedData());
+    QVariantList dialogs = Converter::convertDialogs(m_data, m_filterModel->selectedData());
 
     JsRunner runner(this);
-    runner.setContextProperty(QStringLiteral("toolbars"), QVariant::fromValue(toolbar));
+    runner.setContextProperty(QStringLiteral("widgets"), dialogs);
     auto results = runner.runJavaScript(ui->fileSelector->fileName());
     ui->resultWidget->setResult(results);
 }

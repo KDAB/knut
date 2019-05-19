@@ -110,8 +110,7 @@ private slots:
     void testConvertDialog()
     {
         auto data = getData();
-        Knut::DataCollection collection = {{Knut::DialogData, 1}};
-        auto result = Converter::convertDialog(&data, collection);
+        auto result = Converter::convertDialog(&data, 1);
 
         QCOMPARE(result.id, QStringLiteral("IDD_ABOUTBOX"));
         QCOMPARE(result.geometry, QRect(0, 0, 255, 102));
@@ -119,8 +118,7 @@ private slots:
         QCOMPARE(result.properties[QStringLiteral("windowTitle")].toString(),
                  QStringLiteral("About 2048Game"));
 
-        collection = {{Knut::DialogData, 0}};
-        result = Converter::convertDialog(&data, collection);
+        result = Converter::convertDialog(&data, 0);
         QCOMPARE(result.children.size(), 6);
         auto item = result.children.at(2).value<Converter::Widget>();
         QCOMPARE(item.className, QStringLiteral("QPushButton"));
