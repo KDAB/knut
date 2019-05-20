@@ -5,6 +5,7 @@
 #include <QTextEdit>
 #include <QToolButton>
 #include <QVBoxLayout>
+#include <QTextCursor>
 
 TextEdit::TextEdit(QWidget *parent)
     : QWidget(parent)
@@ -133,6 +134,10 @@ void TextEdit::slotSearchNextText()
 
 void TextEdit::slotSearchText()
 {
+    if (m_textEdit->textCursor().hasSelection()) {
+        const QString searchText = m_textEdit->textCursor().selectedText();
+        m_searchText->setText(searchText);
+    }
     m_searchWidget->setVisible(true);
     m_searchText->setFocus();
 }
