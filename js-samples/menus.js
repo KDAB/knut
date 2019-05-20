@@ -8,7 +8,7 @@ function createMenu(currentMenu, parentMenu, doc) {
 		} else {
 			doc.content += "{\n";
 			doc.content += "parentMenu = menu;\n"
-			doc.content += qsTr("menu = m_actionManager->CreateMenu(\"%1\", %2;\n\n").arg(childMenu.title).arg(parentMenu);
+			doc.content += qsTr("menu = m_actionManager->CreateMenu(tr(\"%1\"), %2;\n\n").arg(childMenu.title).arg(parentMenu);
 			doc.content += createMenu(childMenu, "parentMenu", doc);
 			doc.content += "menu = parentMenu;\n"
 			doc.content += "}\n";
