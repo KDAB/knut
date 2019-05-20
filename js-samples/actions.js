@@ -5,7 +5,7 @@ function main() {
 	for (var i = 0; i < actions.length; ++i) {
 		var action = actions[i]
         doc.content += qsTr("action = m_actionManager->CreateAction(%1, tr(\"%2\"), this);\n").arg(action.id).arg(action.title)
-		if (action.checkable) {
+		if (action.checked) {
 			doc.content += "action->setCheckable(true);\n"
 			doc.content += "action->setChecked(true);\n"
 		}
