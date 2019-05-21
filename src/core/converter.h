@@ -111,7 +111,7 @@ public:
 };
 
 QVariantList convertActions(Data *data, const Knut::DataCollection &collection);
-Menu convertMenu(Data *data, const Knut::DataCollection &collection);
+QVariantList convertMenus(Data *data, const Knut::DataCollection &collection);
 ToolBar convertToolbar(Data *data, const Knut::DataCollection &collection);
 
 Widget convertDialog(Data *data, int index);

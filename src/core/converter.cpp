@@ -103,23 +103,25 @@ MenuItem createMenuItem(const Data::MenuItem &item)
     return menu;
 }
 
-Menu convertMenu(Data *data, const Knut::DataCollection &collection)
+QVariantList convertMenus(Data *data, const Knut::DataCollection &collection)
 {
-    Q_ASSERT(collection.size() == 1);
-    const int index = collection.first().second;
+    QVariantList result;
+    for (const auto &item : collection) {
+        const int index = item.second;
 
-    const auto menuBar = data->menus.value(index);
-    Menu result;
-    result.id = menuBar.id;
+        const auto menuBar = data->menus.value(index);
+        Menu menu;
+        menu.id = menuBar.id;
 
-    QHash<QString, int> actionIdMap;
-    for (const auto &childMenu : menuBar.children) {
-        auto topMenu = createMenuItem(childMenu);
-        topMenu.isTopLevel = true;
-        createActionForMenu(data, topMenu.actions, actionIdMap, childMenu);
-        result.children.push_back(QVariant::fromValue(topMenu));
+        QHash<QString, int> actionIdMap;
+        for (const auto &childMenu : menuBar.children) {
+            auto topMenu = createMenuItem(childMenu);
+            topMenu.isTopLevel = true;
+            createActionForMenu(data, topMenu.actions, actionIdMap, childMenu);
+            menu.children.push_back(QVariant::fromValue(topMenu));
+        }
+        result.push_back(QVariant::fromValue(menu));
     }
-
     return result;
 }
 

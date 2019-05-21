@@ -50,10 +50,12 @@ function createActions(currentMenu) {
 }
 
 function main() {
-    for (var i = 0; i < menu.children.length; ++i) {
-        var childMenu = menu.children[i]
-        var doc = result.createDocument(qsTr("Create%1Menu").arg(childMenu.title.replace("&", "")))
-        doc.content += createActions(childMenu)
-        doc.content += createMenu(childMenu)
+    for (const menu of menus) {
+        for (var i = 0; i < menu.children.length; ++i) {
+            var childMenu = menu.children[i]
+            var doc = result.createDocument(qsTr("Create%1Menu").arg(childMenu.title.replace("&", "")))
+            doc.content += createActions(childMenu)
+            doc.content += createMenu(childMenu)
+        }
     }
 }

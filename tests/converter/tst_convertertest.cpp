@@ -47,7 +47,7 @@ private slots:
     {
         auto data = getData();
         Knut::DataCollection collection = {{Knut::MenuData, 0}};
-        auto result = Converter::convertMenu(&data, collection);
+        auto result = Converter::convertMenus(&data, collection).at(0).value<Converter::Menu>();
 
         QCOMPARE(result.id, QStringLiteral("IDR_MAINFRAME"));
         QCOMPARE(result.children.size(), 5);
