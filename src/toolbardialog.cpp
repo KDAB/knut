@@ -7,6 +7,10 @@
 #include "overviewfiltermodel.h"
 #include "overviewmodel.h"
 
+#include <QSettings>
+namespace  {
+constexpr char JsScriptFileKey[] = "toolbarJsFile";
+}
 ToolbarDialog::ToolbarDialog(Data *data, QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::ToolbarDialog)
@@ -29,10 +33,15 @@ ToolbarDialog::ToolbarDialog(Data *data, QWidget *parent)
     connect(ui->fileSelector, &FileSelector::fileNameChanged, this,
             [this](const QString &text) { ui->runButton->setEnabled(!text.trimmed().isEmpty()); });
     ui->runButton->setEnabled(false);
+    QSettings settings;
+    const QString recentFile = settings.value(QLatin1String(JsScriptFileKey)).toString();
+    ui->fileSelector->setFileName(recentFile);
 }
 
 ToolbarDialog::~ToolbarDialog()
 {
+    QSettings settings;
+    settings.setValue(QLatin1String(JsScriptFileKey), ui->fileSelector->fileName());
     delete ui;
 }
 
