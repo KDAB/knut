@@ -12,6 +12,7 @@ MenuDialog::MenuDialog(Data *data, QWidget *parent)
     , ui(new Ui::MenuDialog)
     , m_data(data)
 {
+    setAttribute(Qt::WA_DeleteOnClose);
     ui->setupUi(this);
 
     ui->fileSelector->setFilter(QStringLiteral("*.js"));

@@ -12,6 +12,7 @@ ToolbarDialog::ToolbarDialog(Data *data, QWidget *parent)
     , ui(new Ui::ToolbarDialog)
     , m_data(data)
 {
+    setAttribute(Qt::WA_DeleteOnClose);
     ui->setupUi(this);
 
     ui->fileSelector->setFilter(QStringLiteral("*.js"));

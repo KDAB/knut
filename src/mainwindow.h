@@ -1,10 +1,15 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "actiondialog.h"
 #include "data.h"
 #include "global.h"
+#include "menudialog.h"
+#include "toolbardialog.h"
+#include "widgetdialog.h"
 
 #include <QMainWindow>
+#include <QPointer>
 
 class OverviewModel;
 
@@ -38,6 +43,10 @@ private:
     Ui::MainWindow *ui = nullptr;
     QMenu *m_recentMenu = nullptr;
     Data m_data;
+    QPointer<ActionDialog> m_actionDialog;
+    QPointer<MenuDialog> m_menuDialog;
+    QPointer<WidgetDialog> m_widgetDialog;
+    QPointer<ToolbarDialog> m_toolbarDialog;
 };
 
 #endif // MAINWINDOW_H
