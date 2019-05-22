@@ -46,6 +46,7 @@ TextEdit::TextEdit(QWidget *parent)
     searchLayout->addWidget(m_searchNextButton);
 
     connect(m_searchText, &QLineEdit::textChanged, this, &TextEdit::slotSearchLineEditChanged);
+    connect(m_searchText, &QLineEdit::returnPressed, this, &TextEdit::slotSearchNextText);
     connect(m_searchPreviewButton, &QToolButton::clicked, this, &TextEdit::slotSearchPreviewText);
     connect(m_searchNextButton, &QToolButton::clicked, this, &TextEdit::slotSearchNextText);
     slotSearchLineEditChanged(QString());
