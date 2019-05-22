@@ -77,9 +77,15 @@ struct ToolBarItem
     Q_GADGET
     Q_PROPERTY(bool isSeparator MEMBER isSeparator)
     Q_PROPERTY(QString id MEMBER id)
+    Q_PROPERTY(QString toolTip MEMBER toolTip)
+    Q_PROPERTY(QString statusTip MEMBER statusTip)
+    Q_PROPERTY(QString iconName MEMBER iconName)
 public:
     QString id;
     bool isSeparator = false;
+    QString toolTip;
+    QString statusTip;
+    QString iconName;
 };
 
 struct ToolBar
@@ -88,10 +94,13 @@ struct ToolBar
     Q_PROPERTY(QString id MEMBER id)
     Q_PROPERTY(QVariantList children MEMBER children)
     Q_PROPERTY(QSize iconSize MEMBER iconSize)
+    Q_PROPERTY(bool needToGenerateActions MEMBER needToGenerateActions)
 public:
     QString id;
     QSize iconSize;
     QVariantList children;
+    QString iconName;
+    bool needToGenerateActions = false;
 };
 
 struct Widget

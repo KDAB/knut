@@ -3,6 +3,7 @@
 #include "data.h"
 #include "logging.h"
 
+#include <QFileInfo>
 #include <QHash>
 
 namespace Converter {
@@ -125,16 +126,50 @@ QVariantList convertMenus(Data *data, const Knut::DataCollection &collection)
     return result;
 }
 
-ToolBarItem createToolBarItem(const Data::ToolBarItem &child)
+bool isAnActionFromMenu(const Data::MenuItem &submenu, const QString &actionId)
+{
+    if (submenu.id == actionId) {
+        return true;
+    }
+    for (const auto &menu : submenu.children) {
+        if (menu.id == actionId) {
+            return true;
+        }
+        if (isAnActionFromMenu(menu, actionId)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+ToolBarItem createToolBarItem(Data *data, const Data::ToolBarItem &child, ToolBar &itemToolbar, int index)
 {
     ToolBarItem item;
     if (child.id.isEmpty()) {
         item.isSeparator = true;
     } else {
         item.id = child.id;
-    }
-    // TODO add icon
 
+        bool foundAction = false;
+        for (const auto &menu : data->menus) {
+            if (isAnActionFromMenu(menu, item.id)) {
+                foundAction = true;
+                break;
+            }
+        }
+        if (!foundAction) {
+            const QString text = data->strings.value(child.id).text;
+            if (!text.isEmpty()) {
+
+                const auto tips = text.split(QLatin1Char('\n'));
+                item.statusTip = tips.first();
+                if (tips.size() > 1)
+                    item.toolTip = tips.value(1);
+            }
+            itemToolbar.needToGenerateActions = true;
+            item.iconName = itemToolbar.iconName + QLatin1Char('/') + itemToolbar.iconName + QStringLiteral("%1.png").arg(index);
+        }
+    }
     return item;
 }
 
@@ -147,8 +182,18 @@ ToolBar convertToolbar(Data *data, const Knut::DataCollection &collection)
     toolbar.id = item.id;
     toolbar.iconSize = QSize(item.width, item.height);
 
-    for (const auto &child : item.children)
-        toolbar.children.push_back(QVariant::fromValue(createToolBarItem(child)));
+    const QFileInfo fileInfo(data->assets.value(toolbar.id).fileName);
+    QString filename = fileInfo.fileName();
+    filename.remove(QStringLiteral(".bmp"));
+    toolbar.iconName = filename;
+
+    int indexIcon = 0;
+    for (const auto &child : item.children) {
+        toolbar.children.push_back(QVariant::fromValue(createToolBarItem(data, child, toolbar, indexIcon)));
+        if (!child.id.isEmpty()) {
+            indexIcon++;
+        }
+    }
 
     return toolbar;
 }
