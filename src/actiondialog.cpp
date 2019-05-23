@@ -7,6 +7,10 @@
 #include "overviewfiltermodel.h"
 #include "overviewmodel.h"
 
+#include <QSettings>
+namespace  {
+constexpr char JsScriptFileKey[] = "actionJsFile";
+}
 ActionDialog::ActionDialog(Data *data, QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::ActionDialog)
@@ -29,10 +33,15 @@ ActionDialog::ActionDialog(Data *data, QWidget *parent)
         ui->runButton->setEnabled(!text.trimmed().isEmpty());
     });
     ui->runButton->setEnabled(false);
+    QSettings settings;
+    const QString recentFile = settings.value(QLatin1String(JsScriptFileKey)).toString();
+    ui->fileSelector->setFileName(recentFile);
 }
 
 ActionDialog::~ActionDialog()
 {
+    QSettings settings;
+    settings.setValue(QLatin1String(JsScriptFileKey), ui->fileSelector->fileName());
     delete ui;
 }
 
