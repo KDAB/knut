@@ -35,7 +35,7 @@
        </attribute>
       </widget>
       <widget class="ContentTree" name="contentTree"/>
-      <widget class="TextEdit" name="texteditwidget" native="true"/>
+      <widget class="TextEdit" name="texteditwidget"/>
      </widget>
     </item>
    </layout>
@@ -105,6 +105,9 @@
   <action name="actionExtractToolBars">
    <property name="text">
     <string>Extract ToolBars...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
    </property>
   </action>
   <action name="actionOpenRecent">
