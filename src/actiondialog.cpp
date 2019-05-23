@@ -16,6 +16,7 @@ ActionDialog::ActionDialog(Data *data, QWidget *parent)
     , ui(new Ui::ActionDialog)
     , m_data(data)
 {
+    setAttribute(Qt::WA_DeleteOnClose);
     ui->setupUi(this);
 
     ui->fileSelector->setFilter(QStringLiteral("*.js"));

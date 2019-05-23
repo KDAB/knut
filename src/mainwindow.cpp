@@ -1,16 +1,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include "actiondialog.h"
 #include "data.h"
 #include "global.h"
-#include "menudialog.h"
 #include "menumodel.h"
 #include "overviewmodel.h"
 #include "parser.h"
 #include "rcsyntaxhighlighter.h"
-#include "toolbardialog.h"
-#include "widgetdialog.h"
 
 #include <QApplication>
 #include <QDebug>
@@ -106,14 +102,18 @@ void MainWindow::updateRecentFiles(const QString &fileName)
 
 void MainWindow::extractActions()
 {
-    ActionDialog dialog(&m_data, this);
-    dialog.exec();
+    if (!m_actionDialog) {
+        m_actionDialog = new ActionDialog(&m_data, this);
+        m_actionDialog->show();
+    }
 }
 
 void MainWindow::extractMenus()
 {
-    MenuDialog dialog(&m_data, this);
-    dialog.exec();
+    if (!m_menuDialog) {
+        m_menuDialog = new MenuDialog(&m_data, this);
+        m_menuDialog->show();
+    }
 }
 
 void MainWindow::openFile(const QString &fileName)
@@ -144,12 +144,16 @@ void MainWindow::updateRecentFileActions()
 
 void MainWindow::extractToolbars()
 {
-    ToolbarDialog dialog(&m_data, this);
-    dialog.exec();
+    if (!m_toolbarDialog) {
+        m_toolbarDialog = new ToolbarDialog(&m_data, this);
+        m_toolbarDialog->show();
+    }
 }
 
 void MainWindow::extractWidgets()
 {
-    WidgetDialog dialog(&m_data, this);
-    dialog.exec();
+    if (!m_widgetDialog) {
+        m_widgetDialog = new WidgetDialog(&m_data, this);
+        m_widgetDialog->show();
+    }
 }
