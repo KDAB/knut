@@ -41,7 +41,7 @@ QVariant OverviewFilterModel::data(const QModelIndex &index, int role) const
     return QSortFilterProxyModel::data(index, role);
 }
 
-bool OverviewFilterModel::setData(const QModelIndex &index, const QVariant &value, int role)
+bool OverviewFilterModel::setData(const QModelIndex &idx, const QVariant &value, int role)
 {
     if (role == Qt::CheckStateRole) {
         const bool checked = value.toBool();
@@ -49,17 +49,21 @@ bool OverviewFilterModel::setData(const QModelIndex &index, const QVariant &valu
             auto it = m_checkStates.begin();
             while (it != m_checkStates.end()) {
                 if (it.value()) {
+                    it.value() = false;
+                    const auto parentIdx = sourceModel()->index(it.key().first, 0);
+                    const auto sourceIdx = sourceModel()->index(it.key().second, 0, parentIdx);
+                    setData(mapFromSource(sourceIdx), false, Qt::CheckStateRole);
                 }
                 ++it;
             }
         }
-        const int type = index.data(OverviewModel::TypeRole).toInt();
-        const int row = index.data(OverviewModel::IndexRole).toInt();
+        const int type = idx.data(OverviewModel::TypeRole).toInt();
+        const int row = idx.data(OverviewModel::IndexRole).toInt();
         m_checkStates[{type, row}] = checked;
-        emit dataChanged(index, index, {Qt::CheckStateRole});
+        emit dataChanged(idx, idx, {Qt::CheckStateRole});
         return true;
     }
-    return QSortFilterProxyModel::setData(index, value, role);
+    return QSortFilterProxyModel::setData(idx, value, role);
 }
 
 Knut::DataCollection OverviewFilterModel::selectedData() const
