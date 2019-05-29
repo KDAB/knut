@@ -83,6 +83,9 @@
    <property name="text">
     <string>Close</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
+   </property>
   </action>
   <action name="actionExit">
    <property name="text">
@@ -105,9 +108,6 @@
   <action name="actionExtractToolBars">
    <property name="text">
     <string>Extract ToolBars...</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+W</string>
    </property>
   </action>
   <action name="actionOpenRecent">
