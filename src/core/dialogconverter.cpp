@@ -122,7 +122,6 @@ static QRect updateGeometry(const QRect &geometry)
     QRect result(static_cast<int>(ScaleX * geometry.x()), static_cast<int>(ScaleY * geometry.y()),
                  static_cast<int>(ScaleX * geometry.width()),
                  static_cast<int>(ScaleY * geometry.height()));
-    qDebug() << geometry << result;
     return result;
 }
 
@@ -397,7 +396,7 @@ static Widget convertScrollBar(Data::Control &control)
     if (control.styles.removeOne(SBS_VERT))
         widget.properties[Orientation] = QStringLiteral("Qt::Vertical");
     else if (control.styles.removeOne(SBS_HORZ) || true) // We want to remove the style if it exits
-        widget.properties[Orientation] = QStringLiteral("Qt::Vertical");
+        widget.properties[Orientation] = QStringLiteral("Qt::Horizontal");
 
     convertStyles(widget, control);
     return widget;
@@ -436,7 +435,7 @@ static Widget convertSlider(Data::Control &control)
     if (control.styles.removeOne(TBS_VERT))
         widget.properties[Orientation] = QStringLiteral("Qt::Vertical");
     else if (control.styles.removeOne(TBS_HORZ) || true) // We want to remove the style if it exits
-        widget.properties[Orientation] = QStringLiteral("Qt::Vertical");
+        widget.properties[Orientation] = QStringLiteral("Qt::Horizontal");
 
     if (control.styles.removeOne(TBS_NOTICKS))
         widget.properties[TickPosition] = QStringLiteral("QSlider::NoTicks");
@@ -471,7 +470,7 @@ static Widget convertProgressBar(Data::Control &control)
     if (control.styles.removeOne(TBS_VERT))
         widget.properties[Orientation] = QStringLiteral("Qt::Vertical");
     else if (control.styles.removeOne(TBS_HORZ) || true) // We want to remove the style if it exits
-        widget.properties[Orientation] = QStringLiteral("Qt::Vertical");
+        widget.properties[Orientation] = QStringLiteral("Qt::Horizontal");
 
     convertStyles(widget, control, true);
     return widget;

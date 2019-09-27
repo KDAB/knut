@@ -21,6 +21,7 @@ public:
 
 private:
     void run();
+    void preview();
 
 private:
     Ui::WidgetDialog *ui;

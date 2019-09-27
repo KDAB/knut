@@ -4,7 +4,7 @@ TEMPLATE = app
 TARGET   = $$KNUT_APP_TARGET
 DESTDIR  = $$KNUT_APP_PATH
 
-QT       += core gui widgets qml
+QT       += core gui widgets qml uitools
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings

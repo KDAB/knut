@@ -6,8 +6,12 @@
 #include "jsrunner.h"
 #include "overviewfiltermodel.h"
 #include "overviewmodel.h"
+#include "writer.h"
 
+#include <QBuffer>
 #include <QSettings>
+#include <QUiLoader>
+
 namespace  {
 constexpr char JsScriptFileKey[] = "widgetJsFile";
 }
@@ -30,6 +34,7 @@ WidgetDialog::WidgetDialog(Data *data, QWidget *parent)
     ui->treeView->expandAll();
 
     connect(ui->runButton, &QPushButton::clicked, this, &WidgetDialog::run);
+    connect(ui->previewButton, &QPushButton::clicked, this, &WidgetDialog::preview);
     connect(ui->fileSelector, &FileSelector::fileNameChanged, this,
             [this](const QString &text) { ui->runButton->setEnabled(!text.trimmed().isEmpty()); });
     ui->runButton->setEnabled(false);
@@ -56,4 +61,29 @@ void WidgetDialog::run()
     runner.setContextProperty(QStringLiteral("widgets"), dialogs);
     auto results = runner.runJavaScript(ui->fileSelector->fileName());
     ui->resultWidget->setResult(results);
+}
+
+void WidgetDialog::preview()
+{
+    if (ui->fileSelector->fileName().isEmpty())
+        return;
+
+    QVariantList dialogs = Converter::convertDialogs(m_data, m_filterModel->selectedData());
+    QUiLoader loader;
+
+    for (const auto &data : dialogs) {
+        auto dialog = data.value<Converter::Widget>();
+
+        QBuffer buffer;
+        if (buffer.open(QIODevice::WriteOnly)) {
+            Writer::writeUi(&buffer, dialog);
+            buffer.close();
+        }
+
+        if (buffer.open(QIODevice::ReadOnly)) {
+            QWidget *widget = loader.load(&buffer);
+            widget->setAttribute(Qt::WA_DeleteOnClose);
+            widget->show();
+        }
+    }
 }

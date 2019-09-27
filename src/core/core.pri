@@ -6,6 +6,7 @@ HEADERS += \
     $$PWD/logging.h \
     $$PWD/parser.h \
     $$PWD/stream.h \
+    $$PWD/writer.h
 
 SOURCES += \
     $$PWD/converter.cpp \
@@ -14,5 +15,6 @@ SOURCES += \
     $$PWD/lexer.cpp \
     $$PWD/parser.cpp \
     $$PWD/stream.cpp \
+    $$PWD/writer.cpp
 
 INCLUDEPATH += $$PWD
