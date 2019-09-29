@@ -1,14 +1,17 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "converter.h"
 #include "data.h"
 #include "global.h"
 #include "menumodel.h"
 #include "overviewmodel.h"
 #include "parser.h"
 #include "rcsyntaxhighlighter.h"
+#include "writer.h"
 
 #include <QApplication>
+#include <QBuffer>
 #include <QDebug>
 #include <QFileDialog>
 #include <QMenu>
@@ -19,6 +22,7 @@
 #include <QTextCursor>
 #include <QTextDocument>
 #include <QTextEdit>
+#include <QUiLoader>
 
 namespace {
 constexpr int MaximumRecentFile = 5;
@@ -45,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionExtractMenus, &QAction::triggered, this, &MainWindow::extractMenus);
     connect(ui->actionExtractToolBars, &QAction::triggered, this, &MainWindow::extractToolbars);
     connect(ui->actionExtractWidgets, &QAction::triggered, this, &MainWindow::extractWidgets);
+    connect(ui->overviewTree, &OverviewTree::doubleClicked, this, &MainWindow::previewDialog);
 
     new RcSyntaxHighlighter(ui->texteditwidget->document());
     m_recentMenu = new QMenu(this);
@@ -155,5 +160,27 @@ void MainWindow::extractWidgets()
     if (!m_widgetDialog) {
         m_widgetDialog = new WidgetDialog(&m_data, this);
         m_widgetDialog->show();
+    }
+}
+
+void MainWindow::previewDialog(const QModelIndex &index)
+{
+    if (!index.isValid() || !index.parent().isValid()
+        || index.data(OverviewModel::TypeRole) != Knut::DialogData)
+        return;
+
+    Converter::Widget dialog = Converter::convertDialog(&m_data, index.row());
+    QUiLoader loader;
+
+    QBuffer buffer;
+    if (buffer.open(QIODevice::WriteOnly)) {
+        Writer::writeUi(&buffer, dialog);
+        buffer.close();
+    }
+
+    if (buffer.open(QIODevice::ReadOnly)) {
+        QWidget *widget = loader.load(&buffer);
+        widget->setAttribute(Qt::WA_DeleteOnClose);
+        widget->show();
     }
 }

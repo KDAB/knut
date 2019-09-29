@@ -38,6 +38,7 @@ private:
     void updateRecentFiles(const QString &fileName);
     void extractToolbars();
     void extractWidgets();
+    void previewDialog(const QModelIndex &index);
 
 private:
     Ui::MainWindow *ui = nullptr;
