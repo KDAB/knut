@@ -2,6 +2,10 @@
 
 #include "converter.h"
 #include "parser.h"
+#include "writer.h"
+
+#include <QBuffer>
+#include <QUiLoader>
 
 class ConverterTest : public QObject
 {
@@ -113,7 +117,7 @@ private slots:
         auto result = Converter::convertDialog(&data, 1);
 
         QCOMPARE(result.id, QStringLiteral("IDD_ABOUTBOX"));
-        QCOMPARE(result.geometry, QRect(0, 0, 255, 102));
+        QCOMPARE(result.geometry, QRect(0, 0, 255, 103));
         QCOMPARE(result.className, QStringLiteral("QDialog"));
         QCOMPARE(result.properties[QStringLiteral("windowTitle")].toString(),
                  QStringLiteral("About 2048Game"));
@@ -123,15 +127,37 @@ private slots:
         auto item = result.children.at(2).value<Converter::Widget>();
         QCOMPARE(item.className, QStringLiteral("QPushButton"));
         QCOMPARE(item.properties.value(QStringLiteral("text")).toString(), QStringLiteral("OK"));
-        QCOMPARE(item.geometry, QRect(96, 108, 75, 23));
+        QCOMPARE(item.geometry, QRect(96, 108, 75, 24));
         item = result.children.last().value<Converter::Widget>();
         QCOMPARE(item.className, QStringLiteral("QComboBox"));
         QStringList values = {QStringLiteral("3"), QStringLiteral("4"), QStringLiteral("5"),
                               QStringLiteral("6")};
         QCOMPARE(item.properties.value(QStringLiteral("text")).toStringList(), values);
     }
+
+    void testWriteDialog()
+    {
+        Data data = Parser::parse(
+            QString(QLatin1String(SAMPLES) + QStringLiteral("complex/cryEdit/CryEdit.rc")));
+
+        QUiLoader loader;
+        for (int index = 0; index < data.dialogs.count(); ++index) {
+            Converter::Widget dialog = Converter::convertDialog(&data, index);
+
+            QBuffer buffer;
+            if (buffer.open(QIODevice::WriteOnly)) {
+                Writer::writeUi(&buffer, dialog);
+                buffer.close();
+            }
+            if (buffer.open(QIODevice::ReadOnly)) {
+                QWidget *widget = loader.load(&buffer);
+                QVERIFY2(loader.errorString().isEmpty(), dialog.className.toLatin1());
+                widget->deleteLater();
+            }
+        }
+    }
 };
 
-QTEST_APPLESS_MAIN(ConverterTest)
+QTEST_MAIN(ConverterTest)
 
 #include "tst_convertertest.moc"

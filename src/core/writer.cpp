@@ -10,18 +10,23 @@ namespace Writer {
 
 void writePropery(QXmlStreamWriter &w, const QString &name, const QVariant &value)
 {
-    w.writeStartElement(QLatin1String("property"));
-    w.writeAttribute(QLatin1String("name"), name);
-
     switch (static_cast<QMetaType::Type>(value.type())) {
     case QMetaType::Bool:
+        w.writeStartElement(QLatin1String("property"));
+        w.writeAttribute(QLatin1String("name"), name);
         w.writeTextElement(QLatin1String("bool"),
                            value.toBool() ? QLatin1String("true") : QLatin1String("false"));
+        w.writeEndElement();
         break;
     case QMetaType::Int:
+        w.writeStartElement(QLatin1String("property"));
+        w.writeAttribute(QLatin1String("name"), name);
         w.writeTextElement(QLatin1String("number"), QString::number(value.toInt()));
+        w.writeEndElement();
         break;
     case QMetaType::QString: {
+        w.writeStartElement(QLatin1String("property"));
+        w.writeAttribute(QLatin1String("name"), name);
         const auto text = value.toString();
         if (name == QLatin1String("alignment")) {
             w.writeTextElement(QLatin1String("set"), text);
@@ -31,13 +36,24 @@ void writePropery(QXmlStreamWriter &w, const QString &name, const QVariant &valu
             else
                 w.writeTextElement(QLatin1String("string"), text);
         }
+        w.writeEndElement();
+        break;
+    }
+    case QMetaType::QStringList: {
+        const auto values = value.toStringList();
+        for (const auto &text : values) {
+            w.writeStartElement(QLatin1String("item"));
+            w.writeStartElement(QLatin1String("property"));
+            w.writeAttribute(QLatin1String("name"), name);
+            w.writeTextElement(QLatin1String("string"), text);
+            w.writeEndElement();
+            w.writeEndElement();
+        }
         break;
     }
     default:
         qCCritical(CONVERTER) << "Unknow property type:" << name << value.toString();
     }
-
-    w.writeEndElement();
 }
 
 void writeWidget(QXmlStreamWriter &w, const Converter::Widget &widget)

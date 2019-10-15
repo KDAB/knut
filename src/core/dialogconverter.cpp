@@ -120,8 +120,8 @@ const auto CalendarPopup = QStringLiteral("calendarPopup");
 static QRect updateGeometry(const QRect &geometry)
 {
     QRect result(static_cast<int>(ScaleX * geometry.x()), static_cast<int>(ScaleY * geometry.y()),
-                 static_cast<int>(ScaleX * geometry.width()),
-                 static_cast<int>(ScaleY * geometry.height()));
+                 static_cast<int>(std::ceil(ScaleX * geometry.width())),
+                 static_cast<int>(std::ceil(ScaleY * geometry.height())));
     return result;
 }
 
@@ -227,9 +227,9 @@ static Widget convertCheckBox(Data::Control &control)
 }
 
 // TODO
-static Widget convertComboBox(Data *data, const QString &dialogId, Data::Control control)
+static Widget convertComboBox(Data *data, const QString &dialogId, Data::Control &control)
 {
-    Q_UNUSED(data);
+    Q_UNUSED(data)
     Widget widget;
     widget.className = QStringLiteral("QComboBox");
 
@@ -238,13 +238,13 @@ static Widget convertComboBox(Data *data, const QString &dialogId, Data::Control
     } else {
         // In MFC, the height is not the height of the combobox
         // So we take the default height of a combobox
-        control.geometry.setHeight(22);
+        control.geometry.setHeight(22 / ScaleY);
 
         if (control.styles.removeOne(CBS_DROPDOWN)) {
             widget.properties[Editable] = true;
             widget.properties[InsertPolicy] = QLatin1String("QComboBox::NoInsert");
         }
-    };
+    }
 
     // Initialize the values if they exists
     const auto it =
@@ -268,7 +268,7 @@ static Widget convertComboBox(Data *data, const QString &dialogId, Data::Control
 // https://docs.microsoft.com/en-us/windows/desktop/menurc/icon-control
 static Widget convertLabel(Data *data, Data::Control &control)
 {
-    Q_UNUSED(data);
+    Q_UNUSED(data)
     Widget widget;
     widget.className = QStringLiteral("QLabel");
 
@@ -309,10 +309,12 @@ static Widget convertLabel(Data *data, Data::Control &control)
 static Widget convertEditText(Data::Control &control)
 {
     Widget widget;
+    bool hasFrame = false;
 
     // TODO what about RichEdit20W
     if (control.styles.removeOne(ES_MULTILINE) || control.className == QStringLiteral("RICHEDIT")) {
         widget.className = QStringLiteral("QTextEdit");
+        hasFrame = true;
     } else {
         widget.className = QStringLiteral("QLineEdit");
         if (control.styles.removeOne(ES_CENTER))
@@ -330,7 +332,7 @@ static Widget convertEditText(Data::Control &control)
     if (control.styles.removeOne(ES_READONLY))
         widget.properties[ReadOnly] = true;
 
-    convertStyles(widget, control, true);
+    convertStyles(widget, control, hasFrame);
     return widget;
 }
 
@@ -338,7 +340,7 @@ static Widget convertEditText(Data::Control &control)
 static Widget convertGroupBox(Data::Control &control)
 {
     Widget widget;
-    widget.className = QStringLiteral("QComboBox");
+    widget.className = QStringLiteral("QGroupBox");
     widget.properties[Title] = control.text;
     convertStyles(widget, control);
     return widget;
@@ -472,7 +474,7 @@ static Widget convertProgressBar(Data::Control &control)
     else if (control.styles.removeOne(TBS_HORZ) || true) // We want to remove the style if it exits
         widget.properties[Orientation] = QStringLiteral("Qt::Horizontal");
 
-    convertStyles(widget, control, true);
+    convertStyles(widget, control);
     return widget;
 }
 
@@ -592,6 +594,8 @@ static Widget convertControl(Data *data, const QString &dialogId, Data::Control 
         return convertTabWidget(control);
     if (control.className == QLatin1String("SysLink"))
         return convertLabel(data, control);
+    if (control.className == QLatin1String("MfcPropertyGrid"))
+        return convertTreeWidget(control);
 
     qCCritical(CONVERTER) << control.id << "- Unknow CONTROL:" << control.className;
 
@@ -681,6 +685,7 @@ static QVariantList adjustHierarchy(QVector<Widget> widgets)
 
                 widgets[j].children.push_back(QVariant::fromValue(iWidget));
                 toRemove.push_front(i);
+                break;
             }
         }
     }

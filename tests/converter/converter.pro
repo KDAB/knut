@@ -2,7 +2,7 @@ include (../../knut.pri)
 include (../../samples/samples.pri)
 include (../../js-samples/js-samples.pri)
 
-QT += testlib
+QT += testlib uitools
 
 CONFIG += qt console warn_on depend_includepath testcase
 CONFIG -= app_bundle
