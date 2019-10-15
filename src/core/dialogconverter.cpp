@@ -5,6 +5,7 @@
 #include "logging.h"
 
 #include <algorithm>
+#include <cmath>
 
 namespace Converter {
 constexpr double ScaleX = 1.5;
