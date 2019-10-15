@@ -35,7 +35,7 @@
        </attribute>
       </widget>
       <widget class="ContentTree" name="contentTree"/>
-      <widget class="TextEdit" name="texteditwidget"/>
+      <widget class="TextEdit" name="texteditwidget" native="true"/>
      </widget>
     </item>
    </layout>
@@ -67,6 +67,7 @@
     <addaction name="actionExtractMenus"/>
     <addaction name="actionExtractToolBars"/>
     <addaction name="actionExtractWidgets"/>
+    <addaction name="actionExportToUi"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menuExtract"/>
@@ -121,6 +122,11 @@
   <action name="actionExtractWidgets">
    <property name="text">
     <string>Extract Widgets...</string>
+   </property>
+  </action>
+  <action name="actionExportToUi">
+   <property name="text">
+    <string>Export to UI Files...</string>
    </property>
   </action>
  </widget>

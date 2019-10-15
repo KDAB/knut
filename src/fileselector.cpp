@@ -28,6 +28,11 @@ QString FileSelector::fileName() const
     return m_lineEdit->text();
 }
 
+FileSelector::Mode FileSelector::mode() const
+{
+    return m_mode;
+}
+
 void FileSelector::setFilter(const QString &filter)
 {
     m_filter = filter;
@@ -38,10 +43,22 @@ void FileSelector::setFileName(const QString &fileName)
     m_lineEdit->setText(fileName);
 }
 
+void FileSelector::setMode(FileSelector::Mode mode)
+{
+    m_mode = mode;
+}
+
 void FileSelector::chooseFile()
 {
     QString fileName;
-    fileName = QFileDialog::getOpenFileName(this, QString(), m_lineEdit->text(), m_filter);
+    switch (m_mode) {
+    case Mode::File:
+        fileName = QFileDialog::getOpenFileName(this, QString(), m_lineEdit->text(), m_filter);
+        break;
+    case Mode::Directory:
+        fileName = QFileDialog::getExistingDirectory(this, QString(), m_lineEdit->text());
+        break;
+    }
 
     if (!fileName.isEmpty())
         m_lineEdit->setText(fileName);

@@ -6,7 +6,6 @@
 #include "jsrunner.h"
 #include "overviewfiltermodel.h"
 #include "overviewmodel.h"
-#include "writer.h"
 
 #include <QBuffer>
 #include <QSettings>

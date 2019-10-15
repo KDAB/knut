@@ -11,13 +11,18 @@ class FileSelector : public QWidget
     Q_PROPERTY(QString fileName READ fileName WRITE setFileName)
 
 public:
+    enum class Mode { File, Directory };
+
+public:
     explicit FileSelector(QWidget *parent = nullptr);
 
     QString fileName() const;
+    Mode mode() const;
 
 public slots:
     void setFilter(const QString &filter);
     void setFileName(const QString &fileName);
+    void setMode(Mode mode);
 
 signals:
     void fileNameChanged(const QString &fileName);
@@ -28,6 +33,7 @@ private:
 private:
     QLineEdit *m_lineEdit = nullptr;
     QString m_filter;
+    Mode m_mode = Mode::File;
 };
 
 #endif // FILESELECTOR_H

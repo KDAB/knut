@@ -8,6 +8,7 @@
 #include "overviewmodel.h"
 #include "parser.h"
 #include "rcsyntaxhighlighter.h"
+#include "uidialog.h"
 #include "writer.h"
 
 #include <QApplication>
@@ -49,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionExtractMenus, &QAction::triggered, this, &MainWindow::extractMenus);
     connect(ui->actionExtractToolBars, &QAction::triggered, this, &MainWindow::extractToolbars);
     connect(ui->actionExtractWidgets, &QAction::triggered, this, &MainWindow::extractWidgets);
+    connect(ui->actionExportToUi, &QAction::triggered, this, &MainWindow::exportToUi);
     connect(ui->overviewTree, &OverviewTree::doubleClicked, this, &MainWindow::previewDialog);
 
     new RcSyntaxHighlighter(ui->texteditwidget->document());
@@ -161,6 +163,12 @@ void MainWindow::extractWidgets()
         m_widgetDialog = new WidgetDialog(&m_data, this);
         m_widgetDialog->show();
     }
+}
+
+void MainWindow::exportToUi()
+{
+    UiDialog dialog(&m_data, this);
+    dialog.exec();
 }
 
 void MainWindow::previewDialog(const QModelIndex &index)

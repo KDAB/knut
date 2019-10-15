@@ -37,6 +37,7 @@ SOURCES += \
     resultwidget.cpp\
     textedit.cpp \
     toolbardialog.cpp \
+    uidialog.cpp \
     widgetdialog.cpp
 
 HEADERS += \
@@ -53,6 +54,7 @@ HEADERS += \
     resultwidget.h\
     textedit.h \
     toolbardialog.h \
+    uidialog.h \
     widgetdialog.h
 
 FORMS += \
@@ -60,4 +62,5 @@ FORMS += \
     mainwindow.ui \
     menudialog.ui \
     toolbardialog.ui \
+    uidialog.ui \
     widgetdialog.ui
