@@ -86,8 +86,9 @@ void MainWindow::highlightLine(int line)
 
 void MainWindow::openData()
 {
+    QFileInfo fi(m_currentFileName);
     const QString &fileName = QFileDialog::getOpenFileName(
-        this, QStringLiteral("Open Resource File"), QStringLiteral("."), QStringLiteral("*.rc"));
+        this, QStringLiteral("Open Resource File"), fi.filePath(), QStringLiteral("*.rc"));
     if (fileName.isEmpty())
         return;
     openFile(fileName);
@@ -129,6 +130,7 @@ void MainWindow::openFile(const QString &fileName)
 
     m_data = Parser::parse(fileName);
 
+    m_currentFileName = fileName;
     setWindowTitle(QStringLiteral("Knut - %1").arg(fileName));
     ui->texteditwidget->setText(m_data.content.replace(QLatin1Char('\t'), QLatin1String("    ")));
     ui->overviewTree->updateModel();

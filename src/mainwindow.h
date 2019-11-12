@@ -44,6 +44,7 @@ private:
 private:
     Ui::MainWindow *ui = nullptr;
     QMenu *m_recentMenu = nullptr;
+    QString m_currentFileName;
     Data m_data;
     QPointer<ActionDialog> m_actionDialog;
     QPointer<MenuDialog> m_menuDialog;
