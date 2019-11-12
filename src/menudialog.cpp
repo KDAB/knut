@@ -24,7 +24,6 @@ MenuDialog::MenuDialog(Data *data, QWidget *parent)
     auto model = new OverviewModel(this);
     model->setResourceData(m_data);
     m_filterModel = new OverviewFilterModel(this);
-    m_filterModel->setExclusive(true);
     m_filterModel->setDataType({Knut::MenuData});
     m_filterModel->setSourceModel(model);
     ui->treeView->setModel(m_filterModel);

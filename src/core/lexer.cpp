@@ -7,6 +7,7 @@
 namespace Parser {
 
 static QHash<QString, Keywords> KeywordMap = {
+    // Used in MENUITEM - not handled in Qt
     {QStringLiteral("ACCELERATORS"), Keywords::ACCELERATORS},
     {QStringLiteral("AFX_DIALOG_LAYOUT"), Keywords::AFX_DIALOG_LAYOUT},
     {QStringLiteral("BITMAP"), Keywords::BITMAP},
@@ -31,14 +32,23 @@ static QHash<QString, Keywords> KeywordMap = {
     {QStringLiteral("BEGIN"), Keywords::BEGIN},
     {QStringLiteral("END"), Keywords::END},
     {QStringLiteral("SEPARATOR"), Keywords::SEPARATOR},
+    {QStringLiteral("MFT_SEPARATOR"), Keywords::SEPARATOR},
     {QStringLiteral("BUTTON"), Keywords::BUTTON},
     {QStringLiteral("NOT"), Keywords::NOT},
     {QStringLiteral("CHECKED"), Keywords::CHECKED},
+    {QStringLiteral("MFS_CHECKED"), Keywords::CHECKED},
     {QStringLiteral("GRAYED"), Keywords::GRAYED},
+    {QStringLiteral("MFS_GRAYED"), Keywords::GRAYED},
+    {QStringLiteral("MFS_DISABLED"), Keywords::INACTIVE},
     {QStringLiteral("HELP"), Keywords::HELP},
     {QStringLiteral("INACTIVE"), Keywords::INACTIVE},
     {QStringLiteral("MENUBARBREAK"), Keywords::MENUBARBREAK},
+    {QStringLiteral("MFT_MENUBARBREAK"), Keywords::MENUBARBREAK},
     {QStringLiteral("MENUBREAK"), Keywords::MENUBREAK},
+    {QStringLiteral("MFT_MENUBREAK"), Keywords::MENUBREAK},
+    {QStringLiteral("MFT_STRING"), Keywords::MFT_STRING},
+    {QStringLiteral("MFS_ENABLED"), Keywords::MFS_ENABLED},
+    {QStringLiteral("MFT_RIGHTJUSTIFY"), Keywords::MFT_RIGHTJUSTIFY},
     {QStringLiteral("ALT"), Keywords::ALT},
     {QStringLiteral("ASCII"), Keywords::ASCII},
     {QStringLiteral("NOINVERT"), Keywords::NOINVERT},

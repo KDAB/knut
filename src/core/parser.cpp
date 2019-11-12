@@ -504,8 +504,11 @@ static Data::MenuItem readMenuItem(Lexer &lexer, Data &data)
             item.shortcut = split.last();
         lexer.skipComma();
         item.id = toId(lexer.next(), data);
-        while (lexer.peek()->type == Token::Operator_Comma) {
-            lexer.skipComma();
+
+        bool readNext = lexer.peek()->type == Token::Operator_Comma;
+
+        while (readNext) {
+            lexer.next();
             const auto flagToken = lexer.next();
             switch (flagToken->toKeyword()) {
             case Keywords::CHECKED:
@@ -528,8 +531,11 @@ static Data::MenuItem readMenuItem(Lexer &lexer, Data &data)
                 break;
             default:
                 qCWarning(PARSER) << "Parser unhandled:" << lexer.line()
-                                  << "- token: " << token->prettyPrint();
+                                  << "- token: " << flagToken->prettyPrint();
             }
+
+            const auto type = lexer.peek()->type;
+            readNext = (type == Token::Operator_Comma || type == Token::Operator_Or);
         }
     }
     return item;

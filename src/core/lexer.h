@@ -52,6 +52,9 @@ enum class Keywords {
     INACTIVE,
     MENUBARBREAK,
     MENUBREAK,
+    MFT_STRING,
+    MFS_ENABLED,
+    MFT_RIGHTJUSTIFY,
 
     // Accelerator
     ASCII,
