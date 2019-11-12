@@ -682,7 +682,7 @@ static Data::Control readControl(Lexer &lexer, Data &data, const std::optional<T
         Keywords::RTEXT,      Keywords::STATE3,       Keywords::CONTROL};
 
     if (textControl.contains(controlType)) {
-        if (controlType == Keywords::ICON)
+        if (controlType == Keywords::ICON || controlType == Keywords::CONTROL)
             control.text = toId(lexer.next(), data);
         else
             control.text = lexer.next()->toString();
