@@ -15,6 +15,11 @@ namespace Parser {
 // See the list and description here:
 // https://docs.microsoft.com/en-us/windows/desktop/menurc/resource-definition-statements
 enum class Keywords {
+    // All keywords ignored
+    // 16-bits only: PRELOAD, LOADONCALL, FIXED, MOVEABLE, DISCARDABLE, PURE, IMPURE, SHARED,
+    // NONSHARED
+    IGNORE_16BITS,
+
     // Resources
     ACCELERATORS,
     AFX_DIALOG_LAYOUT, // https://docs.microsoft.com/en-us/cpp/mfc/dynamic-layout?view=vs-2019

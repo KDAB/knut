@@ -767,9 +767,20 @@ static void readDialog(Lexer &lexer, Data &data, const QString &id)
     qCInfo(PARSER) << dialog.line << "- Dialog:" << id;
 }
 
-static void readKeyWord(Lexer &lexer, Data &data, const std::optional<Token> &token,
-                        const std::optional<Token> &id)
+static void skipResourceAttributes(Lexer &lexer)
 {
+    // Ignore any resource attributes, only used in 16-bits Windows
+    const auto next = lexer.peek();
+    if (next.has_value() && next->type == Token::Keyword
+        && next->toKeyword() == Keywords::IGNORE_16BITS)
+        lexer.next();
+}
+
+static void readResource(Lexer &lexer, Data &data, const std::optional<Token> &token,
+                         const std::optional<Token> &id)
+{
+    skipResourceAttributes(lexer);
+
     const auto keyword = token->toKeyword();
     switch (keyword) {
     case Keywords::LANGUAGE:
@@ -889,7 +900,7 @@ Data parse(const QString &fileName)
                 readDirective(lexer, data, token->toString());
                 break;
             case Token::Keyword: {
-                readKeyWord(lexer, data, token, previousToken);
+                readResource(lexer, data, token, previousToken);
                 previousToken.reset();
                 break;
             }

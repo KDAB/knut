@@ -29,6 +29,15 @@ static QHash<QString, Keywords> KeywordMap = {
     {QStringLiteral("TEXTINCLUDE"), Keywords::TEXTINCLUDE},
     {QStringLiteral("TOOLBAR"), Keywords::TOOLBAR},
     {QStringLiteral("VERSIONINFO"), Keywords::VERSIONINFO},
+    {QStringLiteral("PRELOAD"), Keywords::IGNORE_16BITS},
+    {QStringLiteral("LOADONCALL"), Keywords::IGNORE_16BITS},
+    {QStringLiteral("FIXED"), Keywords::IGNORE_16BITS},
+    {QStringLiteral("MOVEABLE"), Keywords::IGNORE_16BITS},
+    {QStringLiteral("DISCARDABLE"), Keywords::IGNORE_16BITS},
+    {QStringLiteral("PURE"), Keywords::IGNORE_16BITS},
+    {QStringLiteral("IMPURE"), Keywords::IGNORE_16BITS},
+    {QStringLiteral("SHARED"), Keywords::IGNORE_16BITS},
+    {QStringLiteral("NONSHARED"), Keywords::IGNORE_16BITS},
     {QStringLiteral("BEGIN"), Keywords::BEGIN},
     {QStringLiteral("END"), Keywords::END},
     {QStringLiteral("SEPARATOR"), Keywords::SEPARATOR},
@@ -144,17 +153,16 @@ void Lexer::skipComma()
 
 void Lexer::skipScope()
 {
-    int scope = 0;
-    bool inScope = false;
-    while (!m_stream.atEnd() && (scope != 0 || !inScope)) {
+    skipToBegin();
+    int scope = 1;
+    while (!m_stream.atEnd() && (scope != 0)) {
         skipSpace();
         const QChar &ch = m_stream.peek();
         if (ch == QLatin1Char('B') || ch == QLatin1Char('E')) {
             const QString word = readWhile([](const auto &c) { return c.isLetter(); });
-            if (word == QLatin1String("BEGIN")) {
+            if (word == QLatin1String("BEGIN"))
                 ++scope;
-                inScope = true;
-            } else if (word == QLatin1String("END"))
+            else if (word == QLatin1String("END"))
                 --scope;
         }
         skipLine();
@@ -164,6 +172,11 @@ void Lexer::skipScope()
 
 void Lexer::skipToBegin()
 {
+    if (m_current && m_current->type == Token::Keyword
+        && m_current->toKeyword() == Keywords::BEGIN) {
+        m_current.reset();
+        return;
+    }
     while (!m_stream.atEnd()) {
         skipSpace();
         const QChar &ch = m_stream.peek();
