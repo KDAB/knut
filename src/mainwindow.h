@@ -39,6 +39,7 @@ private:
     void extractToolbars();
     void extractWidgets();
     void exportToUi();
+    void exportToQrc();
     void previewDialog(const QModelIndex &index);
 
 private:

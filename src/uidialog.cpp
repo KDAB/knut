@@ -20,7 +20,7 @@ UiDialog::UiDialog(Data *data, QWidget *parent)
     , m_data(data)
 {
     ui->setupUi(this);
-    ui->fileSelector->setMode(FileSelector::Mode::Directory);
+    ui->fileSelector->setMode(FileSelector::Mode::OpenDirectory);
 
     auto model = new OverviewModel(this);
     model->setResourceData(m_data);

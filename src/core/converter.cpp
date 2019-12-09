@@ -198,4 +198,18 @@ ToolBar convertToolbar(Data *data, const Knut::DataCollection &collection)
     return toolbar;
 }
 
+QVector<Asset> convertAssets(Data *data, const QDir &relativeDir)
+{
+    QVector<Asset> result;
+    for (const auto &item : data->assets) {
+        Asset asset;
+        asset.id = item.id;
+        if (!relativeDir.isEmpty())
+            asset.fileName = relativeDir.relativeFilePath(item.fileName);
+        else
+            asset.fileName = item.fileName;
+        result.push_back(asset);
+    }
+    return result;
+}
 }

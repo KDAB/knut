@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "assetdialog.h"
 #include "converter.h"
 #include "data.h"
 #include "global.h"
@@ -51,6 +52,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionExtractToolBars, &QAction::triggered, this, &MainWindow::extractToolbars);
     connect(ui->actionExtractWidgets, &QAction::triggered, this, &MainWindow::extractWidgets);
     connect(ui->actionExportToUi, &QAction::triggered, this, &MainWindow::exportToUi);
+    connect(ui->actionExportToQrc, &QAction::triggered, this, &MainWindow::exportToQrc);
     connect(ui->overviewTree, &OverviewTree::doubleClicked, this, &MainWindow::previewDialog);
 
     new RcSyntaxHighlighter(ui->texteditwidget->document());
@@ -170,6 +172,12 @@ void MainWindow::extractWidgets()
 void MainWindow::exportToUi()
 {
     UiDialog dialog(&m_data, this);
+    dialog.exec();
+}
+
+void MainWindow::exportToQrc()
+{
+    AssetDialog dialog(&m_data, this);
     dialog.exec();
 }
 

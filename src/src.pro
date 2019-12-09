@@ -24,6 +24,7 @@ include (models/models.pri)
 
 SOURCES += \
     actiondialog.cpp \
+    assetdialog.cpp \
     contenttree.cpp \
     fileselector.cpp \
     jsrunner.cpp \
@@ -42,6 +43,7 @@ SOURCES += \
 
 HEADERS += \
     actiondialog.h \
+    assetdialog.h \
     contenttree.h \
     fileselector.h \
     jsrunner.h \
@@ -59,6 +61,7 @@ HEADERS += \
 
 FORMS += \
     actiondialog.ui \
+    assetdialog.ui \
     mainwindow.ui \
     menudialog.ui \
     toolbardialog.ui \

@@ -106,4 +106,29 @@ void writeUi(QIODevice *device, const Converter::Widget &widget)
     w.writeEndElement();
 }
 
+void writeQrc(QIODevice *device, const QVector<Converter::Asset> &assets, bool useAlias)
+{
+    QXmlStreamWriter w(device);
+
+    w.setAutoFormatting(true);
+
+    w.writeStartElement(QLatin1String("RCC"));
+    w.writeStartElement(QLatin1String("qresource"));
+    w.writeAttribute(QLatin1String("prefix"), QLatin1String("/"));
+
+    if (useAlias) {
+        for (const auto &asset : assets) {
+            w.writeStartElement(QLatin1String("file"));
+            w.writeAttribute(QLatin1String("alias"), asset.id);
+            w.writeCharacters(asset.fileName);
+            w.writeEndElement();
+        }
+    } else {
+        for (const auto &asset : assets)
+            w.writeTextElement(QLatin1String("file"), asset.fileName);
+    }
+
+    w.writeEndElement();
+    w.writeEndElement();
+}
 }

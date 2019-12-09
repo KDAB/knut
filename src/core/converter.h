@@ -3,7 +3,9 @@
 
 #include "global.h"
 
+#include <QDir>
 #include <QVariant>
+#include <QVector>
 
 struct Data;
 
@@ -119,12 +121,24 @@ public:
     QVariantList children;
 };
 
+struct Asset
+{
+    Q_GADGET
+    Q_PROPERTY(QString id MEMBER id)
+    Q_PROPERTY(QString fileName MEMBER fileName)
+public:
+    QString id;
+    QString fileName;
+};
+
 QVariantList convertActions(Data *data, const Knut::DataCollection &collection);
 QVariantList convertMenus(Data *data, const Knut::DataCollection &collection);
 ToolBar convertToolbar(Data *data, const Knut::DataCollection &collection);
 
 Widget convertDialog(Data *data, int index);
 QVariantList convertDialogs(Data *data, const Knut::DataCollection &collection);
+
+QVector<Asset> convertAssets(Data *data, const QDir &relativeDir = {});
 }
 
 Q_DECLARE_METATYPE(Converter::Shortcut)

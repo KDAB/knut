@@ -52,11 +52,14 @@ void FileSelector::chooseFile()
 {
     QString fileName;
     switch (m_mode) {
-    case Mode::File:
+    case Mode::OpenFile:
         fileName = QFileDialog::getOpenFileName(this, QString(), m_lineEdit->text(), m_filter);
         break;
-    case Mode::Directory:
+    case Mode::OpenDirectory:
         fileName = QFileDialog::getExistingDirectory(this, QString(), m_lineEdit->text());
+        break;
+    case Mode::SaveFile:
+        fileName = QFileDialog::getSaveFileName(this, QString(), m_lineEdit->text(), m_filter);
         break;
     }
 

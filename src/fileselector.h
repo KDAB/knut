@@ -11,7 +11,7 @@ class FileSelector : public QWidget
     Q_PROPERTY(QString fileName READ fileName WRITE setFileName)
 
 public:
-    enum class Mode { File, Directory };
+    enum class Mode { OpenFile, OpenDirectory, SaveFile };
 
 public:
     explicit FileSelector(QWidget *parent = nullptr);
@@ -33,7 +33,7 @@ private:
 private:
     QLineEdit *m_lineEdit = nullptr;
     QString m_filter;
-    Mode m_mode = Mode::File;
+    Mode m_mode = Mode::OpenFile;
 };
 
 #endif // FILESELECTOR_H
