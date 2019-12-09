@@ -97,9 +97,8 @@ private slots:
         QCOMPARE(data.dialogs.size(), 3);
         const auto gotoFuncDialog = data.dialogs.first();
         QCOMPARE(gotoFuncDialog.id, QStringLiteral("IDD_GOTO_FUNC"));
-        const QStringList styles = {QStringLiteral("DS_SETFONT"),  QStringLiteral("DS_MODALFRAME"),
-                                    QStringLiteral("DS_FIXEDSYS"), QStringLiteral("WS_POPUP"),
-                                    QStringLiteral("WS_CAPTION"),  QStringLiteral("WS_SYSMENU")};
+        const QStringList styles = {QStringLiteral("DS_SETFONT"), QStringLiteral("DS_MODALFRAME"),
+                                    QStringLiteral("DS_FIXEDSYS"), QStringLiteral("WS_POPUP")};
         QCOMPARE(gotoFuncDialog.styles, styles);
         QCOMPARE(gotoFuncDialog.caption, QStringLiteral("Go To Function"));
         QCOMPARE(gotoFuncDialog.geometry, QRect(0, 0, 262, 314));

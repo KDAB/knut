@@ -91,7 +91,15 @@ static QStringList readStyles(Lexer &lexer)
 
 static void readDialogStatements(Lexer &lexer, Data::Dialog &dialog, const Data &data)
 {
-    while (lexer.peek()->toKeyword() != Keywords::BEGIN) {
+    while (const auto peekToken = lexer.peek()) {
+        // There could be some #if/#else/#end here
+        // Just skip them, as they don't add much values
+        if (peekToken->type == Token::Directive) {
+            lexer.skipLine();
+            continue;
+        }
+        if (peekToken->toKeyword() == Keywords::BEGIN)
+            break;
         const auto token = lexer.next();
         switch (token->toKeyword()) {
         case Keywords::CHARACTERISTICS:
@@ -109,7 +117,7 @@ static void readDialogStatements(Lexer &lexer, Data::Dialog &dialog, const Data 
             break;
         case Keywords::EXSTYLE:
         case Keywords::STYLE:
-            dialog.styles += readStyles(lexer);
+            dialog.styles = readStyles(lexer);
             break;
         default:
             qCCritical(PARSER) << "Parser error line:" << lexer.line()
