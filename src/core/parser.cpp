@@ -8,7 +8,7 @@
 #include <QFileInfo>
 #include <QHash>
 #include <QKeySequence>
-#include <QTime>
+#include <QElapsedTimer>
 
 namespace Parser {
 
@@ -873,7 +873,7 @@ static void readDirective(Lexer &lexer, Data &data, const QString &directive)
 //=============================================================================
 Data parse(const QString &fileName)
 {
-    QTime time;
+    QElapsedTimer time;
     time.start();
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly))
