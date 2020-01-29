@@ -27,6 +27,7 @@ public:
 
 public slots:
     void highlightLine(int line);
+    void openFile(const QString &fileName);
 
 private:
     void openData();
@@ -34,7 +35,6 @@ private:
     void extractMenus();
     void closeFile();
     void updateRecentFileActions();
-    void openFile(const QString &fileName);
     void updateRecentFiles(const QString &fileName);
     void extractToolbars();
     void extractWidgets();
