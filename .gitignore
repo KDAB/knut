@@ -15,8 +15,6 @@
 *_pch.h.cpp
 *_resource.rc
 *.qm
-.vs
-x64
 .#*
 *.*#
 core
@@ -33,9 +31,10 @@ ui_*.h
 qrc_*.cpp
 Thumbs.db
 *.res
+*.rc
 /.qmake.cache
 /.qmake.stash
-/build*/
+
 # qtcreator generated files
 *.pro.user*
 
@@ -72,3 +71,13 @@ Thumbs.db
 *.dll
 *.exe
 
+CMakeLists.txt.user
+CMakeLists.txt.user.*
+*.spv
+.vs/*
+imgui.ini
+
+.vscode/*
+build/*
+serenity_metatype.*
+output.json
