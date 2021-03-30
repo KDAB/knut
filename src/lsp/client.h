@@ -20,7 +20,8 @@ public:
 private:
     void readError();
     void readOutput();
-    void finishProcess();
+    void initializeServer();
+    void exitServer();
 
 private:
     std::shared_ptr<spdlog::logger> m_logger;

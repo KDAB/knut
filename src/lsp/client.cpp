@@ -1,10 +1,14 @@
 #include "client.h"
 
+#include "message.h"
+
 #include <QProcess>
 
+#include <nlohmann/json.hpp>
 #include <spdlog/sinks/stdout_color_sinks.h>
+using json = nlohmann::json;
 
-using namespace Lsp;
+namespace Lsp {
 
 Client::Client(const QString &program, const QStringList &arguments, QObject *parent)
     : QObject(parent)
@@ -20,7 +24,8 @@ Client::Client(const QString &program, const QStringList &arguments, QObject *pa
 
     connect(m_process, &QProcess::readyReadStandardError, this, &Client::readError);
     connect(m_process, &QProcess::readyReadStandardOutput, this, &Client::readOutput);
-    connect(m_process, qOverload<int, QProcess::ExitStatus>(&QProcess::finished), this, &Client::finishProcess);
+    connect(m_process, &QProcess::started, this, &Client::initializeServer);
+    connect(m_process, qOverload<int, QProcess::ExitStatus>(&QProcess::finished), this, &Client::exitServer);
 }
 
 void Client::start()
@@ -36,10 +41,31 @@ void Client::readError()
 
 void Client::readOutput()
 {
-    m_logger->trace(m_process->readAllStandardError());
+    const auto message = Lsp::parseMessage(m_process->readAllStandardOutput());
+    m_logger->trace("<== {}", message);
 }
 
-void Client::finishProcess()
+void Client::initializeServer()
 {
-    m_logger->info("Exiting LSP server {}.", m_program.toLatin1());
+    m_logger->info("LSP server {} started", m_program.toLatin1());
+
+    const auto initializeJson = R"(
+           {
+               "jsonrpc": "2.0",
+               "id": 1,
+               "method": "initialize",
+               "params": {}
+           }
+       )"_json.dump();
+    m_logger->trace("==> {}", initializeJson);
+
+    const auto message = Lsp::toMessage(QByteArray::fromStdString(initializeJson));
+    m_process->write(message);
+}
+
+void Client::exitServer()
+{
+    m_logger->info("LSP server {} exited", m_program.toLatin1());
+}
+
 }
