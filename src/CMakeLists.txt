@@ -4,8 +4,9 @@ set(PROJECT_SOURCES
 	main.cpp
 	lsp/client.cpp
 	lsp/client.h
-        lsp/message.cpp
-        lsp/message.h
+        lsp/message_types.h
+        lsp/requestmessage.h
+        lsp/messages.h
 )
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})

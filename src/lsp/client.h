@@ -20,7 +20,7 @@ public:
 private:
     void readError();
     void readOutput();
-    void initializeServer();
+    void initialize();
     void exitServer();
 
 private:
