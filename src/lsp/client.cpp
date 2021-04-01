@@ -1,7 +1,5 @@
 #include "client.h"
 
-#include "messages.h"
-
 #include <QApplication>
 #include <QBuffer>
 #include <QProcess>
@@ -88,7 +86,7 @@ static json parseMessage(const QByteArray &message)
     }
 
     if (length)
-        return buf.read(length);
+        return json::parse(buf.read(length).constData());
     return {};
 }
 
@@ -96,6 +94,19 @@ void Client::readOutput()
 {
     const auto message = parseMessage(m_process->readAllStandardOutput());
     m_logger->trace("<== {}", message.dump());
+    // Check if there is an error
+    if (message.contains("error")) {
+        auto errorString = message.at("error").at("message").get<std::string>();
+        m_logger->error(errorString);
+    }
+
+    if (message.contains("id")) {
+        const MessageId id = message.at("id").get<MessageId>();
+        auto it = m_callbacks.find(id);
+        if (it != m_callbacks.end()) {
+            it->second(message);
+        }
+    }
 }
 
 void Client::initialize()
@@ -104,13 +115,9 @@ void Client::initialize()
 
     InitializeRequest request;
     request.id = 1;
-    auto &params = request.params;
-    params.processId = QCoreApplication::applicationPid();
+    request.params.processId = QCoreApplication::applicationPid();
 
-    json jsonRequest = request;
-    const auto message = Lsp::toMessage(jsonRequest);
-    m_logger->trace("==> {}", jsonRequest.dump());
-    m_process->write(message);
+    sendRequest(request, std::bind(&Client::initializeCallback, this, std::placeholders::_1));
 }
 
 void Client::exitServer()
@@ -118,4 +125,24 @@ void Client::exitServer()
     m_logger->info("LSP server {} exited", m_program.toLatin1());
 }
 
+void Client::sendRequest(nlohmann::json jsonRequest)
+{
+    m_logger->trace("==> {}", jsonRequest.dump());
+
+    const auto message = toMessage(jsonRequest);
+    m_process->write(message);
+}
+
+void Client::initializeCallback(InitializeRequest::Response response)
+{
+    if (response.error) {
+        // TODO how do we want to handle errors?
+        json j = response.error.value();
+        m_logger->error(j.dump());
+    } else if (response.result) {
+        // TODO, most likely emit a signal with server capabilities, and initialize some client internal flags
+        json j = response.result.value();
+        m_logger->info(j.dump());
+    }
+}
 }
