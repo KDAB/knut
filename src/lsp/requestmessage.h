@@ -2,6 +2,8 @@
 
 #include "message_types.h"
 
+#include "utils/json_utils.h"
+
 #include <nlohmann/json.hpp>
 
 #include <functional>

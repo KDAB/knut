@@ -1,5 +1,7 @@
 #include "initialize_message.h"
 
+#include "utils/json_utils.h"
+
 namespace Lsp {
 
 void to_json(nlohmann::json &j, const InitializeResult::ServerInfo &serverInfo)

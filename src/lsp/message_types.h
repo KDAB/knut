@@ -2,30 +2,12 @@
 
 #include <nlohmann/json.hpp>
 
-#include <optional>
 #include <string>
 #include <variant>
 
 namespace Lsp {
 using MessageId = std::variant<int, std::string>;
 using IntegerOrNull = std::variant<int, nullptr_t>;
-
-template <class T>
-void optional_to_json(nlohmann::json &j, const char *name, const std::optional<T> &value)
-{
-    if (value)
-        j[name] = *value;
-}
-
-template <class T>
-void optional_from_json(const nlohmann::json &j, const char *name, std::optional<T> &value)
-{
-    const auto it = j.find(name);
-    if (it != j.end())
-        value = it->get<T>();
-    else
-        value = std::nullopt;
-}
 }
 
 namespace nlohmann {

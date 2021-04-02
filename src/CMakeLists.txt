@@ -8,6 +8,7 @@ set(PROJECT_SOURCES
         lsp/requestmessage.h
         lsp/initialize_message.cpp
         lsp/initialize_message.h
+        utils/json_utils.h
 )
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
