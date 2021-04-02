@@ -18,6 +18,18 @@ namespace Lsp {
 template <typename ErrorData>
 struct ResponseError
 {
+    enum ErrorCodes {
+        ParseError = -32700,
+        InvalidRequest = -32600,
+        MethodNotFound = -32601,
+        InvalidParams = -32602,
+        InternalError = -32603,
+        ServerNotInitialized = -32002,
+        UnknownErrorCode = -32001,
+        ContentModified = -32801,
+        RequestCancelled = -32800,
+    };
+
     int code;
     std::string message;
     std::optional<ErrorData> data;
@@ -50,7 +62,11 @@ struct ResponseMessage
 
     bool isValid() const
     {
-        // We can either havew a result or an error, but not both
+        // If there are no result data, the response is always valid
+        if constexpr (!std::is_same_v<ResultData, std::nullptr_t>)
+            return true;
+
+        // We can either have a result or an error, but not both
         return (result && !error) || (!result && error);
     }
 };
