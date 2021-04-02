@@ -1,6 +1,6 @@
 #pragma once
 
-#include "message_types.h"
+#include "lsp_types.h"
 
 #include "utils/json_utils.h"
 

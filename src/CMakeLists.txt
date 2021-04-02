@@ -4,10 +4,10 @@ set(PROJECT_SOURCES
 	main.cpp
 	lsp/client.cpp
 	lsp/client.h
-        lsp/message_types.h
+        lsp/lsp_types.h
         lsp/requestmessage.h
-        lsp/initialize_message.cpp
-        lsp/initialize_message.h
+        lsp/initialize_request.cpp
+        lsp/initialize_request.h
         utils/json_utils.h
 )
 

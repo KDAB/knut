@@ -1,6 +1,6 @@
 #pragma once
 
-#include "message_types.h"
+#include "lsp_types.h"
 #include "requestmessage.h"
 
 // LSP specification:

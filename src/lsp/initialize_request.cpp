@@ -1,4 +1,4 @@
-#include "initialize_message.h"
+#include "initialize_request.h"
 
 #include "utils/json_utils.h"
 

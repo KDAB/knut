@@ -1,6 +1,6 @@
 #pragma once
 
-#include "initialize_message.h"
+#include "initialize_request.h"
 
 #include <QObject>
 
