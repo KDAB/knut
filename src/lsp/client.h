@@ -49,6 +49,7 @@ private:
     void exitServer();
 
     void sendRequest(nlohmann::json jsonRequest);
+    void sendNotificaiton(nlohmann::json jsonRequest);
     void initializeCallback(InitializeRequest::Response response);
     void shutdownCallback(ShutdownRequest::Response response);
 

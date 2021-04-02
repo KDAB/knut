@@ -139,6 +139,14 @@ void Client::sendRequest(nlohmann::json jsonRequest)
     m_process->write(message);
 }
 
+void Client::sendNotificaiton(nlohmann::json jsonRequest)
+{
+    m_logger->trace("==> {}", jsonRequest.dump());
+
+    const auto message = toMessage(jsonRequest);
+    m_process->write(message);
+}
+
 void Client::initializeCallback(InitializeRequest::Response response)
 {
     if (response.error) {
@@ -147,8 +155,6 @@ void Client::initializeCallback(InitializeRequest::Response response)
         m_logger->error(j.dump());
     } else if (response.result) {
         // TODO initialize some client internal flags
-        json j = response.result.value();
-        m_logger->info(j.dump());
         emit initialized();
     }
 }
@@ -160,7 +166,7 @@ void Client::shutdownCallback(ShutdownRequest::Response response)
         json j = response.error.value();
         m_logger->error(j.dump());
     } else {
-        // TODO send exit notification
+        sendNotificaiton(ExitNotification());
     }
 }
 }

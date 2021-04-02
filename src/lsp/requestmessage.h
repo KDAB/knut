@@ -9,6 +9,7 @@
 #include <functional>
 #include <optional>
 #include <string>
+#include <type_traits>
 
 namespace Lsp {
 
@@ -92,7 +93,7 @@ struct RequestMessage
     std::string jsonrpc = "2.0";
     MessageId id;
     std::string method = MethodName;
-    // params could be optional, we are doing that by passing std::nullptr_t as the type;
+    // params could be optional, we are doing that by passing std::nullptr_t as the type
     RequestParams params;
 
     using Response = ResponseMessage<ResultData, ErrorData>;

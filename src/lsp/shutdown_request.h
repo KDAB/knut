@@ -1,5 +1,6 @@
 #pragma once
 
+#include "notificationmessage.h"
 #include "requestmessage.h"
 
 // LSP specification:
@@ -12,4 +13,9 @@ struct ShutdownRequest : public RequestMessage<shutdownName, std::nullptr_t, std
 {
 };
 
+static constexpr char exitName[] = "exit";
+
+struct ExitNotification : public NotificationMessage<exitName, std::nullptr_t>
+{
+};
 }
