@@ -30,6 +30,8 @@ struct InitializeResult
     // TODO capabilities
     std::optional<ServerInfo> serverInfo;
 };
+void to_json(nlohmann::json &j, const InitializeResult::ServerInfo &serverInfo);
+void from_json(const nlohmann::json &j, InitializeResult::ServerInfo &serverInfo);
 void to_json(nlohmann::json &j, const InitializeResult &result);
 void from_json(const nlohmann::json &j, InitializeResult &result);
 

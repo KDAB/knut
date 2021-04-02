@@ -25,9 +25,12 @@ public:
     template <typename Request>
     void sendRequest(Request request, typename Request::ResponseCallback callback)
     {
-        m_callbacks[request.id] = [callback](nlohmann::json j) {
+        m_callbacks[request.id] = [this, callback](nlohmann::json j) {
             if (callback) {
-                callback(j.get<Request::Response>());
+                auto response = j.get<Request::Response>();
+                if (!response.isValid())
+                    m_logger->error("Invalid response from server: {}", j.dump());
+                callback(response);
             }
         };
         sendRequest(std::move(request));
