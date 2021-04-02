@@ -62,10 +62,6 @@ struct ResponseMessage
 
     bool isValid() const
     {
-        // If there are no result data, the response is always valid
-        if constexpr (!std::is_same_v<ResultData, std::nullptr_t>)
-            return true;
-
         // We can either have a result or an error, but not both
         return (result && !error) || (!result && error);
     }

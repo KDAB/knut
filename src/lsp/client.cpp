@@ -55,6 +55,12 @@ void Client::start()
     m_process->start(m_program, m_arguments);
 }
 
+void Client::shutdown()
+{
+    ShutdownRequest request;
+    sendRequest(request, std::bind(&Client::shutdownCallback, this, std::placeholders::_1));
+}
+
 void Client::readError()
 {
     m_logger->info(m_process->readAllStandardError());
@@ -140,9 +146,21 @@ void Client::initializeCallback(InitializeRequest::Response response)
         json j = response.error.value();
         m_logger->error(j.dump());
     } else if (response.result) {
-        // TODO, most likely emit a signal with server capabilities, and initialize some client internal flags
+        // TODO initialize some client internal flags
         json j = response.result.value();
         m_logger->info(j.dump());
+        emit initialized();
+    }
+}
+
+void Client::shutdownCallback(ShutdownRequest::Response response)
+{
+    if (response.error) {
+        // TODO how do we want to handle errors?
+        json j = response.error.value();
+        m_logger->error(j.dump());
+    } else {
+        // TODO send exit notification
     }
 }
 }

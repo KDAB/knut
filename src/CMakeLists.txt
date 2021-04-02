@@ -8,6 +8,7 @@ set(PROJECT_SOURCES
         lsp/requestmessage.h
         lsp/initialize_request.cpp
         lsp/initialize_request.h
+        lsp/shutdown_request.h
         utils/json_utils.h
 )
 

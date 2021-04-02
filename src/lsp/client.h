@@ -1,6 +1,7 @@
 #pragma once
 
 #include "initialize_request.h"
+#include "shutdown_request.h"
 
 #include <QObject>
 
@@ -21,6 +22,7 @@ public:
     Client(const QString &program, const QStringList &arguments, QObject *parent = nullptr);
 
     void start();
+    void shutdown();
 
     template <typename Request>
     void sendRequest(Request request, typename Request::ResponseCallback callback)
@@ -36,6 +38,9 @@ public:
         sendRequest(std::move(request));
     }
 
+signals:
+    void initialized();
+
 private:
     // TODO extract the QProcess specific in its own class, to reuse for LSP proxies
     void readError();
@@ -45,6 +50,7 @@ private:
 
     void sendRequest(nlohmann::json jsonRequest);
     void initializeCallback(InitializeRequest::Response response);
+    void shutdownCallback(ShutdownRequest::Response response);
 
 private:
     std::shared_ptr<spdlog::logger> m_logger;

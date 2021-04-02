@@ -4,12 +4,9 @@
 #include "requestmessage.h"
 
 // LSP specification:
-// https://microsoft.github.io/language-server-protocol/specifications/specification-current/
+// https://microsoft.github.io/language-server-protocol/specifications/specification-current/#initialize
 namespace Lsp {
 
-///////////////////////////////////////////////////////////////////////////////
-// Initialize Request
-///////////////////////////////////////////////////////////////////////////////
 static constexpr char initializeName[] = "initialize";
 
 struct InitiliazeParams
