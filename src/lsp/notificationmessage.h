@@ -20,8 +20,9 @@ struct NotificationMessage
     NotificationParams params;
 };
 
+///////////////////////////////////////////////////////////////////////////////
 // Serialization
-////////////////
+///////////////////////////////////////////////////////////////////////////////
 template <const char *MethodName, typename NotificationParams>
 void to_json(nlohmann::json &j, const NotificationMessage<MethodName, NotificationParams> &notification)
 {

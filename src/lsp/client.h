@@ -48,7 +48,7 @@ private:
         sendRequest(std::move(request));
     }
     void sendRequest(nlohmann::json jsonRequest);
-    void sendNotificaiton(nlohmann::json jsonRequest);
+    void sendNotification(nlohmann::json jsonRequest);
 
     void initializeCallback(InitializeRequest::Response response);
     void shutdownCallback(ShutdownRequest::Response response);

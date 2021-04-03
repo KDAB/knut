@@ -31,6 +31,36 @@ static QByteArray toMessage(const json &content)
     return header.toLatin1() + data;
 }
 
+// Parse the given LSP message
+// Return the content of the message as a json object or empty if it's invalid
+static json parseMessage(const QByteArray &message)
+{
+    QBuffer buf;
+    buf.setData(message);
+    int length = 0;
+    if (buf.open(QIODevice::ReadOnly)) {
+        while (!buf.atEnd()) {
+            const QByteArray &headerLine = buf.readLine();
+
+            // There's always an empty line between header and content
+            if (headerLine == "\r\n")
+                break;
+
+            int assignmentIndex = headerLine.indexOf(": ");
+            if (assignmentIndex >= 0) {
+                const QByteArray &key = headerLine.mid(0, assignmentIndex).trimmed();
+                const QByteArray &value = headerLine.mid(assignmentIndex + 2).trimmed();
+                if (key == "Content-Length")
+                    length = value.toInt();
+            }
+        }
+    }
+
+    if (length)
+        return json::parse(buf.read(length).constData());
+    return {};
+}
+
 Client::Client(const QString &program, const QStringList &arguments, QObject *parent)
     : QObject(parent)
     , m_program(program)
@@ -64,36 +94,6 @@ void Client::shutdown()
 void Client::readError()
 {
     m_logger->info(m_process->readAllStandardError());
-}
-
-// Parse the given LSP message
-// Return the content of the message as a json object or empty if it's invalid
-static json parseMessage(const QByteArray &message)
-{
-    QBuffer buf;
-    buf.setData(message);
-    int length = 0;
-    if (buf.open(QIODevice::ReadOnly)) {
-        while (!buf.atEnd()) {
-            const QByteArray &headerLine = buf.readLine();
-
-            // There's always an empty line between header and content
-            if (headerLine == "\r\n")
-                break;
-
-            int assignmentIndex = headerLine.indexOf(": ");
-            if (assignmentIndex >= 0) {
-                const QByteArray &key = headerLine.mid(0, assignmentIndex).trimmed();
-                const QByteArray &value = headerLine.mid(assignmentIndex + 2).trimmed();
-                if (key == "Content-Length")
-                    length = value.toInt();
-            }
-        }
-    }
-
-    if (length)
-        return json::parse(buf.read(length).constData());
-    return {};
 }
 
 void Client::readOutput()
@@ -139,7 +139,7 @@ void Client::sendRequest(nlohmann::json jsonRequest)
     m_process->write(message);
 }
 
-void Client::sendNotificaiton(nlohmann::json jsonRequest)
+void Client::sendNotification(nlohmann::json jsonRequest)
 {
     m_logger->trace("==> {}", jsonRequest.dump());
 
@@ -155,6 +155,7 @@ void Client::initializeCallback(InitializeRequest::Response response)
         m_logger->error(j.dump());
     } else if (response.result) {
         // TODO initialize some client internal flags
+        sendNotification(InitializedNotification());
         emit initialized();
     }
 }
@@ -166,7 +167,7 @@ void Client::shutdownCallback(ShutdownRequest::Response response)
         json j = response.error.value();
         m_logger->error(j.dump());
     } else {
-        sendNotificaiton(ExitNotification());
+        sendNotification(ExitNotification());
         emit finished();
     }
 }

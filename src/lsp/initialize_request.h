@@ -1,10 +1,12 @@
 #pragma once
 
 #include "lsp_types.h"
+#include "notificationmessage.h"
 #include "requestmessage.h"
 
 // LSP specification:
 // https://microsoft.github.io/language-server-protocol/specifications/specification-current/#initialize
+// https://microsoft.github.io/language-server-protocol/specifications/specification-current/#initialized
 namespace Lsp {
 
 struct InitiliazeParams
@@ -32,6 +34,11 @@ struct InitializeError
 
 static constexpr char initializeName[] = "initialize";
 struct InitializeRequest : public RequestMessage<initializeName, InitiliazeParams, InitializeResult, InitializeError>
+{
+};
+
+static constexpr char initializedName[] = "initialized";
+struct InitializedNotification : public NotificationMessage<initializedName, std::nullptr_t>
 {
 };
 
