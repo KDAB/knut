@@ -6,10 +6,14 @@
 #include <variant>
 
 namespace Lsp {
+
 using MessageId = std::variant<int, std::string>;
+
 using IntegerOrNull = std::variant<int, nullptr_t>;
 }
 
+// Serialization
+////////////////
 namespace nlohmann {
 template <>
 struct adl_serializer<Lsp::MessageId>

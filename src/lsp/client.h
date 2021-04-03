@@ -24,6 +24,16 @@ public:
     void start();
     void shutdown();
 
+signals:
+    void initialized();
+    void finished();
+
+private:
+    void readError();
+    void readOutput();
+    void initialize();
+    void exitServer();
+
     template <typename Request>
     void sendRequest(Request request, typename Request::ResponseCallback callback)
     {
@@ -37,19 +47,9 @@ public:
         };
         sendRequest(std::move(request));
     }
-
-signals:
-    void initialized();
-
-private:
-    // TODO extract the QProcess specific in its own class, to reuse for LSP proxies
-    void readError();
-    void readOutput();
-    void initialize();
-    void exitServer();
-
     void sendRequest(nlohmann::json jsonRequest);
     void sendNotificaiton(nlohmann::json jsonRequest);
+
     void initializeCallback(InitializeRequest::Response response);
     void shutdownCallback(ShutdownRequest::Response response);
 

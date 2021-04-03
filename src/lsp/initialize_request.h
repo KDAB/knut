@@ -7,14 +7,11 @@
 // https://microsoft.github.io/language-server-protocol/specifications/specification-current/#initialize
 namespace Lsp {
 
-static constexpr char initializeName[] = "initialize";
-
 struct InitiliazeParams
 {
     IntegerOrNull processId = nullptr;
     // TODO everything else...
 };
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(InitiliazeParams, processId);
 
 struct InitializeResult
 {
@@ -27,19 +24,26 @@ struct InitializeResult
     // TODO capabilities
     std::optional<ServerInfo> serverInfo;
 };
-void to_json(nlohmann::json &j, const InitializeResult::ServerInfo &serverInfo);
-void from_json(const nlohmann::json &j, InitializeResult::ServerInfo &serverInfo);
-void to_json(nlohmann::json &j, const InitializeResult &result);
-void from_json(const nlohmann::json &j, InitializeResult &result);
 
 struct InitializeError
 {
     bool retry;
 };
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(InitializeError, retry);
 
+static constexpr char initializeName[] = "initialize";
 struct InitializeRequest : public RequestMessage<initializeName, InitiliazeParams, InitializeResult, InitializeError>
 {
 };
 
+///////////////////////////////////////////////////////////////////////////////
+// Serialization
+///////////////////////////////////////////////////////////////////////////////
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(InitiliazeParams, processId);
+
+void to_json(nlohmann::json &j, const InitializeResult::ServerInfo &serverInfo);
+void from_json(const nlohmann::json &j, InitializeResult::ServerInfo &serverInfo);
+void to_json(nlohmann::json &j, const InitializeResult &result);
+void from_json(const nlohmann::json &j, InitializeResult &result);
+
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(InitializeError, retry);
 }

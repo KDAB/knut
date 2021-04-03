@@ -167,6 +167,7 @@ void Client::shutdownCallback(ShutdownRequest::Response response)
         m_logger->error(j.dump());
     } else {
         sendNotificaiton(ExitNotification());
+        emit finished();
     }
 }
 }

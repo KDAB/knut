@@ -20,6 +20,8 @@ struct NotificationMessage
     NotificationParams params;
 };
 
+// Serialization
+////////////////
 template <const char *MethodName, typename NotificationParams>
 void to_json(nlohmann::json &j, const NotificationMessage<MethodName, NotificationParams> &notification)
 {
@@ -32,7 +34,7 @@ void from_json(const nlohmann::json &j, NotificationMessage<MethodName, Notifica
 {
     j.at("jsonrpc").get_to(notification.jsonrpc);
     j.at("method").get_to(notification.method);
-    if constexpr (!std::is_same_v<RequestParams, std::nullptr_t>)
+    if constexpr (!std::is_same_v<NotificationParams, std::nullptr_t>)
         j.at("params").get_to(notification.params);
 }
 
