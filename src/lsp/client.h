@@ -41,20 +41,23 @@ private:
             if (callback) {
                 auto response = j.get<Request::Response>();
                 if (!response.isValid())
-                    m_logger->error("Invalid response from server: {}", j.dump());
+                    m_serverLogger->error("==> Invalid response from server: {}", j.dump());
                 callback(response);
             }
         };
         sendRequest(std::move(request));
     }
     void sendRequest(nlohmann::json jsonRequest);
-    void sendNotification(nlohmann::json jsonRequest);
+    void sendNotification(nlohmann::json jsonNotification);
 
     void initializeCallback(InitializeRequest::Response response);
     void shutdownCallback(ShutdownRequest::Response response);
 
+    void logMessage(std::string type, const nlohmann::json &message);
+
 private:
-    std::shared_ptr<spdlog::logger> m_logger;
+    std::shared_ptr<spdlog::logger> m_serverLogger;
+    std::shared_ptr<spdlog::logger> m_messageLogger;
     const QString m_program;
     const QStringList m_arguments;
     QProcess *m_process = nullptr;

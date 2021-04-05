@@ -2,10 +2,14 @@
 
 #include <QApplication>
 #include <QBuffer>
+#include <QFile>
 #include <QProcess>
 #include <QString>
 
+#include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
+
+#include <ctime>
 
 using json = nlohmann::json;
 
@@ -66,10 +70,25 @@ Client::Client(const QString &program, const QStringList &arguments, QObject *pa
     , m_program(program)
     , m_arguments(arguments)
 {
-    m_logger = spdlog::get("LSP_Client");
-    if (!m_logger)
-        m_logger = spdlog::stdout_color_mt("LSP_Client");
-    m_logger->set_level(spdlog::level::trace);
+    const auto serverLogName = (program + "_server").toStdString();
+    m_serverLogger = spdlog::get(serverLogName);
+    if (!m_serverLogger) {
+        m_serverLogger = spdlog::stdout_color_mt(serverLogName);
+        m_serverLogger->set_level(spdlog::level::debug);
+        m_serverLogger->set_pattern("%v");
+    }
+
+    const auto messageLogName = (program + "_messages").toStdString();
+    const auto messageLogFile = program + "_messages.log";
+    // Cleanup the file before starting
+    if (QFile::exists(messageLogFile))
+        QFile::remove(messageLogFile);
+    m_messageLogger = spdlog::get(messageLogName);
+    if (!m_messageLogger) {
+        m_messageLogger = spdlog::basic_logger_st(messageLogName, messageLogFile.toStdString());
+        m_messageLogger->set_level(spdlog::level::info);
+        m_messageLogger->set_pattern("[LSP   - %H:%M:%S] %v");
+    }
 
     m_process = new QProcess(this);
 
@@ -81,7 +100,7 @@ Client::Client(const QString &program, const QStringList &arguments, QObject *pa
 
 void Client::start()
 {
-    m_logger->info("Starting LSP server {}.", m_program.toLatin1());
+    m_serverLogger->trace("==> Starting LSP server {}.", m_program.toLatin1());
     m_process->start(m_program, m_arguments);
 }
 
@@ -93,31 +112,36 @@ void Client::shutdown()
 
 void Client::readError()
 {
-    m_logger->info(m_process->readAllStandardError());
+    m_serverLogger->info(m_process->readAllStandardError());
 }
 
 void Client::readOutput()
 {
     const auto message = parseMessage(m_process->readAllStandardOutput());
-    m_logger->trace("<== {}", message.dump());
+
     // Check if there is an error
     if (message.contains("error")) {
         auto errorString = message.at("error").at("message").get<std::string>();
-        m_logger->error(errorString);
+        m_serverLogger->error("==> Error response: {}", errorString);
     }
 
     if (message.contains("id")) {
         const MessageId id = message.at("id").get<MessageId>();
         auto it = m_callbacks.find(id);
         if (it != m_callbacks.end()) {
+            logMessage("receive-response", message);
             it->second(message);
+        } else {
+            logMessage("receive-request", message);
         }
+    } else {
+        logMessage("receive-notification", message);
     }
 }
 
 void Client::initialize()
 {
-    m_logger->info("LSP server {} started", m_program.toLatin1());
+    m_serverLogger->trace("==> LSP server {} started", m_program.toLatin1());
 
     InitializeRequest request;
     request.id = 1;
@@ -128,22 +152,20 @@ void Client::initialize()
 
 void Client::exitServer()
 {
-    m_logger->info("LSP server {} exited", m_program.toLatin1());
+    m_serverLogger->trace("==> LSP server {} exited", m_program.toLatin1());
 }
 
 void Client::sendRequest(nlohmann::json jsonRequest)
 {
-    m_logger->trace("==> {}", jsonRequest.dump());
-
+    logMessage("send-request", jsonRequest);
     const auto message = toMessage(jsonRequest);
     m_process->write(message);
 }
 
-void Client::sendNotification(nlohmann::json jsonRequest)
+void Client::sendNotification(nlohmann::json jsonNotification)
 {
-    m_logger->trace("==> {}", jsonRequest.dump());
-
-    const auto message = toMessage(jsonRequest);
+    logMessage("send-notification", jsonNotification);
+    const auto message = toMessage(jsonNotification);
     m_process->write(message);
 }
 
@@ -152,7 +174,7 @@ void Client::initializeCallback(InitializeRequest::Response response)
     if (response.error) {
         // TODO how do we want to handle errors?
         json j = response.error.value();
-        m_logger->error(j.dump());
+        m_serverLogger->error(j.dump());
     } else if (response.result) {
         // TODO initialize some client internal flags
         sendNotification(InitializedNotification());
@@ -165,10 +187,21 @@ void Client::shutdownCallback(ShutdownRequest::Response response)
     if (response.error) {
         // TODO how do we want to handle errors?
         json j = response.error.value();
-        m_logger->error(j.dump());
+        m_serverLogger->error(j.dump());
     } else {
         sendNotification(ExitNotification());
         emit finished();
     }
+}
+
+void Client::logMessage(std::string type, const nlohmann::json &message)
+{
+    json log = {
+        {"type", type},
+        {"message", message},
+        {"timestamp", std::time(0)},
+    };
+    m_messageLogger->info(log.dump());
+    m_messageLogger->flush();
 }
 }
