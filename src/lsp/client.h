@@ -19,7 +19,7 @@ class Client : public QObject
     Q_OBJECT
 
 public:
-    Client(int languages, const QString &program, const QStringList &arguments, QObject *parent = nullptr);
+    Client(const QString &program, const QStringList &arguments, QObject *parent = nullptr);
 
     void start();
     void shutdown();
@@ -58,7 +58,6 @@ private:
 private:
     std::shared_ptr<spdlog::logger> m_serverLogger;
     std::shared_ptr<spdlog::logger> m_messageLogger;
-    int m_languages;
     const QString m_program;
     const QStringList m_arguments;
     QProcess *m_process = nullptr;

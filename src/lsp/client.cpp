@@ -65,9 +65,8 @@ static json parseMessage(const QByteArray &message)
     return {};
 }
 
-Client::Client(int languages, const QString &program, const QStringList &arguments, QObject *parent)
+Client::Client(const QString &program, const QStringList &arguments, QObject *parent)
     : QObject(parent)
-    , m_languages(languages)
     , m_program(program)
     , m_arguments(arguments)
 {
