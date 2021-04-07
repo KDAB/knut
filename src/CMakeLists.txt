@@ -2,7 +2,9 @@ project(knut VERSION 4.0 LANGUAGES CXX)
 
 set(PROJECT_SOURCES
 	main.cpp
-	lsp/client.cpp
+        core/scriptitem.cpp
+        core/scriptitem.h
+        lsp/client.cpp
 	lsp/client.h
         lsp/lsp_types.h
         lsp/requestmessage.h
