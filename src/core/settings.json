@@ -1,0 +1,8 @@
+{
+    "lsp" : {
+        "cpp" : {
+            "program": "clangd",
+            "arguments": []
+        }
+    }
+}

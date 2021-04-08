@@ -4,8 +4,10 @@ set(PROJECT_SOURCES
 	main.cpp
         core/scriptitem.cpp
         core/scriptitem.h
+        core/settings.cpp
+        core/settings.h
         lsp/client.cpp
-	lsp/client.h
+        lsp/client.h
         lsp/lsp_types.h
         lsp/requestmessage.h
         lsp/initialize_request.cpp
@@ -19,7 +21,11 @@ set(PROJECT_SOURCES
         utils/json_utils.h
 )
 
-add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
+qt5_add_resources(PROJECT_QRC
+        core/core.qrc
+)
+
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${PROJECT_QRC})
 target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Qml
