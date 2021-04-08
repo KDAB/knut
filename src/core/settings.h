@@ -52,6 +52,10 @@ public:
         return {};
     }
 
+    // TODO : Add API to change the project settings, setValue/removeValue
+    Q_INVOKABLE bool hasValue(const QString &path) const;
+    Q_INVOKABLE QVariant value(const QString &path, const QVariant &defaultValue = {}) const;
+
 private:
     explicit Settings(QObject *parent = nullptr);
 

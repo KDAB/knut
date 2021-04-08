@@ -1,5 +1,8 @@
 #include "scriptrunner.h"
 
+#include <core/scriptitem.h>
+#include <core/settings.h>
+
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -15,6 +18,11 @@ ScriptRunner::ScriptRunner(QObject *parent)
     : QObject(parent)
 {
     m_logger = spdlog::get("Script");
+
+    // Script
+    qmlRegisterSingletonInstance<Core::Settings>("Script", 1, 0, "Settings", Core::Settings::instance());
+
+    qmlRegisterType<Core::ScriptItem>("Script", 1, 0, "Script");
 }
 
 ScriptRunner::~ScriptRunner() { }
@@ -29,8 +37,7 @@ QVariant ScriptRunner::runScript(const QString &fileName, std::function<void()> 
 
     QVariant result;
     if (fi.exists() && fi.isReadable()) {
-        // TODO set the current project directory as the current path
-        // before running the script
+        // TODO set the current project directory as the current path before running the script
 
         // Run the script
         auto engine = getEngine(fullName);
