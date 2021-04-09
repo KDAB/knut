@@ -39,7 +39,7 @@ private:
     {
         m_callbacks[request.id] = [this, callback](nlohmann::json j) {
             if (callback) {
-                auto response = j.get<Request::Response>();
+                auto response = j.get<typename Request::Response>();
                 if (!response.isValid())
                     m_serverLogger->error("==> Invalid response from server: {}", j.dump());
                 callback(response);
