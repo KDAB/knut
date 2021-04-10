@@ -1,11 +1,15 @@
 #include "client.h"
 
+#include "utils/log_utils.h"
+
 #include <QApplication>
 #include <QBuffer>
 #include <QFile>
 #include <QProcess>
+#include <QSignalSpy>
 #include <QString>
 
+#include <doctest/doctest.h>
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
@@ -65,12 +69,12 @@ static json parseMessage(const QByteArray &message)
     return {};
 }
 
-Client::Client(const QString &program, const QStringList &arguments, QObject *parent)
+Client::Client(const std::string &language, const QString &program, const QStringList &arguments, QObject *parent)
     : QObject(parent)
     , m_program(program)
     , m_arguments(arguments)
 {
-    const auto serverLogName = (program + "_server").toStdString();
+    const auto serverLogName = language + "_server";
     m_serverLogger = spdlog::get(serverLogName);
     if (!m_serverLogger) {
         m_serverLogger = spdlog::stdout_color_mt(serverLogName);
@@ -78,14 +82,10 @@ Client::Client(const QString &program, const QStringList &arguments, QObject *pa
         m_serverLogger->set_pattern("%v");
     }
 
-    const auto messageLogName = (program + "_messages").toStdString();
-    const auto messageLogFile = program + "_messages.log";
-    // Cleanup the file before starting
-    if (QFile::exists(messageLogFile))
-        QFile::remove(messageLogFile);
+    const auto messageLogName = language + "_messages";
     m_messageLogger = spdlog::get(messageLogName);
     if (!m_messageLogger) {
-        m_messageLogger = spdlog::basic_logger_st(messageLogName, messageLogFile.toStdString());
+        m_messageLogger = spdlog::basic_logger_st(messageLogName, messageLogName + ".log", true);
         m_messageLogger->set_level(spdlog::level::info);
         m_messageLogger->set_pattern("[LSP   - %H:%M:%S] %v");
     }
@@ -95,6 +95,7 @@ Client::Client(const QString &program, const QStringList &arguments, QObject *pa
     connect(m_process, &QProcess::readyReadStandardError, this, &Client::readError);
     connect(m_process, &QProcess::readyReadStandardOutput, this, &Client::readOutput);
     connect(m_process, &QProcess::started, this, &Client::initialize);
+    connect(m_process, &QProcess::errorOccurred, this, &Client::handleError);
     connect(m_process, qOverload<int, QProcess::ExitStatus>(&QProcess::finished), this, &Client::exitServer);
 }
 
@@ -153,6 +154,34 @@ void Client::initialize()
 void Client::exitServer()
 {
     m_serverLogger->trace("==> LSP server {} exited", m_program.toLatin1());
+    emit finished();
+}
+
+void Client::handleError(int error)
+{
+    std::string errorName;
+    switch (error) {
+    case QProcess::FailedToStart:
+        errorName = "FailedToStart";
+        break;
+    case QProcess::Crashed:
+        errorName = "Crashed";
+        break;
+    case QProcess::Timedout:
+        errorName = "Timedout";
+        break;
+    case QProcess::WriteError:
+        errorName = "WriteError";
+        break;
+    case QProcess::ReadError:
+        errorName = "ReadError";
+        break;
+    case QProcess::UnknownError:
+        errorName = "UnknownError";
+        break;
+    }
+    m_serverLogger->error("==> LSP server {} raises an error {}", m_program.toLatin1(), errorName);
+    emit errorOccured(error);
 }
 
 void Client::sendRequest(nlohmann::json jsonRequest)
@@ -190,7 +219,6 @@ void Client::shutdownCallback(ShutdownRequest::Response response)
         m_serverLogger->error(j.dump());
     } else {
         sendNotification(ExitNotification());
-        emit finished();
     }
 }
 
@@ -204,4 +232,47 @@ void Client::logMessage(std::string type, const nlohmann::json &message)
     m_messageLogger->info(log.dump());
     m_messageLogger->flush();
 }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Tests
+///////////////////////////////////////////////////////////////////////////////
+TEST_SUITE("lsp")
+{
+    TEST_CASE("start and shutdown server")
+    {
+        Lsp::Client client("cpp", "clangd", {});
+        LogSilencer serverLog("cpp_server");
+        LogSilencer messagesLog("cpp_messages");
+
+        QSignalSpy initialized(&client, &Lsp::Client::initialized);
+        QSignalSpy errorOccured(&client, &Lsp::Client::errorOccured);
+        QSignalSpy finished(&client, &Lsp::Client::finished);
+
+        client.start();
+        CHECK(errorOccured.count() == 0);
+        REQUIRE(initialized.wait(500));
+        client.shutdown();
+        REQUIRE(finished.wait(500));
+    }
+
+    TEST_CASE("requests")
+    {
+        Lsp::Client client("cpp", "clangd", {});
+        LogSilencer serverLog("cpp_server");
+        LogSilencer messagesLog("cpp_messages");
+        QSignalSpy initialized(&client, &Lsp::Client::initialized);
+        QSignalSpy finished(&client, &Lsp::Client::finished);
+        client.start();
+        REQUIRE(initialized.wait(500));
+
+        SUBCASE("TODO_REQUEST")
+        {
+            // TODO one SUBCASE per request
+        }
+
+        client.shutdown();
+        // Nicely close the client
+        CHECK(finished.wait(500));
+    }
 }

@@ -19,6 +19,7 @@ set(PROJECT_SOURCES
         script/scriptrunner.cpp
         script/scriptrunner.h
         utils/json_utils.h
+        utils/log_utils.h
 )
 
 qt5_add_resources(PROJECT_QRC
@@ -31,6 +32,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt${QT_VERSION_MAJOR}::Qml
     Qt${QT_VERSION_MAJOR}::QmlPrivate
     Qt${QT_VERSION_MAJOR}::Quick
+    Qt${QT_VERSION_MAJOR}::Test
     nlohmann_json::nlohmann_json
     spdlog::spdlog
+    doctest::doctest
 )

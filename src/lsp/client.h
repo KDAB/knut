@@ -19,7 +19,8 @@ class Client : public QObject
     Q_OBJECT
 
 public:
-    Client(const QString &program, const QStringList &arguments, QObject *parent = nullptr);
+    Client(const std::string &language, const QString &program, const QStringList &arguments,
+           QObject *parent = nullptr);
 
     void start();
     void shutdown();
@@ -27,12 +28,14 @@ public:
 signals:
     void initialized();
     void finished();
+    void errorOccured(int error);
 
 private:
     void readError();
     void readOutput();
     void initialize();
     void exitServer();
+    void handleError(int error);
 
     template <typename Request>
     void sendRequest(Request request, typename Request::ResponseCallback callback)
