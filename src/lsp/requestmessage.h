@@ -61,13 +61,15 @@ template <const char *MethodName, typename RequestParams, typename ResultData, t
 struct RequestMessage
 {
     std::string jsonrpc = "2.0";
-    MessageId id;
+    MessageId id = nextId++;
     std::string method = MethodName;
     // params could be optional, we are doing that by passing std::nullptr_t as the type
     RequestParams params;
 
     using Response = ResponseMessage<ResultData, ErrorData>;
     using ResponseCallback = std::function<void(Response)>;
+
+    inline static int nextId = 0;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

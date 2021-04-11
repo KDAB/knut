@@ -4,6 +4,7 @@
 
 #include <QApplication>
 #include <QBuffer>
+#include <QEventLoop>
 #include <QFile>
 #include <QProcess>
 #include <QSignalSpy>
@@ -95,21 +96,21 @@ Client::Client(const std::string &language, const QString &program, const QStrin
     connect(m_process, &QProcess::readyReadStandardError, this, &Client::readError);
     connect(m_process, &QProcess::readyReadStandardOutput, this, &Client::readOutput);
     connect(m_process, &QProcess::errorOccurred, this, &Client::handleError);
-    connect(m_process, qOverload<int, QProcess::ExitStatus>(&QProcess::finished), this, &Client::exitServer);
 }
 
-void Client::start()
+bool Client::start()
 {
     m_serverLogger->trace("==> Starting LSP server {}.", m_program.toLatin1());
     m_process->start(m_program, m_arguments);
     if (m_process->waitForStarted())
-        initialize();
+        return initialize();
+    return false;
 }
 
-void Client::shutdown()
+bool Client::shutdown()
 {
     ShutdownRequest request;
-    sendRequest(request, std::bind(&Client::shutdownCallback, this, std::placeholders::_1));
+    return shutdownCallback(sendRequest(request));
 }
 
 void Client::readError()
@@ -132,7 +133,7 @@ void Client::readOutput()
         auto it = m_callbacks.find(id);
         if (it != m_callbacks.end()) {
             logMessage("receive-response", message);
-            it->second(message);
+            it->second(std::move(message));
         } else {
             logMessage("receive-request", message);
         }
@@ -141,7 +142,7 @@ void Client::readOutput()
     }
 }
 
-void Client::initialize()
+bool Client::initialize()
 {
     m_serverLogger->trace("==> LSP server {} started", m_program.toLatin1());
 
@@ -149,13 +150,7 @@ void Client::initialize()
     request.id = 1;
     request.params.processId = QCoreApplication::applicationPid();
 
-    sendRequest(request, std::bind(&Client::initializeCallback, this, std::placeholders::_1));
-}
-
-void Client::exitServer()
-{
-    m_serverLogger->trace("==> LSP server {} exited", m_program.toLatin1());
-    emit finished();
+    return initializeCallback(sendRequest(request));
 }
 
 void Client::handleError(int error)
@@ -185,11 +180,24 @@ void Client::handleError(int error)
     emit errorOccured(error);
 }
 
-void Client::sendJsonRequest(nlohmann::json jsonRequest)
+void Client::sendAsyncJsonRequest(nlohmann::json jsonRequest)
 {
     logMessage("send-request", jsonRequest);
     const auto message = toMessage(jsonRequest);
     m_process->write(message);
+}
+
+nlohmann::json Client::sendJsonRequest(nlohmann::json jsonRequest)
+{
+    logMessage("send-request", jsonRequest);
+    const auto message = toMessage(jsonRequest);
+
+    // Wait for the response to be emitted using the QEventLoop trick
+    QEventLoop loop;
+    connect(this, &Client::responseEmitted, &loop, [&loop]() { loop.exit(); });
+    m_process->write(message);
+    loop.exec(QEventLoop::ExcludeUserInputEvents);
+    return m_response;
 }
 
 void Client::sendJsonNotification(nlohmann::json jsonNotification)
@@ -199,28 +207,36 @@ void Client::sendJsonNotification(nlohmann::json jsonNotification)
     m_process->write(message);
 }
 
-void Client::initializeCallback(InitializeRequest::Response response)
+bool Client::initializeCallback(InitializeRequest::Response response)
 {
     if (response.error) {
-        // TODO how do we want to handle errors?
         json j = response.error.value();
         m_serverLogger->error(j.dump());
+        return false;
     } else if (response.result) {
         // TODO initialize some client internal flags
         sendNotification(InitializedNotification());
+        m_serverLogger->trace("==> LSP server {} initialized", m_program.toLatin1());
         emit initialized();
+        return true;
     }
+    return false;
 }
 
-void Client::shutdownCallback(ShutdownRequest::Response response)
+bool Client::shutdownCallback(ShutdownRequest::Response response)
 {
     if (response.error) {
-        // TODO how do we want to handle errors?
         json j = response.error.value();
         m_serverLogger->error(j.dump());
+        return false;
     } else {
         sendNotification(ExitNotification());
+        m_process->waitForFinished();
+        m_serverLogger->trace("==> LSP server {} exited", m_program.toLatin1());
+        emit finished();
+        return true;
     }
+    return true;
 }
 
 void Client::logMessage(std::string type, const nlohmann::json &message)
@@ -250,11 +266,11 @@ TEST_SUITE("lsp")
         QSignalSpy errorOccured(&client, &Lsp::Client::errorOccured);
         QSignalSpy finished(&client, &Lsp::Client::finished);
 
-        client.start();
+        CHECK(client.start());
         CHECK(errorOccured.count() == 0);
-        REQUIRE(initialized.wait(500));
-        client.shutdown();
-        REQUIRE(finished.wait(500));
+        REQUIRE(initialized.count());
+        CHECK(client.shutdown());
+        REQUIRE(finished.count());
     }
 
     TEST_CASE("requests")
@@ -262,18 +278,14 @@ TEST_SUITE("lsp")
         Lsp::Client client("cpp", "clangd", {});
         LogSilencer serverLog("cpp_server");
         LogSilencer messagesLog("cpp_messages");
-        QSignalSpy initialized(&client, &Lsp::Client::initialized);
-        QSignalSpy finished(&client, &Lsp::Client::finished);
-        client.start();
-        REQUIRE(initialized.wait(500));
+
+        REQUIRE(client.start());
 
         SUBCASE("TODO_REQUEST")
         {
             // TODO one SUBCASE per request
         }
 
-        client.shutdown();
-        // Nicely close the client
-        CHECK(finished.wait(500));
+        CHECK(client.shutdown());
     }
 }
