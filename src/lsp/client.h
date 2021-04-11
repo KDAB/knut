@@ -25,6 +25,26 @@ public:
     void start();
     void shutdown();
 
+    template <typename Request>
+    void sendRequest(Request request, typename Request::ResponseCallback callback)
+    {
+        m_callbacks[request.id] = [this, callback](nlohmann::json j) {
+            if (callback) {
+                auto response = j.get<typename Request::Response>();
+                if (!response.isValid())
+                    m_serverLogger->error("==> Invalid response from server: {}", j.dump());
+                callback(response);
+            }
+        };
+        sendJsonRequest(request);
+    }
+
+    template <typename Notification>
+    void sendNotification(Notification notification)
+    {
+        sendJsonNotification(notification);
+    }
+
 signals:
     void initialized();
     void finished();
@@ -37,21 +57,8 @@ private:
     void exitServer();
     void handleError(int error);
 
-    template <typename Request>
-    void sendRequest(Request request, typename Request::ResponseCallback callback)
-    {
-        m_callbacks[request.id] = [this, callback](nlohmann::json j) {
-            if (callback) {
-                auto response = j.get<typename Request::Response>();
-                if (!response.isValid())
-                    m_serverLogger->error("==> Invalid response from server: {}", j.dump());
-                callback(response);
-            }
-        };
-        sendRequest(std::move(request));
-    }
-    void sendRequest(nlohmann::json jsonRequest);
-    void sendNotification(nlohmann::json jsonNotification);
+    void sendJsonRequest(nlohmann::json jsonRequest);
+    void sendJsonNotification(nlohmann::json jsonNotification);
 
     void initializeCallback(InitializeRequest::Response response);
     void shutdownCallback(ShutdownRequest::Response response);

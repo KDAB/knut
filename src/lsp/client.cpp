@@ -94,7 +94,6 @@ Client::Client(const std::string &language, const QString &program, const QStrin
 
     connect(m_process, &QProcess::readyReadStandardError, this, &Client::readError);
     connect(m_process, &QProcess::readyReadStandardOutput, this, &Client::readOutput);
-    connect(m_process, &QProcess::started, this, &Client::initialize);
     connect(m_process, &QProcess::errorOccurred, this, &Client::handleError);
     connect(m_process, qOverload<int, QProcess::ExitStatus>(&QProcess::finished), this, &Client::exitServer);
 }
@@ -103,6 +102,8 @@ void Client::start()
 {
     m_serverLogger->trace("==> Starting LSP server {}.", m_program.toLatin1());
     m_process->start(m_program, m_arguments);
+    if (m_process->waitForStarted())
+        initialize();
 }
 
 void Client::shutdown()
@@ -184,14 +185,14 @@ void Client::handleError(int error)
     emit errorOccured(error);
 }
 
-void Client::sendRequest(nlohmann::json jsonRequest)
+void Client::sendJsonRequest(nlohmann::json jsonRequest)
 {
     logMessage("send-request", jsonRequest);
     const auto message = toMessage(jsonRequest);
     m_process->write(message);
 }
 
-void Client::sendNotification(nlohmann::json jsonNotification)
+void Client::sendJsonNotification(nlohmann::json jsonNotification)
 {
     logMessage("send-notification", jsonNotification);
     const auto message = toMessage(jsonNotification);
