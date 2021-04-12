@@ -9,7 +9,7 @@
 // https://microsoft.github.io/language-server-protocol/specifications/specification-current/#initialized
 namespace Lsp {
 
-struct InitiliazeParams
+struct InitializeParams
 {
     IntegerOrNull processId = nullptr;
     // TODO everything else...
@@ -32,12 +32,12 @@ struct InitializeError
     bool retry;
 };
 
-static constexpr char initializeName[] = "initialize";
-struct InitializeRequest : public RequestMessage<initializeName, InitiliazeParams, InitializeResult, InitializeError>
+inline constexpr char initializeName[] = "initialize";
+struct InitializeRequest : public RequestMessage<initializeName, InitializeParams, InitializeResult, InitializeError>
 {
 };
 
-static constexpr char initializedName[] = "initialized";
+inline constexpr char initializedName[] = "initialized";
 struct InitializedNotification : public NotificationMessage<initializedName, std::nullptr_t>
 {
 };
@@ -45,7 +45,7 @@ struct InitializedNotification : public NotificationMessage<initializedName, std
 ///////////////////////////////////////////////////////////////////////////////
 // Serialization
 ///////////////////////////////////////////////////////////////////////////////
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(InitiliazeParams, processId);
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(InitializeParams, processId);
 
 void to_json(nlohmann::json &j, const InitializeResult::ServerInfo &serverInfo);
 void from_json(const nlohmann::json &j, InitializeResult::ServerInfo &serverInfo);

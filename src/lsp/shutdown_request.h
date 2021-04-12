@@ -8,12 +8,12 @@
 // https://microsoft.github.io/language-server-protocol/specifications/specification-current/#exit
 namespace Lsp {
 
-static constexpr char shutdownName[] = "shutdown";
+inline constexpr char shutdownName[] = "shutdown";
 struct ShutdownRequest : public RequestMessage<shutdownName, std::nullptr_t, std::nullptr_t, std::nullptr_t>
 {
 };
 
-static constexpr char exitName[] = "exit";
+inline constexpr char exitName[] = "exit";
 struct ExitNotification : public NotificationMessage<exitName, std::nullptr_t>
 {
 };
