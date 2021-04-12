@@ -19,28 +19,27 @@ class Client : public QObject
     Q_OBJECT
 
 public:
-    Client(const std::string &language, const QString &program, const QStringList &arguments,
-           QObject *parent = nullptr);
+    Client(const std::string &language, QString program, QStringList arguments, QObject *parent = nullptr);
 
     bool start();
     bool shutdown();
 
     template <typename Request>
-    void sendAsyncRequest(Request request, typename Request::ResponseCallback callback)
+    void sendAsyncRequest(const Request &request, typename Request::ResponseCallback callback)
     {
         m_callbacks[request.id] = [this, callback](nlohmann::json &&j) {
             if (callback) {
                 auto response = j.get<typename Request::Response>();
                 if (!response.isValid())
                     m_serverLogger->error("==> Invalid response from server: {}", j.dump());
-                callback(response);
+                callback(std::move(response));
             }
         };
         sendAsyncJsonRequest(request);
     }
 
     template <typename Request>
-    typename Request::Response sendRequest(Request request)
+    typename Request::Response sendRequest(const Request &request)
     {
         m_callbacks[request.id] = [this](nlohmann::json &&j) {
             m_response = std::move(j);
@@ -55,7 +54,7 @@ public:
     }
 
     template <typename Notification>
-    void sendNotification(Notification notification)
+    void sendNotification(const Notification &notification)
     {
         sendJsonNotification(notification);
     }

@@ -22,7 +22,7 @@ namespace Lsp {
 
 // Create a new LSP message to send
 // Return the message to send, with the header + content
-static QByteArray toMessage(const json &content)
+static QByteArray toMessage(json content)
 {
     QByteArray data = QByteArray::fromStdString(content.dump());
     const int length = data.size();
@@ -42,7 +42,7 @@ static QByteArray toMessage(const json &content)
 
 // Parse the given LSP message
 // Return the content of the message as a json object or empty if it's invalid
-static json parseMessage(const QByteArray &message)
+static json parseMessage(QByteArray message)
 {
     QBuffer buf;
     buf.setData(message);
@@ -70,10 +70,10 @@ static json parseMessage(const QByteArray &message)
     return {};
 }
 
-Client::Client(const std::string &language, const QString &program, const QStringList &arguments, QObject *parent)
+Client::Client(const std::string &language, QString program, QStringList arguments, QObject *parent)
     : QObject(parent)
-    , m_program(program)
-    , m_arguments(arguments)
+    , m_program(std::move(program))
+    , m_arguments(std::move(arguments))
 {
     const auto serverLogName = language + "_server";
     m_serverLogger = spdlog::get(serverLogName);
@@ -183,19 +183,16 @@ void Client::handleError(int error)
 void Client::sendAsyncJsonRequest(nlohmann::json jsonRequest)
 {
     logMessage("send-request", jsonRequest);
-    const auto message = toMessage(jsonRequest);
+    const auto message = toMessage(std::move(jsonRequest));
     m_process->write(message);
 }
 
 nlohmann::json Client::sendJsonRequest(nlohmann::json jsonRequest)
 {
-    logMessage("send-request", jsonRequest);
-    const auto message = toMessage(jsonRequest);
-
     // Wait for the response to be emitted using the QEventLoop trick
     QEventLoop loop;
     connect(this, &Client::responseEmitted, &loop, [&loop]() { loop.exit(); });
-    m_process->write(message);
+    sendAsyncJsonRequest(std::move(jsonRequest));
     loop.exec(QEventLoop::ExcludeUserInputEvents);
     return m_response;
 }
@@ -203,7 +200,7 @@ nlohmann::json Client::sendJsonRequest(nlohmann::json jsonRequest)
 void Client::sendJsonNotification(nlohmann::json jsonNotification)
 {
     logMessage("send-notification", jsonNotification);
-    const auto message = toMessage(jsonNotification);
+    const auto message = toMessage(std::move(jsonNotification));
     m_process->write(message);
 }
 
