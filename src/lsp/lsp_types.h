@@ -9,7 +9,7 @@ namespace Lsp {
 
 using MessageId = std::variant<int, std::string>;
 
-using IntegerOrNull = std::variant<int, nullptr_t>;
+using IntegerOrNull = std::variant<int, std::nullptr_t>;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
