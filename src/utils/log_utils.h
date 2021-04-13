@@ -26,6 +26,6 @@ public:
     }
 
 private:
-    spdlog::level::level_enum m_level;
+    spdlog::level::level_enum m_level = spdlog::level::off;
     std::shared_ptr<spdlog::logger> m_logger;
 };

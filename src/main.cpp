@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     // Run the test after starting the QApplication
-    QTimer::singleShot(0, [&]() {
+    QTimer::singleShot(0, &app, [&]() {
         int res = context.run();
         if (context.shouldExit())
             QCoreApplication::exit(res);

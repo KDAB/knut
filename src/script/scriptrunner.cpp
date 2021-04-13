@@ -126,7 +126,8 @@ QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine)
                                      | Qt::WindowFullscreenButtonHint);
 
                 // Delete on close, and clean up the engine
-                connect(window, SIGNAL(closing(QQuickCloseEvent *)), engine, SLOT(deleteLater()));
+                connect(window, SIGNAL(closing(QQuickCloseEvent *)), engine,
+                        SLOT(deleteLater())); // clazy:excludeall=connect-not-normalized
 
                 window->show();
             } else {
