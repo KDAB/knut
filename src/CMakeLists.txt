@@ -37,3 +37,9 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     spdlog::spdlog
     doctest::doctest
 )
+
+if(MSVC)
+  target_compile_options(${PROJECT_NAME} PRIVATE /W3 /WX)
+else()
+  target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Werror)
+endif()
