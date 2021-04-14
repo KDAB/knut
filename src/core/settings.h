@@ -7,6 +7,7 @@
 #include <QVariant>
 
 #include <nlohmann/json.hpp>
+#include <spdlog/spdlog.h>
 
 namespace Core {
 
@@ -45,9 +46,9 @@ public:
     T value(const std::string &path)
     {
         try {
-            return m_settings[nlohmann::json::json_pointer(path)].get<T>();
+            return m_settings.at(nlohmann::json::json_pointer(path)).get<T>();
         } catch (...) {
-            logWarning(QString("Error accessing setting value: %1").arg(QString::fromStdString(path)));
+            spdlog::warn("[Settings] Error accessing setting value {}", path);
         }
         return {};
     }
@@ -61,8 +62,6 @@ private:
 
     void loadKnutSettings();
     void loadUserSettings();
-
-    void logWarning(const QString &text) const;
 
 private:
     nlohmann::json m_settings;

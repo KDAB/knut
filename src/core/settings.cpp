@@ -2,7 +2,6 @@
 
 #include <QDir>
 #include <QFile>
-#include <QMessageBox>
 
 using json = nlohmann::json;
 
@@ -44,9 +43,12 @@ void Settings::loadProjectSettings(const QString &rootDir)
     if (file.open(QIODevice::ReadOnly)) {
         try {
             m_settings.merge_patch(json::parse(file.readAll().constData()));
+            spdlog::trace("[Settings] Loading project settings {}", fileName.toStdString());
         } catch (...) {
-            logWarning(QString("Error loading the project settings, in file:\n%1").arg(fileName));
+            spdlog::error("[Settings] Error loading the project settings, in file {}", fileName.toStdString());
         }
+    } else {
+        spdlog::trace("[Settings] No project settings {}", fileName.toStdString());
     }
 }
 
@@ -67,7 +69,8 @@ bool Settings::hasValue(const QString &path) const
 QVariant Settings::value(const QString &path, const QVariant &defaultValue) const
 {
     try {
-        auto val = m_settings[json::json_pointer(path.toStdString())];
+        auto val = m_settings.at(json::json_pointer(path.toStdString()));
+        spdlog::trace("[Settings] Getting setting value {}", path.toStdString());
         if (val.is_number_integer())
             return val.get<int>();
         else if (val.is_number_float())
@@ -78,8 +81,9 @@ QVariant Settings::value(const QString &path, const QVariant &defaultValue) cons
             // Only support QStringList for now
             return val.get<QStringList>();
         }
+        spdlog::warn("[Settings] Can't convert setting value {}", path.toStdString());
     } catch (...) {
-        logWarning(QString("Error accessing setting value: %1").arg(path));
+        spdlog::debug("[Settings] Trying to access non-existing setting value {}", path.toStdString());
     }
     return defaultValue;
 }
@@ -98,15 +102,13 @@ void Settings::loadUserSettings()
     if (file.open(QIODevice::ReadOnly)) {
         try {
             m_settings.merge_patch(json::parse(file.readAll().constData()));
+            spdlog::trace("[Settings] Loading user settings {}", fileName.toStdString());
         } catch (...) {
-            logWarning(QString("Error loading the user settings, in file:\n%1").arg(fileName));
+            spdlog::error("[Settings] Error loading the user settings, in file {}", fileName.toStdString());
         }
+    } else {
+        spdlog::trace("[Settings] No user settings {}", fileName.toStdString());
     }
-}
-
-void Settings::logWarning(const QString &text) const
-{
-    QMessageBox::warning(nullptr, "Knut", text);
 }
 
 } // namespace Core
