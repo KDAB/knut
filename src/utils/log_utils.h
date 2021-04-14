@@ -7,9 +7,12 @@
 class LogSilencer
 {
 public:
-    LogSilencer(const std::string &name)
+    LogSilencer(const std::string &name = "")
     {
-        m_logger = spdlog::get(name);
+        if (name.empty())
+            m_logger = spdlog::default_logger();
+        else
+            m_logger = spdlog::get(name);
         if (m_logger) {
             m_level = m_logger->level();
             m_logger->set_level(spdlog::level::off);

@@ -55,13 +55,15 @@ public:
 
     // TODO : Add API to change the project settings, setValue/removeValue
     Q_INVOKABLE bool hasValue(const QString &path) const;
-    Q_INVOKABLE QVariant value(const QString &path, const QVariant &defaultValue = {}) const;
+    Q_INVOKABLE QVariant value(QString path, const QVariant &defaultValue = {}) const;
+
+protected:
+    explicit Settings(bool addUserSettings, QObject *parent = nullptr);
 
 private:
-    explicit Settings(QObject *parent = nullptr);
-
     void loadKnutSettings();
     void loadUserSettings();
+    void loadSettings(std::string name, const QString &fileName);
 
 private:
     nlohmann::json m_settings;

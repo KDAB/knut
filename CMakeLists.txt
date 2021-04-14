@@ -3,6 +3,8 @@ include(FetchContent)
 
 project(knut LANGUAGES CXX)
 
+add_definitions(-DTEST_DATA_PATH="${CMAKE_CURRENT_SOURCE_DIR}/test_data")
+
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_CXX_STANDARD 17)
