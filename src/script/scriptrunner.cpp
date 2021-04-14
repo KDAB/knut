@@ -49,19 +49,11 @@ QVariant ScriptRunner::runScript(const QString &fileName, std::function<void()> 
             result = runQml(fullName, engine);
         // engine is deleted in runJavascript or runQml
     } else {
-        m_logger->error("File {} doesn't exist.", fileName.toStdString());
+        m_logger->error("File {} doesn't exist", fileName.toStdString());
         return QVariant();
     }
 
     return result;
-}
-
-static void handleWarnings(const QList<QQmlError> &warnings, std::shared_ptr<spdlog::logger> logger)
-{
-    for (const auto &warning : warnings) {
-        logger->warn("Warning in {} line {}: {}", warning.url().toLocalFile().toStdString(), warning.line(),
-                     warning.description().toStdString());
-    }
 }
 
 QQmlEngine *ScriptRunner::getEngine(const QString &fileName)
@@ -73,7 +65,14 @@ QQmlEngine *ScriptRunner::getEngine(const QString &fileName)
     engine->setProperty("scriptWindow", false);
     engine->addImportPath(QLatin1String("qrc:/qml"));
 
-    connect(engine, &QQmlEngine::warnings, this, [this](auto warnings) { handleWarnings(warnings, m_logger); });
+    auto logWarnings = [this](const QList<QQmlError> &warnings) {
+        for (const auto &warning : warnings) {
+            m_logger->warn("{}({}): warning: {}", warning.url().toLocalFile().toStdString(), warning.line(),
+                           warning.description().toStdString());
+        }
+    };
+
+    connect(engine, &QQmlEngine::warnings, this, logWarnings);
     engine->setOutputWarningsToStandardError(false);
 
     return engine;
