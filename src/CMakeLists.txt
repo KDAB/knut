@@ -10,7 +10,6 @@ set(PROJECT_SOURCES
         lsp/client.h
         lsp/lsp_types.h
         lsp/requestmessage.h
-        lsp/initialize_request.cpp
         lsp/initialize_request.h
         lsp/shutdown_request.h
         lsp/notificationmessage.h

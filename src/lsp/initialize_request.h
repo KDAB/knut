@@ -14,6 +14,7 @@ struct InitializeParams
     IntegerOrNull processId = nullptr;
     // TODO everything else...
 };
+JSONIFY(InitializeParams, processId);
 
 struct InitializeResult
 {
@@ -26,11 +27,14 @@ struct InitializeResult
     // TODO capabilities
     std::optional<ServerInfo> serverInfo;
 };
+JSONIFY(InitializeResult::ServerInfo, name, version);
+JSONIFY(InitializeResult, serverInfo);
 
 struct InitializeError
 {
     bool retry;
 };
+JSONIFY(InitializeError, retry);
 
 inline constexpr char initializeName[] = "initialize";
 struct InitializeRequest : public RequestMessage<initializeName, InitializeParams, InitializeResult, InitializeError>
@@ -42,15 +46,4 @@ struct InitializedNotification : public NotificationMessage<initializedName, std
 {
 };
 
-///////////////////////////////////////////////////////////////////////////////
-// Serialization
-///////////////////////////////////////////////////////////////////////////////
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(InitializeParams, processId);
-
-void to_json(nlohmann::json &j, const InitializeResult::ServerInfo &serverInfo);
-void from_json(const nlohmann::json &j, InitializeResult::ServerInfo &serverInfo);
-void to_json(nlohmann::json &j, const InitializeResult &result);
-void from_json(const nlohmann::json &j, InitializeResult &result);
-
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(InitializeError, retry);
 }
