@@ -206,33 +206,41 @@ void Client::sendJsonNotification(nlohmann::json jsonNotification)
 
 bool Client::initializeCallback(InitializeRequest::Response response)
 {
+    if (!response.isValid()) {
+        m_serverLogger->error("==> Error initializing the server {}", m_program.toLatin1());
+        return false;
+    }
+
     if (response.error) {
         json j = response.error.value();
         m_serverLogger->error(j.dump());
         return false;
-    } else if (response.result) {
-        // TODO initialize some client internal flags
-        sendNotification(InitializedNotification());
-        m_serverLogger->trace("==> LSP server {} initialized", m_program.toLatin1());
-        emit initialized();
-        return true;
     }
-    return false;
+
+    // TODO initialize some client internal flags
+    sendNotification(InitializedNotification());
+    m_serverLogger->trace("==> LSP server {} initialized", m_program.toLatin1());
+    emit initialized();
+    return true;
 }
 
 bool Client::shutdownCallback(ShutdownRequest::Response response)
 {
+    if (!response.isValid()) {
+        m_serverLogger->error("==> Error shutting down the server {}", m_program.toLatin1());
+        return false;
+    }
+
     if (response.error) {
         json j = response.error.value();
         m_serverLogger->error(j.dump());
         return false;
-    } else {
-        sendNotification(ExitNotification());
-        m_process->waitForFinished();
-        m_serverLogger->trace("==> LSP server {} exited", m_program.toLatin1());
-        emit finished();
-        return true;
     }
+
+    sendNotification(ExitNotification());
+    m_process->waitForFinished();
+    m_serverLogger->trace("==> LSP server {} exited", m_program.toLatin1());
+    emit finished();
     return true;
 }
 

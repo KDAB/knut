@@ -29,9 +29,7 @@ public:
     {
         m_callbacks[request.id] = [this, callback](nlohmann::json &&j) {
             if (callback) {
-                auto response = j.get<typename Request::Response>();
-                if (!response.isValid())
-                    m_serverLogger->error("==> Invalid response from server: {}", j.dump());
+                auto response = deserializeResponse<typename Request::Response>(std::move(j));
                 callback(std::move(response));
             }
         };
@@ -47,10 +45,7 @@ public:
         };
 
         auto j = sendJsonRequest(request);
-        auto response = j.template get<typename Request::Response>();
-        if (!response.isValid())
-            m_serverLogger->error("==> Invalid response from server: {}", j.dump());
-        return response;
+        return deserializeResponse<typename Request::Response>(std::move(j));
     }
 
     template <typename Notification>
@@ -69,6 +64,17 @@ private:
     void readError();
     void readOutput();
     void handleError(int error);
+
+    template <typename Response>
+    Response deserializeResponse(nlohmann::json &&j)
+    {
+        try {
+            return j.get<Response>();
+        } catch (...) {
+            m_serverLogger->error("==> Invalid response from server: {}", j.dump());
+        }
+        return {};
+    }
 
     void sendAsyncJsonRequest(nlohmann::json jsonRequest);
     nlohmann::json sendJsonRequest(nlohmann::json jsonRequest);
