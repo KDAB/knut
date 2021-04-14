@@ -11,10 +11,24 @@ namespace Lsp {
 
 struct InitializeParams
 {
+    struct ClientInfo
+    {
+        std::string name;
+        std::optional<std::string> version;
+    };
+
     IntegerOrNull processId = nullptr;
-    // TODO everything else...
+    std::optional<ClientInfo> clientInfo;
+    std::optional<std::string> locale;
+    // deprecated: rootPath?: string | null;
+    // deprecated: rootUri: DocumentUri | null;
+    // TODO user provided initializationOptions?: any;
+    ClientCapabilities capabilities;
+    std::optional<TraceValue> trace;
+    std::optional<std::vector<WorkspaceFolder>> workspaceFolders;
 };
-JSONIFY(InitializeParams, processId);
+JSONIFY(InitializeParams::ClientInfo, name, version);
+JSONIFY(InitializeParams, processId, clientInfo, locale, capabilities, trace, workspaceFolders);
 
 struct InitializeResult
 {

@@ -149,6 +149,11 @@ bool Client::initialize()
     InitializeRequest request;
     request.id = 1;
     request.params.processId = QCoreApplication::applicationPid();
+    request.params.clientInfo = {"knut", "0.1"};
+    request.params.trace = TraceValue::Off;
+    ClientCapabilities::Workspace workspaceCapabilities;
+    workspaceCapabilities.workspaceFolders = true;
+    request.params.capabilities.workspace = workspaceCapabilities;
 
     return initializeCallback(sendRequest(request));
 }

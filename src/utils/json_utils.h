@@ -4,6 +4,7 @@
 #include <QStringList>
 
 #include <nlohmann/json.hpp>
+#include <magic_enum.hpp>
 
 #include <optional>
 
@@ -33,43 +34,80 @@ inline void from_json(const nlohmann::json &j, QStringList &strList)
 
 namespace nlohmann {
 
+template <typename>
+constexpr bool is_optional = false;
+template <typename T>
+constexpr bool is_optional<std::optional<T>> = true;
+
+// the LSP spec has lower case strings for enums, but we cannot use
+// lower case in C++ due to reserved keywords, like 'delete'.
+// we do the serialization here by converting the first character to/from lowercase
+template <class T>
+void enum_to_json(nlohmann::json &j, const char *name, const T &value)
+{
+    auto jsonString = std::string(magic_enum::enum_name(value));
+    jsonString[0] = std::tolower(jsonString[0]);
+    j[name] = jsonString;
+}
+
+template <class T>
+void enum_from_json(const nlohmann::json &j, T &value)
+{
+    auto jsonString = j.get<std::string>();
+    jsonString[0] = std::toupper(jsonString[0]);
+    value = magic_enum::enum_cast<T>(jsonString).value();
+}
+
 template <class T>
 void optional_to_json(nlohmann::json &j, const char *name, const std::optional<T> &value)
 {
-    if (value)
-        j[name] = *value;
+    if (value) {
+        if constexpr (std::is_enum<T>::value) {
+            enum_to_json(j, name, *value);
+        } else {
+            j[name] = *value;
+        }
+    }
 }
 
 template <class T>
 void optional_from_json(const nlohmann::json &j, const char *name, std::optional<T> &value)
 {
     const auto it = j.find(name);
-    if (it != j.end())
-        value = it->get<T>();
-    else
+    if (it != j.end()) {
+        if constexpr (std::is_enum<T>::value) {
+            T enumValue;
+            enum_from_json(*it, enumValue);
+            value = enumValue;
+        } else {
+            value = it->get<T>();
+        }
+    } else {
         value = std::nullopt;
+    }
 }
-
-template <typename>
-constexpr bool is_optional = false;
-template <typename T>
-constexpr bool is_optional<std::optional<T>> = true;
 
 template <typename T>
 void knut_to_json(const char *key, nlohmann::json &j, const T &value)
 {
-    if constexpr (is_optional<T>)
+    if constexpr (is_optional<T>) {
         nlohmann::optional_to_json(j, key, value);
-    else
+    } else if constexpr (std::is_enum<T>::value) {
+        enum_to_json(j, key, value);
+    } else {
         j[key] = value;
+    }
 }
 template <typename T>
 void knut_from_json(const char *key, const nlohmann::json &j, T &value)
 {
-    if constexpr (is_optional<T>)
+    if constexpr (is_optional<T>) {
         nlohmann::optional_from_json(j, key, value);
-    else
+    } else if constexpr (std::is_enum<T>::value) {
+        enum_from_json(j.at(key), value);
+    } else {
         j.at(key).get_to(value);
+    }
 }
 }
 

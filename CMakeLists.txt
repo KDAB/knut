@@ -43,8 +43,13 @@ FetchContent_Declare(doctest
 )
 
 
-FetchContent_MakeAvailable(spdlog json doctest)
+# magic_enum
+FetchContent_Declare(magic_enum
+    GIT_REPOSITORY "https://github.com/Neargye/magic_enum"
+    GIT_TAG v0.7.2
+)
 
+FetchContent_MakeAvailable(spdlog json doctest magic_enum)
 
 # Knut
 add_subdirectory(src)
