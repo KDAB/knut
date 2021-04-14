@@ -4,6 +4,7 @@
 #include <QStringList>
 
 #include <nlohmann/json.hpp>
+#include <magic_enum.hpp>
 
 #include <optional>
 
@@ -48,6 +49,29 @@ void optional_from_json(const nlohmann::json &j, const char *name, std::optional
         value = it->get<T>();
     else
         value = std::nullopt;
+}
+
+template <typename T>
+void optional_enum_to_json(nlohmann::json &j, const char *name, const std::optional<T> &value)
+{
+    if (value) {
+        auto jsonString = std::string(magic_enum::enum_name(*value));
+        jsonString[0] = std::tolower(jsonString[0]);
+        j[name] = jsonString;
+    }
+}
+
+template <typename E>
+void optional_enum_from_json(const nlohmann::json &j, const char *name, std::optional<E> &value)
+{
+    const auto it = j.find(name);
+    if (it != j.end()) {
+        auto jsonString = it->get<std::string>();
+        jsonString[0] = std::toupper(jsonString[0]);
+        value = magic_enum::enum_cast<E>(jsonString);
+    } else {
+        value = std::nullopt;
+    }
 }
 
 }

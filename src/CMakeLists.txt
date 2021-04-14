@@ -36,4 +36,5 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     nlohmann_json::nlohmann_json
     spdlog::spdlog
     doctest::doctest
+    magic_enum::magic_enum
 )
