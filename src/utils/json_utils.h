@@ -7,7 +7,11 @@
 #include <magic_enum.hpp>
 
 #include <optional>
+#include <variant>
 
+///////////////////////////////////////////////////////////////////////////////
+// QString
+///////////////////////////////////////////////////////////////////////////////
 inline void to_json(nlohmann::json &j, const QString &str)
 {
     j = nlohmann::json(str.toStdString());
@@ -18,6 +22,9 @@ inline void from_json(const nlohmann::json &j, QString &str)
     str = QString::fromStdString(j.get<std::string>());
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// QStringList
+///////////////////////////////////////////////////////////////////////////////
 inline void to_json(nlohmann::json &j, const QStringList &strList)
 {
     std::vector<QString> list(strList.cbegin(), strList.cend());
@@ -34,11 +41,9 @@ inline void from_json(const nlohmann::json &j, QStringList &strList)
 
 namespace nlohmann {
 
-template <typename>
-constexpr bool is_optional = false;
-template <typename T>
-constexpr bool is_optional<std::optional<T>> = true;
-
+///////////////////////////////////////////////////////////////////////////////
+// Enums
+///////////////////////////////////////////////////////////////////////////////
 // the LSP spec has lower case strings for enums, but we cannot use
 // lower case in C++ due to reserved keywords, like 'delete'.
 // we do the serialization here by converting the first character to/from lowercase
@@ -57,6 +62,44 @@ void enum_from_json(const nlohmann::json &j, T &value)
     jsonString[0] = std::toupper(jsonString[0]);
     value = magic_enum::enum_cast<T>(jsonString).value();
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// std::variant
+///////////////////////////////////////////////////////////////////////////////
+// Try to set the value of type T into the variant data
+// if it fails, do nothing
+template <typename T, typename... Ts>
+void variant_from_json(const nlohmann::json &j, std::variant<Ts...> &data)
+{
+    try {
+        data = j.get<T>();
+    } catch (...) {
+    }
+}
+
+template <typename... Ts>
+struct adl_serializer<std::variant<Ts...>>
+{
+    static void to_json(nlohmann::json &j, const std::variant<Ts...> &data)
+    {
+        // Will call j = v automatically for the right type
+        std::visit([&j](const auto &v) { j = v; }, data);
+    }
+
+    static void from_json(const nlohmann::json &j, std::variant<Ts...> &data)
+    {
+        // Call variant_from_json for all types, only one will succeed
+        (variant_from_json<Ts>(j, data), ...);
+    }
+};
+
+///////////////////////////////////////////////////////////////////////////////
+// std::optional
+///////////////////////////////////////////////////////////////////////////////
+template <typename>
+constexpr bool is_optional = false;
+template <typename T>
+constexpr bool is_optional<std::optional<T>> = true;
 
 template <class T>
 void optional_to_json(nlohmann::json &j, const char *name, const std::optional<T> &value)
@@ -87,6 +130,9 @@ void optional_from_json(const nlohmann::json &j, const char *name, std::optional
     }
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// all together
+///////////////////////////////////////////////////////////////////////////////
 template <typename T>
 void knut_to_json(const char *key, nlohmann::json &j, const T &value)
 {

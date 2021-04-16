@@ -1,7 +1,5 @@
 #pragma once
 
-#include "lsp_types.h"
-
 #include "utils/json_utils.h"
 
 #include <nlohmann/json.hpp>
@@ -10,6 +8,7 @@
 #include <optional>
 #include <string>
 #include <type_traits>
+#include <variant>
 
 namespace Lsp {
 
@@ -43,7 +42,7 @@ template <typename ResultData, typename ErrorData>
 struct ResponseMessage
 {
     std::string jsonrpc = "2.0";
-    MessageId id; // TODO: id could be null, not the case here
+    std::variant<int, std::string, std::nullptr_t> id;
     std::optional<ResultData> result;
     std::optional<ResponseError<ErrorData>> error;
 

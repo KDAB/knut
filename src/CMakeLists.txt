@@ -18,6 +18,7 @@ set(PROJECT_SOURCES
         script/scriptrunner.cpp
         script/scriptrunner.h
         utils/json_utils.h
+        utils/json_utils.cpp
         utils/log_utils.h
 )
 

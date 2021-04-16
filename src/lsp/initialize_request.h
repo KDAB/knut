@@ -17,7 +17,7 @@ struct InitializeParams
         std::optional<std::string> version;
     };
 
-    IntegerOrNull processId = nullptr;
+    std::variant<int, std::nullptr_t> processId = nullptr;
     std::optional<ClientInfo> clientInfo;
     std::optional<std::string> locale;
     // deprecated: rootPath?: string | null;
