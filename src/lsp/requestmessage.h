@@ -12,6 +12,8 @@
 
 namespace Lsp {
 
+using MessageId = std::variant<int, std::string>;
+
 /*!
  *  \brief Error message in the response message, following a request
  */

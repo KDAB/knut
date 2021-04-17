@@ -4,13 +4,11 @@
 
 #include <nlohmann/json.hpp>
 
-#include <string>
 #include <optional>
+#include <string>
 #include <variant>
 
 namespace Lsp {
-
-using MessageId = std::variant<int, std::string>;
 
 using DocumentUri = std::string;
 
@@ -19,20 +17,20 @@ using SymbolTag = int;
 enum class TraceValue {
     Off = 1,
     Message = 2,
-    Verbose = 3
+    Verbose = 3,
 };
 
-enum class ResourceOperationKind  {
+enum class ResourceOperationKind {
     Create = 1,
     Rename = 2,
     Delete = 3,
 };
 
-enum class FailureHandlingKind  {
+enum class FailureHandlingKind {
     Abort,
     Transactional,
     Undo,
-    TextOnlyTransactional
+    TextOnlyTransactional,
 };
 
 enum class SymbolKind {
@@ -94,22 +92,24 @@ enum class CompletionItemKind {
 
 enum class MarkupKind {
     PlainText,
-    MarkDown
+    MarkDown,
 };
 
-enum class TokenFormat
+enum class TokenFormat {
+    Relative = 1,
+};
+
+struct WorkspaceFolder
 {
-    Relative = 1
-};
-
-struct WorkspaceFolder {
     DocumentUri uri;
     std::string name;
 };
 JSONIFY(WorkspaceFolder, uri, name);
 
-struct WorkspaceEditClientCapabilities {
-    struct ChangeAnnotationSupport {
+struct WorkspaceEditClientCapabilities
+{
+    struct ChangeAnnotationSupport
+    {
         std::optional<bool> groupsOnLabel;
     };
 
@@ -120,25 +120,30 @@ struct WorkspaceEditClientCapabilities {
     std::optional<ChangeAnnotationSupport> changeAnnotationSupport;
 };
 JSONIFY(WorkspaceEditClientCapabilities::ChangeAnnotationSupport, groupsOnLabel);
-JSONIFY(WorkspaceEditClientCapabilities, documentChanges, resourceOperations, failureHandling, normalizesLineEndings, changeAnnotationSupport);
+JSONIFY(WorkspaceEditClientCapabilities, documentChanges, resourceOperations, failureHandling, normalizesLineEndings,
+        changeAnnotationSupport);
 
-struct DidChangeConfigurationClientCapabilities {
+struct DidChangeConfigurationClientCapabilities
+{
     std::optional<bool> dynamicRegistration;
 };
 JSONIFY(DidChangeConfigurationClientCapabilities, dynamicRegistration);
 
-
-struct DidChangeWatchedFilesClientCapabilities {
+struct DidChangeWatchedFilesClientCapabilities
+{
     std::optional<bool> dynamicRegistration;
 };
 JSONIFY(DidChangeWatchedFilesClientCapabilities, dynamicRegistration);
 
-struct WorkspaceSymbolClientCapabilities {
-    struct SymbolKinds {
+struct WorkspaceSymbolClientCapabilities
+{
+    struct SymbolKinds
+    {
         std::optional<std::vector<SymbolKind>> valueSet;
     };
 
-    struct TagSupport {
+    struct TagSupport
+    {
         std::optional<std::vector<SymbolTag>> valueSet;
     };
 
@@ -150,23 +155,28 @@ JSONIFY(WorkspaceSymbolClientCapabilities::SymbolKinds, valueSet);
 JSONIFY(WorkspaceSymbolClientCapabilities::TagSupport, valueSet);
 JSONIFY(WorkspaceSymbolClientCapabilities, dynamicRegistration, symbolKind, tagSupport);
 
-struct ExecuteCommandClientCapabilities {
+struct ExecuteCommandClientCapabilities
+{
     std::optional<bool> dynamicRegistration;
 };
 JSONIFY(ExecuteCommandClientCapabilities, dynamicRegistration);
 
-struct SemanticTokensWorkspaceClientCapabilities {
+struct SemanticTokensWorkspaceClientCapabilities
+{
     std::optional<bool> refreshSupport;
 };
 JSONIFY(SemanticTokensWorkspaceClientCapabilities, refreshSupport);
 
-struct CodeLensWorkspaceClientCapabilities {
+struct CodeLensWorkspaceClientCapabilities
+{
     std::optional<bool> refreshSupport;
 };
 JSONIFY(CodeLensWorkspaceClientCapabilities, refreshSupport);
 
-struct ShowMessageRequestClientCapabilities {
-    struct MessageActionItem {
+struct ShowMessageRequestClientCapabilities
+{
+    struct MessageActionItem
+    {
         std::optional<bool> additionalPropertiesSupport;
     };
     std::optional<MessageActionItem> messageActionItem;
@@ -174,24 +184,28 @@ struct ShowMessageRequestClientCapabilities {
 JSONIFY(ShowMessageRequestClientCapabilities::MessageActionItem, additionalPropertiesSupport);
 JSONIFY(ShowMessageRequestClientCapabilities, messageActionItem);
 
-struct ShowDocumentClientCapabilities {
+struct ShowDocumentClientCapabilities
+{
     bool support;
 };
 JSONIFY(ShowDocumentClientCapabilities, support);
 
-struct RegularExpressionsClientCapabilities {
+struct RegularExpressionsClientCapabilities
+{
     std::string engine;
     std::optional<std::string> version;
 };
 JSONIFY(RegularExpressionsClientCapabilities, engine, version);
 
-struct MarkdownClientCapabilities {
+struct MarkdownClientCapabilities
+{
     std::string parser;
     std::optional<std::string> version;
 };
 JSONIFY(MarkdownClientCapabilities, parser, version);
 
-struct TextDocumentSyncClientCapabilities {
+struct TextDocumentSyncClientCapabilities
+{
     std::optional<bool> dynamicRegistration;
     std::optional<bool> willSave;
     std::optional<bool> willSaveWaitUntil;
@@ -199,8 +213,10 @@ struct TextDocumentSyncClientCapabilities {
 };
 JSONIFY(TextDocumentSyncClientCapabilities, dynamicRegistration, willSave, willSaveWaitUntil, didSave);
 
-struct CompletionClientCapabilities {
-    struct CompletionItem {
+struct CompletionClientCapabilities
+{
+    struct CompletionItem
+    {
         std::optional<bool> snippetSupport;
         std::optional<bool> commitCharactersSupport;
         std::optional<std::vector<MarkupKind>> documentationFormat;
@@ -208,33 +224,36 @@ struct CompletionClientCapabilities {
         std::optional<bool> preselectSupport;
         std::optional<bool> insertReplaceSupport;
         // TODO complete
-
     };
 
-    struct CompletionItemKinds {
+    struct CompletionItemKinds
+    {
         std::optional<std::vector<CompletionItemKind>> valueSet;
     };
-
 
     std::optional<bool> dynamicRegistration;
     std::optional<CompletionItem> completionItem;
     std::optional<CompletionItemKinds> completionItemKind;
     std::optional<bool> contextSupport;
 };
-JSONIFY(CompletionClientCapabilities::CompletionItem, snippetSupport, commitCharactersSupport, \
-        documentationFormat, deprecatedSupport, preselectSupport, insertReplaceSupport);
+JSONIFY(CompletionClientCapabilities::CompletionItem, snippetSupport, commitCharactersSupport, documentationFormat,
+        deprecatedSupport, preselectSupport, insertReplaceSupport);
 JSONIFY(CompletionClientCapabilities::CompletionItemKinds, valueSet);
 JSONIFY(CompletionClientCapabilities, dynamicRegistration, completionItem, completionItemKind, contextSupport);
 
-struct HoverClientCapabilities {
+struct HoverClientCapabilities
+{
     std::optional<bool> dynamicRegistration;
     std::optional<std::vector<MarkupKind>> contentFormat;
 };
 JSONIFY(HoverClientCapabilities, dynamicRegistration, contentFormat);
 
-struct SignatureHelpClientCapabilities {
-    struct SignatueInformation {
-        struct ParameterInformation {
+struct SignatureHelpClientCapabilities
+{
+    struct SignatueInformation
+    {
+        struct ParameterInformation
+        {
             std::optional<bool> labelOffsetSupport;
         };
 
@@ -248,49 +267,59 @@ struct SignatureHelpClientCapabilities {
     std::optional<bool> contextSupport;
 };
 JSONIFY(SignatureHelpClientCapabilities::SignatueInformation::ParameterInformation, labelOffsetSupport);
-JSONIFY(SignatureHelpClientCapabilities::SignatueInformation, documentationFormat, parameterInformation, activeParameterSupport);
+JSONIFY(SignatureHelpClientCapabilities::SignatueInformation, documentationFormat, parameterInformation,
+        activeParameterSupport);
 JSONIFY(SignatureHelpClientCapabilities, dynamicRegistration, signatureInformation, contextSupport);
 
-struct DeclarationClientCapabilities {
+struct DeclarationClientCapabilities
+{
     std::optional<bool> dynamicRegistration;
     std::optional<bool> linkSupport;
 };
 JSONIFY(DeclarationClientCapabilities, dynamicRegistration, linkSupport);
 
-struct DefinitionClientCapabilities {
+struct DefinitionClientCapabilities
+{
     std::optional<bool> dynamicRegistration;
     std::optional<bool> linkSupport;
 };
 JSONIFY(DefinitionClientCapabilities, dynamicRegistration, linkSupport);
 
-struct TypeDefinitionClientCapabilities {
+struct TypeDefinitionClientCapabilities
+{
     std::optional<bool> dynamicRegistration;
     std::optional<bool> linkSupport;
 };
 JSONIFY(TypeDefinitionClientCapabilities, dynamicRegistration, linkSupport);
 
-struct ImplementationClientCapabilities {
+struct ImplementationClientCapabilities
+{
     std::optional<bool> dynamicRegistration;
     std::optional<bool> linkSupport;
 };
 JSONIFY(ImplementationClientCapabilities, dynamicRegistration, linkSupport);
 
-struct ReferenceClientCapabilities {
+struct ReferenceClientCapabilities
+{
     std::optional<bool> dynamicRegistration;
 };
 JSONIFY(ReferenceClientCapabilities, dynamicRegistration);
 
-struct DocumentHighlightClientCapabilities {
+struct DocumentHighlightClientCapabilities
+{
     std::optional<bool> dynamicRegistration;
 };
 JSONIFY(DocumentHighlightClientCapabilities, dynamicRegistration);
 
-struct DocumentSymbolClientCapabilities {
-    struct SymbolKinds {
+struct DocumentSymbolClientCapabilities
+{
+    struct SymbolKinds
+    {
         std::optional<std::vector<SymbolKind>> valueSet;
     };
 
-    struct TagSupport {
+    struct TagSupport
+    {
         std::vector<SymbolTag> valueSet;
     };
 
@@ -302,10 +331,13 @@ struct DocumentSymbolClientCapabilities {
 };
 JSONIFY(DocumentSymbolClientCapabilities::SymbolKinds, valueSet);
 JSONIFY(DocumentSymbolClientCapabilities::TagSupport, valueSet);
-JSONIFY(DocumentSymbolClientCapabilities, dynamicRegistration, symbolKind, hierarchicalDocumentSymbolSupport, tagSupport, labelSupport);
+JSONIFY(DocumentSymbolClientCapabilities, dynamicRegistration, symbolKind, hierarchicalDocumentSymbolSupport,
+        tagSupport, labelSupport);
 
-struct CodeActionClientCapabilities {
-    struct ResolveSupport {
+struct CodeActionClientCapabilities
+{
+    struct ResolveSupport
+    {
         std::vector<std::string> properties;
     };
 
@@ -318,81 +350,97 @@ struct CodeActionClientCapabilities {
     std::optional<bool> honorsChangeAnnotations;
 };
 JSONIFY(CodeActionClientCapabilities::ResolveSupport, properties);
-JSONIFY(CodeActionClientCapabilities, dynamicRegistration, isPreferredSupport, disabledSupport, dataSupport, resolveSupport, honorsChangeAnnotations);
+JSONIFY(CodeActionClientCapabilities, dynamicRegistration, isPreferredSupport, disabledSupport, dataSupport,
+        resolveSupport, honorsChangeAnnotations);
 
-struct CodeLensClientCapabilities {
+struct CodeLensClientCapabilities
+{
     std::optional<bool> dynamicRegistration;
 };
 JSONIFY(CodeLensClientCapabilities, dynamicRegistration);
 
-struct DocumentLinkClientCapabilities {
+struct DocumentLinkClientCapabilities
+{
     std::optional<bool> dynamicRegistration;
     std::optional<bool> tooltipSupport;
 };
 JSONIFY(DocumentLinkClientCapabilities, dynamicRegistration, tooltipSupport);
 
-struct DocumentColorClientCapabilities {
+struct DocumentColorClientCapabilities
+{
     std::optional<bool> dynamicRegistration;
 };
 JSONIFY(DocumentColorClientCapabilities, dynamicRegistration);
 
-struct DocumentFormattingClientCapabilities {
+struct DocumentFormattingClientCapabilities
+{
     std::optional<bool> dynamicRegistration;
 };
 JSONIFY(DocumentFormattingClientCapabilities, dynamicRegistration);
 
-struct DocumentRangeFormattingClientCapabilities {
+struct DocumentRangeFormattingClientCapabilities
+{
     std::optional<bool> dynamicRegistration;
 };
 JSONIFY(DocumentRangeFormattingClientCapabilities, dynamicRegistration);
 
-struct DocumentOnTypeFormattingClientCapabilities {
+struct DocumentOnTypeFormattingClientCapabilities
+{
     std::optional<bool> dynamicRegistration;
 };
 JSONIFY(DocumentOnTypeFormattingClientCapabilities, dynamicRegistration);
 
-struct RenameClientCapabilities {
+struct RenameClientCapabilities
+{
     std::optional<bool> dynamicRegistration;
     std::optional<bool> prepareSupport;
-    //TODO std::optional<PrepareSupportDefaultBehavior> prepareSupportDefaultBehavior;
+    // TODO std::optional<PrepareSupportDefaultBehavior> prepareSupportDefaultBehavior;
     std::optional<bool> honorsChangeAnnotations;
 };
 JSONIFY(RenameClientCapabilities, dynamicRegistration, prepareSupport, honorsChangeAnnotations);
 
-struct PublishDiagnosticsClientCapabilities {
+struct PublishDiagnosticsClientCapabilities
+{
     std::optional<bool> relatedInformation;
-    //TODO std::optional<TagSupport> tagSupport;
+    // TODO std::optional<TagSupport> tagSupport;
     std::optional<bool> versionSupport;
     std::optional<bool> codeDescriptionSupport;
     std::optional<bool> dataSupport;
 };
 JSONIFY(PublishDiagnosticsClientCapabilities, relatedInformation, versionSupport, codeDescriptionSupport, dataSupport);
 
-struct FoldingRangeClientCapabilities {
+struct FoldingRangeClientCapabilities
+{
     std::optional<bool> dynamicRegistration;
     std::optional<unsigned int> rangeLimit;
     std::optional<bool> lineFoldingOnly;
 };
 JSONIFY(FoldingRangeClientCapabilities, dynamicRegistration, rangeLimit, lineFoldingOnly);
 
-struct SelectionRangeClientCapabilities {
+struct SelectionRangeClientCapabilities
+{
     std::optional<bool> dynamicRegistration;
 };
 JSONIFY(SelectionRangeClientCapabilities, dynamicRegistration);
 
-struct LinkedEditingRangeClientCapabilities {
+struct LinkedEditingRangeClientCapabilities
+{
     std::optional<bool> dynamicRegistration;
 };
 JSONIFY(LinkedEditingRangeClientCapabilities, dynamicRegistration);
 
-struct CallHierarchyClientCapabilities {
+struct CallHierarchyClientCapabilities
+{
     std::optional<bool> dynamicRegistration;
 };
 JSONIFY(CallHierarchyClientCapabilities, dynamicRegistration);
 
-struct SemanticTokensClientCapabilities {
-    struct Requests {
-        struct Full {
+struct SemanticTokensClientCapabilities
+{
+    struct Requests
+    {
+        struct Full
+        {
             std::optional<bool> delta;
         };
 
@@ -408,16 +456,19 @@ struct SemanticTokensClientCapabilities {
     std::optional<bool> overlappingTokenSupport;
     std::optional<bool> multilineTokenSupport;
 };
-//TODO JSONIFY(SemanticTokensClientCapabilities::Requests::Full, delta);
+// TODO JSONIFY(SemanticTokensClientCapabilities::Requests::Full, delta);
 JSONIFY(SemanticTokensClientCapabilities::Requests, range);
-JSONIFY(SemanticTokensClientCapabilities, dynamicRegistration, requests, tokenTypes, tokenModifiers, overlappingTokenSupport, multilineTokenSupport);
+JSONIFY(SemanticTokensClientCapabilities, dynamicRegistration, requests, tokenTypes, tokenModifiers,
+        overlappingTokenSupport, multilineTokenSupport);
 
-struct MonikerClientCapabilities {
+struct MonikerClientCapabilities
+{
     std::optional<bool> dynamicRegistration;
 };
 JSONIFY(MonikerClientCapabilities, dynamicRegistration);
 
-struct TextDocumentClientCapabilities {
+struct TextDocumentClientCapabilities
+{
     std::optional<TextDocumentSyncClientCapabilities> synchronization;
     std::optional<CompletionClientCapabilities> completion;
     std::optional<HoverClientCapabilities> hover;
@@ -445,14 +496,17 @@ struct TextDocumentClientCapabilities {
     std::optional<SemanticTokensClientCapabilities> semanticTokens;
     std::optional<MonikerClientCapabilities> moniker;
 };
-JSONIFY(TextDocumentClientCapabilities, synchronization, completion, hover, signatureHelp, declaration \
-, definition, typeDefinition, references, documentHighlight, documentSymbol, codeAction, codeLens, documentLink \
-, colorProvider, formatting, rangeFormatting, onTypeFormatting, rename, publishDiagnostics, foldingRange \
-, selectionRange, linkedEditingRange, callHierarchy, semanticTokens, moniker);
+JSONIFY(TextDocumentClientCapabilities, synchronization, completion, hover, signatureHelp, declaration, definition,
+        typeDefinition, references, documentHighlight, documentSymbol, codeAction, codeLens, documentLink,
+        colorProvider, formatting, rangeFormatting, onTypeFormatting, rename, publishDiagnostics, foldingRange,
+        selectionRange, linkedEditingRange, callHierarchy, semanticTokens, moniker);
 
-struct ClientCapabilities {
-    struct Workspace {
-        struct FileOperations {
+struct ClientCapabilities
+{
+    struct Workspace
+    {
+        struct FileOperations
+        {
             std::optional<bool> dynamicRegistration;
             std::optional<bool> didCreate;
             std::optional<bool> willCreate;
@@ -460,7 +514,6 @@ struct ClientCapabilities {
             std::optional<bool> willRename;
             std::optional<bool> didDelete;
             std::optional<bool> willDelete;
-
         };
 
         std::optional<bool> applyEdit;
@@ -474,35 +527,32 @@ struct ClientCapabilities {
         std::optional<SemanticTokensWorkspaceClientCapabilities> semanticTokens;
         std::optional<CodeLensWorkspaceClientCapabilities> codeLens;
         std::optional<FileOperations> fileOperations;
-
     };
 
-    struct Window {
+    struct Window
+    {
         std::optional<bool> workDoneProgress;
         std::optional<ShowMessageRequestClientCapabilities> showMessage;
         std::optional<ShowDocumentClientCapabilities> showDocument;
-
     };
 
-    struct General {
+    struct General
+    {
         std::optional<RegularExpressionsClientCapabilities> regularExpressions;
         std::optional<MarkdownClientCapabilities> markdown;
-
     };
-
 
     std::optional<Workspace> workspace;
     std::optional<TextDocumentClientCapabilities> textDocument;
     std::optional<Window> window;
     std::optional<General> general;
-    //TODO experimental?: any;
+    // TODO experimental?: any;
 };
-JSONIFY(ClientCapabilities::Workspace::FileOperations, dynamicRegistration, didCreate, willCreate, didRename, willRename \
-, didDelete, willDelete);
-JSONIFY(ClientCapabilities::Workspace, applyEdit, workspaceEdit, didChangeConfiguration, didChangeWatchedFiles, symbol \
-, executeCommand, workspaceFolders, configuration, semanticTokens, codeLens, fileOperations);
+JSONIFY(ClientCapabilities::Workspace::FileOperations, dynamicRegistration, didCreate, willCreate, didRename,
+        willRename, didDelete, willDelete);
+JSONIFY(ClientCapabilities::Workspace, applyEdit, workspaceEdit, didChangeConfiguration, didChangeWatchedFiles, symbol,
+        executeCommand, workspaceFolders, configuration, semanticTokens, codeLens, fileOperations);
 JSONIFY(ClientCapabilities::Window, workDoneProgress, showMessage, showDocument);
 JSONIFY(ClientCapabilities::General, regularExpressions, markdown);
 JSONIFY(ClientCapabilities, workspace, textDocument, window, general);
 }
-
