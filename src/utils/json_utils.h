@@ -19,7 +19,10 @@ inline void to_json(nlohmann::json &j, const QString &str)
 
 inline void from_json(const nlohmann::json &j, QString &str)
 {
-    str = QString::fromStdString(j.get<std::string>());
+    if (j.is_string())
+        str = QString::fromStdString(j.get<std::string>());
+    else
+        throw nlohmann::detail::type_error::create(302, "type must be a string, but is not");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -36,6 +39,8 @@ inline void from_json(const nlohmann::json &j, QStringList &strList)
     if (j.is_array()) {
         auto list = j.get<std::vector<QString>>();
         strList = QStringList(list.cbegin(), list.cend());
+    } else {
+        throw nlohmann::detail::type_error::create(302, "type must be an array, but is not");
     }
 }
 
@@ -58,9 +63,13 @@ void enum_to_json(nlohmann::json &j, const char *name, const T &value)
 template <class T>
 void enum_from_json(const nlohmann::json &j, T &value)
 {
-    auto jsonString = j.get<std::string>();
-    jsonString[0] = std::toupper(jsonString[0]);
-    value = magic_enum::enum_cast<T>(jsonString).value();
+    if (j.is_string()) {
+        auto jsonString = j.get<std::string>();
+        jsonString[0] = std::toupper(jsonString[0]);
+        value = magic_enum::enum_cast<T>(jsonString).value();
+    } else {
+        throw nlohmann::detail::type_error::create(302, "type must be a string, but is not");
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
