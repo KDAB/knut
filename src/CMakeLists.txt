@@ -6,6 +6,16 @@ set(PROJECT_SOURCES
         core/scriptitem.h
         core/settings.cpp
         core/settings.h
+        core/dir.cpp
+        core/dir.h
+        core/file.cpp
+        core/file.h
+        core/fileinfo.cpp
+        core/fileinfo.h
+        core/qdirvaluetype.cpp
+        core/qdirvaluetype.h
+        core/qfileinfovaluetype.cpp
+        core/qfileinfovaluetype.h
         lsp/client.cpp
         lsp/client.h
         lsp/notifications.h
