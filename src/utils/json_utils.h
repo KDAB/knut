@@ -114,7 +114,7 @@ template <class T>
 void optional_to_json(nlohmann::json &j, const char *name, const std::optional<T> &value)
 {
     if (value) {
-        if constexpr (std::is_enum<T>::value) {
+        if constexpr (std::is_enum_v<T>) {
             enum_to_json(j, name, *value);
         } else {
             j[name] = *value;
@@ -122,12 +122,13 @@ void optional_to_json(nlohmann::json &j, const char *name, const std::optional<T
     }
 }
 
+
 template <class T>
 void optional_from_json(const nlohmann::json &j, const char *name, std::optional<T> &value)
 {
     const auto it = j.find(name);
     if (it != j.end()) {
-        if constexpr (std::is_enum<T>::value) {
+        if constexpr (std::is_enum_v<T>) {
             T enumValue;
             enum_from_json(*it, enumValue);
             value = enumValue;
@@ -147,7 +148,7 @@ void knut_to_json(const char *key, nlohmann::json &j, const T &value)
 {
     if constexpr (is_optional<T>) {
         nlohmann::optional_to_json(j, key, value);
-    } else if constexpr (std::is_enum<T>::value) {
+    } else if constexpr (std::is_enum_v<T>) {
         enum_to_json(j, key, value);
     } else {
         j[key] = value;
@@ -158,12 +159,17 @@ void knut_from_json(const char *key, const nlohmann::json &j, T &value)
 {
     if constexpr (is_optional<T>) {
         nlohmann::optional_from_json(j, key, value);
-    } else if constexpr (std::is_enum<T>::value) {
+    } else if constexpr (std::is_enum_v<T>) {
         enum_from_json(j.at(key), value);
-    } else {
+    } else if constexpr (!std::is_const_v<T>) {
         j.at(key).get_to(value);
+    } else {
+        Q_UNUSED(key)
+        Q_UNUSED(j)
+        Q_UNUSED(value)
     }
 }
+
 }
 
 #define JSON_TO(v1) knut_to_json(#v1, nlohmann_json_j, nlohmann_json_t.v1);
