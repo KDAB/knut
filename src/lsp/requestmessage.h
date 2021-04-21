@@ -1,6 +1,7 @@
 #pragma once
 
 #include "utils/json_utils.h"
+#include "types.h"
 
 #include <nlohmann/json.hpp>
 
@@ -20,18 +21,6 @@ using MessageId = std::variant<int, std::string>;
 template <typename ErrorData>
 struct ResponseError
 {
-    enum ErrorCodes {
-        ParseError = -32700,
-        InvalidRequest = -32600,
-        MethodNotFound = -32601,
-        InvalidParams = -32602,
-        InternalError = -32603,
-        ServerNotInitialized = -32002,
-        UnknownErrorCode = -32001,
-        ContentModified = -32801,
-        RequestCancelled = -32800,
-    };
-
     int code;
     std::string message;
     std::optional<ErrorData> data;
