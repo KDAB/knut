@@ -52,6 +52,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     nlohmann_json::nlohmann_json
     spdlog::spdlog
     doctest::doctest
+    cxxopts
 )
 
 FetchContent_GetProperties(json SOURCE_DIR JSON_SRC_DIR)

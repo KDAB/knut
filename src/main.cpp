@@ -3,6 +3,8 @@
 #define DOCTEST_CONFIG_IMPLEMENT
 #include <doctest/doctest.h>
 
+#include <cxxopts.hpp>
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
@@ -20,6 +22,23 @@ int main(int argc, char *argv[])
         context.setOption("no-breaks", false); // break in debugger
         context.applyCommandLine(argc, argv);
         return context.run();
+    }
+
+    try {
+        cxxopts::Options options("Knut", "Automation tool for kdabians");
+
+        options.add_options()("h,help", "Show this help");
+        options.add_options("Tests")("t,tests", "Run internal tests, all options are then passed to doctest");
+
+        auto result = options.parse(argc, argv);
+
+        if (result.count("help")) {
+            std::cout << options.help({"", "Tests"}) << std::endl;
+            exit(0);
+        }
+    } catch (const cxxopts::OptionException &e) {
+        std::cout << "Error parsing options: " << e.what() << std::endl;
+        exit(1);
     }
 
     return app.exec();
