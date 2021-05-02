@@ -10,6 +10,9 @@
 #include <variant>
 
 namespace Lsp {
+// TODO create real struct later
+using ProgressParams = std::nullptr_t;
+
 enum class ErrorCodes {
     // Defined by JSON RPC
     ParseError = -32700,
@@ -3691,9 +3694,7 @@ struct InitializeError
 };
 JSONIFY(InitializeError, retry);
 
-struct InitializedParams
-{
-};
+using InitializedParams = std::nullptr_t;
 
 struct LogTraceParams
 {

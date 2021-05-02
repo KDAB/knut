@@ -4,6 +4,7 @@ include(FetchContent)
 project(knut LANGUAGES CXX)
 
 add_definitions(-DTEST_DATA_PATH="${CMAKE_CURRENT_SOURCE_DIR}/test_data")
+add_definitions(-DLSP_SOURCE_PATH="${CMAKE_CURRENT_SOURCE_DIR}/src/lsp")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 

@@ -8,6 +8,7 @@ set(PROJECT_SOURCES
         core/settings.h
         lsp/client.cpp
         lsp/client.h
+        lsp/notifications.h
         lsp/requestmessage.h
         lsp/types.h
         lsp/initialize_request.h

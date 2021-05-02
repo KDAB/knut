@@ -24,6 +24,9 @@ struct Data
 Specification specs;
 Data data;
 
+// Reading
+///////////////////////////////////////////////////////////////////////////////
+// read the current line, set the main state
 static void readNone(const QString &line)
 {
     if (line.startsWith("_Notification_")) {
@@ -32,6 +35,8 @@ static void readNone(const QString &line)
     }
 }
 
+// Return the method name based on the current line
+// Used for notifications and requests
 static std::optional<QString> extractMethod(const QString &line)
 {
     if (!line.startsWith("* method:"))
@@ -42,6 +47,8 @@ static std::optional<QString> extractMethod(const QString &line)
     return split.at(1);
 }
 
+// Decode a parameter (for example, "boolean" => "bool"
+// Used for all type of parameters
 static QString decodeParam(const QString &param)
 {
     if (param.startsWith("void") | param.startsWith("none") | param.startsWith("null"))
@@ -56,17 +63,22 @@ static QString decodeParam(const QString &param)
     return param;
 }
 
-static std::optional<QString> specialParams(QString line)
+// Return some special parameters (too hard to parse, so it's done case by case
+// Will assert if the parameters has changed
+static std::optional<QString> specialParams(QString params)
 {
     if (data.currentState() == Data::InNotification) {
         auto &notification = specs.currentNotification();
         if (notification.method == "telemetry/event") {
-            Q_ASSERT(line.startsWith(R"('object' \| 'number' \| 'boolean' \| 'string')"));
+            Q_ASSERT(params.startsWith(R"('object' \| 'number' \| 'boolean' \| 'string')"));
             return "nlohmann::json";
         }
     }
     return {};
 }
+
+// Extract the parameters based on a line
+// Used for notifications and requests
 static std::optional<QString> extractParams(QString line)
 {
     if (!line.startsWith("* params:"))
@@ -100,6 +112,7 @@ static std::optional<QString> extractParams(QString line)
         return QString("std::variant<%1>").arg(params.join(','));
 }
 
+// Read a notification (method + params)
 static void readNotification(QString line)
 {
     line = line.simplified();
@@ -117,6 +130,7 @@ static void readNotification(QString line)
     }
 }
 
+// Entry point for reading the specification
 static void readSpecification(const QString &fileName)
 {
     QFile file(fileName);
@@ -139,11 +153,56 @@ static void readSpecification(const QString &fileName)
     }
 }
 
+// Printing
+///////////////////////////////////////////////////////////////////////////////
 static void printSpecification()
 {
     for (const auto &notification : specs.notifications) {
         qDebug().noquote() << QString("Notification(%1, %2)").arg(notification.method, notification.params);
     }
+}
+
+// Saving
+///////////////////////////////////////////////////////////////////////////////
+static auto methodToName(const QString &method)
+{
+    auto names = method.split('/');
+    const QString charName = names.last();
+    const QString structName = charName[0].toUpper() + charName.mid(1);
+    struct Result
+    {
+        QString charName;
+        QString structName;
+    };
+    return Result {charName, structName};
+}
+
+static void saveNotifications()
+{
+    QFile file(LSP_SOURCE_PATH "/notifications.h");
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
+        return;
+    QTextStream stream(&file);
+
+    stream << R"(#pragma once
+
+#include "notificationmessage.h"
+#include "types.h"
+
+namespace Lsp {
+)";
+
+    for (const auto &notification : specs.notifications) {
+        auto [charName, structName] = methodToName(notification.method);
+        stream << QString(R"(
+inline constexpr char %1Name[] = "%2";
+struct %3Notification : public NotificationMessage<%1Name, %4>
+{
+};
+)")
+                      .arg(charName, notification.method, structName, notification.params);
+    }
+    stream << "}\n";
 }
 
 int main(int argc, char *argv[])
@@ -152,4 +211,5 @@ int main(int argc, char *argv[])
     Q_UNUSED(argv);
     readSpecification(":/specification-3-16.md");
     printSpecification();
+    saveNotifications();
 }

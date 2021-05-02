@@ -1,5 +1,7 @@
 #include "client.h"
 
+#include "notifications.h"
+
 #include "utils/log_utils.h"
 
 #include <QApplication>
