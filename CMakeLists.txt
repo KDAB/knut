@@ -53,3 +53,4 @@ FetchContent_MakeAvailable(spdlog json doctest magic_enum)
 
 # Knut
 add_subdirectory(src)
+add_subdirectory(tools)
