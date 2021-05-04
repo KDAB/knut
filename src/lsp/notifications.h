@@ -45,13 +45,14 @@ struct LogMessageNotification : public NotificationMessage<logMessageName, LogMe
 {
 };
 
-inline constexpr char cancelName[] = "window/workDoneProgress/cancel";
-struct CancelNotification : public NotificationMessage<cancelName, WorkDoneProgressCancelParams>
+inline constexpr char workDoneProgressCancelName[] = "window/workDoneProgress/cancel";
+struct WorkDoneProgressCancelNotification
+    : public NotificationMessage<workDoneProgressCancelName, WorkDoneProgressCancelParams>
 {
 };
 
-inline constexpr char eventName[] = "telemetry/event";
-struct EventNotification : public NotificationMessage<eventName, nlohmann::json>
+inline constexpr char telemetryEventName[] = "telemetry/event";
+struct TelemetryEventNotification : public NotificationMessage<telemetryEventName, nlohmann::json>
 {
 };
 

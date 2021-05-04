@@ -1,7 +1,6 @@
 #pragma once
 
-#include "initialize_request.h"
-#include "shutdown_request.h"
+#include "requests.h"
 
 #include <QObject>
 

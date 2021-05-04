@@ -1,7 +1,7 @@
 project(spec2cpp VERSION 4.0 LANGUAGES CXX)
 
 set(PROJECT_SOURCES
-    main.cpp
+    spec2cpp.cpp
     specification.h
 )
 

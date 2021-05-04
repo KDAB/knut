@@ -5469,4 +5469,17 @@ struct ColorPresentation
     std::optional<std::vector<TextEdit>> additionalTextEdits;
 };
 JSONIFY(ColorPresentation, label, textEdit, additionalTextEdits);
+
+struct RenamePlaceholder
+{
+    Range range;
+    std::string placeholder;
+};
+JSONIFY(RenamePlaceholder, range, placeholder);
+
+struct RenameDefaultBehavior
+{
+    bool defaultBehavior;
+};
+JSONIFY(RenameDefaultBehavior, defaultBehavior);
 }

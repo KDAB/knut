@@ -10,9 +10,8 @@ set(PROJECT_SOURCES
         lsp/client.h
         lsp/notifications.h
         lsp/requestmessage.h
+        lsp/requests.h
         lsp/types.h
-        lsp/initialize_request.h
-        lsp/shutdown_request.h
         lsp/notificationmessage.h
         script/scriptmanager.cpp
         script/scriptmanager.h
