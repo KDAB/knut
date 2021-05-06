@@ -176,7 +176,7 @@ void knut_from_json(const char *key, const nlohmann::json &j, T &value)
 #define JSON_FROM(v1) knut_from_json(#v1, nlohmann_json_j, nlohmann_json_t.v1);
 
 /**
- * \brief Macro use to define serialize and deserialize function for structures
+ * \brief Macro used to define serialize and deserialize function for structures
  *
  *   This macro is based on NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE, but takes optional members into account.
  */
@@ -189,3 +189,10 @@ void knut_from_json(const char *key, const nlohmann::json &j, T &value)
     {                                                                                                                  \
         NLOHMANN_JSON_EXPAND(NLOHMANN_JSON_PASTE(JSON_FROM, __VA_ARGS__))                                              \
     }
+
+/**
+ * \brief Macro used for empty types, it's serialized as an empty object
+ */
+#define JSONIFY_EMPTY(Type)                                                                                            \
+    inline void to_json(nlohmann::json &nlohmann_json_j, const Type &) { nlohmann_json_j = nlohmann::json::object(); } \
+    inline void from_json(const nlohmann::json &, Type &) { }

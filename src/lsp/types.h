@@ -3694,7 +3694,10 @@ struct InitializeError
 };
 JSONIFY(InitializeError, retry);
 
-using InitializedParams = std::nullptr_t;
+struct InitializedParams
+{
+};
+JSONIFY_EMPTY(InitializedParams);
 
 struct LogTraceParams
 {
