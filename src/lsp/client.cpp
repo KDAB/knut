@@ -2,12 +2,11 @@
 
 #include "notifications.h"
 
-#include "utils/log_utils.h"
+#include "utils/test_utils.h"
 
-#include <QApplication>
 #include <QBuffer>
+#include <QCoreApplication>
 #include <QEventLoop>
-#include <QFile>
 #include <QProcess>
 #include <QSignalSpy>
 #include <QString>
@@ -268,11 +267,10 @@ void Client::logMessage(std::string type, const nlohmann::json &message)
 ///////////////////////////////////////////////////////////////////////////////
 TEST_SUITE("lsp")
 {
-    TEST_CASE("start and shutdown server")
+    TEST_CASE("client start and shutdown")
     {
         Lsp::Client client("cpp", "clangd", {});
-        LogSilencer serverLog("cpp_server");
-        LogSilencer messagesLog("cpp_messages");
+        Test::LogSilencer serverLog("cpp_server");
 
         QSignalSpy initialized(&client, &Lsp::Client::initialized);
         QSignalSpy errorOccured(&client, &Lsp::Client::errorOccured);
@@ -285,11 +283,10 @@ TEST_SUITE("lsp")
         REQUIRE(finished.count());
     }
 
-    TEST_CASE("requests")
+    TEST_CASE("client requests")
     {
         Lsp::Client client("cpp", "clangd", {});
-        LogSilencer serverLog("cpp_server");
-        LogSilencer messagesLog("cpp_messages");
+        Test::LogSilencer serverLog("cpp_server");
 
         REQUIRE(client.start());
 

@@ -8,6 +8,12 @@ add_definitions(-DLSP_SOURCE_PATH="${CMAKE_CURRENT_SOURCE_DIR}/src/lsp")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+if(MSVC)
+    add_compile_options(/W3 /WX)
+else()
+    add_compile_options(-Wall -Wextra -Werror)
+endif()
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -28,7 +34,6 @@ FetchContent_Declare(spdlog
 # See https://github.com/gabime/spdlog/issues/1190
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-
 # nlohmann/json
 FetchContent_Declare(json
     GIT_REPOSITORY https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent
@@ -36,13 +41,11 @@ FetchContent_Declare(json
 )
 set(JSON_ImplicitConversions OFF)
 
-
 # doctest
 FetchContent_Declare(doctest
     GIT_REPOSITORY "https://github.com/onqtam/doctest"
     GIT_TAG 2.4.6
 )
-
 
 # magic_enum
 FetchContent_Declare(magic_enum
@@ -54,4 +57,4 @@ FetchContent_MakeAvailable(spdlog json doctest magic_enum)
 
 # Knut
 add_subdirectory(src)
-add_subdirectory(tools)
+add_subdirectory(tools/spec2cpp)

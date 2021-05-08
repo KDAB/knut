@@ -1,8 +1,6 @@
 #include "settings.h"
 
-#include "core_global.h"
-
-#include "utils/log_utils.h"
+#include "utils/test_utils.h"
 
 #include <QDir>
 #include <QFile>
@@ -140,36 +138,41 @@ public:
 
 TEST_SUITE("core")
 {
-    TEST_CASE_FIXTURE(TestSettings, "settings loading")
+    TEST_CASE_FIXTURE(TestSettings, "settings")
     {
-        LogSilencer log;
-        CHECK_EQ(hasValue("/lsp/cpp"), true);
-        const auto defaultServer = value<Core::Settings::LspServer>("/lsp/cpp");
-        CHECK_EQ(defaultServer.program, "clangd");
-        CHECK_EQ(defaultServer.arguments.size(), 0);
+        SUBCASE("loading")
+        {
+            // Default values
+            CHECK_EQ(hasValue("/lsp/cpp"), true);
+            const auto defaultServer = value<Core::Settings::LspServer>("/lsp/cpp");
+            CHECK_EQ(defaultServer.program, "clangd");
+            CHECK_EQ(defaultServer.arguments.size(), 0);
 
-        loadProjectSettings(Core::testDataPath() + "/settings");
-        const auto newServer = value<Core::Settings::LspServer>("/lsp/cpp");
-        CHECK_EQ(hasValue("/foobar/foo"), true);
-        Core::Settings::LspServer testData = {"notclangd", {"foo", "bar"}};
-        CHECK_EQ(newServer.program, testData.program);
-        CHECK_EQ(newServer.arguments, testData.arguments);
-    }
+            // Load settings
+            loadProjectSettings(Test::testDataPath() + "/settings");
+            const auto newServer = value<Core::Settings::LspServer>("/lsp/cpp");
+            CHECK_EQ(hasValue("/foobar/foo"), true);
+            Core::Settings::LspServer testData = {"notclangd", {"foo", "bar"}};
+            CHECK_EQ(newServer.program, testData.program);
+            CHECK_EQ(newServer.arguments, testData.arguments);
+        }
 
-    TEST_CASE_FIXTURE(TestSettings, "settings value")
-    {
-        LogSilencer log;
-        loadProjectSettings(Core::testDataPath() + "/settings");
+        SUBCASE("value")
+        {
+            loadProjectSettings(Test::testDataPath() + "/settings");
 
-        CHECK_EQ(value("/answer").toInt(), 42);
-        CHECK_EQ(value("/pi").toFloat(), 3.14f);
-        // Test missing '/'
-        CHECK_EQ(value("enabled").toBool(), true);
-        CHECK_EQ(value("foo").toString(), "bar");
-        // Test missing values
-        CHECK_EQ(value("/bar", "default").toString(), "default");
-        CHECK_EQ(value("/colors").toStringList(), QStringList {"red", "green", "blue"});
-        CHECK_FALSE(value("/numbers").isValid());
-        CHECK_FALSE(value("/foobar").isValid());
+            CHECK_EQ(value("/answer").toInt(), 42);
+            CHECK_EQ(value("/pi").toFloat(), 3.14f);
+
+            // Test missing '/'
+            CHECK_EQ(value("enabled").toBool(), true);
+            CHECK_EQ(value("foo").toString(), "bar");
+
+            // Test missing values
+            CHECK_EQ(value("/bar", "default").toString(), "default");
+            CHECK_EQ(value("/colors").toStringList(), QStringList {"red", "green", "blue"});
+            CHECK_FALSE(value("/numbers").isValid());
+            CHECK_FALSE(value("/foobar").isValid());
+        }
     }
 }

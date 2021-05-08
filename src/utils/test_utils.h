@@ -1,8 +1,26 @@
 #pragma once
 
+#include <QCoreApplication>
+#include <QDir>
+#include <QString>
+
 #include <spdlog/spdlog.h>
 
 #include <memory>
+
+namespace Test {
+
+inline QString testDataPath()
+{
+    QString path;
+#if defined(TEST_DATA_PATH)
+    path = TEST_DATA_PATH;
+#endif
+    if (path.isEmpty() || !QDir(path).exists()) {
+        path = QCoreApplication::applicationDirPath() + "/test_data";
+    }
+    return path;
+}
 
 class LogSilencer
 {
@@ -29,3 +47,5 @@ private:
     spdlog::level::level_enum m_level = spdlog::level::off;
     std::shared_ptr<spdlog::logger> m_logger;
 };
+
+}

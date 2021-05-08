@@ -42,6 +42,11 @@ struct SmallStruct
 };
 JSONIFY(SmallStruct, string, stringList, color);
 
+struct EmptyStruct
+{
+};
+JSONIFY_EMPTY(EmptyStruct)
+
 bool operator==(const TestStruct &lhs, const TestStruct &rhs)
 {
     return lhs.inner.boolValue == rhs.inner.boolValue && lhs.inner.stringValue == rhs.inner.stringValue
@@ -100,6 +105,7 @@ TEST_SUITE("utils")
             auto value2 = j2["valueOrList"].get<TestStruct::ValueOrList>();
             CHECK_EQ(std::get<QStringList>(value2), QStringList {"one", "two", "three"});
         }
+
         SUBCASE("deserialize")
         {
             json j = json::parse(
@@ -114,6 +120,17 @@ TEST_SUITE("utils")
 
             CHECK_EQ(result2, test2);
         }
+
+        SUBCASE("empty struct")
+        {
+            EmptyStruct empty;
+            json j = empty;
+            CHECK_EQ(j.dump(), "{}");
+
+            json j2 = json::parse("{}");
+            CHECK_NOTHROW(j.get<EmptyStruct>());
+        }
+
         SUBCASE("wrong deserialization")
         {
             json j = json::parse(R"({"string":1,"stringList":[],"color":"red"})");
