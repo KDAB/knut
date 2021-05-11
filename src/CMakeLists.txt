@@ -19,9 +19,13 @@ set(PROJECT_SOURCES
     lsp/client.cpp
     lsp/client.h
     lsp/notifications.h
+    lsp/notificationmessage_json.h
     lsp/requestmessage.h
+    lsp/requestmessage_json.h
     lsp/requests.h
     lsp/types.h
+    lsp/types_json.h
+    lsp/types_json.cpp
     lsp/notificationmessage.h
     script/scriptmanager.cpp
     script/scriptmanager.h

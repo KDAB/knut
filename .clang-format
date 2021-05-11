@@ -58,6 +58,9 @@ AllowShortFunctionsOnASingleLine: Inline
 # #include <cpp_includes>
 SortIncludes: true
 
+# Don't put lambda on one line, except empty
+AllowShortLambdasOnASingleLine: Empty
+
 # macros for which the opening brace stays attached
 ForEachMacros:   [ foreach, Q_FOREACH, BOOST_FOREACH, forever, Q_FOREVER, QBENCHMARK, QBENCHMARK_ONCE ]
 

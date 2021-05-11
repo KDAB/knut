@@ -2,7 +2,11 @@ project(spec2cpp VERSION 4.0 LANGUAGES CXX)
 
 set(PROJECT_SOURCES
     spec2cpp.cpp
-    specification.h
+    specparser.cpp
+    specparser.h
+    specwriter.cpp
+    specwriter.h
+    data.h
 )
 
 qt5_add_resources(PROJECT_QRC

@@ -1,6 +1,9 @@
 #include "client.h"
 
+#include "notificationmessage_json.h"
 #include "notifications.h"
+#include "requestmessage_json.h"
+#include "types_json.h"
 
 #include "utils/test_utils.h"
 
@@ -152,7 +155,7 @@ bool Client::initialize()
     request.params.processId = QCoreApplication::applicationPid();
     request.params.clientInfo = {"knut", "0.1"};
     request.params.trace = TraceValue::Off;
-    ClientCapabilities::Workspace workspaceCapabilities;
+    ClientCapabilities::WorkspaceType workspaceCapabilities;
     workspaceCapabilities.workspaceFolders = true;
     request.params.capabilities.workspace = workspaceCapabilities;
 

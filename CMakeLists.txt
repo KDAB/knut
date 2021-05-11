@@ -11,10 +11,10 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 if(MSVC)
     add_compile_options(/W3 /WX)
 else()
-    add_compile_options(-Wall -Wextra -Werror)
+    add_compile_options(-Wall -Wextra -Werror -Wno-error=comment)
 endif()
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Qt

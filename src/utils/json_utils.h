@@ -4,7 +4,6 @@
 #include <QStringList>
 
 #include <nlohmann/json.hpp>
-#include <magic_enum.hpp>
 
 #include <optional>
 #include <variant>
@@ -47,32 +46,6 @@ inline void from_json(const nlohmann::json &j, QStringList &strList)
 namespace nlohmann {
 
 ///////////////////////////////////////////////////////////////////////////////
-// Enums
-///////////////////////////////////////////////////////////////////////////////
-// the LSP spec has lower case strings for enums, but we cannot use
-// lower case in C++ due to reserved keywords, like 'delete'.
-// we do the serialization here by converting the first character to/from lowercase
-template <class T>
-void enum_to_json(nlohmann::json &j, const char *name, const T &value)
-{
-    auto jsonString = std::string(magic_enum::enum_name(value));
-    jsonString[0] = std::tolower(jsonString[0]);
-    j[name] = jsonString;
-}
-
-template <class T>
-void enum_from_json(const nlohmann::json &j, T &value)
-{
-    if (j.is_string()) {
-        auto jsonString = j.get<std::string>();
-        jsonString[0] = std::toupper(jsonString[0]);
-        value = magic_enum::enum_cast<T>(jsonString).value();
-    } else {
-        throw nlohmann::detail::type_error::create(302, "type must be a string, but is not");
-    }
-}
-
-///////////////////////////////////////////////////////////////////////////////
 // std::variant
 ///////////////////////////////////////////////////////////////////////////////
 // Try to set the value of type T into the variant data
@@ -113,13 +86,8 @@ constexpr bool is_optional<std::optional<T>> = true;
 template <class T>
 void optional_to_json(nlohmann::json &j, const char *name, const std::optional<T> &value)
 {
-    if (value) {
-        if constexpr (std::is_enum_v<T>) {
-            enum_to_json(j, name, *value);
-        } else {
-            j[name] = *value;
-        }
-    }
+    if (value)
+        j[name] = *value;
 }
 
 
@@ -127,17 +95,10 @@ template <class T>
 void optional_from_json(const nlohmann::json &j, const char *name, std::optional<T> &value)
 {
     const auto it = j.find(name);
-    if (it != j.end()) {
-        if constexpr (std::is_enum_v<T>) {
-            T enumValue;
-            enum_from_json(*it, enumValue);
-            value = enumValue;
-        } else {
-            value = it->get<T>();
-        }
-    } else {
+    if (it != j.end())
+        value = it->get<T>();
+    else
         value = std::nullopt;
-    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -148,8 +109,6 @@ void knut_to_json(const char *key, nlohmann::json &j, const T &value)
 {
     if constexpr (is_optional<T>) {
         nlohmann::optional_to_json(j, key, value);
-    } else if constexpr (std::is_enum_v<T>) {
-        enum_to_json(j, key, value);
     } else {
         j[key] = value;
     }
@@ -159,8 +118,6 @@ void knut_from_json(const char *key, const nlohmann::json &j, T &value)
 {
     if constexpr (is_optional<T>) {
         nlohmann::optional_from_json(j, key, value);
-    } else if constexpr (std::is_enum_v<T>) {
-        enum_from_json(j.at(key), value);
     } else if constexpr (!std::is_const_v<T>) {
         j.at(key).get_to(value);
     } else {
@@ -196,3 +153,15 @@ void knut_from_json(const char *key, const nlohmann::json &j, T &value)
 #define JSONIFY_EMPTY(Type)                                                                                            \
     inline void to_json(nlohmann::json &nlohmann_json_j, const Type &) { nlohmann_json_j = nlohmann::json::object(); } \
     inline void from_json(const nlohmann::json &, Type &) { }
+
+/**
+ * \brief Macro used to serialize enums with specific data (by default, serialized as int)
+ */
+#define JSONIFY_ENUM NLOHMANN_JSON_SERIALIZE_ENUM
+
+/**
+ * \brief Macro used to foward declare serialization/deserialization methods
+ */
+#define JSONIFY_FWD(Type)                                                                                              \
+    void to_json(nlohmann::json &nlohmann_json_j, const Type &nlohmann_json_t);                                        \
+    void from_json(const nlohmann::json &nlohmann_json_j, Type &nlohmann_json_t);

@@ -58,12 +58,12 @@ Contains the actual content of the message. The content part of a message uses [
 Content-Length: ...\r\n
 \r\n
 {
-	"jsonrpc": "2.0",
-	"id": 1,
-	"method": "textDocument/didOpen",
-	"params": {
-		...
-	}
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "textDocument/didOpen",
+        "params": {
+                ...
+        }
 }
 ```
 ### Base Protocol JSON structures
@@ -105,7 +105,7 @@ A general message as defined by JSON-RPC. The language server protocol always us
 
 ```typescript
 interface Message {
-	jsonrpc: string;
+        jsonrpc: string;
 }
 ```
 #### <a href="#requestMessage" name="requestMessage" class="anchor"> Request Message </a>
@@ -115,20 +115,20 @@ A request message to describe a request between the client and the server. Every
 ```typescript
 interface RequestMessage extends Message {
 
-	/**
-	 * The request id.
-	 */
-	id: integer | string;
+        /**
+         * The request id.
+         */
+        id: integer | string;
 
-	/**
-	 * The method to be invoked.
-	 */
-	method: string;
+        /**
+         * The method to be invoked.
+         */
+        method: string;
 
-	/**
-	 * The method's params.
-	 */
-	params?: array | object;
+        /**
+         * The method's params.
+         */
+        params?: array | object;
 }
 ```
 
@@ -138,97 +138,97 @@ A Response Message sent as a result of a request. If a request doesn't provide a
 
 ```typescript
 interface ResponseMessage extends Message {
-	/**
-	 * The request id.
-	 */
-	id: integer | string | null;
+        /**
+         * The request id.
+         */
+        id: integer | string | null;
 
-	/**
-	 * The result of a request. This member is REQUIRED on success.
-	 * This member MUST NOT exist if there was an error invoking the method.
-	 */
-	result?: string | number | boolean | object | null;
+        /**
+         * The result of a request. This member is REQUIRED on success.
+         * This member MUST NOT exist if there was an error invoking the method.
+         */
+        result?: string | number | boolean | object | null;
 
-	/**
-	 * The error object in case a request fails.
-	 */
-	error?: ResponseError;
+        /**
+         * The error object in case a request fails.
+         */
+        error?: ResponseError;
 }
 
 interface ResponseError {
-	/**
-	 * A number indicating the error type that occurred.
-	 */
-	code: integer;
+        /**
+         * A number indicating the error type that occurred.
+         */
+        code: integer;
 
-	/**
-	 * A string providing a short description of the error.
-	 */
-	message: string;
+        /**
+         * A string providing a short description of the error.
+         */
+        message: string;
 
-	/**
-	 * A primitive or structured value that contains additional
-	 * information about the error. Can be omitted.
-	 */
-	data?: string | number | boolean | array | object | null;
+        /**
+         * A primitive or structured value that contains additional
+         * information about the error. Can be omitted.
+         */
+        data?: string | number | boolean | array | object | null;
 }
 
 export namespace ErrorCodes {
-	// Defined by JSON RPC
-	export const ParseError: integer = -32700;
-	export const InvalidRequest: integer = -32600;
-	export const MethodNotFound: integer = -32601;
-	export const InvalidParams: integer = -32602;
-	export const InternalError: integer = -32603;
+        // Defined by JSON RPC
+        export const ParseError: integer = -32700;
+        export const InvalidRequest: integer = -32600;
+        export const MethodNotFound: integer = -32601;
+        export const InvalidParams: integer = -32602;
+        export const InternalError: integer = -32603;
 
-	/**
-	 * This is the start range of JSON RPC reserved error codes.
-	 * It doesn't denote a real error code. No LSP error codes should
-	 * be defined between the start and end range. For backwards
-	 * compatibility the `ServerNotInitialized` and the `UnknownErrorCode`
-	 * are left in the range.
-	 *
-	 * @since 3.16.0
-	 */
-	export const jsonrpcReservedErrorRangeStart: integer = -32099;
-	/** @deprecated use jsonrpcReservedErrorRangeStart */
-	export const serverErrorStart: integer = jsonrpcReservedErrorRangeStart;
+        /**
+         * This is the start range of JSON RPC reserved error codes.
+         * It doesn't denote a real error code. No LSP error codes should
+         * be defined between the start and end range. For backwards
+         * compatibility the `ServerNotInitialized` and the `UnknownErrorCode`
+         * are left in the range.
+         *
+         * @since 3.16.0
+         */
+        export const jsonrpcReservedErrorRangeStart: integer = -32099;
+        /** @deprecated use jsonrpcReservedErrorRangeStart */
+        export const serverErrorStart: integer = jsonrpcReservedErrorRangeStart;
 
-	/**
-	 * Error code indicating that a server received a notification or
-	 * request before the server has received the `initialize` request.
-	 */
-	export const ServerNotInitialized: integer = -32002;
-	export const UnknownErrorCode: integer = -32001;
+        /**
+         * Error code indicating that a server received a notification or
+         * request before the server has received the `initialize` request.
+         */
+        export const ServerNotInitialized: integer = -32002;
+        export const UnknownErrorCode: integer = -32001;
 
-	/**
-	 * This is the start range of JSON RPC reserved error codes.
-	 * It doesn't denote a real error code.
-	 *
-	 * @since 3.16.0
-	 */
-	export const jsonrpcReservedErrorRangeEnd = -32000;
-	/** @deprecated use jsonrpcReservedErrorRangeEnd */
-	export const serverErrorEnd: integer = jsonrpcReservedErrorRangeEnd;
+        /**
+         * This is the start range of JSON RPC reserved error codes.
+         * It doesn't denote a real error code.
+         *
+         * @since 3.16.0
+         */
+        export const jsonrpcReservedErrorRangeEnd = -32000;
+        /** @deprecated use jsonrpcReservedErrorRangeEnd */
+        export const serverErrorEnd: integer = jsonrpcReservedErrorRangeEnd;
 
-	/**
-	 * This is the start range of LSP reserved error codes.
-	 * It doesn't denote a real error code.
-	 *
-	 * @since 3.16.0
-	 */
-	export const lspReservedErrorRangeStart: integer = -32899;
+        /**
+         * This is the start range of LSP reserved error codes.
+         * It doesn't denote a real error code.
+         *
+         * @since 3.16.0
+         */
+        export const lspReservedErrorRangeStart: integer = -32899;
 
-	export const ContentModified: integer = -32801;
-	export const RequestCancelled: integer = -32800;
+        export const ContentModified: integer = -32801;
+        export const RequestCancelled: integer = -32800;
 
-	/**
-	 * This is the end range of LSP reserved error codes.
-	 * It doesn't denote a real error code.
-	 *
-	 * @since 3.16.0
-	 */
-	export const lspReservedErrorRangeEnd: integer = -32800;
+        /**
+         * This is the end range of LSP reserved error codes.
+         * It doesn't denote a real error code.
+         *
+         * @since 3.16.0
+         */
+        export const lspReservedErrorRangeEnd: integer = -32800;
 }
 ```
 #### <a href="#notificationMessage" name="notificationMessage" class="anchor"> Notification Message </a>
@@ -237,15 +237,15 @@ A notification message. A processed notification message must not send a respons
 
 ```typescript
 interface NotificationMessage extends Message {
-	/**
-	 * The method to be invoked.
-	 */
-	method: string;
+        /**
+         * The method to be invoked.
+         */
+        method: string;
 
-	/**
-	 * The notification's params.
-	 */
-	params?: array | object;
+        /**
+         * The notification's params.
+         */
+        params?: array | object;
 }
 ```
 
@@ -263,10 +263,10 @@ _Notification_:
 
 ```typescript
 interface CancelParams {
-	/**
-	 * The request id to cancel.
-	 */
-	id: integer | string;
+        /**
+         * The request id to cancel.
+         */
+        id: integer | string;
 }
 ```
 
@@ -288,15 +288,15 @@ _Notification_:
 type ProgressToken = integer | string;
 
 interface ProgressParams<T> {
-	/**
-	 * The progress token provided by the client or server.
-	 */
-	token: ProgressToken;
+        /**
+         * The progress token provided by the client or server.
+         */
+        token: ProgressToken;
 
-	/**
-	 * The progress data.
-	 */
-	value: T;
+        /**
+         * The progress data.
+         */
+        value: T;
 }
 ```
 
@@ -359,15 +359,15 @@ The following client capability is used to announce a client's regular expressio
  * Client capabilities specific to regular expressions.
  */
 export interface RegularExpressionsClientCapabilities {
-	/**
-	 * The engine's name.
-	 */
-	engine: string;
+        /**
+         * The engine's name.
+         */
+        engine: string;
 
-	/**
-	 * The engine's version.
-	 */
-	version?: string;
+        /**
+         * The engine's version.
+         */
+        version?: string;
 }
 ```
 
@@ -404,20 +404,20 @@ Position in a text document expressed as zero-based line and zero-based characte
 
 ```typescript
 interface Position {
-	/**
-	 * Line position in a document (zero-based).
-	 */
-	line: uinteger;
+        /**
+         * Line position in a document (zero-based).
+         */
+        line: uinteger;
 
-	/**
-	 * Character offset on a line in a document (zero-based). Assuming that
-	 * the line is represented as a string, the `character` value represents
-	 * the gap between the `character` and `character + 1`.
-	 *
-	 * If the character value is greater than the line length it defaults back
-	 * to the line length.
-	 */
-	character: uinteger;
+        /**
+         * Character offset on a line in a document (zero-based). Assuming that
+         * the line is represented as a string, the `character` value represents
+         * the gap between the `character` and `character + 1`.
+         *
+         * If the character value is greater than the line length it defaults back
+         * to the line length.
+         */
+        character: uinteger;
 }
 ```
 #### <a href="#range" name="range" class="anchor"> Range </a>
@@ -432,15 +432,15 @@ A range in a text document expressed as (zero-based) start and end positions. A 
 
 ```typescript
 interface Range {
-	/**
-	 * The range's start position.
-	 */
-	start: Position;
+        /**
+         * The range's start position.
+         */
+        start: Position;
 
-	/**
-	 * The range's end position.
-	 */
-	end: Position;
+        /**
+         * The range's end position.
+         */
+        end: Position;
 }
 ```
 
@@ -449,8 +449,8 @@ interface Range {
 Represents a location inside a resource, such as a line inside a text file.
 ```typescript
 interface Location {
-	uri: DocumentUri;
-	range: Range;
+        uri: DocumentUri;
+        range: Range;
 }
 ```
 
@@ -461,33 +461,33 @@ Represents a link between a source and a target location.
 ```typescript
 interface LocationLink {
 
-	/**
-	 * Span of the origin of this link.
-	 *
-	 * Used as the underlined span for mouse interaction. Defaults to the word
-	 * range at the mouse position.
-	 */
-	originSelectionRange?: Range;
+        /**
+         * Span of the origin of this link.
+         *
+         * Used as the underlined span for mouse interaction. Defaults to the word
+         * range at the mouse position.
+         */
+        originSelectionRange?: Range;
 
-	/**
-	 * The target resource identifier of this link.
-	 */
-	targetUri: DocumentUri;
+        /**
+         * The target resource identifier of this link.
+         */
+        targetUri: DocumentUri;
 
-	/**
-	 * The full target range of this link. If the target for example is a symbol
-	 * then target range is the range enclosing this symbol not including
-	 * leading/trailing whitespace but everything else like comments. This
-	 * information is typically used to highlight the range in the editor.
-	 */
-	targetRange: Range;
+        /**
+         * The full target range of this link. If the target for example is a symbol
+         * then target range is the range enclosing this symbol not including
+         * leading/trailing whitespace but everything else like comments. This
+         * information is typically used to highlight the range in the editor.
+         */
+        targetRange: Range;
 
-	/**
-	 * The range that should be selected and revealed when this link is being
-	 * followed, e.g the name of a function. Must be contained by the the
-	 * `targetRange`. See also `DocumentSymbol#range`
-	 */
-	targetSelectionRange: Range;
+        /**
+         * The range that should be selected and revealed when this link is being
+         * followed, e.g the name of a function. Must be contained by the the
+         * `targetRange`. See also `DocumentSymbol#range`
+         */
+        targetSelectionRange: Range;
 }
 ```
 
@@ -497,61 +497,61 @@ Represents a diagnostic, such as a compiler error or warning. Diagnostic objects
 
 ```typescript
 export interface Diagnostic {
-	/**
-	 * The range at which the message applies.
-	 */
-	range: Range;
+        /**
+         * The range at which the message applies.
+         */
+        range: Range;
 
-	/**
-	 * The diagnostic's severity. Can be omitted. If omitted it is up to the
-	 * client to interpret diagnostics as error, warning, info or hint.
-	 */
-	severity?: DiagnosticSeverity;
+        /**
+         * The diagnostic's severity. Can be omitted. If omitted it is up to the
+         * client to interpret diagnostics as error, warning, info or hint.
+         */
+        severity?: DiagnosticSeverity;
 
-	/**
-	 * The diagnostic's code, which might appear in the user interface.
-	 */
-	code?: integer | string;
+        /**
+         * The diagnostic's code, which might appear in the user interface.
+         */
+        code?: integer | string;
 
-	/**
-	 * An optional property to describe the error code.
-	 *
-	 * @since 3.16.0
-	 */
-	codeDescription?: CodeDescription;
+        /**
+         * An optional property to describe the error code.
+         *
+         * @since 3.16.0
+         */
+        codeDescription?: CodeDescription;
 
-	/**
-	 * A human-readable string describing the source of this
-	 * diagnostic, e.g. 'typescript' or 'super lint'.
-	 */
-	source?: string;
+        /**
+         * A human-readable string describing the source of this
+         * diagnostic, e.g. 'typescript' or 'super lint'.
+         */
+        source?: string;
 
-	/**
-	 * The diagnostic's message.
-	 */
-	message: string;
+        /**
+         * The diagnostic's message.
+         */
+        message: string;
 
-	/**
-	 * Additional metadata about the diagnostic.
-	 *
-	 * @since 3.15.0
-	 */
-	tags?: DiagnosticTag[];
+        /**
+         * Additional metadata about the diagnostic.
+         *
+         * @since 3.15.0
+         */
+        tags?: DiagnosticTag[];
 
-	/**
-	 * An array of related diagnostic information, e.g. when symbol-names within
-	 * a scope collide all definitions can be marked via this property.
-	 */
-	relatedInformation?: DiagnosticRelatedInformation[];
+        /**
+         * An array of related diagnostic information, e.g. when symbol-names within
+         * a scope collide all definitions can be marked via this property.
+         */
+        relatedInformation?: DiagnosticRelatedInformation[];
 
-	/**
-	 * A data entry field that is preserved between a
-	 * `textDocument/publishDiagnostics` notification and
-	 * `textDocument/codeAction` request.
-	 *
-	 * @since 3.16.0
-	 */
-	data?: unknown;
+        /**
+         * A data entry field that is preserved between a
+         * `textDocument/publishDiagnostics` notification and
+         * `textDocument/codeAction` request.
+         *
+         * @since 3.16.0
+         */
+        data?: unknown;
 }
 ```
 
@@ -559,22 +559,22 @@ The protocol currently supports the following diagnostic severities and tags:
 
 ```typescript
 export namespace DiagnosticSeverity {
-	/**
-	 * Reports an error.
-	 */
-	export const Error: 1 = 1;
-	/**
-	 * Reports a warning.
-	 */
-	export const Warning: 2 = 2;
-	/**
-	 * Reports an information.
-	 */
-	export const Information: 3 = 3;
-	/**
-	 * Reports a hint.
-	 */
-	export const Hint: 4 = 4;
+        /**
+         * Reports an error.
+         */
+        export const Error: 1 = 1;
+        /**
+         * Reports a warning.
+         */
+        export const Warning: 2 = 2;
+        /**
+         * Reports an information.
+         */
+        export const Information: 3 = 3;
+        /**
+         * Reports a hint.
+         */
+        export const Hint: 4 = 4;
 }
 
 export type DiagnosticSeverity = 1 | 2 | 3 | 4;
@@ -585,19 +585,19 @@ export type DiagnosticSeverity = 1 | 2 | 3 | 4;
  * @since 3.15.0
  */
 export namespace DiagnosticTag {
-	/**
-	 * Unused or unnecessary code.
-	 *
-	 * Clients are allowed to render diagnostics with this tag faded out
-	 * instead of having an error squiggle.
-	 */
-	export const Unnecessary: 1 = 1;
-	/**
-	 * Deprecated or obsolete code.
-	 *
-	 * Clients are allowed to rendered diagnostics with this tag strike through.
-	 */
-	export const Deprecated: 2 = 2;
+        /**
+         * Unused or unnecessary code.
+         *
+         * Clients are allowed to render diagnostics with this tag faded out
+         * instead of having an error squiggle.
+         */
+        export const Unnecessary: 1 = 1;
+        /**
+         * Deprecated or obsolete code.
+         *
+         * Clients are allowed to rendered diagnostics with this tag strike through.
+         */
+        export const Deprecated: 2 = 2;
 }
 
 export type DiagnosticTag = 1 | 2;
@@ -612,15 +612,15 @@ export type DiagnosticTag = 1 | 2;
  * a diagnostics, e.g when duplicating a symbol in a scope.
  */
 export interface DiagnosticRelatedInformation {
-	/**
-	 * The location of this related diagnostic information.
-	 */
-	location: Location;
+        /**
+         * The location of this related diagnostic information.
+         */
+        location: Location;
 
-	/**
-	 * The message of this related diagnostic information.
-	 */
-	message: string;
+        /**
+         * The message of this related diagnostic information.
+         */
+        message: string;
 }
 ```
 
@@ -633,10 +633,10 @@ export interface DiagnosticRelatedInformation {
  * @since 3.16.0
  */
 export interface CodeDescription {
-	/**
-	 * An URI to open with more information about the diagnostic error.
-	 */
-	href: URI;
+        /**
+         * An URI to open with more information about the diagnostic error.
+         */
+        href: URI;
 }
 ```
 
@@ -646,19 +646,19 @@ Represents a reference to a command. Provides a title which will be used to repr
 
 ```typescript
 interface Command {
-	/**
-	 * Title of the command, like `save`.
-	 */
-	title: string;
-	/**
-	 * The identifier of the actual command handler.
-	 */
-	command: string;
-	/**
-	 * Arguments that the command handler should be
-	 * invoked with.
-	 */
-	arguments?: any[];
+        /**
+         * Title of the command, like `save`.
+         */
+        title: string;
+        /**
+         * The identifier of the actual command handler.
+         */
+        command: string;
+        /**
+         * Arguments that the command handler should be
+         * invoked with.
+         */
+        arguments?: any[];
 }
 ```
 
@@ -670,17 +670,17 @@ A textual edit applicable to a text document.
 
 ```typescript
 interface TextEdit {
-	/**
-	 * The range of the text document to be manipulated. To insert
-	 * text into a document create a range where start === end.
-	 */
-	range: Range;
+        /**
+         * The range of the text document to be manipulated. To insert
+         * text into a document create a range where start === end.
+         */
+        range: Range;
 
-	/**
-	 * The string to be inserted. For delete operations use an
-	 * empty string.
-	 */
-	newText: string;
+        /**
+         * The string to be inserted. For delete operations use an
+         * empty string.
+         */
+        newText: string;
 }
 ```
 
@@ -693,23 +693,23 @@ Since 3.16.0 there is also the concept of an annotated text edit which supports 
  * @since 3.16.0
  */
 export interface ChangeAnnotation {
-	/**
-	 * A human-readable string describing the actual change. The string
-	 * is rendered prominent in the user interface.
-	 */
-	label: string;
+        /**
+         * A human-readable string describing the actual change. The string
+         * is rendered prominent in the user interface.
+         */
+        label: string;
 
-	/**
-	 * A flag which indicates that user confirmation is needed
-	 * before applying the change.
-	 */
-	needsConfirmation?: boolean;
+        /**
+         * A flag which indicates that user confirmation is needed
+         * before applying the change.
+         */
+        needsConfirmation?: boolean;
 
-	/**
-	 * A human-readable string which is rendered less prominent in
-	 * the user interface.
-	 */
-	description?: string;
+        /**
+         * A human-readable string which is rendered less prominent in
+         * the user interface.
+         */
+        description?: string;
 }
 ```
 
@@ -1875,7 +1875,7 @@ export interface TextDocumentClientCapabilities {
 	/**
 	 * Capabilities specific to the `textDocument/formatting` request.
 	 */
-	formatting?: DocumentFormattingClientCapabilities
+        formatting?: DocumentFormattingClientCapabilities;
 
 	/**
 	 * Capabilities specific to the `textDocument/rangeFormatting` request.
@@ -7637,7 +7637,7 @@ interface SemanticTokensClientCapabilities {
 			 * The client will send the `textDocument/semanticTokens/full/delta`
 			 * request if the server provides a corresponding handler.
 			 */
-			delta?: boolean
+                        delta?: boolean;
 		};
 	};
 

@@ -10,6 +10,12 @@ using json = nlohmann::json;
 // Tests
 ///////////////////////////////////////////////////////////////////////////////
 enum class Color { Red, Green, Blue };
+JSONIFY_ENUM(Color,
+             {
+                 {Color::Red, "red"},
+                 {Color::Green, "green"},
+                 {Color::Blue, "blue"},
+             })
 
 struct TestStruct
 {
@@ -38,9 +44,8 @@ struct SmallStruct
 {
     QString string;
     QStringList stringList;
-    Color color;
 };
-JSONIFY(SmallStruct, string, stringList, color);
+JSONIFY(SmallStruct, string, stringList);
 
 struct EmptyStruct
 {
@@ -133,14 +138,11 @@ TEST_SUITE("utils")
 
         SUBCASE("wrong deserialization")
         {
-            json j = json::parse(R"({"string":1,"stringList":[],"color":"red"})");
+            json j = json::parse(R"({"string":1,"stringList":[]})");
             CHECK_THROWS_AS(j.get<SmallStruct>(), nlohmann::detail::type_error);
 
-            json j2 = json::parse(R"({"string":"test","stringList":"wrong","color":"red"})");
+            json j2 = json::parse(R"({"string":"test","stringList":"wrong"})");
             CHECK_THROWS_AS(j2.get<SmallStruct>(), nlohmann::detail::type_error);
-
-            json j3 = json::parse(R"({"string":"test","stringList":[],"color":1})");
-            CHECK_THROWS_AS(j3.get<SmallStruct>(), nlohmann::detail::type_error);
         }
     }
 }

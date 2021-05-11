@@ -66,7 +66,9 @@ void ScriptManager::runScript(const QString &fileName, bool async, bool log)
         logEndScript = [this, fileName]() { m_logger->info("<== End script {}", fileName.toStdString()); };
 
     if (async)
-        QTimer::singleShot(0, this, [=]() { doRunScript(fileName, logEndScript); });
+        QTimer::singleShot(0, this, [this, fileName, logEndScript]() {
+            doRunScript(fileName, logEndScript);
+        });
     else
         doRunScript(fileName, logEndScript);
 }
