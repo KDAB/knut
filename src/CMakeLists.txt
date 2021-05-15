@@ -16,6 +16,8 @@ set(PROJECT_SOURCES
     core/qdirvaluetype.h
     core/qfileinfovaluetype.cpp
     core/qfileinfovaluetype.h
+    lsp/client.cpp
+    lsp/client.h
     lsp/clientbackend.cpp
     lsp/clientbackend.h
     lsp/notifications.h

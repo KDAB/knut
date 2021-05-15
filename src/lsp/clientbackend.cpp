@@ -9,14 +9,12 @@
 #include "utils/test_utils.h"
 
 #include <QBuffer>
-#include <QCoreApplication>
 #include <QEventLoop>
 #include <QSignalSpy>
 #include <QString>
 
 #include <doctest/doctest.h>
 #include <spdlog/sinks/basic_file_sink.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
 
 #include <ctime>
 
@@ -83,7 +81,7 @@ ClientBackend::ClientBackend(const std::string &language, QString program, QStri
     const auto serverLogName = language + "_server";
     m_serverLogger = spdlog::get(serverLogName);
     if (!m_serverLogger) {
-        m_serverLogger = spdlog::stdout_color_mt(serverLogName);
+        m_serverLogger = spdlog::basic_logger_st(serverLogName, serverLogName + ".log", true);
         m_serverLogger->set_level(spdlog::level::debug);
         m_serverLogger->set_pattern("%v");
     }
@@ -115,7 +113,7 @@ ClientBackend::~ClientBackend()
 
 bool ClientBackend::start()
 {
-    m_serverLogger->trace("==> Starting LSP server {}.", m_program.toLatin1());
+    m_serverLogger->trace("==> Starting LSP server {}", m_program.toLatin1());
     m_process->start(m_program, m_arguments);
     if (m_process->waitForStarted() && m_process->state() == QProcess::Running)
         return true;
@@ -160,7 +158,7 @@ void ClientBackend::handleError()
 
 void ClientBackend::handleFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
-    Q_UNUSED(exitCode)
+    m_serverLogger->trace("==> Exiting LSP server {} with exit code {}", m_program.toLatin1(), exitCode);
     if (exitStatus != QProcess::CrashExit)
         emit finished();
 }
@@ -208,7 +206,7 @@ void ClientBackend::logMessage(std::string type, const nlohmann::json &message)
 ///////////////////////////////////////////////////////////////////////////////
 TEST_SUITE("lsp")
 {
-    TEST_CASE("synchronous requests")
+    TEST_CASE("client synchronous requests")
     {
         Lsp::ClientBackend client("cpp", "clangd", {});
         Test::LogSilencer serverLog("cpp_server");
@@ -236,7 +234,7 @@ TEST_SUITE("lsp")
         REQUIRE(finished.count());
     }
 
-    TEST_CASE("asynchronous requests")
+    TEST_CASE("client asynchronous requests")
     {
         Lsp::ClientBackend client("cpp", "clangd", {});
         Test::LogSilencer serverLog("cpp_server");
