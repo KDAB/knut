@@ -50,11 +50,9 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     nlohmann_json::nlohmann_json
     spdlog::spdlog
     doctest::doctest
-    magic_enum::magic_enum
 )
 
 FetchContent_GetProperties(json SOURCE_DIR JSON_SRC_DIR)
-FetchContent_GetProperties(magic_enum SOURCE_DIR MAGIC_ENUM_SRC_DIR)
 FetchContent_GetProperties(spdlog SOURCE_DIR SPDLOG_SRC_DIR)
 
 # Set manually as the *-inl.h files cannot be included together with the non *-inl.h ones
@@ -73,6 +71,5 @@ set(GLOB SPDLOG_HEADERS
 )
 target_precompile_headers(${PROJECT_NAME} PRIVATE
     ${JSON_SRC_DIR}/include/nlohmann/json.hpp
-    ${MAGIC_ENUM_SRC_DIR}/include/magic_enum.hpp
     ${SPDLOG_HEADERS}
 )

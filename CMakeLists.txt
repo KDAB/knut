@@ -47,13 +47,7 @@ FetchContent_Declare(doctest
     GIT_TAG 2.4.6
 )
 
-# magic_enum
-FetchContent_Declare(magic_enum
-    GIT_REPOSITORY "https://github.com/Neargye/magic_enum"
-    GIT_TAG v0.7.2
-)
-
-FetchContent_MakeAvailable(spdlog json doctest magic_enum)
+FetchContent_MakeAvailable(spdlog json doctest)
 
 # Knut
 add_subdirectory(src)
