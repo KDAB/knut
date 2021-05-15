@@ -1,8 +1,9 @@
-#include "client.h"
+#include "clientbackend.h"
 
 #include "notificationmessage_json.h"
 #include "notifications.h"
 #include "requestmessage_json.h"
+#include "requests.h"
 #include "types_json.h"
 
 #include "utils/test_utils.h"
@@ -10,7 +11,6 @@
 #include <QBuffer>
 #include <QCoreApplication>
 #include <QEventLoop>
-#include <QProcess>
 #include <QSignalSpy>
 #include <QString>
 
@@ -74,10 +74,11 @@ static json parseMessage(QByteArray message)
     return {};
 }
 
-Client::Client(const std::string &language, QString program, QStringList arguments, QObject *parent)
+ClientBackend::ClientBackend(const std::string &language, QString program, QStringList arguments, QObject *parent)
     : QObject(parent)
     , m_program(std::move(program))
     , m_arguments(std::move(arguments))
+    , m_process(new QProcess(this))
 {
     const auto serverLogName = language + "_server";
     m_serverLogger = spdlog::get(serverLogName);
@@ -95,34 +96,38 @@ Client::Client(const std::string &language, QString program, QStringList argumen
         m_messageLogger->set_pattern("[LSP   - %H:%M:%S] %v");
     }
 
-    m_process = new QProcess(this);
-
-    connect(m_process, &QProcess::readyReadStandardError, this, &Client::readError);
-    connect(m_process, &QProcess::readyReadStandardOutput, this, &Client::readOutput);
-    connect(m_process, &QProcess::errorOccurred, this, &Client::handleError);
+    connect(m_process, &QProcess::readyReadStandardError, this, &ClientBackend::readError);
+    connect(m_process, &QProcess::readyReadStandardOutput, this, &ClientBackend::readOutput);
+    connect(m_process, &QProcess::errorOccurred, this, &ClientBackend::handleError);
+    connect(m_process, qOverload<int, QProcess::ExitStatus>(&QProcess::finished), this, &ClientBackend::handleFinished);
 }
 
-bool Client::start()
+ClientBackend::~ClientBackend()
+{
+    if (m_process->state() == QProcess::NotRunning)
+        return;
+    m_process->terminate();
+    if (m_process->waitForFinished(300) && m_process->state() == QProcess::Running)
+        return;
+    m_process->kill();
+    m_process->waitForFinished(300);
+}
+
+bool ClientBackend::start()
 {
     m_serverLogger->trace("==> Starting LSP server {}.", m_program.toLatin1());
     m_process->start(m_program, m_arguments);
-    if (m_process->waitForStarted())
-        return initialize();
+    if (m_process->waitForStarted() && m_process->state() == QProcess::Running)
+        return true;
     return false;
 }
 
-bool Client::shutdown()
-{
-    ShutdownRequest request;
-    return shutdownCallback(sendRequest(request));
-}
-
-void Client::readError()
+void ClientBackend::readError()
 {
     m_serverLogger->info(m_process->readAllStandardError());
 }
 
-void Client::readOutput()
+void ClientBackend::readOutput()
 {
     const auto message = parseMessage(m_process->readAllStandardOutput());
 
@@ -146,114 +151,47 @@ void Client::readOutput()
     }
 }
 
-bool Client::initialize()
+void ClientBackend::handleError()
 {
-    m_serverLogger->trace("==> LSP server {} started", m_program.toLatin1());
-
-    InitializeRequest request;
-    request.id = 1;
-    request.params.processId = QCoreApplication::applicationPid();
-    request.params.clientInfo = {"knut", "0.1"};
-    request.params.trace = TraceValue::Off;
-    ClientCapabilities::WorkspaceType workspaceCapabilities;
-    workspaceCapabilities.workspaceFolders = true;
-    request.params.capabilities.workspace = workspaceCapabilities;
-
-    return initializeCallback(sendRequest(request));
+    m_serverLogger->error("==> LSP server {} raises an error {}", m_program.toLatin1(),
+                          m_process->errorString().toLatin1());
+    emit errorOccured(m_process->errorString());
 }
 
-void Client::handleError(int error)
+void ClientBackend::handleFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
-    std::string errorName;
-    switch (error) {
-    case QProcess::FailedToStart:
-        errorName = "FailedToStart";
-        break;
-    case QProcess::Crashed:
-        errorName = "Crashed";
-        break;
-    case QProcess::Timedout:
-        errorName = "Timedout";
-        break;
-    case QProcess::WriteError:
-        errorName = "WriteError";
-        break;
-    case QProcess::ReadError:
-        errorName = "ReadError";
-        break;
-    case QProcess::UnknownError:
-        errorName = "UnknownError";
-        break;
-    }
-    m_serverLogger->error("==> LSP server {} raises an error {}", m_program.toLatin1(), errorName);
-    emit errorOccured(error);
+    Q_UNUSED(exitCode)
+    if (exitStatus != QProcess::CrashExit)
+        emit finished();
 }
 
-void Client::sendAsyncJsonRequest(nlohmann::json jsonRequest)
+void ClientBackend::sendAsyncJsonRequest(nlohmann::json jsonRequest)
 {
     logMessage("send-request", jsonRequest);
     const auto message = toMessage(std::move(jsonRequest));
     m_process->write(message);
 }
 
-nlohmann::json Client::sendJsonRequest(nlohmann::json jsonRequest)
+nlohmann::json ClientBackend::sendJsonRequest(nlohmann::json jsonRequest)
 {
     // Wait for the response to be emitted using the QEventLoop trick
     QEventLoop loop;
-    connect(this, &Client::responseEmitted, &loop, [&loop]() { loop.exit(); });
+    connect(this, &ClientBackend::responseEmitted, &loop, [&loop]() {
+        loop.exit();
+    });
     sendAsyncJsonRequest(std::move(jsonRequest));
     loop.exec(QEventLoop::ExcludeUserInputEvents);
     return m_response;
 }
 
-void Client::sendJsonNotification(nlohmann::json jsonNotification)
+void ClientBackend::sendJsonNotification(nlohmann::json jsonNotification)
 {
     logMessage("send-notification", jsonNotification);
     const auto message = toMessage(std::move(jsonNotification));
     m_process->write(message);
 }
 
-bool Client::initializeCallback(InitializeRequest::Response response)
-{
-    if (!response.isValid()) {
-        m_serverLogger->error("==> Error initializing the server {}", m_program.toLatin1());
-        return false;
-    }
-
-    if (response.error) {
-        json j = response.error.value();
-        m_serverLogger->error(j.dump());
-        return false;
-    }
-
-    // TODO initialize some client internal flags
-    sendNotification(InitializedNotification());
-    m_serverLogger->trace("==> LSP server {} initialized", m_program.toLatin1());
-    emit initialized();
-    return true;
-}
-
-bool Client::shutdownCallback(ShutdownRequest::Response response)
-{
-    if (!response.isValid()) {
-        m_serverLogger->error("==> Error shutting down the server {}", m_program.toLatin1());
-        return false;
-    }
-
-    if (response.error) {
-        json j = response.error.value();
-        m_serverLogger->error(j.dump());
-        return false;
-    }
-
-    sendNotification(ExitNotification());
-    m_process->waitForFinished();
-    m_serverLogger->trace("==> LSP server {} exited", m_program.toLatin1());
-    emit finished();
-    return true;
-}
-
-void Client::logMessage(std::string type, const nlohmann::json &message)
+void ClientBackend::logMessage(std::string type, const nlohmann::json &message)
 {
     json log = {
         {"type", type},
@@ -270,34 +208,62 @@ void Client::logMessage(std::string type, const nlohmann::json &message)
 ///////////////////////////////////////////////////////////////////////////////
 TEST_SUITE("lsp")
 {
-    TEST_CASE("client start and shutdown")
+    TEST_CASE("synchronous requests")
     {
-        Lsp::Client client("cpp", "clangd", {});
+        Lsp::ClientBackend client("cpp", "clangd", {});
         Test::LogSilencer serverLog("cpp_server");
 
-        QSignalSpy initialized(&client, &Lsp::Client::initialized);
-        QSignalSpy errorOccured(&client, &Lsp::Client::errorOccured);
-        QSignalSpy finished(&client, &Lsp::Client::finished);
+        QSignalSpy errorOccured(&client, &Lsp::ClientBackend::errorOccured);
+        QSignalSpy finished(&client, &Lsp::ClientBackend::finished);
+        client.start();
 
-        CHECK(client.start());
+        Lsp::InitializeRequest initializeRequest;
+        initializeRequest.id = 1;
+        auto initializeResponse = client.sendRequest(initializeRequest);
+        CHECK(initializeResponse.isValid());
+        CHECK(!initializeResponse.error);
+        client.sendNotification(Lsp::InitializedNotification());
+
+        Lsp::ShutdownRequest shutdownRequest;
+        shutdownRequest.id = 2;
+        auto shutdownResponse = client.sendRequest(shutdownRequest);
+        CHECK(shutdownResponse.isValid());
+        CHECK(!shutdownResponse.error);
+        client.sendNotification(Lsp::ExitNotification());
+
         CHECK(errorOccured.count() == 0);
-        REQUIRE(initialized.count());
-        CHECK(client.shutdown());
+        finished.wait();
         REQUIRE(finished.count());
     }
 
-    TEST_CASE("client requests")
+    TEST_CASE("asynchronous requests")
     {
-        Lsp::Client client("cpp", "clangd", {});
+        Lsp::ClientBackend client("cpp", "clangd", {});
         Test::LogSilencer serverLog("cpp_server");
 
-        REQUIRE(client.start());
+        QSignalSpy errorOccured(&client, &Lsp::ClientBackend::errorOccured);
+        QSignalSpy finished(&client, &Lsp::ClientBackend::finished);
+        client.start();
 
-        SUBCASE("TODO_REQUEST")
-        {
-            // TODO one SUBCASE per request
-        }
+        auto shutdownCallback = [&](Lsp::ShutdownRequest::Response response) {
+            if (response.isValid() && !response.error)
+                client.sendNotification(Lsp::ExitNotification());
+        };
+        auto initializeCallback = [&](Lsp::InitializeRequest::Response response) {
+            if (response.isValid() && !response.error) {
+                client.sendNotification(Lsp::InitializedNotification());
+                Lsp::ShutdownRequest shutdownRequest;
+                shutdownRequest.id = 2;
+                client.sendAsyncRequest(shutdownRequest, shutdownCallback);
+            }
+        };
 
-        CHECK(client.shutdown());
+        Lsp::InitializeRequest initializeRequest;
+        initializeRequest.id = 1;
+        client.sendAsyncRequest(initializeRequest, initializeCallback);
+
+        CHECK(errorOccured.count() == 0);
+        finished.wait();
+        REQUIRE(finished.count());
     }
 }

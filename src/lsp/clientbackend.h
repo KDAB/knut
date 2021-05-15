@@ -1,8 +1,9 @@
 #pragma once
 
-#include "requests.h"
+#include "requestmessage.h"
 
 #include <QObject>
+#include <QProcess>
 
 #include <spdlog/spdlog.h>
 
@@ -13,15 +14,15 @@ class QProcess;
 
 namespace Lsp {
 
-class Client : public QObject
+class ClientBackend : public QObject
 {
     Q_OBJECT
 
 public:
-    Client(const std::string &language, QString program, QStringList arguments, QObject *parent = nullptr);
+    ClientBackend(const std::string &language, QString program, QStringList arguments, QObject *parent = nullptr);
+    ~ClientBackend();
 
     bool start();
-    bool shutdown();
 
     template <typename Request>
     void sendAsyncRequest(const Request &request, typename Request::ResponseCallback callback)
@@ -54,15 +55,15 @@ public:
     }
 
 signals:
-    void initialized();
+    void errorOccured(const QString &message);
     void finished();
-    void errorOccured(int error);
     void responseEmitted(QPrivateSignal);
 
 private:
     void readError();
     void readOutput();
-    void handleError(int error);
+    void handleError();
+    void handleFinished(int exitCode, QProcess::ExitStatus exitStatus);
 
     template <typename Response>
     Response deserializeResponse(nlohmann::json &&j)
@@ -78,10 +79,6 @@ private:
     void sendAsyncJsonRequest(nlohmann::json jsonRequest);
     nlohmann::json sendJsonRequest(nlohmann::json jsonRequest);
     void sendJsonNotification(nlohmann::json jsonNotification);
-
-    bool initialize();
-    bool initializeCallback(InitializeRequest::Response response);
-    bool shutdownCallback(ShutdownRequest::Response response);
 
     void logMessage(std::string type, const nlohmann::json &message);
 

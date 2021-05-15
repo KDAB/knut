@@ -142,6 +142,8 @@ TEST_SUITE("core")
     {
         SUBCASE("loading")
         {
+            Test::LogSilencer ls;
+
             // Default values
             CHECK_EQ(hasValue("/lsp/cpp"), true);
             const auto defaultServer = value<Core::Settings::LspServer>("/lsp/cpp");
@@ -159,6 +161,8 @@ TEST_SUITE("core")
 
         SUBCASE("value")
         {
+            Test::LogSilencer ls;
+
             loadProjectSettings(Test::testDataPath() + "/settings");
 
             CHECK_EQ(value("/answer").toInt(), 42);
