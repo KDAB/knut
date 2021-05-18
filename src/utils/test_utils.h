@@ -7,6 +7,7 @@
 #include <spdlog/spdlog.h>
 
 #include <memory>
+#include <vector>
 
 namespace Test {
 
@@ -25,7 +26,9 @@ inline QString testDataPath()
 class LogSilencer
 {
 public:
-    LogSilencer(const std::string &name = "")
+    inline static std::string Default = "";
+
+    LogSilencer(const std::string &name = Default)
     {
         if (name.empty())
             m_logger = spdlog::default_logger();
@@ -43,9 +46,25 @@ public:
         }
     }
 
+    LogSilencer(LogSilencer &&) noexcept = default;
+    LogSilencer &operator=(LogSilencer &&) noexcept = default;
+
 private:
     spdlog::level::level_enum m_level = spdlog::level::off;
     std::shared_ptr<spdlog::logger> m_logger;
 };
 
+class LogSilencers
+{
+public:
+    LogSilencers(std::initializer_list<std::string> names)
+    {
+        m_logs.reserve(names.size());
+        for (const auto &name : names)
+            m_logs.emplace_back(name);
+    }
+
+private:
+    std::vector<LogSilencer> m_logs;
+};
 }

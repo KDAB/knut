@@ -81,7 +81,7 @@ ClientBackend::ClientBackend(const std::string &language, QString program, QStri
     const auto serverLogName = language + "_server";
     m_serverLogger = spdlog::get(serverLogName);
     if (!m_serverLogger) {
-        m_serverLogger = spdlog::basic_logger_st(serverLogName, serverLogName + ".log", true);
+        m_serverLogger = spdlog::basic_logger_mt(serverLogName, serverLogName + ".log", true);
         m_serverLogger->set_level(spdlog::level::debug);
         m_serverLogger->set_pattern("%v");
     }
@@ -89,7 +89,7 @@ ClientBackend::ClientBackend(const std::string &language, QString program, QStri
     const auto messageLogName = language + "_messages";
     m_messageLogger = spdlog::get(messageLogName);
     if (!m_messageLogger) {
-        m_messageLogger = spdlog::basic_logger_st(messageLogName, messageLogName + ".log", true);
+        m_messageLogger = spdlog::basic_logger_mt(messageLogName, messageLogName + ".log", true);
         m_messageLogger->set_level(spdlog::level::info);
         m_messageLogger->set_pattern("[LSP   - %H:%M:%S] %v");
     }
@@ -209,7 +209,7 @@ TEST_SUITE("lsp")
     TEST_CASE("client synchronous requests")
     {
         Lsp::ClientBackend client("cpp", "clangd", {});
-        Test::LogSilencer serverLog("cpp_server");
+        auto logs = Test::LogSilencers {"cpp_server", "cpp_messages"};
 
         QSignalSpy errorOccured(&client, &Lsp::ClientBackend::errorOccured);
         QSignalSpy finished(&client, &Lsp::ClientBackend::finished);
@@ -237,7 +237,7 @@ TEST_SUITE("lsp")
     TEST_CASE("client asynchronous requests")
     {
         Lsp::ClientBackend client("cpp", "clangd", {});
-        Test::LogSilencer serverLog("cpp_server");
+        auto logs = Test::LogSilencers {"cpp_server", "cpp_messages"};
 
         QSignalSpy errorOccured(&client, &Lsp::ClientBackend::errorOccured);
         QSignalSpy finished(&client, &Lsp::ClientBackend::finished);

@@ -29,6 +29,7 @@ set(PROJECT_SOURCES
     lsp/types_json.h
     lsp/types_json.cpp
     lsp/notificationmessage.h
+    lsp/lsp_utils.h
     script/scriptmanager.cpp
     script/scriptmanager.h
     script/scriptrunner.cpp
