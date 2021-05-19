@@ -1,3 +1,5 @@
+#include "script/scriptmanager.h"
+
 #include <QApplication>
 
 #define DOCTEST_CONFIG_IMPLEMENT
@@ -24,11 +26,16 @@ int main(int argc, char *argv[])
         return context.run();
     }
 
+    QString scriptName;
     try {
         cxxopts::Options options("Knut", "Automation tool for kdabians");
 
-        options.add_options()("h,help", "Show this help");
+        // clang-format off
+        options.add_options()
+                ("h,help", "Show this help")
+                ("s,script", "Run given script then exit", cxxopts::value<std::string>());
         options.add_options("Tests")("t,tests", "Run internal tests, all options are then passed to doctest");
+        // clang-format on
 
         auto result = options.parse(argc, argv);
 
@@ -36,9 +43,20 @@ int main(int argc, char *argv[])
             std::cout << options.help({"", "Tests"}) << std::endl;
             exit(0);
         }
+        if (result.count("script"))
+            scriptName = QString::fromStdString(result["script"].as<std::string>());
+
     } catch (const cxxopts::OptionException &e) {
         std::cout << "Error parsing options: " << e.what() << std::endl;
         exit(1);
+    }
+
+    if (!scriptName.isEmpty()) {
+        auto sm = Script::ScriptManager::instance();
+        QObject::connect(sm, &Script::ScriptManager::scriptFinished, &app, [](const QVariant &result) {
+            QApplication::exit(result.toInt());
+        });
+        sm->runScript(scriptName);
     }
 
     return app.exec();

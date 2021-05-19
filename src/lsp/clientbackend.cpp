@@ -206,7 +206,7 @@ void ClientBackend::logMessage(std::string type, const nlohmann::json &message)
 ///////////////////////////////////////////////////////////////////////////////
 TEST_SUITE("lsp")
 {
-    TEST_CASE("client synchronous requests")
+    TEST_CASE("send synchronous requests")
     {
         Lsp::ClientBackend client("cpp", "clangd", {});
         auto logs = Test::LogSilencers {"cpp_server", "cpp_messages"};
@@ -234,7 +234,7 @@ TEST_SUITE("lsp")
         REQUIRE(finished.count());
     }
 
-    TEST_CASE("client asynchronous requests")
+    TEST_CASE("send asynchronous requests")
     {
         Lsp::ClientBackend client("cpp", "clangd", {});
         auto logs = Test::LogSilencers {"cpp_server", "cpp_messages"};

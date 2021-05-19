@@ -47,6 +47,9 @@ public:
 public slots:
     void runScript(const QString &scriptName, bool async = true, bool log = true);
 
+signals:
+    void scriptFinished(const QVariant &result);
+
 private:
     explicit ScriptManager(QObject *parent = nullptr);
 

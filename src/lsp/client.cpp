@@ -132,7 +132,7 @@ bool Client::sendWorkspaceFoldersChanges() const
 ///////////////////////////////////////////////////////////////////////////////
 TEST_SUITE("lsp")
 {
-    TEST_CASE("client initialize and shutdown")
+    TEST_CASE("initialize and shutdown client")
     {
         Lsp::Client client("cpp", "clangd", {});
         auto logs = Test::LogSilencers {"cpp_client", "cpp_server", "cpp_messages"};

@@ -62,7 +62,7 @@ bool operator==(const TestStruct &lhs, const TestStruct &rhs)
 
 TEST_SUITE("utils")
 {
-    TEST_CASE("json")
+    TEST_CASE("jsonify everything")
     {
         TestStruct test;
         test.inner.boolValue = true;
@@ -126,7 +126,7 @@ TEST_SUITE("utils")
             CHECK_EQ(result2, test2);
         }
 
-        SUBCASE("empty struct")
+        SUBCASE("handle empty struct")
         {
             EmptyStruct empty;
             json j = empty;
@@ -136,7 +136,7 @@ TEST_SUITE("utils")
             CHECK_NOTHROW(j.get<EmptyStruct>());
         }
 
-        SUBCASE("wrong deserialization")
+        SUBCASE("throw errors on wrong deserialization")
         {
             json j = json::parse(R"({"string":1,"stringList":[]})");
             CHECK_THROWS_AS(j.get<SmallStruct>(), nlohmann::detail::type_error);

@@ -16,9 +16,9 @@ ScriptManager::ScriptManager(QObject *parent)
     , m_watcher(new QFileSystemWatcher(this))
     , m_runner(new ScriptRunner(this))
 {
-    m_logger = spdlog::get("Script");
+    m_logger = spdlog::get("script");
     if (!m_logger) {
-        m_logger = spdlog::stdout_color_mt("Script");
+        m_logger = spdlog::stdout_color_mt("script");
         m_logger->set_level(spdlog::level::debug);
     }
 
@@ -153,6 +153,7 @@ void ScriptManager::doRunScript(const QString &fileName, std::function<void()> e
         if (result.isValid())
             m_logger->debug("Script result is {}", result.toString().toStdString());
     }
+    emit scriptFinished(result);
 }
 
 }

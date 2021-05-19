@@ -140,7 +140,7 @@ TEST_SUITE("core")
 {
     TEST_CASE_FIXTURE(TestSettings, "settings")
     {
-        SUBCASE("loading")
+        SUBCASE("load settings")
         {
             Test::LogSilencer ls;
 
@@ -159,7 +159,7 @@ TEST_SUITE("core")
             CHECK_EQ(newServer.arguments, testData.arguments);
         }
 
-        SUBCASE("value")
+        SUBCASE("access settings values")
         {
             Test::LogSilencer ls;
 

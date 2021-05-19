@@ -3,8 +3,10 @@ include(FetchContent)
 
 project(knut LANGUAGES CXX)
 
-add_definitions(-DTEST_DATA_PATH="${CMAKE_CURRENT_SOURCE_DIR}/test_data")
-add_definitions(-DLSP_SOURCE_PATH="${CMAKE_CURRENT_SOURCE_DIR}/src/lsp")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+
+add_definitions(-DTEST_DATA_PATH="${CMAKE_SOURCE_DIR}/test_data")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -13,6 +15,8 @@ if(MSVC)
 else()
     add_compile_options(-Wall -Wextra -Werror -Wno-error=comment)
 endif()
+
+enable_testing()
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -64,4 +68,6 @@ FetchContent_MakeAvailable(spdlog json doctest)
 
 # Knut
 add_subdirectory(src)
-add_subdirectory(tools/spec2cpp)
+add_subdirectory(tools)
+add_subdirectory(tests)
+

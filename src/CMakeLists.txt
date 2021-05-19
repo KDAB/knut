@@ -34,17 +34,21 @@ set(PROJECT_SOURCES
     script/scriptmanager.h
     script/scriptrunner.cpp
     script/scriptrunner.h
+    script/testutil.cpp
+    script/testutil.h
     utils/json_utils.h
     utils/json_utils.cpp
     utils/test_utils.h
 )
 
 qt5_add_resources(PROJECT_QRC
-    core/resources/core.qrc
+    resources/resources.qrc
 )
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${PROJECT_QRC})
+add_test(${PROJECT_NAME} ${CMAKE_BINARY_DIR}/bin/${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME} PRIVATE
+    Qt${QT_VERSION_MAJOR}::Core
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Qml
     Qt${QT_VERSION_MAJOR}::QmlPrivate

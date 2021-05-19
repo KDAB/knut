@@ -1,5 +1,7 @@
 #include "scriptrunner.h"
 
+#include "testutil.h"
+
 #include "core/dir.h"
 #include "core/file.h"
 #include "core/fileinfo.h"
@@ -16,6 +18,8 @@
 #include <QtQml/private/qqmlengine_p.h>
 
 namespace Script {
+
+static constexpr int ErrorCode = -1;
 
 // Dir singleton function provider
 static QObject *dir_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
@@ -45,7 +49,7 @@ static QObject *file_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
 ScriptRunner::ScriptRunner(QObject *parent)
     : QObject(parent)
 {
-    m_logger = spdlog::get("Script");
+    m_logger = spdlog::get("script");
 
     // Script objects registrations
     qRegisterMetaType<Core::QDirValueType>();
@@ -58,6 +62,9 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qmlRegisterSingletonInstance<Core::Settings>("Script", 1, 0, "Settings", Core::Settings::instance());
 
     qmlRegisterType<Core::ScriptItem>("Script", 1, 0, "Script");
+
+    // Script.Test
+    qmlRegisterType<TestUtil>("Script.Test", 1, 0, "TestUtil");
 }
 
 ScriptRunner::~ScriptRunner() { }
@@ -85,7 +92,7 @@ QVariant ScriptRunner::runScript(const QString &fileName, std::function<void()> 
         // engine is deleted in runJavascript or runQml
     } else {
         m_logger->error("File {} doesn't exist", fileName.toStdString());
-        return QVariant();
+        return QVariant(ErrorCode);
     }
 
     return result;
@@ -131,7 +138,7 @@ QVariant ScriptRunner::runJavascript(const QString &fileName, QQmlEngine *engine
         return result->property("result");
 
     filterErrors(component);
-    return QVariant();
+    return QVariant(ErrorCode);
 }
 
 QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine)
@@ -175,7 +182,13 @@ QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine)
             if (topLevel->metaObject()->indexOfMethod("init()") != -1)
                 QMetaObject::invokeMethod(topLevel, "init", Qt::QueuedConnection);
 
-            return QVariant();
+            // Run tests if any
+            if (topLevel->metaObject()->indexOfMethod("runTests()") != -1) {
+                QMetaObject::invokeMethod(topLevel, "runTests", Qt::DirectConnection);
+                return topLevel->property("failed");
+            }
+
+            return QVariant(0);
         }
     }
 
@@ -183,7 +196,7 @@ QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine)
     m_hasError = true;
     filterErrors(*component);
     engine->deleteLater();
-    return QVariant();
+    return QVariant(ErrorCode);
 }
 
 void ScriptRunner::filterErrors(const QQmlComponent &component)
