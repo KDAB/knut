@@ -71,4 +71,4 @@ FetchContent_MakeAvailable(spdlog json doctest)
 add_subdirectory(src)
 add_subdirectory(tools)
 add_subdirectory(tests)
-
+add_subdirectory(test_data)

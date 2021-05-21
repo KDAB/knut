@@ -5,7 +5,12 @@ import Script.Test 1.0
 TestCase {
     name: "Settings"
 
-    function test_defaultSettings() {
-        verify(true)
+    function test_globalSettings() {
+        verify(Settings.hasValue("/lsp/cpp/arguments"))
+        compare(Settings.value("/lsp/cpp/program"), "clangd")
+
+        // Test missing '/'
+        verify(Settings.hasValue("lsp/cpp/arguments"))
+        compare(Settings.value("lsp/cpp/program"), "clangd")
     }
 }

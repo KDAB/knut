@@ -51,8 +51,10 @@ void Settings::loadProjectSettings(const QString &rootDir)
  * \qmlmethod bool ProjectSettings::hasValue( string path)
  * Returns true if the project settings has a settings \a key.
  */
-bool Settings::hasValue(const QString &path) const
+bool Settings::hasValue(QString path) const
 {
+    if (!path.startsWith('/'))
+        path.prepend('/');
     return m_settings.contains(json::json_pointer(path.toStdString()));
 }
 
@@ -146,6 +148,7 @@ TEST_SUITE("core")
 
             // Default values
             CHECK_EQ(hasValue("/lsp/cpp"), true);
+            CHECK_EQ(hasValue("lsp/cpp"), true);
             const auto defaultServer = value<Core::Settings::LspServer>("/lsp/cpp");
             CHECK_EQ(defaultServer.program, "clangd");
             CHECK_EQ(defaultServer.arguments.size(), 0);
