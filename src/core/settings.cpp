@@ -69,7 +69,7 @@ QVariant Settings::value(QString path, const QVariant &defaultValue) const
         if (!path.startsWith('/'))
             path.prepend('/');
         auto val = m_settings.at(json::json_pointer(path.toStdString()));
-        spdlog::trace("[Settings] Getting setting value {}", path.toStdString());
+        spdlog::trace("Getting setting value {}", path.toStdString());
         if (val.is_number_integer())
             return val.get<int>();
         else if (val.is_number_float())
@@ -87,9 +87,9 @@ QVariant Settings::value(QString path, const QVariant &defaultValue) const
                 return QStringList();
             }
         }
-        spdlog::warn("[Settings] Can't convert setting value {}", path.toStdString());
+        spdlog::warn("Can't convert setting value {}", path.toStdString());
     } catch (...) {
-        spdlog::debug("[Settings] Trying to access non-existing setting value {}", path.toStdString());
+        spdlog::debug("Trying to access non-existing setting value {}", path.toStdString());
     }
     return defaultValue;
 }
@@ -113,12 +113,12 @@ void Settings::loadSettings(std::string name, const QString &fileName)
     if (file.open(QIODevice::ReadOnly)) {
         try {
             m_settings.merge_patch(json::parse(file.readAll().constData()));
-            spdlog::trace("[Settings] Loading {} settings {}", name, fileName.toStdString());
+            spdlog::trace("Loading {} settings {}", name, fileName.toStdString());
         } catch (...) {
-            spdlog::error("[Settings] Error loading the {} settings, in file {}", name, fileName.toStdString());
+            spdlog::error("Error loading the {} settings, in file {}", name, fileName.toStdString());
         }
     } else {
-        spdlog::trace("[Settings] No {} settings {}", name, fileName.toStdString());
+        spdlog::trace("No {} settings {}", name, fileName.toStdString());
     }
 }
 
@@ -170,6 +170,7 @@ TEST_SUITE("core")
 
             CHECK_EQ(value("/answer").toInt(), 42);
             CHECK_EQ(value("/pi").toFloat(), 3.14f);
+            CHECK_EQ(value("/colors").toStringList(), QStringList {"red", "green", "blue"});
 
             // Test missing '/'
             CHECK_EQ(value("enabled").toBool(), true);
@@ -177,7 +178,9 @@ TEST_SUITE("core")
 
             // Test missing values
             CHECK_EQ(value("/bar", "default").toString(), "default");
-            CHECK_EQ(value("/colors").toStringList(), QStringList {"red", "green", "blue"});
+            CHECK_EQ(value("/baz", 1).toInt(), 1);
+
+            // Check value we can't parse
             CHECK_FALSE(value("/numbers").isValid());
             CHECK_FALSE(value("/foobar").isValid());
         }

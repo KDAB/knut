@@ -13,11 +13,24 @@ public:
     {
         QFileInfo fi(testDataPath() + '/' + scriptName);
         REQUIRE(fi.exists());
-
         m_arguments.append({"-s", fi.absoluteFilePath()});
     }
 
-    void check() const { CHECK_FALSE(QProcess::execute(knutPath(), m_arguments)); }
+    KnutRunner &root(const QString &rootDir)
+    {
+        QDir dir(testDataPath() + '/' + rootDir);
+        REQUIRE(dir.exists());
+        m_arguments.append({"-r", dir.absolutePath()});
+        return *this;
+    }
+
+    void check() const
+    {
+        // 0 Means a success
+        // >0: number of failed tests
+        // <0: problem loading the script
+        CHECK_EQ(QProcess::execute(knutPath(), m_arguments), 0);
+    }
 
 protected:
     QString knutPath() const
@@ -53,5 +66,5 @@ private:
 
 TEST_SUITE("knut")
 {
-    TEST_CASE("settings") { KnutRunner("tst_settings.qml").check(); }
+    TEST_CASE("settings") { KnutRunner("tst_settings.qml").root("settings").check(); }
 }
