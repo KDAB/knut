@@ -1,4 +1,4 @@
-project(knut VERSION 4.0 LANGUAGES CXX)
+project(knut LANGUAGES CXX)
 
 set(PROJECT_SOURCES
     main.cpp
