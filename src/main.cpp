@@ -2,6 +2,7 @@
 
 #include <QApplication>
 
+#define DOCTEST_CONFIG_NO_UNPREFIXED_OPTIONS
 #define DOCTEST_CONFIG_IMPLEMENT
 #include <doctest/doctest.h>
 
@@ -13,9 +14,11 @@ public:
     OptionParser(int argc, char *argv[])
     {
         m_hasTests = (argc == 1);
-        if (!m_hasTests && (argc >= 2 && (!strcmp(argv[1], "--tests") || !strcmp(argv[1], "-t")))) {
-            m_hasTests = true;
-            return;
+        for (int i = 0; i < argc; ++i) {
+            if (strncmp(argv[i], "--dt-", strlen("--dt-")) == 0) {
+                m_hasTests = true;
+                return;
+            }
         }
 
         try {
@@ -26,7 +29,8 @@ public:
                     ("h,help", "Display available options")
                     ("v,version", "Display the version of this program")
                     ("s,script", "Run given script then exit", cxxopts::value<std::string>());
-            options.add_options("Tests")("t,tests", "Run internal tests, all options are then passed to doctest");
+            options.add_options("Tests")
+                    ("dt-help", "Display available tests options");
             // clang-format on
 
             auto result = options.parse(argc, argv);
@@ -67,11 +71,6 @@ int main(int argc, char *argv[])
     OptionParser options(argc, argv);
 
     if (options.hasTests()) {
-        // First remove -t option
-        if (argc > 1) {
-            argc -= 2;
-            argv = &(argv[2]);
-        }
         doctest::Context context;
         context.setOption("no-breaks", false); // break in debugger
         context.applyCommandLine(argc, argv);
