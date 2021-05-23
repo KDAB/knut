@@ -1,4 +1,5 @@
 #include "scriptmanager.h"
+
 #include "scriptrunner.h"
 
 #include <QDir>
@@ -9,7 +10,7 @@
 
 #include <spdlog/sinks/stdout_color_sinks.h>
 
-namespace Script {
+namespace Interface {
 
 ScriptManager::ScriptManager(QObject *parent)
     : QObject(parent)
@@ -63,7 +64,9 @@ void ScriptManager::runScript(const QString &fileName, bool async, bool log)
     m_logger->info("==> Start script {}", fileName.toStdString());
     ScriptRunner::EndScriptFunc logEndScript;
     if (log)
-        logEndScript = [this, fileName]() { m_logger->info("<== End script {}", fileName.toStdString()); };
+        logEndScript = [this, fileName]() {
+            m_logger->info("<== End script {}", fileName.toStdString());
+        };
 
     if (async)
         QTimer::singleShot(0, this, [this, fileName, logEndScript]() {

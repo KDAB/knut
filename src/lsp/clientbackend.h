@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QProcess>
 
+#include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
 
 #include <functional>

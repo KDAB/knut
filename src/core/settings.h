@@ -1,6 +1,6 @@
 #pragma once
 
-#include <utils/json_utils.h>
+#include "json_utils.h"
 
 #include <QObject>
 #include <QStringList>
@@ -71,4 +71,4 @@ private:
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Settings::LspServer, program, arguments);
 
-} // namespace Core
+}

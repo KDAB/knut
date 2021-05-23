@@ -1,11 +1,7 @@
 #include "settings.h"
 
-#include "utils/test_utils.h"
-
 #include <QDir>
 #include <QFile>
-
-#include <doctest/doctest.h>
 
 using json = nlohmann::json;
 
@@ -122,67 +118,4 @@ void Settings::loadSettings(std::string name, const QString &fileName)
     }
 }
 
-} // namespace Core
-
-///////////////////////////////////////////////////////////////////////////////
-// Tests
-///////////////////////////////////////////////////////////////////////////////
-
-// Use a test fixture to avoid using the settings singleton
-class TestSettings : public Core::Settings
-{
-public:
-    TestSettings()
-        : Settings(false)
-    {
-    }
-};
-
-TEST_SUITE("core")
-{
-    TEST_CASE_FIXTURE(TestSettings, "settings")
-    {
-        SUBCASE("load settings")
-        {
-            Test::LogSilencer ls;
-
-            // Default values
-            CHECK_EQ(hasValue("/lsp/cpp"), true);
-            CHECK_EQ(hasValue("lsp/cpp"), true);
-            const auto defaultServer = value<Core::Settings::LspServer>("/lsp/cpp");
-            CHECK_EQ(defaultServer.program, "clangd");
-            CHECK_EQ(defaultServer.arguments.size(), 0);
-
-            // Load settings
-            loadProjectSettings(Test::testDataPath() + "/settings");
-            const auto newServer = value<Core::Settings::LspServer>("/lsp/cpp");
-            CHECK_EQ(hasValue("/foobar/foo"), true);
-            Core::Settings::LspServer testData = {"notclangd", {"foo", "bar"}};
-            CHECK_EQ(newServer.program, testData.program);
-            CHECK_EQ(newServer.arguments, testData.arguments);
-        }
-
-        SUBCASE("access settings values")
-        {
-            Test::LogSilencer ls;
-
-            loadProjectSettings(Test::testDataPath() + "/settings");
-
-            CHECK_EQ(value("/answer").toInt(), 42);
-            CHECK_EQ(value("/pi").toFloat(), 3.14f);
-            CHECK_EQ(value("/colors").toStringList(), QStringList {"red", "green", "blue"});
-
-            // Test missing '/'
-            CHECK_EQ(value("enabled").toBool(), true);
-            CHECK_EQ(value("foo").toString(), "bar");
-
-            // Test missing values
-            CHECK_EQ(value("/bar", "default").toString(), "default");
-            CHECK_EQ(value("/baz", 1).toInt(), 1);
-
-            // Check value we can't parse
-            CHECK_FALSE(value("/numbers").isValid());
-            CHECK_FALSE(value("/foobar").isValid());
-        }
-    }
 }

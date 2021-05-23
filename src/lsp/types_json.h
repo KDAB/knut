@@ -3,9 +3,8 @@
 
 #pragma once
 
+#include "json.h"
 #include "types.h"
-
-#include "utils/json_utils.h"
 
 namespace Lsp {
 

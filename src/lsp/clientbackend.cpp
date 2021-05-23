@@ -6,14 +6,10 @@
 #include "requests.h"
 #include "types_json.h"
 
-#include "utils/test_utils.h"
-
 #include <QBuffer>
 #include <QEventLoop>
-#include <QSignalSpy>
 #include <QString>
 
-#include <doctest/doctest.h>
 #include <spdlog/sinks/basic_file_sink.h>
 
 #include <ctime>
@@ -199,69 +195,4 @@ void ClientBackend::logMessage(std::string type, const nlohmann::json &message)
     m_messageLogger->info(log.dump());
     m_messageLogger->flush();
 }
-}
-
-///////////////////////////////////////////////////////////////////////////////
-// Tests
-///////////////////////////////////////////////////////////////////////////////
-TEST_SUITE("lsp")
-{
-    TEST_CASE("send synchronous requests")
-    {
-        Lsp::ClientBackend client("cpp", "clangd", {});
-        auto logs = Test::LogSilencers {"cpp_server", "cpp_messages"};
-
-        QSignalSpy errorOccured(&client, &Lsp::ClientBackend::errorOccured);
-        QSignalSpy finished(&client, &Lsp::ClientBackend::finished);
-        client.start();
-
-        Lsp::InitializeRequest initializeRequest;
-        initializeRequest.id = 1;
-        auto initializeResponse = client.sendRequest(initializeRequest);
-        CHECK(initializeResponse.isValid());
-        CHECK(!initializeResponse.error);
-        client.sendNotification(Lsp::InitializedNotification());
-
-        Lsp::ShutdownRequest shutdownRequest;
-        shutdownRequest.id = 2;
-        auto shutdownResponse = client.sendRequest(shutdownRequest);
-        CHECK(shutdownResponse.isValid());
-        CHECK(!shutdownResponse.error);
-        client.sendNotification(Lsp::ExitNotification());
-
-        CHECK(errorOccured.count() == 0);
-        finished.wait();
-        REQUIRE(finished.count());
-    }
-
-    TEST_CASE("send asynchronous requests")
-    {
-        Lsp::ClientBackend client("cpp", "clangd", {});
-        auto logs = Test::LogSilencers {"cpp_server", "cpp_messages"};
-
-        QSignalSpy errorOccured(&client, &Lsp::ClientBackend::errorOccured);
-        QSignalSpy finished(&client, &Lsp::ClientBackend::finished);
-        client.start();
-
-        auto shutdownCallback = [&](Lsp::ShutdownRequest::Response response) {
-            if (response.isValid() && !response.error)
-                client.sendNotification(Lsp::ExitNotification());
-        };
-        auto initializeCallback = [&](Lsp::InitializeRequest::Response response) {
-            if (response.isValid() && !response.error) {
-                client.sendNotification(Lsp::InitializedNotification());
-                Lsp::ShutdownRequest shutdownRequest;
-                shutdownRequest.id = 2;
-                client.sendAsyncRequest(shutdownRequest, shutdownCallback);
-            }
-        };
-
-        Lsp::InitializeRequest initializeRequest;
-        initializeRequest.id = 1;
-        client.sendAsyncRequest(initializeRequest, initializeCallback);
-
-        CHECK(errorOccured.count() == 0);
-        finished.wait();
-        REQUIRE(finished.count());
-    }
 }

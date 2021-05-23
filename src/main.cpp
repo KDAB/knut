@@ -1,11 +1,8 @@
 #include "core/settings.h"
-#include "script/scriptmanager.h"
+#include "interface/scriptmanager.h"
 
 #include <QApplication>
-
-#define DOCTEST_CONFIG_NO_UNPREFIXED_OPTIONS
-#define DOCTEST_CONFIG_IMPLEMENT
-#include <doctest/doctest.h>
+#include <QCommandLineParser>
 
 #include <cxxopts.hpp>
 
@@ -39,8 +36,6 @@ public:
                     ("v,version", "Display the version of this program")
                     ("s,script", "Run given script then exit", cxxopts::value<QString>())
                     ("r,root", "Root directory of the project", cxxopts::value<QString>());
-            options.add_options("Tests")
-                    ("dt-help", "Display available tests options");
             // clang-format on
 
             auto result = options.parse(argc, argv);
@@ -79,24 +74,20 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    QApplication::setApplicationName("Knut");
+    QApplication::setApplicationName("knut");
     QApplication::setApplicationVersion(KNUT_VERSION);
 
-    OptionParser options(argc, argv);
+    Q_INIT_RESOURCE(core);
+    Q_INIT_RESOURCE(interface);
 
-    if (options.hasTests()) {
-        doctest::Context context;
-        context.setOption("no-breaks", false); // break in debugger
-        context.applyCommandLine(argc, argv);
-        return context.run();
-    }
+    OptionParser options(argc, argv);
 
     if (!options.rootDir().isEmpty())
         Core::Settings::instance()->loadProjectSettings(options.rootDir());
 
     if (!options.scriptName().isEmpty()) {
-        auto sm = Script::ScriptManager::instance();
-        QObject::connect(sm, &Script::ScriptManager::scriptFinished, &app, [](const QVariant &result) {
+        auto sm = Interface::ScriptManager::instance();
+        QObject::connect(sm, &Interface::ScriptManager::scriptFinished, &app, [](const QVariant &result) {
             QApplication::exit(result.toInt());
         });
         sm->runScript(options.scriptName());

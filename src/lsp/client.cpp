@@ -7,12 +7,10 @@
 #include "requestmessage_json.h"
 #include "types_json.h"
 
-#include "utils/test_utils.h"
-
 #include <QCoreApplication>
+#include <QDir>
 #include <QFileInfo>
 
-#include <doctest/doctest.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
 namespace Lsp {
@@ -126,20 +124,3 @@ bool Client::sendWorkspaceFoldersChanges() const
 }
 
 } // namespace Lsp
-
-///////////////////////////////////////////////////////////////////////////////
-// Tests
-///////////////////////////////////////////////////////////////////////////////
-TEST_SUITE("lsp")
-{
-    TEST_CASE("initialize and shutdown client")
-    {
-        Lsp::Client client("cpp", "clangd", {});
-        auto logs = Test::LogSilencers {"cpp_client", "cpp_server", "cpp_messages"};
-
-        CHECK(client.initialize(Test::testDataPath()));
-        CHECK(client.state() == Lsp::Client::Initialized);
-        CHECK(client.shutdown());
-        CHECK(client.state() == Lsp::Client::Shutdown);
-    }
-}

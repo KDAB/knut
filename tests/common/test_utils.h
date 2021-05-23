@@ -67,4 +67,20 @@ public:
 private:
     std::vector<LogSilencer> m_logs;
 };
+
+constexpr inline bool noClangd()
+{
+#if defined(NO_CLANGD)
+    return true;
+#else
+    return false;
+#endif
 }
+}
+
+// Check if clangd is available, needed for some tests
+#define CHECK_CLANGD                                                                                                   \
+    do {                                                                                                               \
+        if constexpr (Test::noClangd())                                                                                \
+            QSKIP("clangd is not available to run the tests");                                                         \
+    } while (false)

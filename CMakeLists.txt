@@ -39,24 +39,24 @@ FetchContent_Declare(spdlog
 # See https://github.com/gabime/spdlog/issues/1190
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+FetchContent_MakeAvailable(spdlog)
+
 # nlohmann/json
 FetchContent_Declare(json
     GIT_REPOSITORY https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent
     GIT_TAG        v3.9.1
 )
+
 set(JSON_ImplicitConversions OFF)
 
-# doctest
-FetchContent_Declare(doctest
-    GIT_REPOSITORY https://github.com/onqtam/doctest
-    GIT_TAG        2.4.6
-)
+FetchContent_MakeAvailable(json)
 
 # cxxopts
 FetchContent_Declare(cxxopts
     GIT_REPOSITORY https://github.com/jarro2783/cxxopts
     GIT_TAG        v2.2.1
 )
+
 if(NOT cxxopts_POPULATED)
   FetchContent_Populate(cxxopts)
   set(CXXOPTS_BUILD_EXAMPLES OFF CACHE INTERNAL "No examples for cxxopts")
@@ -64,8 +64,6 @@ if(NOT cxxopts_POPULATED)
   set(CXXOPTS_ENABLE_INSTALL OFF CACHE INTERNAL "No installs for cxxopts")
   add_subdirectory(${cxxopts_SOURCE_DIR} ${cxxopts_BINARY_DIR})
 endif()
-
-FetchContent_MakeAvailable(spdlog json doctest)
 
 # Knut
 add_subdirectory(src)

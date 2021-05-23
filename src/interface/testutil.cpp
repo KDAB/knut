@@ -5,7 +5,7 @@
 
 #include <QtQml/private/qqmlengine_p.h>
 
-namespace Script {
+namespace Interface {
 
 /*!
   \qmltype TestUtil
@@ -46,4 +46,4 @@ int TestUtil::callerLine(int frameIndex) const
     return -1;
 }
 
-} // namespace Script
+}

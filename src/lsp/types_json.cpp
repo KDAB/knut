@@ -1,4 +1,5 @@
 #include "types_json.h"
+
 #include "types.h"
 
 namespace Lsp {

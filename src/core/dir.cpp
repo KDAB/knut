@@ -1,4 +1,5 @@
 #include "dir.h"
+
 #include <QVariant>
 
 namespace Core {

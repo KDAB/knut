@@ -2,7 +2,7 @@
 
 #include <QObject>
 
-namespace Script {
+namespace Interface {
 
 class TestUtil : public QObject
 {
@@ -18,4 +18,4 @@ public slots:
     int callerLine(int frameIndex = 0) const;
 };
 
-} // namespace Script
+}

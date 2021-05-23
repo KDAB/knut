@@ -17,7 +17,7 @@
 
 #include <QtQml/private/qqmlengine_p.h>
 
-namespace Script {
+namespace Interface {
 
 static constexpr int ErrorCode = -1;
 
