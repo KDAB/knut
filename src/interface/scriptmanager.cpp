@@ -17,6 +17,8 @@ ScriptManager::ScriptManager(QObject *parent)
     , m_watcher(new QFileSystemWatcher(this))
     , m_runner(new ScriptRunner(this))
 {
+    m_instance = this;
+
     m_logger = spdlog::get("script");
     if (!m_logger) {
         m_logger = spdlog::stdout_color_mt("script");
@@ -26,12 +28,15 @@ ScriptManager::ScriptManager(QObject *parent)
     connect(m_watcher, &QFileSystemWatcher::directoryChanged, this, &ScriptManager::updateScriptDirectory);
 }
 
-ScriptManager::~ScriptManager() { }
+ScriptManager::~ScriptManager()
+{
+    m_instance = nullptr;
+}
 
 ScriptManager *ScriptManager::instance()
 {
-    static ScriptManager instance;
-    return &instance;
+    Q_ASSERT(m_instance);
+    return m_instance;
 }
 
 ScriptManager::ScriptList ScriptManager::scriptList() const

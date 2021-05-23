@@ -1,67 +1,43 @@
-#include <QCoreApplication>
+#include "interface/knutmain.h"
+#include "interface/scriptmanager.h"
+
+#include "common/test_utils.h"
+
 #include <QDir>
 #include <QFileInfo>
-#include <QProcess>
 
-class KnutRunner
+#include <QSignalSpy>
+#include <QTest>
+
+#define KNUT_TEST(name)                                                                                                \
+    void tst_##name()                                                                                                  \
+    {                                                                                                                  \
+        QFileInfo fi(Test::testDataPath() + "/tst_" #name ".qml");                                                     \
+        QVERIFY(fi.exists());                                                                                          \
+        QStringList arguments {"knut.exe", "-s", fi.absoluteFilePath()};                                               \
+        QDir dir(Test::testDataPath() + "/" #name);                                                                    \
+        if (dir.exists())                                                                                              \
+            arguments.append({"-r", dir.absolutePath()});                                                              \
+        Interface::KnutMain main;                                                                                      \
+        QSignalSpy finished(Interface::ScriptManager::instance(), &Interface::ScriptManager::scriptFinished);          \
+        main.process(arguments);                                                                                       \
+        QVERIFY(finished.wait());                                                                                      \
+        QCOMPARE(finished.takeFirst().at(0).toInt(), 0);                                                               \
+    }
+
+class TestKnut : public QObject
 {
-public:
-    KnutRunner(const QString &scriptName)
+    Q_OBJECT
+
+private slots:
+    void initTestCase()
     {
-        QFileInfo fi(testDataPath() + '/' + scriptName);
-        REQUIRE(fi.exists());
-        m_arguments.append({"-s", fi.absoluteFilePath()});
+        Q_INIT_RESOURCE(core);
+        Q_INIT_RESOURCE(interface);
     }
 
-    KnutRunner &root(const QString &rootDir)
-    {
-        QDir dir(testDataPath() + '/' + rootDir);
-        REQUIRE(dir.exists());
-        m_arguments.append({"-r", dir.absolutePath()});
-        return *this;
-    }
-
-    void check() const
-    {
-        // 0 Means a success
-        // >0: number of failed tests
-        // <0: problem loading the script
-        CHECK_EQ(QProcess::execute(knutPath(), m_arguments), 0);
-    }
-
-protected:
-    QString knutPath() const
-    {
-        QString path;
-#if defined(KNUT_EXE)
-        path = KNUT_EXE;
-#endif
-        if (path.isEmpty() || !QFile::exists(path)) {
-#ifdef Q_OS_WINDOWS
-            return "knut.exe";
-#else
-            return "knut";
-#endif
-        }
-        return path;
-    }
-
-    QString testDataPath() const
-    {
-        QString path;
-#if defined(TEST_DATA_PATH)
-        path = TEST_DATA_PATH;
-#endif
-        if (path.isEmpty() || !QDir(path).exists())
-            return "test_data";
-        return path;
-    }
-
-private:
-    QStringList m_arguments;
+    KNUT_TEST(settings)
 };
 
-TEST_SUITE("knut")
-{
-    TEST_CASE("settings") { KnutRunner("tst_settings.qml").root("settings").check(); }
-}
+QTEST_MAIN(TestKnut)
+#include "tst_knut.moc"

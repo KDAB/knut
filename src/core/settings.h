@@ -36,6 +36,7 @@ public:
     };
 
 public:
+    Settings(QObject *parent = nullptr);
     ~Settings();
 
     static Settings *instance();
@@ -58,6 +59,7 @@ public:
     Q_INVOKABLE QVariant value(QString path, const QVariant &defaultValue = {}) const;
 
 protected:
+    // Constructor used for testing purpose
     explicit Settings(bool addUserSettings, QObject *parent = nullptr);
 
 private:
@@ -66,6 +68,8 @@ private:
     void loadSettings(std::string name, const QString &fileName);
 
 private:
+    inline static Settings *m_instance = nullptr;
+
     nlohmann::json m_settings;
 };
 

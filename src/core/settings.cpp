@@ -29,12 +29,22 @@ Settings::Settings(bool addUserSettings, QObject *parent)
         loadUserSettings();
 }
 
-Settings::~Settings() { }
+Settings::Settings(QObject *parent)
+    : Settings(true, parent)
+{
+    Q_ASSERT(m_instance == nullptr);
+    m_instance = this;
+}
+
+Settings::~Settings()
+{
+    m_instance = nullptr;
+}
 
 Settings *Settings::instance()
 {
-    static Settings instance(true);
-    return &instance;
+    Q_ASSERT(m_instance);
+    return m_instance;
 }
 
 void Settings::loadProjectSettings(const QString &rootDir)

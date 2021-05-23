@@ -35,6 +35,7 @@ public:
     };
     using ScriptList = std::vector<Script>;
 
+    explicit ScriptManager(QObject *parent = nullptr);
     ~ScriptManager() override;
 
     static ScriptManager *instance();
@@ -51,8 +52,6 @@ signals:
     void scriptFinished(const QVariant &result);
 
 private:
-    explicit ScriptManager(QObject *parent = nullptr);
-
     void addScript(const QString &fileName);
     void addScriptsFromPath(const QString &path);
     void removeScriptsFromPath(const QString &path);
@@ -62,6 +61,8 @@ private:
     void updateScriptDirectory(const QString &path);
 
 private:
+    inline static ScriptManager *m_instance = nullptr;
+
     std::shared_ptr<spdlog::logger> m_logger;
 
     QFileSystemWatcher *const m_watcher;
