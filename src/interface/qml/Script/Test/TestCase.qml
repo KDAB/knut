@@ -1,4 +1,5 @@
 import QtQuick 2.12
+import Script 1.0
 import Script.Test 1.0
 
 /*!
@@ -34,10 +35,10 @@ QtObject {
             if (msg === undefined)
                 msg = "Compared values are not the same"
 
-            console.error("FAIL!  : " + name + "::" + current + "() " + msg)
-            console.debug("   Actual  : " + actual)
-            console.debug("   Expected: " + expected)
-            console.debug("   " + util.callerFile() + "(" + util.callerLine() + ")")
+            Message.error("FAIL!  : " + name + "::" + current + "() " + msg)
+            Message.debug("   Actual  : " + actual)
+            Message.debug("   Expected: " + expected)
+            Message.debug("   " + util.callerFile() + "(" + util.callerLine() + ")")
             hasError = true
         }
     }
@@ -50,8 +51,8 @@ QtObject {
         if (!value) {
             if (msg === undefined)
                 msg = "Verification failed"
-            console.error("FAIL!  : " + name + "::" + current + "() " + msg)
-            console.debug("   " + util.callerFile() + "(" + util.callerLine() + ")")
+            Message.error("FAIL!  : " + name + "::" + current + "() " + msg)
+            Message.debug("   " + util.callerFile() + "(" + util.callerLine() + ")")
             hasError = true
         }
     }
@@ -64,7 +65,7 @@ QtObject {
             return
         }
 
-        console.log("********* Start testing of " + name + " *********")
+        Message.log("********* Start testing of " + name + " *********")
         var passed = 0
         var testList = []
         for (var prop in testCase) {
@@ -76,13 +77,14 @@ QtObject {
 
             if (!hasError) {
                 passed++
-                console.log("PASS   : " + name + "::" + current + "()")
+                Message.log("PASS   : " + name + "::" + current + "()")
             } else {
                 failed++
             }
         }
-        console.log("Totals: " + passed + " passed, " + failed + " failed")
-        console.log("********* Finished testing of " + name + " *********")
+        Message.log("Totals: " + passed + " passed, " + failed + " failed")
+        Message.log("********* Finished testing of " + name + " *********")
+        Qt.quit()
     }
 
 

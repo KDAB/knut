@@ -3,6 +3,8 @@ project(knut-interface LANGUAGES CXX)
 set(PROJECT_SOURCES
     knutmain.h
     knutmain.cpp
+    message.cpp
+    message.h
     scriptmanager.cpp
     scriptmanager.h
     scriptrunner.cpp

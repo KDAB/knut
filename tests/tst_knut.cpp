@@ -12,6 +12,7 @@
 #define KNUT_TEST(name)                                                                                                \
     void tst_##name()                                                                                                  \
     {                                                                                                                  \
+        Test::LogSilencer ls;                                                                                          \
         QFileInfo fi(Test::testDataPath() + "/tst_" #name ".qml");                                                     \
         QVERIFY(fi.exists());                                                                                          \
         QStringList arguments {"knut.exe", "-s", fi.absoluteFilePath()};                                               \

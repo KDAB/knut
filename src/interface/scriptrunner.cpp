@@ -1,5 +1,6 @@
 #include "scriptrunner.h"
 
+#include "message.h"
 #include "testutil.h"
 
 #include "core/dir.h"
@@ -38,12 +39,20 @@ static QObject *fileinfo_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
     return new Core::FileInfo();
 }
 
-// File Singletion function provider
+// File singleton function provider
 static QObject *file_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(engine)
     Q_UNUSED(scriptEngine)
     return new Core::File();
+}
+
+// Message singleton function provider
+static QObject *message_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+    return new Message();
 }
 
 ScriptRunner::ScriptRunner(QObject *parent)
@@ -59,6 +68,7 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qmlRegisterSingletonType<Core::Dir>("Script", 1, 0, "Dir", dir_provider);
     qmlRegisterSingletonType<Core::FileInfo>("Script", 1, 0, "FileInfo", fileinfo_provider);
     qmlRegisterSingletonType<Core::File>("Script", 1, 0, "File", file_provider);
+    qmlRegisterSingletonType<Interface::Message>("Script", 1, 0, "Message", message_provider);
     qmlRegisterSingletonInstance<Core::Settings>("Script", 1, 0, "Settings", Core::Settings::instance());
 
     qmlRegisterType<Core::ScriptItem>("Script", 1, 0, "Script");
@@ -188,7 +198,9 @@ QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine)
                 QMetaObject::invokeMethod(topLevel, "runTests", Qt::DirectConnection);
                 if (m_hasError)
                     return ErrorCode;
-                return topLevel->property("failed");
+                QVariant result = topLevel->property("failed");
+                delete engine;
+                return result;
             }
 
             return QVariant(0);
