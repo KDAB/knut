@@ -21,31 +21,16 @@ namespace Core {
  * \qmlproperty string Dir::currentPath
  */
 /*!
- * \qmlproperty QDirValueType Dir::current
- */
-/*!
  * \qmlproperty string Dir::currentScriptPath
- */
-/*!
- * \qmlproperty QDirValueType Dir::currentScript
  */
 /*!
  * \qmlproperty string Dir::homePath
  */
 /*!
- * \qmlproperty QDirValueType Dir::home
- */
-/*!
  * \qmlproperty string Dir::rootPath
  */
 /*!
- * \qmlproperty QDirValueType Dir::root
- */
-/*!
  * \qmlproperty string Dir::tempPath
- */
-/*!
- * \qmlproperty QDirValueType Dir::temp
  */
 
 Dir::Dir(QObject *parent)
@@ -95,26 +80,41 @@ bool Dir::setCurrentPath(const QString &path)
     return false;
 }
 
+/*!
+ * \qmlmethod QDirValueType Dir::current()
+ */
 QString Dir::currentPath() const
 {
     return QDir::currentPath();
 }
 
+/*!
+ * \qmlmethod QDirValueType Dir::currentScript()
+ */
 QString Dir::currentScriptPath() const
 {
     return property("scriptPath").toString();
 }
 
+/*!
+ * \qmlmethod QDirValueType Dir::home()
+ */
 QString Dir::homePath() const
 {
     return QDir::homePath();
 }
 
+/*!
+ * \qmlmethod QDirValueType Dir::root()
+ */
 QString Dir::rootPath() const
 {
     return QDir::rootPath();
 }
 
+/*!
+ * \qmlmethod QDirValueType Dir::temp()
+ */
 QString Dir::tempPath() const
 {
     return QDir::tempPath();

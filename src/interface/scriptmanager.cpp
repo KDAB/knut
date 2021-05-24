@@ -155,8 +155,8 @@ void ScriptManager::doRunScript(const QString &fileName, std::function<void()> e
     if (m_runner->hasError()) {
         const auto errors = m_runner->errors();
         for (const auto &error : errors)
-            m_logger->error("{}({}): error: {}", error.url().toLocalFile().toStdString(), error.line(),
-                            error.description().toStdString());
+            m_logger->error("{}({}): {}", QDir::toNativeSeparators(error.url().toLocalFile()).toStdString(),
+                            error.line(), error.description().toStdString());
     } else {
         if (result.isValid())
             m_logger->debug("Script result is {}", result.toString().toStdString());

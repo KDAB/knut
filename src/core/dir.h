@@ -12,15 +12,10 @@ class Dir : public QObject
     Q_OBJECT
     Q_PROPERTY(QChar separator READ separator CONSTANT)
     Q_PROPERTY(QString currentPath READ currentPath WRITE setCurrentPath NOTIFY currentPathChanged)
-    Q_PROPERTY(Core::QDirValueType current READ current NOTIFY currentPathChanged)
     Q_PROPERTY(QString currentScriptPath READ currentScriptPath CONSTANT)
-    Q_PROPERTY(Core::QDirValueType currentScript READ currentScript CONSTANT)
     Q_PROPERTY(QString homePath READ homePath CONSTANT)
-    Q_PROPERTY(Core::QDirValueType home READ home CONSTANT)
     Q_PROPERTY(QString rootPath READ rootPath CONSTANT)
-    Q_PROPERTY(Core::QDirValueType root READ root CONSTANT)
     Q_PROPERTY(QString tempPath READ tempPath CONSTANT)
-    Q_PROPERTY(Core::QDirValueType temp READ temp CONSTANT)
 
 public:
     explicit Dir(QObject *parent = nullptr);
@@ -71,17 +66,17 @@ public:
     Q_INVOKABLE QChar separator() const;
 
     bool setCurrentPath(const QString &path);
-    inline Core::QDirValueType current() const { return QDirValueType(currentPath()); }
+    Q_INVOKABLE inline Core::QDirValueType current() const { return QDirValueType(currentPath()); }
     QString currentPath() const;
 
-    inline Core::QDirValueType currentScript() const { return QDirValueType(currentScriptPath()); }
+    Q_INVOKABLE inline Core::QDirValueType currentScript() const { return QDirValueType(currentScriptPath()); }
     QString currentScriptPath() const;
 
-    inline Core::QDirValueType home() const { return QDirValueType(homePath()); }
+    Q_INVOKABLE inline Core::QDirValueType home() const { return QDirValueType(homePath()); }
     QString homePath() const;
-    inline Core::QDirValueType root() const { return QDirValueType(rootPath()); }
+    Q_INVOKABLE inline Core::QDirValueType root() const { return QDirValueType(rootPath()); }
     QString rootPath() const;
-    inline Core::QDirValueType temp() const { return QDirValueType(tempPath()); }
+    Q_INVOKABLE inline Core::QDirValueType temp() const { return QDirValueType(tempPath()); }
     QString tempPath() const;
 
     Q_INVOKABLE QString toNativeSeparators(const QString &pathName) const;

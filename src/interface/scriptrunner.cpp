@@ -109,8 +109,9 @@ QQmlEngine *ScriptRunner::getEngine(const QString &fileName)
 
     auto logWarnings = [this](const QList<QQmlError> &warnings) {
         for (const auto &warning : warnings) {
-            m_logger->warn("{}({}): warning: {}", warning.url().toLocalFile().toStdString(), warning.line(),
-                           warning.description().toStdString());
+            m_logger->warn("{}({}): {}", QDir::toNativeSeparators(warning.url().toLocalFile()).toStdString(),
+                           warning.line(), warning.description().toStdString());
+            m_hasError = true;
         }
     };
 
@@ -185,6 +186,8 @@ QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine)
             // Run tests if any
             if (topLevel->metaObject()->indexOfMethod("runTests()") != -1) {
                 QMetaObject::invokeMethod(topLevel, "runTests", Qt::DirectConnection);
+                if (m_hasError)
+                    return ErrorCode;
                 return topLevel->property("failed");
             }
 
@@ -196,7 +199,7 @@ QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine)
     m_hasError = true;
     filterErrors(*component);
     engine->deleteLater();
-    return QVariant(ErrorCode);
+    return ErrorCode;
 }
 
 void ScriptRunner::filterErrors(const QQmlComponent &component)
