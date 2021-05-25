@@ -16,6 +16,8 @@ set(PROJECT_SOURCES
     scriptitem.h
     settings.cpp
     settings.h
+    string_utils.cpp
+    string_utils.h
 )
 
 qt5_add_resources(PROJECT_QRC
