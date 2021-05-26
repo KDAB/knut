@@ -26,6 +26,8 @@ set(PROJECT_SOURCES
     string_utils.h
     testutil.cpp
     testutil.h
+    utils.cpp
+    utils.h
 )
 
 qt5_add_resources(PROJECT_QRC

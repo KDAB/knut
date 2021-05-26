@@ -7,6 +7,7 @@
 #include "scriptitem.h"
 #include "settings.h"
 #include "testutil.h"
+#include "utils.h"
 
 #include <QDir>
 #include <QFile>
@@ -54,6 +55,14 @@ static QObject *message_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
     return new Message();
 }
 
+// Message singleton function provider
+static QObject *utils_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+    return new Utils();
+}
+
 ScriptRunner::ScriptRunner(QObject *parent)
     : QObject(parent)
 {
@@ -68,6 +77,7 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qmlRegisterSingletonType<FileInfo>("Script", 1, 0, "FileInfo", fileinfo_provider);
     qmlRegisterSingletonType<File>("Script", 1, 0, "File", file_provider);
     qmlRegisterSingletonType<Message>("Script", 1, 0, "Message", message_provider);
+    qmlRegisterSingletonType<Utils>("Script", 1, 0, "Utils", utils_provider);
     qmlRegisterSingletonInstance<Settings>("Script", 1, 0, "Settings", Settings::instance());
 
     qmlRegisterType<ScriptItem>("Script", 1, 0, "Script");
