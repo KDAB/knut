@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>qml/Script/Test/qmldir</file>
-        <file>qml/Script/Test/TestCase.qml</file>
-    </qresource>
-</RCC>

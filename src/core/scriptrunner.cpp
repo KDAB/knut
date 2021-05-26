@@ -1,13 +1,12 @@
 #include "scriptrunner.h"
 
+#include "dir.h"
+#include "file.h"
+#include "fileinfo.h"
 #include "message.h"
+#include "scriptitem.h"
+#include "settings.h"
 #include "testutil.h"
-
-#include "core/dir.h"
-#include "core/file.h"
-#include "core/fileinfo.h"
-#include "core/scriptitem.h"
-#include "core/settings.h"
 
 #include <QDir>
 #include <QFile>
@@ -18,7 +17,7 @@
 
 #include <QtQml/private/qqmlengine_p.h>
 
-namespace Interface {
+namespace Core {
 
 static constexpr int ErrorCode = -1;
 
@@ -26,7 +25,7 @@ static constexpr int ErrorCode = -1;
 static QObject *dir_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(scriptEngine)
-    auto dir = new Core::Dir();
+    auto dir = new Dir();
     dir->setProperty("scriptPath", engine->property("scriptPath"));
     return dir;
 }
@@ -36,7 +35,7 @@ static QObject *fileinfo_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(engine)
     Q_UNUSED(scriptEngine)
-    return new Core::FileInfo();
+    return new FileInfo();
 }
 
 // File singleton function provider
@@ -44,7 +43,7 @@ static QObject *file_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(engine)
     Q_UNUSED(scriptEngine)
-    return new Core::File();
+    return new File();
 }
 
 // Message singleton function provider
@@ -61,17 +60,17 @@ ScriptRunner::ScriptRunner(QObject *parent)
     m_logger = spdlog::get("script");
 
     // Script objects registrations
-    qRegisterMetaType<Core::QDirValueType>();
-    qRegisterMetaType<Core::QFileInfoValueType>();
+    qRegisterMetaType<QDirValueType>();
+    qRegisterMetaType<QFileInfoValueType>();
 
     // Script
-    qmlRegisterSingletonType<Core::Dir>("Script", 1, 0, "Dir", dir_provider);
-    qmlRegisterSingletonType<Core::FileInfo>("Script", 1, 0, "FileInfo", fileinfo_provider);
-    qmlRegisterSingletonType<Core::File>("Script", 1, 0, "File", file_provider);
-    qmlRegisterSingletonType<Interface::Message>("Script", 1, 0, "Message", message_provider);
-    qmlRegisterSingletonInstance<Core::Settings>("Script", 1, 0, "Settings", Core::Settings::instance());
+    qmlRegisterSingletonType<Dir>("Script", 1, 0, "Dir", dir_provider);
+    qmlRegisterSingletonType<FileInfo>("Script", 1, 0, "FileInfo", fileinfo_provider);
+    qmlRegisterSingletonType<File>("Script", 1, 0, "File", file_provider);
+    qmlRegisterSingletonType<Message>("Script", 1, 0, "Message", message_provider);
+    qmlRegisterSingletonInstance<Settings>("Script", 1, 0, "Settings", Settings::instance());
 
-    qmlRegisterType<Core::ScriptItem>("Script", 1, 0, "Script");
+    qmlRegisterType<ScriptItem>("Script", 1, 0, "Script");
 
     // Script.Test
     qmlRegisterType<TestUtil>("Script.Test", 1, 0, "TestUtil");

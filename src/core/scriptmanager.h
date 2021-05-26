@@ -11,7 +11,7 @@
 class QAction;
 class QFileSystemWatcher;
 
-namespace Interface {
+namespace Core {
 
 class ScriptRunner;
 

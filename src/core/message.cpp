@@ -2,12 +2,12 @@
 
 #include <QVariant>
 
-namespace Interface {
+namespace Core {
 
 /*!
  * \qmltype Message
  * \brief Provides methods to display different messages to the user.
- * \instantiates Interface::Message
+ * \instantiates Core::Message
  * \inqmlmodule Script
  * \since Script 1.0
  *

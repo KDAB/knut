@@ -1,5 +1,5 @@
-#include "interface/knutmain.h"
-#include "interface/scriptmanager.h"
+#include "core/scriptmanager.h"
+#include "ui/knutmain.h"
 
 #include "common/test_utils.h"
 
@@ -19,8 +19,8 @@
         QDir dir(Test::testDataPath() + "/" #name);                                                                    \
         if (dir.exists())                                                                                              \
             arguments.append({"-r", dir.absolutePath()});                                                              \
-        Interface::KnutMain main;                                                                                      \
-        QSignalSpy finished(Interface::ScriptManager::instance(), &Interface::ScriptManager::scriptFinished);          \
+        Ui::KnutMain main;                                                                                             \
+        QSignalSpy finished(Core::ScriptManager::instance(), &Core::ScriptManager::scriptFinished);                    \
         main.process(arguments);                                                                                       \
         QVERIFY(finished.wait());                                                                                      \
         QCOMPARE(finished.takeFirst().at(0).toInt(), 0);                                                               \
@@ -34,7 +34,6 @@ private slots:
     void initTestCase()
     {
         Q_INIT_RESOURCE(core);
-        Q_INIT_RESOURCE(interface);
     }
 
     KNUT_TEST(settings)

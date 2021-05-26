@@ -5,7 +5,7 @@
 
 #include <QtQml/private/qqmlengine_p.h>
 
-namespace Interface {
+namespace Core {
 
 /*!
   \qmltype TestUtil

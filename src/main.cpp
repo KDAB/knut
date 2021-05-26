@@ -1,4 +1,4 @@
-#include "interface/knutmain.h"
+#include "ui/knutmain.h"
 
 #include <QApplication>
 
@@ -10,9 +10,8 @@ int main(int argc, char *argv[])
     QApplication::setApplicationVersion(KNUT_VERSION);
 
     Q_INIT_RESOURCE(core);
-    Q_INIT_RESOURCE(interface);
 
-    Interface::KnutMain knut;
+    Ui::KnutMain knut;
     knut.process(app);
 
     return app.exec();

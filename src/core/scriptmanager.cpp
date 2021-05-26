@@ -10,7 +10,7 @@
 
 #include <spdlog/sinks/stdout_color_sinks.h>
 
-namespace Interface {
+namespace Core {
 
 ScriptManager::ScriptManager(QObject *parent)
     : QObject(parent)

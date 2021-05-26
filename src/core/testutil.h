@@ -2,7 +2,7 @@
 
 #include <QObject>
 
-namespace Interface {
+namespace Core {
 
 class TestUtil : public QObject
 {

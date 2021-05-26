@@ -5,7 +5,7 @@
 
 class QCoreApplication;
 
-namespace Interface {
+namespace Ui {
 
 class KnutMain : public QObject
 {

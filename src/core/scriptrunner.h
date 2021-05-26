@@ -9,7 +9,7 @@
 
 #include <functional>
 
-namespace Interface {
+namespace Core {
 
 /**
  * \brief Script Runner
