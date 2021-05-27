@@ -137,12 +137,12 @@ QString Utils::mktemp(const QString &pattern) const
  *
  * The different cases are:
  * \list
- * \li Core.CamelCase: "toCamelCase",
- * \li Core.PascalCase: "ToPascalCase",
- * \li Core.SnakeCase: "to_snake_case",
- * \li Core.UpperCase: "TO_UPPER_CASE",
- * \li Core.KebabCase: "to-kebab-case",
- * \li Core.TitleCase: "To Title Case".
+ * \li Utils.CamelCase: "toCamelCase",
+ * \li Utils.PascalCase: "ToPascalCase",
+ * \li Utils.SnakeCase: "to_snake_case",
+ * \li Utils.UpperCase: "TO_UPPER_CASE",
+ * \li Utils.KebabCase: "to-kebab-case",
+ * \li Utils.TitleCase: "To Title Case".
  * \endlist
  */
 QString Utils::convertCase(const QString &str, Case from, Case to)
