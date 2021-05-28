@@ -45,7 +45,7 @@ bool Client::initialize(const QString &rootPath)
 
     InitializeRequest request;
     request.id = m_nextRequestId++;
-    request.params.processId = QCoreApplication::applicationPid();
+    request.params.processId = static_cast<int>(QCoreApplication::applicationPid());
     request.params.clientInfo = {"knut", "4.0"};
 
     ClientCapabilities::WorkspaceType workspaceCapabilities;
