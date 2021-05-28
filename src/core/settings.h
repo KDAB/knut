@@ -36,7 +36,6 @@ public:
     };
 
 public:
-    Settings(QObject *parent = nullptr);
     ~Settings();
 
     static Settings *instance();
@@ -63,6 +62,9 @@ protected:
     explicit Settings(bool addUserSettings, QObject *parent = nullptr);
 
 private:
+    friend class KnutMain;
+    Settings(QObject *parent = nullptr);
+
     void loadKnutSettings();
     void loadUserSettings();
     void loadSettings(std::string name, const QString &fileName);

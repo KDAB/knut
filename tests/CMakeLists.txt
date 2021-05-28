@@ -24,6 +24,6 @@ add_knut_test(tst_client tst_client.cpp knut-lsp)
 
 add_knut_test(tst_settings tst_settings.cpp knut-core)
 
-add_knut_test(tst_knut tst_knut.cpp knut-ui)
+add_knut_test(tst_knut tst_knut.cpp knut-core)
 
 add_knut_test(tst_stringutils tst_stringutils.cpp knut-core)

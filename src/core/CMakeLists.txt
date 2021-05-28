@@ -8,6 +8,8 @@ set(PROJECT_SOURCES
     fileinfo.cpp
     fileinfo.h
     json_utils.h
+    knutmain.cpp
+    knutmain.h
     message.cpp
     message.h
     qdirvaluetype.cpp

@@ -1,4 +1,4 @@
-#include "ui/knutmain.h"
+#include "core/knutmain.h"
 
 #include <QApplication>
 
@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 
     Q_INIT_RESOURCE(core);
 
-    Ui::KnutMain knut;
+    Core::KnutMain knut;
     knut.process(app);
 
     return app.exec();

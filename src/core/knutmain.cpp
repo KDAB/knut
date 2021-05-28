@@ -1,19 +1,19 @@
 #include "knutmain.h"
 
-#include "core/scriptmanager.h"
-#include "core/settings.h"
+#include "scriptmanager.h"
+#include "settings.h"
 
 #include <QCommandLineParser>
 #include <QCoreApplication>
 
-namespace Ui {
+namespace Core {
 
 KnutMain::KnutMain(QObject *parent)
     : QObject(parent)
 {
     // Initialize some singletons
-    new Core::Settings(this);
-    new Core::ScriptManager(this);
+    new Settings(this);
+    new ScriptManager(this);
 }
 
 void KnutMain::process(const QCoreApplication &app)
@@ -38,12 +38,12 @@ void KnutMain::process(const QStringList &arguments)
     // Set the root directory
     const QString rootDir = parser.value("root");
     if (!rootDir.isEmpty())
-        Core::Settings::instance()->loadProjectSettings(rootDir);
+        Settings::instance()->loadProjectSettings(rootDir);
 
     // Run the script passed in parameter, if any
     const QString scriptName = parser.value("script");
     if (!scriptName.isEmpty())
-        Core::ScriptManager::instance()->runScript(scriptName);
+        ScriptManager::instance()->runScript(scriptName);
 }
 
 }

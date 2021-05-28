@@ -35,7 +35,6 @@ public:
     };
     using ScriptList = std::vector<Script>;
 
-    explicit ScriptManager(QObject *parent = nullptr);
     ~ScriptManager() override;
 
     static ScriptManager *instance();
@@ -52,6 +51,9 @@ signals:
     void scriptFinished(const QVariant &result);
 
 private:
+    friend class KnutMain;
+    explicit ScriptManager(QObject *parent = nullptr);
+
     void addScript(const QString &fileName);
     void addScriptsFromPath(const QString &path);
     void removeScriptsFromPath(const QString &path);
