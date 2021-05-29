@@ -78,5 +78,5 @@ CMakeLists.txt.user.*
 imgui.ini
 
 .vscode/*
-build/*
-output.json
+build/
+site/
