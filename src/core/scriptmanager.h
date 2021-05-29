@@ -16,7 +16,7 @@ namespace Core {
 class ScriptRunner;
 
 /**
- * \brief Manager for scripts.
+ * \brief Manager for scripts
  *
  * Manage all scripts available to the user, and run them.
  *

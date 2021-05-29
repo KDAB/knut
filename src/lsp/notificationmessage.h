@@ -4,8 +4,8 @@
 
 namespace Lsp {
 
-/*!
- *  \brief Notification message (client or server
+/**
+ *  \brief Notification message (client or server)
  */
 template <const char *MethodName, typename NotificationParams>
 struct NotificationMessage

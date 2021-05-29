@@ -1,0 +1,38 @@
+site_name: Knut v4.0
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - scheme: slate
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+  features:
+    - navigation.top
+
+repo_url: https://codereview.kdab.com/admin/repos/knut
+repo_name: knut
+
+nav:
+    - Home: index.md
+    - Contributing: contributing.md
+
+markdown_extensions:
+    - toc:
+        permalink: "#"
+
+plugins:
+    - search:
+        separator: '[\s\-\.]+'
+    - localsearch
+    - admonition
+    - pymdownx.highlight
+    - pymdownx.inlinehilite
+    - pymdownx.superfences
+    - pymdownx.keys
+    - pymdownx.tabbed
+    - attr_list

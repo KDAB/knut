@@ -12,7 +12,7 @@
 namespace Core {
 
 /**
- * \brief Script Runner
+ * \brief Runner for scripts
  *
  * Provide a script engine and a way to run scripts.
  * The script engine is initialized with interfaces.

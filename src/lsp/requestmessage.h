@@ -9,7 +9,7 @@ namespace Lsp {
 
 using MessageId = std::variant<int, std::string>;
 
-/*!
+/**
  *  \brief Error message in the response message, following a request
  */
 template <typename ErrorData>
@@ -20,7 +20,7 @@ struct ResponseError
     std::optional<ErrorData> data;
 };
 
-/*!
+/**
  *  \brief Response message following a request
  */
 template <typename ResultData, typename ErrorData>
@@ -38,7 +38,7 @@ struct ResponseMessage
     }
 };
 
-/*!
+/**
  *  \brief Request message sent to the server
  */
 template <const char *MethodName, typename RequestParams, typename ResultData, typename ErrorData>
