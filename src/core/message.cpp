@@ -9,7 +9,6 @@ namespace Core {
  * \brief Provides methods to display different messages to the user.
  * \instantiates Core::Message
  * \inqmlmodule Script
- * \since Script 1.0
  *
  * The \c message property is used to display different messages to the user, via logs.
  *

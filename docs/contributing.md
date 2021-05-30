@@ -41,7 +41,6 @@ The documention is done using [mkdocs.org](https://www.mkdocs.org/). To create t
 ```
 pip install mkdocs
 pip install mkdocs-material
-pip install mkdocs-localsearch
 ```
 
 ### Commands

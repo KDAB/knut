@@ -7,7 +7,6 @@ namespace Core {
  * \brief Wrapper around the \c QDir class.
  * \instantiates Core::QDirValueType
  * \inqmlmodule Script
- * \since Script 1.0
  * \sa Dir
  *
  * The QDirValueType is a wrapper around the \c QDir C++ class, check \c QDir documentation.

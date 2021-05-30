@@ -7,7 +7,6 @@ namespace Core {
  * \brief Wrapper around the \c QFileInfo class.
  * \instantiates Core::QFileInfoValueType
  * \inqmlmodule Script
- * \since Script 1.0
  * \sa FileInfo
  *
  * The QFileInfoValueType is a wrapper around the \c QFileInfo C++ class, check \c QFileInfo
@@ -105,10 +104,10 @@ namespace Core {
  * \qmlproperty string QFileInfoValueType::group
  */
 /*!
- * \qmlproperty uint QFileInfoValueType::groupId
+ * \qmlproperty int QFileInfoValueType::groupId
  */
 /*!
- * \qmlproperty qint64 QFileInfoValueType::size
+ * \qmlproperty int QFileInfoValueType::size
  */
 /*!
  * \qmlproperty Date QFileInfoValueType::created

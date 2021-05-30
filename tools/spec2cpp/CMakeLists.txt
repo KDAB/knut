@@ -1,4 +1,4 @@
-project(spec2cpp VERSION 4.0 LANGUAGES CXX)
+project(spec2cpp VERSION 1 LANGUAGES CXX)
 
 add_definitions(-DLSP_SOURCE_PATH="${CMAKE_SOURCE_DIR}/src/lsp")
 

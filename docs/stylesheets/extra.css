@@ -1,0 +1,15 @@
+.md-typeset h4 {
+    font-weight: 400;
+    background-color: var(--md-code-bg-color);
+    border-bottom: 1px solid var(--md-default-fg-color--lightest);
+    padding: 0.3em;
+}
+
+.md-typeset {
+    line-height: 1.2;
+}
+
+html {
+    font-weight: 300;
+    font-size: 1.3em;
+}

@@ -7,7 +7,6 @@ namespace Core {
  * \brief Provides a script object for writing non visual scripts.
  * \instantiates Core::ScriptItem
  * \inqmlmodule Script
- * \since Script 1.0
  *
  * The Script is the base class for all creatable items in QML. It is needed as a QtObject
  * can't have any children in QML. It can be used as the basis for non visual QML scripts:

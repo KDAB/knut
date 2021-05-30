@@ -15,7 +15,6 @@ For full documentation visit [mkdocs.org](https://www.mkdocs.org/).
 ```
 pip install mkdocs
 pip install mkdocs-material
-pip install mkdocs-localsearch
 ```
 
 ## Commands

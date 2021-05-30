@@ -13,6 +13,10 @@ theme:
         name: Switch to light mode
   features:
     - navigation.top
+    - navigation.tabs
+
+extra_css:
+  - stylesheets/extra.css
 
 use_directory_urls: false
 
@@ -22,10 +26,25 @@ repo_name: knut
 nav:
     - Home: index.md
     - Contributing: contributing.md
+    - API:
+        - Script Module:
+             - Dir: API/script/dir.md
+             - File: API/script/file.md
+             - FileInfo: API/script/fileinfo.md
+             - Message: API/script/message.md
+             - QDirValueType: API/script/qdirvaluetype.md
+             - QFileInfoValueType: API/script/qfileinfovaluetype.md
+             - Script: API/script/script.md
+             - Settings: API/script/settings.md
+             - Utils: API/script/utils.md
+        - Script.Test Module:
+             - TestCase: API/script.test/testcase.md
+             - TestUtil: API/script.test/testutil.md
 
 markdown_extensions:
     - toc:
         permalink: "#"
+        toc_depth: 3
     - admonition
     - pymdownx.highlight
     - pymdownx.inlinehilite
@@ -33,3 +52,7 @@ markdown_extensions:
     - pymdownx.keys
     - pymdownx.tabbed
     - attr_list
+
+plugins:
+    - search:
+        separator: '[\s\-\.]+'

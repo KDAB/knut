@@ -15,7 +15,6 @@ namespace Core {
  * \brief Singleton with utility methods.
  * \instantiates Core::Utils
  * \inqmlmodule Script
- * \since Script 1.0
  *
  * The Utilss singleton implements some Utilsity methods useful for scripts.
  */

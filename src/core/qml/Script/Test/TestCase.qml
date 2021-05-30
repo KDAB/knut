@@ -2,21 +2,20 @@ import QtQuick 2.12
 import Script 1.0
 import Script.Test 1.0
 
-/*!
-  \qmltype TestCase
-  \brief Provides a way to create unit tests as script.
-  \inqmlmodule Script.Test
-  \since Script.Test 1.0
-
-  Run unit tests as a script, and display the result in the Script Output pane. A test \b must
-  have a \c name.
+/*!  
+ * \qmltype TestCase
+ * \brief Provides a way to create unit tests as script.
+ * \inqmlmodule Script.Test
+ * Run unit tests as a script, and display the result in the Script Output pane. A test \b must
+ * have a \c name.
  */
 
 QtObject {
     id: testCase
-    /*!
-    This property defines the name of the unit test.
-    */
+/*!
+ * \qmlproperty string TestCase::name
+ * This property defines the name of the unit test.
+ */
     property string name
     property var util: TestUtil {}
 
@@ -25,10 +24,10 @@ QtObject {
     property var model: ListModel {}
     property int failed: 0
 
-    /*!
-    \qmlmethod compare(actual, expected, msg)
-    Compares \a actual vs \a expected, and display the \a msg if it's not the same.
-    */
+/*!
+ * \qmlmethod TestCase::compare(actual, expected, msg)
+ * Compares \a actual vs \a expected, and display the \a msg if it's not the same.
+ */
     function compare(actual, expected, msg) {
         var success = qtest_compareInternal(actual, expected)
         if (!success) {
@@ -43,10 +42,10 @@ QtObject {
         }
     }
 
-    /*!
-    \qmlmethod verify(value, msg)
-    Verifies that \a value is \c true, and display the \a msg if it's not.
-    */
+/*!
+ * \qmlmethod TestCase::verify(value, msg)
+ * Verifies that \a value is \c true, and display the \a msg if it's not.
+ */
     function verify(value, msg) {
         if (!value) {
             if (msg === undefined)
@@ -87,8 +86,6 @@ QtObject {
         Qt.quit()
     }
 
-
-    /*! \internal */
     // Determine what is o.
     // Discussions and reference: http://philrathe.com/articles/equiv
     // Test suites: http://philrathe.com/tests/equiv
@@ -143,7 +140,6 @@ QtObject {
         }
     }
 
-    /*! \internal */
     // Test for equality
     // Large parts contain sources from QUnit or http://philrathe.com
     // Discussions and reference: http://philrathe.com/articles/equiv
@@ -203,7 +199,6 @@ QtObject {
         return success
     }
 
-    /*! \internal */
     function qtest_compareInternalObjects(act, exp) {
         var i;
         var eq = true; // unless we can proove it
@@ -231,7 +226,6 @@ QtObject {
 
     }
 
-    /*! \internal */
     function qtest_compareInternalArrays(actual, expected) {
         if (actual.length !== expected.length) {
             return false

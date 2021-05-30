@@ -8,12 +8,11 @@
 namespace Core {
 
 /*!
-  \qmltype TestUtil
-  \brief Provides utility methods useful for testing.
-  \inqmlmodule Script.Test
-  \since Script.Test 1.0
-
-  Run unit tests as a script, and display the result in the Script Output pane.
+ * \qmltype TestUtil
+ * \brief Provides utility methods useful for testing.
+ * \inqmlmodule Script.Test
+ *
+ * Run unit tests as a script, and display the result in the log.
  */
 
 TestUtil::TestUtil(QObject *parent)
