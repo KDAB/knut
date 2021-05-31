@@ -4,13 +4,14 @@ namespace Core {
 
 /*!
  * \qmltype QDirValueType
- * \brief Wrapper around the \c QDir class.
+ * \brief Wrapper around the `QDir` class.
  * \instantiates Core::QDirValueType
  * \inqmlmodule Script
  * \sa Dir
+ * \since 4.0
  *
- * The QDirValueType is a wrapper around the \c QDir C++ class, check \c QDir documentation.
- * It can only be created using \c Dir.
+ * The `QDirValueType` is a wrapper around the `QDir` C++ class, check [QDir](https://doc.qt.io/qt-5/qdir.html)
+ * documentation. It can only be created using [Dir](dir.md) singleton.
  */
 
 /*!
@@ -145,45 +146,43 @@ QString QDirValueType::at(int pos) const
  * \qmlmethod array<string> QDirValueType::entryList( int filters, int sort)
  * \qmlmethod array<string> QDirValueType::entryList( string nameFilter, int filters, int sort)
  * \qmlmethod array<string> QDirValueType::entryList( array<string> nameFilters, int filters, int sort)
- * \a filters is a combination of (default is Dir.NoFilter):
- * \list
- * \li Dir.Dirs
- * \li Dir.Files
- * \li Dir.Drives
- * \li Dir.NoSymLinks
- * \li Dir.AllEntries
- * \li Dir.TypeMask
- * \li Dir.Readable
- * \li Dir.Writable
- * \li Dir.Executable
- * \li Dir.PermissionMask
- * \li Dir.Modified
- * \li Dir.Hidden
- * \li Dir.System
- * \li Dir.AccessMask
- * \li Dir.AllDirs
- * \li Dir.CaseSensitive
- * \li Dir.NoDot
- * \li Dir.NoDotDot
- * \li Dir.NoDotAndDotDot
- * \li Dir.NoFilter
- * \endlist
+ * `filters` is a combination of (default is `Dir.NoFilter`):
  *
- * \a sort is a combination of (default is Dir.NoSort):
- * \list
- * \li Dir.Name
- * \li Dir.Time
- * \li Dir.Size
- * \li Dir.Unsorted
- * \li Dir.SortByMask
- * \li Dir.DirsFirst
- * \li Dir.Reversed
- * \li Dir.IgnoreCase
- * \li Dir.DirsLast
- * \li Dir.LocaleAware
- * \li Dir.Type
- * \li Dir.NoSory
- * \endlist
+ * - `Dir.Dirs`
+ * - `Dir.Files`
+ * - `Dir.Drives`
+ * - `Dir.NoSymLinks`
+ * - `Dir.AllEntries`
+ * - `Dir.TypeMask`
+ * - `Dir.Readable`
+ * - `Dir.Writable`
+ * - `Dir.Executable`
+ * - `Dir.PermissionMask`
+ * - `Dir.Modified`
+ * - `Dir.Hidden`
+ * - `Dir.System`
+ * - `Dir.AccessMask`
+ * - `Dir.AllDirs`
+ * - `Dir.CaseSensitive`
+ * - `Dir.NoDot`
+ * - `Dir.NoDotDot`
+ * - `Dir.NoDotAndDotDot`
+ * - `Dir.NoFilter`
+ *
+ * `sort` is a combination of (default is `Dir.NoSort`):
+ *
+ * - `Dir.Name`
+ * - `Dir.Time`
+ * - `Dir.Size`
+ * - `Dir.Unsorted`
+ * - `Dir.SortByMask`
+ * - `Dir.DirsFirst`
+ * - `Dir.Reversed`
+ * - `Dir.IgnoreCase`
+ * - `Dir.DirsLast`
+ * - `Dir.LocaleAware`
+ * - `Dir.Type`
+ * - `Dir.NoSory`
  */
 QStringList QDirValueType::entryList(int filters, int sort) const
 {

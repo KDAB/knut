@@ -6,6 +6,12 @@ Provides utility methods useful for testing. [More...](#detailed-description)
 import Script.Test 1.0
 ```
 
+<table>
+<tr><td>Since:</td><td>knut 4.0</td></tr>
+</table>
+
 ## Detailed Description
 
-Run unit tests as a script, and display the result in the log.
+This class is mainly used by the [TestCase](testcase.qml) object, to extract some information on the script.
+
+It should not be used in normal scripts.

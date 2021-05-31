@@ -37,11 +37,8 @@ void SourceParser::parseDirectory(const QString &directory)
 
 QString SourceParser::cleanupCommentLine(QString line)
 {
-    line = line.simplified();
-    if (line.startsWith("* "))
-        line = line.mid(2);
-    if (line.length() == 1)
-        return {};
+    if (line.startsWith(" *") || line.startsWith("   "))
+        line = line.mid(3);
     return line;
 }
 

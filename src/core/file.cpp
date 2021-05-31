@@ -10,9 +10,10 @@ namespace Core {
  * \brief Singleton with methods to handle files.
  * \instantiates Core::File
  * \inqmlmodule Script
+ * \since 4.0
  *
- * The File singleton implements most of the static methods from \c QFile, check \c QFile
- * documentation.
+ * The `File` singleton implements most of the static methods from `QFile`, check
+ * [QFile](https://doc.qt.io/qt-5/qfile.html) documentation.
  */
 
 File::File(QObject *parent)

@@ -9,9 +9,10 @@ namespace Core {
  * \brief Singleton with methods to handle file information.
  * \instantiates Core::FileInfo
  * \inqmlmodule Script
+ * \since 4.0
  *
- * The FileInfo singleton implements most of the static methods from \c QFileInfo, check \c QFileInfo
- * documentation.
+ * The `FileInfo` singleton implements most of the static methods from `QFileInfo`, check
+ * [QFileInfo](https://doc.qt.io/qt-5/qfileinfo.html) documentation.
  */
 
 FileInfo::FileInfo(QObject *parent)

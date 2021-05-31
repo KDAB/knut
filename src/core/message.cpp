@@ -9,12 +9,13 @@ namespace Core {
  * \brief Provides methods to display different messages to the user.
  * \instantiates Core::Message
  * \inqmlmodule Script
+ * \since 4.0
  *
- * The \c message property is used to display different messages to the user, via logs.
+ * The `message` property in QML can be used to display different messages to the user, via logs.
  *
- * \code
- *     message.log("Hello World!") // In the Script Output panel
- * \endcode
+ * ```qml
+ * message.log("Hello World!")
+ * ```
  */
 
 Message::Message(QObject *parent)
@@ -27,7 +28,7 @@ Message::~Message() { }
 
 /*!
  * \qmlmethod Message::error( string text)
- * Shows the message \a text as an error in the log.
+ * Shows the message `text` as an error in the log.
  */
 void Message::error(const QString &text)
 {
@@ -36,7 +37,7 @@ void Message::error(const QString &text)
 
 /*!
  * \qmlmethod Message::log( string text)
- * Shows the message \a text as a log in the log.
+ * Shows the message `text` as a log in the log.
  */
 void Message::log(const QString &text)
 {
@@ -45,7 +46,7 @@ void Message::log(const QString &text)
 
 /*!
  * \qmlmethod Message::debug( string text)
- * Shows the message \a text as a debug in the log.
+ * Shows the message `text` as a debug in the log.
  */
 void Message::debug(const QString &text)
 {
@@ -54,7 +55,7 @@ void Message::debug(const QString &text)
 
 /*!
  * \qmlmethod Message::warning( string text)
- * Shows the message \a text as a warning in the log.
+ * Shows the message `text` as a warning in the log.
  */
 void Message::warning(const QString &text)
 {

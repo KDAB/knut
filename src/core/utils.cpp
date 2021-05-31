@@ -15,8 +15,9 @@ namespace Core {
  * \brief Singleton with utility methods.
  * \instantiates Core::Utils
  * \inqmlmodule Script
+ * \since 4.0
  *
- * The Utilss singleton implements some Utilsity methods useful for scripts.
+ * The `Utils` singleton implements some utility methods useful for scripts.
  */
 
 QHash<QString, QString> Utils::m_globals;
@@ -30,7 +31,7 @@ Utils::~Utils() { }
 
 /*!
  * \qmlmethod string Utils::getEnv( string varName)
- * Returns the value of the environment variable \a varName.
+ * Returns the value of the environment variable `varName`.
  */
 QString Utils::getEnv(const QString &varName) const
 {
@@ -39,10 +40,11 @@ QString Utils::getEnv(const QString &varName) const
 
 /*!
  * \qmlmethod string Utils::getGlobal( string varName)
- * Returns the value of the global \a varName. A global value is a value set by a script, and
- * persistent only in the current Qt Creator execution (it will disappear once closed).
+ * Returns the value of the global `varName`. A global value is a value set by a script, and
+ * persistent only in the current knut execution (it will disappear once closed).
  *
- * For persistent settings, see Settings.
+ * For persistent settings, see [Settings](settings.md).
+ * \sa Settings
  */
 QString Utils::getGlobal(const QString &varName) const
 {
@@ -51,10 +53,11 @@ QString Utils::getGlobal(const QString &varName) const
 
 /*!
  * \qmlmethod Utils::setGlobal( string varName, string value)
- * Sets the global value \a varName to \a value. A global value is a value set by a script, and
+ * Sets the global value `varName` to `value`. A global value is a value set by a script, and
  * persistent only in the current Qt Creator execution (it will disappear once closed).
  *
- * For persistent settings, see Settings.
+ * For persistent settings, see [Settings](settings.md).
+ * \sa Settings
  */
 void Utils::setGlobal(const QString &varName, const QString &value)
 {
@@ -63,17 +66,18 @@ void Utils::setGlobal(const QString &varName, const QString &value)
 
 /*!
  * \qmlmethod Utils::addScriptPath( string path, bool projectOnly)
- * Adds the script directory \a path from another script.
+ * Adds the script directory `path` from another script.
  *
- * Could be useful to load multiple paths at once, by creating a \c {init.js} file like this:
- * \code
+ * Could be useful to load multiple paths at once, by creating a *init.js* file like this:
+ *
+ * ```js
  * function main() {
  *     Utils.addScriptPath(Dir.currentScriptPath() + "/message")
  *     Utils.addScriptPath(Dir.currentScriptPath() + "/texteditor")
  *     Utils.addScriptPath(Dir.currentScriptPath() + "/dialog")
  *     Utils.addScriptPath(Dir.currentScriptPath() + "/cppeditor")
  * }
- * \endcode
+ * ```
  */
 void Utils::addScriptPath(const QString &path) const
 {
@@ -82,8 +86,7 @@ void Utils::addScriptPath(const QString &path) const
 
 /*!
  * \qmlmethod Utils::runScript( string path, bool log)
- * Runs the script given by \a path. If \a log is true, it will also log the run on the Script
- * Output.
+ * Runs the script given by `path`. If `log` is true, it will also log the run of the script.
  */
 void Utils::runScript(const QString &path, bool log) const
 {
@@ -93,7 +96,7 @@ void Utils::runScript(const QString &path, bool log) const
 
 /*!
  * \qmlmethod Utils::sleep( int msecs)
- * Sleeps for \a msecs milliseconds.
+ * Sleeps for `msecs` milliseconds.
  */
 void Utils::sleep(int msecs) const
 {
@@ -106,8 +109,8 @@ void Utils::sleep(int msecs) const
 
 /*!
  * \qmlmethod string Utils::mktemp( string pattern)
- * Creates and returns the name of a temporory file based on a \a pattern.
- * This function is copied from UtilssJsExtension::mktemp
+ * Creates and returns the name of a temporory file based on a `pattern`.
+ * This function is copied from UtilsJsExtension::mktemp from Qt Creator.
  */
 QString Utils::mktemp(const QString &pattern) const
 {
@@ -132,17 +135,16 @@ QString Utils::mktemp(const QString &pattern) const
 
 /*!
  * \qmlmethod string Utils::convertCase( string str, Case from, Case to)
- * Converts and returns the string \a str with a different case pattern: from \a from to \a to.
+ * Converts and returns the string `str` with a different case pattern: from `from` to `to`.
  *
  * The different cases are:
- * \list
- * \li Utils.CamelCase: "toCamelCase",
- * \li Utils.PascalCase: "ToPascalCase",
- * \li Utils.SnakeCase: "to_snake_case",
- * \li Utils.UpperCase: "TO_UPPER_CASE",
- * \li Utils.KebabCase: "to-kebab-case",
- * \li Utils.TitleCase: "To Title Case".
- * \endlist
+ *
+ * - `Utils.CamelCase`: "toCamelCase",
+ * - `Utils.PascalCase`: "ToPascalCase",
+ * - `Utils.SnakeCase`: "to_snake_case",
+ * - `Utils.UpperCase`: "TO_UPPER_CASE",
+ * - `Utils.KebabCase`: "to-kebab-case",
+ * - `Utils.TitleCase`: "To Title Case".
  */
 QString Utils::convertCase(const QString &str, Case from, Case to)
 {

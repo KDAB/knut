@@ -6,15 +6,15 @@ import Script.Test 1.0
  * \qmltype TestCase
  * \brief Provides a way to create unit tests as script.
  * \inqmlmodule Script.Test
- * Run unit tests as a script, and display the result in the Script Output pane. A test \b must
- * have a \c name.
+ * \since 4.0
+ * Run unit tests as a script, and returns the number of failed tests.
  */
 
 QtObject {
     id: testCase
 /*!
  * \qmlproperty string TestCase::name
- * This property defines the name of the unit test.
+ * This property defines the name of the unit test. **This is a mandatory property**.
  */
     property string name
     property var util: TestUtil {}
@@ -26,7 +26,7 @@ QtObject {
 
 /*!
  * \qmlmethod TestCase::compare(actual, expected, msg)
- * Compares \a actual vs \a expected, and display the \a msg if it's not the same.
+ * Compares `actual` vs `expected`, and display the `msg` if it's not the same.
  */
     function compare(actual, expected, msg) {
         var success = qtest_compareInternal(actual, expected)
@@ -44,7 +44,7 @@ QtObject {
 
 /*!
  * \qmlmethod TestCase::verify(value, msg)
- * Verifies that \a value is \c true, and display the \a msg if it's not.
+ * Verifies that `value` is true, and display the `msg` if it's not.
  */
     function verify(value, msg) {
         if (!value) {

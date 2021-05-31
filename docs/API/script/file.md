@@ -6,19 +6,25 @@ Singleton with methods to handle files. [More...](#detailed-description)
 import Script 1.0
 ```
 
+<table>
+<tr><td>Since:</td><td>knut 4.0</td></tr>
+</table>
+
 ## Methods
 
-- bool **[copy](#copy)**(string fileName, string newName)
-- bool **[exists](#exists)**(string fileName)
-- bool **[remove](#remove)**(string fileName)
-- bool **[rename](#rename)**(string oldName, string newName)
-- bool **[touch](#touch)**(string fileName)
-- string **[readAll](#readAll)**(string fileName)
+| | Name |
+|-|-|
+|bool |**[copy](#copy)**(string fileName, string newName)|
+|bool |**[exists](#exists)**(string fileName)|
+|bool |**[remove](#remove)**(string fileName)|
+|bool |**[rename](#rename)**(string oldName, string newName)|
+|bool |**[touch](#touch)**(string fileName)|
+|string |**[readAll](#readAll)**(string fileName)|
 
 ## Detailed Description
 
-The File singleton implements most of the static methods from \c QFile, check \c QFile
-documentation.
+The `File` singleton implements most of the static methods from `QFile`, check
+[QFile](https://doc.qt.io/qt-5/qfile.html) documentation.
 
 ## Method Documentation
 

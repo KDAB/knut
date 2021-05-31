@@ -33,7 +33,8 @@ void DocWriter::saveDocumentation()
         writeTypeFile(type);
 
     QString nav("    - API:\n");
-    for (const auto &module : m_navMap.keys()) {
+    const auto &keys = m_navMap.keys();
+    for (const auto &module : keys) {
         nav += QString("        - %1 Module:\n").arg(module);
         nav += m_navMap.value(module).join("\n") + "\n";
     }
@@ -81,16 +82,18 @@ void DocWriter::writeTypeFile(const Data::TypeBlock &type)
     const auto properties = propertyForType(type.name);
     if (properties.size()) {
         stream << "\n## Properties\n\n";
+        stream << "| | Name |\n|-|-|\n";
         for (const auto &prop : properties)
-            stream << QString("- %1 **[%2](#%2)**\n").arg(prop.type, prop.name);
+            stream << QString("|%1|**[%2](#%2)**|\n").arg(typeToString(prop.type), prop.name);
     }
 
     const auto methods = methodForType(type.name);
     if (methods.size()) {
         stream << "\n## Methods\n\n";
+        stream << "| | Name |\n|-|-|\n";
         for (const auto &method : methods) {
             for (const auto &def : method.methods)
-                stream << QString("- %1\n").arg(methodToString(def, true));
+                stream << methodToString(def, true);
         }
     }
 
@@ -102,7 +105,7 @@ void DocWriter::writeTypeFile(const Data::TypeBlock &type)
     if (properties.size()) {
         stream << "\n## Property Documentation\n";
         for (const auto &prop : properties) {
-            stream << QString("\n#### <a name=\"%1\"></a>%2 **%1**\n").arg(prop.name, prop.type);
+            stream << QString("\n#### <a name=\"%1\"></a>%2 **%1**\n").arg(prop.name, typeToString(prop.type));
             if (!prop.since.isEmpty())
                 stream << QString(SinceTypeFile).arg(prop.since);
             if (!prop.description.isEmpty())
@@ -145,20 +148,36 @@ std::vector<Data::MethodBlock> DocWriter::methodForType(const QString &typeName)
     return results;
 }
 
-QString DocWriter::methodToString(const Data::QmlMethod &method, bool addLink) const
+QString DocWriter::methodToString(const Data::QmlMethod &method, bool summary) const
 {
     QStringList params;
-    for (const auto &param : method.parameters) {
-        QString type = param.type;
-        if (m_typeFileMap.contains(type))
-            type = QString("[%1](%2)").arg(type, m_typeFileMap.value(type));
-        params.push_back(type + ' ' + param.name);
-    }
-    QString returnType = method.returnType.simplified();
+    for (const auto &param : method.parameters)
+        params.push_back(typeToString(param.type) + ' ' + param.name);
+    QString returnType = typeToString(method.returnType.simplified());
     if (!returnType.isEmpty())
         returnType += ' ';
-    if (addLink)
-        return QString("%1**[%2](#%2)**(%3)").arg(returnType, method.name, params.join(", ").simplified());
+    if (summary)
+        return QString("|%1|**[%2](#%2)**(%3)|\n").arg(returnType, method.name, params.join(", ").simplified());
     else
         return QString("%1**%2**(%3)").arg(returnType, method.name, params.join(", ").simplified());
+}
+
+QString DocWriter::typeToString(QString type) const
+{
+    // Note: inefficient, but good enough for now
+    const auto &keys = m_typeFileMap.keys();
+    for (const auto &key : keys) {
+        int index = type.indexOf(key);
+        while (index != -1) {
+            bool doContinue = false;
+            if (index != 0 && type[index - 1].isLetterOrNumber())
+                doContinue = true;
+            if (index + key.length() < type.length() && type[index + key.length() + 1].isLetterOrNumber())
+                doContinue = true;
+            if (!doContinue)
+                type.replace(index, key.length(), QString("[%1](%2)").arg(key, m_typeFileMap.value(key)));
+            index = type.indexOf(key, index + key.length());
+        }
+    }
+    return type;
 }

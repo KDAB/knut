@@ -11,13 +11,20 @@ static const char settingsName[] = "knut.json";
 
 /*!
  * \qmltype Settings
- * \brief Provides a singleton for accessing and editing persistent settings.
+ * \brief Singleton for accessing and editing persistent settings.
  * \instantiates Core::Settings
  * \inqmlmodule Script
  * \sa Settings
  * \sa Project Settings
+ * \since 4.0
  *
- * Settings are stored in a json file, and can be anything.
+ * The settings are stored in a json file, and could be:
+ *
+ * - bool
+ * - int
+ * - double
+ * - string
+ * - array<string>
  */
 
 Settings::Settings(bool addUserSettings, QObject *parent)
@@ -54,7 +61,7 @@ void Settings::loadProjectSettings(const QString &rootDir)
 
 /*!
  * \qmlmethod bool ProjectSettings::hasValue( string path)
- * Returns true if the project settings has a settings \a key.
+ * Returns true if the project settings has a settings `path`.
  */
 bool Settings::hasValue(QString path) const
 {
@@ -65,7 +72,7 @@ bool Settings::hasValue(QString path) const
 
 /*!
  * \qmlmethod variant Settings::value( string path, variant defaultValue = null)
- * Returns the value of the settings \a path, or \a defaultValue if the settings does not exist.
+ * Returns the value of the settings `path`, or `defaultValue` if the settings does not exist.
  */
 
 QVariant Settings::value(QString path, const QVariant &defaultValue) const

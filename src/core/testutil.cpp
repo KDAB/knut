@@ -11,8 +11,11 @@ namespace Core {
  * \qmltype TestUtil
  * \brief Provides utility methods useful for testing.
  * \inqmlmodule Script.Test
+ * \since 4.0
  *
- * Run unit tests as a script, and display the result in the log.
+ * This class is mainly used by the [TestCase](testcase.qml) object, to extract some information on the script.
+ *
+ * It should not be used in normal scripts.
  */
 
 TestUtil::TestUtil(QObject *parent)

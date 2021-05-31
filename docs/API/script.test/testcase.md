@@ -6,32 +6,39 @@ Provides a way to create unit tests as script. [More...](#detailed-description)
 import Script.Test 1.0
 ```
 
+<table>
+<tr><td>Since:</td><td>knut 4.0</td></tr>
+</table>
+
 ## Properties
 
-- string **[name](#name)**
+| | Name |
+|-|-|
+|string|**[name](#name)**|
 
 ## Methods
 
-- **[compare](#compare)**(actual, expected, msg)
-- **[verify](#verify)**(value, msg)
+| | Name |
+|-|-|
+||**[compare](#compare)**(actual, expected, msg)|
+||**[verify](#verify)**(value, msg)|
 
 ## Detailed Description
 
-Run unit tests as a script, and display the result in the Script Output pane. A test \b must
-have a \c name.
+Run unit tests as a script, and returns the number of failed tests.
 
 ## Property Documentation
 
 #### <a name="name"></a>string **name**
 
-This property defines the name of the unit test.
+This property defines the name of the unit test. **This is a mandatory property**.
 
 ## Method Documentation
 
 #### <a name="compare"></a>**compare**(actual, expected, msg)
 
-Compares \a actual vs \a expected, and display the \a msg if it's not the same.
+Compares `actual` vs `expected`, and display the `msg` if it's not the same.
 
 #### <a name="verify"></a>**verify**(value, msg)
 
-Verifies that \a value is \c true, and display the \a msg if it's not.
+Verifies that `value` is true, and display the `msg` if it's not.
