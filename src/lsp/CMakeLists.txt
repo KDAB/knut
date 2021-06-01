@@ -1,10 +1,10 @@
 project(knut-lsp LANGUAGES CXX)
 
 set(PROJECT_SOURCES
-    client.cpp
     client.h
-    clientbackend.cpp
+    client.cpp
     clientbackend.h
+    clientbackend.cpp
     json.h
     lsp_utils.h
     notificationmessage.h
@@ -14,8 +14,8 @@ set(PROJECT_SOURCES
     requestmessage_json.h
     requests.h
     types.h
-    types_json.cpp
     types_json.h
+    types_json.cpp
 )
 
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})

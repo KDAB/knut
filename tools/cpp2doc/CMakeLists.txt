@@ -6,8 +6,8 @@ add_definitions(-DKNUT_DOC_PATH="${CMAKE_SOURCE_DIR}/docs")
 set(PROJECT_SOURCES
     data.h
     cpp2doc.cpp
-    sourceparser.cpp
     sourceparser.h
+    sourceparser.cpp
     docwriter.h
     docwriter.cpp
 )

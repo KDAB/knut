@@ -1,35 +1,37 @@
 project(knut-core LANGUAGES CXX)
 
 set(PROJECT_SOURCES
-    dir.cpp
     dir.h
-    file.cpp
+    dir.cpp
+    document.h
+    document.cpp
     file.h
-    fileinfo.cpp
+    file.cpp
     fileinfo.h
+    fileinfo.cpp
     json_utils.h
-    knutmain.cpp
     knutmain.h
-    message.cpp
+    knutmain.cpp
     message.h
-    qdirvaluetype.cpp
+    message.cpp
     qdirvaluetype.h
-    qfileinfovaluetype.cpp
+    qdirvaluetype.cpp
     qfileinfovaluetype.h
-    scriptitem.cpp
+    qfileinfovaluetype.cpp
     scriptitem.h
-    scriptmanager.cpp
+    scriptitem.cpp
     scriptmanager.h
-    scriptrunner.cpp
+    scriptmanager.cpp
     scriptrunner.h
-    settings.cpp
+    scriptrunner.cpp
     settings.h
-    string_utils.cpp
+    settings.cpp
     string_utils.h
-    testutil.cpp
+    string_utils.cpp
     testutil.h
-    utils.cpp
+    testutil.cpp
     utils.h
+    utils.cpp
 )
 
 qt5_add_resources(PROJECT_QRC

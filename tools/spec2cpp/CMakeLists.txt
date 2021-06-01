@@ -3,12 +3,12 @@ project(spec2cpp VERSION 1 LANGUAGES CXX)
 add_definitions(-DLSP_SOURCE_PATH="${CMAKE_SOURCE_DIR}/src/lsp")
 
 set(PROJECT_SOURCES
-    spec2cpp.cpp
-    specparser.cpp
-    specparser.h
-    specwriter.cpp
-    specwriter.h
     data.h
+    spec2cpp.cpp
+    specparser.h
+    specparser.cpp
+    specwriter.h
+    specwriter.cpp
 )
 
 qt5_add_resources(PROJECT_QRC

@@ -57,7 +57,7 @@ import %3 1.0
 // %1 type since
 static const char SinceTypeFile[] = R"(
 <table>
-<tr><td>Since:</td><td>knut %1</td></tr>
+<tr><td>Since:</td><td>Knut %1</td></tr>
 </table>
 )";
 

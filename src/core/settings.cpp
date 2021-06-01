@@ -14,8 +14,6 @@ static const char settingsName[] = "knut.json";
  * \brief Singleton for accessing and editing persistent settings.
  * \instantiates Core::Settings
  * \inqmlmodule Script
- * \sa Settings
- * \sa Project Settings
  * \since 4.0
  *
  * The settings are stored in a json file, and could be:

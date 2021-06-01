@@ -1,6 +1,6 @@
 # Compilation
 
-To compile knut, you need:
+To compile Knut, you need:
 - a C++20 compiler (recent compilers should work)
 - Qt 5.15
 
