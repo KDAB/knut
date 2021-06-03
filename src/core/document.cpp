@@ -2,6 +2,8 @@
 
 #include <QFile>
 
+#include <spdlog/spdlog.h>
+
 namespace Core {
 
 /*!
@@ -35,11 +37,6 @@ namespace Core {
  * Returns the current type of the document, please note that the type is fixed once, and won't change. Available types
  * are:
  * - `Document.Text`
- * - `Document.Cpp`
- * - `Document.Js`
- * - `Document.Qml`
- * - `Document.Ui`
- * - `Document.Rc`
  */
 /*!
  * \qmlproperty string Document::errorString
@@ -62,7 +59,10 @@ const QString &Document::fileName() const
 
 void Document::setFileName(const QString &newFileName)
 {
-    load(newFileName);
+    if (m_fileName == newFileName)
+        return;
+    m_fileName = newFileName;
+    emit fileNameChanged();
 }
 
 bool Document::exists() const
@@ -100,6 +100,11 @@ bool Document::hasChanged() const
  */
 bool Document::load(const QString &fileName)
 {
+    spdlog::trace("Loading document {}", fileName.toStdString());
+    if (fileName.isEmpty()) {
+        spdlog::warn("Can't load document: fileName is empty");
+        return false;
+    }
     if (m_fileName == fileName)
         return true;
     if (m_hasChanged)
@@ -115,6 +120,11 @@ bool Document::load(const QString &fileName)
  */
 bool Document::save()
 {
+    spdlog::trace("Saving document {}", m_fileName.toStdString());
+    if (m_fileName.isEmpty()) {
+        spdlog::warn("Can't save document: fileName is empty");
+        return false;
+    }
     bool saveDone = doSave(m_fileName);
     if (saveDone)
         setHasChanged(false);
@@ -128,6 +138,7 @@ bool Document::save()
  */
 bool Document::saveAs(const QString &fileName)
 {
+    spdlog::trace("Saving document {} as {}", m_fileName.toStdString(), fileName.toStdString());
     if (m_fileName == fileName)
         return doSave(m_fileName);
     m_fileName = fileName;

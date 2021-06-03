@@ -22,4 +22,4 @@ public:
     Q_INVOKABLE QString readAll(const QString &fileName);
 };
 
-}
+} // namespace Core

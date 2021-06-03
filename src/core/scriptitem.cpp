@@ -65,4 +65,4 @@ void ScriptItem::clearData(QQmlListProperty<QObject> *list)
     }
 }
 
-}
+} // namespace Core

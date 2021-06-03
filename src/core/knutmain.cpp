@@ -46,4 +46,4 @@ void KnutMain::process(const QStringList &arguments)
         ScriptManager::instance()->runScript(scriptName);
 }
 
-}
+} // namespace Core

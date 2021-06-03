@@ -18,4 +18,4 @@ public:
     void process(const QStringList &arguments);
 };
 
-}
+} // namespace Core

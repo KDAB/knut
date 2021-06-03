@@ -271,4 +271,4 @@ bool QDirValueType::fileExists(const QString &name) const
     return m_dirValue.exists(name);
 }
 
-}
+} // namespace Core

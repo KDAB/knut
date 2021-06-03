@@ -1,5 +1,4 @@
-#ifndef CORE_DOCUMENT_H
-#define CORE_DOCUMENT_H
+#pragma once
 
 #include <QObject>
 
@@ -17,16 +16,11 @@ class Document : public QObject
 public:
     enum class Type {
         Text,
-        Cpp,
-        Js,
-        Qml,
-        Ui,
-        Rc,
     };
     Q_ENUM(Type)
 
 public:
-    Document(Type type, QObject *parent = nullptr);
+    explicit Document(Type type, QObject *parent = nullptr);
 
     const QString &fileName() const;
     void setFileName(const QString &newFileName);
@@ -64,5 +58,3 @@ private:
 };
 
 } // namespace Core
-
-#endif // CORE_DOCUMENT_H

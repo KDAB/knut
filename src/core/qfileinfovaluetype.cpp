@@ -313,4 +313,4 @@ QDateTime QFileInfoValueType::lastRead() const
     return m_fileInfoValue.lastRead();
 }
 
-}
+} // namespace Core

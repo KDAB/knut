@@ -48,4 +48,4 @@ int TestUtil::callerLine(int frameIndex) const
     return -1;
 }
 
-}
+} // namespace Core

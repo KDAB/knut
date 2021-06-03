@@ -18,4 +18,4 @@ public slots:
     int callerLine(int frameIndex = 0) const;
 };
 
-}
+} // namespace Core

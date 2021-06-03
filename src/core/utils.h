@@ -26,22 +26,22 @@ public:
     ~Utils() override;
 
 public slots:
-    QString getEnv(const QString &varName) const;
+    static QString getEnv(const QString &varName);
 
-    QString getGlobal(const QString &varName) const;
-    void setGlobal(const QString &varName, const QString &value);
+    static QString getGlobal(const QString &varName);
+    static void setGlobal(const QString &varName, const QString &value);
 
-    void addScriptPath(const QString &path) const;
-    void runScript(const QString &path, bool log = false) const;
+    static void addScriptPath(const QString &path);
+    static void runScript(const QString &path, bool log = false);
 
-    void sleep(int msecs) const;
+    static void sleep(int msecs);
 
-    QString mktemp(const QString &pattern) const;
+    static QString mktemp(const QString &pattern);
 
-    QString convertCase(const QString &str, Case from, Case to);
+    static QString convertCase(const QString &str, Case from, Case to);
 
 private:
     static QHash<QString, QString> m_globals;
 };
 
-}
+} // namespace Core

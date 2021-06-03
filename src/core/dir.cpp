@@ -151,4 +151,4 @@ QDirValueType Dir::create(const QString &path) const
     return QDirValueType(path);
 }
 
-}
+} // namespace Core

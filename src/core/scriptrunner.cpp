@@ -241,4 +241,4 @@ void ScriptRunner::filterErrors(const QQmlComponent &component)
     m_errors = errors;
 }
 
-}
+} // namespace Core

@@ -62,4 +62,4 @@ void Message::warning(const QString &text)
     m_logger->warn("{}", text.toStdString());
 }
 
-}
+} // namespace Core

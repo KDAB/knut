@@ -38,4 +38,4 @@ QFileInfoValueType FileInfo::create(const QString &file)
     return QFileInfoValueType(file);
 }
 
-}
+} // namespace Core

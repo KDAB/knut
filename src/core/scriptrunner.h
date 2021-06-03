@@ -44,4 +44,4 @@ private:
     QList<QQmlError> m_errors;
 };
 
-}
+} // namespace Core

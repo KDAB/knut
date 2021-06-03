@@ -27,3 +27,5 @@ add_knut_test(tst_settings tst_settings.cpp knut-core)
 add_knut_test(tst_knut tst_knut.cpp knut-core)
 
 add_knut_test(tst_stringutils tst_stringutils.cpp knut-core)
+
+add_knut_test(tst_textdocument tst_textdocument.cpp knut-core)

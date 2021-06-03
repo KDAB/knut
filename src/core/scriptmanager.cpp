@@ -164,4 +164,4 @@ void ScriptManager::doRunScript(const QString &fileName, std::function<void()> e
     emit scriptFinished(result);
 }
 
-}
+} // namespace Core

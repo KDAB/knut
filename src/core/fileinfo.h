@@ -19,4 +19,4 @@ public:
     Q_INVOKABLE Core::QFileInfoValueType create(const QString &file);
 };
 
-}
+} // namespace Core

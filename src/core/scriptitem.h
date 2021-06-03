@@ -33,6 +33,6 @@ private:
     std::vector<QObject *> m_data;
 };
 
-}
+} // namespace Core
 
 Q_DECLARE_METATYPE(Core::ScriptItem *)

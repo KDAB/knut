@@ -14,4 +14,4 @@ enum class Case {
 };
 QString convertCase(const QString &str, Case from, Case to);
 
-}
+} // namespace Core

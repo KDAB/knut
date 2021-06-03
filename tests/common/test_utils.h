@@ -2,6 +2,7 @@
 
 #include <QCoreApplication>
 #include <QDir>
+#include <QFile>
 #include <QString>
 
 #include <spdlog/spdlog.h>
@@ -21,6 +22,18 @@ inline QString testDataPath()
         path = QCoreApplication::applicationDirPath() + "/test_data";
     }
     return path;
+}
+
+inline bool compareFiles(const QString &fileName1, const QString &fileName2)
+{
+    QFile file1(fileName1);
+    if (!file1.open(QIODevice::ReadOnly))
+        return false;
+    QFile file2(fileName2);
+    if (!file2.open(QIODevice::ReadOnly))
+        return false;
+
+    return file1.readAll() == file2.readAll();
 }
 
 class LogSilencer

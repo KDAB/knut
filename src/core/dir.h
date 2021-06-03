@@ -96,4 +96,4 @@ signals:
     void currentPathChanged(const QString &path);
 };
 
-}
+} // namespace Core

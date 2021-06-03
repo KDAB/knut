@@ -77,4 +77,4 @@ private:
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Settings::LspServer, program, arguments);
 
-}
+} // namespace Core

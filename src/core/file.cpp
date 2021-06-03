@@ -77,4 +77,4 @@ QString File::readAll(const QString &fileName)
     return {};
 }
 
-}
+} // namespace Core

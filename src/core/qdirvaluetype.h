@@ -67,6 +67,6 @@ private:
     QDir m_dirValue;
 };
 
-}
+} // namespace Core
 
 Q_DECLARE_METATYPE(Core::QDirValueType)

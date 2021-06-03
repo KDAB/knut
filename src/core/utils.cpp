@@ -33,7 +33,7 @@ Utils::~Utils() { }
  * \qmlmethod string Utils::getEnv( string varName)
  * Returns the value of the environment variable `varName`.
  */
-QString Utils::getEnv(const QString &varName) const
+QString Utils::getEnv(const QString &varName)
 {
     return QString::fromUtf8(qgetenv(varName.toLatin1()));
 }
@@ -46,7 +46,7 @@ QString Utils::getEnv(const QString &varName) const
  * For persistent settings, see [Settings](settings.md).
  * \sa Settings
  */
-QString Utils::getGlobal(const QString &varName) const
+QString Utils::getGlobal(const QString &varName)
 {
     return m_globals.value(varName);
 }
@@ -79,7 +79,7 @@ void Utils::setGlobal(const QString &varName, const QString &value)
  * }
  * ```
  */
-void Utils::addScriptPath(const QString &path) const
+void Utils::addScriptPath(const QString &path)
 {
     ScriptManager::instance()->addDirectory(path);
 }
@@ -88,7 +88,7 @@ void Utils::addScriptPath(const QString &path) const
  * \qmlmethod Utils::runScript( string path, bool log)
  * Runs the script given by `path`. If `log` is true, it will also log the run of the script.
  */
-void Utils::runScript(const QString &path, bool log) const
+void Utils::runScript(const QString &path, bool log)
 {
     // Run the script synchronously
     ScriptManager::instance()->runScript(path, false, log);
@@ -98,7 +98,7 @@ void Utils::runScript(const QString &path, bool log) const
  * \qmlmethod Utils::sleep( int msecs)
  * Sleeps for `msecs` milliseconds.
  */
-void Utils::sleep(int msecs) const
+void Utils::sleep(int msecs)
 {
     QElapsedTimer timer;
     timer.start();
@@ -112,7 +112,7 @@ void Utils::sleep(int msecs) const
  * Creates and returns the name of a temporory file based on a `pattern`.
  * This function is copied from UtilsJsExtension::mktemp from Qt Creator.
  */
-QString Utils::mktemp(const QString &pattern) const
+QString Utils::mktemp(const QString &pattern)
 {
     QString tmp = pattern;
     if (tmp.isEmpty())
@@ -151,4 +151,4 @@ QString Utils::convertCase(const QString &str, Case from, Case to)
     return Core::convertCase(str, static_cast<::Core::Case>(from), static_cast<::Core::Case>(to));
 }
 
-}
+} // namespace Core

@@ -104,6 +104,6 @@ private:
     QFileInfo m_fileInfoValue;
 };
 
-}
+} // namespace Core
 
 Q_DECLARE_METATYPE(Core::QFileInfoValueType)

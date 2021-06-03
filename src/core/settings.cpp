@@ -132,4 +132,4 @@ void Settings::loadSettings(std::string name, const QString &fileName)
     }
 }
 
-}
+} // namespace Core

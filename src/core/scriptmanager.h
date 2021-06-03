@@ -74,4 +74,4 @@ private:
     QStringList m_directories;
 };
 
-}
+} // namespace Core
