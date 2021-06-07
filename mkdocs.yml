@@ -29,6 +29,7 @@ nav:
     - API:
         - Script Module:
              - Dir: API/script/dir.md
+             - Document: API/script/document.md
              - File: API/script/file.md
              - FileInfo: API/script/fileinfo.md
              - Message: API/script/message.md
@@ -36,6 +37,7 @@ nav:
              - QFileInfoValueType: API/script/qfileinfovaluetype.md
              - Script: API/script/script.md
              - Settings: API/script/settings.md
+             - TextDocument: API/script/textdocument.md
              - Utils: API/script/utils.md
         - Script.Test Module:
              - TestCase: API/script.test/testcase.md

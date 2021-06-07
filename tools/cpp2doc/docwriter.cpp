@@ -33,7 +33,8 @@ void DocWriter::saveDocumentation()
         writeTypeFile(type);
 
     QString nav("    - API:\n");
-    const auto &keys = m_navMap.keys();
+    auto keys = m_navMap.keys();
+    std::sort(keys.begin(), keys.end());
     for (const auto &module : keys) {
         nav += QString("        - %1 Module:\n").arg(module);
         nav += m_navMap.value(module).join("\n") + "\n";
@@ -79,16 +80,22 @@ void DocWriter::writeTypeFile(const Data::TypeBlock &type)
     if (!type.since.isEmpty())
         stream << QString(SinceTypeFile).arg(type.since);
 
-    const auto properties = propertyForType(type.name);
+    auto properties = propertyForType(type.name);
     if (properties.size()) {
+        std::sort(properties.begin(), properties.end(), [](const auto &prop1, const auto &prop2) {
+            return prop1.name < prop2.name;
+        });
         stream << "\n## Properties\n\n";
         stream << "| | Name |\n|-|-|\n";
         for (const auto &prop : properties)
             stream << QString("|%1|**[%2](#%2)**|\n").arg(typeToString(prop.type), prop.name);
     }
 
-    const auto methods = methodForType(type.name);
+    auto methods = methodForType(type.name);
     if (methods.size()) {
+        std::sort(methods.begin(), methods.end(), [](const auto &method1, const auto &method2) {
+            return method1.methods.front().name < method2.methods.front().name;
+        });
         stream << "\n## Methods\n\n";
         stream << "| | Name |\n|-|-|\n";
         for (const auto &method : methods) {

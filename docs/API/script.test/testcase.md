@@ -7,7 +7,7 @@ import Script.Test 1.0
 ```
 
 <table>
-<tr><td>Since:</td><td>knut 4.0</td></tr>
+<tr><td>Since:</td><td>Knut 4.0</td></tr>
 </table>
 
 ## Properties
