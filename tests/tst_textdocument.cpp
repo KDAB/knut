@@ -3,7 +3,11 @@
 
 #include "common/test_utils.h"
 
+#include <QDir>
+#include <QFile>
 #include <QTest>
+#include <QTextCodec>
+#include <QTextStream>
 
 static const QString loremIpsumText(R"(
 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -37,16 +41,56 @@ private slots:
     void load()
     {
         Core::TextDocument document;
-        document.load(Test::testDataPath() + "/textdocument/loremipsum.txt");
+        document.load(Test::testDataPath() + "/textdocument/loremipsum_lf_utf8.txt");
 
         QVERIFY(QFile::exists(document.fileName()));
 
         // Default values
-        QVERIFY(document.fileName().endsWith("loremipsum.txt"));
+        QVERIFY(document.fileName().endsWith("loremipsum_lf_utf8.txt"));
         QCOMPARE(document.lineCount(), 21);
 
         const auto text = document.text();
         QCOMPARE(text, loremIpsumText);
+    }
+
+    void detectAndSaveCodec_data()
+    {
+        QTest::addColumn<QString>("file");
+        QTest::addColumn<Core::TextDocument::LineEnding>("lineEnding");
+        QTest::addColumn<bool>("bom");
+
+        QTest::newRow("loremipsum_lf_utf8") << Test::testDataPath() + "/textdocument/loremipsum_lf_utf8.txt"
+                                            << Core::TextDocument::LFLineEnding << false;
+        QTest::newRow("loremipsum_crlf_ansi") << Test::testDataPath() + "/textdocument/loremipsum_crlf_ansi.txt"
+                                              << Core::TextDocument::CRLFLineEnding << false;
+        QTest::newRow("loremipsum_crlf_utf8") << Test::testDataPath() + "/textdocument/loremipsum_crlf_utf8.txt"
+                                              << Core::TextDocument::CRLFLineEnding << false;
+        QTest::newRow("loremipsum_crlf_utf8bom") << Test::testDataPath() + "/textdocument/loremipsum_crlf_utf8bom.txt"
+                                                 << Core::TextDocument::CRLFLineEnding << true;
+    }
+
+    void detectAndSaveCodec()
+    {
+        QFETCH(QString, file);
+        QFETCH(Core::TextDocument::LineEnding, lineEnding);
+        QFETCH(bool, bom);
+
+        // Create a copy of the file
+        const QString tempFile = QDir::tempPath() + "/testCodec.txt";
+        QFile::remove(tempFile);
+        QFile::copy(file, tempFile);
+
+        Core::TextDocument document;
+        document.load(tempFile);
+        QCOMPARE(document.lineEnding(), lineEnding);
+        QCOMPARE(document.hasUtf8Bom(), bom);
+
+        document.setText(loremIpsumText);
+        document.save();
+        QVERIFY(Test::compareFiles(file, tempFile));
+
+        // Cleanup
+        QFile::remove(tempFile);
     }
 
     void save()
@@ -61,8 +105,12 @@ private slots:
         document.setFileName(saveFileName);
         document.save();
         QVERIFY(!document.hasChanged());
-        QVERIFY(Test::compareFiles(document.fileName(), Test::testDataPath() + "/textdocument/loremipsum.txt"));
-
+#if defined(Q_OS_WIN)
+        QVERIFY(
+            Test::compareFiles(document.fileName(), Test::testDataPath() + "/textdocument/loremipsum_crlf_utf8.txt"));
+#else
+        QVERIFY(Test::compareFiles(document.fileName(), Test::testDataPath() + "/textdocument/loremipsum_lf_utf8.txt"));
+#endif
         document.setText("Not much to see");
         QVERIFY(document.hasChanged());
         const QString saveAsFileName = Core::Utils::mktemp("TestTextDocument");

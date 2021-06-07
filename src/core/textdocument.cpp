@@ -5,7 +5,6 @@
 #include <QTextBlock>
 #include <QTextDocument>
 #include <QTextStream>
-
 #include <spdlog/spdlog.h>
 
 namespace Core {
@@ -45,6 +44,16 @@ namespace Core {
  * \qmlproperty string TextDocument::selectedText
  * This property holds the selected text of the document.
  */
+/*!
+ * \qmlproperty LineEnding TextDocument::lineEnding
+ * This property holds the line ending for the document. It can be one of those choices:
+ *
+ * - `TextDocument.LFLineEnding`: '\n' character
+ * - `TextDocument.CRLFLineEnding`: '\r\n' characters
+ * - `TextDocument.NativeLineEnding`: LF on Linux and Mac, CRLF on Windows
+ *
+ * Native is the default for new documents.
+ */
 
 TextDocument::TextDocument(QObject *parent)
     : TextDocument(Document::Type::Text, parent)
@@ -74,8 +83,15 @@ bool TextDocument::doSave(const QString &fileName)
         return false;
     }
 
+    if (m_utf8Bom)
+        file.write("\xef\xbb\xbf", 3);
+
+    QString plainText = m_document->toPlainText();
+    if (m_lineEnding == CRLFLineEnding)
+        plainText.replace('\n', "\r\n");
+
     QTextStream stream(&file);
-    stream << m_document->toPlainText();
+    stream << plainText;
     return true;
 }
 
@@ -90,9 +106,35 @@ bool TextDocument::doLoad(const QString &fileName)
         return false;
     }
 
-    QTextStream stream(&file);
-    setText(stream.readAll());
+    QByteArray data = file.readAll();
+    detectFormat(data);
+    QTextStream stream(data);
+    const QString text = stream.readAll();
+
+    // This will replace '\r\n' with '\n'
+    setText(text);
     return true;
+}
+
+// This function is copied from TextFileFormat::detect from Qt Creator.
+void TextDocument::detectFormat(const QByteArray &data)
+{
+    if (data.isEmpty())
+        return;
+    const int bytesRead = data.size();
+    const auto buf = reinterpret_cast<const unsigned char *>(data.constData());
+    // code taken from qtextstream
+    if (bytesRead >= 3 && ((buf[0] == 0xef && buf[1] == 0xbb) && buf[2] == 0xbf))
+        m_utf8Bom = true;
+
+    // end code taken from qtextstream
+    const int newLinePos = data.indexOf('\n');
+    if (newLinePos == -1)
+        setLineEnding(NativeLineEnding);
+    else if (newLinePos == 0)
+        setLineEnding(LFLineEnding);
+    else
+        setLineEnding(data.at(newLinePos - 1) == '\r' ? CRLFLineEnding : LFLineEnding);
 }
 
 int TextDocument::column() const
@@ -141,6 +183,24 @@ void TextDocument::setText(const QString &newText)
 QString TextDocument::selectedText() const
 {
     return m_document->textCursor().selectedText();
+}
+
+TextDocument::LineEnding TextDocument::lineEnding() const
+{
+    return m_lineEnding;
+}
+
+bool TextDocument::hasUtf8Bom() const
+{
+    return m_utf8Bom;
+}
+
+void TextDocument::setLineEnding(LineEnding newLineEnding)
+{
+    if (m_lineEnding == newLineEnding)
+        return;
+    m_lineEnding = newLineEnding;
+    emit lineEndingChanged();
 }
 
 } // namespace Core
