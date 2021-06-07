@@ -13,8 +13,8 @@ public:
 
 private:
     void writeTypeFile(const Data::TypeBlock &type);
-    std::vector<Data::PropertyBlock> propertyForType(const QString &typeName) const;
-    std::vector<Data::MethodBlock> methodForType(const QString &typeName) const;
+    std::vector<Data::PropertyBlock> propertyForType(const Data::TypeBlock &type) const;
+    std::vector<Data::MethodBlock> methodForType(const Data::TypeBlock &type) const;
     QString methodToString(const Data::QmlMethod &method, bool summary) const;
     QString typeToString(QString type) const;
 

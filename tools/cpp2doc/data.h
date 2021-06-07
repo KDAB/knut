@@ -19,6 +19,7 @@ struct Data
     {
         QString name;
         QString qmlModule;
+        QString inherits;
     };
 
     struct PropertyBlock : public Block

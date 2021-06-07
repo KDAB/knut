@@ -62,6 +62,15 @@ static const char SinceTypeFile[] = R"(
 </table>
 )";
 
+// %1 type since
+// %2 type inherits
+static const char SinceInheritTypeFile[] = R"(
+<table>
+<tr><td>Since:</td><td>Knut %1</td></tr>
+<tr><td>Inherits:</td><td><a href="%2.html">%2</a></td></tr>
+</table>
+)";
+
 void DocWriter::writeTypeFile(const Data::TypeBlock &type)
 {
     m_navMap[type.qmlModule].push_back(
@@ -77,31 +86,46 @@ void DocWriter::writeTypeFile(const Data::TypeBlock &type)
 
     stream << QString(TypeFile).arg(type.name, type.brief, type.qmlModule);
 
-    if (!type.since.isEmpty())
-        stream << QString(SinceTypeFile).arg(type.since);
-
-    auto properties = propertyForType(type.name);
-    if (properties.size()) {
-        std::sort(properties.begin(), properties.end(), [](const auto &prop1, const auto &prop2) {
-            return prop1.name < prop2.name;
-        });
-        stream << "\n## Properties\n\n";
-        stream << "| | Name |\n|-|-|\n";
-        for (const auto &prop : properties)
-            stream << QString("|%1|**[%2](#%2)**|\n").arg(typeToString(prop.type), prop.name);
+    if (!type.since.isEmpty()) {
+        if (type.inherits.isEmpty()) {
+            stream << QString(SinceTypeFile).arg(type.since);
+        } else {
+            stream << QString(SinceInheritTypeFile).arg(type.since, type.inherits);
+        }
     }
 
-    auto methods = methodForType(type.name);
-    if (methods.size()) {
-        std::sort(methods.begin(), methods.end(), [](const auto &method1, const auto &method2) {
-            return method1.methods.front().name < method2.methods.front().name;
-        });
-        stream << "\n## Methods\n\n";
-        stream << "| | Name |\n|-|-|\n";
-        for (const auto &method : methods) {
-            for (const auto &def : method.methods)
-                stream << methodToString(def, true);
+    auto properties = propertyForType(type);
+    if (properties.size() || !type.inherits.isEmpty()) {
+        stream << "\n## Properties\n\n";
+        if (properties.size()) {
+            std::sort(properties.begin(), properties.end(), [](const auto &prop1, const auto &prop2) {
+                return prop1.name < prop2.name;
+            });
+            stream << "| | Name |\n|-|-|\n";
+            for (const auto &prop : properties)
+                stream << QString("|%1|**[%2](#%2)**|\n").arg(typeToString(prop.type), prop.name);
         }
+        if (!type.inherits.isEmpty())
+            stream << QString("\nInherited properties: [%1 properties](%2#properties)\n")
+                          .arg(type.inherits, m_typeFileMap.value(type.inherits));
+    }
+
+    auto methods = methodForType(type);
+    if (methods.size() || !type.inherits.isEmpty()) {
+        stream << "\n## Methods\n\n";
+        if (methods.size()) {
+            std::sort(methods.begin(), methods.end(), [](const auto &method1, const auto &method2) {
+                return method1.methods.front().name < method2.methods.front().name;
+            });
+            stream << "| | Name |\n|-|-|\n";
+            for (const auto &method : methods) {
+                for (const auto &def : method.methods)
+                    stream << methodToString(def, true);
+            }
+        }
+        if (!type.inherits.isEmpty())
+            stream << QString("\nInherited methods: [%1 methods](%2#methods)\n")
+                          .arg(type.inherits, m_typeFileMap.value(type.inherits));
     }
 
     if (!type.description.isEmpty()) {
@@ -135,23 +159,44 @@ void DocWriter::writeTypeFile(const Data::TypeBlock &type)
     }
 }
 
-std::vector<Data::PropertyBlock> DocWriter::propertyForType(const QString &typeName) const
+std::vector<Data::PropertyBlock> DocWriter::propertyForType(const Data::TypeBlock &type) const
 {
     std::vector<Data::PropertyBlock> results;
     std::copy_if(m_data.properties.begin(), m_data.properties.end(), std::back_inserter(results),
-                 [typeName](const auto &prop) {
-                     return prop.qmlType == typeName;
+                 [type](const auto &prop) {
+                     return prop.qmlType == type.name;
                  });
+#if 0
+    if (!type.inherits.isEmpty()) {
+        auto it = std::find_if(m_data.types.begin(), m_data.types.end(), [&type](const auto &t) {
+            return t.name == type.inherits;
+        });
+        if (it != m_data.types.end()) {
+            const auto inheritProps = propertyForType(*it);
+            results.insert(results.end(), inheritProps.begin(), inheritProps.end());
+        }
+    }
+#endif
     return results;
 }
 
-std::vector<Data::MethodBlock> DocWriter::methodForType(const QString &typeName) const
+std::vector<Data::MethodBlock> DocWriter::methodForType(const Data::TypeBlock &type) const
 {
     std::vector<Data::MethodBlock> results;
-    std::copy_if(m_data.methods.begin(), m_data.methods.end(), std::back_inserter(results),
-                 [typeName](const auto &method) {
-                     return method.qmlType == typeName;
-                 });
+    std::copy_if(m_data.methods.begin(), m_data.methods.end(), std::back_inserter(results), [type](const auto &method) {
+        return method.qmlType == type.name;
+    });
+#if 0
+    if (!type.inherits.isEmpty()) {
+        auto it = std::find_if(m_data.types.begin(), m_data.types.end(), [&type](const auto &t) {
+            return t.name == type.inherits;
+        });
+        if (it != m_data.types.end()) {
+            const auto inheritMethods = methodForType(*it);
+            results.insert(results.end(), inheritMethods.begin(), inheritMethods.end());
+        }
+    }
+#endif
     return results;
 }
 

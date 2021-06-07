@@ -59,6 +59,7 @@ Returns true if the document has been edited, otherwise returns false.
 
 Returns the current type of the document, please note that the type is fixed once, and won't change. Available types
 are:
+
 - `Document.Text`
 
 ## Method Documentation

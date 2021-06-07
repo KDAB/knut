@@ -36,6 +36,7 @@ namespace Core {
  * \qmlproperty Type Document::type
  * Returns the current type of the document, please note that the type is fixed once, and won't change. Available types
  * are:
+ *
  * - `Document.Text`
  */
 /*!

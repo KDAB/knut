@@ -8,6 +8,7 @@ import Script 1.0
 
 <table>
 <tr><td>Since:</td><td>Knut 4.0</td></tr>
+<tr><td>Inherits:</td><td><a href="Document.html">Document</a></td></tr>
 </table>
 
 ## Properties
@@ -21,6 +22,13 @@ import Script 1.0
 |int|**[position](#position)**|
 |string|**[selectedText](#selectedText)**|
 |string|**[text](#text)**|
+
+Inherited properties: [Document properties](../script/document.md#properties)
+
+## Methods
+
+
+Inherited methods: [Document methods](../script/document.md#methods)
 
 ## Property Documentation
 

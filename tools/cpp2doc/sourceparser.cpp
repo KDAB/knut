@@ -88,6 +88,8 @@ Data::TypeBlock SourceParser::parseType(QTextStream &stream, QString line)
             continue;
         else if (line.startsWith("\\inqmlmodule"))
             currentType.qmlModule = line.mid(13);
+        else if (line.startsWith("\\inherits"))
+            currentType.inherits = line.mid(10);
         else
             parseBlock(line, currentType);
     }
