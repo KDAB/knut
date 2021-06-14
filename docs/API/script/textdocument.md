@@ -16,6 +16,8 @@ import Script 1.0
 | | Name |
 |-|-|
 |int|**[column](#column)**|
+|string|**[currentLine](#currentLine)**|
+|string|**[currentWord](#currentWord)**|
 |int|**[line](#line)**|
 |int|**[lineCount](#lineCount)**|
 |LineEnding|**[lineEnding](#lineEnding)**|
@@ -27,6 +29,48 @@ Inherited properties: [Document properties](../script/document.md#properties)
 
 ## Methods
 
+| | Name |
+|-|-|
+||**[copy](#copy)**()|
+||**[cut](#cut)**()|
+||**[deleteEndOfLine](#deleteEndOfLine)**()|
+||**[deleteEndOfWord](#deleteEndOfWord)**()|
+||**[deleteNextCharacter](#deleteNextCharacter)**(int count)|
+||**[deletePreviousCharacter](#deletePreviousCharacter)**(int count)|
+||**[deleteRegion](#deleteRegion)**(int from, int to)|
+||**[deleteSelection](#deleteSelection)**()|
+||**[deleteStartOfLine](#deleteStartOfLine)**()|
+||**[deleteStartOfWord](#deleteStartOfWord)**()|
+||**[gotoDocumentEnd](#gotoDocumentEnd)**()|
+||**[gotoDocumentStart](#gotoDocumentStart)**()|
+||**[gotoLine](#gotoLine)**(int line, int column = 1)|
+||**[gotoLineEnd](#gotoLineEnd)**()|
+||**[gotoLineStart](#gotoLineStart)**()|
+||**[gotoNextCharacter](#gotoNextCharacter)**(int count = 1)|
+||**[gotoNextLine](#gotoNextLine)**(int count = 1)|
+||**[gotoNextWord](#gotoNextWord)**(int count = 1)|
+||**[gotoPreviousCharacter](#gotoPreviousCharacter)**(int count = 1)|
+||**[gotoPreviousLine](#gotoPreviousLine)**(int count = 1)|
+||**[gotoPreviousWord](#gotoPreviousWord)**(int count = 1)|
+||**[gotoWordEnd](#gotoWordEnd)**()|
+||**[gotoWordStart](#gotoWordStart)**()|
+|bool |**[hasSelection](#hasSelection)**()|
+||**[paste](#paste)**()|
+||**[redo](#redo)**()|
+||**[selectAll](#selectAll)**()|
+||**[selectLineEnd](#selectLineEnd)**()|
+||**[selectLineStart](#selectLineStart)**(int count = 1)|
+||**[selectNextCharacter](#selectNextCharacter)**(int count = 1)|
+||**[selectNextLine](#selectNextLine)**(int count = 1)|
+||**[selectNextWord](#selectNextWord)**(int count = 1)|
+||**[selectPreviousCharacter](#selectPreviousCharacter)**(int count = 1)|
+||**[selectPreviousLine](#selectPreviousLine)**(int count = 1)|
+||**[selectPreviousWord](#selectPreviousWord)**(int count = 1)|
+||**[selectTo](#selectTo)**(int pos)|
+||**[selectWordEnd](#selectWordEnd)**()|
+||**[selectWordStart](#selectWordStart)**()|
+||**[undo](#undo)**()|
+||**[unselect](#unselect)**()|
 
 Inherited methods: [Document methods](../script/document.md#methods)
 
@@ -34,12 +78,20 @@ Inherited methods: [Document methods](../script/document.md#methods)
 
 #### <a name="column"></a>int **column**
 
-This read-only property hold the column of the cursor position.
+This read-only property holds the column of the cursor position.
 Be careful the column is 1-based, so the column before the first character is 1.
+
+#### <a name="currentLine"></a>string **currentLine**
+
+This read-only property return the line under the current position.
+
+#### <a name="currentWord"></a>string **currentWord**
+
+This read-only property return the word under the current position.
 
 #### <a name="line"></a>int **line**
 
-This read-only property hold the line of the cursor position.
+This read-only property holds the line of the cursor position.
 Be careful the line is 1-based, so the first line of the document is 1,
 
 #### <a name="lineCount"></a>int **lineCount**
@@ -67,3 +119,165 @@ This property holds the selected text of the document.
 #### <a name="text"></a>string **text**
 
 This property holds the text of the document.
+
+## Method Documentation
+
+#### <a name="copy"></a>**copy**()
+
+Copies the selected text.
+
+#### <a name="cut"></a>**cut**()
+
+Cuts the selected text.
+
+#### <a name="deleteEndOfLine"></a>**deleteEndOfLine**()
+
+Deletes from the cursor position to the end of the line.
+
+#### <a name="deleteEndOfWord"></a>**deleteEndOfWord**()
+
+Deletes from the cursor position to the end of the word.
+
+#### <a name="deleteNextCharacter"></a>**deleteNextCharacter**(int count)
+
+Deletes the next `count` characters.
+
+#### <a name="deletePreviousCharacter"></a>**deletePreviousCharacter**(int count)
+
+Deletes the previous `count` characters.
+
+#### <a name="deleteRegion"></a>**deleteRegion**(int from, int to)
+
+Deletes the text between `from` and `to` positions.
+
+#### <a name="deleteSelection"></a>**deleteSelection**()
+
+Deletes the current selection, does nothing if no text is selected.
+
+#### <a name="deleteStartOfLine"></a>**deleteStartOfLine**()
+
+Deletes from the cursor position to the start of the line.
+
+#### <a name="deleteStartOfWord"></a>**deleteStartOfWord**()
+
+Deletes from the cursor position to the start of the word.
+
+#### <a name="gotoDocumentEnd"></a>**gotoDocumentEnd**()
+
+Goes to the document end.
+
+#### <a name="gotoDocumentStart"></a>**gotoDocumentStart**()
+
+Goes to the document start.
+
+#### <a name="gotoLine"></a>**gotoLine**(int line, int column = 1)
+
+Goes to the given `line` and `column` in the editor. Lines and columns are 1-based.
+
+#### <a name="gotoLineEnd"></a>**gotoLineEnd**()
+
+Goes to the end of the line.
+
+#### <a name="gotoLineStart"></a>**gotoLineStart**()
+
+Goes to the start of the line.
+
+#### <a name="gotoNextCharacter"></a>**gotoNextCharacter**(int count = 1)
+
+Goes to the next character, repeat the operation `count` times.
+
+#### <a name="gotoNextLine"></a>**gotoNextLine**(int count = 1)
+
+Goes to the next line, repeat the operation `count` times.
+
+#### <a name="gotoNextWord"></a>**gotoNextWord**(int count = 1)
+
+Goes to the next word, repeat the operation `count` times.
+
+#### <a name="gotoPreviousCharacter"></a>**gotoPreviousCharacter**(int count = 1)
+
+Goes to the previous character, repeat the operation `count` times.
+
+#### <a name="gotoPreviousLine"></a>**gotoPreviousLine**(int count = 1)
+
+Goes to the previous line, repeat the operation `count` times.
+
+#### <a name="gotoPreviousWord"></a>**gotoPreviousWord**(int count = 1)
+
+Goes to the previous word, repeat the operation `count` times.
+
+#### <a name="gotoWordEnd"></a>**gotoWordEnd**()
+
+Goes to the end of the word under the cursor.
+
+#### <a name="gotoWordStart"></a>**gotoWordStart**()
+
+Goes to the start of the word under the cursor.
+
+#### <a name="hasSelection"></a>bool **hasSelection**()
+
+Returns true if the editor has a selection.
+
+#### <a name="paste"></a>**paste**()
+
+Pastes text in the clipboard.
+
+#### <a name="redo"></a>**redo**()
+
+Redo the last action.
+
+#### <a name="selectAll"></a>**selectAll**()
+
+Selects all the text.
+
+#### <a name="selectLineEnd"></a>**selectLineEnd**()
+
+Selects the text from the current position to the end of the line.
+
+#### <a name="selectLineStart"></a>**selectLineStart**(int count = 1)
+
+Selects the text from the current position to the start of the line.
+
+#### <a name="selectNextCharacter"></a>**selectNextCharacter**(int count = 1)
+
+Selects the next character, repeat the operation `count` times.
+
+#### <a name="selectNextLine"></a>**selectNextLine**(int count = 1)
+
+Selects the next line, repeat the operation \a count times.
+
+#### <a name="selectNextWord"></a>**selectNextWord**(int count = 1)
+
+Selects the next word, repeat the operation `count` times.
+
+#### <a name="selectPreviousCharacter"></a>**selectPreviousCharacter**(int count = 1)
+
+Selects the previous character, repeat the operation `count` times.
+
+#### <a name="selectPreviousLine"></a>**selectPreviousLine**(int count = 1)
+
+Selectes the previous line, repeat the operation `count` times.
+
+#### <a name="selectPreviousWord"></a>**selectPreviousWord**(int count = 1)
+
+Selects the previous word, repeat the operation `count` times.
+
+#### <a name="selectTo"></a>**selectTo**(int pos)
+
+Selects the text from the current position to `pos`.
+
+#### <a name="selectWordEnd"></a>**selectWordEnd**()
+
+Selects the text from the current position to the end of the word.
+
+#### <a name="selectWordStart"></a>**selectWordStart**()
+
+Selects the text from the current position to the start of the word.
+
+#### <a name="undo"></a>**undo**()
+
+Undo the last action.
+
+#### <a name="unselect"></a>**unselect**()
+
+Clears the current selection.

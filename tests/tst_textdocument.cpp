@@ -9,7 +9,7 @@
 #include <QTextCodec>
 #include <QTextStream>
 
-static const QString loremIpsumText(R"(
+static const QString LoremIpsumText(R"(
 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 Quisque convallis ipsum ac odio aliquet tincidunt.
 
@@ -49,8 +49,7 @@ private slots:
         QVERIFY(document.fileName().endsWith("loremipsum_lf_utf8.txt"));
         QCOMPARE(document.lineCount(), 21);
 
-        const auto text = document.text();
-        QCOMPARE(text, loremIpsumText);
+        QCOMPARE(document.text(), LoremIpsumText);
     }
 
     void detectAndSaveCodec_data()
@@ -85,7 +84,7 @@ private slots:
         QCOMPARE(document.lineEnding(), lineEnding);
         QCOMPARE(document.hasUtf8Bom(), bom);
 
-        document.setText(loremIpsumText);
+        document.setText(LoremIpsumText);
         document.save();
         QVERIFY(Test::compareFiles(file, tempFile));
 
@@ -97,9 +96,9 @@ private slots:
     {
         Core::TextDocument document;
 
-        document.setText(loremIpsumText);
+        document.setText(LoremIpsumText);
         QVERIFY(document.hasChanged());
-        QCOMPARE(document.text(), loremIpsumText);
+        QCOMPARE(document.text(), LoremIpsumText);
 
         const QString saveFileName = Core::Utils::mktemp("TestTextDocument");
         document.setFileName(saveFileName);
@@ -122,6 +121,110 @@ private slots:
         // Cleanup
         QFile::remove(saveFileName);
         QFile::remove(saveAsFileName);
+    }
+
+    void navigation()
+    {
+        Core::TextDocument document;
+        document.load(Test::testDataPath() + "/textdocument/loremipsum_lf_utf8.txt");
+
+        QCOMPARE(document.line(), 1);
+        QCOMPARE(document.column(), 1);
+
+        document.gotoNextLine(2);
+        QCOMPARE(document.line(), 3);
+
+        document.gotoPreviousCharacter(1);
+        QCOMPARE(document.line(), 2);
+
+        document.gotoDocumentStart();
+        QCOMPARE(document.line(), 1);
+        QCOMPARE(document.column(), 1);
+        QCOMPARE(document.position(), 0);
+        document.gotoDocumentEnd();
+        QCOMPARE(document.line(), 21);
+        QCOMPARE(document.position(), 888);
+
+        document.gotoLine(8, 15);
+        QCOMPARE(document.position(), 241);
+        QCOMPARE(document.currentWord(), "sapien");
+        QCOMPARE(document.currentLine(), "In venenatis sapien eu ornare sollicitudin.");
+
+        document.gotoWordStart();
+        QCOMPARE(document.position(), 240);
+        document.gotoNextCharacter();
+        document.gotoWordEnd();
+        QCOMPARE(document.position(), 246);
+
+        document.gotoNextWord();
+        QCOMPARE(document.currentWord(), "eu");
+        document.gotoNextWord(5);
+        QCOMPARE(document.currentWord(), "Nulla");
+        document.gotoNextCharacter();
+        // The next character move to the next line
+        QCOMPARE(document.currentWord(), "Nulla");
+    }
+
+    void selection()
+    {
+        Core::TextDocument document;
+        document.load(Test::testDataPath() + "/textdocument/loremipsum_lf_utf8.txt");
+        QVERIFY(document.selectedText().isEmpty());
+
+        document.selectAll();
+        QCOMPARE(document.selectedText(), LoremIpsumText);
+
+        document.unselect();
+        QVERIFY(document.selectedText().isEmpty());
+        QCOMPARE(document.line(), 21); // cursor is at the end of the selection
+
+        document.gotoLine(5, 10);
+        document.selectNextLine();
+        QCOMPARE(document.selectedText(), " magna vitae mauris fringilla condimentum.\nProin non");
+        QCOMPARE(document.line(), 6);
+        QCOMPARE(document.column(), 10);
+    }
+
+    void edition()
+    {
+        Core::TextDocument document;
+        document.load(Test::testDataPath() + "/textdocument/loremipsum_lf_utf8.txt");
+
+        document.deleteRegion(598, 695);
+
+        document.gotoLine(2);
+        document.selectLineEnd();
+        document.copy();
+        document.unselect();
+        document.insert("\n");
+        document.paste();
+
+        document.gotoLine(6);
+        document.insert("Hello World!\n");
+
+        document.gotoNextLine();
+        document.selectNextWord(2);
+        document.deleteSelection();
+        document.gotoNextWord(2);
+        document.deleteEndOfLine();
+
+        document.gotoLine(10, 4);
+        document.replace(10, "homo-");
+
+        document.gotoLineEnd();
+        document.deletePreviousCharacter(14);
+        document.gotoNextLine(4);
+        document.deleteNextCharacter(5);
+
+        const QString saveFileName = Core::Utils::mktemp("TestTextDocument");
+        document.saveAs(saveFileName);
+
+        QVERIFY(Test::compareFiles(saveFileName, Test::testDataPath() + "/textdocument/loremipsum_lf_utf8_edited.txt"));
+
+        for (int i = 0; i < 9; ++i) // 9 editions done
+            document.undo();
+
+        QCOMPARE(document.text(), LoremIpsumText);
     }
 };
 
