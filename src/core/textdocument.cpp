@@ -1,10 +1,13 @@
 #include "textdocument.h"
 
+#include "mark.h"
+
 #include <QFile>
 #include <QPlainTextEdit>
 #include <QTextBlock>
 #include <QTextDocument>
 #include <QTextStream>
+
 #include <spdlog/spdlog.h>
 
 namespace Core {
@@ -670,6 +673,51 @@ void TextDocument::deleteNextCharacter(int count)
     QTextCursor cursor = m_document->textCursor();
     cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, count);
     cursor.removeSelectedText();
+    m_document->setTextCursor(cursor);
+}
+
+/*!
+ * \qmlmethod Mark TextDocument::createMark( int pos = -1)
+ * Create a mark at the given position `pos`. If `pos` is -1, it will create a mark at the
+ * current position.
+ * \sa Mark
+ */
+Mark *TextDocument::createMark(int pos)
+{
+    if (pos == -1)
+        pos = position();
+    return new Mark(this, pos);
+}
+
+/*!
+ * \qmlmethod TextDocument::gotoMark( Mark mark)
+ * Go to the given `mark`.
+ */
+void TextDocument::gotoMark(Mark *mark)
+{
+    if (mark->m_editor != this) {
+        spdlog::error("Can't use a mark from another editor.");
+        return;
+    }
+
+    QTextCursor cursor = m_document->textCursor();
+    cursor.setPosition(mark->position());
+    m_document->setTextCursor(cursor);
+}
+
+/*!
+ * \qmlmethod TextDocument::selectToMark( Mark mark)
+ * Select the text from the cursor position to the `mark`.
+ */
+void TextDocument::selectToMark(Mark *mark)
+{
+    if (mark->m_editor != this) {
+        spdlog::error("Can't use a mark from another editor.");
+        return;
+    }
+
+    QTextCursor cursor = m_document->textCursor();
+    cursor.setPosition(mark->position(), QTextCursor::KeepAnchor);
     m_document->setTextCursor(cursor);
 }
 

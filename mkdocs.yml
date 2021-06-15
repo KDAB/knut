@@ -32,6 +32,7 @@ nav:
              - Document: API/script/document.md
              - File: API/script/file.md
              - FileInfo: API/script/fileinfo.md
+             - Mark: API/script/mark.md
              - Message: API/script/message.md
              - QDirValueType: API/script/qdirvaluetype.md
              - QFileInfoValueType: API/script/qfileinfovaluetype.md

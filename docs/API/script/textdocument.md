@@ -32,6 +32,7 @@ Inherited properties: [Document properties](../script/document.md#properties)
 | | Name |
 |-|-|
 ||**[copy](#copy)**()|
+|[Mark](../script/mark.md) |**[createMark](#createMark)**(int pos = -1)|
 ||**[cut](#cut)**()|
 ||**[deleteEndOfLine](#deleteEndOfLine)**()|
 ||**[deleteEndOfWord](#deleteEndOfWord)**()|
@@ -46,6 +47,7 @@ Inherited properties: [Document properties](../script/document.md#properties)
 ||**[gotoLine](#gotoLine)**(int line, int column = 1)|
 ||**[gotoLineEnd](#gotoLineEnd)**()|
 ||**[gotoLineStart](#gotoLineStart)**()|
+||**[gotoMark](#gotoMark)**([Mark](../script/mark.md) mark)|
 ||**[gotoNextCharacter](#gotoNextCharacter)**(int count = 1)|
 ||**[gotoNextLine](#gotoNextLine)**(int count = 1)|
 ||**[gotoNextWord](#gotoNextWord)**(int count = 1)|
@@ -67,6 +69,7 @@ Inherited properties: [Document properties](../script/document.md#properties)
 ||**[selectPreviousLine](#selectPreviousLine)**(int count = 1)|
 ||**[selectPreviousWord](#selectPreviousWord)**(int count = 1)|
 ||**[selectTo](#selectTo)**(int pos)|
+||**[selectToMark](#selectToMark)**([Mark](../script/mark.md) mark)|
 ||**[selectWordEnd](#selectWordEnd)**()|
 ||**[selectWordStart](#selectWordStart)**()|
 ||**[undo](#undo)**()|
@@ -126,6 +129,11 @@ This property holds the text of the document.
 
 Copies the selected text.
 
+#### <a name="createMark"></a>[Mark](../script/mark.md) **createMark**(int pos = -1)
+
+Create a mark at the given position `pos`. If `pos` is -1, it will create a mark at the
+current position.
+
 #### <a name="cut"></a>**cut**()
 
 Cuts the selected text.
@@ -181,6 +189,10 @@ Goes to the end of the line.
 #### <a name="gotoLineStart"></a>**gotoLineStart**()
 
 Goes to the start of the line.
+
+#### <a name="gotoMark"></a>**gotoMark**([Mark](../script/mark.md) mark)
+
+Go to the given `mark`.
 
 #### <a name="gotoNextCharacter"></a>**gotoNextCharacter**(int count = 1)
 
@@ -265,6 +277,10 @@ Selects the previous word, repeat the operation `count` times.
 #### <a name="selectTo"></a>**selectTo**(int pos)
 
 Selects the text from the current position to `pos`.
+
+#### <a name="selectToMark"></a>**selectToMark**([Mark](../script/mark.md) mark)
+
+Select the text from the cursor position to the `mark`.
 
 #### <a name="selectWordEnd"></a>**selectWordEnd**()
 

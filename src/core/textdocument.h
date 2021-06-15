@@ -10,6 +10,8 @@ class QPlainTextEdit;
 
 namespace Core {
 
+class Mark;
+
 class TextDocument : public Document
 {
     Q_OBJECT
@@ -115,6 +117,11 @@ public slots:
     void deletePreviousCharacter(int count);
     void deleteNextCharacter(int count);
 
+    // Mark
+    Core::Mark *createMark(int pos = -1);
+    void gotoMark(Mark *mark);
+    void selectToMark(Mark *mark);
+
 signals:
     void positionChanged();
     void textChanged();
@@ -133,6 +140,8 @@ protected:
                       int count = 1);
 
 private:
+    friend Mark;
+
     // TODO: use a QTextDocument maybe, to avoid creating a widget
     // The QPlainTextEdit has a nicer API, so it's slightly easier with that now
     std::unique_ptr<QPlainTextEdit> m_document;

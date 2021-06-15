@@ -226,6 +226,22 @@ private slots:
 
         QCOMPARE(document.text(), LoremIpsumText);
     }
+
+    void mark()
+    {
+        Core::TextDocument document;
+        document.load(Test::testDataPath() + "/textdocument/loremipsum_lf_utf8.txt");
+
+        document.gotoLine(2);
+        auto mark = document.createMark();
+        document.gotoNextLine();
+        document.selectToMark(mark);
+        QCOMPARE(document.selectedText(), "Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n");
+
+        document.gotoDocumentEnd();
+        document.gotoMark(mark);
+        QCOMPARE(document.line(), 2);
+    }
 };
 
 QTEST_MAIN(TestTextDocument)

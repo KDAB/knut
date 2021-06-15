@@ -12,6 +12,8 @@ set(PROJECT_SOURCES
     json_utils.h
     knutmain.h
     knutmain.cpp
+    mark.h
+    mark.cpp
     message.h
     message.cpp
     qdirvaluetype.h
