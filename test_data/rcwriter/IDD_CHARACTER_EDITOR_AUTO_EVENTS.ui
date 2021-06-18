@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+    <class>IDD_CHARACTER_EDITOR_AUTO_EVENTS</class>
+    <widget class="QDialog" name="IDD_CHARACTER_EDITOR_AUTO_EVENTS">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>572</width>
+                <height>334</height>
+            </rect>
+        </property>
+        <property name="windowTitle">
+            <string>Auto Populate Events</string>
+        </property>
+        <widget class="QPushButton" name="IDOK">
+            <property name="geometry">
+                <rect>
+                    <x>19</x>
+                    <y>287</y>
+                    <width>75</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="default">
+                <bool>true</bool>
+            </property>
+            <property name="text">
+                <string>Cancel</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" name="IDC_GENERATE_EVENTS">
+            <property name="geometry">
+                <rect>
+                    <x>351</x>
+                    <y>285</y>
+                    <width>189</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Generate</string>
+            </property>
+        </widget>
+        <widget class="QGroupBox" name="IDC_STATIC">
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>4</y>
+                    <width>551</width>
+                    <height>264</height>
+                </rect>
+            </property>
+            <property name="title">
+                <string>Audio</string>
+            </property>
+            <widget class="QLabel" name="IDC_STATIC1">
+                <property name="geometry">
+                    <rect>
+                        <x>254</x>
+                        <y>58</y>
+                        <width>26</width>
+                        <height>14</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Bone</string>
+                </property>
+            </widget>
+            <widget class="QLabel" name="IDC_STATIC2">
+                <property name="geometry">
+                    <rect>
+                        <x>26</x>
+                        <y>142</y>
+                        <width>51</width>
+                        <height>14</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Foley</string>
+                </property>
+            </widget>
+            <widget class="QLabel" name="IDC_STATIC3">
+                <property name="geometry">
+                    <rect>
+                        <x>192</x>
+                        <y>184</y>
+                        <width>63</width>
+                        <height>14</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Foley delay</string>
+                </property>
+            </widget>
+            <widget class="QLabel" name="IDC_STATIC4">
+                <property name="geometry">
+                    <rect>
+                        <x>171</x>
+                        <y>213</y>
+                        <width>78</width>
+                        <height>14</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Footstep height</string>
+                </property>
+            </widget>
+            <widget class="QLabel" name="IDC_STATIC5">
+                <property name="geometry">
+                    <rect>
+                        <x>114</x>
+                        <y>58</y>
+                        <width>95</width>
+                        <height>14</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Event Name</string>
+                </property>
+            </widget>
+            <widget class="QLabel" name="IDC_STATIC6">
+                <property name="geometry">
+                    <rect>
+                        <x>26</x>
+                        <y>88</y>
+                        <width>110</width>
+                        <height>14</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Left footstep</string>
+                </property>
+            </widget>
+            <widget class="QLabel" name="IDC_STATIC7">
+                <property name="geometry">
+                    <rect>
+                        <x>26</x>
+                        <y>116</y>
+                        <width>110</width>
+                        <height>14</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Right footstep</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox" name="IDC_FOLEYS_CHECK">
+                <property name="geometry">
+                    <rect>
+                        <x>26</x>
+                        <y>30</y>
+                        <width>113</width>
+                        <height>17</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string> Generate foleys? </string>
+                </property>
+            </widget>
+            <widget class="QLineEdit" name="IDC_FOLEY_DELAY_TXT">
+                <property name="geometry">
+                    <rect>
+                        <x>404</x>
+                        <y>179</y>
+                        <width>104</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+            </widget>
+            <widget class="QLineEdit" name="IDC_FOOTSTEP_HEIGHT">
+                <property name="geometry">
+                    <rect>
+                        <x>404</x>
+                        <y>210</y>
+                        <width>104</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+            </widget>
+            <widget class="QLineEdit" name="IDC_LEFT_FOOT_EVENT">
+                <property name="geometry">
+                    <rect>
+                        <x>110</x>
+                        <y>81</y>
+                        <width>125</width>
+                        <height>24</height>
+                    </rect>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+            </widget>
+            <widget class="QLineEdit" name="IDC_RIGHT_FOOT_EVENT">
+                <property name="geometry">
+                    <rect>
+                        <x>110</x>
+                        <y>109</y>
+                        <width>125</width>
+                        <height>24</height>
+                    </rect>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+            </widget>
+            <widget class="QLineEdit" name="IDC_FOLEY_EVENT">
+                <property name="geometry">
+                    <rect>
+                        <x>110</x>
+                        <y>137</y>
+                        <width>125</width>
+                        <height>24</height>
+                    </rect>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+            </widget>
+            <widget class="QLineEdit" name="IDC_LEFT_FOOT_PARAM">
+                <property name="geometry">
+                    <rect>
+                        <x>401</x>
+                        <y>81</y>
+                        <width>125</width>
+                        <height>24</height>
+                    </rect>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+            </widget>
+            <widget class="QLineEdit" name="IDC_RIGHT_FOOT_PARAM">
+                <property name="geometry">
+                    <rect>
+                        <x>401</x>
+                        <y>109</y>
+                        <width>125</width>
+                        <height>24</height>
+                    </rect>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+            </widget>
+            <widget class="QLineEdit" name="IDC_FOLEY_PARAM">
+                <property name="geometry">
+                    <rect>
+                        <x>401</x>
+                        <y>137</y>
+                        <width>125</width>
+                        <height>24</height>
+                    </rect>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+            </widget>
+            <widget class="QComboBox" name="IDC_LEFT_BONE_COMBO">
+                <property name="geometry">
+                    <rect>
+                        <x>248</x>
+                        <y>83</y>
+                        <width>138</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <property name="editable">
+                    <bool>true</bool>
+                </property>
+                <property name="insertPolicy">
+                    <enum>QComboBox::NoInsert</enum>
+                </property>
+            </widget>
+            <widget class="QComboBox" name="IDC_RIGHT_BONE_COMBO">
+                <property name="geometry">
+                    <rect>
+                        <x>248</x>
+                        <y>111</y>
+                        <width>138</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <property name="editable">
+                    <bool>true</bool>
+                </property>
+                <property name="insertPolicy">
+                    <enum>QComboBox::NoInsert</enum>
+                </property>
+            </widget>
+            <widget class="QComboBox" name="IDC_FOLEY_BONE_COMBO">
+                <property name="geometry">
+                    <rect>
+                        <x>248</x>
+                        <y>139</y>
+                        <width>138</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <property name="editable">
+                    <bool>true</bool>
+                </property>
+                <property name="insertPolicy">
+                    <enum>QComboBox::NoInsert</enum>
+                </property>
+            </widget>
+            <widget class="QSlider" name="IDC_FOLEY_DELAY_SLIDER">
+                <property name="geometry">
+                    <rect>
+                        <x>251</x>
+                        <y>179</y>
+                        <width>150</width>
+                        <height>25</height>
+                    </rect>
+                </property>
+                <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="tickPosition">
+                    <enum>QSlider::TicksBothSides</enum>
+                </property>
+            </widget>
+            <widget class="QSlider" name="IDC_FOOT_HEIGHT_SLIDER">
+                <property name="geometry">
+                    <rect>
+                        <x>251</x>
+                        <y>207</y>
+                        <width>150</width>
+                        <height>25</height>
+                    </rect>
+                </property>
+                <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="tickPosition">
+                    <enum>QSlider::TicksBothSides</enum>
+                </property>
+            </widget>
+        </widget>
+    </widget>
+    <resources/>
+    <connections/>
+</ui>

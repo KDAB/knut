@@ -1,0 +1,1072 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+    <class>IDD_CHARPANEL_ANIMATION</class>
+    <widget class="QWidget" name="IDD_CHARPANEL_ANIMATION">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>240</width>
+                <height>1215</height>
+            </rect>
+        </property>
+        <widget class="QLineEdit" name="IDC_PLAYBACK_SCALE_NUMBER">
+            <property name="geometry">
+                <rect>
+                    <x>178</x>
+                    <y>877</y>
+                    <width>42</width>
+                    <height>22</height>
+                </rect>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+        </widget>
+        <widget class="QLineEdit" name="IDC_POLARY_NUMBER">
+            <property name="geometry">
+                <rect>
+                    <x>171</x>
+                    <y>1174</y>
+                    <width>50</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+        </widget>
+        <widget class="QLineEdit" name="IDC_POLARX_NUMBER">
+            <property name="geometry">
+                <rect>
+                    <x>171</x>
+                    <y>1146</y>
+                    <width>50</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+        </widget>
+        <widget class="QCheckBox" name="IDC_ANIMATION_DRIVEN_MOTION">
+            <property name="geometry">
+                <rect>
+                    <x>4</x>
+                    <y>196</y>
+                    <width>99</width>
+                    <height>15</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Animation Driven</string>
+            </property>
+        </widget>
+        <widget class="QCheckBox" name="IDC_VERTICAL_MOVEMENT">
+            <property name="geometry">
+                <rect>
+                    <x>111</x>
+                    <y>194</y>
+                    <width>104</width>
+                    <height>17</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Vertical Movement</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" name="IDC_RESETANIMATIONS">
+            <property name="geometry">
+                <rect>
+                    <x>126</x>
+                    <y>136</y>
+                    <width>102</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Stop All</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" name="IDC_RELOAD_ANIMATIONS">
+            <property name="geometry">
+                <rect>
+                    <x>126</x>
+                    <y>163</y>
+                    <width>102</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Reload CHRPARAM</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" name="IDC_MATERIAL">
+            <property name="geometry">
+                <rect>
+                    <x>126</x>
+                    <y>72</y>
+                    <width>104</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Material Editor</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" name="IDC_STOP_ANIMATION_LAYER">
+            <property name="geometry">
+                <rect>
+                    <x>6</x>
+                    <y>136</y>
+                    <width>108</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Stop Layer</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" name="IDC_START_SELECTED_ANIMATIONS">
+            <property name="geometry">
+                <rect>
+                    <x>6</x>
+                    <y>110</y>
+                    <width>108</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Start in Layer</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" name="IDC_CHOOSE_BASE_CHARACTER">
+            <property name="geometry">
+                <rect>
+                    <x>6</x>
+                    <y>72</y>
+                    <width>108</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Base Character</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" name="IDC_RESET_MODEL">
+            <property name="geometry">
+                <rect>
+                    <x>6</x>
+                    <y>163</y>
+                    <width>108</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Reset Model</string>
+            </property>
+        </widget>
+        <widget class="QLabel" name="IDC_SPEED_MULTIPLYER">
+            <property name="geometry">
+                <rect>
+                    <x>18</x>
+                    <y>862</y>
+                    <width>114</width>
+                    <height>19</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Playback Scale</string>
+            </property>
+        </widget>
+        <widget class="QComboBox" name="IDC_LAYER">
+            <property name="geometry">
+                <rect>
+                    <x>126</x>
+                    <y>110</y>
+                    <width>102</width>
+                    <height>22</height>
+                </rect>
+            </property>
+            <item>
+                <property name="text">
+                    <string>BaseLayer</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>Layer01</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>Layer02</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>Layer03</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>Layer04</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>Layer05</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>Layer06</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>Layer07</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>Layer08</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>Layer09</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>Layer10</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>Layer11</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>Layer12</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>Layer13</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>Layer14</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>Layer15</string>
+                </property>
+            </item>
+        </widget>
+        <widget class="QCheckBox" name="IDC_USE_GAMEPAD">
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>1003</y>
+                    <width>138</width>
+                    <height>17</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Use Gamepad</string>
+            </property>
+        </widget>
+        <widget class="QCheckBox" name="IDC_USE_MORPHTARGETS">
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>1024</y>
+                    <width>149</width>
+                    <height>17</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Use Morph Targets</string>
+            </property>
+        </widget>
+        <widget class="QSlider" name="IDC_POLARY_SLIDER">
+            <property name="geometry">
+                <rect>
+                    <x>7</x>
+                    <y>1178</y>
+                    <width>153</width>
+                    <height>17</height>
+                </rect>
+            </property>
+            <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="tickPosition">
+                <enum>QSlider::TicksBothSides</enum>
+            </property>
+        </widget>
+        <widget class="QSlider" name="IDC_POLARX_SLIDER">
+            <property name="geometry">
+                <rect>
+                    <x>7</x>
+                    <y>1151</y>
+                    <width>153</width>
+                    <height>17</height>
+                </rect>
+            </property>
+            <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="tickPosition">
+                <enum>QSlider::TicksBothSides</enum>
+            </property>
+        </widget>
+        <widget class="QSlider" name="IDC_PLAYBACK_SCALE_SLIDER">
+            <property name="geometry">
+                <rect>
+                    <x>13</x>
+                    <y>882</y>
+                    <width>155</width>
+                    <height>17</height>
+                </rect>
+            </property>
+            <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="tickPosition">
+                <enum>QSlider::TicksBothSides</enum>
+            </property>
+        </widget>
+        <widget class="QLineEdit" name="IDC_FILE">
+            <property name="geometry">
+                <rect>
+                    <x>6</x>
+                    <y>6</y>
+                    <width>221</width>
+                    <height>22</height>
+                </rect>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+        </widget>
+        <widget class="QPushButton" name="IDC_RELOAD_FILE">
+            <property name="geometry">
+                <rect>
+                    <x>6</x>
+                    <y>34</y>
+                    <width>222</width>
+                    <height>22</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Reload Model Setup</string>
+            </property>
+        </widget>
+        <widget class="QGroupBox" name="IDC_STATIC">
+            <property name="geometry">
+                <rect>
+                    <x>6</x>
+                    <y>904</y>
+                    <width>222</width>
+                    <height>86</height>
+                </rect>
+            </property>
+            <property name="title">
+                <string>Unit Test for Humans</string>
+            </property>
+            <widget class="QCheckBox" name="IDC_IDLE2MOVE">
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>61</y>
+                        <width>75</width>
+                        <height>15</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Idle2Move</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox" name="IDC_PLAYER_CONTROL">
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>21</y>
+                        <width>86</width>
+                        <height>17</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>PlayerControl</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox" name="IDC_FIXED_CAMERA">
+                <property name="geometry">
+                    <rect>
+                        <x>115</x>
+                        <y>21</y>
+                        <width>98</width>
+                        <height>15</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Fixed Camera</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox" name="IDC_IDLESTEP">
+                <property name="geometry">
+                    <rect>
+                        <x>115</x>
+                        <y>61</y>
+                        <width>89</width>
+                        <height>17</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>IdleStep</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox" name="IDC_PATH_FOLLOWING">
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>41</y>
+                        <width>93</width>
+                        <height>17</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Path Following</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox" name="IDC_ATTACHED_CAM">
+                <property name="geometry">
+                    <rect>
+                        <x>115</x>
+                        <y>41</y>
+                        <width>95</width>
+                        <height>17</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Attached Cam</string>
+                </property>
+            </widget>
+        </widget>
+        <widget class="QGroupBox" name="IDC_STATIC1">
+            <property name="geometry">
+                <rect>
+                    <x>6</x>
+                    <y>759</y>
+                    <width>222</width>
+                    <height>99</height>
+                </rect>
+            </property>
+            <property name="title">
+                <string>Post Processing</string>
+            </property>
+            <widget class="QCheckBox" name="IDC_RFOOTIK">
+                <property name="geometry">
+                    <rect>
+                        <x>118</x>
+                        <y>39</y>
+                        <width>65</width>
+                        <height>14</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>RFootIK</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox" name="IDC_LARMIK">
+                <property name="geometry">
+                    <rect>
+                        <x>13</x>
+                        <y>59</y>
+                        <width>59</width>
+                        <height>17</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>LArmIK</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox" name="IDC_RARMIK">
+                <property name="geometry">
+                    <rect>
+                        <x>118</x>
+                        <y>59</y>
+                        <width>60</width>
+                        <height>17</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>RArmIK</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox" name="IDC_LOOKIK">
+                <property name="geometry">
+                    <rect>
+                        <x>13</x>
+                        <y>21</y>
+                        <width>62</width>
+                        <height>17</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>LookIK</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox" name="IDC_AIMIK">
+                <property name="geometry">
+                    <rect>
+                        <x>118</x>
+                        <y>21</y>
+                        <width>62</width>
+                        <height>17</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>AimIK</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox" name="IDC_LFOOTIK">
+                <property name="geometry">
+                    <rect>
+                        <x>13</x>
+                        <y>39</y>
+                        <width>62</width>
+                        <height>17</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>LFootIK</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox" name="IDC_GROUNDALIGN">
+                <property name="geometry">
+                    <rect>
+                        <x>118</x>
+                        <y>79</y>
+                        <width>80</width>
+                        <height>14</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>GroundAlign</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox" name="IDC_FOOT_ANCHORING">
+                <property name="geometry">
+                    <rect>
+                        <x>13</x>
+                        <y>77</y>
+                        <width>99</width>
+                        <height>17</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Foot Anchoring</string>
+                </property>
+            </widget>
+        </widget>
+        <widget class="QGroupBox" name="IDC_STATIC2">
+            <property name="geometry">
+                <rect>
+                    <x>6</x>
+                    <y>217</y>
+                    <width>222</width>
+                    <height>225</height>
+                </rect>
+            </property>
+            <property name="title">
+                <string>Animation Flags</string>
+            </property>
+            <widget class="QLineEdit" name="IDC_LOOKIK_LAYER">
+                <property name="geometry">
+                    <rect>
+                        <x>150</x>
+                        <y>200</y>
+                        <width>50</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+            </widget>
+            <widget class="QLineEdit" name="IDC_AIMIK_LAYER">
+                <property name="geometry">
+                    <rect>
+                        <x>150</x>
+                        <y>175</y>
+                        <width>50</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+            </widget>
+            <widget class="QLineEdit" name="IDC_ADDITIVE_WEIGHT">
+                <property name="geometry">
+                    <rect>
+                        <x>150</x>
+                        <y>150</y>
+                        <width>50</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+            </widget>
+            <widget class="QLineEdit" name="IDC_TRANSITION_TIME">
+                <property name="geometry">
+                    <rect>
+                        <x>150</x>
+                        <y>126</y>
+                        <width>51</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+            </widget>
+            <widget class="QCheckBox" name="IDC_LOOP_ANIMATION">
+                <property name="geometry">
+                    <rect>
+                        <x>9</x>
+                        <y>23</y>
+                        <width>99</width>
+                        <height>17</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Loop Animation</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox" name="IDC_REPEAT_LAST_KEY">
+                <property name="geometry">
+                    <rect>
+                        <x>9</x>
+                        <y>45</y>
+                        <width>132</width>
+                        <height>15</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Repeat Last Key</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox" name="IDC_ALLOW_ANIMATION_RESTART">
+                <property name="geometry">
+                    <rect>
+                        <x>9</x>
+                        <y>104</y>
+                        <width>144</width>
+                        <height>14</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Allow Animation Restart</string>
+                </property>
+            </widget>
+            <widget class="QLabel" name="IDC_LOOKIK_LAYER_TEXT">
+                <property name="geometry">
+                    <rect>
+                        <x>27</x>
+                        <y>200</y>
+                        <width>114</width>
+                        <height>19</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>LookIK Layer</string>
+                </property>
+            </widget>
+            <widget class="QLabel" name="IDC_LAYERBLENDWEIGHT_TEXT">
+                <property name="geometry">
+                    <rect>
+                        <x>25</x>
+                        <y>154</y>
+                        <width>114</width>
+                        <height>19</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Layer Blend Weight</string>
+                </property>
+            </widget>
+            <widget class="QLabel" name="IDC_TRANSITION">
+                <property name="geometry">
+                    <rect>
+                        <x>27</x>
+                        <y>131</y>
+                        <width>114</width>
+                        <height>19</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Transition Time</string>
+                </property>
+            </widget>
+            <widget class="QLabel" name="IDC_AIMIK_LAYER_TEXT">
+                <property name="geometry">
+                    <rect>
+                        <x>27</x>
+                        <y>179</y>
+                        <width>114</width>
+                        <height>19</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>AimIK Layer</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox" name="IDC_DISABLE_MULTILAYER_ANIMATION">
+                <property name="geometry">
+                    <rect>
+                        <x>9</x>
+                        <y>84</y>
+                        <width>159</width>
+                        <height>14</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Disable Layer Animation</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox" name="IDC_VTIME_WARPING">
+                <property name="geometry">
+                    <rect>
+                        <x>9</x>
+                        <y>63</y>
+                        <width>140</width>
+                        <height>17</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Transition Time Warping</string>
+                </property>
+            </widget>
+        </widget>
+        <widget class="QGroupBox" name="IDC_STATIC3">
+            <property name="geometry">
+                <rect>
+                    <x>6</x>
+                    <y>448</y>
+                    <width>224</width>
+                    <height>306</height>
+                </rect>
+            </property>
+            <property name="title">
+                <string>Blend-Space Control</string>
+            </property>
+            <widget class="QLineEdit" name="IDC_BLENDSPACENUMBER_Para2">
+                <property name="geometry">
+                    <rect>
+                        <x>166</x>
+                        <y>80</y>
+                        <width>50</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+            </widget>
+            <widget class="QLineEdit" name="IDC_BLENDSPACENUMBER_Para1">
+                <property name="geometry">
+                    <rect>
+                        <x>166</x>
+                        <y>40</y>
+                        <width>50</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+            </widget>
+            <widget class="QLineEdit" name="IDC_BLENDSPACENUMBER_Para3">
+                <property name="geometry">
+                    <rect>
+                        <x>166</x>
+                        <y>119</y>
+                        <width>50</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+            </widget>
+            <widget class="QLineEdit" name="IDC_BLENDSPACENUMBER_Para7">
+                <property name="geometry">
+                    <rect>
+                        <x>168</x>
+                        <y>278</y>
+                        <width>50</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+            </widget>
+            <widget class="QLineEdit" name="IDC_BLENDSPACENUMBER_Para6">
+                <property name="geometry">
+                    <rect>
+                        <x>166</x>
+                        <y>238</y>
+                        <width>50</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+            </widget>
+            <widget class="QLineEdit" name="IDC_BLENDSPACENUMBER_Para5">
+                <property name="geometry">
+                    <rect>
+                        <x>166</x>
+                        <y>198</y>
+                        <width>50</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+            </widget>
+            <widget class="QLineEdit" name="IDC_BLENDSPACENUMBER_Para4">
+                <property name="geometry">
+                    <rect>
+                        <x>166</x>
+                        <y>159</y>
+                        <width>50</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+            </widget>
+            <widget class="QLabel" name="IDC_P1_MoveSpeed">
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>22</y>
+                        <width>114</width>
+                        <height>19</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>P1 - Move Speed</string>
+                </property>
+            </widget>
+            <widget class="QLabel" name="IDC_P2_TurnSpeed">
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>61</y>
+                        <width>114</width>
+                        <height>19</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>P2 - Turn Speed</string>
+                </property>
+            </widget>
+            <widget class="QLabel" name="IDC_P3_TravelAngle">
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>101</y>
+                        <width>114</width>
+                        <height>19</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>P3 - Travel Angle</string>
+                </property>
+            </widget>
+            <widget class="QLabel" name="IDC_P4_Slope">
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>141</y>
+                        <width>114</width>
+                        <height>19</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>P4 - Slope</string>
+                </property>
+            </widget>
+            <widget class="QLabel" name="IDC_P6_TravelDistance">
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>220</y>
+                        <width>114</width>
+                        <height>19</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>P6 - Travel Distance</string>
+                </property>
+            </widget>
+            <widget class="QLabel" name="IDC_P7_BlendWeight">
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>259</y>
+                        <width>114</width>
+                        <height>19</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>P7 - BlendWeight</string>
+                </property>
+            </widget>
+            <widget class="QLabel" name="IDC_P5_TurnAngle">
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>180</y>
+                        <width>114</width>
+                        <height>19</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>P5 - Turn Angle</string>
+                </property>
+            </widget>
+            <widget class="QSlider" name="IDC_BLENDSPACESLIDER_Para1">
+                <property name="geometry">
+                    <rect>
+                        <x>7</x>
+                        <y>43</y>
+                        <width>153</width>
+                        <height>17</height>
+                    </rect>
+                </property>
+                <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="tickPosition">
+                    <enum>QSlider::TicksBothSides</enum>
+                </property>
+            </widget>
+            <widget class="QSlider" name="IDC_BLENDSPACESLIDER_Para7">
+                <property name="geometry">
+                    <rect>
+                        <x>7</x>
+                        <y>279</y>
+                        <width>153</width>
+                        <height>17</height>
+                    </rect>
+                </property>
+                <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="tickPosition">
+                    <enum>QSlider::TicksBothSides</enum>
+                </property>
+            </widget>
+            <widget class="QSlider" name="IDC_BLENDSPACESLIDER_Para3">
+                <property name="geometry">
+                    <rect>
+                        <x>7</x>
+                        <y>122</y>
+                        <width>153</width>
+                        <height>17</height>
+                    </rect>
+                </property>
+                <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="tickPosition">
+                    <enum>QSlider::TicksBothSides</enum>
+                </property>
+            </widget>
+            <widget class="QSlider" name="IDC_BLENDSPACESLIDER_Para4">
+                <property name="geometry">
+                    <rect>
+                        <x>7</x>
+                        <y>162</y>
+                        <width>153</width>
+                        <height>17</height>
+                    </rect>
+                </property>
+                <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="tickPosition">
+                    <enum>QSlider::TicksBothSides</enum>
+                </property>
+            </widget>
+            <widget class="QSlider" name="IDC_BLENDSPACESLIDER_Para5">
+                <property name="geometry">
+                    <rect>
+                        <x>7</x>
+                        <y>202</y>
+                        <width>153</width>
+                        <height>17</height>
+                    </rect>
+                </property>
+                <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="tickPosition">
+                    <enum>QSlider::TicksBothSides</enum>
+                </property>
+            </widget>
+            <widget class="QSlider" name="IDC_BLENDSPACESLIDER_Para2">
+                <property name="geometry">
+                    <rect>
+                        <x>7</x>
+                        <y>83</y>
+                        <width>153</width>
+                        <height>17</height>
+                    </rect>
+                </property>
+                <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="tickPosition">
+                    <enum>QSlider::TicksBothSides</enum>
+                </property>
+            </widget>
+            <widget class="QSlider" name="IDC_BLENDSPACESLIDER_Para6">
+                <property name="geometry">
+                    <rect>
+                        <x>7</x>
+                        <y>240</y>
+                        <width>153</width>
+                        <height>17</height>
+                    </rect>
+                </property>
+                <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="tickPosition">
+                    <enum>QSlider::TicksBothSides</enum>
+                </property>
+            </widget>
+        </widget>
+    </widget>
+    <resources/>
+    <connections/>
+</ui>

@@ -116,12 +116,12 @@ QString Utils::mktemp(const QString &pattern)
 {
     QString tmp = pattern;
     if (tmp.isEmpty())
-        tmp = QStringLiteral("script_temp.XXXXXX");
+        tmp = "script_temp.XXXXXX";
     QFileInfo fi(tmp);
     if (!fi.isAbsolute()) {
         QString tempPattern = QDir::tempPath();
-        if (!tempPattern.endsWith(QLatin1Char('/')))
-            tempPattern += QLatin1Char('/');
+        if (!tempPattern.endsWith('/'))
+            tempPattern += '/';
         tmp = tempPattern + tmp;
     }
 

@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+    <class>IDD_PANEL_DISPLAY_STEREO</class>
+    <widget class="QWidget" name="IDD_PANEL_DISPLAY_STEREO">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>348</width>
+                <height>238</height>
+            </rect>
+        </property>
+        <widget class="QLineEdit" name="IDC_STEREO_EYEDIST_EDIT">
+            <property name="geometry">
+                <rect>
+                    <x>141</x>
+                    <y>94</y>
+                    <width>57</width>
+                    <height>22</height>
+                </rect>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+        </widget>
+        <widget class="QLineEdit" name="IDC_STEREO_SCREENDIST_EDIT">
+            <property name="geometry">
+                <rect>
+                    <x>141</x>
+                    <y>138</y>
+                    <width>57</width>
+                    <height>22</height>
+                </rect>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+        </widget>
+        <widget class="QLabel" name="IDC_STATIC">
+            <property name="geometry">
+                <rect>
+                    <x>13</x>
+                    <y>4</y>
+                    <width>86</width>
+                    <height>17</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Stereo Mode:</string>
+            </property>
+        </widget>
+        <widget class="QLabel" name="IDC_STATIC1">
+            <property name="geometry">
+                <rect>
+                    <x>13</x>
+                    <y>47</y>
+                    <width>86</width>
+                    <height>17</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Stereo Output:</string>
+            </property>
+        </widget>
+        <widget class="QLabel" name="IDC_STATIC2">
+            <property name="geometry">
+                <rect>
+                    <x>13</x>
+                    <y>95</y>
+                    <width>86</width>
+                    <height>17</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Stereo Eye Dist:</string>
+            </property>
+        </widget>
+        <widget class="QLabel" name="IDC_STATIC3">
+            <property name="geometry">
+                <rect>
+                    <x>13</x>
+                    <y>184</y>
+                    <width>86</width>
+                    <height>17</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Stereo Flip Eyes:</string>
+            </property>
+        </widget>
+        <widget class="QRadioButton" name="IDC_STEREO_FLIPEYES_RADIO">
+            <property name="geometry">
+                <rect>
+                    <x>13</x>
+                    <y>201</y>
+                    <width>78</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>don't flip</string>
+            </property>
+        </widget>
+        <widget class="QRadioButton" name="IDC_STEREO_FLIPEYES_RADIO2">
+            <property name="geometry">
+                <rect>
+                    <x>91</x>
+                    <y>201</y>
+                    <width>78</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>flip</string>
+            </property>
+        </widget>
+        <widget class="QLabel" name="IDC_STATIC4">
+            <property name="geometry">
+                <rect>
+                    <x>13</x>
+                    <y>141</y>
+                    <width>101</width>
+                    <height>17</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Stereo Screen Dist:</string>
+            </property>
+        </widget>
+        <widget class="QComboBox" name="IDC_STEREO_MODE_COMBO">
+            <property name="geometry">
+                <rect>
+                    <x>13</x>
+                    <y>21</y>
+                    <width>185</width>
+                    <height>22</height>
+                </rect>
+            </property>
+            <item>
+                <property name="text">
+                    <string>No stereo output</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>Dual rendering</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>Post stereo</string>
+                </property>
+            </item>
+        </widget>
+        <widget class="QComboBox" name="IDC_STEREO_OUTPUT_COMBO">
+            <property name="geometry">
+                <rect>
+                    <x>13</x>
+                    <y>64</y>
+                    <width>185</width>
+                    <height>22</height>
+                </rect>
+            </property>
+            <item>
+                <property name="text">
+                    <string>No stereo output (emulation mode)</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>Generic Dual Head</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>IZ3D</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>Above and Below (not supported)</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>Side by Side</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>Interlaced (not supported)</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>Anaglyph</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>VR Headset (Oculus Rift)</string>
+                </property>
+            </item>
+        </widget>
+        <widget class="QSlider" name="IDC_STEREO_EYEDIST_SLIDER">
+            <property name="geometry">
+                <rect>
+                    <x>13</x>
+                    <y>115</y>
+                    <width>258</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="tickPosition">
+                <enum>QSlider::TicksBothSides</enum>
+            </property>
+        </widget>
+        <widget class="QSlider" name="IDC_STEREO_SCREENDIST_SLIDER">
+            <property name="geometry">
+                <rect>
+                    <x>13</x>
+                    <y>160</y>
+                    <width>258</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="tickPosition">
+                <enum>QSlider::TicksBothSides</enum>
+            </property>
+        </widget>
+    </widget>
+    <resources/>
+    <connections/>
+</ui>

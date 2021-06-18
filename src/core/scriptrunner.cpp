@@ -104,7 +104,7 @@ QVariant ScriptRunner::runScript(const QString &fileName, std::function<void()> 
         auto engine = getEngine(fullName);
         if (endCallback)
             connect(engine, &QObject::destroyed, this, endCallback);
-        if (fi.suffix() == QLatin1String("js"))
+        if (fi.suffix() == "js")
             result = runJavascript(fullName, engine);
         else
             result = runQml(fullName, engine);
@@ -124,7 +124,7 @@ QQmlEngine *ScriptRunner::getEngine(const QString &fileName)
     auto engine = new QQmlEngine(this);
     engine->setProperty("scriptPath", fi.absolutePath());
     engine->setProperty("scriptWindow", false);
-    engine->addImportPath(QLatin1String("qrc:/qml"));
+    engine->addImportPath("qrc:/qml");
 
     auto logWarnings = [this](const QList<QQmlError> &warnings) {
         for (const auto &warning : warnings) {

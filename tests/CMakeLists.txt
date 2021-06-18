@@ -6,9 +6,10 @@ endif()
 function(add_knut_test NAME SOURCES LIBS)
     add_executable(${NAME} ${SOURCES})
 
+    set(_LIBS ${LIBS} ${ARGN})
     target_link_libraries(${NAME} PRIVATE
         Qt${QT_VERSION_MAJOR}::Test
-        ${LIBS}
+        ${_LIBS}
     )
     target_include_directories(${NAME}
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src
@@ -29,3 +30,9 @@ add_knut_test(tst_knut tst_knut.cpp knut-core)
 add_knut_test(tst_stringutils tst_stringutils.cpp knut-core)
 
 add_knut_test(tst_textdocument tst_textdocument.cpp knut-core)
+
+add_knut_test(tst_rclexer tst_rclexer.cpp knut-rcfile)
+
+add_knut_test(tst_rcparser tst_rcparser.cpp knut-rcfile)
+
+add_knut_test(tst_rcwriter tst_rcwriter.cpp knut-rcfile Qt${QT_VERSION_MAJOR}::UiTools)

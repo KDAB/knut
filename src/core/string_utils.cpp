@@ -12,10 +12,10 @@ static QString nextWordInString(const QString &str, QString::const_iterator &i, 
         if (c == Case::CamelCase || c == Case::PascalCase)
             return i->isUpper();
         else if (c == Case::SnakeCase || c == Case::UpperCase)
-            return *i == QLatin1Char('_');
+            return *i == '_';
         else if (c == Case::KebabCase)
-            return *i == QLatin1Char('-');
-        return *i == QLatin1Char(' ');
+            return *i == '-';
+        return *i == ' ';
     };
 
     do {
@@ -59,22 +59,22 @@ QString convertCase(const QString &str, Case from, Case to)
             break;
         case Case::SnakeCase:
             if (!firstWord)
-                result += QLatin1Char('_');
+                result += '_';
             result += w.toLower();
             break;
         case Case::KebabCase:
             if (!firstWord)
-                result += QLatin1Char('-');
+                result += '-';
             result += w.toLower();
             break;
         case Case::UpperCase:
             if (!firstWord)
-                result += QLatin1Char('_');
+                result += '_';
             result += w.toUpper();
             break;
         case Case::TitleCase:
             if (!firstWord)
-                result += QLatin1Char(' ');
+                result += ' ';
             w = w.toLower();
             if (firstWord || !titleCaseExceptions.contains(w))
                 w[0] = w.front().toUpper();

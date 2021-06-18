@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+    <class>IDD_ABCCOMPILE</class>
+    <widget class="QDialog" name="IDD_ABCCOMPILE">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>431</width>
+                <height>255</height>
+            </rect>
+        </property>
+        <property name="windowTitle">
+            <string>Compile Alembic</string>
+        </property>
+        <widget class="QPushButton" name="IDOK">
+            <property name="geometry">
+                <rect>
+                    <x>258</x>
+                    <y>216</y>
+                    <width>75</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="default">
+                <bool>true</bool>
+            </property>
+            <property name="text">
+                <string>OK</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" name="IDCANCEL">
+            <property name="geometry">
+                <rect>
+                    <x>342</x>
+                    <y>216</y>
+                    <width>75</width>
+                    <height>24</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Cancel</string>
+            </property>
+        </widget>
+        <widget class="QCheckBox" name="IDC_PLAYBACKFROMMEMORY">
+            <property name="geometry">
+                <rect>
+                    <x>24</x>
+                    <y>184</y>
+                    <width>132</width>
+                    <height>17</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Playback from Memory</string>
+            </property>
+        </widget>
+        <widget class="QGroupBox" name="IDC_STATIC">
+            <property name="geometry">
+                <rect>
+                    <x>12</x>
+                    <y>67</y>
+                    <width>198</width>
+                    <height>47</height>
+                </rect>
+            </property>
+            <property name="title">
+                <string>Compilation Settings</string>
+            </property>
+            <widget class="QRadioButton" name="IDC_RADIO_YUP">
+                <property name="geometry">
+                    <rect>
+                        <x>12</x>
+                        <y>20</y>
+                        <width>68</width>
+                        <height>17</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Y-axis up</string>
+                </property>
+            </widget>
+            <widget class="QRadioButton" name="IDC_RADIO_ZUP">
+                <property name="geometry">
+                    <rect>
+                        <x>90</x>
+                        <y>20</y>
+                        <width>68</width>
+                        <height>17</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Z-axis up</string>
+                </property>
+            </widget>
+        </widget>
+        <widget class="QGroupBox" name="IDC_STATIC1">
+            <property name="geometry">
+                <rect>
+                    <x>12</x>
+                    <y>120</y>
+                    <width>198</width>
+                    <height>50</height>
+                </rect>
+            </property>
+            <property name="title">
+                <string>Runtime Settings</string>
+            </property>
+        </widget>
+        <widget class="QGroupBox" name="IDC_STATIC2">
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>8</y>
+                    <width>198</width>
+                    <height>52</height>
+                </rect>
+            </property>
+            <property name="title">
+                <string>Preset</string>
+            </property>
+            <widget class="QComboBox" name="IDC_PRESET">
+                <property name="geometry">
+                    <rect>
+                        <x>9</x>
+                        <y>18</y>
+                        <width>182</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+            </widget>
+        </widget>
+        <widget class="QGroupBox" name="IDC_STATIC3">
+            <property name="geometry">
+                <rect>
+                    <x>219</x>
+                    <y>9</y>
+                    <width>197</width>
+                    <height>192</height>
+                </rect>
+            </property>
+            <property name="title">
+                <string>Compression Settings</string>
+            </property>
+            <widget class="QLabel" name="IDC_STATIC4">
+                <property name="geometry">
+                    <rect>
+                        <x>12</x>
+                        <y>76</y>
+                        <width>42</width>
+                        <height>14</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>UV Max:</string>
+                </property>
+            </widget>
+            <widget class="QLineEdit" name="IDC_INDEXFRAMEDISTANCE">
+                <property name="geometry">
+                    <rect>
+                        <x>144</x>
+                        <y>159</y>
+                        <width>41</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+            </widget>
+            <widget class="QLabel" name="IDC_STATIC5">
+                <property name="geometry">
+                    <rect>
+                        <x>12</x>
+                        <y>50</y>
+                        <width>75</width>
+                        <height>14</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Precision (mm):</string>
+                </property>
+            </widget>
+            <widget class="QLabel" name="IDC_STATIC6">
+                <property name="geometry">
+                    <rect>
+                        <x>12</x>
+                        <y>24</y>
+                        <width>93</width>
+                        <height>14</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Block Compression:</string>
+                </property>
+            </widget>
+            <widget class="QLineEdit" name="IDC_PRECISION">
+                <property name="geometry">
+                    <rect>
+                        <x>114</x>
+                        <y>47</y>
+                        <width>71</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+            </widget>
+            <widget class="QLabel" name="IDC_STATIC7">
+                <property name="geometry">
+                    <rect>
+                        <x>12</x>
+                        <y>162</y>
+                        <width>111</width>
+                        <height>14</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Index Frame Distance:</string>
+                </property>
+            </widget>
+            <widget class="QComboBox" name="IDC_BLOCKCOMPRESSION">
+                <property name="geometry">
+                    <rect>
+                        <x>114</x>
+                        <y>20</y>
+                        <width>72</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+            </widget>
+            <widget class="QLineEdit" name="IDC_UV_MAX">
+                <property name="geometry">
+                    <rect>
+                        <x>114</x>
+                        <y>71</y>
+                        <width>71</width>
+                        <height>24</height>
+                    </rect>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+            </widget>
+            <widget class="QCheckBox" name="IDC_MESHPREDICTION">
+                <property name="geometry">
+                    <rect>
+                        <x>12</x>
+                        <y>103</y>
+                        <width>120</width>
+                        <height>17</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Use Mesh Prediction</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox" name="IDC_USEBFRAMES">
+                <property name="geometry">
+                    <rect>
+                        <x>12</x>
+                        <y>132</y>
+                        <width>158</width>
+                        <height>17</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Use Bi-Directional Prediction</string>
+                </property>
+            </widget>
+        </widget>
+    </widget>
+    <resources/>
+    <connections/>
+</ui>

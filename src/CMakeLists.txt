@@ -12,3 +12,4 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 
 add_subdirectory(core)
 add_subdirectory(lsp)
+add_subdirectory(rcfile)

@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+    <class>IDD_PANEL_TERRAIN_MODIFY</class>
+    <widget class="QWidget" name="IDD_PANEL_TERRAIN_MODIFY">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>195</width>
+                <height>637</height>
+            </rect>
+        </property>
+        <widget class="QCheckBox" name="IDC_REPOSITION_OBJECTS">
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>582</y>
+                    <width>113</width>
+                    <height>17</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Reposition Objects</string>
+            </property>
+        </widget>
+        <widget class="QCheckBox" name="IDC_REPOSITION_VEGETATION">
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>603</y>
+                    <width>171</width>
+                    <height>17</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Reposition Vegetation</string>
+            </property>
+        </widget>
+        <widget class="QGroupBox" name="IDC_STATIC2">
+            <property name="geometry">
+                <rect>
+                    <x>4</x>
+                    <y>425</y>
+                    <width>186</width>
+                    <height>147</height>
+                </rect>
+            </property>
+            <property name="title">
+                <string>Noise Settings</string>
+            </property>
+            <widget class="QLabel" name="IDC_STATIC">
+                <property name="geometry">
+                    <rect>
+                        <x>9</x>
+                        <y>45</y>
+                        <width>32</width>
+                        <height>14</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Scale:</string>
+                </property>
+            </widget>
+            <widget class="QLabel" name="IDC_STATIC1">
+                <property name="geometry">
+                    <rect>
+                        <x>9</x>
+                        <y>93</y>
+                        <width>51</width>
+                        <height>14</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Frequency</string>
+                </property>
+            </widget>
+            <widget class="QLineEdit" name="IDC_NOISE_SCALE">
+                <property name="geometry">
+                    <rect>
+                        <x>128</x>
+                        <y>40</y>
+                        <width>53</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+            </widget>
+            <widget class="QLineEdit" name="IDC_NOISE_FREQ">
+                <property name="geometry">
+                    <rect>
+                        <x>128</x>
+                        <y>91</y>
+                        <width>53</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+            </widget>
+            <widget class="QCheckBox" name="IDC_BRUSH_NOISE">
+                <property name="geometry">
+                    <rect>
+                        <x>9</x>
+                        <y>18</y>
+                        <width>87</width>
+                        <height>17</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Enable Noise</string>
+                </property>
+            </widget>
+            <widget class="QSlider" name="IDC_NOISE_SCALE_SLIDER">
+                <property name="geometry">
+                    <rect>
+                        <x>9</x>
+                        <y>63</y>
+                        <width>171</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="tickPosition">
+                    <enum>QSlider::TicksBothSides</enum>
+                </property>
+            </widget>
+            <widget class="QSlider" name="IDC_NOISE_FREQ_SLIDER">
+                <property name="geometry">
+                    <rect>
+                        <x>9</x>
+                        <y>111</y>
+                        <width>171</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="tickPosition">
+                    <enum>QSlider::TicksBothSides</enum>
+                </property>
+            </widget>
+        </widget>
+        <widget class="QGroupBox" name="IDC_STATIC1">
+            <property name="geometry">
+                <rect>
+                    <x>4</x>
+                    <y>0</y>
+                    <width>186</width>
+                    <height>416</height>
+                </rect>
+            </property>
+            <property name="title">
+                <string>Brush Settings</string>
+            </property>
+            <widget class="QLabel" name="IDC_STATIC2">
+                <property name="geometry">
+                    <rect>
+                        <x>9</x>
+                        <y>125</y>
+                        <width>29</width>
+                        <height>14</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Type:</string>
+                </property>
+            </widget>
+            <widget class="QLabel" name="IDC_STATIC3">
+                <property name="geometry">
+                    <rect>
+                        <x>9</x>
+                        <y>369</y>
+                        <width>36</width>
+                        <height>14</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Height:</string>
+                </property>
+            </widget>
+            <widget class="QLabel" name="IDC_STATIC4">
+                <property name="geometry">
+                    <rect>
+                        <x>9</x>
+                        <y>306</y>
+                        <width>50</width>
+                        <height>14</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Hardness:</string>
+                </property>
+            </widget>
+            <widget class="QLabel" name="IDC_STATIC5">
+                <property name="geometry">
+                    <rect>
+                        <x>9</x>
+                        <y>245</y>
+                        <width>69</width>
+                        <height>14</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Inside Radius:</string>
+                </property>
+            </widget>
+            <widget class="QLabel" name="IDC_STATIC6">
+                <property name="geometry">
+                    <rect>
+                        <x>9</x>
+                        <y>168</y>
+                        <width>74</width>
+                        <height>14</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Outside Radius</string>
+                </property>
+            </widget>
+            <widget class="QLineEdit" name="IDC_BRUSH_RADIUS">
+                <property name="geometry">
+                    <rect>
+                        <x>128</x>
+                        <y>166</y>
+                        <width>53</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+            </widget>
+            <widget class="QLineEdit" name="IDC_BRUSH_HEIGHT">
+                <property name="geometry">
+                    <rect>
+                        <x>128</x>
+                        <y>364</y>
+                        <width>53</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+            </widget>
+            <widget class="QLineEdit" name="IDC_BRUSH_HARDNESS">
+                <property name="geometry">
+                    <rect>
+                        <x>128</x>
+                        <y>303</y>
+                        <width>53</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+            </widget>
+            <widget class="QLineEdit" name="IDC_BRUSH_RADIUS2">
+                <property name="geometry">
+                    <rect>
+                        <x>128</x>
+                        <y>244</y>
+                        <width>53</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+            </widget>
+            <widget class="QCheckBox" name="IDC_SYNC_RADIUS">
+                <property name="geometry">
+                    <rect>
+                        <x>29</x>
+                        <y>212</y>
+                        <width>144</width>
+                        <height>17</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Sync Radius for all Types</string>
+                </property>
+            </widget>
+            <widget class="QComboBox" name="IDC_BRUSH_TYPE">
+                <property name="geometry">
+                    <rect>
+                        <x>45</x>
+                        <y>122</y>
+                        <width>135</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+            </widget>
+            <widget class="QSlider" name="IDC_BRUSH_RADIUS_SLIDER">
+                <property name="geometry">
+                    <rect>
+                        <x>9</x>
+                        <y>189</y>
+                        <width>171</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="tickPosition">
+                    <enum>QSlider::TicksBothSides</enum>
+                </property>
+            </widget>
+            <widget class="QSlider" name="IDC_BRUSH_HEIGHT_SLIDER">
+                <property name="geometry">
+                    <rect>
+                        <x>9</x>
+                        <y>389</y>
+                        <width>171</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="tickPosition">
+                    <enum>QSlider::TicksBothSides</enum>
+                </property>
+            </widget>
+            <widget class="QSlider" name="IDC_BRUSH_HARDNESS_SLIDER">
+                <property name="geometry">
+                    <rect>
+                        <x>9</x>
+                        <y>328</y>
+                        <width>171</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="tickPosition">
+                    <enum>QSlider::TicksBothSides</enum>
+                </property>
+            </widget>
+            <widget class="QSlider" name="IDC_BRUSH_RADIUS_SLIDER2">
+                <property name="geometry">
+                    <rect>
+                        <x>9</x>
+                        <y>267</y>
+                        <width>171</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="tickPosition">
+                    <enum>QSlider::TicksBothSides</enum>
+                </property>
+            </widget>
+            <widget class="QLabel" name="IDC_BRUSH_PREVIEW">
+                <property name="geometry">
+                    <rect>
+                        <x>41</x>
+                        <y>82</y>
+                        <width>60</width>
+                        <height>66</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string></string>
+                </property>
+            </widget>
+        </widget>
+    </widget>
+    <resources/>
+    <connections/>
+</ui>

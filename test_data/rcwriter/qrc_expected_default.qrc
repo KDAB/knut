@@ -1,0 +1,19 @@
+
+<RCC>
+    <qresource prefix="/">
+        <file alias="IDR_MAINFRAME">res/Toolbar.bmp</file>
+        <file alias="IDR_MAINFRAME_256">res/Toolbar256.bmp</file>
+        <file alias="IDR_SORT">res/sort.bmp</file>
+        <file alias="IDB_SORT_24">res/sort_hc.bmp</file>
+        <file alias="IDB_FILE_VIEW">res/fileview.bmp</file>
+        <file alias="IDB_FILE_VIEW_24">res/fileview_hc.bmp</file>
+        <file alias="IDB_CLASS_VIEW">res/classview.bmp</file>
+        <file alias="IDB_CLASS_VIEW_24">res/classview_hc.bmp</file>
+        <file alias="IDR_EXPLORER">res/explorer.bmp</file>
+        <file alias="IDB_EXPLORER_24">res/explorer_hc.bmp</file>
+        <file alias="IDR_MENU_IMAGES">res/menuimages.bmp</file>
+        <file alias="IDB_MENU_IMAGES_24">res/menuimages_hc.bmp</file>
+        <file alias="IDR_PROPERTIES">res/properties.bmp</file>
+        <file alias="IDB_PROPERTIES_HC">res/properties_hc.bmp</file>
+    </qresource>
+</RCC>
