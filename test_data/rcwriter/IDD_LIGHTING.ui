@@ -156,11 +156,11 @@
                 <property name="title">
                     <string>Sun Settings</string>
                 </property>
-                <widget class="QLineEdit" name="IDC_LIGHTING_POLE_EDIT">
+                <widget class="QLineEdit" name="IDC_LIGHTING_SUNDIR_EDIT">
                     <property name="geometry">
                         <rect>
                             <x>390</x>
-                            <y>41</y>
+                            <y>18</y>
                             <width>42</width>
                             <height>19</height>
                         </rect>
@@ -169,11 +169,11 @@
                         <set>Qt::AlignLeft|Qt::AlignVCenter</set>
                     </property>
                 </widget>
-                <widget class="QLineEdit" name="IDC_LIGHTING_SUNDIR_EDIT">
+                <widget class="QLineEdit" name="IDC_LIGHTING_POLE_EDIT">
                     <property name="geometry">
                         <rect>
                             <x>390</x>
-                            <y>18</y>
+                            <y>41</y>
                             <width>42</width>
                             <height>19</height>
                         </rect>
@@ -317,27 +317,27 @@
                 <widget class="QLabel" name="IDC_STATIC9">
                     <property name="geometry">
                         <rect>
-                            <x>312</x>
+                            <x>16</x>
                             <y>119</y>
                             <width>12</width>
                             <height>14</height>
                         </rect>
                     </property>
                     <property name="text">
-                        <string>18</string>
+                        <string>0</string>
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC10">
                     <property name="geometry">
                         <rect>
-                            <x>213</x>
+                            <x>411</x>
                             <y>119</y>
                             <width>12</width>
                             <height>14</height>
                         </rect>
                     </property>
                     <property name="text">
-                        <string>12</string>
+                        <string>24</string>
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC11">
@@ -356,43 +356,30 @@
                 <widget class="QLabel" name="IDC_STATIC12">
                     <property name="geometry">
                         <rect>
-                            <x>411</x>
+                            <x>213</x>
                             <y>119</y>
                             <width>12</width>
                             <height>14</height>
                         </rect>
                     </property>
                     <property name="text">
-                        <string>24</string>
+                        <string>12</string>
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC13">
                     <property name="geometry">
                         <rect>
-                            <x>16</x>
+                            <x>312</x>
                             <y>119</y>
                             <width>12</width>
                             <height>14</height>
                         </rect>
                     </property>
                     <property name="text">
-                        <string>0</string>
+                        <string>18</string>
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC14">
-                    <property name="geometry">
-                        <rect>
-                            <x>103</x>
-                            <y>83</y>
-                            <width>27</width>
-                            <height>14</height>
-                        </rect>
-                    </property>
-                    <property name="text">
-                        <string>0 min</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" name="IDC_STATIC15">
                     <property name="geometry">
                         <rect>
                             <x>334</x>
@@ -405,11 +392,24 @@
                         <string>Noon</string>
                     </property>
                 </widget>
-                <widget class="QLabel" name="IDC_STATIC16">
+                <widget class="QLabel" name="IDC_STATIC15">
                     <property name="geometry">
                         <rect>
                             <x>103</x>
                             <y>42</y>
+                            <width>27</width>
+                            <height>14</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string>0 min</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" name="IDC_STATIC16">
+                    <property name="geometry">
+                        <rect>
+                            <x>103</x>
+                            <y>83</y>
                             <width>27</width>
                             <height>14</height>
                         </rect>
@@ -457,20 +457,20 @@
                         <string>Midnight</string>
                     </property>
                 </widget>
-                <widget class="QLineEdit" name="IDC_DAWN_INFO">
+                <widget class="QLabel" name="IDC_STATIC20">
                     <property name="geometry">
                         <rect>
-                            <x>384</x>
+                            <x>88</x>
                             <y>20</y>
                             <width>42</width>
                             <height>17</height>
                         </rect>
                     </property>
-                    <property name="alignment">
-                        <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                    <property name="text">
+                        <string>Midnight</string>
                     </property>
                 </widget>
-                <widget class="QLabel" name="IDC_STATIC20">
+                <widget class="QLabel" name="IDC_STATIC21">
                     <property name="geometry">
                         <rect>
                             <x>88</x>
@@ -483,17 +483,17 @@
                         <string>Noon</string>
                     </property>
                 </widget>
-                <widget class="QLabel" name="IDC_STATIC21">
+                <widget class="QLineEdit" name="IDC_DAWN_INFO">
                     <property name="geometry">
                         <rect>
-                            <x>88</x>
+                            <x>384</x>
                             <y>20</y>
                             <width>42</width>
                             <height>17</height>
                         </rect>
                     </property>
-                    <property name="text">
-                        <string>Midnight</string>
+                    <property name="alignment">
+                        <set>Qt::AlignLeft|Qt::AlignVCenter</set>
                     </property>
                 </widget>
                 <widget class="QLineEdit" name="IDC_DUSK_INFO">
@@ -587,11 +587,11 @@
                         <string>Dawn Duration:</string>
                     </property>
                 </widget>
-                <widget class="QSlider" name="IDC_DUSK_DUR_SLIDER">
+                <widget class="QSlider" name="IDC_DAWN_SLIDER">
                     <property name="geometry">
                         <rect>
                             <x>132</x>
-                            <y>83</y>
+                            <y>20</y>
                             <width>198</width>
                             <height>20</height>
                         </rect>
@@ -619,11 +619,11 @@
                         <enum>QSlider::TicksBothSides</enum>
                     </property>
                 </widget>
-                <widget class="QSlider" name="IDC_DAWN_SLIDER">
+                <widget class="QSlider" name="IDC_DUSK_SLIDER">
                     <property name="geometry">
                         <rect>
                             <x>132</x>
-                            <y>20</y>
+                            <y>61</y>
                             <width>198</width>
                             <height>20</height>
                         </rect>
@@ -635,11 +635,11 @@
                         <enum>QSlider::TicksBothSides</enum>
                     </property>
                 </widget>
-                <widget class="QSlider" name="IDC_DUSK_SLIDER">
+                <widget class="QSlider" name="IDC_DUSK_DUR_SLIDER">
                     <property name="geometry">
                         <rect>
                             <x>132</x>
-                            <y>61</y>
+                            <y>83</y>
                             <width>198</width>
                             <height>20</height>
                         </rect>
