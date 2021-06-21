@@ -441,7 +441,7 @@ static void readAccelerators(Lexer &lexer, Data &data, const QString &id)
     //    END
 
     Data::AcceleratorTable table;
-    table.line = lexer.line();
+    table.line = lexer.line() - 1;
     table.id = id;
     lexer.skipToBegin();
 
@@ -598,7 +598,7 @@ static void readMenu(Lexer &lexer, Data &data, const QString &id)
     //    END
 
     Menu menu;
-    menu.line = lexer.line();
+    menu.line = lexer.line() - 1;
     menu.id = id;
 
     readMenuChildren(lexer, data, menu.children);

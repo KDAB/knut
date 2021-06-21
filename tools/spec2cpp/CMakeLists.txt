@@ -11,11 +11,11 @@ set(PROJECT_SOURCES
     specwriter.cpp
 )
 
-qt5_add_resources(PROJECT_QRC
+qt_add_resources(PROJECT_SOURCES
     spec2cpp.qrc
 )
 
-add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${PROJECT_QRC})
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt${QT_VERSION_MAJOR}::Core
 )

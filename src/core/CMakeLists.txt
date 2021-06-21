@@ -38,11 +38,11 @@ set(PROJECT_SOURCES
     utils.cpp
 )
 
-qt5_add_resources(PROJECT_QRC
+qt_add_resources(PROJECT_SOURCES
     core.qrc
 )
 
-add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES} ${PROJECT_QRC})
+add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
 target_link_libraries(${PROJECT_NAME} PUBLIC
     nlohmann_json::nlohmann_json
     spdlog::spdlog
