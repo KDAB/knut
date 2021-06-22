@@ -6,6 +6,7 @@ project(knut VERSION 4.0 LANGUAGES CXX)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 add_definitions(-DTEST_DATA_PATH="${CMAKE_SOURCE_DIR}/test_data")
 add_definitions(-DKNUT_VERSION="${PROJECT_VERSION}")
 
@@ -46,6 +47,13 @@ FetchContent_Declare(json
 )
 set(JSON_ImplicitConversions OFF)
 FetchContent_MakeAvailable(json)
+
+include(ECMEnableSanitizers)
+
+if (ECM_ENABLE_SANITIZERS)
+    add_definitions(-DSANITIZERS_ENABLED)
+endif()
+
 
 # Knut
 add_subdirectory(src)
