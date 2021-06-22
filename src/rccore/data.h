@@ -24,7 +24,7 @@ public:
         AllFlags = RemoveUnknown | SplitToolBar | ConvertToPng,
     };
     Q_DECLARE_FLAGS(ConversionFlags, ConversionFlag)
-    Q_FLAG(ConversionFlag)
+    Q_FLAG(ConversionFlags)
 
     enum TransparentColor {
         NoColors = 0x08,
@@ -34,7 +34,7 @@ public:
         AllColors = Gray | Magenta | BottomLeftPixel,
     };
     Q_DECLARE_FLAGS(TransparentColors, TransparentColor)
-    Q_FLAG(TransparentColor)
+    Q_FLAG(TransparentColors)
 
     QString id;
     QString fileName;
@@ -85,7 +85,7 @@ struct Widget
     Q_PROPERTY(QVector<RcCore::Widget> children MEMBER children)
 public:
     enum ConversionFlag {
-        NoFlags = 0x80,
+        NoFlags = 0x00,
         UpdateHierarchy = 0x100,
         UpdateGeometry = 0x200,
         UseIdForPixmap = 0x400,
@@ -93,7 +93,7 @@ public:
         AllFlags = UpdateHierarchy | UpdateGeometry | UseIdForPixmap,
     };
     Q_DECLARE_FLAGS(ConversionFlags, ConversionFlag)
-    Q_FLAG(ConversionFlag)
+    Q_FLAG(ConversionFlags)
 
     QString id;
     QString className;

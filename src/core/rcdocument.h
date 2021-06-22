@@ -40,7 +40,8 @@ public:
         // All flags
         AllFlags = RemoveUnknown | SplitToolBar | ConvertToPng | UpdateHierarchy | UpdateGeometry | UseIdForPixmap,
     };
-    Q_ENUM(ConversionFlag)
+    Q_DECLARE_FLAGS(ConversionFlags, ConversionFlag)
+    Q_FLAG(ConversionFlags)
 
 public:
     explicit RcDocument(QObject *parent = nullptr);
@@ -52,7 +53,7 @@ public:
     QVector<RcCore::ToolBar> toolBars() const;
     Q_INVOKABLE RcCore::ToolBar toolBar(const QString &id) const;
 
-    Q_INVOKABLE RcCore::Widget dialog(const QString &id, int flags = DEFAULT_VALUE(ConversionFlag, "/rc/dialog_flags"),
+    Q_INVOKABLE RcCore::Widget dialog(const QString &id, int flags = DEFAULT_VALUE(ConversionFlags, "/rc/dialog_flags"),
                                       double scaleX = DEFAULT_VALUE(double, "/rc/dialog_scalex"),
                                       double scaleY = DEFAULT_VALUE(double, "/rc/dialog_scaley")) const;
 
@@ -71,8 +72,8 @@ public slots:
     void convertAssets(int flags = DEFAULT_VALUE(ConversionFlag, "/rc/asset_flags"));
     QVector<RcCore::Action> convertActions(const QStringList &menus, const QStringList &accelerators,
                                            const QStringList &toolBars,
-                                           int flags = DEFAULT_VALUE(ConversionFlag, "/rc/asset_flags"));
-    bool writeAssetsToImage(int flags = DEFAULT_VALUE(ConversionFlag, "/rc/asset_transparent_colors"));
+                                           int flags = DEFAULT_VALUE(ConversionFlags, "/rc/asset_flags"));
+    bool writeAssetsToImage(int flags = DEFAULT_VALUE(ConversionFlags, "/rc/asset_transparent_colors"));
     bool writeAssetsToQrc(const QString &fileName);
     bool writeDialogToUi(const RcCore::Widget &dialog, const QString &fileName);
     void previewDialog(const RcCore::Widget &dialog) const;
@@ -89,7 +90,7 @@ private:
 
 NLOHMANN_JSON_SERIALIZE_ENUM(RcDocument::ConversionFlag,
                              {
-                                 {RcDocument::NoFlags, ""},
+                                 {RcDocument::NoFlags, "NoFlags"},
                                  {RcDocument::RemoveUnknown, "RemoveUnknown"},
                                  {RcDocument::SplitToolBar, "SplitToolBar"},
                                  {RcDocument::ConvertToPng, "ConvertToPng"},
@@ -105,3 +106,5 @@ NLOHMANN_JSON_SERIALIZE_ENUM(RcDocument::ConversionFlag,
                              })
 
 } // namespace Core
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Core::RcDocument::ConversionFlags)
