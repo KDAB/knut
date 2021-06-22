@@ -88,7 +88,9 @@ public:
         NoFlags = 0x80,
         UpdateHierarchy = 0x100,
         UpdateGeometry = 0x200,
-        AllFlags = UpdateHierarchy | UpdateGeometry,
+        UseIdForPixmap = 0x400,
+        DefaultFlags = UpdateGeometry | UseIdForPixmap,
+        AllFlags = UpdateHierarchy | UpdateGeometry | UseIdForPixmap,
     };
     Q_DECLARE_FLAGS(ConversionFlags, ConversionFlag)
     Q_FLAG(ConversionFlag)
@@ -164,6 +166,7 @@ struct Action
     Q_PROPERTY(QString toolTip MEMBER toolTip)
     Q_PROPERTY(QString statusTip MEMBER statusTip)
     Q_PROPERTY(QString iconPath MEMBER iconPath)
+    Q_PROPERTY(QString iconId MEMBER iconId)
     Q_PROPERTY(bool checked MEMBER checked)
 public:
     QString id;
@@ -172,6 +175,7 @@ public:
     QString toolTip;
     QString statusTip;
     QString iconPath;
+    QString iconId;
     bool checked = false;
 };
 

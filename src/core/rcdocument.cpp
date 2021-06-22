@@ -110,6 +110,7 @@ RcCore::ToolBar RcDocument::toolBar(const QString &id) const
  *
  * - `RcDocument.UpdateHierachy`: create a hierarchy of parent-children, by default there are none in MFC
  * - `RcDocument.UpdateGeometry`: use the scale factor to change the dialog size
+ * - `RcDocument.UseIdForPixmap`: use the id as a resource value for the pixmaps in labels
  * - `RcDocument.AllFlags`: combination of all above
  */
 RcCore::Widget RcDocument::dialog(const QString &id, int flags, double scaleX, double scaleY) const

@@ -334,7 +334,7 @@ static Widget convertComboBox(const Data &data, const QString &dialogId, Data::C
 // https://docs.microsoft.com/en-us/windows/desktop/menurc/rtext-control
 // https://docs.microsoft.com/en-us/windows/desktop/menurc/ctext-control
 // https://docs.microsoft.com/en-us/windows/desktop/menurc/icon-control
-static Widget convertLabel(const Data &data, Data::Control &control)
+static Widget convertLabel(const Data &data, Data::Control &control, bool useIdForPixmap)
 {
     Widget widget;
     widget.className = "QLabel";
@@ -356,12 +356,15 @@ static Widget convertLabel(const Data &data, Data::Control &control)
     if (control.styles.removeOne(SSREALSIZECONTROL))
         widget.properties[ScaledContents] = true;
 
-    // TODO: get the real path
     if (control.styles.removeOne(SSBITMAP) || control.styles.removeOne(SSICON)
-        || control.type == static_cast<int>(Keywords::ICON))
-        widget.properties[Pixmap] = control.text;
-    else
+        || control.type == static_cast<int>(Keywords::ICON)) {
+        if (useIdForPixmap)
+            widget.properties[Pixmap] = QStringLiteral(":/%1").arg(control.text);
+        else
+            widget.properties[Pixmap] = data.asset(control.text)->fileName;
+    } else {
         widget.properties[Text] = control.text;
+    }
 
     if (control.styles.removeOne(SSLEFTNOWORDWRAP))
         widget.properties[WordWrap] = true;
@@ -602,10 +605,10 @@ static Widget convertTabWidget(const Data &data, Data::Control &control)
 }
 
 // https://docs.microsoft.com/en-us/windows/desktop/menurc/control-control
-static Widget convertControl(const Data &data, const QString &dialogId, Data::Control &control)
+static Widget convertControl(const Data &data, const QString &dialogId, Data::Control &control, bool useIdForPixmap)
 {
     if (control.className == "Static")
-        return convertLabel(data, control);
+        return convertLabel(data, control, useIdForPixmap);
     if (control.className == "Button")
         return convertButton(data, control);
     if (control.className == "ComboBox")
@@ -653,7 +656,7 @@ static Widget convertControl(const Data &data, const QString &dialogId, Data::Co
     if (control.className == "SysTabControl32")
         return convertTabWidget(data, control);
     if (control.className == "SysLink")
-        return convertLabel(data, control);
+        return convertLabel(data, control, useIdForPixmap);
     if (control.className == "MfcPropertyGrid")
         return convertTreeWidget(data, control);
 
@@ -665,7 +668,7 @@ static Widget convertControl(const Data &data, const QString &dialogId, Data::Co
     return widget;
 }
 
-static Widget convertChildWidget(const Data &data, const QString &dialogId, Data::Control control)
+static Widget convertChildWidget(const Data &data, const QString &dialogId, Data::Control control, bool useIdForPixmap)
 {
     Widget widget;
 
@@ -693,7 +696,7 @@ static Widget convertChildWidget(const Data &data, const QString &dialogId, Data
     case Keywords::LTEXT:
     case Keywords::RTEXT:
     case Keywords::ICON:
-        widget = convertLabel(data, control);
+        widget = convertLabel(data, control, useIdForPixmap);
         break;
     case Keywords::EDITTEXT:
         widget = convertEditText(data, control);
@@ -708,7 +711,7 @@ static Widget convertChildWidget(const Data &data, const QString &dialogId, Data
         widget = convertScrollBar(data, control);
         break;
     case Keywords::CONTROL:
-        widget = convertControl(data, dialogId, control);
+        widget = convertControl(data, dialogId, control, useIdForPixmap);
         break;
     default:
         logger()->critical("{}({}): unknown control type {}", QDir::toNativeSeparators(data.fileName).toStdString(),
@@ -800,7 +803,7 @@ Widget convertDialog(const Data &data, const Data::Dialog &d, Widget::Conversion
     }
 
     for (const auto &control : dialog.controls)
-        widget.children.push_back(convertChildWidget(data, dialog.id, control));
+        widget.children.push_back(convertChildWidget(data, dialog.id, control, flags & Widget::UseIdForPixmap));
 
     if (flags & Widget::UpdateGeometry)
         adjustGeometry(widget, scaleX, scaleY);
@@ -911,8 +914,10 @@ static void createActionForToolBar(const Data &data, QVector<Action> &actions, Q
             index = actions.size() - 1;
             actionIdMap[action.id] = index;
         }
-        if (iconIndex < assets.size())
+        if (iconIndex < assets.size()) {
             actions[index].iconPath = assets.value(iconIndex).fileName;
+            actions[index].iconId = assets.value(iconIndex).id;
+        }
         ++iconIndex;
     }
 }
