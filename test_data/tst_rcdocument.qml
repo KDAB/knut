@@ -4,7 +4,7 @@ import Script.Mfc 1.0
 import Script.Test 1.0
 
 TestCase {
-    name: "RcFile"
+    name: "RcDocument"
 
     property var document: RcDocument {
         fileName: Dir.currentScriptPath + "/rcfiles/2048Game/2048Game.rc"
