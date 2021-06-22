@@ -4,6 +4,7 @@
 #include "file.h"
 #include "fileinfo.h"
 #include "message.h"
+#include "project.h"
 #include "rcdocument.h"
 #include "scriptitem.h"
 #include "settings.h"
@@ -97,7 +98,9 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qmlRegisterSingletonType<Message>("Script", 1, 0, "Message", message_provider);
     qmlRegisterSingletonType<Utils>("Script", 1, 0, "Utils", utils_provider);
     qmlRegisterSingletonInstance<Settings>("Script", 1, 0, "Settings", Settings::instance());
+    qmlRegisterSingletonInstance<Project>("Script", 1, 0, "Project", Project::instance());
 
+    qmlRegisterUncreatableType<Document>("Script", 1, 0, "Document", "Abstract class");
     qmlRegisterType<ScriptItem>("Script", 1, 0, "Script");
     qmlRegisterType<TextDocument>("Script", 1, 0, "TextDocument");
 

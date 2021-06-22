@@ -41,6 +41,7 @@ private slots:
     KNUT_TEST(fileinfo)
     KNUT_TEST(utils)
     KNUT_TEST(rcfiles)
+    KNUT_TEST(project)
 };
 
 QTEST_MAIN(TestKnut)
