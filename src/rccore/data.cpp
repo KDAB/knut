@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-namespace RcFile {
+namespace RcCore {
 
 bool operator==(const ToolBarItem &left, const ToolBarItem &right)
 {
@@ -60,4 +60,4 @@ bool operator==(const Shortcut &left, const Shortcut &right)
     return left.event == right.event && left.unknown == right.unknown;
 }
 
-} // namespace RcFile
+} // namespace RcCore

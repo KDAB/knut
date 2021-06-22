@@ -2,7 +2,7 @@
 
 #include <spdlog/sinks/stdout_color_sinks.h>
 
-namespace RcFile {
+namespace RcCore {
 
 std::shared_ptr<spdlog::logger> logger()
 {
@@ -14,4 +14,4 @@ std::shared_ptr<spdlog::logger> logger()
     return log;
 }
 
-} // namespace RcFile
+} // namespace RcCore

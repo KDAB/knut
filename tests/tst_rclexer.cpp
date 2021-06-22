@@ -1,10 +1,10 @@
-#include "rcfile/lexer.h"
+#include "rccore/lexer.h"
 
 #include <QByteArray>
 #include <QFile>
 #include <QtTest>
 
-using namespace RcFile;
+using namespace RcCore;
 
 class TestRcLexer : public QObject
 {

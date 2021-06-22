@@ -5,7 +5,7 @@
 
 class QIODevice;
 
-namespace RcFile {
+namespace RcCore {
 
 class Stream
 {
@@ -27,4 +27,4 @@ private:
     int m_line = 1;
 };
 
-} // namespace RcFile
+} // namespace RcCore

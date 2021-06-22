@@ -1,6 +1,6 @@
 #pragma once
 
-#include "rcfile/data.h"
+#include "rccore/data.h"
 
 #include <QAbstractTableModel>
 #include <QList>
@@ -18,7 +18,7 @@ public:
     };
 
 public:
-    explicit StringModel(const RcFile::Data &data, QObject *parent = nullptr);
+    explicit StringModel(const RcCore::Data &data, QObject *parent = nullptr);
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -26,7 +26,7 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 
 private:
-    QList<RcFile::Data::String> m_strings;
+    QList<RcCore::Data::String> m_strings;
 };
 
 } // namespace RcUi

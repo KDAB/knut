@@ -7,7 +7,7 @@
 #include <QVariant>
 #include <QVector>
 
-namespace RcFile {
+namespace RcCore {
 
 struct Asset
 {
@@ -65,7 +65,7 @@ struct ToolBar
 {
     Q_GADGET
     Q_PROPERTY(QString id MEMBER id)
-    Q_PROPERTY(QVector<RcFile::ToolBarItem> children MEMBER children)
+    Q_PROPERTY(QVector<RcCore::ToolBarItem> children MEMBER children)
     Q_PROPERTY(QSize iconSize MEMBER iconSize)
 public:
     QString id;
@@ -82,7 +82,7 @@ struct Widget
     Q_PROPERTY(QString className MEMBER className)
     Q_PROPERTY(QRect geometry MEMBER geometry)
     Q_PROPERTY(QVariantMap properties MEMBER properties)
-    Q_PROPERTY(QVector<RcFile::Widget> children MEMBER children)
+    Q_PROPERTY(QVector<RcCore::Widget> children MEMBER children)
 public:
     enum ConversionFlag {
         NoFlags = 0x0,
@@ -106,7 +106,7 @@ struct MenuItem
     Q_GADGET
     Q_PROPERTY(QString id MEMBER id)
     Q_PROPERTY(QString text MEMBER text)
-    Q_PROPERTY(QVector<RcFile::MenuItem> children MEMBER children)
+    Q_PROPERTY(QVector<RcCore::MenuItem> children MEMBER children)
     Q_PROPERTY(bool isSeparator READ isSeparator)
     Q_PROPERTY(bool isAction READ isAction)
     Q_PROPERTY(bool isTopLevel MEMBER isTopLevel)
@@ -136,7 +136,7 @@ struct Menu
 {
     Q_GADGET
     Q_PROPERTY(QString id MEMBER id)
-    Q_PROPERTY(QVector<RcFile::MenuItem> children MEMBER children)
+    Q_PROPERTY(QVector<RcCore::MenuItem> children MEMBER children)
 public:
     QString id;
     QVector<MenuItem> children;
@@ -160,7 +160,7 @@ struct Action
     Q_GADGET
     Q_PROPERTY(QString id MEMBER id)
     Q_PROPERTY(QString title MEMBER title)
-    Q_PROPERTY(QVector<RcFile::Shortcut> shortcuts MEMBER shortcuts)
+    Q_PROPERTY(QVector<RcCore::Shortcut> shortcuts MEMBER shortcuts)
     Q_PROPERTY(QString toolTip MEMBER toolTip)
     Q_PROPERTY(QString statusTip MEMBER statusTip)
     Q_PROPERTY(QString iconPath MEMBER iconPath)
@@ -258,24 +258,24 @@ struct Data
     const AcceleratorTable *acceleratorTable(const QString &id) const;
 };
 
-} // namespace RcFile
+} // namespace RcCore
 
-Q_DECLARE_METATYPE(RcFile::Asset)
-Q_DECLARE_OPERATORS_FOR_FLAGS(RcFile::Asset::ConversionFlags)
-Q_DECLARE_OPERATORS_FOR_FLAGS(RcFile::Asset::TransparentColors)
-Q_DECLARE_METATYPE(QVector<RcFile::Asset>)
-Q_DECLARE_METATYPE(RcFile::ToolBarItem)
-Q_DECLARE_METATYPE(QVector<RcFile::ToolBarItem>)
-Q_DECLARE_METATYPE(RcFile::ToolBar)
-Q_DECLARE_METATYPE(QVector<RcFile::ToolBar>)
-Q_DECLARE_METATYPE(RcFile::Widget)
-Q_DECLARE_METATYPE(QVector<RcFile::Widget>)
-Q_DECLARE_OPERATORS_FOR_FLAGS(RcFile::Widget::ConversionFlags)
-Q_DECLARE_METATYPE(RcFile::MenuItem)
-Q_DECLARE_METATYPE(QVector<RcFile::MenuItem>)
-Q_DECLARE_METATYPE(RcFile::Menu)
-Q_DECLARE_METATYPE(QVector<RcFile::Menu>)
-Q_DECLARE_METATYPE(RcFile::Shortcut)
-Q_DECLARE_METATYPE(QVector<RcFile::Shortcut>)
-Q_DECLARE_METATYPE(RcFile::Action)
-Q_DECLARE_METATYPE(QVector<RcFile::Action>)
+Q_DECLARE_METATYPE(RcCore::Asset)
+Q_DECLARE_OPERATORS_FOR_FLAGS(RcCore::Asset::ConversionFlags)
+Q_DECLARE_OPERATORS_FOR_FLAGS(RcCore::Asset::TransparentColors)
+Q_DECLARE_METATYPE(QVector<RcCore::Asset>)
+Q_DECLARE_METATYPE(RcCore::ToolBarItem)
+Q_DECLARE_METATYPE(QVector<RcCore::ToolBarItem>)
+Q_DECLARE_METATYPE(RcCore::ToolBar)
+Q_DECLARE_METATYPE(QVector<RcCore::ToolBar>)
+Q_DECLARE_METATYPE(RcCore::Widget)
+Q_DECLARE_METATYPE(QVector<RcCore::Widget>)
+Q_DECLARE_OPERATORS_FOR_FLAGS(RcCore::Widget::ConversionFlags)
+Q_DECLARE_METATYPE(RcCore::MenuItem)
+Q_DECLARE_METATYPE(QVector<RcCore::MenuItem>)
+Q_DECLARE_METATYPE(RcCore::Menu)
+Q_DECLARE_METATYPE(QVector<RcCore::Menu>)
+Q_DECLARE_METATYPE(RcCore::Shortcut)
+Q_DECLARE_METATYPE(QVector<RcCore::Shortcut>)
+Q_DECLARE_METATYPE(RcCore::Action)
+Q_DECLARE_METATYPE(QVector<RcCore::Action>)

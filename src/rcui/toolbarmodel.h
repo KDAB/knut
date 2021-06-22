@@ -1,6 +1,6 @@
 #pragma once
 
-#include "rcfile/data.h"
+#include "rccore/data.h"
 
 #include <QAbstractListModel>
 
@@ -17,14 +17,14 @@ public:
     };
 
 public:
-    explicit ToolBarModel(const RcFile::Data &data, int index, QObject *parent = nullptr);
+    explicit ToolBarModel(const RcCore::Data &data, int index, QObject *parent = nullptr);
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 
 private:
-    const QVector<RcFile::ToolBarItem> m_items;
+    const QVector<RcCore::ToolBarItem> m_items;
 };
 
 } // namespace RcUi

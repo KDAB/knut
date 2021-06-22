@@ -2,7 +2,7 @@
 
 #include <QTextStream>
 
-namespace RcFile {
+namespace RcCore {
 
 Stream::Stream(QIODevice *device)
 {
@@ -47,4 +47,4 @@ QString Stream::content() const
     return m_content;
 }
 
-} // namespace RcFile
+} // namespace RcCore

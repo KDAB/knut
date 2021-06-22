@@ -2,7 +2,7 @@
 
 #include "rcviewer_global.h"
 
-using namespace RcFile;
+using namespace RcCore;
 
 namespace RcUi {
 

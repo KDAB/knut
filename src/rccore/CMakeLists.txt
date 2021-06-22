@@ -1,4 +1,4 @@
-project(knut-rcfile LANGUAGES CXX)
+project(knut-rccore LANGUAGES CXX)
 
 set(PROJECT_SOURCES
     data.h

@@ -1,6 +1,6 @@
 #include "rcsyntaxhighlighter.h"
 
-#include "rcfile/lexer.h"
+#include "rccore/lexer.h"
 
 namespace RcUi {
 
@@ -12,7 +12,7 @@ RcSyntaxHighlighter::RcSyntaxHighlighter(QTextDocument *parent)
     QTextCharFormat keywordFormat;
     keywordFormat.setForeground(Qt::blue);
 
-    const auto keywords = RcFile::Lexer::keywords();
+    const auto keywords = RcCore::Lexer::keywords();
     for (const auto &pattern : keywords) {
         rule.pattern = QRegularExpression("\\b" + pattern + "\\b");
         rule.format = keywordFormat;

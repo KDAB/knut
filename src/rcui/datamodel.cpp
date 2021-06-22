@@ -1,9 +1,9 @@
 #include "datamodel.h"
 
-#include "rcfile/data.h"
+#include "rccore/data.h"
 #include "rcviewer_global.h"
 
-using namespace RcFile;
+using namespace RcCore;
 
 namespace {
 const char *DataTypeStr[] = {

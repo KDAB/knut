@@ -8,7 +8,7 @@
 #include <QSet>
 #include <QXmlStreamWriter>
 
-namespace RcFile {
+namespace RcCore {
 
 //=============================================================================
 // Asset writing
@@ -221,4 +221,4 @@ void writeDialogToUi(const Widget &widget, QIODevice *device)
     w.writeEndElement();
 }
 
-} // namespace RcFile
+} // namespace RcCore

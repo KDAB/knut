@@ -1,4 +1,4 @@
-#include "rcfile/rcfile.h"
+#include "rccore/rcfile.h"
 
 #include "common/test_utils.h"
 
@@ -8,7 +8,7 @@
 #include <QUiLoader>
 #include <QtTest>
 
-using namespace RcFile;
+using namespace RcCore;
 
 class TestRcWriter : public QObject
 {

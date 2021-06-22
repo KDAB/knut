@@ -1,6 +1,6 @@
 #pragma once
 
-#include "rcfile/data.h"
+#include "rccore/data.h"
 
 #include <QAbstractItemModel>
 #include <QHash>
@@ -23,7 +23,7 @@ public:
     };
 
 public:
-    explicit MenuModel(const RcFile::Data &data, int index, QObject *parent = nullptr);
+    explicit MenuModel(const RcCore::Data &data, int index, QObject *parent = nullptr);
 
     QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
     QModelIndex parent(const QModelIndex &child) const override;
@@ -49,7 +49,7 @@ private:
         QVector<Item> children;
     };
 
-    void createTree(Item &item, const QVector<RcFile::MenuItem> &children, const RcFile::Data &data);
+    void createTree(Item &item, const QVector<RcCore::MenuItem> &children, const RcCore::Data &data);
     Item *indexToItem(const QModelIndex &index) const;
 
     Item m_root;

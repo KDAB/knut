@@ -1,6 +1,6 @@
 #pragma once
 
-#include "rcfile/data.h"
+#include "rccore/data.h"
 
 #include <QAbstractListModel>
 
@@ -16,14 +16,14 @@ public:
     };
 
 public:
-    explicit IncludeModel(const RcFile::Data &data, QObject *parent = nullptr);
+    explicit IncludeModel(const RcCore::Data &data, QObject *parent = nullptr);
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 
 private:
-    const QVector<RcFile::Data::Include> m_includes;
+    const QVector<RcCore::Data::Include> m_includes;
 };
 
 } // namespace RcUi

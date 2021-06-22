@@ -2,7 +2,7 @@
 
 #include <QMainWindow>
 
-#include "rcfile/data.h"
+#include "rccore/data.h"
 
 namespace RcUi {
 class RcFileView;
@@ -19,6 +19,6 @@ private:
 
 private:
     RcUi::RcFileView *m_view = nullptr;
-    RcFile::Data m_data;
+    RcCore::Data m_data;
     QString m_fileName;
 };

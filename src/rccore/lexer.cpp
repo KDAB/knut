@@ -5,7 +5,7 @@
 #include <QDir>
 #include <QHash>
 
-namespace RcFile {
+namespace RcCore {
 
 static QHash<QString, Keywords> KeywordMap = {
     // Used in MENUITEM - not handled in Qt
@@ -321,4 +321,4 @@ Token Lexer::readWord()
     return {Token::Word, word};
 }
 
-} // namespace RcFile
+} // namespace RcCore

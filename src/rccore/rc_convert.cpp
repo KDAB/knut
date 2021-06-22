@@ -10,7 +10,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace RcFile {
+namespace RcCore {
 
 static QVector<Asset> splitToolBar(const Data &data, const ToolBar &toolBar, const Asset &asset)
 {
@@ -944,4 +944,4 @@ QVector<Action> convertActions(const Data &data, const QStringList &menus, const
     return actions;
 }
 
-} // namespace RcFile
+} // namespace RcCore

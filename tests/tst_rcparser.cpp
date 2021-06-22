@@ -1,10 +1,10 @@
-#include "rcfile/rcfile.h"
+#include "rccore/rcfile.h"
 
 #include "common/test_utils.h"
 
 #include <QtTest>
 
-using namespace RcFile;
+using namespace RcCore;
 
 class TestRcParser : public QObject
 {

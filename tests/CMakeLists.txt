@@ -31,8 +31,8 @@ add_knut_test(tst_stringutils tst_stringutils.cpp knut-core)
 
 add_knut_test(tst_textdocument tst_textdocument.cpp knut-core)
 
-add_knut_test(tst_rclexer tst_rclexer.cpp knut-rcfile)
+add_knut_test(tst_rclexer tst_rclexer.cpp knut-rccore)
 
-add_knut_test(tst_rcparser tst_rcparser.cpp knut-rcfile)
+add_knut_test(tst_rcparser tst_rcparser.cpp knut-rccore)
 
-add_knut_test(tst_rcwriter tst_rcwriter.cpp knut-rcfile Qt${QT_VERSION_MAJOR}::UiTools)
+add_knut_test(tst_rcwriter tst_rcwriter.cpp knut-rccore Qt${QT_VERSION_MAJOR}::UiTools)

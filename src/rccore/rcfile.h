@@ -6,7 +6,7 @@
 
 class QIODevice;
 
-namespace RcFile {
+namespace RcCore {
 
 constexpr double defaultDialogScaleX = 1.5;
 constexpr double defaultDialogScaleY = 1.65;
@@ -33,4 +33,4 @@ void writeAssetsToQrc(const QVector<Asset> &assets, QIODevice *device, const QSt
 
 void writeDialogToUi(const Widget &widget, QIODevice *device);
 
-} // namespace RcFile
+} // namespace RcCore

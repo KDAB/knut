@@ -2,8 +2,8 @@
 
 #include <spdlog/spdlog.h>
 
-namespace RcFile {
+namespace RcCore {
 
 std::shared_ptr<spdlog::logger> logger();
 
-} // namespace RcFile
+} // namespace RcCore

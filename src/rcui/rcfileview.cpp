@@ -12,8 +12,8 @@
 #include "stringmodel.h"
 #include "toolbarmodel.h"
 
-#include "rcfile/data.h"
-#include "rcfile/rcfile.h"
+#include "rccore/data.h"
+#include "rccore/rcfile.h"
 
 #include <QBuffer>
 #include <QClipboard>
@@ -84,7 +84,7 @@ RcFileView::~RcFileView()
     delete ui;
 }
 
-void RcFileView::setRcFile(const RcFile::Data &data)
+void RcFileView::setRcFile(const RcCore::Data &data)
 {
     m_data = &data;
     auto model = new DataModel(data, this);
@@ -174,7 +174,7 @@ void RcFileView::setData(int type, int index)
 
 void RcFileView::updateDialogProperty(int index)
 {
-    const RcFile::Data::Dialog &dialog = data().dialogs.at(index);
+    const RcCore::Data::Dialog &dialog = data().dialogs.at(index);
     ui->propertyView->clear();
     ui->propertyView->setVisible(true);
     ui->propertyView->setHeaderLabels({tr("Property"), tr("Value")});
@@ -199,13 +199,13 @@ void RcFileView::previewData(const QModelIndex &index)
         return;
 
     const int row = index.data(DataModel::IndexRole).toInt();
-    const RcFile::Widget dialog =
-        RcFile::convertDialog(data(), data().dialogs.value(row), RcFile::Widget::UpdateGeometry);
+    const RcCore::Widget dialog =
+        RcCore::convertDialog(data(), data().dialogs.value(row), RcCore::Widget::UpdateGeometry);
     QUiLoader loader;
 
     QBuffer buffer;
     if (buffer.open(QIODevice::WriteOnly)) {
-        RcFile::writeDialogToUi(dialog, &buffer);
+        RcCore::writeDialogToUi(dialog, &buffer);
         buffer.close();
     }
 
@@ -266,7 +266,7 @@ void RcFileView::slotSearchPrevious()
     ui->textEdit->find(searchString, QTextDocument::FindBackward);
 }
 
-const RcFile::Data &RcFileView::data() const
+const RcCore::Data &RcFileView::data() const
 {
     Q_ASSERT(m_data);
     return *m_data;

@@ -32,7 +32,7 @@ target_link_libraries(${PROJECT_NAME}
     Qt${QT_VERSION_MAJOR}::Gui
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::UiTools
-    knut-rcfile
+    knut-rccore
 )
 target_include_directories(${PROJECT_NAME}
     INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/..

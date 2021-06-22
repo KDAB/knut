@@ -9,7 +9,7 @@
 #include <optional>
 #include <variant>
 
-namespace RcFile {
+namespace RcCore {
 
 // See the list and description here:
 // https://docs.microsoft.com/en-us/windows/desktop/menurc/resource-definition-statements
@@ -174,4 +174,4 @@ private:
     QString m_fileName;
 };
 
-} // namespace RcFile
+} // namespace RcCore

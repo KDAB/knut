@@ -6,7 +6,7 @@ class QSortFilterProxyModel;
 class QAbstractItemModel;
 class QTreeView;
 
-namespace RcFile {
+namespace RcCore {
 struct Data;
 }
 
@@ -24,7 +24,7 @@ public:
     explicit RcFileView(QWidget *parent = nullptr);
     ~RcFileView();
 
-    void setRcFile(const RcFile::Data &data);
+    void setRcFile(const RcCore::Data &data);
 
 private:
     void changeDataItem(const QModelIndex &current);
@@ -39,11 +39,11 @@ private:
     void slotSearchNext();
     void slotSearchPrevious();
 
-    const RcFile::Data &data() const;
+    const RcCore::Data &data() const;
 
 private:
     Ui::RcFileView *ui;
-    const RcFile::Data *m_data;
+    const RcCore::Data *m_data;
     QSortFilterProxyModel *const m_dataProxyModel;
     QSortFilterProxyModel *const m_contentProxyModel;
     QAbstractItemModel *m_contentModel = nullptr;

@@ -12,7 +12,7 @@
 #include <QKeySequence>
 #include <QTextStream>
 
-namespace RcFile {
+namespace RcCore {
 
 //=============================================================================
 // Utility methods
@@ -948,4 +948,4 @@ Data parse(const QString &fileName)
     return data;
 }
 
-} // namespace RcFile
+} // namespace RcCore

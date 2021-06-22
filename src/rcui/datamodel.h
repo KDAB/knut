@@ -3,7 +3,7 @@
 #include <QAbstractItemModel>
 #include <QStringList>
 
-namespace RcFile {
+namespace RcCore {
 struct Data;
 }
 
@@ -20,7 +20,7 @@ public:
     };
 
 public:
-    explicit DataModel(const RcFile::Data &data, QObject *parent = nullptr);
+    explicit DataModel(const RcCore::Data &data, QObject *parent = nullptr);
 
     QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
     QModelIndex parent(const QModelIndex &child) const override;
@@ -31,7 +31,7 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
 private:
-    const RcFile::Data &m_data;
+    const RcCore::Data &m_data;
 };
 
 } // namespace RcUi

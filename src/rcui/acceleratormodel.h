@@ -1,6 +1,6 @@
 #pragma once
 
-#include "rcfile/data.h"
+#include "rccore/data.h"
 
 #include <QAbstractTableModel>
 
@@ -17,7 +17,7 @@ public:
     };
 
 public:
-    explicit AcceleratorModel(const RcFile::Data &data, int index, QObject *parent = nullptr);
+    explicit AcceleratorModel(const RcCore::Data &data, int index, QObject *parent = nullptr);
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -25,7 +25,7 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 
 private:
-    const QVector<RcFile::Data::Accelerator> m_accelerators;
+    const QVector<RcCore::Data::Accelerator> m_accelerators;
 };
 
 } // namespace RcUi

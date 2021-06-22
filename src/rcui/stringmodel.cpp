@@ -4,7 +4,7 @@
 
 #include <algorithm>
 
-using namespace RcFile;
+using namespace RcCore;
 
 namespace RcUi {
 

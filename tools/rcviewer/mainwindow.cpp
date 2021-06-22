@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 
-#include "rcfile/rcfile.h"
+#include "rccore/rcfile.h"
 #include "rcui/rcfileview.h"
 
 #include <QFileDialog>
@@ -33,6 +33,6 @@ void MainWindow::load()
         return;
 
     m_fileName = fileName;
-    m_data = RcFile::parse(m_fileName);
+    m_data = RcCore::parse(m_fileName);
     m_view->setRcFile(m_data);
 }
