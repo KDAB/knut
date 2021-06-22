@@ -4,9 +4,11 @@
 #include "file.h"
 #include "fileinfo.h"
 #include "message.h"
+#include "rcdocument.h"
 #include "scriptitem.h"
 #include "settings.h"
 #include "testutil.h"
+#include "textdocument.h"
 #include "utils.h"
 
 #include <QDir>
@@ -71,7 +73,22 @@ ScriptRunner::ScriptRunner(QObject *parent)
     // Script objects registrations
     qRegisterMetaType<QDirValueType>();
     qRegisterMetaType<QFileInfoValueType>();
-
+    qRegisterMetaType<RcCore::Asset>();
+    qRegisterMetaType<QVector<RcCore::Asset>>();
+    qRegisterMetaType<RcCore::ToolBarItem>();
+    qRegisterMetaType<QVector<RcCore::ToolBarItem>>();
+    qRegisterMetaType<RcCore::ToolBar>();
+    qRegisterMetaType<QVector<RcCore::ToolBar>>();
+    qRegisterMetaType<RcCore::Widget>();
+    qRegisterMetaType<QVector<RcCore::Widget>>();
+    qRegisterMetaType<RcCore::MenuItem>();
+    qRegisterMetaType<QVector<RcCore::MenuItem>>();
+    qRegisterMetaType<RcCore::Menu>();
+    qRegisterMetaType<QVector<RcCore::Menu>>();
+    qRegisterMetaType<RcCore::Shortcut>();
+    qRegisterMetaType<QVector<RcCore::Shortcut>>();
+    qRegisterMetaType<RcCore::Action>();
+    qRegisterMetaType<QVector<RcCore::Action>>();
     // Script
     qmlRegisterSingletonType<Dir>("Script", 1, 0, "Dir", dir_provider);
     qmlRegisterSingletonType<FileInfo>("Script", 1, 0, "FileInfo", fileinfo_provider);
@@ -81,6 +98,8 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qmlRegisterSingletonInstance<Settings>("Script", 1, 0, "Settings", Settings::instance());
 
     qmlRegisterType<ScriptItem>("Script", 1, 0, "Script");
+    qmlRegisterType<TextDocument>("Script", 1, 0, "TextDocument");
+    qmlRegisterType<RcDocument>("Script", 1, 0, "RcDocument");
 
     // Script.Test
     qmlRegisterType<TestUtil>("Script.Test", 1, 0, "TestUtil");

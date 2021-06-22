@@ -10,6 +10,7 @@ int main(int argc, char *argv[])
     Data data;
     SourceParser parser(data);
     parser.parseDirectory(KNUT_SOURCE_PATH "/core");
+    parser.parseDirectory(KNUT_SOURCE_PATH "/rccore");
 
     DocWriter writer(data);
     writer.saveDocumentation();

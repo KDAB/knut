@@ -4,5 +4,12 @@
             "program": "clangd",
             "arguments": []
         }
+    },
+    "rc": {
+        "dialog_flags": "UpdateGeometry",
+        "dialog_scalex": 1.5,
+        "dialog_scaley": 1.65,
+        "asset_flags": "AllFlags",
+        "asset_transparent_colors": "AllColors"
     }
 }

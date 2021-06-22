@@ -55,14 +55,14 @@ private slots:
     {
         Test::LogSilencer ls {"rc"};
         Data data = parse(Test::testDataPath() + "/rcfiles/2048Game/2048Game.rc");
-        auto result = convertDialog(data, data.dialogs.value(1));
+        auto result = convertDialog(data, data.dialogs.value(1), RcCore::Widget::AllFlags);
 
         QCOMPARE(result.id, "IDD_ABOUTBOX");
         QCOMPARE(result.geometry, QRect(0, 0, 255, 103));
         QCOMPARE(result.className, "QDialog");
         QCOMPARE(result.properties["windowTitle"].toString(), "About 2048Game");
 
-        result = convertDialog(data, data.dialogs.first());
+        result = convertDialog(data, data.dialogs.first(), RcCore::Widget::AllFlags);
         QCOMPARE(result.children.size(), 6);
         auto item = result.children.at(2);
         QCOMPARE(item.className, "QPushButton");
@@ -87,7 +87,7 @@ private slots:
         };
 
         for (int index = 0; index < data.dialogs.size(); ++index) {
-            Widget dialog = convertDialog(data, data.dialogs.value(index));
+            Widget dialog = convertDialog(data, data.dialogs.value(index), RcCore::Widget::AllFlags);
 
             QBuffer buffer;
             if (buffer.open(QIODevice::WriteOnly)) {

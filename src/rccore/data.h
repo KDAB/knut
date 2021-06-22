@@ -27,10 +27,10 @@ public:
     Q_FLAG(ConversionFlag)
 
     enum TransparentColor {
-        NoColors = 0x0,
-        Gray = 0x01,
-        Magenta = 0x02,
-        BottomLeftPixel = 0x04,
+        NoColors = 0x08,
+        Gray = 0x10,
+        Magenta = 0x20,
+        BottomLeftPixel = 0x40,
         AllColors = Gray | Magenta | BottomLeftPixel,
     };
     Q_DECLARE_FLAGS(TransparentColors, TransparentColor)
@@ -85,9 +85,9 @@ struct Widget
     Q_PROPERTY(QVector<RcCore::Widget> children MEMBER children)
 public:
     enum ConversionFlag {
-        NoFlags = 0x0,
-        UpdateHierarchy = 0x01,
-        UpdateGeometry = 0x02,
+        NoFlags = 0x80,
+        UpdateHierarchy = 0x100,
+        UpdateGeometry = 0x200,
         AllFlags = UpdateHierarchy | UpdateGeometry,
     };
     Q_DECLARE_FLAGS(ConversionFlags, ConversionFlag)

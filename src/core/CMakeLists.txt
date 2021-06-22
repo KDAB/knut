@@ -20,6 +20,8 @@ set(PROJECT_SOURCES
     qdirvaluetype.cpp
     qfileinfovaluetype.h
     qfileinfovaluetype.cpp
+    rcdocument.h
+    rcdocument.cpp
     scriptitem.h
     scriptitem.cpp
     scriptmanager.h
@@ -51,7 +53,9 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     Qt${QT_VERSION_MAJOR}::QmlPrivate
     Qt${QT_VERSION_MAJOR}::Quick
     Qt${QT_VERSION_MAJOR}::Widgets
+    Qt${QT_VERSION_MAJOR}::UiTools
     knut-lsp
+    knut-rccore
 )
 target_include_directories(${PROJECT_NAME}
     INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/..

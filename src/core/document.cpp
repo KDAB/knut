@@ -62,8 +62,7 @@ void Document::setFileName(const QString &newFileName)
 {
     if (m_fileName == newFileName)
         return;
-    m_fileName = newFileName;
-    emit fileNameChanged();
+    load(newFileName);
 }
 
 bool Document::exists() const
@@ -110,9 +109,12 @@ bool Document::load(const QString &fileName)
         return true;
     if (m_hasChanged)
         save();
-    m_fileName = fileName;
-    emit fileNameChanged();
-    return doLoad(m_fileName);
+    bool loadDone = doLoad(fileName);
+    if (loadDone) {
+        m_fileName = fileName;
+        emit fileNameChanged();
+    }
+    return loadDone;
 }
 
 /*!

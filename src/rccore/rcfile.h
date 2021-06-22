@@ -8,26 +8,20 @@ class QIODevice;
 
 namespace RcCore {
 
-constexpr double defaultDialogScaleX = 1.5;
-constexpr double defaultDialogScaleY = 1.65;
-constexpr Widget::ConversionFlags defaultDialogFlags = Widget::AllFlags;
-constexpr Asset::ConversionFlags defaultAssetFlags = Asset::AllFlags;
-constexpr Asset::TransparentColors defaultColorFlags = Asset::AllColors;
-
 // Parse method
 Data parse(const QString &fileName);
 
 // Conversion methods
-QVector<Asset> convertAssets(const Data &data, Asset::ConversionFlags flags = defaultAssetFlags);
+QVector<Asset> convertAssets(const Data &data, Asset::ConversionFlags flags = Asset::AllFlags);
 
-Widget convertDialog(const Data &data, const Data::Dialog &dialog, Widget::ConversionFlags flags = defaultDialogFlags,
-                     double scaleX = defaultDialogScaleX, double scaleY = defaultDialogScaleY);
+Widget convertDialog(const Data &data, const Data::Dialog &dialog,
+                     Widget::ConversionFlags flags = Widget::UpdateGeometry, double scaleX = 1.5, double scaleY = 1.65);
 
 QVector<Action> convertActions(const Data &data, const QStringList &menus, const QStringList &accelerators = {},
-                               const QStringList &toolBars = {}, Asset::ConversionFlags flags = defaultAssetFlags);
+                               const QStringList &toolBars = {}, Asset::ConversionFlags flags = Asset::AllFlags);
 
 // Write methods
-void writeAssetsToImage(const QVector<Asset> &assets, Asset::TransparentColors colors = defaultColorFlags);
+void writeAssetsToImage(const QVector<Asset> &assets, Asset::TransparentColors colors = Asset::AllColors);
 
 void writeAssetsToQrc(const QVector<Asset> &assets, QIODevice *device, const QString &fileName);
 

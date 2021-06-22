@@ -101,8 +101,7 @@ private slots:
         QCOMPARE(document.text(), LoremIpsumText);
 
         const QString saveFileName = Core::Utils::mktemp("TestTextDocument");
-        document.setFileName(saveFileName);
-        document.save();
+        document.saveAs(saveFileName);
         QVERIFY(!document.hasChanged());
 #if defined(Q_OS_WIN)
         QVERIFY(

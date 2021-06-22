@@ -11,7 +11,7 @@
 
 namespace Core {
 
-/*!
+/**
  * \brief Singleton storing all settings for Knut
  *
  * There are 3 levels of settings:
@@ -43,8 +43,10 @@ public:
     void loadProjectSettings(const QString &rootDir);
 
     template <typename T>
-    T value(const std::string &path)
+    T value(std::string path)
     {
+        if (!path.starts_with('/'))
+            path = '/' + path;
         try {
             return m_settings.at(nlohmann::json::json_pointer(path)).get<T>();
         } catch (...) {
@@ -78,3 +80,5 @@ private:
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Settings::LspServer, program, arguments);
 
 } // namespace Core
+
+#define DEFAULT_VALUE(Type, PATH) Core::Settings::instance()->value<Type>(PATH)

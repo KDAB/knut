@@ -40,6 +40,7 @@ private slots:
     KNUT_TEST(dir)
     KNUT_TEST(fileinfo)
     KNUT_TEST(utils)
+    KNUT_TEST(rcfiles)
 };
 
 QTEST_MAIN(TestKnut)
