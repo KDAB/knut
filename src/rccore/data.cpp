@@ -6,7 +6,7 @@ namespace RcCore {
 /*!
  * \qmltype Asset
  * \brief Description of a RC file asset.
- * \inqmlmodule Script
+ * \inqmlmodule Script.Mfc
  * \since 4.0
  * \sa RcFile
  */
@@ -27,7 +27,7 @@ namespace RcCore {
 /*!
  * \qmltype ToolBarItem
  * \brief Description of a RC file toolbar item.
- * \inqmlmodule Script
+ * \inqmlmodule Script.Mfc
  * \since 4.0
  * \sa RcFile
  */
@@ -43,7 +43,7 @@ namespace RcCore {
 /*!
  * \qmltype ToolBar
  * \brief Description of a RC file toolbar.
- * \inqmlmodule Script
+ * \inqmlmodule Script.Mfc
  * \since 4.0
  * \sa RcFile
  */
@@ -52,18 +52,18 @@ namespace RcCore {
  * This property holds the id of the toolbar.
  */
 /*!
- * \qmlproperty array<ToolBarItem> ToolBarItem::children
+ * \qmlproperty array<ToolBarItem> ToolBar::children
  * This property holds the list of toolbar items inside in the toolbar.
  */
 /*!
- * \qmlproperty size ToolBarItem::iconSize
+ * \qmlproperty size ToolBar::iconSize
  * This property holds the size of the icon associated to the toolbar.
  */
 
 /*!
  * \qmltype Widget
  * \brief Description of a RC file widget.
- * \inqmlmodule Script
+ * \inqmlmodule Script.Mfc
  * \since 4.0
  * \sa RcFile
  */
@@ -95,7 +95,7 @@ namespace RcCore {
 /*!
  * \qmltype MenuItem
  * \brief Description of a RC file menu item.
- * \inqmlmodule Script
+ * \inqmlmodule Script.Mfc
  * \since 4.0
  * \sa RcFile
  */
@@ -127,7 +127,7 @@ namespace RcCore {
 /*!
  * \qmltype Menu
  * \brief Description of a RC file menu.
- * \inqmlmodule Script
+ * \inqmlmodule Script.Mfc
  * \since 4.0
  * \sa RcFile
  */
@@ -143,7 +143,7 @@ namespace RcCore {
 /*!
  * \qmltype Shortcut
  * \brief Description of a RC file shortcut.
- * \inqmlmodule Script
+ * \inqmlmodule Script.Mfc
  * \since 4.0
  * \sa RcFile
  */
@@ -159,7 +159,7 @@ namespace RcCore {
 /*!
  * \qmltype Action
  * \brief Description of a RC file action.
- * \inqmlmodule Script
+ * \inqmlmodule Script.Mfc
  * \since 4.0
  * \sa RcFile
  */

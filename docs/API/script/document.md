@@ -61,6 +61,7 @@ Returns the current type of the document, please note that the type is fixed onc
 are:
 
 - `Document.Text`
+- `Document.Rc`
 
 ## Method Documentation
 

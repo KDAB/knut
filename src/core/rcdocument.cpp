@@ -15,7 +15,7 @@ namespace Core {
  * \qmltype RcDocument
  * \brief Provides access to the content of a RC file (MFC resource file).
  * \instantiates Core::RcDocument
- * \inqmlmodule Script
+ * \inqmlmodule Script.Mfc
  * \since 4.0
  */
 
@@ -87,7 +87,7 @@ QVector<RcCore::ToolBar> RcDocument::toolBars() const
 
 /*!
  * \qmlmethod ToolBar RcDocument::toolBar( string id)
- * Returns the toolbar for the given \a id.
+ * Returns the toolbar for the given `id`.
  */
 RcCore::ToolBar RcDocument::toolBar(const QString &id) const
 {
@@ -205,7 +205,7 @@ QStringList RcDocument::stringIds() const
 }
 
 /*!
- * \qmlmethod RcDocument::text( string id)
+ * \qmlmethod string RcDocument::text( string id)
  * Return the string for the given `id`.
  */
 QString RcDocument::text(const QString &id) const

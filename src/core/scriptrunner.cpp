@@ -89,6 +89,7 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qRegisterMetaType<QVector<RcCore::Shortcut>>();
     qRegisterMetaType<RcCore::Action>();
     qRegisterMetaType<QVector<RcCore::Action>>();
+
     // Script
     qmlRegisterSingletonType<Dir>("Script", 1, 0, "Dir", dir_provider);
     qmlRegisterSingletonType<FileInfo>("Script", 1, 0, "FileInfo", fileinfo_provider);
@@ -99,7 +100,8 @@ ScriptRunner::ScriptRunner(QObject *parent)
 
     qmlRegisterType<ScriptItem>("Script", 1, 0, "Script");
     qmlRegisterType<TextDocument>("Script", 1, 0, "TextDocument");
-    qmlRegisterType<RcDocument>("Script", 1, 0, "RcDocument");
+
+    qmlRegisterType<RcDocument>("Script.Mfc", 1, 0, "RcDocument");
 
     // Script.Test
     qmlRegisterType<TestUtil>("Script.Test", 1, 0, "TestUtil");

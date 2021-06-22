@@ -13,7 +13,7 @@ namespace Core {
  * \inqmlmodule Script.Test
  * \since 4.0
  *
- * This class is mainly used by the [TestCase](testcase.qml) object, to extract some information on the script.
+ * This class is mainly used by the [TestCase](testcase.md) object, to extract some information on the script.
  *
  * It should not be used in normal scripts.
  */

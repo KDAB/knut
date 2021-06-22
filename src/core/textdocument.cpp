@@ -470,7 +470,7 @@ void TextDocument::selectWordEnd()
 
 /*!
  * \qmlmethod TextDocument::selectNextLine( int count = 1)
- * Selects the next line, repeat the operation \a count times.
+ * Selects the next line, repeat the operation `count` times.
  */
 void TextDocument::selectNextLine(int count)
 {

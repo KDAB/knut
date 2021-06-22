@@ -1,0 +1,28 @@
+# ToolBarItem
+
+Description of a RC file toolbar item. [More...](#detailed-description)
+
+```qml
+import Script.Mfc 1.0
+```
+
+<table>
+<tr><td>Since:</td><td>Knut 4.0</td></tr>
+</table>
+
+## Properties
+
+| | Name |
+|-|-|
+|string|**[id](#id)**|
+|bool|**[isSeparator](#isSeparator)**|
+
+## Property Documentation
+
+#### <a name="id"></a>string **id**
+
+This property holds the id of the toolbar item.
+
+#### <a name="isSeparator"></a>bool **isSeparator**
+
+This property returns `true` if the toolbar item is a separatior (vertical line visually).

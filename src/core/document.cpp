@@ -38,6 +38,7 @@ namespace Core {
  * are:
  *
  * - `Document.Text`
+ * - `Document.Rc`
  */
 /*!
  * \qmlproperty string Document::errorString

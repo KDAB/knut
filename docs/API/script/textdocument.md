@@ -256,7 +256,7 @@ Selects the next character, repeat the operation `count` times.
 
 #### <a name="selectNextLine"></a>**selectNextLine**(int count = 1)
 
-Selects the next line, repeat the operation \a count times.
+Selects the next line, repeat the operation `count` times.
 
 #### <a name="selectNextWord"></a>**selectNextWord**(int count = 1)
 
