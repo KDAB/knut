@@ -51,7 +51,7 @@ signals:
     void scriptFinished(const QVariant &result);
 
 private:
-    friend class KnutMain;
+    friend class KnutCore;
     explicit ScriptManager(QObject *parent = nullptr);
 
     void addScript(const QString &fileName);

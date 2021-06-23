@@ -64,7 +64,7 @@ protected:
     explicit Settings(bool addUserSettings, QObject *parent = nullptr);
 
 private:
-    friend class KnutMain;
+    friend class KnutCore;
     Settings(QObject *parent = nullptr);
 
     void loadKnutSettings();

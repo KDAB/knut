@@ -7,15 +7,19 @@ class QCoreApplication;
 
 namespace Core {
 
-class KnutMain : public QObject
+class KnutCore : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit KnutMain(QObject *parent = nullptr);
+    explicit KnutCore(QObject *parent = nullptr);
 
     void process(const QCoreApplication &app);
     void process(const QStringList &arguments);
+
+protected:
+    virtual void initParser(QCommandLineParser &parser) const;
+    virtual void doParse(const QCommandLineParser &parser) const;
 };
 
 } // namespace Core

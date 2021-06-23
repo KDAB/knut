@@ -10,8 +10,8 @@ set(PROJECT_SOURCES
     fileinfo.h
     fileinfo.cpp
     json_utils.h
-    knutmain.h
-    knutmain.cpp
+    knutcore.h
+    knutcore.cpp
     mark.h
     mark.cpp
     message.h

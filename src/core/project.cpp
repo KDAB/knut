@@ -7,14 +7,16 @@
 #include <QDir>
 #include <QDirIterator>
 #include <QFileInfo>
-#include <QFileSystemModel>
+#include <QStringList>
 
 #include <spdlog/spdlog.h>
 
 #include <algorithm>
-#include <unordered_set>
 
 namespace Core {
+
+static QStringList TextSuffix = {"txt", "cpp", "h"};
+static QStringList RcSuffix = {"rc"};
 
 /*!
  * \qmltype Project
@@ -137,13 +139,10 @@ Document *Project::open(QString fileName)
     if (findIt != m_documents.cend())
         return *findIt;
 
-    // TODO update once CppDocument exist
-    static std::unordered_set<QString> textSuffix = {"txt", "cpp", "h"};
-
     Document *doc = nullptr;
-    if (textSuffix.contains(fi.suffix()))
+    if (TextSuffix.contains(fi.suffix()))
         doc = new TextDocument(this);
-    else if (fi.suffix() == "rc")
+    else if (RcSuffix.contains(fi.suffix()))
         doc = new RcDocument(this);
 
     if (doc) {
@@ -153,14 +152,6 @@ Document *Project::open(QString fileName)
         spdlog::critical("Document type is unmanaged in Knut: {}", fi.suffix().toStdString());
     }
     return doc;
-}
-
-QAbstractItemModel *Project::fileModel() const
-{
-    // Only create on-demand
-    static QFileSystemModel *model = new QFileSystemModel(const_cast<Core::Project *>(this));
-    model->setRootPath(m_root);
-    return model;
 }
 
 } // namespace Core

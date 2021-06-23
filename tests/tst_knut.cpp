@@ -1,4 +1,4 @@
-#include "core/knutmain.h"
+#include "core/knutcore.h"
 #include "core/scriptmanager.h"
 
 #include "common/test_utils.h"
@@ -19,9 +19,9 @@
         QDir dir(Test::testDataPath() + "/" #name);                                                                    \
         if (dir.exists())                                                                                              \
             arguments.append({"-r", dir.absolutePath()});                                                              \
-        Core::KnutMain main;                                                                                           \
+        Core::KnutCore knut;                                                                                           \
         QSignalSpy finished(Core::ScriptManager::instance(), &Core::ScriptManager::scriptFinished);                    \
-        main.process(arguments);                                                                                       \
+        knut.process(arguments);                                                                                       \
         QVERIFY(finished.wait());                                                                                      \
         QCOMPARE(finished.takeFirst().at(0).toInt(), 0);                                                               \
     }
