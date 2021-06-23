@@ -28,10 +28,10 @@ set(PROJECT_SOURCES
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
 target_link_libraries(${PROJECT_NAME}
     spdlog::spdlog
-    Qt${QT_VERSION_MAJOR}::Core
-    Qt${QT_VERSION_MAJOR}::Gui
-    Qt${QT_VERSION_MAJOR}::Widgets
-    Qt${QT_VERSION_MAJOR}::UiTools
+    Qt::Core
+    Qt::Gui
+    Qt::Widgets
+    Qt::UiTools
     knut-rccore
 )
 target_include_directories(${PROJECT_NAME}

@@ -8,7 +8,7 @@ function(add_knut_test NAME SOURCES LIBS)
 
     set(_LIBS ${LIBS} ${ARGN})
     target_link_libraries(${NAME} PRIVATE
-        Qt${QT_VERSION_MAJOR}::Test
+        Qt::Test
         ${_LIBS}
     )
     target_include_directories(${NAME}
@@ -35,4 +35,4 @@ add_knut_test(tst_rclexer tst_rclexer.cpp knut-rccore)
 
 add_knut_test(tst_rcparser tst_rcparser.cpp knut-rccore)
 
-add_knut_test(tst_rcwriter tst_rcwriter.cpp knut-rccore Qt${QT_VERSION_MAJOR}::UiTools)
+add_knut_test(tst_rcwriter tst_rcwriter.cpp knut-rccore Qt::UiTools)

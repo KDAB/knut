@@ -50,12 +50,12 @@ add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
 target_link_libraries(${PROJECT_NAME} PUBLIC
     nlohmann_json::nlohmann_json
     spdlog::spdlog
-    Qt${QT_VERSION_MAJOR}::Core
-    Qt${QT_VERSION_MAJOR}::Qml
-    Qt${QT_VERSION_MAJOR}::QmlPrivate
-    Qt${QT_VERSION_MAJOR}::Quick
-    Qt${QT_VERSION_MAJOR}::Widgets
-    Qt${QT_VERSION_MAJOR}::UiTools
+    Qt::Core
+    Qt::Qml
+    Qt::QmlPrivate
+    Qt::Quick
+    Qt::Widgets
+    Qt::UiTools
     knut-lsp
     knut-rccore
     knut-rcui
