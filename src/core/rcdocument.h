@@ -68,6 +68,9 @@ public:
 
     Q_INVOKABLE QString text(const QString &id) const;
 
+    const RcCore::Data &data() const;
+    QWidget *widget() const override;
+
 public slots:
     void convertAssets(int flags = DEFAULT_VALUE(ConversionFlag, "/rc/asset_flags"));
     QVector<RcCore::Action> convertActions(const QStringList &menus, const QStringList &accelerators,

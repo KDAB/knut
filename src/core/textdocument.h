@@ -2,6 +2,7 @@
 
 #include "document.h"
 
+#include <QPointer>
 #include <QTextCursor>
 
 #include <memory>
@@ -60,6 +61,8 @@ public:
     void setLineEnding(LineEnding newLineEnding);
 
     bool hasUtf8Bom() const;
+
+    QWidget *widget() const override;
 
 public slots:
     void undo();
@@ -144,7 +147,7 @@ private:
 
     // TODO: use a QTextDocument maybe, to avoid creating a widget
     // The QPlainTextEdit has a nicer API, so it's slightly easier with that now
-    std::unique_ptr<QPlainTextEdit> m_document;
+    QPointer<QPlainTextEdit> m_document;
     LineEnding m_lineEnding = NativeLineEnding;
     bool m_utf8Bom = false;
 };

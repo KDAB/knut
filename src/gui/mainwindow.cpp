@@ -1,12 +1,18 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "core/document.h"
 #include "core/project.h"
+#include "core/rcdocument.h"
+#include "core/textdocument.h"
+#include "rcui/rcfileview.h"
 
 #include <QApplication>
+#include <QDir>
 #include <QFileDialog>
 #include <QFileSystemModel>
 #include <QHeaderView>
+#include <QPlainTextEdit>
 #include <QSettings>
 
 namespace Gui {
@@ -68,6 +74,7 @@ void MainWindow::initProject(const QString &path)
     for (int i = 1; i < projectModel->columnCount(); ++i)
         ui->projectView->header()->hideSection(i);
     ui->projectView->setRootIndex(index);
+    connect(ui->projectView->selectionModel(), &QItemSelectionModel::currentChanged, this, &MainWindow::openDocument);
 
     // Disable menus, we can only load one project - restart Knut if needed
     ui->action_Open->setEnabled(false);
@@ -82,13 +89,35 @@ void MainWindow::updateRecentProjects()
     const int numRecentProjects = qMin(projects.count(), MaximumRecentProjects);
     m_recentProjects->clear();
     for (int i = 0; i < numRecentProjects; ++i) {
-        const QString text = projects.value(i);
-        QAction *act = m_recentProjects->addAction(text);
-        connect(act, &QAction::triggered, this, [this, text]() {
-            initProject(text);
+        const QString path = projects.value(i);
+        QAction *act = m_recentProjects->addAction(path);
+        connect(act, &QAction::triggered, this, [this, path]() {
+            Core::Project::instance()->setRoot(path);
+            initProject(path);
         });
     }
     ui->actionRecent_Projects->setEnabled(numRecentProjects > 0);
+}
+
+void MainWindow::openDocument(const QModelIndex &index)
+{
+    auto fileSystemModel = qobject_cast<QFileSystemModel *>(ui->projectView->model());
+    auto path = fileSystemModel->filePath(index);
+    auto document = Core::Project::instance()->open(path);
+    if (!document)
+        return;
+
+    // open the window if it's already opened
+    int windowIndex = m_windows.value(document->fileName(), -1);
+    if (windowIndex != -1) {
+        ui->tabWidget->setCurrentIndex(windowIndex);
+        return;
+    }
+
+    QDir dir(Core::Project::instance()->root());
+    windowIndex = ui->tabWidget->addTab(document->widget(), dir.relativeFilePath(document->fileName()));
+    m_windows[document->fileName()] = windowIndex;
+    ui->tabWidget->setCurrentIndex(windowIndex);
 }
 
 } // namespace Gui

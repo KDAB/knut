@@ -1,6 +1,7 @@
 #include "rcdocument.h"
 
 #include "rccore/rcfile.h"
+#include "rcui/rcfileview.h"
 
 #include <QBuffer>
 #include <QFile>
@@ -213,6 +214,18 @@ QString RcDocument::text(const QString &id) const
     if (m_data.isValid)
         return m_data.strings.value(id).text;
     return {};
+}
+
+const RcCore::Data &RcDocument::data() const
+{
+    return m_data;
+}
+
+QWidget *RcDocument::widget() const
+{
+    auto rcview = new RcUi::RcFileView();
+    rcview->setRcFile(m_data);
+    return rcview;
 }
 
 QVector<RcCore::Menu> RcDocument::menus() const

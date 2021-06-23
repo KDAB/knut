@@ -71,16 +71,19 @@ TextDocument::TextDocument(QObject *parent)
 {
 }
 
-TextDocument::~TextDocument() { }
+TextDocument::~TextDocument()
+{
+    delete m_document;
+}
 
 TextDocument::TextDocument(Type type, QObject *parent)
     : Document(type, parent)
     , m_document(new QPlainTextEdit())
 {
     m_document->hide();
-    connect(m_document.get(), &QPlainTextEdit::textChanged, this, &TextDocument::textChanged);
-    connect(m_document.get(), &QPlainTextEdit::selectionChanged, this, &TextDocument::selectionChanged);
-    connect(m_document.get(), &QPlainTextEdit::cursorPositionChanged, this, &TextDocument::positionChanged);
+    connect(m_document, &QPlainTextEdit::textChanged, this, &TextDocument::textChanged);
+    connect(m_document, &QPlainTextEdit::selectionChanged, this, &TextDocument::selectionChanged);
+    connect(m_document, &QPlainTextEdit::cursorPositionChanged, this, &TextDocument::positionChanged);
 }
 
 bool TextDocument::doSave(const QString &fileName)
@@ -235,6 +238,15 @@ TextDocument::LineEnding TextDocument::lineEnding() const
 bool TextDocument::hasUtf8Bom() const
 {
     return m_utf8Bom;
+}
+
+QWidget *TextDocument::widget() const
+{
+    auto f = m_document->font();
+    f.setFamily(QStringLiteral("Courier New"));
+    f.setPointSize(10);
+    m_document->setFont(f);
+    return m_document;
 }
 
 /*!
