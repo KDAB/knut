@@ -2,6 +2,7 @@
 
 #include "common/test_utils.h"
 
+#include <QSignalSpy>
 #include <QTest>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -70,6 +71,40 @@ private slots:
         // Check value we can't parse
         QVERIFY(!settings.value("/numbers").isValid());
         QVERIFY(!settings.value("/foobar").isValid());
+    }
+
+    void setValue()
+    {
+        Test::FileTester file(Test::testDataPath() + "/settings/setValue/knut_original.json");
+        Test::LogSilencer ls;
+        SettingsFixture settings;
+        QSignalSpy settingsSaved(&settings, &Core::Settings::projectSettingsSaved);
+
+        settings.loadProjectSettings(Test::testDataPath() + "/settings/setValue");
+        QCOMPARE(settings.value("/rc/dialog_scalex").toDouble(), 1.5);
+
+        settings.setValue("/rc/dialog_scalex", 2.0);
+        QCOMPARE(settings.value("/rc/dialog_scalex").toDouble(), 2.0);
+
+        QStringList test = {"This", "is", "a", "test."};
+        settings.setValue("/thisisatest", test);
+        QCOMPARE(settings.value<QStringList>("/thisisatest"), test);
+
+        QVariant var(10);
+        settings.setValue("/thisisanothertest", var);
+        QCOMPARE(settings.value("/thisisanothertest").toInt(), 10);
+
+        QVariant v;
+        QVERIFY(!settings.setValue("/shouldnotwork", v));
+
+        QRect r;
+        QVERIFY(!settings.setValue("/shouldnotwork", QVariant(r)));
+
+        // There's only one signal, as the save is done asynchronously
+        settingsSaved.wait();
+        QCOMPARE(settingsSaved.count(), 1);
+
+        QVERIFY(file.compare());
     }
 };
 

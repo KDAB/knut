@@ -1,5 +1,6 @@
 #include "testutil.h"
 
+#include <QFile>
 #include <QUrl>
 #include <QtQml>
 
@@ -46,6 +47,29 @@ int TestUtil::callerLine(int frameIndex) const
     if (stack.size() > frameIndex + 1)
         return stack.at(frameIndex + 1).line;
     return -1;
+}
+
+/*!
+ * \qmlmethod TestUtil::compareFiles( string file, string expected, bool eolLF = true)
+ * Compares the content of the two files, and return true if they are the same.
+ * If `eolLF` true, compareFiles will change the EOL of files to LF for comparison.
+ */
+bool TestUtil::compareFiles(const QString &file, const QString &expected, bool eolLF)
+{
+    QFile file1(file);
+    if (!file1.open(QIODevice::ReadOnly))
+        return false;
+    QFile file2(expected);
+    if (!file2.open(QIODevice::ReadOnly))
+        return false;
+
+    auto data1 = file1.readAll();
+    auto data2 = file2.readAll();
+    if (eolLF) {
+        data1.replace("\r\n", "\n");
+        data2.replace("\r\n", "\n");
+    }
+    return data1 == data2;
 }
 
 } // namespace Core

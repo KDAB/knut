@@ -9,6 +9,8 @@
 #include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
 
+class QTimer;
+
 namespace Core {
 
 /**
@@ -61,9 +63,13 @@ public:
         return {};
     }
 
-    // TODO : Add API to change the project settings, setValue/removeValue
     Q_INVOKABLE bool hasValue(QString path) const;
     Q_INVOKABLE QVariant value(QString path, const QVariant &defaultValue = {}) const;
+
+    Q_INVOKABLE bool setValue(QString path, const QVariant &value);
+
+signals:
+    void projectSettingsSaved();
 
 protected:
     // Constructor used for testing purpose
@@ -75,12 +81,15 @@ private:
 
     void loadKnutSettings();
     void loadUserSettings();
-    void loadSettings(std::string name, const QString &fileName);
+    void saveProjectSettings();
 
 private:
     inline static Settings *m_instance = nullptr;
 
     nlohmann::json m_settings;
+    nlohmann::json m_projectSettings;
+    QString m_projectSettingsName;
+    QTimer *m_saveTimer = nullptr;
 };
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Settings::LspServer, program, arguments);

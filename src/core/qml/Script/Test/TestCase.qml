@@ -17,7 +17,6 @@ QtObject {
  * This property defines the name of the unit test. **This is a mandatory property**.
  */
     property string name
-    property var util: TestUtil {}
 
     property bool hasError: false
     property string current
@@ -37,7 +36,7 @@ QtObject {
             Message.error("FAIL!  : " + name + "::" + current + "() " + msg)
             Message.debug("   Actual  : " + actual)
             Message.debug("   Expected: " + expected)
-            Message.debug("   " + util.callerFile() + "(" + util.callerLine() + ")")
+            Message.debug("   " + TestUtil.callerFile() + "(" + TestUtil.callerLine() + ")")
             hasError = true
         }
     }
@@ -51,7 +50,7 @@ QtObject {
             if (msg === undefined)
                 msg = "Verification failed"
             Message.error("FAIL!  : " + name + "::" + current + "() " + msg)
-            Message.debug("   " + util.callerFile() + "(" + util.callerLine() + ")")
+            Message.debug("   " + TestUtil.callerFile() + "(" + TestUtil.callerLine() + ")")
             hasError = true
         }
     }

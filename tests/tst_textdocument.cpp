@@ -86,7 +86,7 @@ private slots:
 
         document.setText(LoremIpsumText);
         document.save();
-        QVERIFY(Test::compareFiles(file, tempFile));
+        QVERIFY(Test::compareFiles(file, tempFile, false));
 
         // Cleanup
         QFile::remove(tempFile);
@@ -104,10 +104,11 @@ private slots:
         document.saveAs(saveFileName);
         QVERIFY(!document.hasChanged());
 #if defined(Q_OS_WIN)
-        QVERIFY(
-            Test::compareFiles(document.fileName(), Test::testDataPath() + "/textdocument/loremipsum_crlf_utf8.txt"));
+        QVERIFY(Test::compareFiles(document.fileName(), Test::testDataPath() + "/textdocument/loremipsum_crlf_utf8.txt",
+                                   false));
 #else
-        QVERIFY(Test::compareFiles(document.fileName(), Test::testDataPath() + "/textdocument/loremipsum_lf_utf8.txt"));
+        QVERIFY(Test::compareFiles(document.fileName(), Test::testDataPath() + "/textdocument/loremipsum_lf_utf8.txt",
+                                   false));
 #endif
         document.setText("Not much to see");
         QVERIFY(document.hasChanged());
@@ -115,7 +116,7 @@ private slots:
         document.saveAs(saveAsFileName);
         QCOMPARE(document.fileName(), saveAsFileName);
         QVERIFY(!document.hasChanged());
-        QVERIFY(!Test::compareFiles(saveFileName, saveAsFileName));
+        QVERIFY(!Test::compareFiles(saveFileName, saveAsFileName, false));
 
         // Cleanup
         QFile::remove(saveFileName);
@@ -186,8 +187,9 @@ private slots:
 
     void edition()
     {
+        Test::FileTester file(Test::testDataPath() + "/textdocument/loremipsum_original.txt");
         Core::TextDocument document;
-        document.load(Test::testDataPath() + "/textdocument/loremipsum_lf_utf8.txt");
+        document.load(Test::testDataPath() + "/textdocument/loremipsum.txt");
 
         document.deleteRegion(598, 695);
 
@@ -215,10 +217,9 @@ private slots:
         document.gotoNextLine(4);
         document.deleteNextCharacter(5);
 
-        const QString saveFileName = Core::Utils::mktemp("TestTextDocument");
-        document.saveAs(saveFileName);
+        document.save();
 
-        QVERIFY(Test::compareFiles(saveFileName, Test::testDataPath() + "/textdocument/loremipsum_lf_utf8_edited.txt"));
+        QVERIFY(file.compare());
 
         for (int i = 0; i < 9; ++i) // 9 editions done
             document.undo();

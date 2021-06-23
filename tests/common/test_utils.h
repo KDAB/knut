@@ -1,8 +1,10 @@
 #pragma once
 
 #include <QCoreApplication>
+#include <QDebug>
 #include <QDir>
 #include <QFile>
+#include <QFileInfo>
 #include <QString>
 
 #include <spdlog/spdlog.h>
@@ -24,17 +26,54 @@ inline QString testDataPath()
     return path;
 }
 
-inline bool compareFiles(const QString &fileName1, const QString &fileName2)
+inline bool compareFiles(const QString &file, const QString &expected, bool eolLF = true)
 {
-    QFile file1(fileName1);
+    QFile file1(file);
     if (!file1.open(QIODevice::ReadOnly))
         return false;
-    QFile file2(fileName2);
+    QFile file2(expected);
     if (!file2.open(QIODevice::ReadOnly))
         return false;
 
-    return file1.readAll() == file2.readAll();
+    auto data1 = file1.readAll();
+    auto data2 = file2.readAll();
+    if (eolLF) {
+        data1.replace("\r\n", "\n");
+        data2.replace("\r\n", "\n");
+    }
+    return data1 == data2;
 }
+
+/**
+ * @brief The FileTester class to handle expected/original files
+ * Create a temporary file based on an original one, and also compare to an expected one.
+ * Delete the created file on destruction.
+ */
+class FileTester
+{
+public:
+    FileTester(const QString &original)
+        : m_original(original)
+    {
+        m_file = m_original;
+        m_file.replace("_original", "");
+        QFile::copy(m_original, m_file);
+    }
+    ~FileTester() { QFile::remove(m_file); }
+
+    QString fileName() const { return m_file; }
+
+    bool compare() const
+    {
+        QString expected = m_original;
+        expected.replace("_original", "_expected");
+        return compareFiles(m_file, expected);
+    }
+
+private:
+    QString m_original;
+    QString m_file;
+};
 
 class LogSilencer
 {

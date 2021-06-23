@@ -1,0 +1,38 @@
+{
+    "answer": 42,
+    "colors": [
+        "red",
+        "green",
+        "blue"
+    ],
+    "enabled": true,
+    "foo": "bar",
+    "foobar": {
+        "foo": "bar"
+    },
+    "lsp": {
+        "cpp": {
+            "arguments": [
+                "foo",
+                "bar"
+            ],
+            "program": "notclangd"
+        }
+    },
+    "numbers": [
+        1,
+        2,
+        3
+    ],
+    "pi": 3.14,
+    "rc": {
+        "dialog_scalex": 2.0
+    },
+    "thisisanothertest": 10,
+    "thisisatest": [
+        "This",
+        "is",
+        "a",
+        "test."
+    ]
+}

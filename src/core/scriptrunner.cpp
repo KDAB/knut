@@ -66,6 +66,14 @@ static QObject *utils_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
     return new Utils();
 }
 
+// TestUtil singleton function provider
+static QObject *testUtil_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+    return new TestUtil();
+}
+
 ScriptRunner::ScriptRunner(QObject *parent)
     : QObject(parent)
 {
@@ -107,7 +115,7 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qmlRegisterType<RcDocument>("Script.Mfc", 1, 0, "RcDocument");
 
     // Script.Test
-    qmlRegisterType<TestUtil>("Script.Test", 1, 0, "TestUtil");
+    qmlRegisterSingletonType<TestUtil>("Script.Test", 1, 0, "TestUtil", testUtil_provider);
 }
 
 ScriptRunner::~ScriptRunner() { }
