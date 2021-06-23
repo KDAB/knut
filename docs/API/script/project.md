@@ -14,7 +14,7 @@ import Script 1.0
 
 | | Name |
 |-|-|
-|string|**[fileModel](#fileModel)**|
+|string|**[currentDocument](#currentDocument)**|
 |string|**[root](#root)**|
 
 ## Methods
@@ -30,9 +30,9 @@ The `Project` object is not meant to open multiple projects, but only open one.
 
 ## Property Documentation
 
-#### <a name="fileModel"></a>string **fileModel**
+#### <a name="currentDocument"></a>string **currentDocument**
 
-Qt model for the current root path. It is created on-demand.
+Current document opened in the project.
 
 #### <a name="root"></a>string **root**
 

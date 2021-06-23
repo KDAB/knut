@@ -11,6 +11,7 @@ class Project : public QObject
     Q_OBJECT
 
     Q_PROPERTY(QString root READ root WRITE setRoot NOTIFY rootChanged)
+    Q_PROPERTY(Core::Document *currentDocument READ currentDocument NOTIFY currentDocumentChanged)
 
 public:
     ~Project();
@@ -20,6 +21,8 @@ public:
     const QString &root() const;
     bool setRoot(const QString &newRoot);
 
+    Core::Document *currentDocument() const;
+
 public slots:
     QStringList allFiles() const;
     QStringList allFilesWithExtension(const QString &extension);
@@ -28,6 +31,7 @@ public slots:
 
 signals:
     void rootChanged();
+    void currentDocumentChanged();
 
 private:
     friend class KnutCore;
@@ -38,6 +42,7 @@ private:
 
     QString m_root;
     std::vector<Document *> m_documents;
+    Core::Document *m_current = nullptr;
 };
 
 } // namespace Core

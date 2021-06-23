@@ -1,11 +1,16 @@
 project(knut-gui LANGUAGES CXX)
 
 set(PROJECT_SOURCES
+    fileselector.h
+    fileselector.cpp
     knutmain.h
     knutmain.cpp
     mainwindow.h
     mainwindow.cpp
     mainwindow.ui
+    rctoqrcdialog.h
+    rctoqrcdialog.cpp
+    rctoqrcdialog.ui
 )
 
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})

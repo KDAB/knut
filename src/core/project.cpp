@@ -7,16 +7,13 @@
 #include <QDir>
 #include <QDirIterator>
 #include <QFileInfo>
-#include <QStringList>
 
 #include <spdlog/spdlog.h>
 
 #include <algorithm>
+#include <unordered_set>
 
 namespace Core {
-
-static QStringList TextSuffix = {"txt", "cpp", "h"};
-static QStringList RcSuffix = {"rc"};
 
 /*!
  * \qmltype Project
@@ -33,8 +30,8 @@ static QStringList RcSuffix = {"rc"};
  */
 
 /*!
- * \qmlproperty string Project::fileModel
- * Qt model for the current root path. It is created on-demand.
+ * \qmlproperty string Project::currentDocument
+ * Current document opened in the project.
  */
 
 Project::Project(QObject *parent)
@@ -133,25 +130,43 @@ Document *Project::open(QString fileName)
     if (fi.isRelative())
         fileName = m_root + '/' + fileName;
 
+    if (m_current && m_current->fileName() == fileName)
+        return m_current;
+
     auto findIt = std::find_if(m_documents.cbegin(), m_documents.cend(), [fileName](auto document) {
         return document->fileName() == fileName;
     });
-    if (findIt != m_documents.cend())
-        return *findIt;
 
     Document *doc = nullptr;
-    if (TextSuffix.contains(fi.suffix()))
-        doc = new TextDocument(this);
-    else if (RcSuffix.contains(fi.suffix()))
-        doc = new RcDocument(this);
 
-    if (doc) {
-        doc->load(fileName);
-        m_documents.push_back(doc);
+    static std::unordered_set<QString> TextSuffix = {"txt", "cpp", "h"};
+    static std::unordered_set<QString> RcSuffix = {"rc"};
+
+    if (findIt != m_documents.cend()) {
+        doc = *findIt;
     } else {
-        spdlog::critical("Document type is unmanaged in Knut: {}", fi.suffix().toStdString());
+        if (TextSuffix.contains(fi.suffix()))
+            doc = new TextDocument(this);
+        else if (RcSuffix.contains(fi.suffix()))
+            doc = new RcDocument(this);
+
+        if (doc) {
+            doc->load(fileName);
+            m_documents.push_back(doc);
+        } else {
+            spdlog::error("Document type is unmanaged in Knut: {}", fi.suffix().toStdString());
+        }
     }
+
+    m_current = doc;
+    emit currentDocumentChanged();
+
     return doc;
+}
+
+Core::Document *Project::currentDocument() const
+{
+    return m_current;
 }
 
 } // namespace Core

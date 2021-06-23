@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "rctoqrcdialog.h"
+
 #include "core/document.h"
 #include "core/project.h"
 #include "core/rcdocument.h"
@@ -32,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->action_Quit, &QAction::triggered, this, &MainWindow::close);
     connect(ui->action_Open, &QAction::triggered, this, &MainWindow::openProject);
+    connect(ui->actionCreate_Qrc, &QAction::triggered, this, &MainWindow::createQrc);
 
     m_recentProjects = new QMenu(this);
     ui->actionRecent_Projects->setMenu(m_recentProjects);
@@ -40,6 +43,8 @@ MainWindow::MainWindow(QWidget *parent)
     auto path = Core::Project::instance()->root();
     if (!path.isEmpty())
         initProject(path);
+
+    connect(ui->tabWidget, &QTabWidget::currentChanged, this, &MainWindow::changeCurrentDocument);
 }
 
 MainWindow::~MainWindow()
@@ -118,6 +123,25 @@ void MainWindow::openDocument(const QModelIndex &index)
     windowIndex = ui->tabWidget->addTab(document->widget(), dir.relativeFilePath(document->fileName()));
     m_windows[document->fileName()] = windowIndex;
     ui->tabWidget->setCurrentIndex(windowIndex);
+}
+
+void MainWindow::createQrc()
+{
+    auto document = Core::Project::instance()->currentDocument();
+    if (auto rcDocument = qobject_cast<Core::RcDocument *>(document)) {
+        RcToQrcDialog dialog(rcDocument, this);
+        dialog.exec();
+    }
+}
+
+void MainWindow::changeCurrentDocument(int index)
+{
+    auto document = Core::Project::instance()->open(ui->tabWidget->tabText(index));
+    if (!document)
+        return;
+
+    ui->actionCreate_Qrc->setEnabled(document->type() == Core::Document::Type::Rc);
+    ui->actionCreate_Ui->setEnabled(document->type() == Core::Document::Type::Rc);
 }
 
 } // namespace Gui

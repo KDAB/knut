@@ -53,9 +53,9 @@ public:
     QVector<RcCore::ToolBar> toolBars() const;
     Q_INVOKABLE RcCore::ToolBar toolBar(const QString &id) const;
 
-    Q_INVOKABLE RcCore::Widget dialog(const QString &id, int flags = DEFAULT_VALUE(ConversionFlags, "/rc/dialog_flags"),
-                                      double scaleX = DEFAULT_VALUE(double, "/rc/dialog_scalex"),
-                                      double scaleY = DEFAULT_VALUE(double, "/rc/dialog_scaley")) const;
+    Q_INVOKABLE RcCore::Widget dialog(const QString &id, int flags = DEFAULT_VALUE(ConversionFlags, RcDialogFlags),
+                                      double scaleX = DEFAULT_VALUE(double, RcDialogScaleX),
+                                      double scaleY = DEFAULT_VALUE(double, RcDialogScaleY)) const;
 
     QVector<RcCore::Menu> menus() const;
     Q_INVOKABLE RcCore::Menu menu(const QString &id) const;
@@ -72,11 +72,11 @@ public:
     QWidget *widget() const override;
 
 public slots:
-    void convertAssets(int flags = DEFAULT_VALUE(ConversionFlag, "/rc/asset_flags"));
+    void convertAssets(int flags = DEFAULT_VALUE(ConversionFlag, RcAssetFlags));
     QVector<RcCore::Action> convertActions(const QStringList &menus, const QStringList &accelerators,
                                            const QStringList &toolBars,
-                                           int flags = DEFAULT_VALUE(ConversionFlags, "/rc/asset_flags"));
-    bool writeAssetsToImage(int flags = DEFAULT_VALUE(ConversionFlags, "/rc/asset_transparent_colors"));
+                                           int flags = DEFAULT_VALUE(ConversionFlags, RcAssetFlags));
+    bool writeAssetsToImage(int flags = DEFAULT_VALUE(ConversionFlags, RcAssetColors));
     bool writeAssetsToQrc(const QString &fileName);
     bool writeDialogToUi(const RcCore::Widget &dialog, const QString &fileName);
     void previewDialog(const RcCore::Widget &dialog) const;

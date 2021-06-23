@@ -35,6 +35,12 @@ public:
         QStringList arguments;
     };
 
+    static inline const char RcDialogFlags[] = "/rc/dialog_flags";
+    static inline const char RcDialogScaleX[] = "/rc/dialog_scalex";
+    static inline const char RcDialogScaleY[] = "/rc/dialog_scaley";
+    static inline const char RcAssetFlags[] = "/rc/asset_flags";
+    static inline const char RcAssetColors[] = "/rc/asset_transparent_colors";
+
 public:
     ~Settings();
 
@@ -81,4 +87,4 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Settings::LspServer, program, arguments);
 
 } // namespace Core
 
-#define DEFAULT_VALUE(Type, PATH) Core::Settings::instance()->value<Type>(PATH)
+#define DEFAULT_VALUE(Type, PATH) Core::Settings::instance()->value<Type>(Core::Settings::PATH)

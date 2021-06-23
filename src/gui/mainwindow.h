@@ -29,6 +29,9 @@ private:
     void initProject(const QString &path);
     void updateRecentProjects();
     void openDocument(const QModelIndex &index);
+    void createQrc();
+
+    void changeCurrentDocument(int index);
 
 private:
     Ui::MainWindow *ui;

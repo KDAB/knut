@@ -44,7 +44,15 @@
     <addaction name="separator"/>
     <addaction name="action_Quit"/>
    </widget>
+   <widget class="QMenu" name="menu_Rc">
+    <property name="title">
+     <string>&amp;Rc</string>
+    </property>
+    <addaction name="actionCreate_Qrc"/>
+    <addaction name="actionCreate_Ui"/>
+   </widget>
    <addaction name="menu_File"/>
+   <addaction name="menu_Rc"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="action_Quit">
@@ -60,6 +68,22 @@
   <action name="actionRecent_Projects">
    <property name="text">
     <string>Recent &amp;Projects</string>
+   </property>
+  </action>
+  <action name="actionCreate_Qrc">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Create Qrc...</string>
+   </property>
+  </action>
+  <action name="actionCreate_Ui">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Create Ui...</string>
    </property>
   </action>
  </widget>
