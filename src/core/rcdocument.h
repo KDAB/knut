@@ -40,6 +40,7 @@ public:
         // All flags
         AllFlags = RemoveUnknown | SplitToolBar | ConvertToPng | UpdateHierarchy | UpdateGeometry | UseIdForPixmap,
     };
+    Q_ENUM(ConversionFlag)
     Q_DECLARE_FLAGS(ConversionFlags, ConversionFlag)
     Q_FLAG(ConversionFlags)
 

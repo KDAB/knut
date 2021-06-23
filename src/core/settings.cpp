@@ -3,7 +3,6 @@
 #include <QDir>
 #include <QFile>
 #include <QTextStream>
-#include <QTimer>
 
 #include <iostream>
 

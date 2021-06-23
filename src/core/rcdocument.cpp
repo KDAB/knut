@@ -116,6 +116,9 @@ RcCore::ToolBar RcDocument::toolBar(const QString &id) const
  */
 RcCore::Widget RcDocument::dialog(const QString &id, int flags, double scaleX, double scaleY) const
 {
+    SET_DEFAULT_VALUE(RcDialogFlags, static_cast<ConversionFlags>(flags));
+    SET_DEFAULT_VALUE(RcDialogScaleX, scaleX);
+    SET_DEFAULT_VALUE(RcDialogScaleY, scaleY);
     if (m_data.isValid) {
         if (auto dialog = m_data.dialog(id))
             return RcCore::convertDialog(m_data, *dialog, static_cast<RcCore::Widget::ConversionFlags>(flags), scaleX,
@@ -249,6 +252,7 @@ QVector<RcCore::Menu> RcDocument::menus() const
  */
 void RcDocument::convertAssets(int flags)
 {
+    SET_DEFAULT_VALUE(RcAssetFlags, static_cast<ConversionFlags>(flags));
     if (m_data.isValid) {
         m_cacheAssets = RcCore::convertAssets(m_data, static_cast<RcCore::Asset::ConversionFlags>(flags));
         emit fileNameChanged();
@@ -269,6 +273,7 @@ void RcDocument::convertAssets(int flags)
 QVector<RcCore::Action> RcDocument::convertActions(const QStringList &menus, const QStringList &accelerators,
                                                    const QStringList &toolBars, int flags)
 {
+    SET_DEFAULT_VALUE(RcAssetFlags, static_cast<ConversionFlags>(flags));
     if (m_data.isValid)
         return RcCore::convertActions(m_data, menus, accelerators, toolBars,
                                       static_cast<RcCore::Asset::ConversionFlags>(flags));
@@ -292,6 +297,7 @@ QVector<RcCore::Action> RcDocument::convertActions(const QStringList &menus, con
  */
 bool RcDocument::writeAssetsToImage(int flags)
 {
+    SET_DEFAULT_VALUE(RcAssetColors, static_cast<ConversionFlags>(flags));
     if (m_cacheAssets.isEmpty())
         convertAssets();
     RcCore::writeAssetsToImage(m_cacheAssets, static_cast<RcCore::Asset::TransparentColors>(flags));

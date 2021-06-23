@@ -56,7 +56,7 @@ struct adl_serializer<QFlags<T>>
         auto metaEnum = QMetaEnum::fromType<T>();
         for (int i = 0; i < metaEnum.keyCount(); ++i) {
             if (data & metaEnum.value(i))
-                flags.push_back(metaEnum.value(i));
+                flags.push_back(static_cast<T>(metaEnum.value(i)));
         }
         j = flags;
     }

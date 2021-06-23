@@ -4,12 +4,11 @@
 
 #include <QObject>
 #include <QStringList>
+#include <QTimer>
 #include <QVariant>
 
 #include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
-
-class QTimer;
 
 namespace Core {
 
@@ -58,9 +57,25 @@ public:
         try {
             return m_settings.at(nlohmann::json::json_pointer(path)).get<T>();
         } catch (...) {
-            spdlog::warn("[Settings] Error accessing setting value {}", path);
+            spdlog::error("Error accessing setting value {}", path);
         }
         return {};
+    }
+
+    template <typename T>
+    bool setValue(std::string path, const T &value)
+    {
+        if (!path.starts_with('/'))
+            path = '/' + path;
+        try {
+            m_settings[nlohmann::json::json_pointer(path)] = value;
+            m_projectSettings[nlohmann::json::json_pointer(path)] = value;
+        } catch (...) {
+            spdlog::error("Error saving setting value {}", path);
+            return false;
+        }
+        m_saveTimer->start();
+        return true;
     }
 
     Q_INVOKABLE bool hasValue(QString path) const;
@@ -97,3 +112,4 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Settings::LspServer, program, arguments);
 } // namespace Core
 
 #define DEFAULT_VALUE(Type, PATH) Core::Settings::instance()->value<Type>(Core::Settings::PATH)
+#define SET_DEFAULT_VALUE(PATH, Value) Core::Settings::instance()->setValue(Core::Settings::PATH, Value)
