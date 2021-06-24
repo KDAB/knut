@@ -11,6 +11,9 @@ set(PROJECT_SOURCES
     rctoqrcdialog.h
     rctoqrcdialog.cpp
     rctoqrcdialog.ui
+    rctouidialog.h
+    rctouidialog.cpp
+    rctouidialog.ui
 )
 
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})

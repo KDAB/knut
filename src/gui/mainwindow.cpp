@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 
 #include "rctoqrcdialog.h"
+#include "rctouidialog.h"
 
 #include "core/document.h"
 #include "core/project.h"
@@ -35,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->action_Quit, &QAction::triggered, this, &MainWindow::close);
     connect(ui->action_Open, &QAction::triggered, this, &MainWindow::openProject);
     connect(ui->actionCreate_Qrc, &QAction::triggered, this, &MainWindow::createQrc);
+    connect(ui->actionCreate_Ui, &QAction::triggered, this, &MainWindow::createUi);
 
     m_recentProjects = new QMenu(this);
     ui->actionRecent_Projects->setMenu(m_recentProjects);
@@ -130,6 +132,15 @@ void MainWindow::createQrc()
     auto document = Core::Project::instance()->currentDocument();
     if (auto rcDocument = qobject_cast<Core::RcDocument *>(document)) {
         RcToQrcDialog dialog(rcDocument, this);
+        dialog.exec();
+    }
+}
+
+void MainWindow::createUi()
+{
+    auto document = Core::Project::instance()->currentDocument();
+    if (auto rcDocument = qobject_cast<Core::RcDocument *>(document)) {
+        RcToUiDialog dialog(rcDocument, this);
         dialog.exec();
     }
 }
