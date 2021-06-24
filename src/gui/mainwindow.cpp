@@ -42,11 +42,22 @@ MainWindow::MainWindow(QWidget *parent)
     ui->actionRecent_Projects->setMenu(m_recentProjects);
     updateRecentProjects();
 
-    auto path = Core::Project::instance()->root();
+    ui->tabWidget->setDocumentMode(true);
+    connect(ui->tabWidget, &QTabWidget::currentChanged, this, &MainWindow::changeTab);
+
+    m_fileModel = new QFileSystemModel(this);
+    ui->projectView->setModel(m_fileModel);
+    for (int i = 1; i < m_fileModel->columnCount(); ++i)
+        ui->projectView->header()->hideSection(i);
+
+    auto project = Core::Project::instance();
+    connect(project, &Core::Project::currentDocumentChanged, this, &MainWindow::changeCurrentDocument);
+
+    auto path = project->root();
     if (!path.isEmpty())
         initProject(path);
-
-    connect(ui->tabWidget, &QTabWidget::currentChanged, this, &MainWindow::changeCurrentDocument);
+    if (project->currentDocument())
+        changeCurrentDocument();
 }
 
 MainWindow::~MainWindow()
@@ -75,11 +86,7 @@ void MainWindow::initProject(const QString &path)
     settings.setValue(RecentProjectKey, projects);
 
     // Initalize tree view
-    auto projectModel = new QFileSystemModel(this);
-    auto index = projectModel->setRootPath(path);
-    ui->projectView->setModel(projectModel);
-    for (int i = 1; i < projectModel->columnCount(); ++i)
-        ui->projectView->header()->hideSection(i);
+    auto index = m_fileModel->setRootPath(path);
     ui->projectView->setRootIndex(index);
     connect(ui->projectView->selectionModel(), &QItemSelectionModel::currentChanged, this, &MainWindow::openDocument);
 
@@ -108,23 +115,8 @@ void MainWindow::updateRecentProjects()
 
 void MainWindow::openDocument(const QModelIndex &index)
 {
-    auto fileSystemModel = qobject_cast<QFileSystemModel *>(ui->projectView->model());
-    auto path = fileSystemModel->filePath(index);
-    auto document = Core::Project::instance()->open(path);
-    if (!document)
-        return;
-
-    // open the window if it's already opened
-    int windowIndex = m_windows.value(document->fileName(), -1);
-    if (windowIndex != -1) {
-        ui->tabWidget->setCurrentIndex(windowIndex);
-        return;
-    }
-
-    QDir dir(Core::Project::instance()->root());
-    windowIndex = ui->tabWidget->addTab(document->widget(), dir.relativeFilePath(document->fileName()));
-    m_windows[document->fileName()] = windowIndex;
-    ui->tabWidget->setCurrentIndex(windowIndex);
+    auto path = m_fileModel->filePath(index);
+    Core::Project::instance()->open(path);
 }
 
 void MainWindow::createQrc()
@@ -145,14 +137,34 @@ void MainWindow::createUi()
     }
 }
 
-void MainWindow::changeCurrentDocument(int index)
+void MainWindow::changeTab()
 {
-    auto document = Core::Project::instance()->open(ui->tabWidget->tabText(index));
+    auto document = Core::Project::instance()->open(ui->tabWidget->currentWidget()->windowTitle());
     if (!document)
         return;
 
     ui->actionCreate_Qrc->setEnabled(document->type() == Core::Document::Type::Rc);
     ui->actionCreate_Ui->setEnabled(document->type() == Core::Document::Type::Rc);
+}
+
+void MainWindow::changeCurrentDocument()
+{
+    auto project = Core::Project::instance();
+    const QString fileName = project->currentDocument()->fileName();
+
+    // open the window if it's already opened
+    int windowIndex = m_windows.value(fileName, -1);
+    if (windowIndex == -1) {
+        QDir dir(project->root());
+        auto widget = project->currentDocument()->widget();
+        widget->setWindowTitle(fileName);
+        windowIndex = ui->tabWidget->addTab(widget, dir.relativeFilePath(fileName));
+        m_windows[fileName] = windowIndex;
+    }
+    ui->tabWidget->setCurrentIndex(windowIndex);
+
+    const QModelIndex &index = m_fileModel->index(fileName);
+    ui->projectView->setCurrentIndex(index);
 }
 
 } // namespace Gui

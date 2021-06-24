@@ -59,18 +59,19 @@ const QString &Project::root() const
 
 bool Project::setRoot(const QString &newRoot)
 {
-    if (m_root == newRoot)
+    QDir dir(newRoot);
+    if (m_root == dir.absolutePath())
         return true;
 
     if (m_root.isEmpty()) {
-        spdlog::info("Opening project {}", newRoot.toStdString());
+        spdlog::info("Opening project {}", dir.absolutePath().toStdString());
     } else {
         spdlog::warn("Knut can't open a new project after loading one.");
         return false;
     }
 
-    m_root = newRoot;
-    Settings::instance()->loadProjectSettings(newRoot);
+    m_root = dir.absolutePath();
+    Settings::instance()->loadProjectSettings(m_root);
     emit rootChanged();
     return true;
 }
@@ -127,8 +128,10 @@ QStringList Project::allFilesWithExtension(const QString &extension)
 Document *Project::open(QString fileName)
 {
     QFileInfo fi(fileName);
-    if (fi.isRelative())
+    if (!fi.exists() && fi.isRelative())
         fileName = m_root + '/' + fileName;
+    else
+        fileName = fi.absoluteFilePath();
 
     if (m_current && m_current->fileName() == fileName)
         return m_current;
@@ -155,6 +158,7 @@ Document *Project::open(QString fileName)
             m_documents.push_back(doc);
         } else {
             spdlog::error("Document type is unmanaged in Knut: {}", fi.suffix().toStdString());
+            return nullptr;
         }
     }
 

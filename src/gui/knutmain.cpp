@@ -17,8 +17,8 @@ void KnutMain::initParser(QCommandLineParser &parser) const
 
 void KnutMain::doParse(const QCommandLineParser &parser) const
 {
-    const QString ide = parser.value("ide");
-    if (!ide.isEmpty() || parser.optionNames().isEmpty()) {
+    bool ide = parser.isSet("ide");
+    if (ide || parser.optionNames().isEmpty()) {
         auto ide = new MainWindow();
         ide->show();
     }

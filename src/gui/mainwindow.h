@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 class QMenu;
+class QFileSystemModel;
 
 namespace Core {
 class TextDocument;
@@ -32,12 +33,14 @@ private:
     void createQrc();
     void createUi();
 
-    void changeCurrentDocument(int index);
+    void changeTab();
+    void changeCurrentDocument();
 
 private:
     Ui::MainWindow *ui;
     QMenu *m_recentProjects = nullptr;
     QHash<QString, int> m_windows;
+    QFileSystemModel *m_fileModel = nullptr;
 };
 
 } // namespace Gui

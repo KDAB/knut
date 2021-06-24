@@ -34,6 +34,11 @@ void KnutCore::process(const QStringList &arguments)
     if (!rootDir.isEmpty())
         Project::instance()->setRoot(rootDir);
 
+    // Open document on startup
+    const QString fileName = parser.value("input");
+    if (!fileName.isEmpty())
+        Project::instance()->open(fileName);
+
     // Run the script passed in parameter, if any
     const QString scriptName = parser.value("script");
     if (!scriptName.isEmpty())
@@ -50,6 +55,7 @@ void KnutCore::initParser(QCommandLineParser &parser) const
     parser.addOptions({
         {{"s", "script"}, "Run given script <file> then exit", "file"},
         {{"r", "root"}, "Root <directory> of the project", "directory"},
+        {{"i", "input"}, "Open document <file> on startup", "file"},
     });
 }
 
