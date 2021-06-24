@@ -2,6 +2,8 @@
 
 #include "core/string_utils.h"
 
+using namespace Core;
+
 class TestStringUtils : public QObject
 {
     Q_OBJECT
@@ -9,7 +11,6 @@ class TestStringUtils : public QObject
 private slots:
     void test_formatCase()
     {
-
         QCOMPARE(convertCase("toCamelCase", Core::Case::CamelCase, Core::Case::CamelCase), "toCamelCase");
         QCOMPARE(convertCase("ToCamelCase", Core::Case::PascalCase, Core::Case::CamelCase), "toCamelCase");
         QCOMPARE(convertCase("to_camel_case", Core::Case::SnakeCase, Core::Case::CamelCase), "toCamelCase");
@@ -64,6 +65,64 @@ private slots:
                  "To Title Case With an Exception");
         QCOMPARE(convertCase("To Title Case With an Exception", Core::Case::TitleCase, Core::Case::TitleCase),
                  "To Title Case With an Exception");
+    }
+
+    // This function is copied from from Qt Creator.
+    void test_matchCaseReplacement()
+    {
+        QCOMPARE(matchCaseReplacement("", "foobar"), QString("foobar")); // empty string
+
+        QCOMPARE(matchCaseReplacement("testpad", "foobar"), QString("foobar")); // lower case
+        QCOMPARE(matchCaseReplacement("TESTPAD", "foobar"), QString("FOOBAR")); // upper case
+        QCOMPARE(matchCaseReplacement("Testpad", "foobar"), QString("Foobar")); // capitalized
+        QCOMPARE(matchCaseReplacement("tESTPAD", "foobar"), QString("fOOBAR")); // un-capitalized
+        QCOMPARE(matchCaseReplacement("tEsTpAd", "foobar"),
+                 QString("foobar")); // mixed case, use replacement as specified
+        QCOMPARE(matchCaseReplacement("TeStPaD", "foobar"),
+                 QString("foobar")); // mixed case, use replacement as specified
+
+        QCOMPARE(matchCaseReplacement("testpad", "fooBar"), QString("foobar")); // lower case
+        QCOMPARE(matchCaseReplacement("TESTPAD", "fooBar"), QString("FOOBAR")); // upper case
+        QCOMPARE(matchCaseReplacement("Testpad", "fooBar"), QString("Foobar")); // capitalized
+        QCOMPARE(matchCaseReplacement("tESTPAD", "fooBar"), QString("fOOBAR")); // un-capitalized
+        QCOMPARE(matchCaseReplacement("tEsTpAd", "fooBar"),
+                 QString("fooBar")); // mixed case, use replacement as specified
+        QCOMPARE(matchCaseReplacement("TeStPaD", "fooBar"),
+                 QString("fooBar")); // mixed case, use replacement as specified
+
+        // with common prefix
+        QCOMPARE(matchCaseReplacement("pReFiXtestpad", "prefixfoobar"), QString("pReFiXfoobar")); // lower case
+        QCOMPARE(matchCaseReplacement("pReFiXTESTPAD", "prefixfoobar"), QString("pReFiXFOOBAR")); // upper case
+        QCOMPARE(matchCaseReplacement("pReFiXTestpad", "prefixfoobar"), QString("pReFiXFoobar")); // capitalized
+        QCOMPARE(matchCaseReplacement("pReFiXtESTPAD", "prefixfoobar"), QString("pReFiXfOOBAR")); // un-capitalized
+        QCOMPARE(matchCaseReplacement("pReFiXtEsTpAd", "prefixfoobar"),
+                 QString("pReFiXfoobar")); // mixed case, use replacement as specified
+        QCOMPARE(matchCaseReplacement("pReFiXTeStPaD", "prefixfoobar"),
+                 QString("pReFiXfoobar")); // mixed case, use replacement as specified
+
+        // with common suffix
+        QCOMPARE(matchCaseReplacement("testpadSuFfIx", "foobarsuffix"), QString("foobarSuFfIx")); // lower case
+        QCOMPARE(matchCaseReplacement("TESTPADSuFfIx", "foobarsuffix"), QString("FOOBARSuFfIx")); // upper case
+        QCOMPARE(matchCaseReplacement("TestpadSuFfIx", "foobarsuffix"), QString("FoobarSuFfIx")); // capitalized
+        QCOMPARE(matchCaseReplacement("tESTPADSuFfIx", "foobarsuffix"), QString("fOOBARSuFfIx")); // un-capitalized
+        QCOMPARE(matchCaseReplacement("tEsTpAdSuFfIx", "foobarsuffix"),
+                 QString("foobarSuFfIx")); // mixed case, use replacement as specified
+        QCOMPARE(matchCaseReplacement("TeStPaDSuFfIx", "foobarsuffix"),
+                 QString("foobarSuFfIx")); // mixed case, use replacement as specified
+
+        // with common prefix and suffix
+        QCOMPARE(matchCaseReplacement("pReFiXtestpadSuFfIx", "prefixfoobarsuffix"),
+                 QString("pReFiXfoobarSuFfIx")); // lower case
+        QCOMPARE(matchCaseReplacement("pReFiXTESTPADSuFfIx", "prefixfoobarsuffix"),
+                 QString("pReFiXFOOBARSuFfIx")); // upper case
+        QCOMPARE(matchCaseReplacement("pReFiXTestpadSuFfIx", "prefixfoobarsuffix"),
+                 QString("pReFiXFoobarSuFfIx")); // capitalized
+        QCOMPARE(matchCaseReplacement("pReFiXtESTPADSuFfIx", "prefixfoobarsuffix"),
+                 QString("pReFiXfOOBARSuFfIx")); // un-capitalized
+        QCOMPARE(matchCaseReplacement("pReFiXtEsTpAdSuFfIx", "prefixfoobarsuffix"),
+                 QString("pReFiXfoobarSuFfIx")); // mixed case, use replacement as specified
+        QCOMPARE(matchCaseReplacement("pReFiXTeStPaDSuFfIx", "prefixfoobarsuffix"),
+                 QString("pReFiXfoobarSuFfIx")); // mixed case, use replacement as specified
     }
 };
 

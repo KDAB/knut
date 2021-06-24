@@ -4,6 +4,7 @@
 
 #include <QPointer>
 #include <QTextCursor>
+#include <QTextDocument>
 
 #include <memory>
 
@@ -38,6 +39,16 @@ public:
 #endif
     };
     Q_ENUM(LineEnding)
+
+    enum FindFlag {
+        NoFindFlags = 0x0,
+        FindBackward = QTextDocument::FindBackward,
+        FindCaseSensitively = QTextDocument::FindCaseSensitively,
+        FindWholeWords = QTextDocument::FindWholeWords,
+        FindRegexp = 0x08,
+        PreserveCase = 0x10
+    };
+    Q_DECLARE_FLAGS(FindFlags, FindFlag)
 
     explicit TextDocument(QObject *parent = nullptr);
     ~TextDocument();
@@ -125,6 +136,13 @@ public slots:
     void gotoMark(Mark *mark);
     void selectToMark(Mark *mark);
 
+    // Find
+    bool find(const QString &text, int options = NoFindFlags);
+    bool findRegexp(const QString &regexp, int options = NoFindFlags);
+
+    // Replace
+    int replaceAll(const QString &searchText, const QString &replaceText, int options = NoFindFlags);
+
 signals:
     void positionChanged();
     void textChanged();
@@ -153,3 +171,5 @@ private:
 };
 
 } // namespace Core
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Core::TextDocument::FindFlags)

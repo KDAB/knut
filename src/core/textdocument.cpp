@@ -1,9 +1,11 @@
 #include "textdocument.h"
 
 #include "mark.h"
+#include "string_utils.h"
 
 #include <QFile>
 #include <QPlainTextEdit>
+#include <QRegularExpression>
 #include <QTextBlock>
 #include <QTextDocument>
 #include <QTextStream>
@@ -575,7 +577,7 @@ void TextDocument::remove(int length)
 
 /*!
  * \qmlmethod TextEditor::insert( string text)
- * Inserts the string `text` at the current position.
+ * Inserts the string `text` at the current position. If some text is selected it will be replaced.
  */
 void TextDocument::insert(const QString &text)
 {
@@ -731,6 +733,84 @@ void TextDocument::selectToMark(Mark *mark)
     QTextCursor cursor = m_document->textCursor();
     cursor.setPosition(mark->position(), QTextCursor::KeepAnchor);
     m_document->setTextCursor(cursor);
+}
+
+/*!
+ * \qmlmethod bool TextDocument::find( string text, int options = NoFindFlags)
+ * Searches the string `text` in the editor. Options could be a combination of:
+ *
+ * - `TextEditor.FindBackward`: search backward
+ * - `TextEditor.FindCaseSensitively`: match case
+ * - `TextEditor.FindWholeWords`: match only complete words
+ * - `TextEditor.FindRegexp`: use a regexp, equivalent to calling `findRegexp`
+ *
+ * Selects the match and returns `true` if a match is found.
+ */
+bool TextDocument::find(const QString &text, int options)
+{
+    if (options & FindRegexp)
+        return findRegexp(text, options);
+    else
+        return m_document->find(text, static_cast<QTextDocument::FindFlags>(options));
+}
+
+/*!
+ * \qmlmethod bool TextDocument::findRegexp( string regexp, int options = NoFindFlags)
+ * Searches the string `regexp` in the editor using a regular expression. Options could be a combination of:
+ *
+ * - `TextEditor.FindBackward`: search backward
+ * - `TextEditor.FindCaseSensitively`: match case
+ * - `TextEditor.FindWholeWords`: match only complete words
+ *
+ * Selects the match and returns `true` if a match is found.
+ */
+bool TextDocument::findRegexp(const QString &regexp, int options)
+{
+    auto regularExpression = QRegularExpression(regexp);
+    if (options & FindCaseSensitively)
+        regularExpression.setPatternOptions(regularExpression.patternOptions()
+                                            | QRegularExpression::CaseInsensitiveOption);
+    return m_document->find(regularExpression, static_cast<QTextDocument::FindFlags>(options));
+}
+
+/*!
+ * \qmlmethod bool TextDocument::replaceAll( string searchText, string replaceText, int options = NoFindFlags)
+ * Replace all occurences of the string `searchText` with `replaceText`. Options could be a combination of:
+ *
+ * - `TextEditor.FindBackward`: search backward
+ * - `TextEditor.FindCaseSensitively`: match case
+ * - `TextEditor.FindWholeWords`: match only complete words
+ * - `TextEditor.FindRegexp`: use a regexp, equivalent to calling `findRegexp`
+ * - `TextEditor.PreserveCase`: preserve case when replacing
+ *
+ * If the option `TextEditor.PreserveCase` is used, it means:
+ *
+ * - All upper-case occurrences are replaced with the upper-case new text.
+ * - All lower-case occurrences are replaced with the lower-case new text.
+ * - Capitalized occurrences are replaced with the capitalized new text.
+ * - Other occurrences are replaced with the new text as entered. If an occurrence and the new text have the same prefix
+ * or suffix, then the case of the prefix and/or suffix are preserved, and the other rules are applied on the rest of
+ * the occurrence only.
+ *
+ * Returns the number of changes done in the document.
+ */
+int TextDocument::replaceAll(const QString &searchText, const QString &replaceText, int options)
+{
+    int count = 0;
+    auto cursor = m_document->textCursor();
+    cursor.movePosition(QTextCursor::Start);
+    m_document->setTextCursor(cursor);
+    cursor.beginEditBlock();
+    while (find(searchText, options)) {
+        auto cursor = m_document->textCursor();
+        QString afterText = replaceText;
+        if (options & PreserveCase)
+            afterText = matchCaseReplacement(cursor.selectedText(), replaceText);
+        cursor.insertText(afterText);
+        ++count;
+    }
+    cursor.endEditBlock();
+    return count;
 }
 
 void TextDocument::setLineEnding(LineEnding newLineEnding)

@@ -218,7 +218,6 @@ private slots:
         document.deleteNextCharacter(5);
 
         document.save();
-
         QVERIFY(file.compare());
 
         for (int i = 0; i < 9; ++i) // 9 editions done
@@ -241,6 +240,43 @@ private slots:
         document.gotoDocumentEnd();
         document.gotoMark(mark);
         QCOMPARE(document.line(), 2);
+    }
+
+    void findReplace()
+    {
+        Test::FileTester file(Test::testDataPath() + "/textdocument/findreplace_original.txt");
+        Core::TextDocument document;
+        document.load(Test::testDataPath() + "/textdocument/findreplace.txt");
+
+        document.gotoLine(4);
+        QVERIFY(document.find("LOREM"));
+        QCOMPARE(document.line(), 7);
+        QCOMPARE(document.selectedText(), "Lorem");
+        QVERIFY(!document.find("LOREM", Core::TextDocument::FindCaseSensitively));
+
+        document.gotoLine(8);
+        QVERIFY(document.find("Lor"));
+        QCOMPARE(document.line(), 13);
+        QCOMPARE(document.selectedText(), "Lor");
+        QCOMPARE(document.currentWord(), "Lorem");
+        QVERIFY(!document.find("Lor", Core::TextDocument::FindWholeWords));
+
+        document.gotoLine(14);
+        QVERIFY(document.find("m\\w*s",
+                              Core::TextDocument::FindCaseSensitively | Core::TextDocument::FindWholeWords
+                                  | Core::TextDocument::FindRegexp));
+        QCOMPARE(document.line(), 16);
+        QCOMPARE(document.selectedText(), "mauris");
+
+        document.insert("REPLACE TEXT");
+
+        document.replaceAll("Lorem", "Merol");
+        document.replaceAll("m\\w*s", "siruam",
+                            Core::TextDocument::FindCaseSensitively | Core::TextDocument::FindWholeWords
+                                | Core::TextDocument::FindRegexp);
+
+        document.save();
+        QVERIFY(file.compare());
     }
 };
 

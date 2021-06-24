@@ -14,4 +14,6 @@ enum class Case {
 };
 QString convertCase(const QString &str, Case from, Case to);
 
+QString matchCaseReplacement(const QString &originalText, const QString &replaceText);
+
 } // namespace Core

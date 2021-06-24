@@ -42,6 +42,8 @@ Inherited properties: [Document properties](../script/document.md#properties)
 ||**[deleteSelection](#deleteSelection)**()|
 ||**[deleteStartOfLine](#deleteStartOfLine)**()|
 ||**[deleteStartOfWord](#deleteStartOfWord)**()|
+|bool |**[find](#find)**(string text, int options = NoFindFlags)|
+|bool |**[findRegexp](#findRegexp)**(string regexp, int options = NoFindFlags)|
 ||**[gotoDocumentEnd](#gotoDocumentEnd)**()|
 ||**[gotoDocumentStart](#gotoDocumentStart)**()|
 ||**[gotoLine](#gotoLine)**(int line, int column = 1)|
@@ -59,6 +61,7 @@ Inherited properties: [Document properties](../script/document.md#properties)
 |bool |**[hasSelection](#hasSelection)**()|
 ||**[paste](#paste)**()|
 ||**[redo](#redo)**()|
+|bool |**[replaceAll](#replaceAll)**(string searchText, string replaceText, int options = NoFindFlags)|
 ||**[selectAll](#selectAll)**()|
 ||**[selectLineEnd](#selectLineEnd)**()|
 ||**[selectLineStart](#selectLineStart)**(int count = 1)|
@@ -170,6 +173,27 @@ Deletes from the cursor position to the start of the line.
 
 Deletes from the cursor position to the start of the word.
 
+#### <a name="find"></a>bool **find**(string text, int options = NoFindFlags)
+
+Searches the string `text` in the editor. Options could be a combination of:
+
+- `TextEditor.FindBackward`: search backward
+- `TextEditor.FindCaseSensitively`: match case
+- `TextEditor.FindWholeWords`: match only complete words
+- `TextEditor.FindRegexp`: use a regexp, equivalent to calling `findRegexp`
+
+Selects the match and returns `true` if a match is found.
+
+#### <a name="findRegexp"></a>bool **findRegexp**(string regexp, int options = NoFindFlags)
+
+Searches the string `regexp` in the editor using a regular expression. Options could be a combination of:
+
+- `TextEditor.FindBackward`: search backward
+- `TextEditor.FindCaseSensitively`: match case
+- `TextEditor.FindWholeWords`: match only complete words
+
+Selects the match and returns `true` if a match is found.
+
 #### <a name="gotoDocumentEnd"></a>**gotoDocumentEnd**()
 
 Goes to the document end.
@@ -237,6 +261,27 @@ Pastes text in the clipboard.
 #### <a name="redo"></a>**redo**()
 
 Redo the last action.
+
+#### <a name="replaceAll"></a>bool **replaceAll**(string searchText, string replaceText, int options = NoFindFlags)
+
+Replace all occurences of the string `searchText` with `replaceText`. Options could be a combination of:
+
+- `TextEditor.FindBackward`: search backward
+- `TextEditor.FindCaseSensitively`: match case
+- `TextEditor.FindWholeWords`: match only complete words
+- `TextEditor.FindRegexp`: use a regexp, equivalent to calling `findRegexp`
+- `TextEditor.PreserveCase`: preserve case when replacing
+
+If the option `TextEditor.PreserveCase` is used, it means:
+
+- All upper-case occurrences are replaced with the upper-case new text.
+- All lower-case occurrences are replaced with the lower-case new text.
+- Capitalized occurrences are replaced with the capitalized new text.
+- Other occurrences are replaced with the new text as entered. If an occurrence and the new text have the same prefix
+or suffix, then the case of the prefix and/or suffix are preserved, and the other rules are applied on the rest of
+the occurrence only.
+
+Returns the number of changes done in the document.
 
 #### <a name="selectAll"></a>**selectAll**()
 
