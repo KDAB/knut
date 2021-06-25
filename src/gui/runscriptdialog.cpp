@@ -3,6 +3,7 @@
 
 #include "core/scriptmanager.h"
 
+#include <QApplication>
 #include <QCompleter>
 #include <QFileDialog>
 
@@ -15,6 +16,8 @@ RunScriptDialog::RunScriptDialog(QWidget *parent)
     , ui(new Ui::RunScriptDialog)
 {
     ui->setupUi(this);
+    setWindowTitle(QApplication::applicationName() + ' ' + QApplication::applicationVersion() + " - " + windowTitle());
+
     connect(ui->toolButton, &QToolButton::clicked, this, &RunScriptDialog::chooseScript);
 
     auto list = Core::ScriptManager::instance()->scriptList();

@@ -8,12 +8,12 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Tests Data
 ///////////////////////////////////////////////////////////////////////////////
-// Use a test fixture to avoid using the settings singleton and loading the user settings
+// Use a test fixture as Settings is a singleton
 class SettingsFixture : public Core::Settings
 {
 public:
     SettingsFixture()
-        : Settings(false)
+        : Settings()
     {
     }
 };

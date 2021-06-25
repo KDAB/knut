@@ -4,6 +4,7 @@
 #include "core/rcdocument.h"
 #include "core/settings.h"
 
+#include <QApplication>
 #include <QDir>
 #include <QMessageBox>
 
@@ -16,6 +17,7 @@ RcToUiDialog::RcToUiDialog(Core::RcDocument *document, QWidget *parent)
 {
     Q_ASSERT(m_document);
     ui->setupUi(this);
+    setWindowTitle(QApplication::applicationName() + ' ' + QApplication::applicationVersion() + " - " + windowTitle());
 
     ui->dirSelector->setMode(FileSelector::Mode::OpenDirectory);
 

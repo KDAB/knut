@@ -4,6 +4,7 @@
 #include "core/rcdocument.h"
 #include "core/settings.h"
 
+#include <QApplication>
 #include <QFile>
 #include <QFileInfo>
 #include <QMessageBox>
@@ -17,6 +18,7 @@ RcToQrcDialog::RcToQrcDialog(Core::RcDocument *document, QWidget *parent)
 {
     Q_ASSERT(m_document);
     ui->setupUi(this);
+    setWindowTitle(QApplication::applicationName() + ' ' + QApplication::applicationVersion() + " - " + windowTitle());
 
     auto assetFlags = DEFAULT_VALUE(Core::RcDocument::ConversionFlags, RcAssetFlags);
     ui->removeUnknown->setChecked(assetFlags & Core::RcDocument::RemoveUnknown);

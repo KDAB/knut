@@ -1,16 +1,17 @@
 #include "settings.h"
 
+#include "project.h"
+#include "scriptmanager.h"
+
 #include <QDir>
 #include <QFile>
 #include <QTextStream>
-
-#include <iostream>
 
 using json = nlohmann::json;
 
 namespace Core {
 
-static const char settingsName[] = "knut.json";
+static const char SettingsName[] = "knut.json";
 
 /*!
  * \qmltype Settings
@@ -28,23 +29,18 @@ static const char settingsName[] = "knut.json";
  * - array<string>
  */
 
-Settings::Settings(bool addUserSettings, QObject *parent)
+Settings::Settings(QObject *parent)
     : QObject(parent)
     , m_saveTimer(new QTimer(this))
 {
-    loadKnutSettings();
-    if (addUserSettings)
-        loadUserSettings();
-
-    m_saveTimer->callOnTimeout(this, &Settings::saveProjectSettings);
-    m_saveTimer->setSingleShot(true);
-}
-
-Settings::Settings(QObject *parent)
-    : Settings(true, parent)
-{
     Q_ASSERT(m_instance == nullptr);
     m_instance = this;
+
+    loadKnutSettings();
+    m_saveTimer->callOnTimeout(this, [this]() {
+        saveSettings(m_projectPathName, m_projectSettings);
+    });
+    m_saveTimer->setSingleShot(true);
 }
 
 Settings::~Settings()
@@ -58,20 +54,21 @@ Settings *Settings::instance()
     return m_instance;
 }
 
+void Settings::loadUserSettings()
+{
+    m_userPathName = QDir::homePath() + '/' + SettingsName;
+    auto userSettings = loadSettings(m_userPathName);
+    if (userSettings)
+        m_settings.merge_patch(userSettings.value());
+}
+
 void Settings::loadProjectSettings(const QString &rootDir)
 {
-    m_projectSettingsName = rootDir + '/' + settingsName;
-    QFile file(m_projectSettingsName);
-    if (file.open(QIODevice::ReadOnly)) {
-        try {
-            m_projectSettings = json::parse(file.readAll().constData());
-            m_settings.merge_patch(m_projectSettings);
-            spdlog::info("Loading project settings {}", m_projectSettingsName.toStdString());
-        } catch (...) {
-            spdlog::error("Error loading the project settings, in file {}", m_projectSettingsName.toStdString());
-        }
-    } else {
-        spdlog::trace("No project settings {}", m_projectSettingsName.toStdString());
+    m_projectPathName = rootDir + '/' + SettingsName;
+    auto userSettings = loadSettings(m_projectPathName);
+    if (userSettings) {
+        m_projectSettings = userSettings.value();
+        m_settings.merge_patch(m_projectSettings);
     }
 }
 
@@ -137,32 +134,33 @@ bool Settings::setValue(QString path, const QVariant &value)
     if (!path.startsWith('/'))
         path.prepend('/');
 
+    auto jsonPath = json::json_pointer(path.toStdString());
     switch (value.type()) {
     case QVariant::Bool:
-        m_settings[json::json_pointer(path.toStdString())] = value.toBool();
-        m_projectSettings[json::json_pointer(path.toStdString())] = value.toBool();
+        m_settings[jsonPath] = value.toBool();
+        m_projectSettings[jsonPath] = value.toBool();
         break;
     case QVariant::Int:
     case QVariant::LongLong:
-        m_settings[json::json_pointer(path.toStdString())] = value.toInt();
-        m_projectSettings[json::json_pointer(path.toStdString())] = value.toInt();
+        m_settings[jsonPath] = value.toInt();
+        m_projectSettings[jsonPath] = value.toInt();
         break;
     case QVariant::UInt:
     case QVariant::ULongLong:
-        m_settings[json::json_pointer(path.toStdString())] = value.toUInt();
-        m_projectSettings[json::json_pointer(path.toStdString())] = value.toUInt();
+        m_settings[jsonPath] = value.toUInt();
+        m_projectSettings[jsonPath] = value.toUInt();
         break;
     case QVariant::Double:
-        m_settings[json::json_pointer(path.toStdString())] = value.toDouble();
-        m_projectSettings[json::json_pointer(path.toStdString())] = value.toDouble();
+        m_settings[jsonPath] = value.toDouble();
+        m_projectSettings[jsonPath] = value.toDouble();
         break;
     case QVariant::String:
-        m_settings[json::json_pointer(path.toStdString())] = value.toString();
-        m_projectSettings[json::json_pointer(path.toStdString())] = value.toString();
+        m_settings[jsonPath] = value.toString();
+        m_projectSettings[jsonPath] = value.toString();
         break;
     case QVariant::StringList:
-        m_settings[json::json_pointer(path.toStdString())] = value.toStringList();
-        m_projectSettings[json::json_pointer(path.toStdString())] = value.toStringList();
+        m_settings[jsonPath] = value.toStringList();
+        m_projectSettings[jsonPath] = value.toStringList();
         break;
     default:
         spdlog::error("Can't save setting value {} - {}", path.toStdString(), value.toString().toStdString());
@@ -180,38 +178,92 @@ void Settings::loadKnutSettings()
         m_settings = json::parse(file.readAll().constData());
 }
 
-void Settings::loadUserSettings()
+std::optional<nlohmann::json> Settings::loadSettings(const QString &name, bool log)
 {
-    const QString fileName = QDir::homePath() + '/' + settingsName;
-    QFile file(fileName);
+    if (name.isEmpty())
+        return {};
+
+    QFile file(name);
     if (file.open(QIODevice::ReadOnly)) {
         try {
-            m_settings.merge_patch(json::parse(file.readAll().constData()));
-            spdlog::trace("Loading user settings {}", fileName.toStdString());
+            auto settings = json::parse(file.readAll().constData());
+            if (log)
+                spdlog::trace("Loading settings {}", name.toStdString());
+            // Load script paths if any
+            try {
+                auto scriptPaths = settings.at(nlohmann::json::json_pointer(ScriptPaths)).get<QStringList>();
+                for (const auto &path : scriptPaths)
+                    ScriptManager::instance()->addDirectory(path);
+            } catch (...) {
+            }
+            return settings;
         } catch (...) {
-            spdlog::error("Error loading the user settings, in file {}", fileName.toStdString());
+            if (log)
+                spdlog::error("Error loading the settings in file {}", name.toStdString());
         }
     } else {
-        spdlog::trace("No user settings {}", fileName.toStdString());
+        if (log)
+            spdlog::trace("No settings {}", name.toStdString());
+        return nlohmann::json {};
     }
+    return {};
 }
 
-void Settings::saveProjectSettings()
+void Settings::saveSettings(const QString &name, const nlohmann::json &settings)
 {
-    if (m_projectSettingsName.isEmpty()) {
+    if (name.isEmpty()) {
         spdlog::error("Can't save project settings, no project loaded");
         return;
     }
 
-    QFile file(m_projectSettingsName);
+    QFile file(name);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-        spdlog::error("Error saving the user settings, in file {}", m_projectSettingsName.toStdString());
+        spdlog::error("Error saving settings in file {}", name.toStdString());
         return;
     }
 
     QTextStream stream(&file);
-    stream << QString::fromStdString(m_projectSettings.dump(4, ' ', false));
-    emit projectSettingsSaved();
+    stream << QString::fromStdString(settings.dump(4, ' ', false));
+    if (name == m_projectPathName)
+        emit projectSettingsSaved();
+}
+
+void Settings::addScriptPath(const QString &path)
+{
+    updateScriptPaths(path, true);
+}
+
+void Settings::removeScriptPath(const QString &path)
+{
+    updateScriptPaths(path, false);
+}
+
+void Settings::updateScriptPaths(const QString &path, bool add)
+{
+    const QString rootPath = Project::instance()->root();
+    bool isUSer = rootPath.isEmpty() || !path.contains(rootPath);
+
+    if (add)
+        ScriptManager::instance()->addDirectory(path);
+    else
+        ScriptManager::instance()->removeDirectory(path);
+
+    const QString name = isUSer ? m_userPathName : m_projectPathName;
+    auto settingsResult = loadSettings(name, false);
+    if (settingsResult) {
+        auto settings = settingsResult.value();
+        QStringList paths;
+        try {
+            paths = settings.at(nlohmann::json::json_pointer(ScriptPaths)).get<QStringList>();
+        } catch (...) {
+        }
+        if (add)
+            paths.push_back(path);
+        else
+            paths.removeAll(path);
+        settings[nlohmann::json::json_pointer(ScriptPaths)] = paths;
+        saveSettings(name, settings);
+    }
 }
 
 } // namespace Core

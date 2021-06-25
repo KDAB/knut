@@ -50,12 +50,12 @@ void ScriptManager::addDirectory(const QString &path)
     if (!fi.exists())
         return;
 
-    // Check that the path does not already exist as global
-    if (m_directories.contains(path))
+    // Check that the path does not already exist
+    if (m_directories.contains(fi.absoluteFilePath()))
         return;
 
-    m_directories.append(path);
-    addScriptsFromPath(path);
+    m_directories.append(fi.absoluteFilePath());
+    addScriptsFromPath(fi.absoluteFilePath());
 }
 
 void ScriptManager::removeDirectory(const QString &path)

@@ -10,6 +10,8 @@
 #include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
 
+#include <optional>
+
 namespace Core {
 
 /**
@@ -41,13 +43,18 @@ public:
     static inline const char RcDialogScaleY[] = "/rc/dialog_scaley";
     static inline const char RcAssetFlags[] = "/rc/asset_flags";
     static inline const char RcAssetColors[] = "/rc/asset_transparent_colors";
+    static inline const char ScriptPaths[] = "/script_paths";
 
 public:
     ~Settings();
 
     static Settings *instance();
 
+    void loadUserSettings();
     void loadProjectSettings(const QString &rootDir);
+
+    void addScriptPath(const QString &path);
+    void removeScriptPath(const QString &path);
 
     template <typename T>
     T value(std::string path)
@@ -87,23 +94,23 @@ signals:
     void projectSettingsSaved();
 
 protected:
-    // Constructor used for testing purpose
-    explicit Settings(bool addUserSettings, QObject *parent = nullptr);
+    Settings(QObject *parent = nullptr);
 
 private:
     friend class KnutCore;
-    Settings(QObject *parent = nullptr);
 
     void loadKnutSettings();
-    void loadUserSettings();
-    void saveProjectSettings();
+    std::optional<nlohmann::json> loadSettings(const QString &name, bool log = true);
+    void saveSettings(const QString &name, const nlohmann::json &settings);
+    void updateScriptPaths(const QString &path, bool add);
 
 private:
     inline static Settings *m_instance = nullptr;
 
     nlohmann::json m_settings;
     nlohmann::json m_projectSettings;
-    QString m_projectSettingsName;
+    QString m_userPathName;
+    QString m_projectPathName;
     QTimer *m_saveTimer = nullptr;
 };
 
