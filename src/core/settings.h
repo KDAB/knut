@@ -90,6 +90,9 @@ public:
 
     Q_INVOKABLE bool setValue(QString path, const QVariant &value);
 
+    QString userPath() const;
+    QString projectPath() const;
+
 signals:
     void projectSettingsSaved();
 
@@ -102,6 +105,7 @@ private:
     void loadKnutSettings();
     std::optional<nlohmann::json> loadSettings(const QString &name, bool log = true);
     void saveSettings(const QString &name, const nlohmann::json &settings);
+    void addScriptPaths(const nlohmann::json &settings);
     void updateScriptPaths(const QString &path, bool add);
 
 private:
@@ -109,8 +113,8 @@ private:
 
     nlohmann::json m_settings;
     nlohmann::json m_projectSettings;
-    QString m_userPathName;
-    QString m_projectPathName;
+    QString m_userPath;
+    QString m_projectPath;
     QTimer *m_saveTimer = nullptr;
 };
 

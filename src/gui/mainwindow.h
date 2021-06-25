@@ -33,6 +33,7 @@ private:
     void createQrc();
     void createUi();
     void runScript();
+    void openSettings();
 
     void changeTab();
     void changeCurrentDocument();

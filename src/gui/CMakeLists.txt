@@ -17,6 +17,9 @@ set(PROJECT_SOURCES
     runscriptdialog.h
     runscriptdialog.cpp
     runscriptdialog.ui
+    settingsdialog.h
+    settingsdialog.cpp
+    settingsdialog.ui
 )
 
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})

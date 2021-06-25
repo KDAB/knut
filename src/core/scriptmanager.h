@@ -44,6 +44,8 @@ public:
     void addDirectory(const QString &path);
     void removeDirectory(const QString &path);
 
+    QStringList directories() const;
+
 public slots:
     void runScript(const QString &scriptName, bool async = true, bool log = true);
 

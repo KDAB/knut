@@ -2,6 +2,7 @@
 
 #include "mainwindow.h"
 #include "runscriptdialog.h"
+#include "settingsdialog.h"
 
 namespace Gui {
 
@@ -16,6 +17,7 @@ void KnutMain::initParser(QCommandLineParser &parser) const
     parser.addOptions({
         {"ide", "Open Knut IDE"},
         {"run-dialog", "Open the run script dialog"},
+        {"settings", "Open the settings dialog"},
     });
 }
 
@@ -31,6 +33,13 @@ void KnutMain::doParse(const QCommandLineParser &parser) const
     bool runDialog = parser.isSet("run-dialog");
     if (runDialog) {
         auto dialog = new RunScriptDialog;
+        dialog->show();
+        return;
+    }
+
+    bool settingsDialog = parser.isSet("settings");
+    if (settingsDialog) {
+        auto dialog = new SettingsDialog;
         dialog->show();
         return;
     }

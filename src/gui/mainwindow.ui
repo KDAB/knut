@@ -59,6 +59,7 @@
     <addaction name="actionRecent_Projects"/>
     <addaction name="separator"/>
     <addaction name="action_Run_Script"/>
+    <addaction name="actionSettings"/>
     <addaction name="separator"/>
     <addaction name="action_Quit"/>
    </widget>
@@ -107,6 +108,11 @@
   <action name="action_Run_Script">
    <property name="text">
     <string>&amp;Run Script...</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="text">
+    <string>Settings...</string>
    </property>
   </action>
  </widget>

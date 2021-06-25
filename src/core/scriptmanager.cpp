@@ -64,6 +64,11 @@ void ScriptManager::removeDirectory(const QString &path)
     removeScriptsFromPath(path);
 }
 
+QStringList ScriptManager::directories() const
+{
+    return m_directories;
+}
+
 void ScriptManager::runScript(const QString &fileName, bool async, bool log)
 {
     m_logger->info("==> Start script {}", fileName.toStdString());

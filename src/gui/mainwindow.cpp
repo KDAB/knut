@@ -4,6 +4,7 @@
 #include "rctoqrcdialog.h"
 #include "rctouidialog.h"
 #include "runscriptdialog.h"
+#include "settingsdialog.h"
 
 #include "core/document.h"
 #include "core/project.h"
@@ -14,6 +15,7 @@
 #include <QApplication>
 #include <QDir>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QFileSystemModel>
 #include <QHeaderView>
 #include <QPlainTextEdit>
@@ -39,6 +41,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionCreate_Qrc, &QAction::triggered, this, &MainWindow::createQrc);
     connect(ui->actionCreate_Ui, &QAction::triggered, this, &MainWindow::createUi);
     connect(ui->action_Run_Script, &QAction::triggered, this, &MainWindow::runScript);
+    connect(ui->actionSettings, &QAction::triggered, this, &MainWindow::openSettings);
 
     m_recentProjects = new QMenu(this);
     ui->actionRecent_Projects->setMenu(m_recentProjects);
@@ -118,7 +121,9 @@ void MainWindow::updateRecentProjects()
 void MainWindow::openDocument(const QModelIndex &index)
 {
     auto path = m_fileModel->filePath(index);
-    Core::Project::instance()->open(path);
+    QFileInfo fi(path);
+    if (fi.isFile())
+        Core::Project::instance()->open(path);
 }
 
 void MainWindow::createQrc()
@@ -142,6 +147,12 @@ void MainWindow::createUi()
 void MainWindow::runScript()
 {
     RunScriptDialog dialog(this);
+    dialog.exec();
+}
+
+void MainWindow::openSettings()
+{
+    SettingsDialog dialog(this);
     dialog.exec();
 }
 
