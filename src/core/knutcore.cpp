@@ -4,7 +4,8 @@
 #include "scriptmanager.h"
 #include "settings.h"
 
-#include <QCoreApplication>
+#include <QApplication>
+#include <QTimer>
 
 namespace Core {
 
@@ -40,9 +41,13 @@ void KnutCore::process(const QStringList &arguments)
         Project::instance()->open(fileName);
 
     // Run the script passed in parameter, if any
+    // Exit Knut if there are no windows opened
     const QString scriptName = parser.value("script");
-    if (!scriptName.isEmpty())
-        ScriptManager::instance()->runScript(scriptName);
+    if (!scriptName.isEmpty()) {
+        QTimer::singleShot(0, this, [scriptName]() {
+            ScriptManager::instance()->runScript(scriptName);
+        });
+    }
 
     doParse(parser);
 }

@@ -32,6 +32,7 @@ private:
     void openDocument(const QModelIndex &index);
     void createQrc();
     void createUi();
+    void runScript();
 
     void changeTab();
     void changeCurrentDocument();

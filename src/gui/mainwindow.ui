@@ -15,12 +15,28 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
     <item>
      <widget class="QSplitter" name="splitter">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QTreeView" name="projectView"/>
+      <widget class="QTreeView" name="projectView">
+       <attribute name="headerVisible">
+        <bool>false</bool>
+       </attribute>
+      </widget>
       <widget class="QTabWidget" name="tabWidget"/>
      </widget>
     </item>
@@ -42,6 +58,8 @@
     <addaction name="action_Open"/>
     <addaction name="actionRecent_Projects"/>
     <addaction name="separator"/>
+    <addaction name="action_Run_Script"/>
+    <addaction name="separator"/>
     <addaction name="action_Quit"/>
    </widget>
    <widget class="QMenu" name="menu_Rc">
@@ -62,7 +80,7 @@
   </action>
   <action name="action_Open">
    <property name="text">
-    <string>&amp;Open..</string>
+    <string>&amp;Open Project...</string>
    </property>
   </action>
   <action name="actionRecent_Projects">
@@ -84,6 +102,11 @@
    </property>
    <property name="text">
     <string>Create Ui...</string>
+   </property>
+  </action>
+  <action name="action_Run_Script">
+   <property name="text">
+    <string>&amp;Run Script...</string>
    </property>
   </action>
  </widget>

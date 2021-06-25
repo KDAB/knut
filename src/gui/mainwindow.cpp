@@ -3,6 +3,7 @@
 
 #include "rctoqrcdialog.h"
 #include "rctouidialog.h"
+#include "runscriptdialog.h"
 
 #include "core/document.h"
 #include "core/project.h"
@@ -30,13 +31,14 @@ MainWindow::MainWindow(QWidget *parent)
     setAttribute(Qt::WA_DeleteOnClose);
 
     ui->setupUi(this);
-    ui->splitter->setSizes({200, 600});
+    ui->splitter->setSizes({275, 749});
     setWindowTitle(QApplication::applicationName() + ' ' + QApplication::applicationVersion());
 
     connect(ui->action_Quit, &QAction::triggered, this, &MainWindow::close);
     connect(ui->action_Open, &QAction::triggered, this, &MainWindow::openProject);
     connect(ui->actionCreate_Qrc, &QAction::triggered, this, &MainWindow::createQrc);
     connect(ui->actionCreate_Ui, &QAction::triggered, this, &MainWindow::createUi);
+    connect(ui->action_Run_Script, &QAction::triggered, this, &MainWindow::runScript);
 
     m_recentProjects = new QMenu(this);
     ui->actionRecent_Projects->setMenu(m_recentProjects);
@@ -135,6 +137,12 @@ void MainWindow::createUi()
         RcToUiDialog dialog(rcDocument, this);
         dialog.exec();
     }
+}
+
+void MainWindow::runScript()
+{
+    RunScriptDialog dialog(this);
+    dialog.exec();
 }
 
 void MainWindow::changeTab()
