@@ -26,7 +26,7 @@
                 <bool>true</bool>
             </property>
             <property name="text">
-                <string>Cancel</string>
+                <string comment="IDOK">Cancel</string>
             </property>
         </widget>
         <widget class="QPushButton" name="IDC_GENERATE_EVENTS">
@@ -39,7 +39,7 @@
                 </rect>
             </property>
             <property name="text">
-                <string>Generate</string>
+                <string comment="IDC_GENERATE_EVENTS">Generate</string>
             </property>
         </widget>
         <widget class="QGroupBox" name="IDC_STATIC">
@@ -64,7 +64,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Bone</string>
+                    <string comment="IDC_STATIC1">Bone</string>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC2">
@@ -77,7 +77,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Foley</string>
+                    <string comment="IDC_STATIC2">Foley</string>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC3">
@@ -90,7 +90,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Foley delay</string>
+                    <string comment="IDC_STATIC3">Foley delay</string>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC4">
@@ -103,7 +103,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Footstep height</string>
+                    <string comment="IDC_STATIC4">Footstep height</string>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC5">
@@ -116,7 +116,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Event Name</string>
+                    <string comment="IDC_STATIC5">Event Name</string>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC6">
@@ -129,7 +129,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Left footstep</string>
+                    <string comment="IDC_STATIC6">Left footstep</string>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC7">
@@ -142,7 +142,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Right footstep</string>
+                    <string comment="IDC_STATIC7">Right footstep</string>
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_FOLEYS_CHECK">
@@ -155,7 +155,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string> Generate foleys? </string>
+                    <string comment="IDC_FOLEYS_CHECK"> Generate foleys? </string>
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_FOLEY_DELAY_TXT">

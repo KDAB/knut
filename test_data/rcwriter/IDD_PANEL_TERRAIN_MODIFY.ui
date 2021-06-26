@@ -20,7 +20,7 @@
                 </rect>
             </property>
             <property name="text">
-                <string>Reposition Objects</string>
+                <string comment="IDC_REPOSITION_OBJECTS">Reposition Objects</string>
             </property>
         </widget>
         <widget class="QCheckBox" name="IDC_REPOSITION_VEGETATION">
@@ -33,7 +33,7 @@
                 </rect>
             </property>
             <property name="text">
-                <string>Reposition Vegetation</string>
+                <string comment="IDC_REPOSITION_VEGETATION">Reposition Vegetation</string>
             </property>
         </widget>
         <widget class="QGroupBox" name="IDC_STATIC2">
@@ -58,7 +58,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Scale:</string>
+                    <string comment="IDC_STATIC">Scale:</string>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC1">
@@ -71,7 +71,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Frequency</string>
+                    <string comment="IDC_STATIC1">Frequency</string>
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_NOISE_SCALE">
@@ -110,7 +110,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Enable Noise</string>
+                    <string comment="IDC_BRUSH_NOISE">Enable Noise</string>
                 </property>
             </widget>
             <widget class="QSlider" name="IDC_NOISE_SCALE_SLIDER">
@@ -168,7 +168,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Type:</string>
+                    <string comment="IDC_STATIC2">Type:</string>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC3">
@@ -181,7 +181,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Height:</string>
+                    <string comment="IDC_STATIC3">Height:</string>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC4">
@@ -194,7 +194,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Hardness:</string>
+                    <string comment="IDC_STATIC4">Hardness:</string>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC5">
@@ -207,7 +207,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Inside Radius:</string>
+                    <string comment="IDC_STATIC5">Inside Radius:</string>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC6">
@@ -220,7 +220,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Outside Radius</string>
+                    <string comment="IDC_STATIC6">Outside Radius</string>
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_BRUSH_RADIUS">
@@ -285,7 +285,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Sync Radius for all Types</string>
+                    <string comment="IDC_SYNC_RADIUS">Sync Radius for all Types</string>
                 </property>
             </widget>
             <widget class="QComboBox" name="IDC_BRUSH_TYPE">
@@ -372,7 +372,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string></string>
+                    <string comment="IDC_BRUSH_PREVIEW"></string>
                 </property>
             </widget>
         </widget>

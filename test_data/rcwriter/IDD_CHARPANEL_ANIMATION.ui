@@ -59,7 +59,7 @@
                 </rect>
             </property>
             <property name="text">
-                <string>Animation Driven</string>
+                <string comment="IDC_ANIMATION_DRIVEN_MOTION">Animation Driven</string>
             </property>
         </widget>
         <widget class="QCheckBox" name="IDC_VERTICAL_MOVEMENT">
@@ -72,7 +72,7 @@
                 </rect>
             </property>
             <property name="text">
-                <string>Vertical Movement</string>
+                <string comment="IDC_VERTICAL_MOVEMENT">Vertical Movement</string>
             </property>
         </widget>
         <widget class="QPushButton" name="IDC_RESETANIMATIONS">
@@ -85,7 +85,7 @@
                 </rect>
             </property>
             <property name="text">
-                <string>Stop All</string>
+                <string comment="IDC_RESETANIMATIONS">Stop All</string>
             </property>
         </widget>
         <widget class="QPushButton" name="IDC_RELOAD_ANIMATIONS">
@@ -98,7 +98,7 @@
                 </rect>
             </property>
             <property name="text">
-                <string>Reload CHRPARAM</string>
+                <string comment="IDC_RELOAD_ANIMATIONS">Reload CHRPARAM</string>
             </property>
         </widget>
         <widget class="QPushButton" name="IDC_MATERIAL">
@@ -111,7 +111,7 @@
                 </rect>
             </property>
             <property name="text">
-                <string>Material Editor</string>
+                <string comment="IDC_MATERIAL">Material Editor</string>
             </property>
         </widget>
         <widget class="QPushButton" name="IDC_STOP_ANIMATION_LAYER">
@@ -124,7 +124,7 @@
                 </rect>
             </property>
             <property name="text">
-                <string>Stop Layer</string>
+                <string comment="IDC_STOP_ANIMATION_LAYER">Stop Layer</string>
             </property>
         </widget>
         <widget class="QPushButton" name="IDC_CHOOSE_BASE_CHARACTER">
@@ -137,7 +137,7 @@
                 </rect>
             </property>
             <property name="text">
-                <string>Base Character</string>
+                <string comment="IDC_CHOOSE_BASE_CHARACTER">Base Character</string>
             </property>
         </widget>
         <widget class="QPushButton" name="IDC_START_SELECTED_ANIMATIONS">
@@ -150,7 +150,7 @@
                 </rect>
             </property>
             <property name="text">
-                <string>Start in Layer</string>
+                <string comment="IDC_START_SELECTED_ANIMATIONS">Start in Layer</string>
             </property>
         </widget>
         <widget class="QPushButton" name="IDC_RESET_MODEL">
@@ -163,7 +163,7 @@
                 </rect>
             </property>
             <property name="text">
-                <string>Reset Model</string>
+                <string comment="IDC_RESET_MODEL">Reset Model</string>
             </property>
         </widget>
         <widget class="QLabel" name="IDC_SPEED_MULTIPLYER">
@@ -176,7 +176,7 @@
                 </rect>
             </property>
             <property name="text">
-                <string>Playback Scale</string>
+                <string comment="IDC_SPEED_MULTIPLYER">Playback Scale</string>
             </property>
         </widget>
         <widget class="QComboBox" name="IDC_LAYER">
@@ -279,7 +279,7 @@
                 </rect>
             </property>
             <property name="text">
-                <string>Use Gamepad</string>
+                <string comment="IDC_USE_GAMEPAD">Use Gamepad</string>
             </property>
         </widget>
         <widget class="QCheckBox" name="IDC_USE_MORPHTARGETS">
@@ -292,7 +292,7 @@
                 </rect>
             </property>
             <property name="text">
-                <string>Use Morph Targets</string>
+                <string comment="IDC_USE_MORPHTARGETS">Use Morph Targets</string>
             </property>
         </widget>
         <widget class="QSlider" name="IDC_POLARX_SLIDER">
@@ -366,7 +366,7 @@
                 </rect>
             </property>
             <property name="text">
-                <string>Reload Model Setup</string>
+                <string comment="IDC_RELOAD_FILE">Reload Model Setup</string>
             </property>
         </widget>
         <widget class="QGroupBox" name="IDC_STATIC">
@@ -391,7 +391,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Idle2Move</string>
+                    <string comment="IDC_IDLE2MOVE">Idle2Move</string>
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_PLAYER_CONTROL">
@@ -404,7 +404,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>PlayerControl</string>
+                    <string comment="IDC_PLAYER_CONTROL">PlayerControl</string>
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_FIXED_CAMERA">
@@ -417,7 +417,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Fixed Camera</string>
+                    <string comment="IDC_FIXED_CAMERA">Fixed Camera</string>
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_IDLESTEP">
@@ -430,7 +430,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>IdleStep</string>
+                    <string comment="IDC_IDLESTEP">IdleStep</string>
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_PATH_FOLLOWING">
@@ -443,7 +443,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Path Following</string>
+                    <string comment="IDC_PATH_FOLLOWING">Path Following</string>
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_ATTACHED_CAM">
@@ -456,7 +456,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Attached Cam</string>
+                    <string comment="IDC_ATTACHED_CAM">Attached Cam</string>
                 </property>
             </widget>
         </widget>
@@ -482,7 +482,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>RFootIK</string>
+                    <string comment="IDC_RFOOTIK">RFootIK</string>
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_LARMIK">
@@ -495,7 +495,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>LArmIK</string>
+                    <string comment="IDC_LARMIK">LArmIK</string>
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_RARMIK">
@@ -508,7 +508,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>RArmIK</string>
+                    <string comment="IDC_RARMIK">RArmIK</string>
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_LOOKIK">
@@ -521,7 +521,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>LookIK</string>
+                    <string comment="IDC_LOOKIK">LookIK</string>
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_AIMIK">
@@ -534,7 +534,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>AimIK</string>
+                    <string comment="IDC_AIMIK">AimIK</string>
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_LFOOTIK">
@@ -547,7 +547,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>LFootIK</string>
+                    <string comment="IDC_LFOOTIK">LFootIK</string>
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_GROUNDALIGN">
@@ -560,7 +560,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>GroundAlign</string>
+                    <string comment="IDC_GROUNDALIGN">GroundAlign</string>
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_FOOT_ANCHORING">
@@ -573,7 +573,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Foot Anchoring</string>
+                    <string comment="IDC_FOOT_ANCHORING">Foot Anchoring</string>
                 </property>
             </widget>
         </widget>
@@ -651,7 +651,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Loop Animation</string>
+                    <string comment="IDC_LOOP_ANIMATION">Loop Animation</string>
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_REPEAT_LAST_KEY">
@@ -664,7 +664,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Repeat Last Key</string>
+                    <string comment="IDC_REPEAT_LAST_KEY">Repeat Last Key</string>
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_ALLOW_ANIMATION_RESTART">
@@ -677,7 +677,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Allow Animation Restart</string>
+                    <string comment="IDC_ALLOW_ANIMATION_RESTART">Allow Animation Restart</string>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_LAYERBLENDWEIGHT_TEXT">
@@ -690,7 +690,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Layer Blend Weight</string>
+                    <string comment="IDC_LAYERBLENDWEIGHT_TEXT">Layer Blend Weight</string>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_AIMIK_LAYER_TEXT">
@@ -703,7 +703,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>AimIK Layer</string>
+                    <string comment="IDC_AIMIK_LAYER_TEXT">AimIK Layer</string>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_LOOKIK_LAYER_TEXT">
@@ -716,7 +716,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>LookIK Layer</string>
+                    <string comment="IDC_LOOKIK_LAYER_TEXT">LookIK Layer</string>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_TRANSITION">
@@ -729,7 +729,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Transition Time</string>
+                    <string comment="IDC_TRANSITION">Transition Time</string>
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_DISABLE_MULTILAYER_ANIMATION">
@@ -742,7 +742,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Disable Layer Animation</string>
+                    <string comment="IDC_DISABLE_MULTILAYER_ANIMATION">Disable Layer Animation</string>
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_VTIME_WARPING">
@@ -755,7 +755,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>Transition Time Warping</string>
+                    <string comment="IDC_VTIME_WARPING">Transition Time Warping</string>
                 </property>
             </widget>
         </widget>
@@ -872,7 +872,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>P1 - Move Speed</string>
+                    <string comment="IDC_P1_MoveSpeed">P1 - Move Speed</string>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_P2_TurnSpeed">
@@ -885,7 +885,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>P2 - Turn Speed</string>
+                    <string comment="IDC_P2_TurnSpeed">P2 - Turn Speed</string>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_P3_TravelAngle">
@@ -898,7 +898,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>P3 - Travel Angle</string>
+                    <string comment="IDC_P3_TravelAngle">P3 - Travel Angle</string>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_P4_Slope">
@@ -911,7 +911,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>P4 - Slope</string>
+                    <string comment="IDC_P4_Slope">P4 - Slope</string>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_P5_TurnAngle">
@@ -924,7 +924,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>P5 - Turn Angle</string>
+                    <string comment="IDC_P5_TurnAngle">P5 - Turn Angle</string>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_P6_TravelDistance">
@@ -937,7 +937,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>P6 - Travel Distance</string>
+                    <string comment="IDC_P6_TravelDistance">P6 - Travel Distance</string>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_P7_BlendWeight">
@@ -950,7 +950,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string>P7 - BlendWeight</string>
+                    <string comment="IDC_P7_BlendWeight">P7 - BlendWeight</string>
                 </property>
             </widget>
             <widget class="QSlider" name="IDC_BLENDSPACESLIDER_Para3">

@@ -109,7 +109,7 @@ void writeAssetsToQrc(const QVector<Asset> &assets, QIODevice *device, const QSt
 //=============================================================================
 // Dialog writing
 //=============================================================================
-static void writePropery(QXmlStreamWriter &w, const QString &name, const QVariant &value)
+static void writePropery(QXmlStreamWriter &w, const QString &id, const QString &name, const QVariant &value)
 {
     switch (static_cast<QMetaType::Type>(value.type())) {
     case QMetaType::Bool:
@@ -130,6 +130,11 @@ static void writePropery(QXmlStreamWriter &w, const QString &name, const QVarian
         const auto text = value.toString();
         if (name == "alignment") {
             w.writeTextElement("set", text);
+        } else if (name == "text") {
+            w.writeStartElement("string");
+            w.writeAttribute("comment", id);
+            w.writeCharacters(text);
+            w.writeEndElement();
         } else {
             if (text.contains("::") && !text.contains(' '))
                 w.writeTextElement("enum", text);
@@ -184,7 +189,7 @@ static void writeWidget(QXmlStreamWriter &w, const Widget &widget, int &staticCo
 
     auto itEnd = widget.properties.constEnd();
     for (auto it = widget.properties.constBegin(); it != itEnd; ++it)
-        writePropery(w, it.key(), it.value());
+        writePropery(w, id, it.key(), it.value());
 
     const bool isMainWindow = (widget.className == "QMainWindow");
     if (isMainWindow) {
