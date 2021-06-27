@@ -210,7 +210,7 @@ std::optional<nlohmann::json> Settings::loadSettings(const QString &name, bool l
     } else {
         if (log)
             spdlog::trace("No settings {}", name.toStdString());
-        return nlohmann::json {};
+        return "{}"_json;
     }
     return {};
 }

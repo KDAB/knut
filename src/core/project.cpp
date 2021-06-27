@@ -121,6 +121,23 @@ QStringList Project::allFilesWithExtension(const QString &extension)
     return result;
 }
 
+Document *createDocument(const QString &suffix)
+{
+    static const char TextTypes[] = "/mime_types/text";
+    static const char RcTypes[] = "/mime_types/rc";
+    static const char UiTypes[] = "/mime_types/ui";
+
+    auto settings = Settings::instance();
+
+    if (settings->value<QStringList>(TextTypes).contains(suffix))
+        return new TextDocument();
+    else if (settings->value<QStringList>(RcTypes).contains(suffix))
+        return new RcDocument();
+    else if (settings->value<QStringList>(UiTypes).contains(suffix))
+        return new UiDocument();
+    return nullptr;
+}
+
 /*!
  * \qmlmethod Document open(string fileName)
  * Opens a document for the given `fileName`. If the document already exists, returns the same instance, a document
@@ -143,21 +160,12 @@ Document *Project::open(QString fileName)
 
     Document *doc = nullptr;
 
-    static std::unordered_set<QString> TextSuffix = {"txt", "cpp", "h"};
-    static QString RcSuffix = "rc";
-    static QString UiSuffix = "ui";
-
     if (findIt != m_documents.cend()) {
         doc = *findIt;
     } else {
-        if (TextSuffix.contains(fi.suffix()))
-            doc = new TextDocument(this);
-        else if (fi.suffix() == RcSuffix)
-            doc = new RcDocument(this);
-        else if (fi.suffix() == UiSuffix)
-            doc = new UiDocument(this);
-
+        doc = createDocument(fi.suffix());
         if (doc) {
+            doc->setParent(this);
             doc->load(fileName);
             m_documents.push_back(doc);
         } else {

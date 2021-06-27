@@ -11,5 +11,10 @@
         "dialog_scaley": 1.65,
         "asset_flags": ["AllFlags"],
         "asset_transparent_colors": ["AllColors"]
+    },
+    "mime_types": {
+        "text": ["txt", "cpp", "h"],
+        "rc": ["rc"],
+        "ui": ["ui"]
     }
 }
