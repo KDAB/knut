@@ -35,8 +35,6 @@ public:
 
     bool hasChanged() const;
 
-    virtual QWidget *widget() const = 0;
-
 public slots:
     bool load(const QString &fileName);
     bool save();

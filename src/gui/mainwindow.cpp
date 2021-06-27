@@ -166,6 +166,29 @@ void MainWindow::changeTab()
     ui->actionCreate_Ui->setEnabled(document->type() == Core::Document::Type::Rc);
 }
 
+static QWidget *widgetForDocument(Core::Document *document)
+{
+    switch (document->type()) {
+    case Core::Document::Type::Text: {
+        auto textEdit = qobject_cast<Core::TextDocument *>(document)->textEdit();
+        auto f = textEdit->font();
+        f.setFamily(QStringLiteral("Courier New"));
+        f.setPointSize(10);
+        textEdit->setFont(f);
+        return textEdit;
+    }
+    case Core::Document::Type::Rc: {
+        auto rcview = new RcUi::RcFileView();
+        rcview->setRcFile(qobject_cast<Core::RcDocument *>(document)->data());
+        return rcview;
+    }
+    case Core::Document::Type::Ui:
+        break;
+    }
+    Q_UNREACHABLE();
+    return nullptr;
+}
+
 void MainWindow::changeCurrentDocument()
 {
     auto project = Core::Project::instance();
@@ -175,7 +198,7 @@ void MainWindow::changeCurrentDocument()
     int windowIndex = m_windows.value(fileName, -1);
     if (windowIndex == -1) {
         QDir dir(project->root());
-        auto widget = project->currentDocument()->widget();
+        auto widget = widgetForDocument(project->currentDocument());
         widget->setWindowTitle(fileName);
         windowIndex = ui->tabWidget->addTab(widget, dir.relativeFilePath(fileName));
         m_windows[fileName] = windowIndex;

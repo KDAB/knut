@@ -28,11 +28,6 @@ UiDocument::UiDocument(QObject *parent)
 {
 }
 
-QWidget *UiDocument::widget() const
-{
-    return nullptr;
-}
-
 /*!
  * \qmlmethod UiWidget UiDocument::findWidget( string name)
  * Returns the widget for the given `name`.

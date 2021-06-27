@@ -41,8 +41,6 @@ class UiDocument : public Document
 public:
     explicit UiDocument(QObject *parent = nullptr);
 
-    QWidget *widget() const override;
-
     QVector<Core::UiWidget *> widgets() const { return m_widgets; }
     Q_INVOKABLE Core::UiWidget *findWidget(const QString &name) const;
 

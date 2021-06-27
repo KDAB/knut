@@ -242,12 +242,8 @@ bool TextDocument::hasUtf8Bom() const
     return m_utf8Bom;
 }
 
-QWidget *TextDocument::widget() const
+QPlainTextEdit *TextDocument::textEdit() const
 {
-    auto f = m_document->font();
-    f.setFamily(QStringLiteral("Courier New"));
-    f.setPointSize(10);
-    m_document->setFont(f);
     return m_document;
 }
 

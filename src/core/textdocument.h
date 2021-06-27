@@ -73,7 +73,7 @@ public:
 
     bool hasUtf8Bom() const;
 
-    QWidget *widget() const override;
+    QPlainTextEdit *textEdit() const;
 
 public slots:
     void undo();
