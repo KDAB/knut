@@ -10,6 +10,7 @@
 #include "settings.h"
 #include "testutil.h"
 #include "textdocument.h"
+#include "uidocument.h"
 #include "utils.h"
 
 #include <QDir>
@@ -111,6 +112,7 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qmlRegisterUncreatableType<Document>("Script", 1, 0, "Document", "Abstract class");
     qmlRegisterType<ScriptItem>("Script", 1, 0, "Script");
     qmlRegisterType<TextDocument>("Script", 1, 0, "TextDocument");
+    qmlRegisterType<UiDocument>("Script", 1, 0, "UiDocument");
 
     qmlRegisterType<RcDocument>("Script.Mfc", 1, 0, "RcDocument");
 

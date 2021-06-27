@@ -48,12 +48,18 @@ FetchContent_Declare(json
 set(JSON_ImplicitConversions OFF)
 FetchContent_MakeAvailable(json)
 
-include(ECMEnableSanitizers)
+#pugixml
+FetchContent_Declare(pugixml
+    GIT_REPOSITORY https://github.com/zeux/pugixml.git
+    GIT_TAG        v1.11.4
+)
+FetchContent_MakeAvailable(pugixml)
 
+# ECM
+include(ECMEnableSanitizers)
 if (ECM_ENABLE_SANITIZERS)
     add_definitions(-DSANITIZERS_ENABLED)
 endif()
-
 
 # Knut
 add_subdirectory(src)

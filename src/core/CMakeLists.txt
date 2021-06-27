@@ -38,6 +38,8 @@ set(PROJECT_SOURCES
     testutil.cpp
     textdocument.h
     textdocument.cpp
+    uidocument.h
+    uidocument.cpp
     utils.h
     utils.cpp
 )
@@ -50,6 +52,7 @@ add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
 target_link_libraries(${PROJECT_NAME} PUBLIC
     nlohmann_json::nlohmann_json
     spdlog::spdlog
+    pugixml::pugixml
     Qt::Core
     Qt::Qml
     Qt::QmlPrivate

@@ -189,7 +189,7 @@ private slots:
     {
         Test::FileTester file(Test::testDataPath() + "/textdocument/loremipsum_original.txt");
         Core::TextDocument document;
-        document.load(Test::testDataPath() + "/textdocument/loremipsum.txt");
+        document.load(file.fileName());
 
         document.deleteRegion(598, 695);
 
@@ -246,7 +246,7 @@ private slots:
     {
         Test::FileTester file(Test::testDataPath() + "/textdocument/findreplace_original.txt");
         Core::TextDocument document;
-        document.load(Test::testDataPath() + "/textdocument/findreplace.txt");
+        document.load(file.fileName());
 
         document.gotoLine(4);
         QVERIFY(document.find("LOREM"));

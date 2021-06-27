@@ -3,6 +3,7 @@
 #include "rcdocument.h"
 #include "settings.h"
 #include "textdocument.h"
+#include "uidocument.h"
 
 #include <QDir>
 #include <QDirIterator>
@@ -143,15 +144,18 @@ Document *Project::open(QString fileName)
     Document *doc = nullptr;
 
     static std::unordered_set<QString> TextSuffix = {"txt", "cpp", "h"};
-    static std::unordered_set<QString> RcSuffix = {"rc"};
+    static QString RcSuffix = "rc";
+    static QString UiSuffix = "ui";
 
     if (findIt != m_documents.cend()) {
         doc = *findIt;
     } else {
         if (TextSuffix.contains(fi.suffix()))
             doc = new TextDocument(this);
-        else if (RcSuffix.contains(fi.suffix()))
+        else if (fi.suffix() == RcSuffix)
             doc = new RcDocument(this);
+        else if (fi.suffix() == UiSuffix)
+            doc = new UiDocument(this);
 
         if (doc) {
             doc->load(fileName);

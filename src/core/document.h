@@ -17,6 +17,7 @@ public:
     enum class Type {
         Text,
         Rc,
+        Ui,
     };
     Q_ENUM(Type)
 

@@ -1,0 +1,672 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+    <class>IDD_LIGHTING</class>
+    <widget class="QMainWindow" name="IDD_LIGHTING">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>1125</width>
+                <height>594</height>
+            </rect>
+        </property>
+        <widget class="QWidget" name="centralwidget">
+            <widget class="QPushButton" name="IDC_LIGHTING_IMPORT_BTN">
+                <property name="geometry">
+                    <rect>
+                        <x>13</x>
+                        <y>333</y>
+                        <width>45</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string comment="IDC_LIGHTING_IMPORT_BTN">Import</string>
+                </property>
+            </widget>
+            <widget class="QPushButton" name="IDC_LIGHTING_EXPORT_BTN">
+                <property name="geometry">
+                    <rect>
+                        <x>61</x>
+                        <y>333</y>
+                        <width>45</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string comment="IDC_LIGHTING_EXPORT_BTN">Export</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox" name="IDC_FORCE_SKY_UPDATE">
+                <property name="geometry">
+                    <rect>
+                        <x>15</x>
+                        <y>305</y>
+                        <width>105</width>
+                        <height>17</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string comment="IDC_FORCE_SKY_UPDATE">Force Sky Update</string>
+                </property>
+            </widget>
+            <widget class="QGroupBox" name="IDC_STATIC">
+                <property name="geometry">
+                    <rect>
+                        <x>297</x>
+                        <y>9</y>
+                        <width>201</width>
+                        <height>52</height>
+                    </rect>
+                </property>
+                <property name="title">
+                    <string>Light Type</string>
+                </property>
+                <widget class="QRadioButton" name="IDC_LIGHTING_TYPE_PRECISE">
+                    <property name="geometry">
+                        <rect>
+                            <x>10</x>
+                            <y>22</y>
+                            <width>59</width>
+                            <height>17</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string comment="IDC_LIGHTING_TYPE_PRECISE">Precise</string>
+                    </property>
+                </widget>
+                <widget class="QRadioButton" name="IDC_LIGHTING_TYPE_DYNAMIC_SUN">
+                    <property name="geometry">
+                        <rect>
+                            <x>82</x>
+                            <y>22</y>
+                            <width>86</width>
+                            <height>17</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string comment="IDC_LIGHTING_TYPE_DYNAMIC_SUN">Dynamic Sun</string>
+                    </property>
+                </widget>
+            </widget>
+            <widget class="QGroupBox" name="IDC_STATIC1">
+                <property name="geometry">
+                    <rect>
+                        <x>510</x>
+                        <y>9</y>
+                        <width>233</width>
+                        <height>52</height>
+                    </rect>
+                </property>
+                <property name="title">
+                    <string>Time of Day</string>
+                </property>
+                <widget class="QLabel" name="IDC_STATIC2">
+                    <property name="geometry">
+                        <rect>
+                            <x>15</x>
+                            <y>22</y>
+                            <width>30</width>
+                            <height>17</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string comment="IDC_STATIC2">Time:</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" name="IDC_TIME_OF_DAY_EDIT">
+                    <property name="geometry">
+                        <rect>
+                            <x>171</x>
+                            <y>20</y>
+                            <width>42</width>
+                            <height>17</height>
+                        </rect>
+                    </property>
+                    <property name="alignment">
+                        <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                    </property>
+                </widget>
+                <widget class="QSlider" name="IDC_LIGHTING_TIME_OF_DAY">
+                    <property name="geometry">
+                        <rect>
+                            <x>45</x>
+                            <y>20</y>
+                            <width>123</width>
+                            <height>20</height>
+                        </rect>
+                    </property>
+                    <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="tickPosition">
+                        <enum>QSlider::TicksBothSides</enum>
+                    </property>
+                </widget>
+            </widget>
+            <widget class="QGroupBox" name="IDC_STATIC3">
+                <property name="geometry">
+                    <rect>
+                        <x>297</x>
+                        <y>66</y>
+                        <width>446</width>
+                        <height>70</height>
+                    </rect>
+                </property>
+                <property name="title">
+                    <string>Sun Settings</string>
+                </property>
+                <widget class="QLineEdit" name="IDC_LIGHTING_SUNDIR_EDIT">
+                    <property name="geometry">
+                        <rect>
+                            <x>390</x>
+                            <y>18</y>
+                            <width>42</width>
+                            <height>19</height>
+                        </rect>
+                    </property>
+                    <property name="alignment">
+                        <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" name="IDC_LIGHTING_POLE_EDIT">
+                    <property name="geometry">
+                        <rect>
+                            <x>390</x>
+                            <y>41</y>
+                            <width>42</width>
+                            <height>19</height>
+                        </rect>
+                    </property>
+                    <property name="alignment">
+                        <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                    </property>
+                </widget>
+                <widget class="QLabel" name="IDC_STATIC4">
+                    <property name="geometry">
+                        <rect>
+                            <x>9</x>
+                            <y>44</y>
+                            <width>185</width>
+                            <height>14</height>
+                        </rect>
+                    </property>
+                    <property name="alignment">
+                        <set>Qt::AlignHCenter</set>
+                    </property>
+                    <property name="text">
+                        <string comment="IDC_STATIC4">NorthPole .. Equator .. SouthPole:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" name="IDC_STATIC5">
+                    <property name="geometry">
+                        <rect>
+                            <x>1</x>
+                            <y>21</y>
+                            <width>192</width>
+                            <height>14</height>
+                        </rect>
+                    </property>
+                    <property name="alignment">
+                        <set>Qt::AlignRight</set>
+                    </property>
+                    <property name="text">
+                        <string comment="IDC_STATIC5">Sun Direction (map orientation):</string>
+                    </property>
+                </widget>
+                <widget class="QSlider" name="IDC_SUNMAPLONGITUDE">
+                    <property name="geometry">
+                        <rect>
+                            <x>198</x>
+                            <y>42</y>
+                            <width>188</width>
+                            <height>20</height>
+                        </rect>
+                    </property>
+                    <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="tickPosition">
+                        <enum>QSlider::TicksBothSides</enum>
+                    </property>
+                </widget>
+                <widget class="QSlider" name="IDC_SUN_DIRECTION">
+                    <property name="geometry">
+                        <rect>
+                            <x>198</x>
+                            <y>19</y>
+                            <width>189</width>
+                            <height>20</height>
+                        </rect>
+                    </property>
+                    <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="tickPosition">
+                        <enum>QSlider::TicksBothSides</enum>
+                    </property>
+                </widget>
+            </widget>
+            <widget class="QGroupBox" name="IDC_STATIC6">
+                <property name="geometry">
+                    <rect>
+                        <x>297</x>
+                        <y>282</y>
+                        <width>446</width>
+                        <height>73</height>
+                    </rect>
+                </property>
+                <property name="title">
+                    <string>Terrain Occlusion</string>
+                </property>
+                <widget class="QLabel" name="IDC_STATIC7">
+                    <property name="geometry">
+                        <rect>
+                            <x>6</x>
+                            <y>23</y>
+                            <width>204</width>
+                            <height>14</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string comment="IDC_STATIC7">Sky Terrain Occlusion Quality (low .. high):</string>
+                    </property>
+                </widget>
+                <widget class="QSlider" name="IDC_HEMISAMPLEQ">
+                    <property name="geometry">
+                        <rect>
+                            <x>216</x>
+                            <y>21</y>
+                            <width>216</width>
+                            <height>20</height>
+                        </rect>
+                    </property>
+                    <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="tickPosition">
+                        <enum>QSlider::TicksBothSides</enum>
+                    </property>
+                </widget>
+                <widget class="QCheckBox" name="IDC_OBJECTTERRAINOCCL">
+                    <property name="geometry">
+                        <rect>
+                            <x>6</x>
+                            <y>46</y>
+                            <width>365</width>
+                            <height>17</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string comment="IDC_OBJECTTERRAINOCCL">Super Sampling (Terrain Object Occlusion - Only with Indirect Lighting)</string>
+                    </property>
+                </widget>
+            </widget>
+            <widget class="QGroupBox" name="IDC_STATIC8">
+                <property name="geometry">
+                    <rect>
+                        <x>297</x>
+                        <y>141</y>
+                        <width>446</width>
+                        <height>134</height>
+                    </rect>
+                </property>
+                <property name="title">
+                    <string>Moon/Sun Shadow Transition</string>
+                </property>
+                <widget class="QLabel" name="IDC_STATIC9">
+                    <property name="geometry">
+                        <rect>
+                            <x>16</x>
+                            <y>119</y>
+                            <width>12</width>
+                            <height>14</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string comment="IDC_STATIC9">0</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" name="IDC_STATIC10">
+                    <property name="geometry">
+                        <rect>
+                            <x>411</x>
+                            <y>119</y>
+                            <width>12</width>
+                            <height>14</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string comment="IDC_STATIC10">24</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" name="IDC_STATIC11">
+                    <property name="geometry">
+                        <rect>
+                            <x>115</x>
+                            <y>119</y>
+                            <width>12</width>
+                            <height>14</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string comment="IDC_STATIC11">6</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" name="IDC_STATIC12">
+                    <property name="geometry">
+                        <rect>
+                            <x>213</x>
+                            <y>119</y>
+                            <width>12</width>
+                            <height>14</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string comment="IDC_STATIC12">12</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" name="IDC_STATIC13">
+                    <property name="geometry">
+                        <rect>
+                            <x>312</x>
+                            <y>119</y>
+                            <width>12</width>
+                            <height>14</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string comment="IDC_STATIC13">18</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" name="IDC_STATIC14">
+                    <property name="geometry">
+                        <rect>
+                            <x>334</x>
+                            <y>20</y>
+                            <width>27</width>
+                            <height>14</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string comment="IDC_STATIC14">Noon</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" name="IDC_STATIC15">
+                    <property name="geometry">
+                        <rect>
+                            <x>103</x>
+                            <y>42</y>
+                            <width>27</width>
+                            <height>14</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string comment="IDC_STATIC15">0 min</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" name="IDC_STATIC16">
+                    <property name="geometry">
+                        <rect>
+                            <x>103</x>
+                            <y>83</y>
+                            <width>27</width>
+                            <height>14</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string comment="IDC_STATIC16">0 min</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" name="IDC_STATIC17">
+                    <property name="geometry">
+                        <rect>
+                            <x>334</x>
+                            <y>42</y>
+                            <width>33</width>
+                            <height>14</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string comment="IDC_STATIC17">60 min</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" name="IDC_STATIC18">
+                    <property name="geometry">
+                        <rect>
+                            <x>334</x>
+                            <y>83</y>
+                            <width>33</width>
+                            <height>14</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string comment="IDC_STATIC18">60 min</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" name="IDC_STATIC19">
+                    <property name="geometry">
+                        <rect>
+                            <x>334</x>
+                            <y>61</y>
+                            <width>42</width>
+                            <height>14</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string comment="IDC_STATIC19">Midnight</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" name="IDC_STATIC20">
+                    <property name="geometry">
+                        <rect>
+                            <x>88</x>
+                            <y>20</y>
+                            <width>42</width>
+                            <height>17</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string comment="IDC_STATIC20">Midnight</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" name="IDC_STATIC21">
+                    <property name="geometry">
+                        <rect>
+                            <x>88</x>
+                            <y>61</y>
+                            <width>42</width>
+                            <height>17</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string comment="IDC_STATIC21">Noon</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" name="IDC_DAWN_INFO">
+                    <property name="geometry">
+                        <rect>
+                            <x>384</x>
+                            <y>20</y>
+                            <width>42</width>
+                            <height>17</height>
+                        </rect>
+                    </property>
+                    <property name="alignment">
+                        <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" name="IDC_DUSK_INFO">
+                    <property name="geometry">
+                        <rect>
+                            <x>384</x>
+                            <y>61</y>
+                            <width>42</width>
+                            <height>17</height>
+                        </rect>
+                    </property>
+                    <property name="alignment">
+                        <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                    </property>
+                </widget>
+                <widget class="QLabel" name="IDC_STATIC22">
+                    <property name="geometry">
+                        <rect>
+                            <x>6</x>
+                            <y>61</y>
+                            <width>54</width>
+                            <height>14</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string comment="IDC_STATIC22">Dusk Time:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" name="IDC_STATIC23">
+                    <property name="geometry">
+                        <rect>
+                            <x>6</x>
+                            <y>20</y>
+                            <width>57</width>
+                            <height>14</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string comment="IDC_STATIC23">Dawn Time:</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" name="IDC_DAWN_DUR_INFO">
+                    <property name="geometry">
+                        <rect>
+                            <x>384</x>
+                            <y>40</y>
+                            <width>42</width>
+                            <height>19</height>
+                        </rect>
+                    </property>
+                    <property name="alignment">
+                        <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" name="IDC_DUSK_DUR_INFO">
+                    <property name="geometry">
+                        <rect>
+                            <x>384</x>
+                            <y>81</y>
+                            <width>42</width>
+                            <height>19</height>
+                        </rect>
+                    </property>
+                    <property name="alignment">
+                        <set>Qt::AlignLeft|Qt::AlignVCenter</set>
+                    </property>
+                </widget>
+                <widget class="QLabel" name="IDC_STATIC24">
+                    <property name="geometry">
+                        <rect>
+                            <x>6</x>
+                            <y>83</y>
+                            <width>72</width>
+                            <height>14</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string comment="IDC_STATIC24">Dusk Duration:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" name="IDC_STATIC25">
+                    <property name="geometry">
+                        <rect>
+                            <x>6</x>
+                            <y>40</y>
+                            <width>77</width>
+                            <height>14</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string comment="IDC_STATIC25">Dawn Duration:</string>
+                    </property>
+                </widget>
+                <widget class="QSlider" name="IDC_DAWN_SLIDER">
+                    <property name="geometry">
+                        <rect>
+                            <x>132</x>
+                            <y>20</y>
+                            <width>198</width>
+                            <height>20</height>
+                        </rect>
+                    </property>
+                    <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="tickPosition">
+                        <enum>QSlider::TicksBothSides</enum>
+                    </property>
+                </widget>
+                <widget class="QSlider" name="IDC_DAWN_DUR_SLIDER">
+                    <property name="geometry">
+                        <rect>
+                            <x>132</x>
+                            <y>42</y>
+                            <width>198</width>
+                            <height>20</height>
+                        </rect>
+                    </property>
+                    <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="tickPosition">
+                        <enum>QSlider::TicksBothSides</enum>
+                    </property>
+                </widget>
+                <widget class="QSlider" name="IDC_DUSK_SLIDER">
+                    <property name="geometry">
+                        <rect>
+                            <x>132</x>
+                            <y>61</y>
+                            <width>198</width>
+                            <height>20</height>
+                        </rect>
+                    </property>
+                    <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="tickPosition">
+                        <enum>QSlider::TicksBothSides</enum>
+                    </property>
+                </widget>
+                <widget class="QSlider" name="IDC_DUSK_DUR_SLIDER">
+                    <property name="geometry">
+                        <rect>
+                            <x>132</x>
+                            <y>83</y>
+                            <width>198</width>
+                            <height>20</height>
+                        </rect>
+                    </property>
+                    <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="tickPosition">
+                        <enum>QSlider::TicksBothSides</enum>
+                    </property>
+                </widget>
+            </widget>
+            <widget class="QGroupBox" name="IDC_HEIGHTMAP_BORDER">
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>9</y>
+                        <width>276</width>
+                        <height>291</height>
+                    </rect>
+                </property>
+                <property name="title">
+                    <string>Terrain Preview with Sun Path</string>
+                </property>
+            </widget>
+        </widget>
+    </widget>
+    <resources/>
+    <connections/>
+</ui>
