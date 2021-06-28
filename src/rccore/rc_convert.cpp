@@ -79,7 +79,7 @@ QVector<Asset> convertAssets(const Data &data, Asset::ConversionFlags flags)
         return data.assets;
 
     QVector<Asset> assets;
-    for (auto asset : data.assets)
+    for (const auto &asset : data.assets)
         assets.append(convertAsset(data, asset, flags));
 
     return assets;
@@ -802,7 +802,7 @@ Widget convertDialog(const Data &data, const Data::Dialog &d, Widget::Conversion
                         dialog.line, dialog.id.toStdString(), dialog.styles.join(", ").toStdString());
     }
 
-    for (const auto &control : dialog.controls)
+    for (const auto &control : qAsConst(dialog.controls))
         widget.children.push_back(convertChildWidget(data, dialog.id, control, flags & Widget::UseIdForPixmap));
 
     if (flags & Widget::UpdateGeometry)

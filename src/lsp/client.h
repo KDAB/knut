@@ -33,7 +33,7 @@ public:
     State state() const { return m_state; }
 
 signals:
-    void stateChanged(State state);
+    void stateChanged(Lsp::Client::State state);
 
 private:
     void setState(State newState);

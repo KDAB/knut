@@ -23,7 +23,7 @@ public:
 public slots:
     void setFilter(const QString &filter);
     void setFileName(const QString &fileName);
-    void setMode(Mode mode);
+    void setMode(Gui::FileSelector::Mode mode);
 
 signals:
     void fileNameChanged(const QString &fileName);

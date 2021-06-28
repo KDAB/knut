@@ -133,8 +133,8 @@ public slots:
 
     // Mark
     Core::Mark *createMark(int pos = -1);
-    void gotoMark(Mark *mark);
-    void selectToMark(Mark *mark);
+    void gotoMark(Core::Mark *mark);
+    void selectToMark(Core::Mark *mark);
 
     // Find
     bool find(const QString &text, int options = NoFindFlags);
