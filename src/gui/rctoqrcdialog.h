@@ -27,8 +27,8 @@ private:
     void updateColorBox();
 
 private:
-    Ui::RcToQrcDialog *ui;
-    Core::RcDocument *m_document;
+    Ui::RcToQrcDialog *const ui;
+    Core::RcDocument *const m_document;
 };
 
 } // namespace Gui

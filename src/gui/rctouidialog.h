@@ -25,8 +25,8 @@ public slots:
     void accept() override;
 
 private:
-    Ui::RcToUiDialog *ui;
-    Core::RcDocument *m_document;
+    Ui::RcToUiDialog *const ui;
+    Core::RcDocument *const m_document;
 };
 
 } // namespace Gui

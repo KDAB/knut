@@ -25,7 +25,7 @@ private:
     void updateScriptPaths();
 
 private:
-    Ui::SettingsDialog *ui;
+    Ui::SettingsDialog *const ui;
 };
 
 } // namespace Gui

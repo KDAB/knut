@@ -24,7 +24,7 @@ private:
     void chooseScript();
 
 private:
-    Ui::RunScriptDialog *ui;
+    Ui::RunScriptDialog *const ui;
 };
 
 } // namespace Gui

@@ -39,7 +39,7 @@ private:
     void changeCurrentDocument();
 
 private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow *const ui;
     QMenu *m_recentProjects = nullptr;
     QHash<QString, int> m_windows;
     QFileSystemModel *m_fileModel = nullptr;
