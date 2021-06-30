@@ -5,11 +5,13 @@
 #include "rctouidialog.h"
 #include "runscriptdialog.h"
 #include "settingsdialog.h"
+#include "uiview.h"
 
 #include "core/document.h"
 #include "core/project.h"
 #include "core/rcdocument.h"
 #include "core/textdocument.h"
+#include "core/uidocument.h"
 #include "rcui/rcfileview.h"
 
 #include <QApplication>
@@ -42,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionCreate_Ui, &QAction::triggered, this, &MainWindow::createUi);
     connect(ui->action_Run_Script, &QAction::triggered, this, &MainWindow::runScript);
     connect(ui->actionSettings, &QAction::triggered, this, &MainWindow::openSettings);
+    connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveDocument);
 
     m_recentProjects = new QMenu(this);
     ui->actionRecent_Projects->setMenu(m_recentProjects);
@@ -126,6 +129,13 @@ void MainWindow::openDocument(const QModelIndex &index)
         Core::Project::instance()->open(path);
 }
 
+void MainWindow::saveDocument()
+{
+    auto document = Core::Project::instance()->currentDocument();
+    if (document)
+        document->save();
+}
+
 void MainWindow::createQrc()
 {
     auto document = Core::Project::instance()->currentDocument();
@@ -183,10 +193,22 @@ static QWidget *widgetForDocument(Core::Document *document)
         return rcview;
     }
     case Core::Document::Type::Ui:
-        break;
+        auto uiview = new UiView();
+        uiview->setUiDocument(qobject_cast<Core::UiDocument *>(document));
+        return uiview;
     }
     Q_UNREACHABLE();
     return nullptr;
+}
+
+static void updateTabTitle(QTabWidget *tabWidget, int index, bool hasChanged)
+{
+    QString text = tabWidget->tabText(index);
+    if (hasChanged && !text.endsWith('*'))
+        text += '*';
+    else if (!hasChanged && text.endsWith('*'))
+        text.remove(text.size() - 1, 1);
+    tabWidget->setTabText(index, text);
 }
 
 void MainWindow::changeCurrentDocument()
@@ -197,11 +219,16 @@ void MainWindow::changeCurrentDocument()
     // open the window if it's already opened
     int windowIndex = m_windows.value(fileName, -1);
     if (windowIndex == -1) {
+        auto document = project->currentDocument();
         QDir dir(project->root());
-        auto widget = widgetForDocument(project->currentDocument());
+        auto widget = widgetForDocument(document);
         widget->setWindowTitle(fileName);
         windowIndex = ui->tabWidget->addTab(widget, dir.relativeFilePath(fileName));
         m_windows[fileName] = windowIndex;
+
+        connect(document, &Core::Document::hasChangedChanged, this, [this, windowIndex, document]() {
+            updateTabTitle(ui->tabWidget, windowIndex, document->hasChanged());
+        });
     }
     ui->tabWidget->setCurrentIndex(windowIndex);
 

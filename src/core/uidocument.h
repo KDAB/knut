@@ -30,7 +30,6 @@ private:
     friend UiDocument;
     pugi::xml_node m_widget;
     bool m_isRoot = false;
-    bool m_nameChanged = false;
 };
 
 class UiDocument : public Document
@@ -52,6 +51,7 @@ protected:
     bool doLoad(const QString &fileName) override;
 
 private:
+    friend UiWidget;
     pugi::xml_document m_document;
     QVector<UiWidget *> m_widgets;
 };

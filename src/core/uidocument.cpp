@@ -125,13 +125,13 @@ QString UiWidget::name() const
 
 void UiWidget::setName(const QString &newName)
 {
-    m_nameChanged = true;
     m_widget.attribute("name").set_value(newName.toLatin1().constData());
     if (m_isRoot) {
         // Also change the <class> tag
         auto node = m_widget.previous_sibling();
         node.text().set(newName.toLatin1().constData());
     }
+    qobject_cast<UiDocument *>(parent())->setHasChanged(true);
 }
 
 QString UiWidget::className() const
@@ -142,6 +142,7 @@ QString UiWidget::className() const
 void UiWidget::setClassName(const QString &newClassName)
 {
     m_widget.attribute("class").set_value(newClassName.toLatin1().constData());
+    qobject_cast<UiDocument *>(parent())->setHasChanged(true);
 }
 
 } // namespace Core

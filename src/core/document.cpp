@@ -143,11 +143,18 @@ bool Document::save()
 bool Document::saveAs(const QString &fileName)
 {
     spdlog::trace("Saving document {} as {}", m_fileName.toStdString(), fileName.toStdString());
-    if (m_fileName == fileName)
-        return doSave(m_fileName);
-    m_fileName = fileName;
-    emit fileNameChanged();
-    return save();
+    if (fileName.isEmpty()) {
+        spdlog::warn("Can't save document: fileName is empty");
+        return false;
+    }
+    if (m_fileName != fileName) {
+        m_fileName = fileName;
+        emit fileNameChanged();
+    }
+    bool saveDone = doSave(m_fileName);
+    if (saveDone)
+        setHasChanged(false);
+    return saveDone;
 }
 
 void Document::setHasChanged(bool newHasChanged)

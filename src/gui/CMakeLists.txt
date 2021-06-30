@@ -20,12 +20,15 @@ set(PROJECT_SOURCES
     settingsdialog.h
     settingsdialog.cpp
     settingsdialog.ui
+    uiview.h
+    uiview.cpp
 )
 
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
 target_link_libraries(${PROJECT_NAME} PUBLIC
     Qt::Core
     Qt::Widgets
+    Qt::UiTools
     knut-core
 )
 target_include_directories(${PROJECT_NAME}

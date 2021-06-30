@@ -30,6 +30,7 @@ private:
     void initProject(const QString &path);
     void updateRecentProjects();
     void openDocument(const QModelIndex &index);
+    void saveDocument();
     void createQrc();
     void createUi();
     void runScript();
