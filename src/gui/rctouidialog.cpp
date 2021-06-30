@@ -7,6 +7,7 @@
 #include <QApplication>
 #include <QDir>
 #include <QMessageBox>
+#include <QPushButton>
 
 namespace Gui {
 
@@ -36,6 +37,10 @@ RcToUiDialog::RcToUiDialog(Core::RcDocument *document, QWidget *parent)
         auto item = new QListWidgetItem(id, ui->idList);
         item->setCheckState(Qt::Checked);
     }
+    connect(ui->dirSelector, &FileSelector::fileNameChanged, this, [this](const QString &fileName) {
+        ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!fileName.trimmed().isEmpty());
+    });
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 }
 
 RcToUiDialog::~RcToUiDialog()

@@ -32,7 +32,7 @@ private:
     void chooseFile();
 
 private:
-    QLineEdit *m_lineEdit = nullptr;
+    QLineEdit *const m_lineEdit;
     QString m_filter;
     Mode m_mode = Mode::OpenFile;
 };

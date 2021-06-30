@@ -9,11 +9,11 @@ namespace Gui {
 
 FileSelector::FileSelector(QWidget *parent)
     : QWidget(parent)
+    , m_lineEdit(new QLineEdit(this))
 {
     auto layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
 
-    m_lineEdit = new QLineEdit(this);
     layout->addWidget(m_lineEdit);
     connect(m_lineEdit, &QLineEdit::textChanged, this, &FileSelector::fileNameChanged);
 
