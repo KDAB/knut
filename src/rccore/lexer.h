@@ -37,6 +37,7 @@ enum class Keywords {
     PNG,
     POPUP,
     RCDATA,
+    REGISTRY,
     STRINGTABLE,
     TEXTINCLUDE,
     TOOLBAR,

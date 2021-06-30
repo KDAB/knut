@@ -26,6 +26,7 @@ static QHash<QString, Keywords> KeywordMap = {
     {"PNG", Keywords::PNG},
     {"POPUP", Keywords::POPUP},
     {"RCDATA", Keywords::RCDATA},
+    {"REGISTRY", Keywords::REGISTRY},
     {"STRINGTABLE", Keywords::STRINGTABLE},
     {"TEXTINCLUDE", Keywords::TEXTINCLUDE},
     {"TOOLBAR", Keywords::TOOLBAR},
