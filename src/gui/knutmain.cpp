@@ -15,9 +15,9 @@ void KnutMain::initParser(QCommandLineParser &parser) const
 {
     Core::KnutCore::initParser(parser);
     parser.addOptions({
-        {"ide", "Open Knut IDE"},
-        {"run-dialog", "Open the run script dialog"},
-        {"settings", "Open the settings dialog"},
+        {"ide", tr("Open Knut IDE")},
+        {"run-dialog", tr("Open the run script dialog")},
+        {"settings", tr("Open the settings dialog")},
     });
 }
 
