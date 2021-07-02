@@ -1,5 +1,7 @@
 #pragma once
 
+#include "json_utils.h"
+
 #include <QObject>
 
 namespace Core {
@@ -59,6 +61,14 @@ private:
     QString m_errorString;
     bool m_hasChanged = 0;
 };
+
+NLOHMANN_JSON_SERIALIZE_ENUM(Document::Type,
+                             {
+                                 {Document::Type::Cpp, "cpp_type"},
+                                 {Document::Type::Text, "text_type"},
+                                 {Document::Type::Rc, "rc_type"},
+                                 {Document::Type::Ui, "ui_type"},
+                             })
 
 } // namespace Core
 

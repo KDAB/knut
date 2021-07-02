@@ -9,10 +9,12 @@
 #include <QDir>
 #include <QDirIterator>
 #include <QFileInfo>
+#include <QMetaEnum>
 
 #include <spdlog/spdlog.h>
 
 #include <algorithm>
+#include <map>
 #include <unordered_set>
 
 namespace Core {
@@ -124,21 +126,24 @@ QStringList Project::allFilesWithExtension(const QString &extension)
 
 Document *createDocument(const QString &suffix)
 {
-    static const char CppTypes[] = "/mime_types/cpp";
-    static const char TextTypes[] = "/mime_types/text";
-    static const char RcTypes[] = "/mime_types/rc";
-    static const char UiTypes[] = "/mime_types/ui";
+    static const char MimeTypes[] = "/mime_types";
+    static const auto mimeTypes = Settings::instance()->value<std::map<std::string, Document::Type>>(MimeTypes);
 
-    auto settings = Settings::instance();
+    auto it = mimeTypes.find(suffix.toStdString());
+    if (it == mimeTypes.end())
+        return nullptr;
 
-    if (settings->value<QStringList>(CppTypes).contains(suffix))
+    switch (it->second) {
+    case Document::Type::Cpp:
         return new CppDocument();
-    else if (settings->value<QStringList>(TextTypes).contains(suffix))
+    case Document::Type::Text:
         return new TextDocument();
-    else if (settings->value<QStringList>(RcTypes).contains(suffix))
+    case Document::Type::Rc:
         return new RcDocument();
-    else if (settings->value<QStringList>(UiTypes).contains(suffix))
+    case Document::Type::Ui:
         return new UiDocument();
+    }
+    Q_UNREACHABLE();
     return nullptr;
 }
 
