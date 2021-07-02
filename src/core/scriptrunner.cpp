@@ -1,5 +1,6 @@
 #include "scriptrunner.h"
 
+#include "cppdocument.h"
 #include "dir.h"
 #include "file.h"
 #include "fileinfo.h"
@@ -113,7 +114,10 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qmlRegisterType<ScriptItem>("Script", 1, 0, "Script");
     qmlRegisterType<TextDocument>("Script", 1, 0, "TextDocument");
     qmlRegisterType<UiDocument>("Script", 1, 0, "UiDocument");
+    qmlRegisterUncreatableType<UiWidget>("Script", 1, 0, "UiWidget", "Only created by UiDocument");
+    qmlRegisterType<CppDocument>("Script", 1, 0, "CppDocument");
 
+    // Script.Mfc
     qmlRegisterType<RcDocument>("Script.Mfc", 1, 0, "RcDocument");
 
     // Script.Test

@@ -1,5 +1,6 @@
 #include "project.h"
 
+#include "cppdocument.h"
 #include "rcdocument.h"
 #include "settings.h"
 #include "textdocument.h"
@@ -123,13 +124,16 @@ QStringList Project::allFilesWithExtension(const QString &extension)
 
 Document *createDocument(const QString &suffix)
 {
+    static const char CppTypes[] = "/mime_types/cpp";
     static const char TextTypes[] = "/mime_types/text";
     static const char RcTypes[] = "/mime_types/rc";
     static const char UiTypes[] = "/mime_types/ui";
 
     auto settings = Settings::instance();
 
-    if (settings->value<QStringList>(TextTypes).contains(suffix))
+    if (settings->value<QStringList>(CppTypes).contains(suffix))
+        return new CppDocument();
+    else if (settings->value<QStringList>(TextTypes).contains(suffix))
         return new TextDocument();
     else if (settings->value<QStringList>(RcTypes).contains(suffix))
         return new RcDocument();

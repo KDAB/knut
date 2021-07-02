@@ -1,6 +1,8 @@
 project(knut-core LANGUAGES CXX)
 
 set(PROJECT_SOURCES
+    cppdocument.h
+    cppdocument.cpp
     dir.h
     dir.cpp
     document.h

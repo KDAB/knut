@@ -13,7 +13,8 @@
         "asset_transparent_colors": ["AllColors"]
     },
     "mime_types": {
-        "text": ["txt", "cpp", "h"],
+        "cpp": ["c", "cpp", "cxx", "h", "hpp"],
+        "text": ["txt", "json"],
         "rc": ["rc"],
         "ui": ["ui"]
     }

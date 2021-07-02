@@ -22,7 +22,7 @@ TestCase {
         Project.root = Dir.currentScriptPath + "/mfc/dialog"
 
         var txtdoc = Project.open("dialog.cpp")
-        compare(txtdoc.type, Document.Text)
+        compare(txtdoc.type, Document.Cpp)
 
         var rcdoc = Project.open("dialog.rc")
         compare(rcdoc.type, Document.Rc)

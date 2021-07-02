@@ -179,6 +179,7 @@ void MainWindow::changeTab()
 static QWidget *widgetForDocument(Core::Document *document)
 {
     switch (document->type()) {
+    case Core::Document::Type::Cpp:
     case Core::Document::Type::Text: {
         auto textEdit = qobject_cast<Core::TextDocument *>(document)->textEdit();
         auto f = textEdit->font();

@@ -15,8 +15,9 @@ class Document : public QObject
 
 public:
     enum class Type {
-        Text,
+        Cpp,
         Rc,
+        Text,
         Ui,
     };
     Q_ENUM(Type)
