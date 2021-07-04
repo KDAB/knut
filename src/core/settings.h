@@ -1,5 +1,6 @@
 #pragma once
 
+#include "document.h"
 #include "json_utils.h"
 
 #include <QObject>
@@ -34,6 +35,7 @@ public:
     //! Store settings relative to a LSP server
     struct LspServer
     {
+        Document::Type type;
         QString program;
         QStringList arguments;
     };
@@ -118,7 +120,7 @@ private:
     QTimer *m_saveTimer = nullptr;
 };
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Settings::LspServer, program, arguments);
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Settings::LspServer, type, program, arguments);
 
 } // namespace Core
 

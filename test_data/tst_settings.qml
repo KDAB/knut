@@ -7,20 +7,20 @@ TestCase {
 
     function test_globalSettings() {
         // We can't test the values, as they could change
-        verify(Settings.hasValue("/lsp/cpp/arguments"))
-        verify(Settings.hasValue("/lsp/cpp/program"))
+        verify(Settings.hasValue("/lsp/0/arguments"))
+        verify(Settings.hasValue("/lsp/0/program"))
         verify(!Settings.hasValue("/foo/bar"))
 
         // Test missing '/'
-        verify(Settings.hasValue("lsp/cpp/arguments"))
-        verify(Settings.hasValue("lsp/cpp/program"))
+        verify(Settings.hasValue("lsp/0/arguments"))
+        verify(Settings.hasValue("lsp/0/program"))
         verify(!Settings.hasValue("foo/bar"))
     }
 
     function test_projectSettings() {
         verify(Settings.hasValue("/foobar/foo"))
-        compare(Settings.value("/lsp/cpp/program"), "notclangd")
-        compare(Settings.value("/lsp/cpp/arguments"), ["foo", "bar"])
+        compare(Settings.value("/lsp/0/program"), "notclangd")
+        compare(Settings.value("/lsp/0/arguments"), ["foo", "bar"])
 
         compare(Settings.value("/answer"), 42)
         compare(Settings.value("/pi"), 3.14)

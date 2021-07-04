@@ -66,10 +66,35 @@ bool Client::initialize(const QString &rootPath)
 
 bool Client::shutdown()
 {
+    Q_ASSERT(m_state == Initialized);
     ShutdownRequest request;
     request.id = m_nextRequestId++;
     m_clientLogger->debug("==> Sending ShutdownRequest");
     return shutdownCallback(m_backend->sendRequest(request));
+}
+
+void Client::openProject(const QString &rootPath)
+{
+    Q_ASSERT(m_state == Initialized);
+    QFileInfo fi(rootPath);
+    if (!fi.exists() || !sendWorkspaceFoldersChanges())
+        return;
+
+    DidChangeWorkspaceFoldersNotification notification;
+    notification.params.event.added.push_back({Utils::toDocumentUri(rootPath), fi.baseName().toStdString()});
+    m_backend->sendNotification(notification);
+}
+
+void Client::closeProject(const QString &rootPath)
+{
+    Q_ASSERT(m_state == Initialized);
+    QFileInfo fi(rootPath);
+    if (!fi.exists() || !sendWorkspaceFoldersChanges())
+        return;
+
+    DidChangeWorkspaceFoldersNotification notification;
+    notification.params.event.removed.push_back({Utils::toDocumentUri(rootPath), fi.baseName().toStdString()});
+    m_backend->sendNotification(notification);
 }
 
 void Client::setState(State newState)
@@ -112,6 +137,7 @@ bool Client::shutdownCallback(ShutdownRequest::Response response)
 bool Client::sendWorkspaceFoldersChanges() const
 {
     Q_ASSERT(m_state == Initialized);
+    // TODO handle dynamic capabilities
     if (auto workspace = m_serverCapabilities.workspace) {
         if (auto workspaceFolders = workspace.value().workspaceFolders) {
             if (workspaceFolders.value().supported.value_or(false)) {

@@ -8,10 +8,11 @@
     "foobar": {
         "foo": "bar"
     },
-    "lsp" : {
-        "cpp" : {
+    "lsp" : [
+        {
+            "type": "cpp_type",
             "program": "notclangd",
             "arguments": ["foo", "bar"]
         }
-    }
+    ]
 }

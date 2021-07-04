@@ -1,10 +1,17 @@
 #pragma once
 
+#include "document.h"
+
 #include <QObject>
 
-namespace Core {
+#include <unordered_map>
+#include <vector>
 
-class Document;
+namespace Lsp {
+class Client;
+}
+
+namespace Core {
 
 class Project : public QObject
 {
@@ -37,12 +44,15 @@ private:
     friend class KnutCore;
     explicit Project(QObject *parent = nullptr);
 
+    Lsp::Client *getClient(Document::Type type);
+
 private:
     inline static Project *m_instance = nullptr;
 
     QString m_root;
     std::vector<Document *> m_documents;
     Core::Document *m_current = nullptr;
+    std::unordered_map<Core::Document::Type, Lsp::Client *> m_lspClients;
 };
 
 } // namespace Core

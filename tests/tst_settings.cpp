@@ -34,19 +34,20 @@ private slots:
         SettingsFixture settings;
 
         // Default values
-        QCOMPARE(settings.hasValue("/lsp/cpp"), true);
-        QCOMPARE(settings.hasValue("lsp/cpp"), true);
-        const auto defaultServer = settings.value<Core::Settings::LspServer>("/lsp/cpp");
-        QCOMPARE(defaultServer.program, "clangd");
-        QCOMPARE(defaultServer.arguments.size(), 0);
+        QCOMPARE(settings.hasValue("/lsp"), true);
+        QCOMPARE(settings.hasValue("lsp"), true);
+        const auto lspServers = settings.value<std::vector<Core::Settings::LspServer>>("/lsp");
+        QCOMPARE(lspServers.size(), 1);
+        QCOMPARE(lspServers.front().program, "clangd");
+        QCOMPARE(lspServers.front().arguments.size(), 0);
 
         // Load settings
         settings.loadProjectSettings(Test::testDataPath() + "/settings");
-        const auto newServer = settings.value<Core::Settings::LspServer>("/lsp/cpp");
+        const auto newServers = settings.value<std::vector<Core::Settings::LspServer>>("/lsp");
         QCOMPARE(settings.hasValue("/foobar/foo"), true);
-        Core::Settings::LspServer testData = {"notclangd", {"foo", "bar"}};
-        QCOMPARE(newServer.program, testData.program);
-        QCOMPARE(newServer.arguments, testData.arguments);
+        Core::Settings::LspServer testData = {Core::Document::Type::Cpp, "notclangd", {"foo", "bar"}};
+        QCOMPARE(newServers.front().program, testData.program);
+        QCOMPARE(newServers.front().arguments, testData.arguments);
     }
 
     void getValue()

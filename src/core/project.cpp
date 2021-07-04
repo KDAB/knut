@@ -6,6 +6,8 @@
 #include "textdocument.h"
 #include "uidocument.h"
 
+#include "lsp/client.h"
+
 #include <QDir>
 #include <QDirIterator>
 #include <QFileInfo>
@@ -48,6 +50,8 @@ Project::Project(QObject *parent)
 Project::~Project()
 {
     m_instance = nullptr;
+    for (auto clients : m_lspClients)
+        clients.second->shutdown();
 }
 
 Project *Project::instance()
@@ -76,6 +80,9 @@ bool Project::setRoot(const QString &newRoot)
 
     m_root = dir.absolutePath();
     Settings::instance()->loadProjectSettings(m_root);
+    for (auto clients : m_lspClients)
+        clients.second->openProject(m_root);
+
     emit rootChanged();
     return true;
 }
@@ -124,7 +131,7 @@ QStringList Project::allFilesWithExtension(const QString &extension)
     return result;
 }
 
-Document *createDocument(const QString &suffix)
+static Document *createDocument(const QString &suffix)
 {
     static const char MimeTypes[] = "/mime_types";
     static const auto mimeTypes = Settings::instance()->value<std::map<std::string, Document::Type>>(MimeTypes);
@@ -144,6 +151,29 @@ Document *createDocument(const QString &suffix)
         return new UiDocument();
     }
     Q_UNREACHABLE();
+    return nullptr;
+}
+
+Lsp::Client *Project::getClient(Document::Type type)
+{
+    static const char Lsp[] = "/lsp";
+    static auto lspServers = Settings::instance()->value<std::vector<Settings::LspServer>>(Lsp);
+
+    auto cit = m_lspClients.find(type);
+    if (cit != m_lspClients.end())
+        return cit->second;
+
+    auto sit = std::find_if(lspServers.cbegin(), lspServers.cend(), [type](const Settings::LspServer &server) {
+        return server.type == type;
+    });
+    if (sit == lspServers.cend())
+        return nullptr;
+    QString language(QMetaEnum::fromType<Document::Type>().key(static_cast<int>(type)));
+    auto client = new Lsp::Client(language.toLower().toStdString(), sit->program, sit->arguments);
+    if (client->initialize(m_root)) {
+        m_lspClients[type] = client;
+        return client;
+    }
     return nullptr;
 }
 
@@ -174,6 +204,8 @@ Document *Project::open(QString fileName)
     } else {
         doc = createDocument(fi.suffix());
         if (doc) {
+            if (auto textDocument = qobject_cast<TextDocument *>(doc))
+                textDocument->setLspClient(getClient(doc->type()));
             doc->setParent(this);
             doc->load(fileName);
             m_documents.push_back(doc);

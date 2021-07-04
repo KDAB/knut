@@ -10,6 +10,10 @@
 
 class QPlainTextEdit;
 
+namespace Lsp {
+class Client;
+}
+
 namespace Core {
 
 class Mark;
@@ -74,6 +78,8 @@ public:
     bool hasUtf8Bom() const;
 
     QPlainTextEdit *textEdit() const;
+
+    void setLspClient(Lsp::Client *client);
 
 public slots:
     void undo();
@@ -160,6 +166,8 @@ protected:
     void movePosition(QTextCursor::MoveOperation operation, QTextCursor::MoveMode mode = QTextCursor::MoveAnchor,
                       int count = 1);
 
+    Lsp::Client *client() const;
+
 private:
     friend Mark;
 
@@ -168,6 +176,7 @@ private:
     QPointer<QPlainTextEdit> m_document;
     LineEnding m_lineEnding = NativeLineEnding;
     bool m_utf8Bom = false;
+    QPointer<Lsp::Client> m_lspClient;
 };
 
 } // namespace Core

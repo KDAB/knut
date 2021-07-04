@@ -30,6 +30,15 @@ public:
     bool initialize(const QString &rootPath = {});
     bool shutdown();
 
+    /**
+     * Open a new project, this will add a new workspace on the server
+     */
+    void openProject(const QString &rootPath);
+    /**
+     * Close a project, the project will be removed from the server's workspaces
+     */
+    void closeProject(const QString &rootPath);
+
     State state() const { return m_state; }
 
 signals:

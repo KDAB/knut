@@ -3,6 +3,8 @@
 #include "mark.h"
 #include "string_utils.h"
 
+#include "lsp/client.h"
+
 #include <QFile>
 #include <QPlainTextEdit>
 #include <QRegularExpression>
@@ -247,6 +249,11 @@ QPlainTextEdit *TextDocument::textEdit() const
     return m_document;
 }
 
+void TextDocument::setLspClient(Lsp::Client *client)
+{
+    m_lspClient = client;
+}
+
 /*!
  * \qmlmethod TextDocument::undo()
  * Undo the last action.
@@ -271,6 +278,11 @@ void TextDocument::movePosition(QTextCursor::MoveOperation operation, QTextCurso
         m_document->moveCursor(operation, mode);
         m_document->setTextCursor(m_document->textCursor());
     }
+}
+
+Lsp::Client *TextDocument::client() const
+{
+    return m_lspClient;
 }
 
 /*!
