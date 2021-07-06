@@ -48,7 +48,7 @@ void RunScriptDialog::accept()
         });
         if (it == list.cend())
             return;
-        scriptName = it->name;
+        scriptName = it->fileName;
     }
 
     Core::ScriptManager::instance()->runScript(scriptName);
