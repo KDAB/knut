@@ -111,10 +111,8 @@ bool Document::load(const QString &fileName)
     if (m_hasChanged)
         save();
     bool loadDone = doLoad(fileName);
-    if (loadDone) {
-        m_fileName = fileName;
-        emit fileNameChanged();
-    }
+    m_fileName = fileName;
+    emit fileNameChanged();
     return loadDone;
 }
 
