@@ -40,6 +40,9 @@ nav:
              - Script: API/script/script.md
              - Settings: API/script/settings.md
              - TextDocument: API/script/textdocument.md
+             - UiDocument: API/script/uidocument.md
+             - UiWidget: API/script/uiwidget.md
+             - UserDialog: API/script/userdialog.md
              - Utils: API/script/utils.md
         - Script.Mfc Module:
              - Action: API/script.mfc/action.md

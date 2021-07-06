@@ -42,6 +42,8 @@ set(PROJECT_SOURCES
     textdocument.cpp
     uidocument.h
     uidocument.cpp
+    userdialog.h
+    userdialog.cpp
     utils.h
     utils.cpp
 )

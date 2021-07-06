@@ -12,6 +12,7 @@
 #include "testutil.h"
 #include "textdocument.h"
 #include "uidocument.h"
+#include "userdialog.h"
 #include "utils.h"
 
 #include <QDir>
@@ -26,6 +27,13 @@
 namespace Core {
 
 static constexpr int ErrorCode = -1;
+
+// UserDialog singleton function provider
+static QObject *userdialog_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(scriptEngine)
+    return new UserDialog(engine);
+}
 
 // Dir singleton function provider
 static QObject *dir_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
@@ -107,6 +115,7 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qmlRegisterSingletonType<File>("Script", 1, 0, "File", file_provider);
     qmlRegisterSingletonType<Message>("Script", 1, 0, "Message", message_provider);
     qmlRegisterSingletonType<Utils>("Script", 1, 0, "Utils", utils_provider);
+    qmlRegisterSingletonType<UserDialog>("Script", 1, 0, "UserDialog", userdialog_provider);
     qmlRegisterSingletonInstance<Settings>("Script", 1, 0, "Settings", Settings::instance());
     qmlRegisterSingletonInstance<Project>("Script", 1, 0, "Project", Project::instance());
 
