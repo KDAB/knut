@@ -77,14 +77,16 @@ QJSValue UserDialog::getExistingDirectory(const QString &caption, const QString 
     return QJSValue(QJSValue::NullValue);
 }
 
+// clang-format off
 /*!
- * \qmlmethod string UserDialog::getItem( string title, string label, array<string> items, int current = 0, bool
- * editable = false) Returns a string selected among a pre-defined list. Returns `null` if the user cancel.
+ * \qmlmethod string UserDialog::getItem( string title, string label, array<string> items, int current = 0, bool editable = false)
+ * Returns a string selected among a pre-defined list. Returns `null` if the user cancel.
  *
  * The dialog's caption is set to `title`, the `label` is displayed and `items` contain the
  * initial list of values. The value `current` is selected at the start, and if `editable` is
  * true, the user will be able to enter his own value.
  */
+// clang-format on
 QJSValue UserDialog::getItem(const QString &title, const QString &label, const QStringList &items, int current,
                              bool editable)
 {
@@ -95,16 +97,17 @@ QJSValue UserDialog::getItem(const QString &title, const QString &label, const Q
     return QJSValue(QJSValue::NullValue);
 }
 
+// clang-format off
 /*!
- * \qmlmethod double UserDialog::getDouble( string title, string label, real value = 0.0, int decimals = 1, real step
- * = 1.0, real min = -2147483647.0, real max = 2147483647.0) Returns a double entered by the user. Returns `null` if the
- * user cancel.
+ * \qmlmethod double UserDialog::getDouble( string title, string label, real value = 0.0, int decimals = 1, real step = 1.0, real min = -2147483647.0, real max = 2147483647.0)
+ * Returns a double entered by the user. Returns `null` if the user cancel.
  *
  * The dialog's caption is set to `title`, the `label` is displayed and the initial value is
  * `value`. The dialog will show `decimals` number of decimals.
  * `min` and `max` are the minimum and maximum values the user may choose.
  * `step` is the amount by which the values change when incrementing or decrementing the value.
  */
+// clang-format on
 QJSValue UserDialog::getDouble(const QString &title, const QString &label, double value, int decimals, double step,
                                double min, double max)
 {
@@ -116,14 +119,16 @@ QJSValue UserDialog::getDouble(const QString &title, const QString &label, doubl
     return QJSValue(QJSValue::NullValue);
 }
 
+// clang-format off
 /*!
- * \qmlmethod int UserDialog::getInt( string title, string label, int value = 0, int step = 1, int min = -2147483647,
- * int max = 2147483647) Returns an integer entered by the user. Returns `null` if the user cancel.
+ * \qmlmethod int UserDialog::getInt( string title, string label, int value = 0, int step = 1, int min = -2147483647, int max = 2147483647)
+ * Returns an integer entered by the user. Returns `null` if the user cancel.
  *
  * The dialog's caption is set to `title`, the `label` is displayed and the initial value is
  * `value`. `min` and `max` are the minimum and maximum values the user may choose.
  * `step` is the amount by which the values change when incrementing or decrementing the value.
  */
+// clang-format on
 QJSValue UserDialog::getInt(const QString &title, const QString &label, int value, int step, int min, int max)
 {
     bool ok;

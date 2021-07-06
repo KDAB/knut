@@ -19,7 +19,7 @@ namespace Core {
  */
 
 /*!
- * \qmlproperty std::vector<UiWidget> widgets
+ * \qmlproperty array<UiWidget> UiDocument::widgets
  * List of all widgets in the ui file.
  */
 
@@ -99,15 +99,15 @@ bool UiDocument::doLoad(const QString &fileName)
  */
 
 /*!
- * \qmlproperty string name
+ * \qmlproperty string UiWidget::name
  * Name of the widget.
  */
 /*!
- * \qmlproperty string className
+ * \qmlproperty string UiWidget::className
  * Name of the widget's class.
  */
 /*!
- * \qmlproperty bool isRoot
+ * \qmlproperty bool UiWidget::isRoot
  * Read-only property returning `true` if the widget is the root widget.
  */
 

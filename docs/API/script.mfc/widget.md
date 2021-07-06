@@ -14,12 +14,17 @@ import Script.Mfc 1.0
 
 | | Name |
 |-|-|
+|array<[Widget](../script.mfc/widget.md)>|**[children](#children)**|
 |string|**[className](#className)**|
 |rect|**[geometry](#geometry)**|
 |string|**[id](#id)**|
 |object|**[properties](#properties)**|
 
 ## Property Documentation
+
+#### <a name="children"></a>array<[Widget](../script.mfc/widget.md)> **children**
+
+This property holds the list of children of the current widget.
 
 #### <a name="className"></a>string **className**
 

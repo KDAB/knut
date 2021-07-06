@@ -14,6 +14,14 @@ import Script.Mfc 1.0
 
 | | Name |
 |-|-|
+|array<string>|**[acceleratorIds](#acceleratorIds)**|
+|array<[Asset](../script.mfc/asset.md)>|**[assets](#assets)**|
+|array<string>|**[dialogIds](#dialogIds)**|
+|array<string>|**[menuIds](#menuIds)**|
+|array<[Menu](../script.mfc/menu.md)>|**[menus](#menus)**|
+|array<string>|**[stringIds](#stringIds)**|
+|array<string>|**[toolbarIds](#toolbarIds)**|
+|array<[ToolBar](../script.mfc/toolbar.md)>|**[toolbars](#toolbars)**|
 |bool|**[valid](#valid)**|
 
 ## Methods
@@ -31,6 +39,38 @@ import Script.Mfc 1.0
 |bool |**[writeDialogToUi](#writeDialogToUi)**([Widget](../script.mfc/widget.md) dialog, string fileName)|
 
 ## Property Documentation
+
+#### <a name="acceleratorIds"></a>array<string> **acceleratorIds**
+
+This read-only property holds the list of accelerator's ids in the RC file.
+
+#### <a name="assets"></a>array<[Asset](../script.mfc/asset.md)> **assets**
+
+This read-only property holds the list of assets in the RC file.
+
+#### <a name="dialogIds"></a>array<string> **dialogIds**
+
+This read-only property holds the list of dialog's ids in the RC file.
+
+#### <a name="menuIds"></a>array<string> **menuIds**
+
+This read-only property holds the list of menu's ids in the RC file.
+
+#### <a name="menus"></a>array<[Menu](../script.mfc/menu.md)> **menus**
+
+This read-only property holds the list of menus in the RC file.
+
+#### <a name="stringIds"></a>array<string> **stringIds**
+
+This read-only property holds the list of string's ids in the RC file.
+
+#### <a name="toolbarIds"></a>array<string> **toolbarIds**
+
+This read-only property holds the list of toolbar's ids in the RC file.
+
+#### <a name="toolbars"></a>array<[ToolBar](../script.mfc/toolbar.md)> **toolbars**
+
+This read-only property holds the list of toolbars in the RC file.
 
 #### <a name="valid"></a>bool **valid**
 

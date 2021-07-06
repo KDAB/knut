@@ -10,12 +10,24 @@ import Script 1.0
 <tr><td>Since:</td><td>Knut 4.0</td></tr>
 </table>
 
+## Properties
+
+| | Name |
+|-|-|
+|array<[UiWidget](../script/uiwidget.md)>|**[widgets](#widgets)**|
+
 ## Methods
 
 | | Name |
 |-|-|
 |[UiWidget](../script/uiwidget.md) |**[findWidget](#findWidget)**(string name)|
 ||**[preview](#preview)**()|
+
+## Property Documentation
+
+#### <a name="widgets"></a>array<[UiWidget](../script/uiwidget.md)> **widgets**
+
+List of all widgets in the ui file.
 
 ## Method Documentation
 

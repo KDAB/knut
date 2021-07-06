@@ -17,6 +17,7 @@ import Script.Mfc 1.0
 |bool|**[checked](#checked)**|
 |string|**[iconPath](#iconPath)**|
 |string|**[id](#id)**|
+|array<[Shortcut](../script.mfc/shortcut.md)>|**[shortcuts](#shortcuts)**|
 |string|**[statusTip](#statusTip)**|
 |string|**[toolTip](#toolTip)**|
 
@@ -33,6 +34,10 @@ This property holds the fileName for the icon of the action.
 #### <a name="id"></a>string **id**
 
 This property holds the id of the action.
+
+#### <a name="shortcuts"></a>array<[Shortcut](../script.mfc/shortcut.md)> **shortcuts**
+
+This property holds all the shortcuts associated with the action.
 
 #### <a name="statusTip"></a>string **statusTip**
 

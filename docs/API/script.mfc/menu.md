@@ -14,9 +14,14 @@ import Script.Mfc 1.0
 
 | | Name |
 |-|-|
+|array<[MenuItem](../script.mfc/menuitem.md)|**[children](#children)**|
 |string|**[id](#id)**|
 
 ## Property Documentation
+
+#### <a name="children"></a>array<[MenuItem](../script.mfc/menuitem.md) **children**
+
+This property holds the list of menu items inside the menu.
 
 #### <a name="id"></a>string **id**
 

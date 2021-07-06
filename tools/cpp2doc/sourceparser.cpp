@@ -102,7 +102,7 @@ Data::PropertyBlock SourceParser::parseProperty(QTextStream &stream, QString lin
     Data::PropertyBlock currentProperty;
     line = line.mid(13);
     currentProperty.name = line;
-    QRegularExpression regexp(R"(^(\w+) (\w+)::(\w+)$)");
+    QRegularExpression regexp(R"(^([\w<>]+) (\w+)::(\w+)$)");
     auto match = regexp.match(line);
     currentProperty.type = match.captured(1);
     currentProperty.qmlType = match.captured(2);
