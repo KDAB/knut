@@ -24,6 +24,8 @@
 
 #include <QtQml/private/qqmlengine_p.h>
 
+#include <spdlog/sinks/stdout_color_sinks.h>
+
 namespace Core {
 
 static constexpr int ErrorCode = -1;
@@ -88,6 +90,10 @@ ScriptRunner::ScriptRunner(QObject *parent)
     : QObject(parent)
 {
     m_logger = spdlog::get("script");
+    if (!m_logger) {
+        m_logger = spdlog::stdout_color_mt("script");
+        m_logger->set_level(spdlog::level::debug);
+    }
 
     // Script objects registrations
     qRegisterMetaType<QDirValueType>();

@@ -8,8 +8,6 @@
 #include <QFileSystemWatcher>
 #include <QTimer>
 
-#include <spdlog/sinks/stdout_color_sinks.h>
-
 namespace Core {
 
 ScriptManager::ScriptManager(QObject *parent)
@@ -20,10 +18,6 @@ ScriptManager::ScriptManager(QObject *parent)
     m_instance = this;
 
     m_logger = spdlog::get("script");
-    if (!m_logger) {
-        m_logger = spdlog::stdout_color_mt("script");
-        m_logger->set_level(spdlog::level::debug);
-    }
 
     connect(m_watcher, &QFileSystemWatcher::directoryChanged, this, &ScriptManager::updateScriptDirectory);
 }
