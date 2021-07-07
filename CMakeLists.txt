@@ -62,6 +62,7 @@ if (ECM_ENABLE_SANITIZERS)
 endif()
 
 # Knut
+add_subdirectory(scripts)
 add_subdirectory(src)
 add_subdirectory(tools)
 add_subdirectory(tests)
