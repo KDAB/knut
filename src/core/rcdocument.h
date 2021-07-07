@@ -33,13 +33,10 @@ public:
         Gray = RcCore::Asset::Gray,
         Magenta = RcCore::Asset::Magenta,
         BottomLeftPixel = RcCore::Asset::BottomLeftPixel,
-        AllColors = Gray | Magenta | BottomLeftPixel,
         // Dialog conversion
         UpdateHierarchy = RcCore::Widget::UpdateHierarchy,
         UpdateGeometry = RcCore::Widget::UpdateGeometry,
         UseIdForPixmap = RcCore::Widget::UseIdForPixmap,
-        // All flags
-        AllFlags = RemoveUnknown | SplitToolBar | ConvertToPng | UpdateHierarchy | UpdateGeometry | UseIdForPixmap,
     };
     Q_ENUM(ConversionFlag)
     Q_DECLARE_FLAGS(ConversionFlags, ConversionFlag)
@@ -103,11 +100,9 @@ NLOHMANN_JSON_SERIALIZE_ENUM(RcDocument::ConversionFlag,
                                  {RcDocument::Gray, "Gray"},
                                  {RcDocument::Magenta, "Magenta"},
                                  {RcDocument::BottomLeftPixel, "BottomLeftPixel"},
-                                 {RcDocument::AllColors, "AllColors"},
                                  {RcDocument::UpdateHierarchy, "UpdateHierarchy"},
                                  {RcDocument::UpdateGeometry, "UpdateGeometry"},
                                  {RcDocument::UseIdForPixmap, "UseIdForPixmap"},
-                                 {RcDocument::AllFlags, "AllFlags"},
                              })
 
 } // namespace Core

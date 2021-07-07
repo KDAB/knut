@@ -89,7 +89,6 @@ public:
         UpdateHierarchy = 0x100,
         UpdateGeometry = 0x200,
         UseIdForPixmap = 0x400,
-        DefaultFlags = UpdateGeometry | UseIdForPixmap,
         AllFlags = UpdateHierarchy | UpdateGeometry | UseIdForPixmap,
     };
     Q_DECLARE_FLAGS(ConversionFlags, ConversionFlag)

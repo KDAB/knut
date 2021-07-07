@@ -10,8 +10,8 @@
         "dialog_flags": ["UpdateGeometry", "UseIdForPixmap"],
         "dialog_scalex": 1.5,
         "dialog_scaley": 1.65,
-        "asset_flags": ["AllFlags"],
-        "asset_transparent_colors": ["AllColors"]
+        "asset_flags": ["RemoveUnknown", "SplitToolBar", "ConvertToPng"],
+        "asset_transparent_colors": ["Gray", "Magenta", "BottomLeftPixel"]
     },
     "mime_types": {
         "c": "cpp_type",
