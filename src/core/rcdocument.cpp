@@ -38,6 +38,10 @@ namespace Core {
  * This read-only property holds the list of menus in the RC file.
  */
 /*!
+ * \qmlproperty array<String> RcDocument::strings
+ * This read-only property holds the list of strings in the RC file.
+ */
+/*!
  * \qmlproperty array<string> RcDocument::dialogIds
  * This read-only property holds the list of dialog's ids in the RC file.
  */
@@ -207,11 +211,20 @@ QStringList RcDocument::stringIds() const
     return {};
 }
 
+QList<RcCore::String> RcDocument::strings() const
+{
+    if (m_data.isValid) {
+        const auto &strings = m_data.strings;
+        return strings.values();
+    }
+    return {};
+}
+
 /*!
  * \qmlmethod string RcDocument::text( string id)
  * Return the string for the given `id`.
  */
-QString RcDocument::text(const QString &id) const
+QString RcDocument::string(const QString &id) const
 {
     if (m_data.isValid)
         return m_data.strings.value(id).text;

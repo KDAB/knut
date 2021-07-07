@@ -1,0 +1,28 @@
+# String
+
+Description of a RC file string. [More...](#detailed-description)
+
+```qml
+import Script.Mfc 1.0
+```
+
+<table>
+<tr><td>Since:</td><td>Knut 4.0</td></tr>
+</table>
+
+## Properties
+
+| | Name |
+|-|-|
+|string|**[id](#id)**|
+|string|**[text](#text)**|
+
+## Property Documentation
+
+#### <a name="id"></a>string **id**
+
+This property holds the id of the string.
+
+#### <a name="text"></a>string **text**
+
+This property holds the text of the string.

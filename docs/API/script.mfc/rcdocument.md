@@ -20,6 +20,7 @@ import Script.Mfc 1.0
 |array<string>|**[menuIds](#menuIds)**|
 |array<[Menu](../script.mfc/menu.md)>|**[menus](#menus)**|
 |array<string>|**[stringIds](#stringIds)**|
+|array<[String](../script.mfc/string.md)>|**[strings](#strings)**|
 |array<string>|**[toolbarIds](#toolbarIds)**|
 |array<[ToolBar](../script.mfc/toolbar.md)>|**[toolbars](#toolbars)**|
 |bool|**[valid](#valid)**|
@@ -63,6 +64,10 @@ This read-only property holds the list of menus in the RC file.
 #### <a name="stringIds"></a>array<string> **stringIds**
 
 This read-only property holds the list of string's ids in the RC file.
+
+#### <a name="strings"></a>array<[String](../script.mfc/string.md)> **strings**
+
+This read-only property holds the list of strings in the RC file.
 
 #### <a name="toolbarIds"></a>array<string> **toolbarIds**
 

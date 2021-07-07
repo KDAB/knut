@@ -383,7 +383,7 @@ static void readStringTable(Lexer &lexer, Data &data)
         const int line = lexer.line();
         const auto id = lexer.next()->toString();
         const auto string = lexer.next()->toString();
-        data.strings[id] = {line, id, string};
+        data.strings[id] = {id, string, line};
     }
     lexer.next(); // END
 }

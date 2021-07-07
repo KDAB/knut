@@ -188,6 +188,22 @@ namespace RcCore {
  * This property is `true` if the action is checkabled and checked by default.
  */
 
+/*!
+ * \qmltype String
+ * \brief Description of a RC file string.
+ * \inqmlmodule Script.Mfc
+ * \since 4.0
+ * \sa RcFile
+ */
+/*!
+ * \qmlproperty string String::id
+ * This property holds the id of the string.
+ */
+/*!
+ * \qmlproperty string String::text
+ * This property holds the text of the string.
+ */
+
 bool operator==(const ToolBarItem &left, const ToolBarItem &right)
 {
     return left.id == right.id;
@@ -242,6 +258,11 @@ bool operator==(const MenuItem &left, const MenuItem &right)
 bool operator==(const Shortcut &left, const Shortcut &right)
 {
     return left.event == right.event && left.unknown == right.unknown;
+}
+
+bool operator==(const String &left, const String &right)
+{
+    return left.id == right.id && left.text == right.text;
 }
 
 } // namespace RcCore

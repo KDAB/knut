@@ -14,6 +14,7 @@ class RcDocument : public Document
     Q_PROPERTY(QVector<RcCore::Asset> assets READ assets NOTIFY fileNameChanged)
     Q_PROPERTY(QVector<RcCore::ToolBar> toolBars READ toolBars NOTIFY fileNameChanged)
     Q_PROPERTY(QVector<RcCore::Menu> menus READ menus NOTIFY fileNameChanged)
+    Q_PROPERTY(QList<RcCore::String> strings READ strings NOTIFY fileNameChanged)
     Q_PROPERTY(QStringList dialogIds READ dialogIds NOTIFY fileNameChanged)
     Q_PROPERTY(QStringList menuIds READ menuIds NOTIFY fileNameChanged)
     Q_PROPERTY(QStringList acceleratorIds READ acceleratorIds NOTIFY fileNameChanged)
@@ -67,7 +68,8 @@ public:
     QStringList toolbarIds() const;
     QStringList stringIds() const;
 
-    Q_INVOKABLE QString text(const QString &id) const;
+    QList<RcCore::String> strings() const;
+    Q_INVOKABLE QString string(const QString &id) const;
 
     const RcCore::Data &data() const;
 

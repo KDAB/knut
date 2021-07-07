@@ -179,6 +179,19 @@ public:
     bool checked = false;
 };
 
+struct String
+{
+    Q_GADGET
+    Q_PROPERTY(QString id MEMBER id)
+    Q_PROPERTY(QString text MEMBER text)
+public:
+    QString id;
+    QString text;
+    // Internal data
+    int line = -1;
+};
+bool operator==(const String &left, const String &right);
+
 //=============================================================================
 // Data describing a full file
 //=============================================================================
@@ -189,12 +202,6 @@ struct Data
         int line = -1;
         QString fileName;
         bool exist = false;
-    };
-    struct String
-    {
-        int line = -1;
-        QString id;
-        QString text;
     };
     struct DialogData
     {
@@ -283,3 +290,5 @@ Q_DECLARE_METATYPE(RcCore::Shortcut)
 Q_DECLARE_METATYPE(QVector<RcCore::Shortcut>)
 Q_DECLARE_METATYPE(RcCore::Action)
 Q_DECLARE_METATYPE(QVector<RcCore::Action>)
+Q_DECLARE_METATYPE(RcCore::String)
+Q_DECLARE_METATYPE(QList<RcCore::String>)
