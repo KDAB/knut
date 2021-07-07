@@ -16,6 +16,7 @@ import Script 1.0
 |-|-|
 ||**[addScriptPath](#addScriptPath)**(string path, bool projectOnly)|
 |string |**[convertCase](#convertCase)**(string str, Case from, Case to)|
+|string |**[copyToClipboard](#copyToClipboard)**(string text)|
 |string |**[getEnv](#getEnv)**(string varName)|
 |string |**[getGlobal](#getGlobal)**(string varName)|
 |string |**[mktemp](#mktemp)**(string pattern)|
@@ -56,6 +57,10 @@ The different cases are:
 - `Utils.UpperCase`: "TO_UPPER_CASE",
 - `Utils.KebabCase`: "to-kebab-case",
 - `Utils.TitleCase`: "To Title Case".
+
+#### <a name="copyToClipboard"></a>string **copyToClipboard**(string text)
+
+Copy the text to the clipboard
 
 #### <a name="getEnv"></a>string **getEnv**(string varName)
 

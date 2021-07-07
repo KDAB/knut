@@ -2,7 +2,8 @@
 
 #include "scriptmanager.h"
 
-#include <QCoreApplication>
+#include <QApplication>
+#include <QClipboard>
 #include <QDir>
 #include <QElapsedTimer>
 #include <QFileInfo>
@@ -149,6 +150,16 @@ QString Utils::mktemp(const QString &pattern)
 QString Utils::convertCase(const QString &str, Case from, Case to)
 {
     return Core::convertCase(str, static_cast<::Core::Case>(from), static_cast<::Core::Case>(to));
+}
+
+/*!
+ * \qmlmethod string Utils::copyToClipboard( string text)
+ * Copy the text to the clipboard
+ */
+void Utils::copyToClipboard(const QString &text)
+{
+    auto clipboard = QApplication::clipboard();
+    clipboard->setText(text);
 }
 
 } // namespace Core

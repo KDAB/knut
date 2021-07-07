@@ -40,6 +40,8 @@ public slots:
 
     static QString convertCase(const QString &str, Case from, Case to);
 
+    static void copyToClipboard(const QString &text);
+
 private:
     static QHash<QString, QString> m_globals;
 };
