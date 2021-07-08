@@ -19,6 +19,7 @@ class Project : public QObject
 
     Q_PROPERTY(QString root READ root WRITE setRoot NOTIFY rootChanged)
     Q_PROPERTY(Core::Document *currentDocument READ currentDocument NOTIFY currentDocumentChanged)
+    Q_PROPERTY(QVector<Core::Document *> documents READ documents NOTIFY documentsChanged)
 
 public:
     ~Project();
@@ -30,15 +31,19 @@ public:
 
     Core::Document *currentDocument() const;
 
+    const QVector<Document *> &documents() const;
+
 public slots:
     QStringList allFiles() const;
     QStringList allFilesWithExtension(const QString &extension);
 
     Core::Document *open(QString fileName);
+    void saveAllDocuments();
 
 signals:
     void rootChanged();
     void currentDocumentChanged();
+    void documentsChanged();
 
 private:
     friend class KnutCore;
@@ -50,7 +55,7 @@ private:
     inline static Project *m_instance = nullptr;
 
     QString m_root;
-    std::vector<Document *> m_documents;
+    QVector<Document *> m_documents;
     Core::Document *m_current = nullptr;
     std::unordered_map<Core::Document::Type, Lsp::Client *> m_lspClients;
 };

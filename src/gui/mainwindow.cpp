@@ -45,6 +45,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->action_Run_Script, &QAction::triggered, this, &MainWindow::runScript);
     connect(ui->actionSettings, &QAction::triggered, this, &MainWindow::openSettings);
     connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveDocument);
+    connect(ui->actionSaveAll, &QAction::triggered, this, &MainWindow::saveAllDocuments);
 
     m_recentProjects = new QMenu(this);
     ui->actionRecent_Projects->setMenu(m_recentProjects);
@@ -127,6 +128,11 @@ void MainWindow::openDocument(const QModelIndex &index)
     QFileInfo fi(path);
     if (fi.isFile())
         Core::Project::instance()->open(path);
+}
+
+void MainWindow::saveAllDocuments()
+{
+    Core::Project::instance()->saveAllDocuments();
 }
 
 void MainWindow::saveDocument()

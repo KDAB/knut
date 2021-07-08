@@ -38,6 +38,7 @@ private:
 
     void changeTab();
     void changeCurrentDocument();
+    void saveAllDocuments();
 
 private:
     Ui::MainWindow *const ui;

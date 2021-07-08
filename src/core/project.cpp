@@ -40,6 +40,11 @@ namespace Core {
  * Current document opened in the project.
  */
 
+/*!
+ * \qmlproperty array<string> Project::documents
+ * Return all documents opened in the project.
+ */
+
 Project::Project(QObject *parent)
     : QObject(parent)
 {
@@ -178,8 +183,13 @@ Lsp::Client *Project::getClient(Document::Type type)
     return nullptr;
 }
 
+const QVector<Document *> &Project::documents() const
+{
+    return m_documents;
+}
+
 /*!
- * \qmlmethod Document open(string fileName)
+ * \qmlmethod Document Project::open(string fileName)
  * Opens a document for the given `fileName`. If the document already exists, returns the same instance, a document
  * can't be open twice. If the fileName is relative, use the root path as the base.
  */
@@ -210,6 +220,7 @@ Document *Project::open(QString fileName)
             doc->setParent(this);
             doc->load(fileName);
             m_documents.push_back(doc);
+            Q_EMIT documentsChanged();
         } else {
             spdlog::error("Document type is unmanaged in Knut: {}", fi.suffix().toStdString());
             return nullptr;
@@ -225,6 +236,19 @@ Document *Project::open(QString fileName)
 Core::Document *Project::currentDocument() const
 {
     return m_current;
+}
+
+/*!
+ * \qmlmethod Project::saveAllDocuments()
+ * Save all Documents opened in project.
+ */
+void Project::saveAllDocuments()
+{
+    for (auto d : qAsConst(m_documents)) {
+        if (d->hasChanged()) {
+            d->save();
+        }
+    }
 }
 
 } // namespace Core
