@@ -9,6 +9,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt::Widgets
     knut-gui
 )
+install(TARGETS ${PROJECT_NAME})
 
 add_subdirectory(core)
 add_subdirectory(lsp)
