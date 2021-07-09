@@ -1,0 +1,5 @@
+# SPDX-FileCopyrightText: 2021 Laurent Montel <laurent.montel@kdab.com>
+# SPDX-License-Identifier: CC0-1.0
+# Suppression file for ASAN/LSAN
+
+leak:libfontconfig
