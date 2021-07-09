@@ -50,8 +50,9 @@ Project::Project(QObject *parent)
 Project::~Project()
 {
     m_instance = nullptr;
-    for (auto clients : m_lspClients)
+    for (auto clients : m_lspClients) {
         clients.second->shutdown();
+    }
 }
 
 Project *Project::instance()
@@ -169,7 +170,7 @@ Lsp::Client *Project::getClient(Document::Type type)
     if (sit == lspServers.cend())
         return nullptr;
     QString language(QMetaEnum::fromType<Document::Type>().key(static_cast<int>(type)));
-    auto client = new Lsp::Client(language.toLower().toStdString(), sit->program, sit->arguments);
+    auto client = new Lsp::Client(language.toLower().toStdString(), sit->program, sit->arguments, this);
     if (client->initialize(m_root)) {
         m_lspClients[type] = client;
         return client;
