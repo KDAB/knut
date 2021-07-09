@@ -17,7 +17,7 @@ namespace Lsp {
 
 Client::Client(const std::string &language, QString program, QStringList arguments, QObject *parent)
     : QObject(parent)
-    , m_backend(new ClientBackend(language, program, arguments, this))
+    , m_backend(new ClientBackend(language, std::move(program), std::move(arguments), this))
 {
     const auto clientLogName = language + "_client";
     m_clientLogger = spdlog::get(clientLogName);
