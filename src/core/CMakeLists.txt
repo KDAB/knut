@@ -46,9 +46,6 @@ set(PROJECT_SOURCES
     userdialog.cpp
     utils.h
     utils.cpp
-)
-
-qt_add_resources(PROJECT_SOURCES
     core.qrc
 )
 
