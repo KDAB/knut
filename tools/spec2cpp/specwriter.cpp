@@ -459,11 +459,11 @@ void SpecWriter::cleanCode()
     // Cleanup dependencies for types and interfaces
     {
         for (auto &type : types) {
-            for (const auto &enumName : qAsConst(enumNames))
+            for (const auto &enumName : std::as_const(enumNames))
                 type.dependencies.removeAll(enumName);
         }
         for (auto &interface : m_data.interfaces) {
-            for (const auto &enumName : qAsConst(enumNames))
+            for (const auto &enumName : std::as_const(enumNames))
                 interface.dependencies.removeAll(enumName);
         }
     }

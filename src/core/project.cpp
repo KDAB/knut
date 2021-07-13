@@ -244,7 +244,7 @@ Core::Document *Project::currentDocument() const
  */
 void Project::saveAllDocuments()
 {
-    for (auto d : qAsConst(m_documents)) {
+    for (auto d : std::as_const(m_documents)) {
         if (d->hasChanged()) {
             d->save();
         }

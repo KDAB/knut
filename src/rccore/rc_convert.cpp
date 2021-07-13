@@ -802,7 +802,7 @@ Widget convertDialog(const Data &data, const Data::Dialog &d, Widget::Conversion
                         dialog.line, dialog.id.toStdString(), dialog.styles.join(", ").toStdString());
     }
 
-    for (const auto &control : qAsConst(dialog.controls))
+    for (const auto &control : std::as_const(dialog.controls))
         widget.children.push_back(convertChildWidget(data, dialog.id, control, flags & Widget::UseIdForPixmap));
 
     if (flags & Widget::UpdateGeometry)

@@ -39,7 +39,7 @@ void RcSyntaxHighlighter::highlightBlock(const QString &text)
     if (text.startsWith("//")) {
         setFormat(0, text.size(), m_commentFormat);
     } else {
-        for (const auto &rule : qAsConst(m_highlightingRules)) {
+        for (const auto &rule : std::as_const(m_highlightingRules)) {
             QRegularExpressionMatchIterator matchIterator = rule.pattern.globalMatch(text);
             while (matchIterator.hasNext()) {
                 QRegularExpressionMatch match = matchIterator.next();
