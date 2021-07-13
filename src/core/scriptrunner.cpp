@@ -30,62 +30,6 @@ namespace Core {
 
 static constexpr int ErrorCode = -1;
 
-// UserDialog singleton function provider
-static QObject *userdialog_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(scriptEngine)
-    return new UserDialog(engine);
-}
-
-// Dir singleton function provider
-static QObject *dir_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(scriptEngine)
-    auto dir = new Dir();
-    dir->setProperty("scriptPath", engine->property("scriptPath"));
-    return dir;
-}
-
-// FileInfo singleton function provider
-static QObject *fileinfo_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
-    return new FileInfo();
-}
-
-// File singleton function provider
-static QObject *file_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
-    return new File();
-}
-
-// Message singleton function provider
-static QObject *message_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
-    return new Message();
-}
-
-// Message singleton function provider
-static QObject *utils_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
-    return new Utils();
-}
-
-// TestUtil singleton function provider
-static QObject *testUtil_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
-    return new TestUtil();
-}
-
 ScriptRunner::ScriptRunner(QObject *parent)
     : QObject(parent)
 {
@@ -116,14 +60,24 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qRegisterMetaType<QVector<RcCore::Action>>();
 
     // Script
-    qmlRegisterSingletonType<Dir>("Script", 1, 0, "Dir", dir_provider);
-    qmlRegisterSingletonType<FileInfo>("Script", 1, 0, "FileInfo", fileinfo_provider);
-    qmlRegisterSingletonType<File>("Script", 1, 0, "File", file_provider);
-    qmlRegisterSingletonType<Message>("Script", 1, 0, "Message", message_provider);
-    qmlRegisterSingletonType<Utils>("Script", 1, 0, "Utils", utils_provider);
-    qmlRegisterSingletonType<UserDialog>("Script", 1, 0, "UserDialog", userdialog_provider);
-    qmlRegisterSingletonInstance<Settings>("Script", 1, 0, "Settings", Settings::instance());
-    qmlRegisterSingletonInstance<Project>("Script", 1, 0, "Project", Project::instance());
+    qmlRegisterSingletonType<Dir>("Script", 1, 0, "Dir", [](QQmlEngine *engine, QJSEngine *) {
+        return new Dir(engine->property("scriptPath").toString());
+    });
+    qmlRegisterSingletonType<FileInfo>("Script", 1, 0, "FileInfo", [](QQmlEngine *, QJSEngine *) {
+        return new FileInfo();
+    });
+    qmlRegisterSingletonType<File>("Script", 1, 0, "File", [](QQmlEngine *, QJSEngine *) {
+        return new File();
+    });
+    qmlRegisterSingletonType<Message>("Script", 1, 0, "Message", [](QQmlEngine *, QJSEngine *) {
+        return new Message();
+    });
+    qmlRegisterSingletonType<Utils>("Script", 1, 0, "Utils", [](QQmlEngine *, QJSEngine *) {
+        return new Utils();
+    });
+    qmlRegisterSingletonType<UserDialog>("Script", 1, 0, "UserDialog", [](QQmlEngine *, QJSEngine *) {
+        return new UserDialog();
+    });
 
     qmlRegisterUncreatableType<Document>("Script", 1, 0, "Document", "Abstract class");
     qmlRegisterType<ScriptItem>("Script", 1, 0, "Script");
@@ -136,7 +90,9 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qmlRegisterType<RcDocument>("Script.Mfc", 1, 0, "RcDocument");
 
     // Script.Test
-    qmlRegisterSingletonType<TestUtil>("Script.Test", 1, 0, "TestUtil", testUtil_provider);
+    qmlRegisterSingletonType<TestUtil>("Script.Test", 1, 0, "TestUtil", [](QQmlEngine *, QJSEngine *) {
+        return new TestUtil();
+    });
 }
 
 ScriptRunner::~ScriptRunner() { }
@@ -178,6 +134,9 @@ QQmlEngine *ScriptRunner::getEngine(const QString &fileName)
     engine->setProperty("scriptPath", fi.absolutePath());
     engine->setProperty("scriptWindow", false);
     engine->addImportPath("qrc:/qml");
+
+    engine->rootContext()->setContextProperty("Settings", Settings::instance());
+    engine->rootContext()->setContextProperty("Project", Project::instance());
 
     auto logWarnings = [this](const QList<QQmlError> &warnings) {
         for (const auto &warning : warnings) {

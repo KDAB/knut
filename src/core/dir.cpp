@@ -34,8 +34,9 @@ namespace Core {
  * \qmlproperty string Dir::tempPath
  */
 
-Dir::Dir(QObject *parent)
+Dir::Dir(const QString &currentScriptPath, QObject *parent)
     : QObject(parent)
+    , m_currentScriptPath(currentScriptPath)
 {
 }
 
@@ -94,7 +95,7 @@ QString Dir::currentPath() const
  */
 QString Dir::currentScriptPath() const
 {
-    return property("scriptPath").toString();
+    return m_currentScriptPath;
 }
 
 /*!
