@@ -6,6 +6,7 @@
 #include <QApplication>
 #include <QCompleter>
 #include <QFileDialog>
+#include <QPushButton>
 
 #include <algorithm>
 
@@ -19,6 +20,11 @@ RunScriptDialog::RunScriptDialog(QWidget *parent)
     setWindowTitle(QApplication::applicationName() + ' ' + QApplication::applicationVersion() + " - " + windowTitle());
 
     connect(ui->toolButton, &QToolButton::clicked, this, &RunScriptDialog::chooseScript);
+    auto okButton = ui->buttonBox->button(QDialogButtonBox::Ok);
+    okButton->setEnabled(false);
+    connect(ui->lineEdit, &QLineEdit::textChanged, this, [okButton](const QString &str) {
+        okButton->setEnabled(!str.trimmed().isEmpty());
+    });
 
     auto list = Core::ScriptManager::instance()->scriptList();
     QStringList scriptNames;
