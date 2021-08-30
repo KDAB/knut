@@ -74,18 +74,17 @@ TestCase {
         compare(actionFileNew.title, "&New");
         compare(actionFileNew.toolTip, "New");
         compare(actionFileNew.statusTip, "Create a new document");
-        compare(actionFileNew.shortcuts.length, 2);
+        compare(actionFileNew.shortcuts.length, 1);
         compare(actionFileNew.shortcuts[0].event, "Ctrl+N");
-        compare(actionFileNew.shortcuts[1].event, "Ctrl+N");
         Message.log(actionFileNew.iconPath)
         verify(actionFileNew.iconPath.endsWith("res/Toolbar_0.png"));
 
         var actionEditPaste = actions[12]
         compare(actionEditPaste.id, "ID_EDIT_PASTE");
         compare(actionEditPaste.title, "&Paste");
-        compare(actionEditPaste.shortcuts.length, 3);
+        compare(actionEditPaste.shortcuts.length, 2);
         compare(actionEditPaste.shortcuts[0].event, "Ctrl+V");
-        compare(actionEditPaste.shortcuts[2].event, "Shift+Ins");
+        compare(actionEditPaste.shortcuts[1].event, "Shift+Ins");
         Message.log(actionEditPaste.iconPath)
         verify(actionEditPaste.iconPath.endsWith("res/Toolbar_5.png"));
 

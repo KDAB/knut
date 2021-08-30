@@ -122,7 +122,7 @@ private slots:
         QCOMPARE(action.title, "&New");
         QCOMPARE(action.toolTip, "New");
         QCOMPARE(action.statusTip, "Create a new document");
-        QCOMPARE(action.shortcuts.size(), 2);
+        QCOMPARE(action.shortcuts.size(), 1);
         QCOMPARE(action.shortcuts.first().event, "Ctrl+N");
         QCOMPARE(action.shortcuts.last().event, "Ctrl+N");
         QVERIFY(action.iconPath.endsWith("res/Toolbar_0.png"));
@@ -130,7 +130,7 @@ private slots:
         action = result.value(12);
         QCOMPARE(action.id, "ID_EDIT_PASTE");
         QCOMPARE(action.title, "&Paste");
-        QCOMPARE(action.shortcuts.size(), 3);
+        QCOMPARE(action.shortcuts.size(), 2);
         QCOMPARE(action.shortcuts.first().event, "Ctrl+V");
         QCOMPARE(action.shortcuts.last().event, "Shift+Ins");
         QVERIFY(action.iconPath.endsWith("res/Toolbar_5.png"));
