@@ -885,7 +885,11 @@ static void createActionForAccelerator(const Data &data, QVector<Action> &action
             index = actions.size() - 1;
             actionIdMap[action.id] = index;
         }
-        actions[index].shortcuts.push_back(createShortcut(data, accelerator));
+        auto &shortcuts = actions[index].shortcuts;
+        auto shortcut = createShortcut(data, accelerator);
+        auto it = std::find(shortcuts.begin(), shortcuts.end(), shortcut);
+        if (it == shortcuts.end())
+            actions[index].shortcuts.push_back(shortcut);
     }
 }
 

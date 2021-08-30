@@ -143,6 +143,8 @@ public:
     QVector<MenuItem> children;
     // Internal data
     int line = -1;
+
+    Q_INVOKABLE bool contains(const QString &id);
 };
 
 struct Shortcut
