@@ -8,6 +8,9 @@ set(PROJECT_SOURCES
     mainwindow.h
     mainwindow.cpp
     mainwindow.ui
+    palette.h
+    palette.cpp
+    palette.ui
     rctoqrcdialog.h
     rctoqrcdialog.cpp
     rctoqrcdialog.ui

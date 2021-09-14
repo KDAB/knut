@@ -48,7 +48,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>30</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -61,6 +61,7 @@
     <addaction name="actionSave"/>
     <addaction name="actionSaveAll"/>
     <addaction name="separator"/>
+    <addaction name="actionShow_Palette"/>
     <addaction name="action_Run_Script"/>
     <addaction name="actionSettings"/>
     <addaction name="separator"/>
@@ -141,6 +142,14 @@
   <action name="actionSaveAll">
    <property name="text">
     <string>Save All</string>
+   </property>
+  </action>
+  <action name="actionShow_Palette">
+   <property name="text">
+    <string>Show Palette...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
    </property>
   </action>
  </widget>

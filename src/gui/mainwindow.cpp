@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "palette.h"
 #include "rctoqrcdialog.h"
 #include "rctouidialog.h"
 #include "runscriptdialog.h"
@@ -31,8 +32,11 @@ constexpr char RecentProjectKey[] = "RecentProject";
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , m_palette(new Palette(this))
 {
     setAttribute(Qt::WA_DeleteOnClose);
+
+    m_palette->hide();
 
     ui->setupUi(this);
     ui->splitter->setSizes({275, 749});
@@ -46,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionSettings, &QAction::triggered, this, &MainWindow::openSettings);
     connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveDocument);
     connect(ui->actionSaveAll, &QAction::triggered, this, &MainWindow::saveAllDocuments);
+    connect(ui->actionShow_Palette, &QAction::triggered, this, &MainWindow::showPalette);
 
     m_recentProjects = new QMenu(this);
     ui->actionRecent_Projects->setMenu(m_recentProjects);
@@ -72,6 +77,13 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    QMainWindow::resizeEvent(event);
+    if (m_palette->isVisible())
+        showPalette();
 }
 
 void MainWindow::openProject()
@@ -170,6 +182,17 @@ void MainWindow::openSettings()
 {
     SettingsDialog dialog(this);
     dialog.exec();
+}
+
+void MainWindow::showPalette()
+{
+    const QRect rect = centralWidget()->geometry();
+    const int x = (rect.width() - m_palette->width()) / 2;
+    const int y = rect.y();
+
+    m_palette->move(x, y);
+    m_palette->show();
+    m_palette->raise();
 }
 
 void MainWindow::changeTab()

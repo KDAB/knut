@@ -13,6 +13,8 @@ class RcDocument;
 
 namespace Gui {
 
+class Palette;
+
 namespace Ui {
     class MainWindow;
 }
@@ -25,6 +27,9 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+protected:
+    void resizeEvent(QResizeEvent *event) override;
+
 private:
     void openProject();
     void initProject(const QString &path);
@@ -35,6 +40,7 @@ private:
     void createUi();
     void runScript();
     void openSettings();
+    void showPalette();
 
     void changeTab();
     void changeCurrentDocument();
@@ -45,6 +51,7 @@ private:
     QMenu *m_recentProjects = nullptr;
     QHash<QString, int> m_windows;
     QFileSystemModel *m_fileModel = nullptr;
+    Palette *const m_palette = nullptr;
 };
 
 } // namespace Gui
