@@ -22,6 +22,13 @@ class Project : public QObject
     Q_PROPERTY(QVector<Core::Document *> documents READ documents NOTIFY documentsChanged)
 
 public:
+    enum PathType {
+        FullPath = 0,
+        RelativeToRoot = 1,
+    };
+    Q_ENUMS(PathType)
+
+public:
     ~Project();
 
     static Project *instance();
@@ -34,8 +41,9 @@ public:
     const QVector<Document *> &documents() const;
 
 public slots:
-    QStringList allFiles() const;
-    QStringList allFilesWithExtension(const QString &extension);
+    QStringList allFiles(Core::Project::PathType type = RelativeToRoot) const;
+    QStringList allFilesWithExtension(const QString &extension, Core::Project::PathType type = RelativeToRoot);
+    QStringList allFilesWithExtensions(const QStringList &extensions, Core::Project::PathType type = RelativeToRoot);
 
     Core::Document *open(QString fileName);
     void saveAllDocuments();

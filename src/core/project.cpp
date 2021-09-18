@@ -94,10 +94,14 @@ bool Project::setRoot(const QString &newRoot)
 }
 
 /*!
- * \qmlmethod array<string> Project::allFiles()
+ * \qmlmethod array<string> Project::allFiles( PathType type = RelativeToRoot)
  * Returns all files in the current project.
+ * `type` defines the type of path, and can be one of those values:
+ *
+ * - `Project.FullPath`
+ * - `Project.RelativeToRoot`
  */
-QStringList Project::allFiles() const
+QStringList Project::allFiles(PathType type) const
 {
     if (m_root.isEmpty())
         return {};
@@ -109,17 +113,21 @@ QStringList Project::allFiles() const
         it.next();
         auto fi = it.fileInfo();
         if (fi.isFile())
-            result.push_back(dir.relativeFilePath(fi.absoluteFilePath()));
+            result.push_back(type == FullPath ? fi.absoluteFilePath() : dir.relativeFilePath(fi.absoluteFilePath()));
     }
     std::sort(result.begin(), result.end());
     return result;
 }
 
 /*!
- * \qmlmethod array<string> Project::allFilesWithExtension( string extension)
+ * \qmlmethod array<string> Project::allFilesWithExtension( string extension, PathType type = RelativeToRoot)
  * Returns all files with the `extension` given in the current project.
+ * `type` defines the type of path, and can be one of those values:
+ *
+ * - `Project.FullPath`
+ * - `Project.RelativeToRoot`
  */
-QStringList Project::allFilesWithExtension(const QString &extension)
+QStringList Project::allFilesWithExtension(const QString &extension, PathType type)
 {
     if (m_root.isEmpty())
         return {};
@@ -131,7 +139,33 @@ QStringList Project::allFilesWithExtension(const QString &extension)
         it.next();
         auto fi = it.fileInfo();
         if (fi.isFile() && fi.suffix() == extension)
-            result.push_back(dir.relativeFilePath(fi.absoluteFilePath()));
+            result.push_back(type == FullPath ? fi.absoluteFilePath() : dir.relativeFilePath(fi.absoluteFilePath()));
+    }
+    std::sort(result.begin(), result.end());
+    return result;
+}
+
+/*!
+ * \qmlmethod array<string> Project::allFilesWithExtensions( array<string> extensions, PathType type = RelativeToRoot)
+ * Returns all files with an extenstion from `extensions` in the current project.
+ * `type` defines the type of path, and can be one of those values:
+ *
+ * - `Project.FullPath`
+ * - `Project.RelativeToRoot`
+ */
+QStringList Project::allFilesWithExtensions(const QStringList &extensions, PathType type)
+{
+    if (m_root.isEmpty())
+        return {};
+
+    QDir dir(m_root);
+    QDirIterator it(m_root, QDirIterator::Subdirectories);
+    QStringList result;
+    while (it.hasNext()) {
+        it.next();
+        auto fi = it.fileInfo();
+        if (fi.isFile() && extensions.contains(fi.suffix(), Qt::CaseInsensitive))
+            result.push_back(type == FullPath ? fi.absoluteFilePath() : dir.relativeFilePath(fi.absoluteFilePath()));
     }
     std::sort(result.begin(), result.end());
     return result;
