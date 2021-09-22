@@ -38,6 +38,8 @@ public:
 
     bool hasChanged() const;
 
+    int revision() const;
+
 public slots:
     bool load(const QString &fileName);
     bool save();
@@ -60,6 +62,7 @@ private:
     Type m_type;
     QString m_errorString;
     bool m_hasChanged = 0;
+    int m_revision = 0;
 };
 
 NLOHMANN_JSON_SERIALIZE_ENUM(Document::Type,

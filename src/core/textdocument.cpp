@@ -208,8 +208,8 @@ QString TextDocument::text() const
 
 void TextDocument::setText(const QString &newText)
 {
-    setHasChanged(true);
     m_document->setPlainText(newText);
+    setHasChanged(true);
 }
 
 QString TextDocument::currentLine() const
@@ -559,8 +559,8 @@ void TextDocument::copy()
  */
 void TextDocument::paste()
 {
-    setHasChanged(true);
     m_document->paste();
+    setHasChanged(true);
 }
 
 /*!
@@ -569,8 +569,8 @@ void TextDocument::paste()
  */
 void TextDocument::cut()
 {
-    setHasChanged(true);
     m_document->cut();
+    setHasChanged(true);
 }
 
 /*!
@@ -579,11 +579,11 @@ void TextDocument::cut()
  */
 void TextDocument::remove(int length)
 {
-    setHasChanged(true);
     QTextCursor cursor = m_document->textCursor();
     cursor.setPosition(cursor.position() + length, QTextCursor::KeepAnchor);
     cursor.removeSelectedText();
     m_document->setTextCursor(cursor);
+    setHasChanged(true);
 }
 
 /*!
@@ -592,8 +592,8 @@ void TextDocument::remove(int length)
  */
 void TextDocument::insert(const QString &text)
 {
-    setHasChanged(true);
     m_document->insertPlainText(text);
+    setHasChanged(true);
 }
 
 /*!
@@ -602,11 +602,11 @@ void TextDocument::insert(const QString &text)
  */
 void TextDocument::replace(int length, const QString &text)
 {
-    setHasChanged(true);
     QTextCursor cursor = m_document->textCursor();
     cursor.setPosition(cursor.position() + length, QTextCursor::KeepAnchor);
     cursor.insertText(text);
     m_document->setTextCursor(cursor);
+    setHasChanged(true);
 }
 
 /*!
@@ -615,8 +615,8 @@ void TextDocument::replace(int length, const QString &text)
  */
 void TextDocument::deleteSelection()
 {
-    setHasChanged(true);
     m_document->textCursor().removeSelectedText();
+    setHasChanged(true);
 }
 
 /*!
@@ -625,12 +625,12 @@ void TextDocument::deleteSelection()
  */
 void TextDocument::deleteRegion(int from, int to)
 {
-    setHasChanged(true);
     QTextCursor cursor(m_document->document());
     cursor.setPosition(from);
     cursor.setPosition(to, QTextCursor::KeepAnchor);
     cursor.removeSelectedText();
     m_document->setTextCursor(cursor);
+    setHasChanged(true);
 }
 
 /*!
@@ -639,11 +639,11 @@ void TextDocument::deleteRegion(int from, int to)
  */
 void TextDocument::deleteEndOfLine()
 {
-    setHasChanged(true);
     QTextCursor cursor = m_document->textCursor();
     cursor.movePosition(QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
     cursor.removeSelectedText();
     m_document->setTextCursor(cursor);
+    setHasChanged(true);
 }
 
 /*!
@@ -652,11 +652,11 @@ void TextDocument::deleteEndOfLine()
  */
 void TextDocument::deleteStartOfLine()
 {
-    setHasChanged(true);
     QTextCursor cursor = m_document->textCursor();
     cursor.movePosition(QTextCursor::StartOfLine, QTextCursor::KeepAnchor);
     cursor.removeSelectedText();
     m_document->setTextCursor(cursor);
+    setHasChanged(true);
 }
 
 /*!
@@ -665,11 +665,11 @@ void TextDocument::deleteStartOfLine()
  */
 void TextDocument::deleteEndOfWord()
 {
-    setHasChanged(true);
     QTextCursor cursor = m_document->textCursor();
     cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
     cursor.removeSelectedText();
     m_document->setTextCursor(cursor);
+    setHasChanged(true);
 }
 
 /*!
@@ -678,11 +678,11 @@ void TextDocument::deleteEndOfWord()
  */
 void TextDocument::deleteStartOfWord()
 {
-    setHasChanged(true);
     QTextCursor cursor = m_document->textCursor();
     cursor.movePosition(QTextCursor::StartOfWord, QTextCursor::KeepAnchor);
     cursor.removeSelectedText();
     m_document->setTextCursor(cursor);
+    setHasChanged(true);
 }
 
 /*!
@@ -691,11 +691,11 @@ void TextDocument::deleteStartOfWord()
  */
 void TextDocument::deletePreviousCharacter(int count)
 {
-    setHasChanged(true);
     QTextCursor cursor = m_document->textCursor();
     cursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor, count);
     cursor.removeSelectedText();
     m_document->setTextCursor(cursor);
+    setHasChanged(true);
 }
 
 /*!
@@ -704,11 +704,11 @@ void TextDocument::deletePreviousCharacter(int count)
  */
 void TextDocument::deleteNextCharacter(int count)
 {
-    setHasChanged(true);
     QTextCursor cursor = m_document->textCursor();
     cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, count);
     cursor.removeSelectedText();
     m_document->setTextCursor(cursor);
+    setHasChanged(true);
 }
 
 /*!
