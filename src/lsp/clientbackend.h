@@ -92,6 +92,26 @@ private:
 
     std::unordered_map<MessageId, std::function<void(nlohmann::json)>> m_callbacks;
     nlohmann::json m_response;
+
+    class Message
+    {
+    public:
+        void addData(const QByteArray &data);
+
+        // Parse the current data, and return a message as a json object or empty if there's nothing
+        nlohmann::json getNextMessage();
+
+    private:
+        // Read the header file and remove the data from m_data
+        // Returns true if the header file is read
+        bool readHeader();
+
+    private:
+        QByteArray m_data;
+        int m_length = 0;
+    };
+
+    Message m_message;
 };
 
 }

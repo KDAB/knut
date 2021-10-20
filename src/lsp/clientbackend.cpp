@@ -38,36 +38,6 @@ static QByteArray toMessage(json content)
     return header.toLatin1() + data;
 }
 
-// Parse the given LSP message
-// Return the content of the message as a json object or empty if it's invalid
-static json parseMessage(QByteArray message)
-{
-    QBuffer buf;
-    buf.setData(message);
-    int length = 0;
-    if (buf.open(QIODevice::ReadOnly)) {
-        while (!buf.atEnd()) {
-            const QByteArray &headerLine = buf.readLine();
-
-            // There's always an empty line between header and content
-            if (headerLine == "\r\n")
-                break;
-
-            int assignmentIndex = headerLine.indexOf(": ");
-            if (assignmentIndex >= 0) {
-                const QByteArray &key = headerLine.mid(0, assignmentIndex).trimmed();
-                const QByteArray &value = headerLine.mid(assignmentIndex + 2).trimmed();
-                if (key == "Content-Length")
-                    length = value.toInt();
-            }
-        }
-    }
-
-    if (length)
-        return json::parse(buf.read(length).constData());
-    return {};
-}
-
 ClientBackend::ClientBackend(const std::string &language, QString program, QStringList arguments, QObject *parent)
     : QObject(parent)
     , m_program(std::move(program))
@@ -123,25 +93,29 @@ void ClientBackend::readError()
 
 void ClientBackend::readOutput()
 {
-    const auto message = parseMessage(m_process->readAllStandardOutput());
+    m_message.addData(m_process->readAllStandardOutput());
 
-    // Check if there is an error
-    if (message.contains("error")) {
-        auto errorString = message.at("error").at("message").get<std::string>();
-        m_serverLogger->error("==> Error response: {}", errorString);
-    }
-
-    if (message.contains("id")) {
-        const MessageId id = message.at("id").get<MessageId>();
-        auto it = m_callbacks.find(id);
-        if (it != m_callbacks.end()) {
-            logMessage("receive-response", message);
-            it->second(std::move(message));
-        } else {
-            logMessage("receive-request", message);
+    auto message = m_message.getNextMessage();
+    while (!message.is_null()) {
+        // Check if there is an error
+        if (message.contains("error")) {
+            auto errorString = message.at("error").at("message").get<std::string>();
+            m_serverLogger->error("==> Error response: {}", errorString);
         }
-    } else {
-        logMessage("receive-notification", message);
+
+        if (message.contains("id")) {
+            const MessageId id = message.at("id").get<MessageId>();
+            auto it = m_callbacks.find(id);
+            if (it != m_callbacks.end()) {
+                logMessage("receive-response", message);
+                it->second(std::move(message));
+            } else {
+                logMessage("receive-request", message);
+            }
+        } else {
+            logMessage("receive-notification", message);
+        }
+        message = m_message.getNextMessage();
     }
 }
 
@@ -194,5 +168,58 @@ void ClientBackend::logMessage(std::string type, const nlohmann::json &message)
     };
     m_messageLogger->info(log.dump());
     m_messageLogger->flush();
+}
+
+void ClientBackend::Message::addData(const QByteArray &data)
+{
+    m_data += data;
+}
+
+nlohmann::json ClientBackend::Message::getNextMessage()
+{
+    // Not enough data yet to read the message
+    if (m_length == 0 && !readHeader())
+        return {};
+
+    // There is a message
+    if (m_length) {
+        QBuffer buf;
+        buf.setData(m_data);
+        if (buf.open(QIODevice::ReadOnly)) {
+            auto message = json::parse(buf.read(m_length).constData());
+            m_length = 0;
+            m_data = m_data.mid(buf.pos());
+            return message;
+        }
+    }
+    return {};
+}
+
+bool ClientBackend::Message::readHeader()
+{
+    QBuffer buf;
+    buf.setData(m_data);
+    int length = 0;
+    if (buf.open(QIODevice::ReadOnly)) {
+        while (!buf.atEnd()) {
+            const QByteArray &headerLine = buf.readLine();
+
+            // There's always an empty line between header and content
+            if (headerLine == "\r\n") {
+                m_length = length;
+                m_data = m_data.mid(buf.pos());
+                return true;
+            };
+
+            int assignmentIndex = headerLine.indexOf(": ");
+            if (assignmentIndex >= 0) {
+                const QByteArray &key = headerLine.mid(0, assignmentIndex).trimmed();
+                const QByteArray &value = headerLine.mid(assignmentIndex + 2).trimmed();
+                if (key == "Content-Length")
+                    length = value.toInt();
+            }
+        }
+    }
+    return false;
 }
 }
