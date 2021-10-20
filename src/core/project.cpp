@@ -55,9 +55,13 @@ Project::Project(QObject *parent)
 Project::~Project()
 {
     m_instance = nullptr;
-    for (auto clients : m_lspClients) {
+
+    const auto documents = findChildren<Document *>();
+    for (auto document : documents)
+        document->close();
+
+    for (auto clients : m_lspClients)
         clients.second->shutdown();
-    }
 }
 
 Project *Project::instance()

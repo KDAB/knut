@@ -10,16 +10,17 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QFileInfo>
-
+#include <QUrl>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
 namespace Lsp {
 
-Client::Client(const std::string &language, QString program, QStringList arguments, QObject *parent)
+Client::Client(std::string languageId, QString program, QStringList arguments, QObject *parent)
     : QObject(parent)
-    , m_backend(new ClientBackend(language, std::move(program), std::move(arguments), this))
+    , m_languageId(std::move(languageId))
+    , m_backend(new ClientBackend(m_languageId, std::move(program), std::move(arguments), this))
 {
-    const auto clientLogName = language + "_client";
+    const auto clientLogName = m_languageId + "_client";
     m_clientLogger = spdlog::get(clientLogName);
     if (!m_clientLogger) {
         m_clientLogger = spdlog::stdout_color_mt(clientLogName);
@@ -36,6 +37,11 @@ Client::Client(const std::string &language, QString program, QStringList argumen
 
 Client::~Client() { }
 
+std::string Client::languageId() const
+{
+    return m_languageId;
+}
+
 bool Client::initialize(const QString &rootPath)
 {
     if (!m_backend->start())
@@ -48,9 +54,17 @@ bool Client::initialize(const QString &rootPath)
     request.params.processId = static_cast<int>(QCoreApplication::applicationPid());
     request.params.clientInfo = {"knut", "4.0"};
 
+    // Workspace capabilities
     ClientCapabilities::WorkspaceType workspaceCapabilities;
     workspaceCapabilities.workspaceFolders = true;
     request.params.capabilities.workspace = workspaceCapabilities;
+
+    // TextDocument capabilities
+    TextDocumentSyncClientCapabilities synchronization;
+    synchronization.dynamicRegistration = false;
+    TextDocumentClientCapabilities textDocument;
+    textDocument.synchronization = synchronization;
+    request.params.capabilities.textDocument = textDocument;
 
     QFileInfo fi(rootPath);
     if (fi.exists()) {
@@ -60,7 +74,6 @@ bool Client::initialize(const QString &rootPath)
         request.params.workspaceFolders = wsf;
     }
 
-    m_clientLogger->debug("==> Sending InitializeRequest");
     return initializeCallback(m_backend->sendRequest(request));
 }
 
@@ -69,7 +82,6 @@ bool Client::shutdown()
     Q_ASSERT(m_state == Initialized);
     ShutdownRequest request;
     request.id = m_nextRequestId++;
-    m_clientLogger->debug("==> Sending ShutdownRequest");
     return shutdownCallback(m_backend->sendRequest(request));
 }
 
@@ -97,6 +109,32 @@ void Client::closeProject(const QString &rootPath)
     m_backend->sendNotification(notification);
 }
 
+void Client::didOpen(DidOpenTextDocumentParams params)
+{
+    if (!sendOpenCloseChanges())
+        return;
+
+    DidOpenNotification notification;
+    notification.params = std::move(params);
+    m_backend->sendNotification(notification);
+}
+
+void Client::didClose(DidCloseTextDocumentParams params)
+{
+    if (!sendOpenCloseChanges())
+        return;
+
+    DidCloseNotification notification;
+    notification.params = std::move(params);
+    m_backend->sendNotification(notification);
+}
+
+std::string Client::toUri(const QString &path)
+{
+    QFileInfo fi(path);
+    return QUrl::fromLocalFile(fi.absoluteFilePath()).toString().toStdString();
+}
+
 void Client::setState(State newState)
 {
     if (m_state == newState)
@@ -108,7 +146,7 @@ void Client::setState(State newState)
 bool Client::initializeCallback(InitializeRequest::Response response)
 {
     if (!response.isValid() || response.error) {
-        m_clientLogger->debug("Error initializing the server");
+        m_clientLogger->error("Error initializing the server");
         setState(Error);
         return false;
     }
@@ -144,6 +182,22 @@ bool Client::sendWorkspaceFoldersChanges() const
                 auto notifications = workspaceFolders.value().changeNotifications.value_or(false);
                 return std::holds_alternative<std::string>(notifications) || std::get<bool>(notifications);
             }
+        }
+    }
+    return false;
+}
+
+bool Client::sendOpenCloseChanges() const
+{
+    Q_ASSERT(m_state == Initialized);
+    // TODO handle dynamic capabilities
+    if (auto textDocument = m_serverCapabilities.textDocumentSync) {
+        if (std::holds_alternative<TextDocumentSyncKind>(textDocument.value())) {
+            auto syncKind = std::get<TextDocumentSyncKind>(textDocument.value());
+            return syncKind != TextDocumentSyncKind::None;
+        } else {
+            auto syncOptions = std::get<TextDocumentSyncOptions>(textDocument.value());
+            return syncOptions.openClose.value_or(false);
         }
     }
     return false;

@@ -1,6 +1,7 @@
 #include "document.h"
 
 #include <QFile>
+#include <QUrl>
 
 #include <spdlog/spdlog.h>
 
@@ -99,6 +100,11 @@ int Document::revision() const
     return m_revision;
 }
 
+std::string Document::toUri() const
+{
+    return QUrl::fromLocalFile(m_fileName).toString().toStdString();
+}
+
 /*!
  * \qmlmethod bool Document::load(string fileName)
  * Load the document `fileName` **without changing the type**. If the current document has some changes, save them
@@ -113,10 +119,10 @@ bool Document::load(const QString &fileName)
     }
     if (m_fileName == fileName)
         return true;
-    if (m_hasChanged)
-        save();
+    close();
     bool loadDone = doLoad(fileName);
     m_fileName = fileName;
+    didOpen();
     emit fileNameChanged();
     return loadDone;
 }
@@ -150,14 +156,30 @@ bool Document::saveAs(const QString &fileName)
         spdlog::warn("Can't save document: fileName is empty");
         return false;
     }
-    if (m_fileName != fileName) {
+    bool isNewName = m_fileName != fileName;
+    if (isNewName) {
+        if (!m_fileName.isEmpty())
+            didClose();
         m_fileName = fileName;
         emit fileNameChanged();
     }
     bool saveDone = doSave(m_fileName);
-    if (saveDone)
+    if (saveDone) {
+        m_revision = 0;
         setHasChanged(false);
+        didOpen();
+    }
     return saveDone;
+}
+
+void Document::close()
+{
+    if (m_fileName.isEmpty())
+        return;
+    if (m_hasChanged)
+        save();
+    didClose();
+    m_fileName.clear();
 }
 
 void Document::setHasChanged(bool newHasChanged)

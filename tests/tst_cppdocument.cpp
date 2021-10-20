@@ -5,6 +5,9 @@
 #include "common/test_utils.h"
 
 #include <QTest>
+#include <QThread>
+
+#include <memory>
 
 class TestCppDocument : public QObject
 {
@@ -14,7 +17,7 @@ private slots:
     void initTestCase()
     {
         Q_INIT_RESOURCE(core);
-        core = new Core::KnutCore(this);
+        core.reset(new Core::KnutCore(this));
     }
 
     void correspondingHeaderSource_data()
@@ -47,7 +50,7 @@ private slots:
     }
 
 private:
-    Core::KnutCore *core;
+    std::unique_ptr<Core::KnutCore> core;
 };
 
 QTEST_MAIN(TestCppDocument)

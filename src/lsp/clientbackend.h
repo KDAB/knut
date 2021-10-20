@@ -45,6 +45,11 @@ public:
             emit responseEmitted({});
         };
 
+        std::visit(
+            [this, &request](const auto &id) {
+                m_serverLogger->debug("==> Sending Request {} with id {}", request.method, id);
+            },
+            request.id);
         auto j = sendJsonRequest(request);
         return deserializeResponse<typename Request::Response>(std::move(j));
     }
@@ -52,6 +57,7 @@ public:
     template <typename Notification>
     void sendNotification(const Notification &notification)
     {
+        m_serverLogger->debug("==> Sending Notification {}", notification.method);
         sendJsonNotification(notification);
     }
 
@@ -70,9 +76,15 @@ private:
     Response deserializeResponse(nlohmann::json &&j)
     {
         try {
-            return j.get<Response>();
+            auto response = j.get<Response>();
+            std::visit(
+                [this](const auto &id) {
+                    m_serverLogger->error("<== Receiving Response id {}", id);
+                },
+                response.id);
+            return response;
         } catch (...) {
-            m_serverLogger->error("==> Invalid response from server: {}", j.dump());
+            m_serverLogger->error("<== Invalid response from server: {}", j.dump());
         }
         return {};
     }

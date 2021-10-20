@@ -100,7 +100,7 @@ void ClientBackend::readOutput()
         // Check if there is an error
         if (message.contains("error")) {
             auto errorString = message.at("error").at("message").get<std::string>();
-            m_serverLogger->error("==> Error response: {}", errorString);
+            m_serverLogger->error("<== Error response: {}", errorString);
         }
 
         if (message.contains("id")) {
@@ -149,6 +149,7 @@ nlohmann::json ClientBackend::sendJsonRequest(nlohmann::json jsonRequest)
     });
     sendAsyncJsonRequest(std::move(jsonRequest));
     loop.exec(QEventLoop::ExcludeUserInputEvents);
+
     return m_response;
 }
 

@@ -24,22 +24,35 @@ public:
         Error,
     };
 
-    explicit Client(const std::string &language, QString program, QStringList arguments, QObject *parent = nullptr);
+    explicit Client(std::string languageId, QString program, QStringList arguments, QObject *parent = nullptr);
     ~Client();
+
+    std::string languageId() const;
 
     bool initialize(const QString &rootPath = {});
     bool shutdown();
 
     /**
-     * Open a new project, this will add a new workspace on the server
+     * Opens a new project, this will add a new workspace on the server
      */
     void openProject(const QString &rootPath);
     /**
-     * Close a project, the project will be removed from the server's workspaces
+     * Closes a project, the project will be removed from the server's workspaces
      */
     void closeProject(const QString &rootPath);
 
+    /**
+     * Sends the didOpen notification, when a document has been opened
+     */
+    void didOpen(DidOpenTextDocumentParams params);
+    /**
+     * Sends the didClose notification, when a document has been closed
+     */
+    void didClose(DidCloseTextDocumentParams params);
+
     State state() const { return m_state; }
+
+    static std::string toUri(const QString &path);
 
 signals:
     void stateChanged(Lsp::Client::State state);
@@ -50,9 +63,11 @@ private:
     bool shutdownCallback(ShutdownRequest::Response response);
 
     bool sendWorkspaceFoldersChanges() const;
+    bool sendOpenCloseChanges() const;
 
 private:
     mutable int m_nextRequestId = 1;
+    std::string m_languageId;
     std::shared_ptr<spdlog::logger> m_clientLogger;
     ClientBackend *m_backend = nullptr;
     State m_state = Uninitialized;

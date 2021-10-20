@@ -161,6 +161,9 @@ protected:
     bool doSave(const QString &fileName) override;
     bool doLoad(const QString &fileName) override;
 
+    void didOpen() override;
+    void didClose() override;
+
     void detectFormat(const QByteArray &data);
 
     void movePosition(QTextCursor::MoveOperation operation, QTextCursor::MoveMode mode = QTextCursor::MoveAnchor,

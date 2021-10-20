@@ -40,10 +40,13 @@ public:
 
     int revision() const;
 
+    std::string toUri() const;
+
 public slots:
     bool load(const QString &fileName);
     bool save();
     bool saveAs(const QString &fileName);
+    void close();
 
 signals:
     void fileNameChanged();
@@ -54,6 +57,10 @@ signals:
 protected:
     virtual bool doSave(const QString &fileName) = 0;
     virtual bool doLoad(const QString &fileName) = 0;
+
+    virtual void didOpen() {};
+    virtual void didClose() {};
+
     void setHasChanged(bool newHasChanged);
     void setErrorString(const QString &error);
 

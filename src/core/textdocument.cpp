@@ -134,6 +134,31 @@ bool TextDocument::doLoad(const QString &fileName)
     return true;
 }
 
+void TextDocument::didOpen()
+{
+    if (!m_lspClient)
+        return;
+
+    Lsp::DidOpenTextDocumentParams params;
+    params.textDocument.uri = toUri();
+    params.textDocument.version = revision();
+    params.textDocument.text = m_document->toPlainText().toStdString();
+    params.textDocument.languageId = m_lspClient->languageId();
+
+    m_lspClient->didOpen(params);
+}
+
+void TextDocument::didClose()
+{
+    if (!m_lspClient)
+        return;
+
+    Lsp::DidCloseTextDocumentParams params;
+    params.textDocument.uri = toUri();
+
+    m_lspClient->didClose(params);
+}
+
 // This function is copied from TextFileFormat::detect from Qt Creator.
 void TextDocument::detectFormat(const QByteArray &data)
 {
