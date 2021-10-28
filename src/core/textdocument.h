@@ -148,6 +148,7 @@ public slots:
 
     // Replace
     int replaceAll(const QString &searchText, const QString &replaceText, int options = NoFindFlags);
+    int replaceAllRegexp(const QString &regexp, const QString &replaceText, int options = NoFindFlags);
 
 signals:
     void positionChanged();

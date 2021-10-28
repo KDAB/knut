@@ -800,6 +800,13 @@ bool TextDocument::find(const QString &text, int options)
         return m_document->find(text, static_cast<QTextDocument::FindFlags>(options));
 }
 
+static QRegularExpression createRegularExpression(const QString &txt, int flags)
+{
+    return QRegularExpression((flags & TextDocument::FindRegexp) ? txt : QRegularExpression::escape(txt),
+                              (flags & TextDocument::PreserveCase) ? QRegularExpression::NoPatternOption
+                                                                   : QRegularExpression::CaseInsensitiveOption);
+}
+
 /*!
  * \qmlmethod bool TextDocument::findRegexp( string regexp, int options = NoFindFlags)
  * Searches the string `regexp` in the editor using a regular expression. Options could be a combination of:
@@ -812,10 +819,7 @@ bool TextDocument::find(const QString &text, int options)
  */
 bool TextDocument::findRegexp(const QString &regexp, int options)
 {
-    auto regularExpression = QRegularExpression(regexp);
-    if (options & FindCaseSensitively)
-        regularExpression.setPatternOptions(regularExpression.patternOptions()
-                                            | QRegularExpression::CaseInsensitiveOption);
+    auto regularExpression = createRegularExpression(regexp, options | TextDocument::FindRegexp);
     return m_document->find(regularExpression, static_cast<QTextDocument::FindFlags>(options));
 }
 
@@ -823,7 +827,6 @@ bool TextDocument::findRegexp(const QString &regexp, int options)
  * \qmlmethod bool TextDocument::replaceAll( string searchText, string replaceText, int options = NoFindFlags)
  * Replace all occurences of the string `searchText` with `replaceText`. Options could be a combination of:
  *
- * - `TextEditor.FindBackward`: search backward
  * - `TextEditor.FindCaseSensitively`: match case
  * - `TextEditor.FindWholeWords`: match only complete words
  * - `TextEditor.FindRegexp`: use a regexp, equivalent to calling `findRegexp`
@@ -847,18 +850,44 @@ int TextDocument::replaceAll(const QString &searchText, const QString &replaceTe
     cursor.movePosition(QTextCursor::Start);
     m_document->setTextCursor(cursor);
     cursor.beginEditBlock();
-    while (find(searchText, options)) {
-        auto cursor = m_document->textCursor();
+
+    const bool usesRegExp = options & FindRegexp;
+    const bool preserveCase = options & PreserveCase;
+
+    auto regexp = createRegularExpression(searchText, options);
+
+    while (m_document->find(regexp, static_cast<QTextDocument::FindFlags>(options))) {
+        auto found = m_document->textCursor();
+        cursor.setPosition(found.selectionStart());
+        cursor.setPosition(found.selectionEnd(), QTextCursor::KeepAnchor);
         QString afterText = replaceText;
-        if (options & PreserveCase)
+        if (usesRegExp) {
+            QRegularExpressionMatch match = regexp.match(found.selectedText());
+            afterText = expandRegExpReplacement(replaceText, match.capturedTexts());
+        } else if (preserveCase) {
             afterText = matchCaseReplacement(cursor.selectedText(), replaceText);
+        }
         cursor.insertText(afterText);
         ++count;
     }
+
     cursor.endEditBlock();
     if (count)
         setHasChanged(true);
     return count;
+}
+
+/*!
+ * \qmlmethod bool TextDocument::replaceAllRegexp( string searchText, string replaceText, int options = NoFindFlags)
+ * Replace all occurences of the matches for the `regexp` with `replaceText`. See the options from `replaceAll`.
+ *
+ * The captures coming from the regexp can be used in the replacement text, using `\1`..`\n` or `$1`..`$n`.
+ *
+ * Returns the number of changes done in the document.
+ */
+int TextDocument::replaceAllRegexp(const QString &regexp, const QString &replaceText, int options)
+{
+    return replaceAll(regexp, replaceText, options | FindRegexp);
 }
 
 void TextDocument::setLineEnding(LineEnding newLineEnding)

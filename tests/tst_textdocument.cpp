@@ -267,13 +267,13 @@ private slots:
                                   | Core::TextDocument::FindRegexp));
         QCOMPARE(document.line(), 16);
         QCOMPARE(document.selectedText(), "mauris");
-
         document.insert("REPLACE TEXT");
 
         document.replaceAll("Lorem", "Merol");
         document.replaceAll("m\\w*s", "siruam",
                             Core::TextDocument::FindCaseSensitively | Core::TextDocument::FindWholeWords
                                 | Core::TextDocument::FindRegexp);
+        document.replaceAll(", ([\\w ]*), ", "~~ \\1 ~~ ", Core::TextDocument::FindRegexp);
 
         document.save();
         QVERIFY(file.compare());

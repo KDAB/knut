@@ -2,22 +2,22 @@ Merol ipsum dolor sit amet, consectetur adipiscing elit.
 Quisque convallis ipsum ac odio aliquet tincidunt.
 
 Mauris ut magna vitae siruam fringilla condimentum.
-Proin non mi placerat, ultricies diam sit amet, ultricies nisi.
+Proin non mi placerat~~ ultricies diam sit amet ~~ ultricies nisi.
 
 Merol ipsum dolor sit amet, consectetur adipiscing elit.
 Quisque convallis ipsum ac odio aliquet tincidunt.
 
 Mauris ut magna vitae siruam fringilla condimentum.
-Proin non mi placerat, ultricies diam sit amet, ultricies nisi.
+Proin non mi placerat~~ ultricies diam sit amet ~~ ultricies nisi.
 
 Merol ipsum dolor sit amet, consectetur adipiscing elit.
 Quisque convallis ipsum ac odio aliquet tincidunt.
 
 Mauris ut magna vitae REPLACE TEXT fringilla condimentum.
-Proin non mi placerat, ultricies diam sit amet, ultricies nisi.
+Proin non mi placerat~~ ultricies diam sit amet ~~ ultricies nisi.
 
 Merol ipsum dolor sit amet, consectetur adipiscing elit.
 Quisque convallis ipsum ac odio aliquet tincidunt.
 
 Mauris ut magna vitae siruam fringilla condimentum.
-Proin non mi placerat, ultricies diam sit amet, ultricies nisi.
+Proin non mi placerat~~ ultricies diam sit amet ~~ ultricies nisi.
