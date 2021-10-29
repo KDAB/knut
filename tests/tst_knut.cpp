@@ -31,10 +31,7 @@ class TestKnut : public QObject
     Q_OBJECT
 
 private slots:
-    void initTestCase()
-    {
-        Q_INIT_RESOURCE(core);
-    }
+    void initTestCase() { Q_INIT_RESOURCE(core); }
 
     KNUT_TEST(settings)
     KNUT_TEST(dir)

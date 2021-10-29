@@ -68,3 +68,8 @@ ForEachMacros:   [ foreach, Q_FOREACH, BOOST_FOREACH, forever, Q_FOREVER, QBENCH
 Language: JavaScript
 # Don't format .js files.
 DisableFormat: true
+
+---
+Language: Json
+# Don't format .json files
+DisableFormat: true
