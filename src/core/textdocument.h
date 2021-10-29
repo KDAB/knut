@@ -147,8 +147,8 @@ public slots:
     bool findRegexp(const QString &regexp, int options = NoFindFlags);
 
     // Replace
-    int replaceAll(const QString &searchText, const QString &replaceText, int options = NoFindFlags);
-    int replaceAllRegexp(const QString &regexp, const QString &replaceText, int options = NoFindFlags);
+    int replaceAll(const QString &before, const QString &after, int options = NoFindFlags);
+    int replaceAllRegexp(const QString &regexp, const QString &after, int options = NoFindFlags);
 
 signals:
     void positionChanged();

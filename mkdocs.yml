@@ -28,6 +28,7 @@ nav:
     - Contributing: contributing.md
     - API:
         - Script Module:
+             - CppDocument: API/script/cppdocument.md
              - Dir: API/script/dir.md
              - Document: API/script/document.md
              - File: API/script/file.md

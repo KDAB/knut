@@ -61,7 +61,8 @@ Inherited properties: [Document properties](../script/document.md#properties)
 |bool |**[hasSelection](#hasSelection)**()|
 ||**[paste](#paste)**()|
 ||**[redo](#redo)**()|
-|bool |**[replaceAll](#replaceAll)**(string searchText, string replaceText, int options = NoFindFlags)|
+|bool |**[replaceAll](#replaceAll)**(string before, string after, int options = NoFindFlags)|
+|bool |**[replaceAllRegexp](#replaceAllRegexp)**(string regexp, string after, int options = NoFindFlags)|
 ||**[selectAll](#selectAll)**()|
 ||**[selectLineEnd](#selectLineEnd)**()|
 ||**[selectLineStart](#selectLineStart)**(int count = 1)|
@@ -262,11 +263,10 @@ Pastes text in the clipboard.
 
 Redo the last action.
 
-#### <a name="replaceAll"></a>bool **replaceAll**(string searchText, string replaceText, int options = NoFindFlags)
+#### <a name="replaceAll"></a>bool **replaceAll**(string before, string after, int options = NoFindFlags)
 
-Replace all occurences of the string `searchText` with `replaceText`. Options could be a combination of:
+Replace all occurences of the string `before` with `after`. Options could be a combination of:
 
-- `TextEditor.FindBackward`: search backward
 - `TextEditor.FindCaseSensitively`: match case
 - `TextEditor.FindWholeWords`: match only complete words
 - `TextEditor.FindRegexp`: use a regexp, equivalent to calling `findRegexp`
@@ -280,6 +280,14 @@ If the option `TextEditor.PreserveCase` is used, it means:
 - Other occurrences are replaced with the new text as entered. If an occurrence and the new text have the same prefix
 or suffix, then the case of the prefix and/or suffix are preserved, and the other rules are applied on the rest of
 the occurrence only.
+
+Returns the number of changes done in the document.
+
+#### <a name="replaceAllRegexp"></a>bool **replaceAllRegexp**(string regexp, string after, int options = NoFindFlags)
+
+Replace all occurences of the matches for the `regexp` with `after`. See the options from `replaceAll`.
+
+The captures coming from the regexp can be used in the replacement text, using `\1`..`\n` or `$1`..`$n`.
 
 Returns the number of changes done in the document.
 

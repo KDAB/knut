@@ -77,7 +77,7 @@ static int commonFilePathLength(const QString &s1, const QString &s2)
 }
 
 /*!
- * \qmlmethod string correspondingHeaderSource()
+ * \qmlmethod string CppDocument::correspondingHeaderSource()
  * Returns the corresponding source or header file path.
  */
 QString CppDocument::correspondingHeaderSource() const
@@ -141,7 +141,7 @@ QString CppDocument::correspondingHeaderSource() const
 }
 
 /*!
- * \qmlmethod CppDocument openHeaderSource()
+ * \qmlmethod CppDocument CppDocument::openHeaderSource()
  * Opens the corresponding source or header files, the current document is the new file.
  * If no files have been found, it's a no-op.
  */
