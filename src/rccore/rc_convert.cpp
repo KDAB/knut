@@ -358,10 +358,15 @@ static Widget convertLabel(const Data &data, Data::Control &control, bool useIdF
 
     if (control.styles.removeOne(SSBITMAP) || control.styles.removeOne(SSICON)
         || control.type == static_cast<int>(Keywords::ICON)) {
-        if (useIdForPixmap)
+        if (useIdForPixmap) {
             widget.properties[Pixmap] = QStringLiteral(":/%1").arg(control.text);
-        else
-            widget.properties[Pixmap] = data.asset(control.text)->fileName;
+        } else {
+            auto asset = data.asset(control.text);
+            if (asset)
+                widget.properties[Pixmap] = asset->fileName;
+            else
+                widget.properties[Pixmap] = QStringLiteral(":/%1").arg(control.text);
+        }
     } else {
         widget.properties[Text] = control.text;
     }
