@@ -249,6 +249,8 @@ std::optional<Token> Lexer::readNext()
         return readNumber();
     if (ch.isLetter())
         return readWord();
+    if (ch == '<')
+        return readInclude();
 
     logger()->error("{}({}): general lexer error reading next token",
                     QDir::toNativeSeparators(m_fileName).toStdString(), m_stream.line());
@@ -291,6 +293,20 @@ Token Lexer::readString()
         } else {
             str += ch;
         }
+    }
+    return {Token::String, str};
+}
+
+Token Lexer::readInclude()
+{
+    QString str;
+    m_stream.next(); // Read the first '"'
+    while (!m_stream.atEnd()) {
+        const QChar &ch = m_stream.next();
+        if (ch == '>')
+            break;
+        else
+            str += ch;
     }
     return {Token::String, str};
 }

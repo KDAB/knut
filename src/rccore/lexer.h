@@ -166,6 +166,7 @@ private:
 
     Token readDirective();
     Token readString();
+    Token readInclude();
     Token readNumber();
     Token readWord();
 
