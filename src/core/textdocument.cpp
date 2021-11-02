@@ -130,7 +130,7 @@ bool TextDocument::doLoad(const QString &fileName)
     const QString text = stream.readAll();
 
     // This will replace '\r\n' with '\n'
-    setText(text);
+    m_document->setPlainText(text);
     return true;
 }
 
