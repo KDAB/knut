@@ -67,3 +67,6 @@ add_subdirectory(src)
 add_subdirectory(tools)
 add_subdirectory(tests)
 add_subdirectory(test_data)
+
+set(DOCS_FILES mkdocs.yml)
+add_custom_target(docs SOURCES ${DOCS_FILES})
