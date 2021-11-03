@@ -3,7 +3,7 @@
 Description of a RC file widget. [More...](#detailed-description)
 
 ```qml
-import Script.Mfc 1.0
+import Script 1.0
 ```
 
 <table>
@@ -14,7 +14,7 @@ import Script.Mfc 1.0
 
 | | Name |
 |-|-|
-|array<[Widget](../script.mfc/widget.md)>|**[children](#children)**|
+|array<[Widget](../script/widget.md)>|**[children](#children)**|
 |string|**[className](#className)**|
 |rect|**[geometry](#geometry)**|
 |string|**[id](#id)**|
@@ -22,7 +22,7 @@ import Script.Mfc 1.0
 
 ## Property Documentation
 
-#### <a name="children"></a>array<[Widget](../script.mfc/widget.md)> **children**
+#### <a name="children"></a>array<[Widget](../script/widget.md)> **children**
 
 This property holds the list of children of the current widget.
 

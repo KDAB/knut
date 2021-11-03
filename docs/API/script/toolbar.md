@@ -3,7 +3,7 @@
 Description of a RC file toolbar. [More...](#detailed-description)
 
 ```qml
-import Script.Mfc 1.0
+import Script 1.0
 ```
 
 <table>
@@ -14,13 +14,13 @@ import Script.Mfc 1.0
 
 | | Name |
 |-|-|
-|array<[ToolBarItem](../script.mfc/toolbaritem.md)>|**[children](#children)**|
+|array<[ToolBarItem](../script/toolbaritem.md)>|**[children](#children)**|
 |size|**[iconSize](#iconSize)**|
 |string|**[id](#id)**|
 
 ## Property Documentation
 
-#### <a name="children"></a>array<[ToolBarItem](../script.mfc/toolbaritem.md)> **children**
+#### <a name="children"></a>array<[ToolBarItem](../script/toolbaritem.md)> **children**
 
 This property holds the list of toolbar items inside in the toolbar.
 

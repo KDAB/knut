@@ -3,7 +3,7 @@
 Provides access to the content of a RC file (MFC resource file). [More...](#detailed-description)
 
 ```qml
-import Script.Mfc 1.0
+import Script 1.0
 ```
 
 <table>
@@ -15,14 +15,14 @@ import Script.Mfc 1.0
 | | Name |
 |-|-|
 |array<string>|**[acceleratorIds](#acceleratorIds)**|
-|array<[Asset](../script.mfc/asset.md)>|**[assets](#assets)**|
+|array<[Asset](../script/asset.md)>|**[assets](#assets)**|
 |array<string>|**[dialogIds](#dialogIds)**|
 |array<string>|**[menuIds](#menuIds)**|
-|array<[Menu](../script.mfc/menu.md)>|**[menus](#menus)**|
+|array<[Menu](../script/menu.md)>|**[menus](#menus)**|
 |array<string>|**[stringIds](#stringIds)**|
-|array<[String](../script.mfc/string.md)>|**[strings](#strings)**|
+|array<[String](../script/string.md)>|**[strings](#strings)**|
 |array<string>|**[toolbarIds](#toolbarIds)**|
-|array<[ToolBar](../script.mfc/toolbar.md)>|**[toolbars](#toolbars)**|
+|array<[ToolBar](../script/toolbar.md)>|**[toolbars](#toolbars)**|
 |bool|**[valid](#valid)**|
 
 ## Methods
@@ -30,14 +30,14 @@ import Script.Mfc 1.0
 | | Name |
 |-|-|
 ||**[convertAssets](#convertAssets)**(int flags)|
-|[Widget](../script.mfc/widget.md) |**[dialog](#dialog)**(string id, int flags, real scaleX, real scaleY)|
-|[Menu](../script.mfc/menu.md) |**[menu](#menu)**(string id)|
-|bool |**[previewDialog](#previewDialog)**([Widget](../script.mfc/widget.md) dialog)|
+|[Widget](../script/widget.md) |**[dialog](#dialog)**(string id, int flags, real scaleX, real scaleY)|
+|[Menu](../script/menu.md) |**[menu](#menu)**(string id)|
+|bool |**[previewDialog](#previewDialog)**([Widget](../script/widget.md) dialog)|
 |string |**[text](#text)**(string id)|
-|[ToolBar](../script.mfc/toolbar.md) |**[toolBar](#toolBar)**(string id)|
+|[ToolBar](../script/toolbar.md) |**[toolBar](#toolBar)**(string id)|
 |bool |**[writeAssetsToImage](#writeAssetsToImage)**(int flags)|
 |bool |**[writeAssetsToQrc](#writeAssetsToQrc)**(string fileName)|
-|bool |**[writeDialogToUi](#writeDialogToUi)**([Widget](../script.mfc/widget.md) dialog, string fileName)|
+|bool |**[writeDialogToUi](#writeDialogToUi)**([Widget](../script/widget.md) dialog, string fileName)|
 
 ## Property Documentation
 
@@ -45,7 +45,7 @@ import Script.Mfc 1.0
 
 This read-only property holds the list of accelerator's ids in the RC file.
 
-#### <a name="assets"></a>array<[Asset](../script.mfc/asset.md)> **assets**
+#### <a name="assets"></a>array<[Asset](../script/asset.md)> **assets**
 
 This read-only property holds the list of assets in the RC file.
 
@@ -57,7 +57,7 @@ This read-only property holds the list of dialog's ids in the RC file.
 
 This read-only property holds the list of menu's ids in the RC file.
 
-#### <a name="menus"></a>array<[Menu](../script.mfc/menu.md)> **menus**
+#### <a name="menus"></a>array<[Menu](../script/menu.md)> **menus**
 
 This read-only property holds the list of menus in the RC file.
 
@@ -65,7 +65,7 @@ This read-only property holds the list of menus in the RC file.
 
 This read-only property holds the list of string's ids in the RC file.
 
-#### <a name="strings"></a>array<[String](../script.mfc/string.md)> **strings**
+#### <a name="strings"></a>array<[String](../script/string.md)> **strings**
 
 This read-only property holds the list of strings in the RC file.
 
@@ -73,7 +73,7 @@ This read-only property holds the list of strings in the RC file.
 
 This read-only property holds the list of toolbar's ids in the RC file.
 
-#### <a name="toolbars"></a>array<[ToolBar](../script.mfc/toolbar.md)> **toolbars**
+#### <a name="toolbars"></a>array<[ToolBar](../script/toolbar.md)> **toolbars**
 
 This read-only property holds the list of toolbars in the RC file.
 
@@ -94,7 +94,7 @@ Convert all assets using the `flags`.
 - `RcDocument.ConvertToPng`: convert BMPs to PNGs, needed if we want to also change the transparency
 - `RcDocument.AllFlags`: combination of all above
 
-#### <a name="dialog"></a>[Widget](../script.mfc/widget.md) **dialog**(string id, int flags, real scaleX, real scaleY)
+#### <a name="dialog"></a>[Widget](../script/widget.md) **dialog**(string id, int flags, real scaleX, real scaleY)
 
 Returns the dialog for the given `id`.
 
@@ -108,11 +108,11 @@ Flags could be:
 - `RcDocument.UseIdForPixmap`: use the id as a resource value for the pixmaps in labels
 - `RcDocument.AllFlags`: combination of all above
 
-#### <a name="menu"></a>[Menu](../script.mfc/menu.md) **menu**(string id)
+#### <a name="menu"></a>[Menu](../script/menu.md) **menu**(string id)
 
 Returns the menu for the given `id`.
 
-#### <a name="previewDialog"></a>bool **previewDialog**([Widget](../script.mfc/widget.md) dialog)
+#### <a name="previewDialog"></a>bool **previewDialog**([Widget](../script/widget.md) dialog)
 
 Preview the result of the conversion RC->UI
 
@@ -120,7 +120,7 @@ Preview the result of the conversion RC->UI
 
 Return the string for the given `id`.
 
-#### <a name="toolBar"></a>[ToolBar](../script.mfc/toolbar.md) **toolBar**(string id)
+#### <a name="toolBar"></a>[ToolBar](../script/toolbar.md) **toolBar**(string id)
 
 Returns the toolbar for the given `id`.
 
@@ -144,6 +144,6 @@ Writes a qrc file with the given `fileName`. Returns `true` if no issues.
 
 Before writing the qrc file, you first need to convert them using RcDocument::convertAssets.
 
-#### <a name="writeDialogToUi"></a>bool **writeDialogToUi**([Widget](../script.mfc/widget.md) dialog, string fileName)
+#### <a name="writeDialogToUi"></a>bool **writeDialogToUi**([Widget](../script/widget.md) dialog, string fileName)
 
 Writes a ui file for the given `dialog`, to the given `fileName`. Return `true` if no issues.

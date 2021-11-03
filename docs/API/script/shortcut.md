@@ -3,7 +3,7 @@
 Description of a RC file shortcut. [More...](#detailed-description)
 
 ```qml
-import Script.Mfc 1.0
+import Script 1.0
 ```
 
 <table>
