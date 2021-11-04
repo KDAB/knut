@@ -9,6 +9,8 @@
 #include <QFileInfo>
 #include <QTemporaryFile>
 
+#include <spdlog/spdlog.h>
+
 namespace Core {
 
 /*!
@@ -36,6 +38,8 @@ Utils::~Utils() { }
  */
 QString Utils::getEnv(const QString &varName)
 {
+    spdlog::trace("Utils::getEnv {}", varName.toStdString());
+
     return QString::fromUtf8(qgetenv(varName.toLatin1()));
 }
 
@@ -49,6 +53,8 @@ QString Utils::getEnv(const QString &varName)
  */
 QString Utils::getGlobal(const QString &varName)
 {
+    spdlog::trace("Utils::getGlobal {}", varName.toStdString());
+
     return m_globals.value(varName);
 }
 
@@ -62,6 +68,8 @@ QString Utils::getGlobal(const QString &varName)
  */
 void Utils::setGlobal(const QString &varName, const QString &value)
 {
+    spdlog::trace("Utils::setGlobal {} in {}", value.toStdString(), varName.toStdString());
+
     m_globals.insert(varName, value);
 }
 
@@ -82,6 +90,8 @@ void Utils::setGlobal(const QString &varName, const QString &value)
  */
 void Utils::addScriptPath(const QString &path)
 {
+    spdlog::trace("Utils::addScriptPath {}", path.toStdString());
+
     ScriptManager::instance()->addDirectory(path);
 }
 
@@ -91,6 +101,8 @@ void Utils::addScriptPath(const QString &path)
  */
 void Utils::runScript(const QString &path, bool log)
 {
+    spdlog::trace("Utils::runScript {}", path.toStdString());
+
     // Run the script synchronously
     ScriptManager::instance()->runScript(path, false, log);
 }
@@ -101,6 +113,8 @@ void Utils::runScript(const QString &path, bool log)
  */
 void Utils::sleep(int msecs)
 {
+    spdlog::trace("Utils::sleep {}", msecs);
+
     QElapsedTimer timer;
     timer.start();
     while (timer.elapsed() < msecs) {
@@ -115,6 +129,8 @@ void Utils::sleep(int msecs)
  */
 QString Utils::mktemp(const QString &pattern)
 {
+    spdlog::trace("Utils::mktemp with pattern {}", pattern.toStdString());
+
     QString tmp = pattern;
     if (tmp.isEmpty())
         tmp = "script_temp.XXXXXX";
@@ -131,6 +147,8 @@ QString Utils::mktemp(const QString &pattern)
     if (!file.open())
         return {};
     file.close();
+
+    spdlog::debug("Utils::mktemp {}", tmp.toStdString());
     return file.fileName();
 }
 
@@ -149,6 +167,7 @@ QString Utils::mktemp(const QString &pattern)
  */
 QString Utils::convertCase(const QString &str, Case from, Case to)
 {
+    spdlog::trace("Utils::convertCase {}", str.toStdString());
     return Core::convertCase(str, static_cast<::Core::Case>(from), static_cast<::Core::Case>(to));
 }
 
@@ -158,6 +177,7 @@ QString Utils::convertCase(const QString &str, Case from, Case to)
  */
 void Utils::copyToClipboard(const QString &text)
 {
+    spdlog::trace("Utils::copyToClipboard {}", text.toStdString());
     auto clipboard = QApplication::clipboard();
     clipboard->setText(text);
 }

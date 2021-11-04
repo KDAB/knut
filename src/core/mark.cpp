@@ -87,7 +87,7 @@ void Mark::restore()
 bool Mark::checkEditor() const
 {
     if (!m_editor) {
-        spdlog::error("Can't use this mark as the document does not exist anymore.");
+        spdlog::error("Mark::checkEditor - document does not exist anymore");
         return false;
     }
     return true;

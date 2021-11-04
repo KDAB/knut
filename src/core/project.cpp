@@ -82,9 +82,9 @@ bool Project::setRoot(const QString &newRoot)
         return true;
 
     if (m_root.isEmpty()) {
-        spdlog::info("Opening project {}", dir.absolutePath().toStdString());
+        spdlog::info("Project::setRoot {}", dir.absolutePath().toStdString());
     } else {
-        spdlog::warn("Knut can't open a new project after loading one.");
+        spdlog::error("Project::setRoot - can't open a new project");
         return false;
     }
 
@@ -109,6 +109,8 @@ QStringList Project::allFiles(PathType type) const
 {
     if (m_root.isEmpty())
         return {};
+
+    spdlog::trace("Project::allFiles");
 
     QDir dir(m_root);
     QDirIterator it(m_root, QDirIterator::Subdirectories);
@@ -136,6 +138,8 @@ QStringList Project::allFilesWithExtension(const QString &extension, PathType ty
     if (m_root.isEmpty())
         return {};
 
+    spdlog::trace("Project::allFilesWithExtension {}", extension.toStdString());
+
     QDir dir(m_root);
     QDirIterator it(m_root, QDirIterator::Subdirectories);
     QStringList result;
@@ -161,6 +165,8 @@ QStringList Project::allFilesWithExtensions(const QStringList &extensions, PathT
 {
     if (m_root.isEmpty())
         return {};
+
+    spdlog::trace("Project::allFilesWithExtensions {}", extensions.join('|').toStdString());
 
     QDir dir(m_root);
     QDirIterator it(m_root, QDirIterator::Subdirectories);
@@ -233,6 +239,8 @@ const QVector<Document *> &Project::documents() const
  */
 Document *Project::open(QString fileName)
 {
+    spdlog::trace("Project::open {}", fileName.toStdString());
+
     QFileInfo fi(fileName);
     if (!fi.exists() && fi.isRelative())
         fileName = m_root + '/' + fileName;
@@ -260,7 +268,7 @@ Document *Project::open(QString fileName)
             m_documents.push_back(doc);
             Q_EMIT documentsChanged();
         } else {
-            spdlog::error("Document type is unmanaged in Knut: {}", fi.suffix().toStdString());
+            spdlog::error("Project::open {} - unknow document type", fi.suffix().toStdString());
             return nullptr;
         }
     }
@@ -282,6 +290,8 @@ Core::Document *Project::currentDocument() const
  */
 void Project::saveAllDocuments()
 {
+    spdlog::trace("Project::saveAllDocuments");
+
     for (auto d : std::as_const(m_documents)) {
         if (d->hasChanged()) {
             d->save();

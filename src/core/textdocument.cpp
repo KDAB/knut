@@ -204,6 +204,8 @@ int TextDocument::position() const
 
 void TextDocument::setPosition(int newPosition)
 {
+    spdlog::trace("TextDocument::setPosition {}", newPosition);
+
     if (position() == newPosition)
         return;
     auto cursor = m_document->textCursor();
@@ -233,6 +235,8 @@ QString TextDocument::text() const
 
 void TextDocument::setText(const QString &newText)
 {
+    spdlog::trace("TextDocument::setText");
+
     m_document->setPlainText(newText);
     setHasChanged(true);
 }
@@ -285,6 +289,7 @@ void TextDocument::setLspClient(Lsp::Client *client)
  */
 void TextDocument::undo()
 {
+    spdlog::trace("TextDocument::undo");
     m_document->undo();
 }
 
@@ -294,6 +299,7 @@ void TextDocument::undo()
  */
 void TextDocument::redo()
 {
+    spdlog::trace("TextDocument::redo");
     m_document->redo();
 }
 
@@ -318,6 +324,8 @@ Lsp::Client *TextDocument::client() const
  */
 void TextDocument::gotoLine(int line, int column)
 {
+    spdlog::trace("TextDocument::gotoLine {} col:{}", line, column);
+
     // Internally, columns are 0-based, while 1-based on the API
     column = column - 1;
     const int blockNumber = qMin(line, m_document->document()->blockCount()) - 1;
@@ -337,6 +345,7 @@ void TextDocument::gotoLine(int line, int column)
  */
 void TextDocument::gotoLineStart()
 {
+    spdlog::trace("TextDocument::gotoLineStart");
     movePosition(QTextCursor::StartOfLine);
 }
 
@@ -346,6 +355,7 @@ void TextDocument::gotoLineStart()
  */
 void TextDocument::gotoLineEnd()
 {
+    spdlog::trace("TextDocument::gotoLineEnd");
     movePosition(QTextCursor::EndOfLine);
 }
 
@@ -355,6 +365,7 @@ void TextDocument::gotoLineEnd()
  */
 void TextDocument::gotoWordStart()
 {
+    spdlog::trace("TextDocument::gotoWordStart");
     movePosition(QTextCursor::StartOfWord);
 }
 
@@ -364,6 +375,7 @@ void TextDocument::gotoWordStart()
  */
 void TextDocument::gotoWordEnd()
 {
+    spdlog::trace("TextDocument::gotoWordEnd");
     movePosition(QTextCursor::EndOfWord);
 }
 
@@ -373,6 +385,7 @@ void TextDocument::gotoWordEnd()
  */
 void TextDocument::gotoNextLine(int count)
 {
+    spdlog::trace("TextDocument::gotoNextLine");
     movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, count);
 }
 
@@ -382,6 +395,7 @@ void TextDocument::gotoNextLine(int count)
  */
 void TextDocument::gotoPreviousLine(int count)
 {
+    spdlog::trace("TextDocument::gotoPreviousLine");
     movePosition(QTextCursor::Up, QTextCursor::MoveAnchor, count);
 }
 
@@ -391,6 +405,7 @@ void TextDocument::gotoPreviousLine(int count)
  */
 void TextDocument::gotoPreviousCharacter(int count)
 {
+    spdlog::trace("TextDocument::gotoPreviousCharacter");
     movePosition(QTextCursor::PreviousCharacter, QTextCursor::MoveAnchor, count);
 }
 
@@ -400,6 +415,7 @@ void TextDocument::gotoPreviousCharacter(int count)
  */
 void TextDocument::gotoNextCharacter(int count)
 {
+    spdlog::trace("TextDocument::gotoNextCharacter");
     movePosition(QTextCursor::NextCharacter, QTextCursor::MoveAnchor, count);
 }
 
@@ -409,6 +425,7 @@ void TextDocument::gotoNextCharacter(int count)
  */
 void TextDocument::gotoPreviousWord(int count)
 {
+    spdlog::trace("TextDocument::gotoPreviousWord");
     movePosition(QTextCursor::PreviousWord, QTextCursor::MoveAnchor, count);
 }
 
@@ -418,6 +435,7 @@ void TextDocument::gotoPreviousWord(int count)
  */
 void TextDocument::gotoNextWord(int count)
 {
+    spdlog::trace("TextDocument::gotoNextWord");
     movePosition(QTextCursor::NextWord, QTextCursor::MoveAnchor, count);
 }
 
@@ -427,6 +445,7 @@ void TextDocument::gotoNextWord(int count)
  */
 void TextDocument::gotoDocumentStart()
 {
+    spdlog::trace("TextDocument::gotoDocumentStart");
     movePosition(QTextCursor::Start);
 }
 
@@ -436,6 +455,7 @@ void TextDocument::gotoDocumentStart()
  */
 void TextDocument::gotoDocumentEnd()
 {
+    spdlog::trace("TextDocument::gotoDocumentEnd");
     movePosition(QTextCursor::End);
 }
 
@@ -445,6 +465,7 @@ void TextDocument::gotoDocumentEnd()
  */
 void TextDocument::unselect()
 {
+    spdlog::trace("TextDocument::unselect");
     QTextCursor cursor = m_document->textCursor();
     cursor.clearSelection();
     m_document->setTextCursor(cursor);
@@ -456,6 +477,7 @@ void TextDocument::unselect()
  */
 bool TextDocument::hasSelection()
 {
+    spdlog::trace("TextDocument::hasSelection");
     return m_document->textCursor().hasSelection();
 }
 
@@ -465,6 +487,7 @@ bool TextDocument::hasSelection()
  */
 void TextDocument::selectAll()
 {
+    spdlog::trace("TextDocument::selectAll");
     m_document->selectAll();
 }
 
@@ -474,6 +497,7 @@ void TextDocument::selectAll()
  */
 void TextDocument::selectTo(int pos)
 {
+    spdlog::trace("TextDocument::selectTo {}", pos);
     QTextCursor cursor = m_document->textCursor();
     cursor.setPosition(pos, QTextCursor::KeepAnchor);
     m_document->setTextCursor(cursor);
@@ -485,6 +509,7 @@ void TextDocument::selectTo(int pos)
  */
 void TextDocument::selectLineStart()
 {
+    spdlog::trace("TextDocument::selectLineStart");
     movePosition(QTextCursor::StartOfLine, QTextCursor::KeepAnchor);
 }
 
@@ -494,6 +519,7 @@ void TextDocument::selectLineStart()
  */
 void TextDocument::selectLineEnd()
 {
+    spdlog::trace("TextDocument::selectLineEnd");
     movePosition(QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
 }
 
@@ -503,6 +529,7 @@ void TextDocument::selectLineEnd()
  */
 void TextDocument::selectWordStart()
 {
+    spdlog::trace("TextDocument::selectWordStart");
     movePosition(QTextCursor::StartOfWord, QTextCursor::KeepAnchor);
 }
 
@@ -512,6 +539,7 @@ void TextDocument::selectWordStart()
  */
 void TextDocument::selectWordEnd()
 {
+    spdlog::trace("TextDocument::selectWordEnd");
     movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
 }
 
@@ -521,6 +549,7 @@ void TextDocument::selectWordEnd()
  */
 void TextDocument::selectNextLine(int count)
 {
+    spdlog::trace("TextDocument::selectNextLine {}", count);
     movePosition(QTextCursor::Down, QTextCursor::KeepAnchor, count);
 }
 
@@ -530,6 +559,7 @@ void TextDocument::selectNextLine(int count)
  */
 void TextDocument::selectPreviousLine(int count)
 {
+    spdlog::trace("TextDocument::selectPreviousLine {}", count);
     movePosition(QTextCursor::Up, QTextCursor::KeepAnchor, count);
 }
 
@@ -539,6 +569,7 @@ void TextDocument::selectPreviousLine(int count)
  */
 void TextDocument::selectPreviousCharacter(int count)
 {
+    spdlog::trace("TextDocument::selectPreviousCharacter {}", count);
     movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor, count);
 }
 
@@ -548,6 +579,7 @@ void TextDocument::selectPreviousCharacter(int count)
  */
 void TextDocument::selectNextCharacter(int count)
 {
+    spdlog::trace("TextDocument::selectNextCharacter {}", count);
     movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, count);
 }
 
@@ -557,6 +589,7 @@ void TextDocument::selectNextCharacter(int count)
  */
 void TextDocument::selectPreviousWord(int count)
 {
+    spdlog::trace("TextDocument::selectPreviousWord {}", count);
     movePosition(QTextCursor::PreviousWord, QTextCursor::KeepAnchor, count);
 }
 
@@ -566,6 +599,7 @@ void TextDocument::selectPreviousWord(int count)
  */
 void TextDocument::selectNextWord(int count)
 {
+    spdlog::trace("TextDocument::selectNextWord {}", count);
     movePosition(QTextCursor::NextWord, QTextCursor::KeepAnchor, count);
 }
 
@@ -575,6 +609,7 @@ void TextDocument::selectNextWord(int count)
  */
 void TextDocument::copy()
 {
+    spdlog::trace("TextDocument::copy");
     m_document->copy();
 }
 
@@ -584,6 +619,7 @@ void TextDocument::copy()
  */
 void TextDocument::paste()
 {
+    spdlog::trace("TextDocument::paste");
     m_document->paste();
     setHasChanged(true);
 }
@@ -594,6 +630,7 @@ void TextDocument::paste()
  */
 void TextDocument::cut()
 {
+    spdlog::trace("TextDocument::cut");
     m_document->cut();
     setHasChanged(true);
 }
@@ -604,6 +641,7 @@ void TextDocument::cut()
  */
 void TextDocument::remove(int length)
 {
+    spdlog::trace("TextDocument::remove {}", length);
     QTextCursor cursor = m_document->textCursor();
     cursor.setPosition(cursor.position() + length, QTextCursor::KeepAnchor);
     cursor.removeSelectedText();
@@ -617,6 +655,7 @@ void TextDocument::remove(int length)
  */
 void TextDocument::insert(const QString &text)
 {
+    spdlog::trace("TextDocument::insert {}", text.toStdString());
     m_document->insertPlainText(text);
     setHasChanged(true);
 }
@@ -627,6 +666,7 @@ void TextDocument::insert(const QString &text)
  */
 void TextDocument::replace(int length, const QString &text)
 {
+    spdlog::trace("TextDocument::replace {} chars by {}", length, text.toStdString());
     QTextCursor cursor = m_document->textCursor();
     cursor.setPosition(cursor.position() + length, QTextCursor::KeepAnchor);
     cursor.insertText(text);
@@ -640,6 +680,7 @@ void TextDocument::replace(int length, const QString &text)
  */
 void TextDocument::deleteSelection()
 {
+    spdlog::trace("TextDocument::deleteSelection");
     m_document->textCursor().removeSelectedText();
     setHasChanged(true);
 }
@@ -650,6 +691,7 @@ void TextDocument::deleteSelection()
  */
 void TextDocument::deleteRegion(int from, int to)
 {
+    spdlog::trace("TextDocument::deleteRegion from {} to {}", from, to);
     QTextCursor cursor(m_document->document());
     cursor.setPosition(from);
     cursor.setPosition(to, QTextCursor::KeepAnchor);
@@ -664,6 +706,7 @@ void TextDocument::deleteRegion(int from, int to)
  */
 void TextDocument::deleteEndOfLine()
 {
+    spdlog::trace("TextDocument::deleteEndOfLine");
     QTextCursor cursor = m_document->textCursor();
     cursor.movePosition(QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
     cursor.removeSelectedText();
@@ -677,6 +720,7 @@ void TextDocument::deleteEndOfLine()
  */
 void TextDocument::deleteStartOfLine()
 {
+    spdlog::trace("TextDocument::deleteStartOfLine");
     QTextCursor cursor = m_document->textCursor();
     cursor.movePosition(QTextCursor::StartOfLine, QTextCursor::KeepAnchor);
     cursor.removeSelectedText();
@@ -690,6 +734,7 @@ void TextDocument::deleteStartOfLine()
  */
 void TextDocument::deleteEndOfWord()
 {
+    spdlog::trace("TextDocument::deleteEndOfWord");
     QTextCursor cursor = m_document->textCursor();
     cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
     cursor.removeSelectedText();
@@ -703,6 +748,7 @@ void TextDocument::deleteEndOfWord()
  */
 void TextDocument::deleteStartOfWord()
 {
+    spdlog::trace("TextDocument::deleteStartOfWord");
     QTextCursor cursor = m_document->textCursor();
     cursor.movePosition(QTextCursor::StartOfWord, QTextCursor::KeepAnchor);
     cursor.removeSelectedText();
@@ -716,6 +762,7 @@ void TextDocument::deleteStartOfWord()
  */
 void TextDocument::deletePreviousCharacter(int count)
 {
+    spdlog::trace("TextDocument::deletePreviousCharacter {}", count);
     QTextCursor cursor = m_document->textCursor();
     cursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor, count);
     cursor.removeSelectedText();
@@ -729,6 +776,7 @@ void TextDocument::deletePreviousCharacter(int count)
  */
 void TextDocument::deleteNextCharacter(int count)
 {
+    spdlog::trace("TextDocument::deleteNextCharacter {}", count);
     QTextCursor cursor = m_document->textCursor();
     cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, count);
     cursor.removeSelectedText();
@@ -744,6 +792,7 @@ void TextDocument::deleteNextCharacter(int count)
  */
 Mark *TextDocument::createMark(int pos)
 {
+    spdlog::trace("TextDocument::createMark {}", pos);
     if (pos == -1)
         pos = position();
     return new Mark(this, pos);
@@ -755,6 +804,7 @@ Mark *TextDocument::createMark(int pos)
  */
 void TextDocument::gotoMark(Mark *mark)
 {
+    spdlog::trace("TextDocument::gotoMark {}", mark->position());
     if (mark->m_editor != this) {
         spdlog::error("Can't use a mark from another editor.");
         return;
@@ -771,6 +821,7 @@ void TextDocument::gotoMark(Mark *mark)
  */
 void TextDocument::selectToMark(Mark *mark)
 {
+    spdlog::trace("TextDocument::selectToMark {}", mark->position());
     if (mark->m_editor != this) {
         spdlog::error("Can't use a mark from another editor.");
         return;
@@ -794,6 +845,7 @@ void TextDocument::selectToMark(Mark *mark)
  */
 bool TextDocument::find(const QString &text, int options)
 {
+    spdlog::trace("TextDocument::find {} - {}", text.toStdString(), options);
     if (options & FindRegexp)
         return findRegexp(text, options);
     else
@@ -819,6 +871,7 @@ static QRegularExpression createRegularExpression(const QString &txt, int flags)
  */
 bool TextDocument::findRegexp(const QString &regexp, int options)
 {
+    spdlog::trace("TextDocument::findRegexp {} - {}", regexp.toStdString(), options);
     auto regularExpression = createRegularExpression(regexp, options | TextDocument::FindRegexp);
     return m_document->find(regularExpression, static_cast<QTextDocument::FindFlags>(options));
 }
@@ -845,6 +898,8 @@ bool TextDocument::findRegexp(const QString &regexp, int options)
  */
 int TextDocument::replaceAll(const QString &before, const QString &after, int options)
 {
+    spdlog::trace("TextDocument::replaceAll {} by {} - {}", before.toStdString(), after.toStdString(), options);
+
     int count = 0;
     auto cursor = m_document->textCursor();
     cursor.movePosition(QTextCursor::Start);
@@ -887,6 +942,7 @@ int TextDocument::replaceAll(const QString &before, const QString &after, int op
  */
 int TextDocument::replaceAllRegexp(const QString &regexp, const QString &after, int options)
 {
+    spdlog::trace("TextDocument::replaceAllRegexp {} by {} - {}", regexp.toStdString(), after.toStdString(), options);
     return replaceAll(regexp, after, options | FindRegexp);
 }
 

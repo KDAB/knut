@@ -3,10 +3,10 @@
 #include "project.h"
 #include "settings.h"
 
-#include <spdlog/spdlog.h>
-
 #include <QFileInfo>
 #include <QHash>
+
+#include <spdlog/spdlog.h>
 
 namespace Core {
 
@@ -100,7 +100,7 @@ QString CppDocument::correspondingHeaderSource() const
         if (QFile::exists(testFileName)) {
             cache[fileName()] = testFileName;
             cache[testFileName] = fileName();
-            spdlog::trace("Cpp Document Corresponding Header/Source setting {} => {}", fileName().toStdString(),
+            spdlog::trace("CppDocument::correspondingHeaderSource {} => {}", fileName().toStdString(),
                           testFileName.toStdString());
             return testFileName;
         }
@@ -132,11 +132,12 @@ QString CppDocument::correspondingHeaderSource() const
     if (!bestFileName.isEmpty()) {
         cache[fileName()] = bestFileName;
         cache[bestFileName] = fileName();
-        spdlog::trace("Cpp Document Corresponding Header/Source setting {} => {}", fileName().toStdString(),
+        spdlog::trace("CppDocument::correspondingHeaderSource {} => {}", fileName().toStdString(),
                       bestFileName.toStdString());
         return bestFileName;
     }
 
+    spdlog::warn("CppDocument::correspondingHeaderSource {} - not found ", fileName().toStdString());
     return {};
 }
 
@@ -147,6 +148,7 @@ QString CppDocument::correspondingHeaderSource() const
  */
 CppDocument *CppDocument::openHeaderSource()
 {
+    spdlog::trace("CppDocument::openHeaderSource {}", fileName().toStdString());
     const QString fileName = correspondingHeaderSource();
     if (!fileName.isEmpty())
         return dynamic_cast<CppDocument *>(Project::instance()->open(fileName));

@@ -82,6 +82,8 @@ void Settings::loadProjectSettings(const QString &rootDir)
  */
 bool Settings::hasValue(QString path) const
 {
+    spdlog::trace("Settings::hasValue {}", path.toStdString());
+
     if (!path.startsWith('/'))
         path.prepend('/');
     return m_settings.contains(json::json_pointer(path.toStdString()));
@@ -94,6 +96,8 @@ bool Settings::hasValue(QString path) const
 QVariant Settings::value(QString path, const QVariant &defaultValue) const
 {
     try {
+        spdlog::trace("Settings::value {}", path.toStdString());
+
         if (!path.startsWith('/'))
             path.prepend('/');
 
@@ -103,7 +107,6 @@ QVariant Settings::value(QString path, const QVariant &defaultValue) const
         }
 
         auto val = m_settings.at(json::json_pointer(path.toStdString()));
-        spdlog::trace("Getting setting value {}", path.toStdString());
         if (val.is_number_unsigned())
             return val.get<unsigned int>();
         if (val.is_number_integer())
@@ -123,9 +126,9 @@ QVariant Settings::value(QString path, const QVariant &defaultValue) const
                 return QStringList();
             }
         }
-        spdlog::error("Can't convert setting value {}", path.toStdString());
+        spdlog::error("Settings::value {} - can't convert", path.toStdString());
     } catch (...) {
-        spdlog::debug("Trying to access non-existing setting value {}", path.toStdString());
+        spdlog::info("Settings::value {} - accessing non-existing value", path.toStdString());
     }
     return defaultValue;
 }
@@ -136,8 +139,11 @@ QVariant Settings::value(QString path, const QVariant &defaultValue) const
  */
 bool Settings::setValue(QString path, const QVariant &value)
 {
+    spdlog::trace("Settings::setValue {} in {}", value.toString().toStdString(), path.toStdString());
+
     if (value.isNull()) {
-        spdlog::error("Can't save setting value {} - {}", path.toStdString(), value.toString().toStdString());
+        spdlog::error("Settings::setValue {} in {} - value is null", value.toString().toStdString(),
+                      path.toStdString());
         return false;
     }
 
@@ -173,7 +179,8 @@ bool Settings::setValue(QString path, const QVariant &value)
         m_projectSettings[jsonPath] = value.toStringList();
         break;
     default:
-        spdlog::error("Can't save setting value {} - {}", path.toStdString(), value.toString().toStdString());
+        spdlog::error("Settings::setValue {} in {} - value type not handled", value.toString().toStdString(),
+                      path.toStdString());
         return false;
     }
     // Asynchronous save
@@ -208,15 +215,15 @@ std::optional<nlohmann::json> Settings::loadSettings(const QString &name, bool l
         try {
             auto settings = json::parse(file.readAll().constData());
             if (log)
-                spdlog::trace("Loading settings {}", name.toStdString());
+                spdlog::trace("Settings::loadSettings {}", name.toStdString());
             return settings;
         } catch (...) {
             if (log)
-                spdlog::error("Error loading the settings in file {}", name.toStdString());
+                spdlog::error("Settings::loadSettings {}", name.toStdString());
         }
     } else {
         if (log)
-            spdlog::trace("No settings {}", name.toStdString());
+            spdlog::debug("Settings::loadSettings {} - file can't be read", name.toStdString());
         return "{}"_json;
     }
     return {};
@@ -225,13 +232,13 @@ std::optional<nlohmann::json> Settings::loadSettings(const QString &name, bool l
 void Settings::saveSettings(const QString &name, const nlohmann::json &settings)
 {
     if (name.isEmpty()) {
-        spdlog::error("Can't save project settings, no project loaded");
+        spdlog::error("Settings::saveSettings - no project loaded");
         return;
     }
 
     QFile file(name);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-        spdlog::error("Error saving settings in file {}", name.toStdString());
+        spdlog::error("Settings::saveSettings {}", name.toStdString());
         return;
     }
 

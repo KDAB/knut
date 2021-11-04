@@ -34,6 +34,8 @@ UiDocument::UiDocument(QObject *parent)
  */
 UiWidget *UiDocument::findWidget(const QString &name) const
 {
+    spdlog::trace("UiDocument::findWidget {}", name.toStdString());
+
     auto it = std::find_if(m_widgets.cbegin(), m_widgets.cend(), [name](UiWidget *widget) {
         return widget->name() == name;
     });
@@ -125,6 +127,8 @@ QString UiWidget::name() const
 
 void UiWidget::setName(const QString &newName)
 {
+    spdlog::trace("UiWidget::setName {} => {}", m_widget.attribute("name").value(), newName.toStdString());
+
     m_widget.attribute("name").set_value(newName.toLatin1().constData());
     if (m_isRoot) {
         // Also change the <class> tag
@@ -141,6 +145,8 @@ QString UiWidget::className() const
 
 void UiWidget::setClassName(const QString &newClassName)
 {
+    spdlog::trace("UiWidget::setClassName {} => {}", m_widget.attribute("class").value(), newClassName.toStdString());
+
     m_widget.attribute("class").set_value(newClassName.toLatin1().constData());
     qobject_cast<UiDocument *>(parent())->setHasChanged(true);
 }

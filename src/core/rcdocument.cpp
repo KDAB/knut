@@ -7,6 +7,8 @@
 #include <QUiLoader>
 #include <QWidget>
 
+#include <spdlog/spdlog.h>
+
 #include <algorithm>
 
 namespace Core {
@@ -95,6 +97,8 @@ QVector<RcCore::ToolBar> RcDocument::toolBars() const
  */
 RcCore::ToolBar RcDocument::toolBar(const QString &id) const
 {
+    spdlog::trace("RcDocument::toolBar {}", id.toStdString());
+
     if (m_data.isValid) {
         if (auto tb = m_data.toolBar(id))
             return *tb;
@@ -119,6 +123,8 @@ RcCore::ToolBar RcDocument::toolBar(const QString &id) const
  */
 RcCore::Widget RcDocument::dialog(const QString &id, int flags, double scaleX, double scaleY) const
 {
+    spdlog::trace("RcDocument::dialog {} - {}, {}x{}", id.toStdString(), flags, scaleX, scaleY);
+
     SET_DEFAULT_VALUE(RcDialogFlags, static_cast<ConversionFlags>(flags));
     SET_DEFAULT_VALUE(RcDialogScaleX, scaleX);
     SET_DEFAULT_VALUE(RcDialogScaleY, scaleY);
@@ -136,6 +142,8 @@ RcCore::Widget RcDocument::dialog(const QString &id, int flags, double scaleX, d
  */
 RcCore::Menu RcDocument::menu(const QString &id) const
 {
+    spdlog::trace("RcDocument::menu {}", id.toStdString());
+
     if (m_data.isValid) {
         if (auto tb = m_data.menu(id))
             return *tb;
@@ -226,6 +234,8 @@ QList<RcCore::String> RcDocument::strings() const
  */
 QString RcDocument::string(const QString &id) const
 {
+    spdlog::trace("RcDocument::string {}", id.toStdString());
+
     if (m_data.isValid)
         return m_data.strings.value(id).text;
     return {};
@@ -257,6 +267,8 @@ QVector<RcCore::Menu> RcDocument::menus() const
  */
 void RcDocument::convertAssets(int flags)
 {
+    spdlog::trace("RcDocument::convertAssets {}", flags);
+
     SET_DEFAULT_VALUE(RcAssetFlags, static_cast<ConversionFlags>(flags));
     if (m_data.isValid) {
         m_cacheAssets = RcCore::convertAssets(m_data, static_cast<RcCore::Asset::ConversionFlags>(flags));
@@ -278,6 +290,9 @@ void RcDocument::convertAssets(int flags)
 QVector<RcCore::Action> RcDocument::convertActions(const QStringList &menus, const QStringList &accelerators,
                                                    const QStringList &toolBars, int flags)
 {
+    spdlog::trace("RcDocument::convertActions {} - {} - {} - {}", menus.join('|').toStdString(),
+                  accelerators.join('|').toStdString(), toolBars.join('|').toStdString(), flags);
+
     SET_DEFAULT_VALUE(RcAssetFlags, static_cast<ConversionFlags>(flags));
     if (m_data.isValid)
         return RcCore::convertActions(m_data, menus, accelerators, toolBars,
@@ -302,6 +317,8 @@ QVector<RcCore::Action> RcDocument::convertActions(const QStringList &menus, con
  */
 bool RcDocument::writeAssetsToImage(int flags)
 {
+    spdlog::trace("RcDocument::writeAssetsToImage {}", flags);
+
     SET_DEFAULT_VALUE(RcAssetColors, static_cast<ConversionFlags>(flags));
     if (m_cacheAssets.isEmpty())
         convertAssets();
@@ -318,6 +335,8 @@ bool RcDocument::writeAssetsToImage(int flags)
  */
 bool RcDocument::writeAssetsToQrc(const QString &fileName)
 {
+    spdlog::trace("RcDocument::writeAssetsToQrc {}", fileName.toStdString());
+
     if (m_cacheAssets.isEmpty())
         convertAssets();
 
@@ -336,6 +355,8 @@ bool RcDocument::writeAssetsToQrc(const QString &fileName)
  */
 bool RcDocument::writeDialogToUi(const RcCore::Widget &dialog, const QString &fileName)
 {
+    spdlog::trace("RcDocument::writeDialogToUi {} in {}", dialog.id.toStdString(), fileName.toStdString());
+
     QFile file(fileName);
     if (file.open(QIODevice::WriteOnly)) {
         RcCore::writeDialogToUi(dialog, &file);
@@ -351,6 +372,8 @@ bool RcDocument::writeDialogToUi(const RcCore::Widget &dialog, const QString &fi
  */
 void RcDocument::previewDialog(const RcCore::Widget &dialog) const
 {
+    spdlog::trace("RcDocument::previewDialog {}", dialog.id.toStdString());
+
     QUiLoader loader;
 
     QBuffer buffer;

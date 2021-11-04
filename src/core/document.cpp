@@ -112,9 +112,9 @@ std::string Document::toUri() const
  */
 bool Document::load(const QString &fileName)
 {
-    spdlog::trace("Loading document {}", fileName.toStdString());
+    spdlog::trace("Document::load {}", fileName.toStdString());
     if (fileName.isEmpty()) {
-        spdlog::warn("Can't load document: fileName is empty");
+        spdlog::warn("Document::load - fileName is empty");
         return false;
     }
     if (m_fileName == fileName)
@@ -133,9 +133,9 @@ bool Document::load(const QString &fileName)
  */
 bool Document::save()
 {
-    spdlog::trace("Saving document {}", m_fileName.toStdString());
+    spdlog::trace("Document::save {}", m_fileName.toStdString());
     if (m_fileName.isEmpty()) {
-        spdlog::warn("Can't save document: fileName is empty");
+        spdlog::error("Document::save - fileName is empty");
         return false;
     }
     bool saveDone = doSave(m_fileName);
@@ -151,9 +151,9 @@ bool Document::save()
  */
 bool Document::saveAs(const QString &fileName)
 {
-    spdlog::trace("Saving document {} as {}", m_fileName.toStdString(), fileName.toStdString());
+    spdlog::trace("Document::saveAs {} as {}", m_fileName.toStdString(), fileName.toStdString());
     if (fileName.isEmpty()) {
-        spdlog::warn("Can't save document: fileName is empty");
+        spdlog::error("Document::saveAs - fileName is empty");
         return false;
     }
     bool isNewName = m_fileName != fileName;
@@ -174,6 +174,7 @@ bool Document::saveAs(const QString &fileName)
 
 void Document::close()
 {
+    spdlog::trace("Document::close {}", m_fileName.toStdString());
     if (m_fileName.isEmpty())
         return;
     if (m_hasChanged)
