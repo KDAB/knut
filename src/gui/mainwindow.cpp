@@ -215,6 +215,8 @@ static QWidget *widgetForDocument(Core::Document *document)
         f.setFamily(QStringLiteral("Courier New"));
         f.setPointSize(10);
         textEdit->setFont(f);
+        QFontMetrics fm(f);
+        textEdit->setTabStopDistance(4 * fm.horizontalAdvance(' '));
         return textEdit;
     }
     case Core::Document::Type::Rc: {
