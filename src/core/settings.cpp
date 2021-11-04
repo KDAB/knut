@@ -1,6 +1,7 @@
 #include "settings.h"
 
 #include "project.h"
+#include "rcdocument.h"
 #include "scriptmanager.h"
 
 #include <QDir>
@@ -95,6 +96,12 @@ QVariant Settings::value(QString path, const QVariant &defaultValue) const
     try {
         if (!path.startsWith('/'))
             path.prepend('/');
+
+        // Special cases
+        if (path == RcAssetColors || path == RcAssetFlags || path == RcDialogFlags) {
+            return static_cast<int>(value<RcDocument::ConversionFlags>(path.toStdString()));
+        }
+
         auto val = m_settings.at(json::json_pointer(path.toStdString()));
         spdlog::trace("Getting setting value {}", path.toStdString());
         if (val.is_number_unsigned())

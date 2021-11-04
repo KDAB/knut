@@ -59,7 +59,7 @@ public:
     void removeScriptPath(const QString &path);
 
     template <typename T>
-    T value(std::string path)
+    T value(std::string path) const
     {
         if (!path.starts_with('/'))
             path = '/' + path;
