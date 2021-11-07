@@ -25,6 +25,7 @@ import Script 1.0
 |array<string> |**[allFiles](#allFiles)**(PathType type = RelativeToRoot)|
 |array<string> |**[allFilesWithExtension](#allFilesWithExtension)**(string extension, PathType type = RelativeToRoot)|
 |array<string> |**[allFilesWithExtensions](#allFilesWithExtensions)**(array<string> extensions, PathType type = RelativeToRoot)|
+|[Document](../script/document.md) |**[get](#get)**(string fileName)|
 |[Document](../script/document.md) |**[open](#open)**(string fileName)|
 ||**[saveAllDocuments](#saveAllDocuments)**()|
 
@@ -71,6 +72,11 @@ Returns all files with an extenstion from `extensions` in the current project.
 
 - `Project.FullPath`
 - `Project.RelativeToRoot`
+
+#### <a name="get"></a>[Document](../script/document.md) **get**(string fileName)
+
+Get the document for the given `fileName`. If the document is not opented yet, open it. If the document already exists, returns the same instance, a document
+can't be open twice. If the fileName is relative, use the root path as the base.
 
 #### <a name="open"></a>[Document](../script/document.md) **open**(string fileName)
 

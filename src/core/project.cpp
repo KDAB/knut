@@ -233,22 +233,20 @@ const QVector<Document *> &Project::documents() const
 }
 
 /*!
- * \qmlmethod Document Project::open(string fileName)
- * Opens a document for the given `fileName`. If the document already exists, returns the same instance, a document
- * can't be open twice. If the fileName is relative, use the root path as the base.
+ * \qmlmethod Document Project::get(string fileName)
+ * Get the document for the given `fileName`. If the document is not opented yet, open it. If the document already
+ * exists, returns the same instance, a document can't be open twice. If the fileName is relative, use the root path as
+ * the base.
  */
-Document *Project::open(QString fileName)
+Document *Project::get(QString fileName)
 {
-    spdlog::trace("Project::open {}", fileName.toStdString());
+    spdlog::trace("Project::get {}", fileName.toStdString());
 
     QFileInfo fi(fileName);
     if (!fi.exists() && fi.isRelative())
         fileName = m_root + '/' + fileName;
     else
         fileName = fi.absoluteFilePath();
-
-    if (m_current && m_current->fileName() == fileName)
-        return m_current;
 
     auto findIt = std::find_if(m_documents.cbegin(), m_documents.cend(), [fileName](auto document) {
         return document->fileName() == fileName;
@@ -273,10 +271,25 @@ Document *Project::open(QString fileName)
         }
     }
 
-    m_current = doc;
+    return doc;
+}
+
+/*!
+ * \qmlmethod Document Project::open(string fileName)
+ * Opens a document for the given `fileName`. If the document already exists, returns the same instance, a document
+ * can't be open twice. If the fileName is relative, use the root path as the base.
+ */
+Document *Project::open(QString fileName)
+{
+    spdlog::trace("Project::open {}", fileName.toStdString());
+
+    if (m_current && m_current->fileName() == fileName)
+        return m_current;
+
+    m_current = get(fileName);
     emit currentDocumentChanged();
 
-    return doc;
+    return m_current;
 }
 
 Core::Document *Project::currentDocument() const

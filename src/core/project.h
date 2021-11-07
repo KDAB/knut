@@ -45,6 +45,7 @@ public slots:
     QStringList allFilesWithExtension(const QString &extension, Core::Project::PathType type = RelativeToRoot);
     QStringList allFilesWithExtensions(const QStringList &extensions, Core::Project::PathType type = RelativeToRoot);
 
+    Core::Document *get(QString fileName);
     Core::Document *open(QString fileName);
     void saveAllDocuments();
 
