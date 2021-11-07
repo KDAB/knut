@@ -26,6 +26,8 @@ set(PROJECT_SOURCES
     qfileinfovaluetype.cpp
     rcdocument.h
     rcdocument.cpp
+    scriptdialogitem.h
+    scriptdialogitem.cpp
     scriptitem.h
     scriptitem.cpp
     scriptmanager.h

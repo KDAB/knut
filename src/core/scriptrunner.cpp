@@ -7,6 +7,7 @@
 #include "message.h"
 #include "project.h"
 #include "rcdocument.h"
+#include "scriptdialogitem.h"
 #include "scriptitem.h"
 #include "settings.h"
 #include "testutil.h"
@@ -80,6 +81,7 @@ ScriptRunner::ScriptRunner(QObject *parent)
     });
 
     qmlRegisterUncreatableType<Document>("Script", 1, 0, "Document", "Abstract class");
+    qmlRegisterType<ScriptDialogItem>("Script", 1, 0, "ScriptDialog");
     qmlRegisterType<ScriptItem>("Script", 1, 0, "Script");
     qmlRegisterType<TextDocument>("Script", 1, 0, "TextDocument");
     qmlRegisterType<UiDocument>("Script", 1, 0, "UiDocument");
@@ -129,6 +131,7 @@ QQmlEngine *ScriptRunner::getEngine(const QString &fileName)
     QFileInfo fi(fileName);
 
     auto engine = new QQmlEngine(this);
+    currentScriptPath = fi.absoluteFilePath();
     engine->setProperty("scriptPath", fi.absolutePath());
     engine->setProperty("scriptWindow", false);
     engine->addImportPath("qrc:/qml");
@@ -202,6 +205,10 @@ QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine)
                         SLOT(deleteLater())); // clazy:excludeall=connect-not-normalized
 
                 window->show();
+            } else if (auto dialog = qobject_cast<ScriptDialogItem *>(topLevel)) {
+                dialog->show();
+                connect(dialog, &ScriptDialogItem::finished, engine, &QObject::deleteLater);
+                connect(engine, &QQmlEngine::quit, dialog, &QDialog::close);
             } else {
                 // Handle quit for non-gui qml, and make sure everything is deleted
                 topLevel->setParent(engine);

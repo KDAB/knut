@@ -39,6 +39,9 @@ private:
     void filterErrors(const QQmlComponent &component);
 
 private:
+    friend class ScriptDialogItem;
+    inline static QString currentScriptPath;
+
     std::shared_ptr<spdlog::logger> m_logger;
     bool m_hasError = false;
     QList<QQmlError> m_errors;
