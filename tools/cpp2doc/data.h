@@ -47,7 +47,14 @@ struct Data
         QString qmlType;
     };
 
+    struct SignalBlock : public Block
+    {
+        QmlMethod method;
+        QString qmlType;
+    };
+
     std::vector<TypeBlock> types;
     std::vector<PropertyBlock> properties;
     std::vector<MethodBlock> methods;
+    std::vector<SignalBlock> qmlSignals;
 };

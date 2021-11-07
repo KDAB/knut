@@ -68,6 +68,8 @@ void SourceParser::parseFile(const QString &fileName)
                 m_data.properties.push_back(parseProperty(stream, line));
             else if (line.startsWith("\\qmlmethod"))
                 m_data.methods.push_back(parseMethod(stream, line));
+            else if (line.startsWith("\\qmlsignal"))
+                m_data.qmlSignals.push_back(parseSignal(stream, line));
         }
     }
 }
@@ -177,6 +179,28 @@ Data::MethodBlock SourceParser::parseMethod(QTextStream &stream, QString line)
     }
 
     return currentMethod;
+}
+
+Data::SignalBlock SourceParser::parseSignal(QTextStream &stream, QString line)
+{
+    Data::SignalBlock currentSignal;
+    line = line.mid(11);
+
+    auto definition = parseMethodDefinition(line);
+    currentSignal.qmlType = definition.qmlType;
+    currentSignal.method = definition.method;
+
+    while (!stream.atEnd()) {
+        line = stream.readLine();
+
+        if (line.startsWith(" */"))
+            break;
+        line = cleanupCommentLine(line);
+
+        parseBlock(line, currentSignal);
+    }
+
+    return currentSignal;
 }
 
 void SourceParser::parseBlock(const QString &line, Data::Block &block)

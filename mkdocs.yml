@@ -44,6 +44,7 @@ nav:
              - QFileInfoValueType: API/script/qfileinfovaluetype.md
              - RcDocument: API/script/rcdocument.md
              - Script: API/script/script.md
+             - ScriptDialog: API/script/scriptdialog.md
              - Settings: API/script/settings.md
              - Shortcut: API/script/shortcut.md
              - String: API/script/string.md

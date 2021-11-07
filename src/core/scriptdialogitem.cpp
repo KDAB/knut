@@ -61,9 +61,9 @@ namespace Core {
  */
 
 /*!
-    \qmlsignal ScriptDialog::clicked(string name)
-    This handler is called when a button is cliked, the `name` is the name of the button.
-*/
+ * \qmlsignal ScriptDialog::clicked(string name)
+ * This handler is called when a button is cliked, the `name` is the name of the button.
+ */
 
 ScriptDialogItem::ScriptDialogItem(QWidget *parent)
     : QDialog(parent)

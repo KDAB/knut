@@ -128,6 +128,19 @@ void DocWriter::writeTypeFile(const Data::TypeBlock &type)
                           .arg(type.inherits, m_typeFileMap.value(type.inherits));
     }
 
+    auto qmlSignals = signalForType(type);
+    if (qmlSignals.size()) {
+        stream << "\n## Signals\n\n";
+        if (qmlSignals.size()) {
+            std::sort(qmlSignals.begin(), qmlSignals.end(), [](const auto &signal1, const auto &signal2) {
+                return signal1.method.name < signal2.method.name;
+            });
+            stream << "| | Name |\n|-|-|\n";
+            for (const auto &signal : qmlSignals)
+                stream << methodToString(signal.method, true);
+        }
+    }
+
     if (!type.description.isEmpty()) {
         stream << "\n## Detailed Description\n\n";
         stream << type.description;
@@ -155,6 +168,17 @@ void DocWriter::writeTypeFile(const Data::TypeBlock &type)
                 stream << QString(SinceTypeFile).arg(method.since);
             if (!method.description.isEmpty())
                 stream << "\n" << method.description;
+        }
+    }
+    if (qmlSignals.size()) {
+        stream << "\n## Signal Documentation\n";
+        for (const auto &signal : qmlSignals) {
+            stream << QString("\n#### <a name=\"%1\"></a>%2\n")
+                          .arg(signal.method.name, methodToString(signal.method, false));
+            if (!signal.since.isEmpty())
+                stream << QString(SinceTypeFile).arg(signal.since);
+            if (!signal.description.isEmpty())
+                stream << "\n" << signal.description;
         }
     }
 }
@@ -194,6 +218,27 @@ std::vector<Data::MethodBlock> DocWriter::methodForType(const Data::TypeBlock &t
         if (it != m_data.types.end()) {
             const auto inheritMethods = methodForType(*it);
             results.insert(results.end(), inheritMethods.begin(), inheritMethods.end());
+        }
+    }
+#endif
+    return results;
+}
+
+std::vector<Data::SignalBlock> DocWriter::signalForType(const Data::TypeBlock &type) const
+{
+    std::vector<Data::SignalBlock> results;
+    std::copy_if(m_data.qmlSignals.begin(), m_data.qmlSignals.end(), std::back_inserter(results),
+                 [type](const auto &signal) {
+                     return signal.qmlType == type.name;
+                 });
+#if 0
+    if (!type.inherits.isEmpty()) {
+        auto it = std::find_if(m_data.types.begin(), m_data.types.end(), [&type](const auto &t) {
+            return t.name == type.inherits;
+        });
+        if (it != m_data.types.end()) {
+            const auto inheritSignals = signalForType(*it);
+            results.insert(results.end(), inheritSignals.begin(), inheritSignals.end());
         }
     }
 #endif

@@ -1,0 +1,61 @@
+# ScriptDialog
+
+QML Item for writing visual scripts. [More...](#detailed-description)
+
+```qml
+import Script 1.0
+```
+
+<table>
+<tr><td>Since:</td><td>Knut 4.0</td></tr>
+</table>
+
+## Properties
+
+| | Name |
+|-|-|
+|QQmlPropertyMap|**[data](#data)**|
+
+## Signals
+
+| | Name |
+|-|-|
+||**[clicked](#clicked)**(string name)|
+
+## Detailed Description
+
+The `ScriptDialog` allows creating a scipt dialog based on a ui file. It requires creating a ui file with the same
+name as the qml script.
+
+Widget's main properties are mapped to a property inside the data property, using the same name as the `objectName`.
+Buttons (`QPushButton` or `QToolButton`) `clicked` signal is mapped to the `clicked` signal of this class, with the
+button `objectName` as parameter. `QDialogButtonBox` `accepted` or `rejected` signals are automatically connected.
+
+```qml
+import Script 1.0
+
+ScriptDialog {
+    property string text1: data.lineEdit
+    property string text2: data.comboBox
+    property int number: data.spinBox
+    property int number2: data.doubleSpinBox
+    property bool check: data.checkBox
+    property bool check2: data.radioButton
+    onClicked: {
+        if (name == "pushButton" || name == "toolButton")
+            console.log(name)
+    }
+}
+```
+
+## Property Documentation
+
+#### <a name="data"></a>QQmlPropertyMap **data**
+
+This read-only property contains all properties mapping the widgets.
+
+## Signal Documentation
+
+#### <a name="clicked"></a>**clicked**(string name)
+
+This handler is called when a button is cliked, the `name` is the name of the button.

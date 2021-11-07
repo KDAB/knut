@@ -18,6 +18,7 @@ private:
     Data::TypeBlock parseType(QTextStream &stream, QString line);
     Data::PropertyBlock parseProperty(QTextStream &stream, QString line);
     Data::MethodBlock parseMethod(QTextStream &stream, QString line);
+    Data::SignalBlock parseSignal(QTextStream &stream, QString line);
     void parseBlock(const QString &line, Data::Block &block);
 
 private:
