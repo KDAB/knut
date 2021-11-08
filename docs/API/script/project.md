@@ -75,8 +75,9 @@ Returns all files with an extenstion from `extensions` in the current project.
 
 #### <a name="get"></a>[Document](../script/document.md) **get**(string fileName)
 
-Get the document for the given `fileName`. If the document is not opented yet, open it. If the document already exists, returns the same instance, a document
-can't be open twice. If the fileName is relative, use the root path as the base.
+Get the document for the given `fileName`. If the document is not opented yet, open it. If the document already
+exists, returns the same instance, a document can't be open twice. If the fileName is relative, use the root path as
+the base.
 
 #### <a name="open"></a>[Document](../script/document.md) **open**(string fileName)
 

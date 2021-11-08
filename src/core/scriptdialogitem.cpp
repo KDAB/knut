@@ -66,6 +66,18 @@ namespace Core {
  * This handler is called when a button is cliked, the `name` is the name of the button.
  */
 
+/*!
+ * \qmlsignal ScriptDialog::accepted()
+ * This handler is called when a button with an accept role from a `QDialogButtonBox` is pressed (usually the OK
+ * button).
+ */
+
+/*!
+ * \qmlsignal ScriptDialog::rejected()
+ * This handler is called when a button with a reject role from a `QDialogButtonBox` is pressed (usually the Cancel
+ * button).
+ */
+
 ScriptDialogItem::ScriptDialogItem(QWidget *parent)
     : QDialog(parent)
     , m_data(new QQmlPropertyMap(this))

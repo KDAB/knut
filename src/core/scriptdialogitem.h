@@ -4,6 +4,8 @@
 #include <QQmlListProperty>
 #include <QQmlPropertyMap>
 
+#include <vector>
+
 namespace Core {
 
 class ScriptDialogItem : public QDialog
