@@ -28,34 +28,35 @@ nav:
     - Contributing: contributing.md
     - API:
         - Script Module:
-             - Action: API/script/action.md
-             - Asset: API/script/asset.md
              - CppDocument: API/script/cppdocument.md
              - Dir: API/script/dir.md
              - Document: API/script/document.md
              - File: API/script/file.md
              - FileInfo: API/script/fileinfo.md
              - Mark: API/script/mark.md
-             - Menu: API/script/menu.md
-             - MenuItem: API/script/menuitem.md
              - Message: API/script/message.md
              - Project: API/script/project.md
              - QDirValueType: API/script/qdirvaluetype.md
              - QFileInfoValueType: API/script/qfileinfovaluetype.md
-             - RcDocument: API/script/rcdocument.md
              - Script: API/script/script.md
              - ScriptDialog: API/script/scriptdialog.md
              - Settings: API/script/settings.md
-             - Shortcut: API/script/shortcut.md
-             - String: API/script/string.md
              - TextDocument: API/script/textdocument.md
-             - ToolBar: API/script/toolbar.md
-             - ToolBarItem: API/script/toolbaritem.md
              - UiDocument: API/script/uidocument.md
              - UiWidget: API/script/uiwidget.md
              - UserDialog: API/script/userdialog.md
              - Utils: API/script/utils.md
-             - Widget: API/script/widget.md
+        - Script.Mfc Module:
+             - Action: API/script.mfc/action.md
+             - Asset: API/script.mfc/asset.md
+             - Menu: API/script.mfc/menu.md
+             - MenuItem: API/script.mfc/menuitem.md
+             - RcDocument: API/script.mfc/rcdocument.md
+             - Shortcut: API/script.mfc/shortcut.md
+             - String: API/script.mfc/string.md
+             - ToolBar: API/script.mfc/toolbar.md
+             - ToolBarItem: API/script.mfc/toolbaritem.md
+             - Widget: API/script.mfc/widget.md
         - Script.Test Module:
              - TestCase: API/script.test/testcase.md
              - TestUtil: API/script.test/testutil.md

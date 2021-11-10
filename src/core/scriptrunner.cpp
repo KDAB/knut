@@ -87,7 +87,9 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qmlRegisterType<UiDocument>("Script", 1, 0, "UiDocument");
     qmlRegisterUncreatableType<UiWidget>("Script", 1, 0, "UiWidget", "Only created by UiDocument");
     qmlRegisterType<CppDocument>("Script", 1, 0, "CppDocument");
-    qmlRegisterType<RcDocument>("Script", 1, 0, "RcDocument");
+
+    // Script.Mfc
+    qmlRegisterType<RcDocument>("Script.Mfc", 1, 0, "RcDocument");
 
     // Script.Test
     qmlRegisterSingletonType<TestUtil>("Script.Test", 1, 0, "TestUtil", [](QQmlEngine *, QJSEngine *) {

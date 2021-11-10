@@ -60,7 +60,8 @@ This read-only property contains all properties mapping the widgets.
 
 #### <a name="accepted"></a>**accepted**()
 
-This handler is called when a button with an accept role from a `QDialogButtonBox` is pressed (usually the OK button).
+This handler is called when a button with an accept role from a `QDialogButtonBox` is pressed (usually the OK
+button).
 
 #### <a name="clicked"></a>**clicked**(string name)
 
@@ -68,4 +69,5 @@ This handler is called when a button is cliked, the `name` is the name of the bu
 
 #### <a name="rejected"></a>**rejected**()
 
-This handler is called when a button with a reject role from a `QDialogButtonBox` is pressed (usually the Cancel button).
+This handler is called when a button with a reject role from a `QDialogButtonBox` is pressed (usually the Cancel
+button).
