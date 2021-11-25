@@ -51,8 +51,9 @@ struct RequestMessage
     RequestParams params;
 
     using Response = ResponseMessage<ResultData, ErrorData>;
+    using Result = ResultData;
     using ResponseCallback = std::function<void(Response)>;
 
-    inline static int nextId = 0;
+    inline static int nextId = 1;
 };
 }

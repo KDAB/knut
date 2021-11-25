@@ -15,6 +15,34 @@
 
 namespace Lsp {
 
+template <typename Request>
+std::optional<typename Request::Result> sendRequest(ClientBackend *backend, std::shared_ptr<spdlog::logger> logger,
+                                                    Request request,
+                                                    std::function<void(typename Request::Result)> callback)
+{
+    auto checkResponse = [&](typename Request::Response response) {
+        if (!response.isValid() || response.error) {
+            logger->warn("Response error for request {} - {}", request.method,
+                         response.error ? response.error->message : "");
+            return false;
+        }
+        return true;
+    };
+
+    if (callback) {
+        auto requestCallBack = [&](typename Request::Response response) {
+            if (checkResponse(response))
+                callback(response.result.value());
+        };
+        backend->sendAsyncRequest(request, requestCallBack);
+    } else {
+        auto response = backend->sendRequest(request);
+        if (checkResponse(response))
+            return response.result;
+    }
+    return {};
+}
+
 Client::Client(std::string languageId, QString program, QStringList arguments, QObject *parent)
     : QObject(parent)
     , m_languageId(std::move(languageId))
@@ -55,16 +83,42 @@ bool Client::initialize(const QString &rootPath)
     request.params.clientInfo = {"knut", "4.0"};
 
     // Workspace capabilities
-    ClientCapabilities::WorkspaceType workspaceCapabilities;
-    workspaceCapabilities.workspaceFolders = true;
-    request.params.capabilities.workspace = workspaceCapabilities;
+    {
+        ClientCapabilities::WorkspaceType workspaceCapabilities;
+        workspaceCapabilities.workspaceFolders = true;
+        request.params.capabilities.workspace = workspaceCapabilities;
+    }
 
     // TextDocument capabilities
-    TextDocumentSyncClientCapabilities synchronization;
-    synchronization.dynamicRegistration = false;
-    TextDocumentClientCapabilities textDocument;
-    textDocument.synchronization = synchronization;
-    request.params.capabilities.textDocument = textDocument;
+    {
+        TextDocumentSyncClientCapabilities synchronization;
+        synchronization.dynamicRegistration = false;
+
+        DocumentSymbolClientCapabilities symbol;
+        symbol.dynamicRegistration = false;
+        symbol.hierarchicalDocumentSymbolSupport = true;
+        symbol.labelSupport = true;
+        std::vector<SymbolKind> symbolKinds = {
+            SymbolKind::File,        SymbolKind::Module,       SymbolKind::Namespace, SymbolKind::Package,
+            SymbolKind::Class,       SymbolKind::Method,       SymbolKind::Property,  SymbolKind::Field,
+            SymbolKind::Constructor, SymbolKind::Enum,         SymbolKind::Interface, SymbolKind::Function,
+            SymbolKind::Variable,    SymbolKind::Constant,     SymbolKind::String,    SymbolKind::Number,
+            SymbolKind::Boolean,     SymbolKind::Array,        SymbolKind::Object,    SymbolKind::Key,
+            SymbolKind::Null,        SymbolKind::EnumMember,   SymbolKind::Struct,    SymbolKind::Event,
+            SymbolKind::Operator,    SymbolKind::TypeParameter};
+        symbol.symbolKind = DocumentSymbolClientCapabilities::SymbolKindType {symbolKinds};
+
+        SemanticTokensClientCapabilities semanticTokens;
+        semanticTokens.dynamicRegistration = false;
+        semanticTokens.requests.full = true;
+        semanticTokens.formats = {TokenFormat::Relative};
+
+        TextDocumentClientCapabilities textDocument;
+        textDocument.synchronization = synchronization;
+        textDocument.documentSymbol = symbol;
+        textDocument.semanticTokens = semanticTokens;
+        request.params.capabilities.textDocument = textDocument;
+    }
 
     QFileInfo fi(rootPath);
     if (fi.exists()) {
@@ -89,7 +143,7 @@ void Client::openProject(const QString &rootPath)
 {
     Q_ASSERT(m_state == Initialized);
     QFileInfo fi(rootPath);
-    if (!fi.exists() || !sendWorkspaceFoldersChanges())
+    if (!fi.exists() || !canSendWorkspaceFoldersChanges())
         return;
 
     DidChangeWorkspaceFoldersNotification notification;
@@ -101,7 +155,7 @@ void Client::closeProject(const QString &rootPath)
 {
     Q_ASSERT(m_state == Initialized);
     QFileInfo fi(rootPath);
-    if (!fi.exists() || !sendWorkspaceFoldersChanges())
+    if (!fi.exists() || !canSendWorkspaceFoldersChanges())
         return;
 
     DidChangeWorkspaceFoldersNotification notification;
@@ -109,9 +163,9 @@ void Client::closeProject(const QString &rootPath)
     m_backend->sendNotification(notification);
 }
 
-void Client::didOpen(DidOpenTextDocumentParams params)
+void Client::didOpen(DidOpenTextDocumentParams &&params)
 {
-    if (!sendOpenCloseChanges())
+    if (!canSendOpenCloseChanges())
         return;
 
     DidOpenNotification notification;
@@ -119,14 +173,28 @@ void Client::didOpen(DidOpenTextDocumentParams params)
     m_backend->sendNotification(notification);
 }
 
-void Client::didClose(DidCloseTextDocumentParams params)
+void Client::didClose(DidCloseTextDocumentParams &&params)
 {
-    if (!sendOpenCloseChanges())
+    if (!canSendOpenCloseChanges())
         return;
 
     DidCloseNotification notification;
     notification.params = std::move(params);
     m_backend->sendNotification(notification);
+}
+
+std::optional<DocumentSymbolRequest::Result>
+Client::documentSymbol(DocumentSymbolParams &&params, std::function<void(DocumentSymbolRequest::Result)> asyncCallback)
+{
+    if (!canSendDocumentSymbol()) {
+        m_clientLogger->error("{} not supported by LSP server", DocumentSymbolName);
+        return {};
+    }
+
+    DocumentSymbolRequest request;
+    request.id = m_nextRequestId++;
+    request.params = std::move(params);
+    return sendRequest(m_backend, m_clientLogger, request, asyncCallback);
 }
 
 std::string Client::toUri(const QString &path)
@@ -172,7 +240,7 @@ bool Client::shutdownCallback(ShutdownRequest::Response response)
     return true;
 }
 
-bool Client::sendWorkspaceFoldersChanges() const
+bool Client::canSendWorkspaceFoldersChanges() const
 {
     Q_ASSERT(m_state == Initialized);
     // TODO handle dynamic capabilities
@@ -187,7 +255,7 @@ bool Client::sendWorkspaceFoldersChanges() const
     return false;
 }
 
-bool Client::sendOpenCloseChanges() const
+bool Client::canSendOpenCloseChanges() const
 {
     Q_ASSERT(m_state == Initialized);
     // TODO handle dynamic capabilities
@@ -198,6 +266,19 @@ bool Client::sendOpenCloseChanges() const
         } else {
             auto syncOptions = std::get<TextDocumentSyncOptions>(textDocument.value());
             return syncOptions.openClose.value_or(false);
+        }
+    }
+    return false;
+}
+
+bool Client::canSendDocumentSymbol() const
+{
+    Q_ASSERT(m_state == Initialized);
+    // TODO handle dynamic capabilities
+    if (auto documentSymbolProvider = m_serverCapabilities.documentSymbolProvider) {
+        if (std::holds_alternative<DocumentSymbolOptions>(documentSymbolProvider.value())
+            || std::get<bool>(documentSymbolProvider.value())) {
+            return true;
         }
     }
     return false;

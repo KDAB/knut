@@ -44,11 +44,21 @@ public:
     /**
      * Sends the didOpen notification, when a document has been opened
      */
-    void didOpen(DidOpenTextDocumentParams params);
+    void didOpen(DidOpenTextDocumentParams &&params);
     /**
      * Sends the didClose notification, when a document has been closed
      */
-    void didClose(DidCloseTextDocumentParams params);
+    void didClose(DidCloseTextDocumentParams &&params);
+
+    /**
+     * Sends the documentSymbol requests, and returns the list of symbols
+     * If asyncCallback is not null, the request will be sent asynchronously and the callback called once the respone
+     * has arrive. Otherwise, the request is synchronous, and the result is returned. An empty optional means there was
+     * an error.
+     */
+    std::optional<DocumentSymbolRequest::Result>
+    documentSymbol(DocumentSymbolParams &&params,
+                   std::function<void(DocumentSymbolRequest::Result)> asyncCallback = {});
 
     State state() const { return m_state; }
 
@@ -62,8 +72,9 @@ private:
     bool initializeCallback(InitializeRequest::Response response);
     bool shutdownCallback(ShutdownRequest::Response response);
 
-    bool sendWorkspaceFoldersChanges() const;
-    bool sendOpenCloseChanges() const;
+    bool canSendWorkspaceFoldersChanges() const;
+    bool canSendOpenCloseChanges() const;
+    bool canSendDocumentSymbol() const;
 
 private:
     mutable int m_nextRequestId = 1;

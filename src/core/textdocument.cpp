@@ -145,7 +145,7 @@ void TextDocument::didOpen()
     params.textDocument.text = m_document->toPlainText().toStdString();
     params.textDocument.languageId = m_lspClient->languageId();
 
-    m_lspClient->didOpen(params);
+    m_lspClient->didOpen(std::move(params));
 }
 
 void TextDocument::didClose()
@@ -156,7 +156,7 @@ void TextDocument::didClose()
     Lsp::DidCloseTextDocumentParams params;
     params.textDocument.uri = toUri();
 
-    m_lspClient->didClose(params);
+    m_lspClient->didClose(std::move(params));
 }
 
 // This function is copied from TextFileFormat::detect from Qt Creator.
