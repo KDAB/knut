@@ -32,6 +32,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     Qt::Core
     Qt::Widgets
     Qt::UiTools
+    KF5SyntaxHighlighting
     knut-core
 )
 target_include_directories(${PROJECT_NAME}

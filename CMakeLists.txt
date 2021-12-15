@@ -6,19 +6,14 @@ project(knut VERSION 4.0 LANGUAGES CXX)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 add_definitions(-DTEST_DATA_PATH="${CMAKE_SOURCE_DIR}/test_data")
 add_definitions(-DKNUT_VERSION="${PROJECT_VERSION}")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-if(MSVC)
-    add_compile_options(/W3 /WX)
-else()
-    add_compile_options(-Wall -Wextra -Werror -Wno-error=comment)
-endif()
-
-enable_testing()
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+find_package(ECM 5.87.0 REQUIRED NO_MODULE)
+set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -38,7 +33,6 @@ FetchContent_Declare(spdlog
 )
 # See https://github.com/gabime/spdlog/issues/1190
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-FetchContent_MakeAvailable(spdlog)
 
 # nlohmann/json
 FetchContent_Declare(json
@@ -46,14 +40,31 @@ FetchContent_Declare(json
     GIT_TAG        v3.9.1
 )
 set(JSON_ImplicitConversions OFF)
-FetchContent_MakeAvailable(json)
 
 #pugixml
 FetchContent_Declare(pugixml
     GIT_REPOSITORY https://github.com/zeux/pugixml.git
     GIT_TAG        v1.11.4
 )
-FetchContent_MakeAvailable(pugixml)
+
+#KSyntaxHighlighting
+FetchContent_Declare(KSyntaxHighlighting
+    GIT_REPOSITORY https://github.com/KDE/syntax-highlighting.git
+    GIT_TAG        v5.87.0
+)
+# Don't buld tests
+set(BUILD_TESTING OFF)
+
+# Fetch them all
+FetchContent_MakeAvailable(spdlog json pugixml KSyntaxHighlighting)
+
+if(MSVC)
+    add_compile_options(/W3 /WX)
+else()
+    add_compile_options(-Wall -Wextra -Werror -Wno-error=comment)
+endif()
+
+enable_testing()
 
 # ECM
 include(ECMEnableSanitizers)

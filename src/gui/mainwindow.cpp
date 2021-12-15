@@ -15,6 +15,11 @@
 #include "core/uidocument.h"
 #include "rcui/rcfileview.h"
 
+#include <definition.h>
+#include <repository.h>
+#include <syntaxhighlighter.h>
+#include <theme.h>
+
 #include <QApplication>
 #include <QDir>
 #include <QFileDialog>
@@ -217,6 +222,15 @@ static QWidget *widgetForDocument(Core::Document *document)
         textEdit->setFont(f);
         QFontMetrics fm(f);
         textEdit->setTabStopDistance(4 * fm.horizontalAdvance(' '));
+
+        static KSyntaxHighlighting::Repository repository;
+        auto highlighter = new KSyntaxHighlighting::SyntaxHighlighter(textEdit->document());
+        highlighter->setTheme((textEdit->palette().color(QPalette::Base).lightness() < 128)
+                                  ? repository.defaultTheme(KSyntaxHighlighting::Repository::DarkTheme)
+                                  : repository.defaultTheme(KSyntaxHighlighting::Repository::LightTheme));
+        const auto def = repository.definitionForFileName(document->fileName());
+        highlighter->setDefinition(def);
+
         return textEdit;
     }
     case Core::Document::Type::Rc: {
