@@ -12,6 +12,8 @@ set(PROJECT_SOURCES
     fileinfo.h
     fileinfo.cpp
     json_utils.h
+    imagedocument.h
+    imagedocument.cpp
     knutcore.h
     knutcore.cpp
     mark.h

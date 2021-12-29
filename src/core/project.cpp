@@ -1,6 +1,7 @@
 #include "project.h"
 
 #include "cppdocument.h"
+#include "imagedocument.h"
 #include "rcdocument.h"
 #include "settings.h"
 #include "textdocument.h"
@@ -199,6 +200,8 @@ static Document *createDocument(const QString &suffix)
         return new RcDocument();
     case Document::Type::Ui:
         return new UiDocument();
+    case Document::Type::Image:
+        return new ImageDocument();
     }
     Q_UNREACHABLE();
     return nullptr;

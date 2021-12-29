@@ -11,6 +11,7 @@ int main(int argc, char *argv[])
     QApplication::setApplicationVersion(KNUT_VERSION);
 
     Q_INIT_RESOURCE(core);
+    Q_INIT_RESOURCE(gui);
 
     Gui::KnutMain knut;
     knut.process(app);

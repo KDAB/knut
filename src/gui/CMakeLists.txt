@@ -3,6 +3,8 @@ project(knut-gui LANGUAGES CXX)
 set(PROJECT_SOURCES
     fileselector.h
     fileselector.cpp
+    imageview.h
+    imageview.cpp
     knutmain.h
     knutmain.cpp
     mainwindow.h
@@ -25,6 +27,7 @@ set(PROJECT_SOURCES
     settingsdialog.ui
     uiview.h
     uiview.cpp
+    gui.qrc
 )
 
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})

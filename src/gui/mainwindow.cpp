@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "imageview.h"
 #include "palette.h"
 #include "rctoqrcdialog.h"
 #include "rctouidialog.h"
@@ -9,6 +10,7 @@
 #include "uiview.h"
 
 #include "core/document.h"
+#include "core/imagedocument.h"
 #include "core/project.h"
 #include "core/rcdocument.h"
 #include "core/textdocument.h"
@@ -238,10 +240,16 @@ static QWidget *widgetForDocument(Core::Document *document)
         rcview->setRcFile(qobject_cast<Core::RcDocument *>(document)->data());
         return rcview;
     }
-    case Core::Document::Type::Ui:
+    case Core::Document::Type::Ui: {
         auto uiview = new UiView();
         uiview->setUiDocument(qobject_cast<Core::UiDocument *>(document));
         return uiview;
+    }
+    case Core::Document::Type::Image: {
+        auto imageview = new ImageView();
+        imageview->setImageDocument(qobject_cast<Core::ImageDocument *>(document));
+        return imageview;
+    }
     }
     Q_UNREACHABLE();
     return nullptr;
