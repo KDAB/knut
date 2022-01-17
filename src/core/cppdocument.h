@@ -18,6 +18,8 @@ public:
 
 public slots:
     CppDocument *openHeaderSource();
+
+    QVariantMap mfcExtractDDX(const QString &className);
 };
 
 } // namespace Core

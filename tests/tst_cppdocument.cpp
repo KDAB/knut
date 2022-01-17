@@ -7,8 +7,6 @@
 #include <QTest>
 #include <QThread>
 
-#include <memory>
-
 class TestCppDocument : public QObject
 {
     Q_OBJECT
@@ -17,7 +15,6 @@ private slots:
     void initTestCase()
     {
         Q_INIT_RESOURCE(core);
-        core.reset(new Core::KnutCore(this));
     }
 
     void correspondingHeaderSource_data()
@@ -44,13 +41,24 @@ private slots:
         QFETCH(QString, headerOrSource);
         QFETCH(QString, sourceOrHeader);
 
+        Core::KnutCore core;
         Core::Project::instance()->setRoot(Test::testDataPath() + "/cppdocument");
         auto document = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(headerOrSource));
         QCOMPARE(sourceOrHeader, document->correspondingHeaderSource());
     }
 
-private:
-    std::unique_ptr<Core::KnutCore> core;
+    void extractDataExchange()
+    {
+        Core::KnutCore core;
+        Core::Project::instance()->setRoot(Test::testDataPath() + "/mfc/tutorial");
+
+        auto document = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open("TutorialDlg.cpp"));
+        auto ddxMap = document->mfcExtractDDX("CTutorialDlg");
+
+        QCOMPARE(ddxMap.size(), 8);
+        QCOMPARE(ddxMap.value("IDC_ECHO_AREA"), "m_EchoText");
+        QCOMPARE(ddxMap.value("IDC_MOUSEECHO"), "m_MouseEcho");
+    }
 };
 
 QTEST_MAIN(TestCppDocument)

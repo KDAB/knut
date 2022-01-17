@@ -5,6 +5,8 @@
 
 #include <QFileInfo>
 #include <QHash>
+#include <QRegularExpression>
+#include <QVariantMap>
 
 #include <spdlog/spdlog.h>
 
@@ -153,6 +155,54 @@ CppDocument *CppDocument::openHeaderSource()
     if (!fileName.isEmpty())
         return dynamic_cast<CppDocument *>(Project::instance()->open(fileName));
     return nullptr;
+}
+
+/*!
+ * \qmlmethod map<string, string> CppDocument::mfcExtractDDX()
+ * Extract the DDX information from a MFC class.
+ *
+ * The DDX information gives the mapping between the ID and the member variables in the class.
+ */
+QVariantMap CppDocument::mfcExtractDDX(const QString &className)
+{
+    QVariantMap map;
+
+    // TODO: use semantic information coming from LSP instead of regexp to find the method
+
+    const QString source = text();
+    const QRegularExpression searchFunctionExpression(QString(R"*(void\s*%1\s*::DoDataExchange\s*\()*").arg(className),
+                                                      QRegularExpression::MultilineOption);
+    QRegularExpressionMatch match = searchFunctionExpression.match(source);
+
+    if (match.hasMatch()) {
+        const int capturedStart = match.capturedStart(0);
+        const int capturedEnd = match.capturedEnd(0);
+        int bracketCount = 0;
+        int positionEnd = -1;
+        for (int i = capturedEnd; i < source.length(); ++i) {
+            if (source.at(i) == QLatin1Char('{')) {
+                bracketCount++;
+            } else if (source.at(i) == QLatin1Char('}')) {
+                bracketCount--;
+                if (bracketCount == 0) {
+                    positionEnd = i;
+                    break;
+                }
+            }
+        }
+
+        if (positionEnd == -1)
+            return {};
+
+        const QString ddxText = source.mid(capturedStart, (positionEnd - capturedStart + 1));
+        static const QRegularExpression doDataExchangeExpression(R"*(DDX_.*\(.*,\s*(.*)\s*,\s*(.*)\))*");
+        QRegularExpressionMatchIterator userIteratorWidgetExpression = doDataExchangeExpression.globalMatch(ddxText);
+        while (userIteratorWidgetExpression.hasNext()) {
+            const QRegularExpressionMatch match = userIteratorWidgetExpression.next();
+            map.insert(match.captured(1), match.captured(2));
+        }
+    }
+    return map;
 }
 
 } // namespace Core
