@@ -16,8 +16,9 @@ private slots:
         Core::UiDocument document;
         document.load(Test::testDataPath() + QStringLiteral("/uidocument/IDD_ABCCOMPILE.ui"));
 
-        QCOMPARE(document.widgets().count(), 21);
-        auto rootWidget = document.widgets().first();
+        const auto widgets = document.widgets();
+        QCOMPARE(widgets.count(), 21);
+        auto rootWidget = widgets.first();
         QCOMPARE(rootWidget->name(), "IDD_ABCCOMPILE");
         QCOMPARE(rootWidget->className(), "QDialog");
         QCOMPARE(rootWidget->isRoot(), true);
@@ -37,9 +38,10 @@ private slots:
         Core::UiDocument document;
         document.load(file.fileName());
 
-        QCOMPARE(document.widgets().count(), 50);
+        const auto widgets = document.widgets();
+        QCOMPARE(widgets.count(), 50);
 
-        auto root = document.widgets().first();
+        auto root = widgets.first();
         root->setClassName("QWidget");
         root->setName("Lighting");
 

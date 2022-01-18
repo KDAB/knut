@@ -17,7 +17,7 @@ public:
     Q_INVOKABLE QString correspondingHeaderSource() const;
 
 public slots:
-    CppDocument *openHeaderSource();
+    Core::CppDocument *openHeaderSource();
 
     QVariantMap mfcExtractDDX(const QString &className);
 };

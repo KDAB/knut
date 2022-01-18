@@ -26,7 +26,7 @@ public:
         FullPath = 0,
         RelativeToRoot = 1,
     };
-    Q_ENUMS(PathType)
+    Q_ENUM(PathType)
 
 public:
     ~Project();
@@ -40,11 +40,13 @@ public:
 
     const QVector<Document *> &documents() const;
 
-public slots:
-    QStringList allFiles(Core::Project::PathType type = RelativeToRoot) const;
-    QStringList allFilesWithExtension(const QString &extension, Core::Project::PathType type = RelativeToRoot);
-    QStringList allFilesWithExtensions(const QStringList &extensions, Core::Project::PathType type = RelativeToRoot);
+    Q_INVOKABLE QStringList allFiles(Core::Project::PathType type = RelativeToRoot) const;
+    Q_INVOKABLE QStringList allFilesWithExtension(const QString &extension,
+                                                  Core::Project::PathType type = RelativeToRoot);
+    Q_INVOKABLE QStringList allFilesWithExtensions(const QStringList &extensions,
+                                                   Core::Project::PathType type = RelativeToRoot);
 
+public slots:
     Core::Document *get(QString fileName);
     Core::Document *open(QString fileName);
     void saveAllDocuments();

@@ -283,7 +283,7 @@ static bool containActionId(const QString &id, const MenuItem &menuItem)
 
 bool Menu::contains(const QString &id)
 {
-    for (const auto &child : children) {
+    for (const auto &child : std::as_const(children)) {
         if (containActionId(id, child))
             return true;
     }

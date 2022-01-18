@@ -199,8 +199,6 @@ const auto CalendarPopup = "calendarPopup";
 static void convertStyles(const Data &data, Widget &widget, Data::Control &control, bool isFrame = false)
 {
     if (isFrame) {
-        QString shadow = "QFrame::Plain";
-        QString shape = "QFrame::StyledPanel";
         if (control.styles.removeOne(WSEX_CLIENTEDGE)) {
             widget.properties[FrameShape] = "QFrame::Panel";
             widget.properties[FrameShadow] = "QFrame::Sunken";
