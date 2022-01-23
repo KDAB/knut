@@ -39,10 +39,10 @@ constexpr char RecentProjectKey[] = "RecentProject";
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , m_palette(new Palette(this))
 {
     setAttribute(Qt::WA_DeleteOnClose);
 
+    m_palette = new Palette(this);
     m_palette->hide();
 
     ui->setupUi(this);

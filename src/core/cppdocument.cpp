@@ -86,7 +86,7 @@ QString CppDocument::correspondingHeaderSource() const
 {
     static QHash<QString, QString> cache;
 
-    const QString cacheData = cache.value(fileName());
+    QString cacheData = cache.value(fileName());
     if (!cacheData.isEmpty())
         return cacheData;
 

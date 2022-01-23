@@ -51,7 +51,7 @@ private:
     QMenu *m_recentProjects = nullptr;
     QHash<QString, int> m_windows;
     QFileSystemModel *m_fileModel = nullptr;
-    Palette *const m_palette = nullptr;
+    Palette *m_palette = nullptr;
 };
 
 } // namespace Gui

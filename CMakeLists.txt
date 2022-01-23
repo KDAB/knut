@@ -29,12 +29,14 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Qml Quick Test UiTools REQ
 # spdlog
 FetchContent_Declare(spdlog
     GIT_REPOSITORY https://github.com/gabime/spdlog.git
-    GIT_TAG        v1.8.5
+    GIT_TAG        v1.9.2
 )
 # See https://github.com/gabime/spdlog/issues/1190
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # nlohmann/json
+# TODO: move to version 3.10, change github link to the original one
+#       right now the code is not compiling with version 3.10
 FetchContent_Declare(json
     GIT_REPOSITORY https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent
     GIT_TAG        v3.9.1
@@ -52,7 +54,9 @@ FetchContent_Declare(KSyntaxHighlighting
     GIT_REPOSITORY https://github.com/KDE/syntax-highlighting.git
     GIT_TAG        v5.87.0
 )
-# Don't buld tests
+# Don't build tests and examples
+set(KSYNTAXHIGHLIGHTING_USE_GUI OFF)
+set(DISABLE_ALL_OPTIONAL_SUBDIRECTORIES TRUE)
 set(BUILD_TESTING OFF)
 
 # Fetch them all

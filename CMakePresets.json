@@ -2,40 +2,36 @@
     "version": 2,
     "configurePresets": [
         {
-            "name": "dev",
-            "displayName": "Build as debug",
+            "name": "debug",
+            "displayName": "Debug build",
             "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build",
+            "binaryDir": "${sourceDir}/build-debug",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
-		"CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
             }
         },
         {
             "name": "asan",
-            "displayName": "Build with Asan support.",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build-asan",
+            "displayName": "Asan debug build",
+            "inherits": "debug",
+            "binaryDir": "${sourceDir}/build-debug-asan",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
-                "ECM_ENABLE_SANITIZERS" : "'address;undefined'",
-		"CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+                "ECM_ENABLE_SANITIZERS" : "'address;undefined'"
             }
         },
         {
             "name": "unity",
-            "displayName": "Build with CMake unity support.",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build-unity",
+            "displayName": "Unity debug build",
+            "inherits": "debug",
+            "binaryDir": "${sourceDir}/build-debug-unity",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
-		"CMAKE_UNITY_BUILD": "ON",
-		"CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+                "CMAKE_UNITY_BUILD": "ON"
             }
         },
         {
             "name": "release",
-            "displayName": "Build as release mode.",
+            "displayName": "Release build",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build-release",
             "cacheVariables": {
@@ -44,17 +40,17 @@
         },
         {
             "name": "profile",
-            "displayName": "profile",
+            "displayName": "Profile build",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build-profile",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "RelWithDebInfo",
-		"CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
             }
-	},
+        },
         {
             "name": "clazy",
-            "displayName": "clazy",
+            "displayName": "Clazy build",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build-clazy",
             "cacheVariables": {
@@ -68,12 +64,16 @@
     ],
     "buildPresets": [
         {
-            "name": "dev",
-            "configurePreset": "dev"
+            "name": "debug",
+            "configurePreset": "debug"
         },
         {
             "name": "asan",
             "configurePreset": "asan"
+        },
+        {
+            "name": "release",
+            "configurePreset": "release"
         },
         {
             "name": "clazy",
