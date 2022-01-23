@@ -58,12 +58,12 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     nlohmann_json::nlohmann_json
     spdlog::spdlog
     pugixml::pugixml
-    Qt::Core
-    Qt::Qml
-    Qt::QmlPrivate
-    Qt::Quick
-    Qt::Widgets
-    Qt::UiTools
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Qml
+    Qt${QT_VERSION_MAJOR}::QmlPrivate
+    Qt${QT_VERSION_MAJOR}::Quick
+    Qt${QT_VERSION_MAJOR}::Widgets
+    Qt${QT_VERSION_MAJOR}::UiTools
     knut-lsp
     knut-rccore
     knut-rcui

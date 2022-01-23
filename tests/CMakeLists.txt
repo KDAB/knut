@@ -8,7 +8,7 @@ function(add_knut_test NAME SOURCES LIBS)
 
     set(_LIBS ${LIBS} ${ARGN})
     target_link_libraries(${NAME} PRIVATE
-        Qt::Test
+        Qt${QT_VERSION_MAJOR}::Test
         ${_LIBS}
     )
     target_include_directories(${NAME}

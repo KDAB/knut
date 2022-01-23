@@ -32,9 +32,9 @@ set(PROJECT_SOURCES
 
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
 target_link_libraries(${PROJECT_NAME} PUBLIC
-    Qt::Core
-    Qt::Widgets
-    Qt::UiTools
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Widgets
+    Qt${QT_VERSION_MAJOR}::UiTools
     KF5SyntaxHighlighting
     knut-core
 )

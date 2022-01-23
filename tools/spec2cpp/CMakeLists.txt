@@ -17,5 +17,5 @@ qt_add_resources(PROJECT_SOURCES
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 target_link_libraries(${PROJECT_NAME} PRIVATE
-    Qt::Core
+    Qt${QT_VERSION_MAJOR}::Core
 )
