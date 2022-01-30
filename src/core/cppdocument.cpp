@@ -165,6 +165,8 @@ CppDocument *CppDocument::openHeaderSource()
  */
 QVariantMap CppDocument::mfcExtractDDX(const QString &className)
 {
+    spdlog::trace("CppDocument::mfcExtractDDX {}", className.toStdString());
+
     QVariantMap map;
 
     // TODO: use semantic information coming from LSP instead of regexp to find the method
