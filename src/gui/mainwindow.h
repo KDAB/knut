@@ -1,6 +1,5 @@
 #pragma once
 
-#include <QHash>
 #include <QMainWindow>
 
 class QMenu;
@@ -36,6 +35,7 @@ private:
     void updateRecentProjects();
     void openDocument(const QModelIndex &index);
     void saveDocument();
+    void closeDocument();
     void createQrc();
     void createUi();
     void runScript();
@@ -49,7 +49,6 @@ private:
 private:
     Ui::MainWindow *const ui;
     QMenu *m_recentProjects = nullptr;
-    QHash<QString, int> m_windows;
     QFileSystemModel *m_fileModel = nullptr;
     Palette *m_palette = nullptr;
 };

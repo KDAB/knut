@@ -57,9 +57,7 @@ Project::~Project()
 {
     m_instance = nullptr;
 
-    const auto documents = findChildren<Document *>();
-    for (auto document : documents)
-        document->close();
+    closeAll();
 
     for (auto clients : m_lspClients)
         clients.second->shutdown();
@@ -293,6 +291,16 @@ Document *Project::open(QString fileName)
     emit currentDocumentChanged();
 
     return m_current;
+}
+
+/*!
+ * \qmlmethod void Project::cloasAll()
+ * Close all documents. If the document has some changes, save the changes.
+ */
+void Project::closeAll()
+{
+    for (auto d : std::as_const(m_documents))
+        d->close();
 }
 
 Core::Document *Project::currentDocument() const

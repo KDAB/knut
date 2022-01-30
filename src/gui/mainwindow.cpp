@@ -58,6 +58,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveDocument);
     connect(ui->actionSaveAll, &QAction::triggered, this, &MainWindow::saveAllDocuments);
     connect(ui->actionShow_Palette, &QAction::triggered, this, &MainWindow::showPalette);
+    connect(ui->actionClose_Document, &QAction::triggered, this, &MainWindow::closeDocument);
 
     m_recentProjects = new QMenu(this);
     ui->actionRecent_Projects->setMenu(m_recentProjects);
@@ -83,6 +84,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    Core::Project::instance()->closeAll();
     delete ui;
 }
 
@@ -161,6 +163,14 @@ void MainWindow::saveDocument()
         document->save();
 }
 
+void MainWindow::closeDocument()
+{
+    auto document = Core::Project::instance()->currentDocument();
+    if (document)
+        document->save();
+    ui->tabWidget->removeTab(ui->tabWidget->currentIndex());
+}
+
 void MainWindow::createQrc()
 {
     auto document = Core::Project::instance()->currentDocument();
@@ -204,6 +214,13 @@ void MainWindow::showPalette()
 
 void MainWindow::changeTab()
 {
+    if (ui->tabWidget->count() == 0) {
+        ui->actionCreate_Qrc->setEnabled(false);
+        ui->actionCreate_Ui->setEnabled(false);
+        ui->projectView->selectionModel()->clear();
+        return;
+    }
+
     auto document = Core::Project::instance()->open(ui->tabWidget->currentWidget()->windowTitle());
     if (!document)
         return;
@@ -270,15 +287,22 @@ void MainWindow::changeCurrentDocument()
     auto project = Core::Project::instance();
     const QString fileName = project->currentDocument()->fileName();
 
+    // find index of the document, if any
+    int windowIndex = -1;
+    for (int i = 0; i < ui->tabWidget->count(); ++i) {
+        if (ui->tabWidget->widget(i)->windowTitle() == fileName) {
+            windowIndex = i;
+            break;
+        }
+    }
+
     // open the window if it's already opened
-    int windowIndex = m_windows.value(fileName, -1);
     if (windowIndex == -1) {
         auto document = project->currentDocument();
         QDir dir(project->root());
         auto widget = widgetForDocument(document);
         widget->setWindowTitle(fileName);
         windowIndex = ui->tabWidget->addTab(widget, dir.relativeFilePath(fileName));
-        m_windows[fileName] = windowIndex;
 
         connect(document, &Core::Document::hasChangedChanged, this, [this, windowIndex, document]() {
             updateTabTitle(ui->tabWidget, windowIndex, document->hasChanged());

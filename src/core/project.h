@@ -49,6 +49,7 @@ public:
 public slots:
     Core::Document *get(QString fileName);
     Core::Document *open(QString fileName);
+    void closeAll();
     void saveAllDocuments();
 
 signals:

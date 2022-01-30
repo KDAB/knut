@@ -48,7 +48,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -60,6 +60,8 @@
     <addaction name="separator"/>
     <addaction name="actionSave"/>
     <addaction name="actionSaveAll"/>
+    <addaction name="separator"/>
+    <addaction name="actionClose_Document"/>
     <addaction name="separator"/>
     <addaction name="actionShow_Palette"/>
     <addaction name="action_Run_Script"/>
@@ -150,6 +152,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="actionClose_Document">
+   <property name="text">
+    <string>Close Document</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
    </property>
   </action>
  </widget>
