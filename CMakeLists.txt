@@ -83,5 +83,5 @@ add_subdirectory(tools)
 add_subdirectory(tests)
 add_subdirectory(test_data)
 
-set(DOCS_FILES mkdocs.yml)
+file(GLOB DOCS_FILES README.md mkdocs.yml docs/*.md docs/contributing/*.md)
 add_custom_target(docs SOURCES ${DOCS_FILES})

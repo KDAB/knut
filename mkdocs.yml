@@ -14,6 +14,7 @@ theme:
   features:
     - navigation.top
     - navigation.tabs
+    - navigation.tabs.sticky
 
 extra_css:
   - stylesheets/extra.css
@@ -25,7 +26,8 @@ repo_name: knut
 
 nav:
     - Home: index.md
-    - Contributing: contributing.md
+    - Contributing:
+        - Getting started: contributing/getting-started.md
     - API:
         - Script Module:
              - CppDocument: API/script/cppdocument.md
@@ -72,6 +74,8 @@ markdown_extensions:
     - pymdownx.keys
     - pymdownx.tabbed
     - attr_list
+    - plantuml_markdown:
+        server: http://www.plantuml.com/plantuml
 
 plugins:
     - search:

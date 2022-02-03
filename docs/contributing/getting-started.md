@@ -1,8 +1,4 @@
-# Contributing
-
-Feel free to contribute code, scripts, documentation...
-
-## Development
+# Development
 
 If you want to collaborate, please checkout the `knut` repository on gerrit:
 
@@ -15,35 +11,35 @@ The code layout is like this:
 - `docs`: current documention
 - `scripts`: available scripts known by knut
 - `src`: source of the application
-    - `core`: contains all the plumbing and objects exported to QML
-    - `lsp`: client/server [Language Server Protocol](https://microsoft.github.io/language-server-protocol/) implementation
 - `tests`: unit-tests for the application
 - `test_data`: data used by tests
 - `tools`: specific tools written for knut
-    - `spec2cpp`: convert the LSP specification into code, used by the lsp library
 
 Happy hacking!
 
-## Compilation
+# Compilation
 
 To compile Knut, you need:
+
 - a C++20 compiler (recent compilers should work)
 - Qt 5.15
+- `clang-format` in the path (needed by KSyntaxHighlighting)
 
 All 3rd-party are downloaded at configure time using cmake `FetchContent`.
 
-## Documentation
+# Documentation
 
 The documention is done using [mkdocs.org](https://www.mkdocs.org/). To create the documentation, follow instructions:
 
-### Installation
+## Installation
 
 ```
 pip install mkdocs
 pip install mkdocs-material
+pip install plantuml-markdown
 ```
 
-### Commands
+## Commands
 
 - `mkdocs serve` - Start the live-reloading docs server.
 - `mkdocs build` - Build the documentation site.
