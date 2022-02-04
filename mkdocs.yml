@@ -15,6 +15,7 @@ theme:
     - navigation.top
     - navigation.tabs
     - navigation.tabs.sticky
+  logo: assets/transparentWhiteKDAB.svg
 
 extra_css:
   - stylesheets/extra.css
