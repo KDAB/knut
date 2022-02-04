@@ -32,7 +32,7 @@ void DocWriter::saveDocumentation()
     for (const auto &type : m_data.types)
         writeTypeFile(type);
 
-    QString nav("    - API:\n");
+    QString nav("    - Script API:\n");
     auto keys = m_navMap.keys();
     std::sort(keys.begin(), keys.end());
     for (const auto &module : keys) {
