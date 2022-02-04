@@ -28,7 +28,9 @@ nav:
     - Home: index.md
     - Contributing:
         - Getting started: contributing/getting-started.md
-    - API:
+        - Architecture: contributing/architecture.md
+        - Unit tests: contributing/unit-tests.md
+    - Script API:
         - Script Module:
              - CppDocument: API/script/cppdocument.md
              - Dir: API/script/dir.md
@@ -74,9 +76,15 @@ markdown_extensions:
     - pymdownx.keys
     - pymdownx.tabbed
     - attr_list
-    - plantuml_markdown:
-        server: http://www.plantuml.com/plantuml
 
 plugins:
     - search:
         separator: '[\s\-\.]+'
+    - build_plantuml:
+          render: "server"
+          server: "http://www.plantuml.com/plantuml"
+          output_format: "svg"
+          diagram_root: "docs/assets"
+          output_folder: "."
+          input_folder: "."
+          input_extensions: ""

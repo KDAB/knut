@@ -84,3 +84,4 @@ site/
 
 cpp_messages.log
 cpp_server.log
+docs/assets/*.svg

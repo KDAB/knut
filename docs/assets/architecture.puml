@@ -1,0 +1,15 @@
+@startuml
+node knut #palegreen;line:green;text:green
+node gui #aliceblue;line:blue;text:blue
+node rcui #aliceblue;line:blue;text:blue
+node rccore #aliceblue;line:blue;text:blue
+node core #aliceblue;line:blue;text:blue
+node lsp #aliceblue;line:blue;text:blue
+storage clangd #pink;line:red;line.bold;text:red
+knut -->> gui
+gui -->> rcui
+gui -->> core
+rcui -->> rccore
+core -->> lsp
+lsp --> clangd
+@enduml

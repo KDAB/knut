@@ -1,4 +1,6 @@
-# Development
+# Getting started
+
+## Development
 
 If you want to collaborate, please checkout the `knut` repository on gerrit:
 
@@ -15,9 +17,7 @@ The code layout is like this:
 - `test_data`: data used by tests
 - `tools`: specific tools written for knut
 
-Happy hacking!
-
-# Compilation
+## Compilation
 
 To compile Knut, you need:
 
@@ -27,19 +27,19 @@ To compile Knut, you need:
 
 All 3rd-party are downloaded at configure time using cmake `FetchContent`.
 
-# Documentation
+## Documentation
 
 The documention is done using [mkdocs.org](https://www.mkdocs.org/). To create the documentation, follow instructions:
 
-## Installation
+### Installation
 
 ```
 pip install mkdocs
 pip install mkdocs-material
-pip install plantuml-markdown
+pip install mkdocs-build-plantuml-plugin
 ```
 
-## Commands
+### Commands
 
 - `mkdocs serve` - Start the live-reloading docs server.
 - `mkdocs build` - Build the documentation site.

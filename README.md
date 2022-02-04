@@ -15,7 +15,7 @@ For full documentation visit [mkdocs.org](https://www.mkdocs.org/).
 ```
 pip install mkdocs
 pip install mkdocs-material
-pip install plantuml-markdown
+pip install mkdocs-build-plantuml-plugin
 ```
 
 ## Commands
