@@ -134,5 +134,5 @@ constexpr inline bool noClangd()
 #define CHECK_CLANGD                                                                                                   \
     do {                                                                                                               \
         if constexpr (Test::noClangd())                                                                                \
-            QSKIP("clangd is not available to run the tests");                                                         \
+            QSKIP("clangd is not available to run the test");                                                          \
     } while (false)

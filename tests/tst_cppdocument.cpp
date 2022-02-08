@@ -59,6 +59,49 @@ private slots:
         QCOMPARE(ddxMap.value("IDC_ECHO_AREA"), "m_EchoText");
         QCOMPARE(ddxMap.value("IDC_MOUSEECHO"), "m_MouseEcho");
     }
+
+    void getSymbols()
+    {
+// Commenting it out by default, looks like it's failing on the CI with clang 11
+// Works with clang 13
+#ifdef USE_EXTRA_TESTS
+        CHECK_CLANGD;
+
+        Core::KnutCore core;
+        Core::Project::instance()->setRoot(Test::testDataPath() + "/mfc/tutorial");
+
+        auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open("TutorialDlg.cpp"));
+        const auto cppSymbols = cppDocument->symbols();
+
+        QCOMPARE(cppSymbols.size(), 15);
+        const auto constructor = cppSymbols.first();
+        QCOMPARE(constructor.kind, Core::Symbol::Constructor);
+        QCOMPARE(constructor.name, "CTutorialDlg::CTutorialDlg");
+        cppDocument->selectRange(constructor.selectionRange);
+        const QString constructorName = cppDocument->selectedText();
+        QCOMPARE(constructorName, "CTutorialDlg");
+        cppDocument->selectRange(constructor.range);
+        const QString constructorCode = cppDocument->selectedText();
+        QVERIFY(constructorCode.startsWith("CTutorialDlg::CTutorialDlg(CWnd* pParent)"));
+        QVERIFY(constructorCode.endsWith('}'));
+
+        QCOMPARE(cppSymbols.at(1).kind, Core::Symbol::Method);
+        QCOMPARE(cppSymbols.at(1).name, "CTutorialDlg::DoDataExchange");
+        QCOMPARE(cppSymbols.at(1).description, "void (CDataExchange *)");
+
+        auto hDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open("TutorialDlg.h"));
+        const auto hSymbols = hDocument->symbols();
+
+        QCOMPARE(hSymbols.size(), 26);
+        QCOMPARE(hSymbols.first().kind, Core::Symbol::Class);
+        QCOMPARE(hSymbols.first().name, "CTutorialDlg");
+
+        QCOMPARE(hSymbols.last().kind, Core::Symbol::Field);
+        QCOMPARE(hSymbols.last().name, "m_hIcon");
+        hDocument->selectRange(hSymbols.last().range);
+        QCOMPARE(hDocument->selectedText(), "HICON m_hIcon");
+#endif
+    }
 };
 
 QTEST_MAIN(TestCppDocument)

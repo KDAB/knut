@@ -65,6 +65,11 @@ if(USE_SYNTAX_HIGHLIGHTING)
     add_definitions(-DUSE_SYNTAX_HIGHLIGHTING)
 endif()
 
+option(USE_EXTRA_TESTS "Enable more tests" OFF)
+if (USE_EXTRA_TESTS)
+    add_definitions(-DUSE_EXTRA_TESTS)
+endif()
+
 if(MSVC)
     add_compile_options(/W3 /WX)
 else()

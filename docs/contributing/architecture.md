@@ -38,3 +38,5 @@ High-level architecture description.
 The `Project` class is the root of everything, as it's the class used to create all documents.
 
 ![project classes](../assets/project-classes.svg)
+
+All objects exported **must be declared** inside the `ScriptRunner` class constructor. This class, as the name suggest, is used to run the scripts.

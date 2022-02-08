@@ -3,6 +3,9 @@
 #include "project.h"
 #include "settings.h"
 
+#include "lsp/client.h"
+#include "lsp/types.h"
+
 #include <QFileInfo>
 #include <QHash>
 #include <QRegularExpression>
@@ -11,6 +14,66 @@
 #include <spdlog/spdlog.h>
 
 namespace Core {
+
+/*!
+ * \qmltype Symbol
+ * \brief Represent a symbol in the current file
+ * \instantiates Core::Symbol
+ * \inqmlmodule Script
+ * \since 4.0
+ */
+
+/*!
+ * \qmlproperty string Symbol::name
+ * Return the name of this symbol.
+ */
+/*!
+ * \qmlproperty string Symbol::description
+ * Return more detail for this symbol, e.g the signature of a function.
+ */
+/*!
+ * \qmlproperty Kind Symbol::kind
+ * Return the kind of this symbol. Available symbole kinds are:
+ *
+ * - `Symbol.File`
+ * - `Symbol.Module`
+ * - `Symbol.Namespace`
+ * - `Symbol.Package`
+ * - `Symbol.Class`
+ * - `Symbol.Method`
+ * - `Symbol.Property`
+ * - `Symbol.Field`
+ * - `Symbol.Constructor`
+ * - `Symbol.Enum`
+ * - `Symbol.Interface`
+ * - `Symbol.Function`
+ * - `Symbol.Variable`
+ * - `Symbol.Constant`
+ * - `Symbol.String`
+ * - `Symbol.Number`
+ * - `Symbol.Boolean`
+ * - `Symbol.Array`
+ * - `Symbol.Object`
+ * - `Symbol.Key`
+ * - `Symbol.Null`
+ * - `Symbol.EnumMember`
+ * - `Symbol.Struct`
+ * - `Symbol.Event`
+ * - `Symbol.Operator`
+ * - `Symbol.TypeParameter`
+ */
+/*!
+ * \qmlproperty TextRange Symbol::range
+ * The range enclosing this symbol not including leading/trailing whitespace
+ * but everything else like comments. This information is typically used to
+ * determine if the clients cursor is inside the symbol to reveal in the
+ * symbol in the UI.
+ */
+/*!
+ * \qmlproperty TextRange Symbol::selectionRange
+ * The range that should be selected and revealed when this symbol is being
+ * picked, e.g. the name of a function. Must be contained by the `range`.
+ */
 
 /*!
  * \qmltype CppDocument
@@ -141,6 +204,43 @@ QString CppDocument::correspondingHeaderSource() const
 
     spdlog::warn("CppDocument::correspondingHeaderSource {} - not found ", fileName().toStdString());
     return {};
+}
+
+/*!
+ * \qmlmethod vector<Symbol> CppDocument::symbols()
+ * Returns the list of symbols in the current document.
+ */
+QVector<Core::Symbol> CppDocument::symbols() const
+{
+    if (!client())
+        return {};
+
+    // TODO cache the data
+    Lsp::DocumentSymbolParams params;
+    params.textDocument.uri = toUri();
+    auto result = client()->documentSymbol(std::move(params));
+    if (!result)
+        return {};
+
+    // Wee only supports Lsp::DocumentSymbol for now
+    Q_ASSERT(std::holds_alternative<std::vector<Lsp::DocumentSymbol>>(result.value()));
+    const auto lspSymbols = std::get<std::vector<Lsp::DocumentSymbol>>(result.value());
+    QVector<Symbol> symbols;
+
+    const std::function<void(const std::vector<Lsp::DocumentSymbol> &)> fillSymbols =
+        [this, &symbols, &fillSymbols](const std::vector<Lsp::DocumentSymbol> &lspSymbols) {
+            for (const auto &lspSymbol : lspSymbols) {
+                const QString description = lspSymbol.detail ? QString::fromStdString(lspSymbol.detail.value()) : "";
+                symbols.push_back(Symbol {QString::fromStdString(lspSymbol.name), description,
+                                          static_cast<Core::Symbol::Kind>(lspSymbol.kind), toRange(lspSymbol.range),
+                                          toRange(lspSymbol.selectionRange)});
+                if (lspSymbol.children)
+                    fillSymbols(lspSymbol.children.value());
+            }
+        };
+    fillSymbols(lspSymbols);
+
+    return symbols;
 }
 
 /*!

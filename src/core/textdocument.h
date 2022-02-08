@@ -1,6 +1,9 @@
 #pragma once
 
 #include "document.h"
+#include "textrange.h"
+
+#include "lsp/types.h"
 
 #include <QPointer>
 #include <QTextCursor>
@@ -116,6 +119,7 @@ public slots:
     void selectNextCharacter(int count = 1);
     void selectPreviousWord(int count = 1);
     void selectNextWord(int count = 1);
+    void selectRange(const Core::TextRange &range);
 
     // Copy & paste
     void copy();
@@ -170,7 +174,11 @@ protected:
     void movePosition(QTextCursor::MoveOperation operation, QTextCursor::MoveMode mode = QTextCursor::MoveAnchor,
                       int count = 1);
 
+    // LSP specific methods
     Lsp::Client *client() const;
+    std::string toUri() const;
+    int toPos(const Lsp::Position &pos) const;
+    TextRange toRange(const Lsp::Range &range) const;
 
 private:
     friend Mark;

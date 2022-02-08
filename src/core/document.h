@@ -41,8 +41,6 @@ public:
 
     int revision() const;
 
-    std::string toUri() const;
-
 public slots:
     bool load(const QString &fileName);
     bool save();

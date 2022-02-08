@@ -12,6 +12,7 @@
 #include "settings.h"
 #include "testutil.h"
 #include "textdocument.h"
+#include "textrange.h"
 #include "uidocument.h"
 #include "userdialog.h"
 #include "utils.h"
@@ -43,22 +44,7 @@ ScriptRunner::ScriptRunner(QObject *parent)
     // Script objects registrations
     qRegisterMetaType<QDirValueType>();
     qRegisterMetaType<QFileInfoValueType>();
-    qRegisterMetaType<RcCore::Asset>();
-    qRegisterMetaType<QVector<RcCore::Asset>>();
-    qRegisterMetaType<RcCore::ToolBarItem>();
-    qRegisterMetaType<QVector<RcCore::ToolBarItem>>();
-    qRegisterMetaType<RcCore::ToolBar>();
-    qRegisterMetaType<QVector<RcCore::ToolBar>>();
-    qRegisterMetaType<RcCore::Widget>();
-    qRegisterMetaType<QVector<RcCore::Widget>>();
-    qRegisterMetaType<RcCore::MenuItem>();
-    qRegisterMetaType<QVector<RcCore::MenuItem>>();
-    qRegisterMetaType<RcCore::Menu>();
-    qRegisterMetaType<QVector<RcCore::Menu>>();
-    qRegisterMetaType<RcCore::Shortcut>();
-    qRegisterMetaType<QVector<RcCore::Shortcut>>();
-    qRegisterMetaType<RcCore::Action>();
-    qRegisterMetaType<QVector<RcCore::Action>>();
+    qRegisterMetaType<TextRange>();
 
     // Script
     qmlRegisterSingletonType<Dir>("Script", 1, 0, "Dir", [](QQmlEngine *engine, QJSEngine *) {
@@ -89,6 +75,23 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qmlRegisterType<CppDocument>("Script", 1, 0, "CppDocument");
 
     // Script.Mfc
+    qRegisterMetaType<RcCore::Asset>();
+    qRegisterMetaType<QVector<RcCore::Asset>>();
+    qRegisterMetaType<RcCore::ToolBarItem>();
+    qRegisterMetaType<QVector<RcCore::ToolBarItem>>();
+    qRegisterMetaType<RcCore::ToolBar>();
+    qRegisterMetaType<QVector<RcCore::ToolBar>>();
+    qRegisterMetaType<RcCore::Widget>();
+    qRegisterMetaType<QVector<RcCore::Widget>>();
+    qRegisterMetaType<RcCore::MenuItem>();
+    qRegisterMetaType<QVector<RcCore::MenuItem>>();
+    qRegisterMetaType<RcCore::Menu>();
+    qRegisterMetaType<QVector<RcCore::Menu>>();
+    qRegisterMetaType<RcCore::Shortcut>();
+    qRegisterMetaType<QVector<RcCore::Shortcut>>();
+    qRegisterMetaType<RcCore::Action>();
+    qRegisterMetaType<QVector<RcCore::Action>>();
+
     qmlRegisterType<RcDocument>("Script.Mfc", 1, 0, "RcDocument");
 
     // Script.Test

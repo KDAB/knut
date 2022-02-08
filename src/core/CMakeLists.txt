@@ -40,10 +40,12 @@ set(PROJECT_SOURCES
     settings.cpp
     string_utils.h
     string_utils.cpp
+    symbol.h
     testutil.h
     testutil.cpp
     textdocument.h
     textdocument.cpp
+    textrange.h
     uidocument.h
     uidocument.cpp
     userdialog.h

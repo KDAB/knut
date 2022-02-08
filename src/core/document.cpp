@@ -100,11 +100,6 @@ int Document::revision() const
     return m_revision;
 }
 
-std::string Document::toUri() const
-{
-    return QUrl::fromLocalFile(m_fileName).toString().toStdString();
-}
-
 /*!
  * \qmlmethod bool Document::load(string fileName)
  * Load the document `fileName` **without changing the type**. If the current document has some changes, save them

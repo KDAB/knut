@@ -2,6 +2,7 @@
 
 #include "mark.h"
 #include "string_utils.h"
+#include "textrange.h"
 
 #include "lsp/client.h"
 
@@ -18,6 +19,22 @@
 namespace Core {
 
 /*!
+ * \qmltype TextRange
+ * \brief Define a range of text in a text document
+ * \inqmlmodule Script
+ * \since 4.0
+ * \sa TextDocument
+ */
+/*!
+ * \qmlproperty int TextRange::start
+ * Start position of the range.
+ */
+/*!
+ * \qmlproperty int TextRange::end
+ * End position of the range.
+ */
+
+/*!
  * \qmltype TextDocument
  * \brief Document object for text files.
  * \instantiates Core::TextDocument
@@ -25,7 +42,6 @@ namespace Core {
  * \since 4.0
  * \inherits Document
  */
-
 /*!
  * \qmlproperty int TextDocument::column
  * This read-only property holds the column of the cursor position.
@@ -322,6 +338,29 @@ Lsp::Client *TextDocument::client() const
     return m_lspClient;
 }
 
+std::string TextDocument::toUri() const
+{
+    return QUrl::fromLocalFile(fileName()).toString().toStdString();
+}
+
+int TextDocument::toPos(const Lsp::Position &pos) const
+{
+    // Internally, columns are 0-based, like in LSP
+    const int blockNumber = qMin((int)pos.line, m_document->document()->blockCount() - 1);
+    const QTextBlock &block = m_document->document()->findBlockByNumber(blockNumber);
+    if (block.isValid()) {
+        QTextCursor cursor(block);
+        cursor.movePosition(QTextCursor::Right, QTextCursor::MoveAnchor, pos.character);
+        return cursor.position();
+    }
+    return 0;
+}
+
+TextRange TextDocument::toRange(const Lsp::Range &range) const
+{
+    return {toPos(range.start), toPos(range.end)};
+}
+
 /*!
  * \qmlmethod TextDocument::gotoLine( int line, int column = 1)
  * Goes to the given `line` and `column` in the editor. Lines and columns are 1-based.
@@ -607,6 +646,19 @@ void TextDocument::selectNextWord(int count)
 {
     spdlog::trace("TextDocument::selectNextWord {}", count);
     movePosition(QTextCursor::NextWord, QTextCursor::KeepAnchor, count);
+}
+
+/*!
+ * \qmlmethod TextDocument::selectRange( TextRange range)
+ * Selects the range passed in parameter.
+ */
+void TextDocument::selectRange(const TextRange &range)
+{
+    spdlog::trace("TextDocument::selectRange {} - {}", range.start, range.end);
+    QTextCursor cursor = m_document->textCursor();
+    cursor.setPosition(range.start, QTextCursor::MoveAnchor);
+    cursor.setPosition(range.end, QTextCursor::KeepAnchor);
+    m_document->setTextCursor(cursor);
 }
 
 /*!
