@@ -49,18 +49,23 @@ FetchContent_Declare(pugixml
     GIT_TAG        v1.11.4
 )
 
-#KSyntaxHighlighting
-FetchContent_Declare(KSyntaxHighlighting
-    GIT_REPOSITORY https://github.com/KDE/syntax-highlighting.git
-    GIT_TAG        v5.87.0
-)
-# Don't build tests and examples
-set(KSYNTAXHIGHLIGHTING_USE_GUI OFF)
-set(DISABLE_ALL_OPTIONAL_SUBDIRECTORIES TRUE)
-set(BUILD_TESTING OFF)
-
 # Fetch them all
-FetchContent_MakeAvailable(spdlog json pugixml KSyntaxHighlighting)
+FetchContent_MakeAvailable(spdlog json pugixml)
+
+option(USE_SYNTAX_HIGHLIGHTING "Enable syntax highlighting in IDE" ON)
+if(USE_SYNTAX_HIGHLIGHTING)
+    #KSyntaxHighlighting
+    FetchContent_Declare(KSyntaxHighlighting
+        GIT_REPOSITORY https://github.com/KDE/syntax-highlighting.git
+        GIT_TAG        v5.87.0
+    )
+    # Don't build tests and examples
+    set(KSYNTAXHIGHLIGHTING_USE_GUI OFF)
+    set(DISABLE_ALL_OPTIONAL_SUBDIRECTORIES TRUE)
+    set(BUILD_TESTING OFF)
+    FetchContent_MakeAvailable(KSyntaxHighlighting)
+    add_definitions(-DUSE_SYNTAX_HIGHLIGHTING)
+endif()
 
 if(MSVC)
     add_compile_options(/W3 /WX)

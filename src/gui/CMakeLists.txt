@@ -35,10 +35,15 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     Qt${QT_VERSION_MAJOR}::Core
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::UiTools
-    KF5SyntaxHighlighting
     knut-core
     knut-rcui
 )
+if(USE_SYNTAX_HIGHLIGHTING)
+    target_link_libraries(${PROJECT_NAME} PUBLIC
+        KF5SyntaxHighlighting
+    )
+endif()
+
 target_include_directories(${PROJECT_NAME}
     INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/..
 )

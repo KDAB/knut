@@ -17,10 +17,12 @@
 #include "core/uidocument.h"
 #include "rcui/rcfileview.h"
 
+#ifdef USE_SYNTAX_HIGHLIGHTING
 #include <definition.h>
 #include <repository.h>
 #include <syntaxhighlighter.h>
 #include <theme.h>
+#endif
 
 #include <QApplication>
 #include <QDir>
@@ -242,6 +244,7 @@ static QWidget *widgetForDocument(Core::Document *document)
         QFontMetrics fm(f);
         textEdit->setTabStopDistance(4 * fm.horizontalAdvance(' '));
 
+#ifdef USE_SYNTAX_HIGHLIGHTING
         static KSyntaxHighlighting::Repository repository;
         auto highlighter = new KSyntaxHighlighting::SyntaxHighlighter(textEdit->document());
         highlighter->setTheme((textEdit->palette().color(QPalette::Base).lightness() < 128)
@@ -249,6 +252,7 @@ static QWidget *widgetForDocument(Core::Document *document)
                                   : repository.defaultTheme(KSyntaxHighlighting::Repository::LightTheme));
         const auto def = repository.definitionForFileName(document->fileName());
         highlighter->setDefinition(def);
+#endif
 
         return textEdit;
     }
