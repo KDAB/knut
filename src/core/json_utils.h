@@ -20,7 +20,7 @@ inline void from_json(const nlohmann::json &j, QString &str)
     if (j.is_string())
         str = QString::fromStdString(j.get<std::string>());
     else
-        throw nlohmann::detail::type_error::create(302, "type must be a string, but is not");
+        throw nlohmann::detail::type_error::create(302, "type must be a string, but is not", j);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -38,7 +38,7 @@ inline void from_json(const nlohmann::json &j, QStringList &strList)
         auto list = j.get<std::vector<QString>>();
         strList = QStringList(list.cbegin(), list.cend());
     } else {
-        throw nlohmann::detail::type_error::create(302, "type must be an array, but is not");
+        throw nlohmann::detail::type_error::create(302, "type must be an array, but is not", j);
     }
 }
 
@@ -68,7 +68,7 @@ struct adl_serializer<QFlags<T>>
             for (auto v : list)
                 data.setFlag(v);
         } else {
-            throw nlohmann::detail::type_error::create(302, "type must be an array, but is not");
+            throw nlohmann::detail::type_error::create(302, "type must be an array, but is not", j);
         }
     }
 };
