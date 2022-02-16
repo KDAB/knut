@@ -212,6 +212,8 @@ QString CppDocument::correspondingHeaderSource() const
  */
 QVector<Core::Symbol> CppDocument::symbols() const
 {
+    spdlog::trace("CppDocument::symbols");
+
     if (!client())
         return {};
 
@@ -227,18 +229,26 @@ QVector<Core::Symbol> CppDocument::symbols() const
     const auto lspSymbols = std::get<std::vector<Lsp::DocumentSymbol>>(result.value());
     QVector<Symbol> symbols;
 
-    const std::function<void(const std::vector<Lsp::DocumentSymbol> &)> fillSymbols =
-        [this, &symbols, &fillSymbols](const std::vector<Lsp::DocumentSymbol> &lspSymbols) {
+    // Create a recusive lambda to flatten the hierarchy
+    // Add the full symbol name (with namespaces/classes)
+    const std::function<void(const std::vector<Lsp::DocumentSymbol> &, QString)> fillSymbols =
+        [this, &symbols, &fillSymbols](const std::vector<Lsp::DocumentSymbol> &lspSymbols, QString context) {
             for (const auto &lspSymbol : lspSymbols) {
                 const QString description = lspSymbol.detail ? QString::fromStdString(lspSymbol.detail.value()) : "";
-                symbols.push_back(Symbol {QString::fromStdString(lspSymbol.name), description,
-                                          static_cast<Core::Symbol::Kind>(lspSymbol.kind), toRange(lspSymbol.range),
-                                          toRange(lspSymbol.selectionRange)});
-                if (lspSymbol.children)
-                    fillSymbols(lspSymbol.children.value());
+                QString name = QString::fromStdString(lspSymbol.name);
+                if (!context.isEmpty())
+                    name = context + "::" + name;
+                symbols.push_back(Symbol {name, description, static_cast<Core::Symbol::Kind>(lspSymbol.kind),
+                                          toRange(lspSymbol.range), toRange(lspSymbol.selectionRange)});
+                if (lspSymbol.children) {
+                    if (lspSymbol.kind == Lsp::SymbolKind::String) // case for BEGIN_MESSAGE_MAP
+                        fillSymbols(lspSymbol.children.value(), context);
+                    else
+                        fillSymbols(lspSymbol.children.value(), name);
+                }
             }
         };
-    fillSymbols(lspSymbols);
+    fillSymbols(lspSymbols, "");
 
     return symbols;
 }

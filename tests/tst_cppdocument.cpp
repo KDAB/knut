@@ -94,7 +94,7 @@ private slots:
         QCOMPARE(hSymbols.first().name, "CTutorialDlg");
 
         QCOMPARE(hSymbols.last().kind, Core::Symbol::Field);
-        QCOMPARE(hSymbols.last().name, "m_hIcon");
+        QCOMPARE(hSymbols.last().name, "CTutorialDlg::m_hIcon");
         hDocument->selectRange(hSymbols.last().range);
         QCOMPARE(hDocument->selectedText(), "HICON m_hIcon");
     }
