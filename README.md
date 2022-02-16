@@ -6,6 +6,11 @@ To compile Knut, you need:
 
 All 3rd-party are downloaded at configure time using Cmake `FetchContent`.
 
+# Usage
+
+Knut is using [Language Server Protocol](https://microsoft.github.io/language-server-protocol/) servers.
+For C++, if you are using clangd, note that some tests are disabled for clangd version < 13.
+
 # Documentation
 
 For full documentation visit [mkdocs.org](https://www.mkdocs.org/).

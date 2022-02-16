@@ -27,6 +27,14 @@ To compile Knut, you need:
 
 All 3rd-party are downloaded at configure time using cmake `FetchContent`.
 
+
+## Usage
+
+Knut is using [Language Server Protocol](https://microsoft.github.io/language-server-protocol/) servers.
+
+For C++, the default LSP server is clangd. The recommanded version is clangd >= 13, some tests are disabled otherwise.
+
+
 ## Documentation
 
 The documention is done using [mkdocs.org](https://www.mkdocs.org/). To create the documentation, follow instructions:

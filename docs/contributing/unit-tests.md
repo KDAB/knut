@@ -4,7 +4,11 @@ There are 2 different kinds of unit-tests: C++ and script. THey are located in t
 
 ## C++ unit-tests
 
-Tests written using the QtTest module. There are some utility classes you can use:
+Tests written using the QtTest module.
+
+### Utility classes
+
+There are some utility classes you can use:
 
 - `Test::testDataPath()`: returns the test data folder path
 - `Test::LogSilencers`: silence logs during the tests
@@ -28,6 +32,15 @@ QVERIFY(file.compare());
 ```
 
 To use it, include `"common/test_utils.h".
+
+### Enabling or disabling tests
+
+Some tests can't be run without `clangd` or with a version of `clangd` older than 13.0.
+In this case, you can add some macro at the begining of the tests:
+
+- `CHECK_CLANGD` to skip the test if there are no `clangd`
+- `CHECK_CLANGD_VERSION` to skip the test if there are no `clangd` or an obsolete one
+
 
 ## QML Unit-tests
 

@@ -128,6 +128,15 @@ constexpr inline bool noClangd()
     return false;
 #endif
 }
+
+constexpr inline bool obsoleteClangd()
+{
+#if defined(OBSOLETE_CLANGD)
+    return true;
+#else
+    return false;
+#endif
+}
 }
 
 // Check if clangd is available, needed for some tests
@@ -135,4 +144,13 @@ constexpr inline bool noClangd()
     do {                                                                                                               \
         if constexpr (Test::noClangd())                                                                                \
             QSKIP("clangd is not available to run the test");                                                          \
+    } while (false)
+
+// Check if clangd is available, and if the version is high enough
+#define CHECK_CLANGD_VERSION                                                                                           \
+    do {                                                                                                               \
+        if constexpr (Test::noClangd())                                                                                \
+            QSKIP("clangd is not available to run the test");                                                          \
+        else if constexpr (Test::obsoleteClangd())                                                                     \
+            QSKIP("clangd version is too old to run the test");                                                        \
     } while (false)

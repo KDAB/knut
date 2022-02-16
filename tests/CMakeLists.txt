@@ -1,6 +1,15 @@
 find_program(CLANGD_EXEC clangd)
 if (NOT CLANGD_EXEC)
     add_definitions(-DNO_CLANGD=true)
+else()
+    execute_process(COMMAND ${CLANGD_EXEC} --version
+        OUTPUT_VARIABLE CLANGD_VERSION_TEXT
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    string(REGEX MATCH "[0-9]+\\.[0-9]+\\.[0-9]+" CLANGD_VERSION ${CLANGD_VERSION_TEXT})
+    if (${CLANGD_VERSION} VERSION_LESS  "13.0.0")
+        add_definitions(-DOBSOLETE_CLANGD=true)
+    endif()
 endif()
 
 function(add_knut_test NAME SOURCES LIBS)

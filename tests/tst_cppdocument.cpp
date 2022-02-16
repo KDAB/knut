@@ -62,10 +62,7 @@ private slots:
 
     void getSymbols()
     {
-// Commenting it out by default, looks like it's failing on the CI with clang 11
-// Works with clang 13
-#ifdef USE_EXTRA_TESTS
-        CHECK_CLANGD;
+        CHECK_CLANGD_VERSION;
 
         Core::KnutCore core;
         Core::Project::instance()->setRoot(Test::testDataPath() + "/mfc/tutorial");
@@ -100,7 +97,6 @@ private slots:
         QCOMPARE(hSymbols.last().name, "m_hIcon");
         hDocument->selectRange(hSymbols.last().range);
         QCOMPARE(hDocument->selectedText(), "HICON m_hIcon");
-#endif
     }
 };
 
