@@ -231,34 +231,37 @@ void MainWindow::changeTab()
     ui->actionCreate_Ui->setEnabled(document->type() == Core::Document::Type::Rc);
 }
 
+static void setupTextEdit(QPlainTextEdit *textEdit, const QString &fileName)
+{
+    auto f = textEdit->font();
+    f.setFamily(QStringLiteral("Courier New"));
+    f.setPointSize(10);
+    textEdit->setFont(f);
+    QFontMetrics fm(f);
+    textEdit->setTabStopDistance(4 * fm.horizontalAdvance(' '));
+
+#ifdef USE_SYNTAX_HIGHLIGHTING
+    static KSyntaxHighlighting::Repository repository;
+    auto highlighter = new KSyntaxHighlighting::SyntaxHighlighter(textEdit->document());
+    highlighter->setTheme(repository.themeForPalette(textEdit->palette()));
+    const auto def = repository.definitionForFileName(fileName);
+    highlighter->setDefinition(def);
+#endif
+}
+
 static QWidget *widgetForDocument(Core::Document *document)
 {
     switch (document->type()) {
     case Core::Document::Type::Cpp:
     case Core::Document::Type::Text: {
         auto textEdit = qobject_cast<Core::TextDocument *>(document)->textEdit();
-        auto f = textEdit->font();
-        f.setFamily(QStringLiteral("Courier New"));
-        f.setPointSize(10);
-        textEdit->setFont(f);
-        QFontMetrics fm(f);
-        textEdit->setTabStopDistance(4 * fm.horizontalAdvance(' '));
-
-#ifdef USE_SYNTAX_HIGHLIGHTING
-        static KSyntaxHighlighting::Repository repository;
-        auto highlighter = new KSyntaxHighlighting::SyntaxHighlighter(textEdit->document());
-        highlighter->setTheme((textEdit->palette().color(QPalette::Base).lightness() < 128)
-                                  ? repository.defaultTheme(KSyntaxHighlighting::Repository::DarkTheme)
-                                  : repository.defaultTheme(KSyntaxHighlighting::Repository::LightTheme));
-        const auto def = repository.definitionForFileName(document->fileName());
-        highlighter->setDefinition(def);
-#endif
-
+        setupTextEdit(textEdit, document->fileName());
         return textEdit;
     }
     case Core::Document::Type::Rc: {
         auto rcview = new RcUi::RcFileView();
         rcview->setRcFile(qobject_cast<Core::RcDocument *>(document)->data());
+        setupTextEdit(rcview->textEdit(), document->fileName());
         return rcview;
     }
     case Core::Document::Type::Ui: {

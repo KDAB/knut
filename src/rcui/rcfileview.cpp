@@ -7,7 +7,6 @@
 #include "dialogmodel.h"
 #include "includemodel.h"
 #include "menumodel.h"
-#include "rcsyntaxhighlighter.h"
 #include "rcviewer_global.h"
 #include "stringmodel.h"
 #include "toolbarmodel.h"
@@ -61,12 +60,6 @@ RcFileView::RcFileView(QWidget *parent)
     connect(ui->contentFilter, &QLineEdit::textChanged, m_contentProxyModel,
             &QSortFilterProxyModel::setFilterFixedString);
 
-    new RcSyntaxHighlighter(ui->textEdit->document());
-    auto f = font();
-    f.setFamily(QStringLiteral("Courier New"));
-    f.setPointSize(10);
-    ui->textEdit->setFont(f);
-
     connect(ui->searchText, &QLineEdit::textChanged, this, &RcFileView::slotSearchText);
     connect(ui->searchText, &QLineEdit::returnPressed, this, &RcFileView::slotSearchNext);
 
@@ -96,6 +89,11 @@ void RcFileView::setRcFile(const RcCore::Data &data)
 
     auto content = data.content;
     ui->textEdit->setPlainText(content.replace("\t", "    "));
+}
+
+QPlainTextEdit *RcFileView::textEdit() const
+{
+    return ui->textEdit;
 }
 
 void RcFileView::changeDataItem(const QModelIndex &current)

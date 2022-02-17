@@ -21,8 +21,6 @@ set(PROJECT_SOURCES
     rcfileview.h
     rcfileview.cpp
     rcfileview.ui
-    rcsyntaxhighlighter.h
-    rcsyntaxhighlighter.cpp
 )
 
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})

@@ -5,6 +5,7 @@
 class QSortFilterProxyModel;
 class QAbstractItemModel;
 class QTreeView;
+class QPlainTextEdit;
 
 namespace RcCore {
 struct Data;
@@ -25,6 +26,8 @@ public:
     ~RcFileView();
 
     void setRcFile(const RcCore::Data &data);
+
+    QPlainTextEdit *textEdit() const;
 
 private:
     void changeDataItem(const QModelIndex &current);
