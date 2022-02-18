@@ -1,5 +1,7 @@
 #pragma once
 
+#include "interfacesettings.h"
+
 #include <QMainWindow>
 
 class QMenu;
@@ -40,6 +42,7 @@ private:
     void createUi();
     void runScript();
     void openSettings();
+    void openInterfaceSettings();
     void showPalette();
 
     void changeTab();
@@ -51,6 +54,7 @@ private:
     QMenu *m_recentProjects = nullptr;
     QFileSystemModel *m_fileModel = nullptr;
     Palette *m_palette = nullptr;
+    InterfaceSettings m_settings;
 };
 
 } // namespace Gui

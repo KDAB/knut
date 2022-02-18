@@ -55,7 +55,7 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
-    <addaction name="action_Open"/>
+    <addaction name="actionOpen"/>
     <addaction name="actionRecent_Projects"/>
     <addaction name="separator"/>
     <addaction name="actionSave"/>
@@ -64,10 +64,11 @@
     <addaction name="actionClose_Document"/>
     <addaction name="separator"/>
     <addaction name="actionShow_Palette"/>
-    <addaction name="action_Run_Script"/>
-    <addaction name="actionSettings"/>
+    <addaction name="actionRun_Script"/>
+    <addaction name="actionScript_Settings"/>
+    <addaction name="actionInterface_Settings"/>
     <addaction name="separator"/>
-    <addaction name="action_Quit"/>
+    <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menu_Rc">
     <property name="title">
@@ -80,7 +81,7 @@
    <addaction name="menu_Rc"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="action_Quit">
+  <action name="actionQuit">
    <property name="text">
     <string>&amp;Quit</string>
    </property>
@@ -88,7 +89,7 @@
     <string>Ctrl+Q</string>
    </property>
   </action>
-  <action name="action_Open">
+  <action name="actionOpen">
    <property name="text">
     <string>&amp;Open Project...</string>
    </property>
@@ -117,7 +118,7 @@
     <string>Create Ui...</string>
    </property>
   </action>
-  <action name="action_Run_Script">
+  <action name="actionRun_Script">
    <property name="text">
     <string>&amp;Run Script...</string>
    </property>
@@ -125,9 +126,9 @@
     <string>Ctrl+R</string>
    </property>
   </action>
-  <action name="actionSettings">
+  <action name="actionScript_Settings">
    <property name="text">
-    <string>Settings...</string>
+    <string>Script Settings...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+,</string>
@@ -160,6 +161,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+W</string>
+   </property>
+  </action>
+  <action name="actionInterface_Settings">
+   <property name="text">
+    <string>Interface Settings...</string>
    </property>
   </action>
  </widget>

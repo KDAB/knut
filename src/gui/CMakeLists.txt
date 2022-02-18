@@ -5,6 +5,11 @@ set(PROJECT_SOURCES
     fileselector.cpp
     imageview.h
     imageview.cpp
+    interfacedialog.h
+    interfacedialog.cpp
+    interfacedialog.ui
+    interfacesettings.h
+    interfacesettings.cpp
     knutmain.h
     knutmain.cpp
     mainwindow.h

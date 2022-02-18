@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 
 #include "imageview.h"
+
+#include "interfacedialog.h"
 #include "palette.h"
 #include "rctoqrcdialog.h"
 #include "rctouidialog.h"
@@ -16,13 +18,6 @@
 #include "core/textdocument.h"
 #include "core/uidocument.h"
 #include "rcui/rcfileview.h"
-
-#ifdef USE_SYNTAX_HIGHLIGHTING
-#include <definition.h>
-#include <repository.h>
-#include <syntaxhighlighter.h>
-#include <theme.h>
-#endif
 
 #include <QApplication>
 #include <QDir>
@@ -51,16 +46,17 @@ MainWindow::MainWindow(QWidget *parent)
     ui->splitter->setSizes({275, 749});
     setWindowTitle(QApplication::applicationName() + ' ' + QApplication::applicationVersion());
 
-    connect(ui->action_Quit, &QAction::triggered, this, &MainWindow::close);
-    connect(ui->action_Open, &QAction::triggered, this, &MainWindow::openProject);
+    connect(ui->actionQuit, &QAction::triggered, this, &MainWindow::close);
+    connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openProject);
     connect(ui->actionCreate_Qrc, &QAction::triggered, this, &MainWindow::createQrc);
     connect(ui->actionCreate_Ui, &QAction::triggered, this, &MainWindow::createUi);
-    connect(ui->action_Run_Script, &QAction::triggered, this, &MainWindow::runScript);
-    connect(ui->actionSettings, &QAction::triggered, this, &MainWindow::openSettings);
+    connect(ui->actionRun_Script, &QAction::triggered, this, &MainWindow::runScript);
+    connect(ui->actionScript_Settings, &QAction::triggered, this, &MainWindow::openSettings);
     connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveDocument);
     connect(ui->actionSaveAll, &QAction::triggered, this, &MainWindow::saveAllDocuments);
     connect(ui->actionShow_Palette, &QAction::triggered, this, &MainWindow::showPalette);
     connect(ui->actionClose_Document, &QAction::triggered, this, &MainWindow::closeDocument);
+    connect(ui->actionInterface_Settings, &QAction::triggered, this, &MainWindow::openInterfaceSettings);
 
     m_recentProjects = new QMenu(this);
     ui->actionRecent_Projects->setMenu(m_recentProjects);
@@ -123,7 +119,7 @@ void MainWindow::initProject(const QString &path)
     connect(ui->projectView->selectionModel(), &QItemSelectionModel::currentChanged, this, &MainWindow::openDocument);
 
     // Disable menus, we can only load one project - restart Knut if needed
-    ui->action_Open->setEnabled(false);
+    ui->actionOpen->setEnabled(false);
     ui->actionRecent_Projects->setEnabled(false);
 }
 
@@ -203,6 +199,13 @@ void MainWindow::openSettings()
     dialog.exec();
 }
 
+void MainWindow::openInterfaceSettings()
+{
+    InterfaceDialog dialog(this);
+    dialog.initialize(&m_settings);
+    dialog.exec();
+}
+
 void MainWindow::showPalette()
 {
     const QRect rect = centralWidget()->geometry();
@@ -231,37 +234,19 @@ void MainWindow::changeTab()
     ui->actionCreate_Ui->setEnabled(document->type() == Core::Document::Type::Rc);
 }
 
-static void setupTextEdit(QPlainTextEdit *textEdit, const QString &fileName)
-{
-    auto f = textEdit->font();
-    f.setFamily(QStringLiteral("Courier New"));
-    f.setPointSize(10);
-    textEdit->setFont(f);
-    QFontMetrics fm(f);
-    textEdit->setTabStopDistance(4 * fm.horizontalAdvance(' '));
-
-#ifdef USE_SYNTAX_HIGHLIGHTING
-    static KSyntaxHighlighting::Repository repository;
-    auto highlighter = new KSyntaxHighlighting::SyntaxHighlighter(textEdit->document());
-    highlighter->setTheme(repository.themeForPalette(textEdit->palette()));
-    const auto def = repository.definitionForFileName(fileName);
-    highlighter->setDefinition(def);
-#endif
-}
-
-static QWidget *widgetForDocument(Core::Document *document)
+static QWidget *widgetForDocument(Core::Document *document, const InterfaceSettings &settings)
 {
     switch (document->type()) {
     case Core::Document::Type::Cpp:
     case Core::Document::Type::Text: {
         auto textEdit = qobject_cast<Core::TextDocument *>(document)->textEdit();
-        setupTextEdit(textEdit, document->fileName());
+        settings.setupTextEdit(textEdit, document->fileName());
         return textEdit;
     }
     case Core::Document::Type::Rc: {
         auto rcview = new RcUi::RcFileView();
         rcview->setRcFile(qobject_cast<Core::RcDocument *>(document)->data());
-        setupTextEdit(rcview->textEdit(), document->fileName());
+        settings.setupTextEdit(rcview->textEdit(), document->fileName());
         return rcview;
     }
     case Core::Document::Type::Ui: {
@@ -307,7 +292,7 @@ void MainWindow::changeCurrentDocument()
     if (windowIndex == -1) {
         auto document = project->currentDocument();
         QDir dir(project->root());
-        auto widget = widgetForDocument(document);
+        auto widget = widgetForDocument(document, m_settings);
         widget->setWindowTitle(fileName);
         windowIndex = ui->tabWidget->addTab(widget, dir.relativeFilePath(fileName));
 
