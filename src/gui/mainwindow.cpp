@@ -32,6 +32,7 @@ namespace Gui {
 
 constexpr int MaximumRecentProjects = 10;
 constexpr char RecentProjectKey[] = "RecentProject";
+constexpr char SplitterKey[] = "SplitterSizes";
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -43,7 +44,9 @@ MainWindow::MainWindow(QWidget *parent)
     m_palette->hide();
 
     ui->setupUi(this);
-    ui->splitter->setSizes({275, 749});
+    ui->splitter->setSizes({275, 750});
+    ui->splitter->setStretchFactor(0, 0);
+    ui->splitter->setStretchFactor(1, 1);
     setWindowTitle(QApplication::applicationName() + ' ' + QApplication::applicationVersion());
 
     connect(ui->actionQuit, &QAction::triggered, this, &MainWindow::close);
@@ -83,6 +86,9 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     Core::Project::instance()->closeAll();
+
+    QSettings settings;
+    settings.setValue(SplitterKey, ui->splitter->saveState());
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event)
@@ -90,6 +96,13 @@ void MainWindow::resizeEvent(QResizeEvent *event)
     QMainWindow::resizeEvent(event);
     if (m_palette->isVisible())
         showPalette();
+}
+
+void MainWindow::showEvent(QShowEvent *event)
+{
+    QMainWindow::showEvent(event);
+    QSettings settings;
+    ui->splitter->restoreState(settings.value(SplitterKey).toByteArray());
 }
 
 void MainWindow::openProject()
