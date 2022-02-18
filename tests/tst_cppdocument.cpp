@@ -12,10 +12,7 @@ class TestCppDocument : public QObject
     Q_OBJECT
 
 private slots:
-    void initTestCase()
-    {
-        Q_INIT_RESOURCE(core);
-    }
+    void initTestCase() { Q_INIT_RESOURCE(core); }
 
     void correspondingHeaderSource_data()
     {
@@ -45,6 +42,26 @@ private slots:
         Core::Project::instance()->setRoot(Test::testDataPath() + "/cppdocument");
         auto document = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(headerOrSource));
         QCOMPARE(sourceOrHeader, document->correspondingHeaderSource());
+    }
+
+    void insertForwardDeclInHeader()
+    {
+        Core::KnutCore core;
+        Core::Project::instance()->setRoot(Test::testDataPath() + "/cppdocument");
+
+        Test::FileTester file(Test::testDataPath() + "/cppdocument/test/forward_declaration_original.h");
+        Core::CppDocument headerFile;
+        headerFile.load(file.fileName());
+        QCOMPARE(headerFile.insertForwardDeclaration("class Foo"), true);
+        QCOMPARE(headerFile.insertForwardDeclaration("class Foo::Bar::FooBar"), true);
+        QCOMPARE(headerFile.insertForwardDeclaration("class Foo::Bar::FooBar"), false);
+        QCOMPARE(headerFile.insertForwardDeclaration(" "), false);
+        QCOMPARE(headerFile.insertForwardDeclaration("Foo::Bar::FooBar"), false);
+        QCOMPARE(headerFile.insertForwardDeclaration("struct Neo"), true);
+        QCOMPARE(headerFile.insertForwardDeclaration("struct SFoo::SBar::Uno"), true);
+        headerFile.save();
+        QVERIFY(file.compare());
+        headerFile.close();
     }
 
     void extractDataExchange()

@@ -8,10 +8,12 @@
 
 #include <QFileInfo>
 #include <QHash>
+#include <QPlainTextEdit>
 #include <QRegularExpression>
 #include <QVariantMap>
-
 #include <spdlog/spdlog.h>
+
+#include <ranges>
 
 namespace Core {
 
@@ -218,6 +220,69 @@ CppDocument *CppDocument::openHeaderSource()
     if (!fileName.isEmpty())
         return dynamic_cast<CppDocument *>(Project::instance()->open(fileName));
     return nullptr;
+}
+
+/*!
+ * \qmlmethod void CppDocument::insertForwardDeclaration(string fwddecl)
+ * Inserts the forward declaration `fwddecl` into the current file.
+ * The method will check if the file is a header file, and also that the forward declaration starts with 'class ' or
+ * 'struct '. Fully qualified the forward declaration to add namespaces: `class Foo::Bar::FooBar` will result in:
+ *
+ * ```cpp
+ * namespace Foo {
+ * namespace Bar {
+ * class FooBar
+ * }
+ * }
+ * ```
+ */
+bool CppDocument::insertForwardDeclaration(const QString &fwddecl)
+{
+    spdlog::trace("CppDocument::insertForwardDeclaration {}", fwddecl.toStdString());
+    if (!isHeader()) {
+        spdlog::warn("CppDocument::insertForwardDeclaration: {} - is not a header file. ", fileName().toStdString());
+        return false;
+    }
+
+    int spacePos = fwddecl.indexOf(' ');
+    auto classOrStruct = fwddecl.leftRef(spacePos);
+    if (fwddecl.isEmpty() || (classOrStruct != "class" && classOrStruct != "struct")) {
+        spdlog::warn("CppDocument::insertForwardDeclaration: {} - should start with 'class ' or 'struct '. ",
+                     fwddecl.toStdString());
+        return false;
+    }
+
+    auto qualifierList = fwddecl.midRef(spacePos + 1).split("::");
+    std::ranges::reverse(qualifierList);
+
+    // Get the un-qualified declaration
+    QString result = QString("%1 %2;").arg(classOrStruct).arg(qualifierList.first());
+    qualifierList.pop_front();
+
+    // Check if the declaration already exists
+    QTextDocument *doc = textEdit()->document();
+    QTextCursor cursor(doc);
+    cursor = doc->find(result, cursor, QTextDocument::FindWholeWords);
+    if (!cursor.isNull()) {
+        spdlog::warn("CppDocument::insertForwardDeclaration: '{}' - already exists in file.", fwddecl.toStdString());
+        return false;
+    }
+
+    for (const auto &qualifier : std::as_const(qualifierList))
+        result = QString("namespace %1 {\n%2\n}").arg(qualifier, result);
+
+    cursor = QTextCursor(doc);
+    cursor.movePosition(QTextCursor::End, QTextCursor::MoveAnchor);
+    cursor = doc->find(QRegularExpression(QStringLiteral(R"(^#include\s*)")), cursor, QTextDocument::FindBackward);
+    if (!cursor.isNull()) {
+        cursor.beginEditBlock();
+        cursor.movePosition(QTextCursor::EndOfLine, QTextCursor::MoveAnchor);
+        cursor.insertText("\n" + result + "\n");
+        cursor.endEditBlock();
+        return true;
+    }
+
+    return false;
 }
 
 /*!

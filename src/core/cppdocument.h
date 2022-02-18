@@ -15,6 +15,7 @@ public:
     bool isHeader() const;
 
     Q_INVOKABLE QString correspondingHeaderSource() const;
+    Q_INVOKABLE bool insertForwardDeclaration(const QString& fwddecl);
 
 public slots:
     Core::CppDocument *openHeaderSource();
