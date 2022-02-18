@@ -2,6 +2,8 @@
 
 #include <QWidget>
 
+#include <memory>
+
 namespace Gui {
 
 namespace Ui {
@@ -28,7 +30,7 @@ private:
     void openDocument(const QModelIndex &index);
 
 private:
-    Ui::Palette *ui;
+    std::unique_ptr<Ui::Palette> ui;
     PaletteFileModel *m_fileModel;
 };
 

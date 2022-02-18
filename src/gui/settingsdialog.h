@@ -2,6 +2,8 @@
 
 #include <QDialog>
 
+#include <memory>
+
 namespace Gui {
 
 namespace Ui {
@@ -25,7 +27,7 @@ private:
     void updateScriptPaths();
 
 private:
-    Ui::SettingsDialog *const ui;
+    std::unique_ptr<Ui::SettingsDialog> ui;
 };
 
 } // namespace Gui

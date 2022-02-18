@@ -40,10 +40,7 @@ RcToQrcDialog::RcToQrcDialog(Core::RcDocument *document, QWidget *parent)
     connect(ui->convertPng, &QCheckBox::toggled, this, &RcToQrcDialog::updateColorBox);
 }
 
-RcToQrcDialog::~RcToQrcDialog()
-{
-    delete ui;
-}
+RcToQrcDialog::~RcToQrcDialog() = default;
 
 void RcToQrcDialog::accept()
 {

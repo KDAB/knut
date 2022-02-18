@@ -37,10 +37,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     updateScriptPaths();
 }
 
-SettingsDialog::~SettingsDialog()
-{
-    delete ui;
-}
+SettingsDialog::~SettingsDialog() = default;
 
 void SettingsDialog::openUserSettings()
 {

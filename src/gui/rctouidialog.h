@@ -1,7 +1,8 @@
-#ifndef GUI_RCTOUIDIALOG_H
-#define GUI_RCTOUIDIALOG_H
+#pragma once
 
 #include <QDialog>
+
+#include <memory>
 
 namespace Core {
 class RcDocument;
@@ -25,9 +26,8 @@ public slots:
     void accept() override;
 
 private:
-    Ui::RcToUiDialog *const ui;
+    std::unique_ptr<Ui::RcToUiDialog> ui;
     Core::RcDocument *const m_document;
 };
 
 } // namespace Gui
-#endif // GUI_RCTOUIDIALOG_H

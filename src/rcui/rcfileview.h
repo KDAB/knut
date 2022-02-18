@@ -2,6 +2,8 @@
 
 #include <QWidget>
 
+#include <memory>
+
 class QSortFilterProxyModel;
 class QAbstractItemModel;
 class QTreeView;
@@ -45,7 +47,7 @@ private:
     const RcCore::Data &data() const;
 
 private:
-    Ui::RcFileView *ui;
+    std::unique_ptr<Ui::RcFileView> ui;
     const RcCore::Data *m_data;
     QSortFilterProxyModel *const m_dataProxyModel;
     QSortFilterProxyModel *const m_contentProxyModel;

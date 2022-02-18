@@ -72,10 +72,7 @@ RcFileView::RcFileView(QWidget *parent)
     connect(findPrevious, &QShortcut::activated, this, &RcFileView::slotSearchPrevious);
 }
 
-RcFileView::~RcFileView()
-{
-    delete ui;
-}
+RcFileView::~RcFileView() = default;
 
 void RcFileView::setRcFile(const RcCore::Data &data)
 {

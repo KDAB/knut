@@ -4,6 +4,8 @@
 
 #include <QMainWindow>
 
+#include <memory>
+
 class QMenu;
 class QFileSystemModel;
 
@@ -50,7 +52,7 @@ private:
     void saveAllDocuments();
 
 private:
-    Ui::MainWindow *const ui;
+    std::unique_ptr<Ui::MainWindow> ui;
     QMenu *m_recentProjects = nullptr;
     QFileSystemModel *m_fileModel = nullptr;
     Palette *m_palette = nullptr;

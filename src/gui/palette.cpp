@@ -112,10 +112,7 @@ Palette::Palette(QWidget *parent)
     ui->lineEdit->installEventFilter(this);
 }
 
-Palette::~Palette()
-{
-    delete ui;
-}
+Palette::~Palette() = default;
 
 bool Palette::eventFilter(QObject *watched, QEvent *event)
 {

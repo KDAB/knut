@@ -1,7 +1,8 @@
-#ifndef GUI_RUNSCRIPTDIALOG_H
-#define GUI_RUNSCRIPTDIALOG_H
+#pragma once
 
 #include <QDialog>
+
+#include <memory>
 
 namespace Gui {
 
@@ -24,8 +25,7 @@ private:
     void chooseScript();
 
 private:
-    Ui::RunScriptDialog *const ui;
+    std::unique_ptr<Ui::RunScriptDialog> ui;
 };
 
 } // namespace Gui
-#endif // GUI_RUNSCRIPTDIALOG_H

@@ -35,10 +35,7 @@ RunScriptDialog::RunScriptDialog(QWidget *parent)
     ui->lineEdit->setCompleter(completer);
 }
 
-RunScriptDialog::~RunScriptDialog()
-{
-    delete ui;
-}
+RunScriptDialog::~RunScriptDialog() = default;
 
 void RunScriptDialog::accept()
 {

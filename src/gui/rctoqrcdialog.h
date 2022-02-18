@@ -2,6 +2,8 @@
 
 #include <QDialog>
 
+#include <memory>
+
 namespace Core {
 class RcDocument;
 }
@@ -27,7 +29,7 @@ private:
     void updateColorBox();
 
 private:
-    Ui::RcToQrcDialog *const ui;
+    std::unique_ptr<Ui::RcToQrcDialog> ui;
     Core::RcDocument *const m_document;
 };
 

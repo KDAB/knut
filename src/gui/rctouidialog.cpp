@@ -43,10 +43,7 @@ RcToUiDialog::RcToUiDialog(Core::RcDocument *document, QWidget *parent)
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 }
 
-RcToUiDialog::~RcToUiDialog()
-{
-    delete ui;
-}
+RcToUiDialog::~RcToUiDialog() = default;
 
 void RcToUiDialog::accept()
 {

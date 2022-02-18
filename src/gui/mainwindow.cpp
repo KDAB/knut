@@ -83,7 +83,6 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     Core::Project::instance()->closeAll();
-    delete ui;
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event)
