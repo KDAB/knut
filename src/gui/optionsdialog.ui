@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Gui::InterfaceDialog</class>
- <widget class="QDialog" name="Gui::InterfaceDialog">
+ <class>Gui::OptionsDialog</class>
+ <widget class="QDialog" name="Gui::OptionsDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>479</width>
-    <height>270</height>
+    <width>534</width>
+    <height>329</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Options Dialog</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -173,6 +173,18 @@
     </widget>
    </item>
    <item>
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>Scripts</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="Gui::SettingsWidget" name="widget" native="true"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -184,12 +196,20 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Gui::SettingsWidget</class>
+   <extends>QWidget</extends>
+   <header>settingswidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>Gui::InterfaceDialog</receiver>
+   <receiver>Gui::OptionsDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -205,7 +225,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>Gui::InterfaceDialog</receiver>
+   <receiver>Gui::OptionsDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

@@ -1,5 +1,5 @@
-#include "settingsdialog.h"
-#include "ui_settingsdialog.h"
+#include "settingswidget.h"
+#include "ui_settingswidget.h"
 
 #include "core/scriptmanager.h"
 #include "core/settings.h"
@@ -13,17 +13,17 @@
 
 namespace Gui {
 
-SettingsDialog::SettingsDialog(QWidget *parent)
-    : QDialog(parent)
-    , ui(new Ui::SettingsDialog)
+SettingsWidget::SettingsWidget(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::SettingsWidget)
 {
     ui->setupUi(this);
     setWindowTitle(QApplication::applicationName() + ' ' + QApplication::applicationVersion() + " - " + windowTitle());
 
-    connect(ui->openUserButton, &QPushButton::clicked, this, &SettingsDialog::openUserSettings);
-    connect(ui->openProjectButton, &QPushButton::clicked, this, &SettingsDialog::openProjectSettings);
-    connect(ui->addButton, &QPushButton::clicked, this, &SettingsDialog::addScriptPath);
-    connect(ui->removeButton, &QPushButton::clicked, this, &SettingsDialog::removeScriptPath);
+    connect(ui->openUserButton, &QPushButton::clicked, this, &SettingsWidget::openUserSettings);
+    connect(ui->openProjectButton, &QPushButton::clicked, this, &SettingsWidget::openProjectSettings);
+    connect(ui->addButton, &QPushButton::clicked, this, &SettingsWidget::addScriptPath);
+    connect(ui->removeButton, &QPushButton::clicked, this, &SettingsWidget::removeScriptPath);
 
     ui->userPath->setText(Core::Settings::instance()->userPath());
     ui->openUserButton->setDisabled(ui->userPath->text().isEmpty());
@@ -37,19 +37,19 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     updateScriptPaths();
 }
 
-SettingsDialog::~SettingsDialog() = default;
+SettingsWidget::~SettingsWidget() = default;
 
-void SettingsDialog::openUserSettings()
+void SettingsWidget::openUserSettings()
 {
     QDesktopServices::openUrl(QUrl::fromLocalFile(ui->userPath->text()));
 }
 
-void SettingsDialog::openProjectSettings()
+void SettingsWidget::openProjectSettings()
 {
     QDesktopServices::openUrl(QUrl::fromLocalFile(ui->projectPath->text()));
 }
 
-void SettingsDialog::addScriptPath()
+void SettingsWidget::addScriptPath()
 {
     const QString scriptPath = QFileDialog::getExistingDirectory(this, "Add Script Path", QDir::currentPath());
     if (scriptPath.isEmpty())
@@ -58,14 +58,14 @@ void SettingsDialog::addScriptPath()
     updateScriptPaths();
 }
 
-void SettingsDialog::removeScriptPath()
+void SettingsWidget::removeScriptPath()
 {
     const QString scriptPath = ui->scriptPathList->selectedItems().first()->text();
     Core::Settings::instance()->removeScriptPath(scriptPath);
     updateScriptPaths();
 }
 
-void SettingsDialog::updateScriptPaths()
+void SettingsWidget::updateScriptPaths()
 {
     QStringList scriptPaths = Core::ScriptManager::instance()->directories();
     std::sort(scriptPaths.begin(), scriptPaths.end());

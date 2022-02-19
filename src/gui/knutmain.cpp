@@ -2,9 +2,30 @@
 
 #include "mainwindow.h"
 #include "runscriptdialog.h"
-#include "settingsdialog.h"
+#include "settingswidget.h"
+
+#include <QDialog>
+#include <QDialogButtonBox>
+#include <QVBoxLayout>
 
 namespace Gui {
+
+class SettingsDialog : public QDialog
+{
+public:
+    explicit SettingsDialog(QWidget *parent = nullptr)
+        : QDialog(parent)
+    {
+        setWindowTitle("Settings Dialog");
+
+        auto dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Close);
+        connect(dialogButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
+        auto layout = new QVBoxLayout(this);
+        layout->addWidget(new SettingsWidget);
+        layout->addWidget(dialogButtonBox);
+    }
+};
 
 KnutMain::KnutMain(QObject *parent)
     : Core::KnutCore(parent)

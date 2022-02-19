@@ -3,18 +3,18 @@ project(knut-gui LANGUAGES CXX)
 set(PROJECT_SOURCES
     fileselector.h
     fileselector.cpp
+    guisettings.h
+    guisettings.cpp
     imageview.h
     imageview.cpp
-    interfacedialog.h
-    interfacedialog.cpp
-    interfacedialog.ui
-    interfacesettings.h
-    interfacesettings.cpp
     knutmain.h
     knutmain.cpp
     mainwindow.h
     mainwindow.cpp
     mainwindow.ui
+    optionsdialog.h
+    optionsdialog.cpp
+    optionsdialog.ui
     palette.h
     palette.cpp
     palette.ui
@@ -27,9 +27,9 @@ set(PROJECT_SOURCES
     runscriptdialog.h
     runscriptdialog.cpp
     runscriptdialog.ui
-    settingsdialog.h
-    settingsdialog.cpp
-    settingsdialog.ui
+    settingswidget.h
+    settingswidget.cpp
+    settingswidget.ui
     uiview.h
     uiview.cpp
     gui.qrc

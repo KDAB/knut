@@ -74,8 +74,7 @@
     <addaction name="separator"/>
     <addaction name="actionShow_Palette"/>
     <addaction name="actionRun_Script"/>
-    <addaction name="actionScript_Settings"/>
-    <addaction name="actionInterface_Settings"/>
+    <addaction name="actionOptions"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -135,9 +134,9 @@
     <string>Ctrl+R</string>
    </property>
   </action>
-  <action name="actionScript_Settings">
+  <action name="actionOptions">
    <property name="text">
-    <string>Script Settings...</string>
+    <string>Options...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+,</string>
@@ -170,11 +169,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+W</string>
-   </property>
-  </action>
-  <action name="actionInterface_Settings">
-   <property name="text">
-    <string>Interface Settings...</string>
    </property>
   </action>
  </widget>

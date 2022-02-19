@@ -3,12 +3,11 @@
 
 #include "imageview.h"
 
-#include "interfacedialog.h"
+#include "optionsdialog.h"
 #include "palette.h"
 #include "rctoqrcdialog.h"
 #include "rctouidialog.h"
 #include "runscriptdialog.h"
-#include "settingsdialog.h"
 #include "uiview.h"
 
 #include "core/document.h"
@@ -32,7 +31,7 @@ namespace Gui {
 
 constexpr int MaximumRecentProjects = 10;
 constexpr char RecentProjectKey[] = "RecentProject";
-constexpr char SplitterKey[] = "SplitterSizes";
+constexpr char SplitterKey[] = "MainWindow/SplitterSizes";
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -54,12 +53,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionCreate_Qrc, &QAction::triggered, this, &MainWindow::createQrc);
     connect(ui->actionCreate_Ui, &QAction::triggered, this, &MainWindow::createUi);
     connect(ui->actionRun_Script, &QAction::triggered, this, &MainWindow::runScript);
-    connect(ui->actionScript_Settings, &QAction::triggered, this, &MainWindow::openSettings);
+    connect(ui->actionOptions, &QAction::triggered, this, &MainWindow::openOptions);
     connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveDocument);
     connect(ui->actionSaveAll, &QAction::triggered, this, &MainWindow::saveAllDocuments);
     connect(ui->actionShow_Palette, &QAction::triggered, this, &MainWindow::showPalette);
     connect(ui->actionClose_Document, &QAction::triggered, this, &MainWindow::closeDocument);
-    connect(ui->actionInterface_Settings, &QAction::triggered, this, &MainWindow::openInterfaceSettings);
 
     m_recentProjects = new QMenu(this);
     ui->actionRecent_Projects->setMenu(m_recentProjects);
@@ -205,16 +203,9 @@ void MainWindow::runScript()
     dialog.exec();
 }
 
-void MainWindow::openSettings()
+void MainWindow::openOptions()
 {
-    SettingsDialog dialog(this);
-    dialog.exec();
-}
-
-void MainWindow::openInterfaceSettings()
-{
-    InterfaceDialog dialog(this);
-    dialog.initialize(&m_settings);
+    OptionsDialog dialog(&m_settings, this);
     dialog.exec();
 }
 
@@ -246,7 +237,7 @@ void MainWindow::changeTab()
     ui->actionCreate_Ui->setEnabled(document->type() == Core::Document::Type::Rc);
 }
 
-static QWidget *widgetForDocument(Core::Document *document, const InterfaceSettings &settings)
+static QWidget *widgetForDocument(Core::Document *document, const GuiSettings &settings)
 {
     switch (document->type()) {
     case Core::Document::Type::Cpp:

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "interfacesettings.h"
+#include "guisettings.h"
 
 #include <QMainWindow>
 
@@ -44,8 +44,7 @@ private:
     void createQrc();
     void createUi();
     void runScript();
-    void openSettings();
-    void openInterfaceSettings();
+    void openOptions();
     void showPalette();
 
     void changeTab();
@@ -57,7 +56,7 @@ private:
     QMenu *m_recentProjects = nullptr;
     QFileSystemModel *m_fileModel = nullptr;
     Palette *m_palette = nullptr;
-    InterfaceSettings m_settings;
+    GuiSettings m_settings;
 };
 
 } // namespace Gui

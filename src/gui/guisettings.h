@@ -6,7 +6,7 @@ class QPlainTextEdit;
 
 namespace Gui {
 
-class InterfaceSettings
+class GuiSettings
 {
 public:
     enum Style {
@@ -15,7 +15,7 @@ public:
         FusionDark,
     };
 
-    InterfaceSettings();
+    GuiSettings();
 
     void setStyle(Style style);
     Style style() const;

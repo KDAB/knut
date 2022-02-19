@@ -1,22 +1,22 @@
 #pragma once
 
-#include <QDialog>
+#include <QWidget>
 
 #include <memory>
 
 namespace Gui {
 
 namespace Ui {
-    class SettingsDialog;
+    class SettingsWidget;
 }
 
-class SettingsDialog : public QDialog
+class SettingsWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit SettingsDialog(QWidget *parent = nullptr);
-    ~SettingsDialog();
+    explicit SettingsWidget(QWidget *parent = nullptr);
+    ~SettingsWidget();
 
 private:
     void openUserSettings();
@@ -27,7 +27,7 @@ private:
     void updateScriptPaths();
 
 private:
-    std::unique_ptr<Ui::SettingsDialog> ui;
+    std::unique_ptr<Ui::SettingsWidget> ui;
 };
 
 } // namespace Gui

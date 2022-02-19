@@ -1,4 +1,4 @@
-#include "interfacesettings.h"
+#include "guisettings.h"
 
 #ifdef USE_SYNTAX_HIGHLIGHTING
 #include <definition.h>
@@ -16,16 +16,16 @@
 
 namespace Gui {
 
-constexpr const char StyleKey[] = "Style";
-constexpr const char ThemeKey[] = "Theme";
-constexpr const char FontFamilyKey[] = "FontFamily";
-constexpr const char FontSizeKey[] = "FontSize";
-constexpr const char WordWrapKey[] = "WordWrap";
+constexpr const char StyleKey[] = "Interface/Style";
+constexpr const char ThemeKey[] = "Interface/Theme";
+constexpr const char FontFamilyKey[] = "TextEditor/FontFamily";
+constexpr const char FontSizeKey[] = "TextEditor/FontSize";
+constexpr const char WordWrapKey[] = "TextEditor/WordWrap";
 
-InterfaceSettings::InterfaceSettings()
+GuiSettings::GuiSettings()
 {
     QSettings settings;
-    m_style = static_cast<InterfaceSettings::Style>(settings.value(StyleKey, m_style).toInt());
+    m_style = static_cast<GuiSettings::Style>(settings.value(StyleKey, m_style).toInt());
     m_theme = settings.value(ThemeKey, m_theme).toString();
     m_fontFamily = settings.value(FontFamilyKey, m_fontFamily).toString();
     m_fontSize = settings.value(FontSizeKey, m_fontSize).toInt();
@@ -33,7 +33,7 @@ InterfaceSettings::InterfaceSettings()
     updateStyle();
 }
 
-void InterfaceSettings::setStyle(Style style)
+void GuiSettings::setStyle(Style style)
 {
     if (m_style != style) {
         m_style = style;
@@ -43,12 +43,12 @@ void InterfaceSettings::setStyle(Style style)
     }
 }
 
-InterfaceSettings::Style InterfaceSettings::style() const
+GuiSettings::Style GuiSettings::style() const
 {
     return m_style;
 }
 
-void InterfaceSettings::setTheme(const QString &theme)
+void GuiSettings::setTheme(const QString &theme)
 {
     if (m_theme != theme) {
         m_theme = theme;
@@ -58,12 +58,12 @@ void InterfaceSettings::setTheme(const QString &theme)
     }
 }
 
-QString InterfaceSettings::theme() const
+QString GuiSettings::theme() const
 {
     return m_theme;
 }
 
-void InterfaceSettings::setFontFamily(const QString &fontFamily)
+void GuiSettings::setFontFamily(const QString &fontFamily)
 {
     if (m_fontFamily != fontFamily) {
         m_fontFamily = fontFamily;
@@ -73,12 +73,12 @@ void InterfaceSettings::setFontFamily(const QString &fontFamily)
     }
 }
 
-QString InterfaceSettings::fontFamily() const
+QString GuiSettings::fontFamily() const
 {
     return m_fontFamily;
 }
 
-void InterfaceSettings::setFontSize(int size)
+void GuiSettings::setFontSize(int size)
 {
     if (m_fontSize != size) {
         m_fontSize = size;
@@ -88,12 +88,12 @@ void InterfaceSettings::setFontSize(int size)
     }
 }
 
-int InterfaceSettings::fontSize() const
+int GuiSettings::fontSize() const
 {
     return m_fontSize;
 }
 
-void InterfaceSettings::setWordWrap(bool wordWrap)
+void GuiSettings::setWordWrap(bool wordWrap)
 {
     if (m_wordWrap != wordWrap) {
         m_wordWrap = wordWrap;
@@ -103,7 +103,7 @@ void InterfaceSettings::setWordWrap(bool wordWrap)
     }
 }
 
-bool InterfaceSettings::isWordWrap() const
+bool GuiSettings::isWordWrap() const
 {
     return m_wordWrap;
 }
@@ -124,7 +124,7 @@ static void setupHighlighter(KSyntaxHighlighting::SyntaxHighlighter *highlighter
 }
 #endif
 
-void InterfaceSettings::setupTextEdit(QPlainTextEdit *textEdit, const QString &fileName) const
+void GuiSettings::setupTextEdit(QPlainTextEdit *textEdit, const QString &fileName) const
 {
     updateTextEdit(textEdit);
 
@@ -134,25 +134,25 @@ void InterfaceSettings::setupTextEdit(QPlainTextEdit *textEdit, const QString &f
 #endif
 }
 
-void InterfaceSettings::updateStyle() const
+void GuiSettings::updateStyle() const
 {
     // Store the name of the default style... else there's no way to get it back
     static QString defaultStyle = qApp->style()->objectName();
 
     switch (m_style) {
-    case InterfaceSettings::DefaultStyle: {
+    case GuiSettings::DefaultStyle: {
         auto style = QStyleFactory::create(defaultStyle);
         qApp->setStyle(style);
         qApp->setPalette(style->standardPalette());
         break;
     }
-    case InterfaceSettings::FusionLight: {
+    case GuiSettings::FusionLight: {
         auto style = QStyleFactory::create("Fusion");
         qApp->setStyle(style);
         qApp->setPalette(style->standardPalette());
         break;
     }
-    case InterfaceSettings::FusionDark: {
+    case GuiSettings::FusionDark: {
         qApp->setStyle(QStyleFactory::create("Fusion"));
 
         const QColor darkGray(64, 66, 65);
@@ -189,7 +189,7 @@ void InterfaceSettings::updateStyle() const
         updateTheme();
 }
 
-void InterfaceSettings::updateTheme() const
+void GuiSettings::updateTheme() const
 {
 #ifdef USE_SYNTAX_HIGHLIGHTING
     const auto topLevels = QApplication::topLevelWidgets();
@@ -203,7 +203,7 @@ void InterfaceSettings::updateTheme() const
 #endif
 }
 
-void InterfaceSettings::updateTextEdits() const
+void GuiSettings::updateTextEdits() const
 {
     const auto topLevels = QApplication::topLevelWidgets();
     for (auto topLevel : topLevels) {
@@ -213,7 +213,7 @@ void InterfaceSettings::updateTextEdits() const
     }
 }
 
-void InterfaceSettings::updateTextEdit(QPlainTextEdit *textEdit) const
+void GuiSettings::updateTextEdit(QPlainTextEdit *textEdit) const
 {
     auto f = textEdit->font();
     f.setFamily(m_fontFamily);

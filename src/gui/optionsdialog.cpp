@@ -1,7 +1,7 @@
-#include "interfacedialog.h"
-#include "ui_interfacedialog.h"
+#include "optionsdialog.h"
+#include "ui_optionsdialog.h"
 
-#include "interfacesettings.h"
+#include "guisettings.h"
 
 #ifdef USE_SYNTAX_HIGHLIGHTING
 #include <repository.h>
@@ -12,10 +12,13 @@
 
 namespace Gui {
 
-InterfaceDialog::InterfaceDialog(QWidget *parent)
+OptionsDialog::OptionsDialog(GuiSettings *settings, QWidget *parent)
     : QDialog(parent)
-    , ui(new Ui::InterfaceDialog)
+    , ui(new Ui::OptionsDialog)
+    , m_settings(settings)
 {
+    Q_ASSERT(settings);
+
     ui->setupUi(this);
 
     ui->styleCombo->addItems({"[Defaut]", "Fusion Light", "Fusion Dark"});
@@ -30,9 +33,10 @@ InterfaceDialog::InterfaceDialog(QWidget *parent)
     std::transform(std::begin(themes), std::end(themes), std::back_inserter(themeNames), themeToString);
     ui->themeCombo->addItems(themeNames);
 #endif
+    initialize();
 
     auto setStyle = [this](int idx) {
-        m_settings->setStyle(static_cast<InterfaceSettings::Style>(idx));
+        m_settings->setStyle(static_cast<GuiSettings::Style>(idx));
     };
     connect(ui->styleCombo, qOverload<int>(&QComboBox::currentIndexChanged), this, setStyle);
 
@@ -57,21 +61,17 @@ InterfaceDialog::InterfaceDialog(QWidget *parent)
     connect(ui->wordWrapCheck, &QCheckBox::toggled, this, setWordWrap);
 }
 
-InterfaceDialog::~InterfaceDialog() = default;
+OptionsDialog::~OptionsDialog() = default;
 
-void InterfaceDialog::initialize(InterfaceSettings *settings)
+void OptionsDialog::initialize()
 {
-    Q_ASSERT(settings);
-
-    m_settings = settings;
-
-    ui->styleCombo->setCurrentIndex(static_cast<int>(settings->style()));
-    const int themeIdx = ui->themeCombo->findText(settings->theme());
+    ui->styleCombo->setCurrentIndex(static_cast<int>(m_settings->style()));
+    const int themeIdx = ui->themeCombo->findText(m_settings->theme());
     ui->themeCombo->setCurrentIndex(themeIdx == -1 ? 0 : themeIdx);
 
-    ui->fontCombo->setCurrentText(settings->fontFamily());
-    ui->fontSizeCombo->setCurrentText(QString::number(settings->fontSize()));
-    ui->wordWrapCheck->setChecked(settings->isWordWrap());
+    ui->fontCombo->setCurrentText(m_settings->fontFamily());
+    ui->fontSizeCombo->setCurrentText(QString::number(m_settings->fontSize()));
+    ui->wordWrapCheck->setChecked(m_settings->isWordWrap());
 }
 
 } // namespace Gui
