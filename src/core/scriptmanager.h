@@ -32,6 +32,7 @@ public:
     {
         QString name;
         QString fileName;
+        QString description;
     };
     using ScriptList = std::vector<Script>;
 
@@ -39,7 +40,7 @@ public:
 
     static ScriptManager *instance();
 
-    ScriptList scriptList() const;
+    const ScriptList &scriptList() const;
 
     void addDirectory(const QString &path);
     void removeDirectory(const QString &path);

@@ -26,7 +26,7 @@ RunScriptDialog::RunScriptDialog(QWidget *parent)
         okButton->setEnabled(!str.trimmed().isEmpty());
     });
 
-    auto list = Core::ScriptManager::instance()->scriptList();
+    const auto &list = Core::ScriptManager::instance()->scriptList();
     QStringList scriptNames;
     scriptNames.reserve(static_cast<int>(list.size()));
     for (const auto &item : list)
@@ -45,7 +45,7 @@ void RunScriptDialog::accept()
     QString scriptName = ui->lineEdit->text();
     QFileInfo fi(scriptName);
     if (!fi.exists()) {
-        auto list = Core::ScriptManager::instance()->scriptList();
+        const auto &list = Core::ScriptManager::instance()->scriptList();
         auto it = std::find_if(list.cbegin(), list.cend(), [&scriptName](const auto &item) {
             return item.name == scriptName;
         });

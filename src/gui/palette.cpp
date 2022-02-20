@@ -2,6 +2,7 @@
 #include "ui_palette.h"
 
 #include <core/project.h>
+#include <core/scriptmanager.h>
 #include <core/textdocument.h>
 
 #include <QAbstractTableModel>
@@ -92,6 +93,52 @@ private:
 };
 
 //=============================================================================
+// Model listing all scripts
+//=============================================================================
+class ScriptModel : public QAbstractTableModel
+{
+public:
+    using QAbstractTableModel::QAbstractTableModel;
+
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override
+    {
+
+        if (parent.isValid())
+            return 0;
+        const auto &list = Core::ScriptManager::instance()->scriptList();
+        return static_cast<int>(list.size());
+    }
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override
+    {
+        if (parent.isValid())
+            return 0;
+        return 2;
+    }
+
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override
+    {
+        Q_ASSERT(index.isValid());
+
+        const auto &list = Core::ScriptManager::instance()->scriptList();
+
+        switch (role) {
+        case Qt::DisplayRole:
+            if (index.column() == 0 && role == Qt::DisplayRole) {
+                return list.at(index.row()).name;
+            } else if (index.column() == 1) {
+                return list.at(index.row()).description;
+            }
+            break;
+        case Qt::ToolTipRole:
+        case Qt::UserRole:
+            return list.at(index.row()).fileName;
+        }
+
+        return {};
+    }
+};
+
+//=============================================================================
 // Proxy model used to sort and display the data
 //=============================================================================
 class SortFilterProxyModel : public QSortFilterProxyModel
@@ -139,7 +186,7 @@ Palette::Palette(QWidget *parent)
     connect(ui->treeView, &QTreeView::clicked, this, &Palette::clickItem);
     ui->lineEdit->installEventFilter(this);
 
-    // File model initialisation, and set it as default one
+    // File selector
     auto fileModel = std::make_unique<FileModel>();
     auto fileReset = [model = fileModel.get()]() {
         model->resetFileInfo();
@@ -149,7 +196,7 @@ Palette::Palette(QWidget *parent)
     };
     m_selectors.push_back(Selector {"", std::move(fileModel), fileReset, fileSelection});
 
-    // Gotoline
+    // Gotoline selector
     auto gotoLine = [](const QString &value) {
         bool isInt;
         const int line = value.toInt(&isInt);
@@ -161,6 +208,12 @@ Palette::Palette(QWidget *parent)
         }
     };
     m_selectors.push_back(Selector {":", nullptr, {}, gotoLine});
+
+    // Script selector
+    auto runScript = [](const QString &fileName) {
+        Core::ScriptManager::instance()->runScript(fileName);
+    };
+    m_selectors.push_back(Selector {".", std::make_unique<ScriptModel>(), {}, runScript});
 }
 
 Palette::~Palette() = default;
@@ -228,7 +281,7 @@ void Palette::changeText(const QString &text)
         setSourceModel(m_selectors.at(index).model.get());
     }
 
-    const auto search = text.mid(m_selectors.at(m_currentSelector).prefix.length());
+    const auto search = text.mid(m_selectors.at(m_currentSelector).prefix.length()).simplified();
     m_proxyModel->setFilterWildcard(search);
     updateListHeight();
 }

@@ -4,8 +4,10 @@
 
 #include <QDir>
 #include <QDirIterator>
+#include <QFile>
 #include <QFileInfo>
 #include <QFileSystemWatcher>
+#include <QTextStream>
 #include <QTimer>
 
 namespace Core {
@@ -33,7 +35,7 @@ ScriptManager *ScriptManager::instance()
     return m_instance;
 }
 
-ScriptManager::ScriptList ScriptManager::scriptList() const
+const ScriptManager::ScriptList &ScriptManager::scriptList() const
 {
     return m_scriptList;
 }
@@ -82,15 +84,16 @@ void ScriptManager::runScript(const QString &fileName, bool async, bool log)
 
 void ScriptManager::addScript(const QString &fileName)
 {
-    QFileInfo fi(fileName);
 
-    if (!fi.isReadable())
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly))
         return;
 
-    Script script;
-    script.fileName = fileName;
-    script.name = fi.fileName();
-    m_scriptList.push_back(script);
+    QTextStream stream(&file);
+    const QString &line = stream.readLine();
+    const QString description = line.startsWith("//") ? line.mid(2).simplified() : "";
+    QFileInfo fi(fileName);
+    m_scriptList.push_back(Script {fi.fileName(), fileName, description});
 }
 
 static QStringList scriptListFromDir(const QString &path)
