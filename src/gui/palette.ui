@@ -30,16 +30,35 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QLineEdit" name="lineEdit">
-     <property name="clearButtonEnabled">
-      <bool>true</bool>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="leftMargin">
+      <number>9</number>
      </property>
-    </widget>
+     <property name="topMargin">
+      <number>9</number>
+     </property>
+     <property name="rightMargin">
+      <number>9</number>
+     </property>
+     <item>
+      <widget class="QLineEdit" name="lineEdit">
+       <property name="placeholderText">
+        <string>Search by filenames (append : to go to line)</string>
+       </property>
+       <property name="clearButtonEnabled">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
-    <widget class="QTableView" name="tableView">
+    <widget class="QTreeView" name="treeView">
      <property name="cursor" stdset="0">
       <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
      </property>
      <property name="selectionMode">
       <enum>QAbstractItemView::SingleSelection</enum>
@@ -47,19 +66,13 @@
      <property name="selectionBehavior">
       <enum>QAbstractItemView::SelectRows</enum>
      </property>
-     <property name="showGrid">
-      <bool>false</bool>
+     <property name="indentation">
+      <number>10</number>
      </property>
-     <property name="cornerButtonEnabled">
-      <bool>false</bool>
+     <property name="uniformRowHeights">
+      <bool>true</bool>
      </property>
-     <attribute name="horizontalHeaderVisible">
-      <bool>false</bool>
-     </attribute>
-     <attribute name="horizontalHeaderMinimumSectionSize">
-      <number>20</number>
-     </attribute>
-     <attribute name="verticalHeaderVisible">
+     <attribute name="headerVisible">
       <bool>false</bool>
      </attribute>
     </widget>

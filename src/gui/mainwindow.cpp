@@ -89,13 +89,6 @@ MainWindow::~MainWindow()
     settings.setValue(SplitterKey, ui->splitter->saveState());
 }
 
-void MainWindow::resizeEvent(QResizeEvent *event)
-{
-    QMainWindow::resizeEvent(event);
-    if (m_palette->isVisible())
-        showPalette();
-}
-
 void MainWindow::showEvent(QShowEvent *event)
 {
     QMainWindow::showEvent(event);
@@ -215,7 +208,7 @@ void MainWindow::showPalette()
     const int x = (rect.width() - m_palette->width()) / 2;
     const int y = rect.y();
 
-    m_palette->move(x, y);
+    m_palette->move(mapToGlobal({x, y}));
     m_palette->show();
     m_palette->raise();
 }
@@ -304,6 +297,8 @@ void MainWindow::changeCurrentDocument()
         });
     }
     ui->tabWidget->setCurrentIndex(windowIndex);
+    if (ui->tabWidget->currentWidget())
+        ui->tabWidget->currentWidget()->setFocus(Qt::OtherFocusReason);
 
     const QModelIndex &index = m_fileModel->index(fileName);
     ui->projectView->setCurrentIndex(index);

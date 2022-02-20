@@ -1,16 +1,19 @@
 #pragma once
 
+#include <QAbstractItemModel>
 #include <QWidget>
 
+#include <functional>
 #include <memory>
+#include <vector>
+
+class QSortFilterProxyModel;
 
 namespace Gui {
 
 namespace Ui {
     class Palette;
 }
-
-class PaletteFileModel;
 
 class Palette : public QWidget
 {
@@ -27,11 +30,23 @@ protected:
     void showEvent(QShowEvent *event) override;
 
 private:
-    void openDocument(const QModelIndex &index);
+    void changeText(const QString &text);
+    void clickItem(const QModelIndex &index);
+    void setSourceModel(QAbstractItemModel *model);
+    void updateListHeight();
 
-private:
+    struct Selector
+    {
+        QString prefix;
+        std::unique_ptr<QAbstractItemModel> model;
+        std::function<void()> resetFunc;
+        std::function<void(const QString &)> selectionFunc;
+    };
+
     std::unique_ptr<Ui::Palette> ui;
-    PaletteFileModel *m_fileModel;
+    std::vector<Selector> m_selectors;
+    int m_currentSelector = 0;
+    QSortFilterProxyModel *m_proxyModel = nullptr;
 };
 
 } // namespace Gui
