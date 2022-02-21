@@ -1,5 +1,7 @@
 #include "lspdocument.h"
 
+#include "private/lspcache.h"
+
 #include "lsp/client.h"
 #include "lsp/types.h"
 
@@ -20,16 +22,13 @@ namespace Core {
  * \inherits TextDocument
  */
 
-LspDocument::LspDocument(QObject *parent)
-    : TextDocument(parent)
-{
-}
-
 LspDocument::~LspDocument() = default;
 
 LspDocument::LspDocument(Type type, QObject *parent)
     : TextDocument(type, parent)
+    , m_cache(std::make_unique<LspCache>(this))
 {
+    connect(textEdit()->document(), &QTextDocument::contentsChange, this, &LspDocument::changeContent);
 }
 
 void LspDocument::setLspClient(Lsp::Client *client)
@@ -45,43 +44,7 @@ QVector<Core::Symbol> LspDocument::symbols() const
 {
     spdlog::trace("LspDocument::symbols");
 
-    if (!client())
-        return {};
-
-    // TODO cache the data
-    Lsp::DocumentSymbolParams params;
-    params.textDocument.uri = toUri();
-    auto result = client()->documentSymbol(std::move(params));
-    if (!result)
-        return {};
-
-    // Wee only supports Lsp::DocumentSymbol for now
-    Q_ASSERT(std::holds_alternative<std::vector<Lsp::DocumentSymbol>>(result.value()));
-    const auto lspSymbols = std::get<std::vector<Lsp::DocumentSymbol>>(result.value());
-    QVector<Symbol> symbols;
-
-    // Create a recusive lambda to flatten the hierarchy
-    // Add the full symbol name (with namespaces/classes)
-    const std::function<void(const std::vector<Lsp::DocumentSymbol> &, QString)> fillSymbols =
-        [this, &symbols, &fillSymbols](const std::vector<Lsp::DocumentSymbol> &lspSymbols, QString context) {
-            for (const auto &lspSymbol : lspSymbols) {
-                const QString description = lspSymbol.detail ? QString::fromStdString(lspSymbol.detail.value()) : "";
-                QString name = QString::fromStdString(lspSymbol.name);
-                if (!context.isEmpty())
-                    name = context + "::" + name;
-                symbols.push_back(Symbol {name, description, static_cast<Core::Symbol::Kind>(lspSymbol.kind),
-                                          toRange(lspSymbol.range), toRange(lspSymbol.selectionRange)});
-                if (lspSymbol.children) {
-                    if (lspSymbol.kind == Lsp::SymbolKind::String) // case for BEGIN_MESSAGE_MAP
-                        fillSymbols(lspSymbol.children.value(), context);
-                    else
-                        fillSymbols(lspSymbol.children.value(), name);
-                }
-            }
-        };
-    fillSymbols(lspSymbols, "");
-
-    return symbols;
+    return m_cache->symbols();
 }
 
 void LspDocument::didOpen()
@@ -135,6 +98,14 @@ int LspDocument::toPos(const Lsp::Position &pos) const
 TextRange LspDocument::toRange(const Lsp::Range &range) const
 {
     return {toPos(range.start), toPos(range.end)};
+}
+
+void LspDocument::changeContent(int position, int charsRemoved, int charsAdded)
+{
+    Q_UNUSED(position)
+    Q_UNUSED(charsRemoved)
+    Q_UNUSED(charsAdded)
+    m_cache->clear();
 }
 
 } // namespace Core

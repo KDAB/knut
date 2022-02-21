@@ -11,12 +11,13 @@ struct Range;
 
 namespace Core {
 
+class LspCache;
+
 class LspDocument : public TextDocument
 {
     Q_OBJECT
 
 public:
-    explicit LspDocument(QObject *parent = nullptr);
     ~LspDocument();
 
     void setLspClient(Lsp::Client *client);
@@ -35,7 +36,11 @@ protected:
     TextRange toRange(const Lsp::Range &range) const;
 
 private:
+    void changeContent(int position, int charsRemoved, int charsAdded);
+
+    friend LspCache;
     QPointer<Lsp::Client> m_lspClient;
+    std::unique_ptr<LspCache> m_cache;
 };
 
 } // namespace Core
