@@ -8,7 +8,7 @@ import Script 1.0
 
 <table>
 <tr><td>Since:</td><td>Knut 4.0</td></tr>
-<tr><td>Inherits:</td><td><a href="TextDocument.html">TextDocument</a></td></tr>
+<tr><td>Inherits:</td><td><a href="LspDocument.html">LspDocument</a></td></tr>
 </table>
 
 ## Properties
@@ -17,7 +17,7 @@ import Script 1.0
 |-|-|
 |bool|**[isHeader](#isHeader)**|
 
-Inherited properties: [TextDocument properties](../script/textdocument.md#properties)
+Inherited properties: [LspDocument properties](../script/lspdocument.md#properties)
 
 ## Methods
 
@@ -26,7 +26,7 @@ Inherited properties: [TextDocument properties](../script/textdocument.md#proper
 |string |**[correspondingHeaderSource](#correspondingHeaderSource)**()|
 |[CppDocument](../script/cppdocument.md) |**[openHeaderSource](#openHeaderSource)**()|
 
-Inherited methods: [TextDocument methods](../script/textdocument.md#methods)
+Inherited methods: [LspDocument methods](../script/lspdocument.md#methods)
 
 ## Property Documentation
 

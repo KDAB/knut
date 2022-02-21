@@ -1,11 +1,10 @@
 #pragma once
 
-#include "symbol.h"
-#include "textdocument.h"
+#include "lspdocument.h"
 
 namespace Core {
 
-class CppDocument : public TextDocument
+class CppDocument : public LspDocument
 {
     Q_OBJECT
     Q_PROPERTY(bool isHeader READ isHeader CONSTANT)
@@ -16,8 +15,6 @@ public:
     bool isHeader() const;
 
     Q_INVOKABLE QString correspondingHeaderSource() const;
-
-    Q_INVOKABLE QVector<Core::Symbol> symbols() const;
 
 public slots:
     Core::CppDocument *openHeaderSource();

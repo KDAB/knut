@@ -2,9 +2,6 @@
 
 #include "mark.h"
 #include "string_utils.h"
-#include "textrange.h"
-
-#include "lsp/client.h"
 
 #include <QFile>
 #include <QPlainTextEdit>
@@ -157,31 +154,6 @@ bool TextDocument::doLoad(const QString &fileName)
     return true;
 }
 
-void TextDocument::didOpen()
-{
-    if (!m_lspClient)
-        return;
-
-    Lsp::DidOpenTextDocumentParams params;
-    params.textDocument.uri = toUri();
-    params.textDocument.version = revision();
-    params.textDocument.text = m_document->toPlainText().toStdString();
-    params.textDocument.languageId = m_lspClient->languageId();
-
-    m_lspClient->didOpen(std::move(params));
-}
-
-void TextDocument::didClose()
-{
-    if (!m_lspClient)
-        return;
-
-    Lsp::DidCloseTextDocumentParams params;
-    params.textDocument.uri = toUri();
-
-    m_lspClient->didClose(std::move(params));
-}
-
 // This function is copied from TextFileFormat::detect from Qt Creator.
 void TextDocument::detectFormat(const QByteArray &data)
 {
@@ -300,11 +272,6 @@ QPlainTextEdit *TextDocument::textEdit() const
     return m_document;
 }
 
-void TextDocument::setLspClient(Lsp::Client *client)
-{
-    m_lspClient = client;
-}
-
 /*!
  * \qmlmethod TextDocument::undo()
  * Undo the last action.
@@ -331,34 +298,6 @@ void TextDocument::movePosition(QTextCursor::MoveOperation operation, QTextCurso
         m_document->moveCursor(operation, mode);
         m_document->setTextCursor(m_document->textCursor());
     }
-}
-
-Lsp::Client *TextDocument::client() const
-{
-    return m_lspClient;
-}
-
-std::string TextDocument::toUri() const
-{
-    return QUrl::fromLocalFile(fileName()).toString().toStdString();
-}
-
-int TextDocument::toPos(const Lsp::Position &pos) const
-{
-    // Internally, columns are 0-based, like in LSP
-    const int blockNumber = qMin((int)pos.line, m_document->document()->blockCount() - 1);
-    const QTextBlock &block = m_document->document()->findBlockByNumber(blockNumber);
-    if (block.isValid()) {
-        QTextCursor cursor(block);
-        cursor.movePosition(QTextCursor::Right, QTextCursor::MoveAnchor, pos.character);
-        return cursor.position();
-    }
-    return 0;
-}
-
-TextRange TextDocument::toRange(const Lsp::Range &range) const
-{
-    return {toPos(range.start), toPos(range.end)};
 }
 
 /*!

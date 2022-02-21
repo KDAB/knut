@@ -72,6 +72,7 @@ Inherited properties: [Document properties](../script/document.md#properties)
 ||**[selectPreviousCharacter](#selectPreviousCharacter)**(int count = 1)|
 ||**[selectPreviousLine](#selectPreviousLine)**(int count = 1)|
 ||**[selectPreviousWord](#selectPreviousWord)**(int count = 1)|
+||**[selectRange](#selectRange)**([TextRange](../script/textrange.md) range)|
 ||**[selectTo](#selectTo)**(int pos)|
 ||**[selectToMark](#selectToMark)**([Mark](../script/mark.md) mark)|
 ||**[selectWordEnd](#selectWordEnd)**()|
@@ -326,6 +327,10 @@ Selectes the previous line, repeat the operation `count` times.
 #### <a name="selectPreviousWord"></a>**selectPreviousWord**(int count = 1)
 
 Selects the previous word, repeat the operation `count` times.
+
+#### <a name="selectRange"></a>**selectRange**([TextRange](../script/textrange.md) range)
+
+Selects the range passed in parameter.
 
 #### <a name="selectTo"></a>**selectTo**(int pos)
 

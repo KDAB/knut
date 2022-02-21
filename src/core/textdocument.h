@@ -3,8 +3,6 @@
 #include "document.h"
 #include "textrange.h"
 
-#include "lsp/types.h"
-
 #include <QPointer>
 #include <QTextCursor>
 #include <QTextDocument>
@@ -12,10 +10,6 @@
 #include <memory>
 
 class QPlainTextEdit;
-
-namespace Lsp {
-class Client;
-}
 
 namespace Core {
 
@@ -81,8 +75,6 @@ public:
     bool hasUtf8Bom() const;
 
     QPlainTextEdit *textEdit() const;
-
-    void setLspClient(Lsp::Client *client);
 
 public slots:
     void undo();
@@ -166,19 +158,10 @@ protected:
     bool doSave(const QString &fileName) override;
     bool doLoad(const QString &fileName) override;
 
-    void didOpen() override;
-    void didClose() override;
-
     void detectFormat(const QByteArray &data);
 
     void movePosition(QTextCursor::MoveOperation operation, QTextCursor::MoveMode mode = QTextCursor::MoveAnchor,
                       int count = 1);
-
-    // LSP specific methods
-    Lsp::Client *client() const;
-    std::string toUri() const;
-    int toPos(const Lsp::Position &pos) const;
-    TextRange toRange(const Lsp::Range &range) const;
 
 private:
     friend Mark;
@@ -188,7 +171,6 @@ private:
     QPointer<QPlainTextEdit> m_document;
     LineEnding m_lineEnding = NativeLineEnding;
     bool m_utf8Bom = false;
-    QPointer<Lsp::Client> m_lspClient;
 };
 
 } // namespace Core

@@ -260,8 +260,8 @@ Document *Project::get(QString fileName)
     } else {
         doc = createDocument(fi.suffix());
         if (doc) {
-            if (auto textDocument = qobject_cast<TextDocument *>(doc))
-                textDocument->setLspClient(getClient(doc->type()));
+            if (auto lspDocument = qobject_cast<LspDocument *>(doc))
+                lspDocument->setLspClient(getClient(doc->type()));
             doc->setParent(this);
             doc->load(fileName);
             m_documents.push_back(doc);

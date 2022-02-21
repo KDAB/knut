@@ -16,6 +16,8 @@ set(PROJECT_SOURCES
     imagedocument.cpp
     knutcore.h
     knutcore.cpp
+    lspdocument.h
+    lspdocument.cpp
     mark.h
     mark.cpp
     message.h
