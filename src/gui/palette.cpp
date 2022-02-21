@@ -1,8 +1,10 @@
 #include "palette.h"
 #include "ui_palette.h"
 
+#include <core/lspdocument.h>
 #include <core/project.h>
 #include <core/scriptmanager.h>
+#include <core/symbol.h>
 #include <core/textdocument.h>
 
 #include <QAbstractTableModel>
@@ -102,7 +104,6 @@ public:
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override
     {
-
         if (parent.isValid())
             return 0;
         const auto &list = Core::ScriptManager::instance()->scriptList();
@@ -134,6 +135,56 @@ public:
             return list.at(index.row()).fileName;
         }
 
+        return {};
+    }
+};
+
+//=============================================================================
+// Model listing all symbols
+//=============================================================================
+class SymbolModel : public QAbstractTableModel
+{
+public:
+    using QAbstractTableModel::QAbstractTableModel;
+
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override
+    {
+        if (parent.isValid())
+            return 0;
+        return getSymbols().count();
+    }
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override
+    {
+        if (parent.isValid())
+            return 0;
+        return 2;
+    }
+
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override
+    {
+        Q_ASSERT(index.isValid());
+
+        switch (role) {
+        case Qt::DisplayRole:
+        case Qt::ToolTipRole:
+            if (index.column() == 0 && role == Qt::DisplayRole) {
+                return getSymbols().at(index.row()).name;
+            } else if (index.column() == 1) {
+                return getSymbols().at(index.row()).description;
+            }
+            break;
+        case Qt::UserRole:
+            return index.row();
+        }
+
+        return {};
+    }
+
+private:
+    QVector<Core::Symbol> getSymbols() const
+    {
+        if (auto lspDocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->currentDocument()))
+            return lspDocument->symbols();
         return {};
     }
 };
@@ -186,34 +237,10 @@ Palette::Palette(QWidget *parent)
     connect(ui->treeView, &QTreeView::clicked, this, &Palette::clickItem);
     ui->lineEdit->installEventFilter(this);
 
-    // File selector
-    auto fileModel = std::make_unique<FileModel>();
-    auto fileReset = [model = fileModel.get()]() {
-        model->resetFileInfo();
-    };
-    auto fileSelection = [](const QString &path) {
-        Core::Project::instance()->open(path);
-    };
-    m_selectors.push_back(Selector {"", std::move(fileModel), fileReset, fileSelection});
-
-    // Gotoline selector
-    auto gotoLine = [](const QString &value) {
-        bool isInt;
-        const int line = value.toInt(&isInt);
-        if (isInt) {
-            if (auto textDocument = qobject_cast<Core::TextDocument *>(Core::Project::instance()->currentDocument())) {
-                textDocument->gotoLine(line);
-                textDocument->textEdit()->setFocus(Qt::OtherFocusReason);
-            }
-        }
-    };
-    m_selectors.push_back(Selector {":", nullptr, {}, gotoLine});
-
-    // Script selector
-    auto runScript = [](const QString &fileName) {
-        Core::ScriptManager::instance()->runScript(fileName);
-    };
-    m_selectors.push_back(Selector {".", std::make_unique<ScriptModel>(), {}, runScript});
+    addFileSelector();
+    addLineSelector();
+    addScriptSelector();
+    addSymbolSelector();
 }
 
 Palette::~Palette() = default;
@@ -322,6 +349,57 @@ void Palette::updateListHeight()
         ui->treeView->setFixedHeight(0);
     }
     setFixedHeight(minimumSizeHint().height());
+}
+
+void Palette::addFileSelector()
+{
+    auto fileModel = std::make_unique<FileModel>();
+    auto fileReset = [model = fileModel.get()]() {
+        model->resetFileInfo();
+    };
+    auto fileSelection = [](const QVariant &path) {
+        Core::Project::instance()->open(path.toString());
+    };
+    m_selectors.push_back(Selector {"", std::move(fileModel), fileReset, fileSelection});
+}
+
+void Palette::addLineSelector()
+{
+    auto gotoLine = [](const QVariant &value) {
+        bool isInt;
+        const int line = value.toInt(&isInt);
+        if (isInt) {
+            if (auto textDocument = qobject_cast<Core::TextDocument *>(Core::Project::instance()->currentDocument())) {
+                textDocument->gotoLine(line);
+                textDocument->textEdit()->setFocus(Qt::OtherFocusReason);
+                textDocument->textEdit()->centerCursor();
+            }
+        }
+    };
+    m_selectors.push_back(Selector {":", nullptr, {}, gotoLine});
+}
+
+void Palette::addScriptSelector()
+{
+    auto runScript = [](const QVariant &fileName) {
+        Core::ScriptManager::instance()->runScript(fileName.toString());
+    };
+    m_selectors.push_back(Selector {".", std::make_unique<ScriptModel>(), {}, runScript});
+}
+
+void Palette::addSymbolSelector()
+{
+    auto gotoSymbol = [](const QVariant &index) {
+        auto lspDocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->currentDocument());
+        bool isInt;
+        const int symbol = index.toInt(&isInt);
+        if (isInt && lspDocument) {
+            lspDocument->selectRange(lspDocument->symbols().at(symbol).selectionRange);
+            lspDocument->textEdit()->setFocus(Qt::OtherFocusReason);
+            lspDocument->textEdit()->centerCursor();
+        }
+    };
+    m_selectors.push_back(Selector {"@", std::make_unique<SymbolModel>(), {}, gotoSymbol});
 }
 
 } // namespace Gui

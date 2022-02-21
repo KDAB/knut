@@ -35,12 +35,17 @@ private:
     void setSourceModel(QAbstractItemModel *model);
     void updateListHeight();
 
+    void addFileSelector();
+    void addLineSelector();
+    void addScriptSelector();
+    void addSymbolSelector();
+
     struct Selector
     {
         QString prefix;
         std::unique_ptr<QAbstractItemModel> model;
         std::function<void()> resetFunc;
-        std::function<void(const QString &)> selectionFunc;
+        std::function<void(const QVariant &)> selectionFunc;
     };
 
     std::unique_ptr<Ui::Palette> ui;
