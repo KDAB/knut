@@ -27,6 +27,16 @@ To compile Knut, you need:
 
 All 3rd-party are downloaded at configure time using cmake `FetchContent`.
 
+## Contribution
+
+If you want to contribute, make sure to install the pre-commit hooks. Those are installed using [pre-commit](https://pre-commit.com/):
+
+```
+pip install pre-commit
+pre-commit install
+```
+
+At your first commit, it will download a bunch of necessary files, then all checks will be done at every commit, before hitting the CI.
 
 ## Usage
 
