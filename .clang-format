@@ -72,4 +72,4 @@ DisableFormat: true
 ---
 Language: Json
 # Don't format .json files
-DisableFormat: true
+IndentWidth: 4
