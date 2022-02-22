@@ -29,6 +29,8 @@ int AcceleratorModel::columnCount(const QModelIndex &parent) const
 
 QVariant AcceleratorModel::data(const QModelIndex &index, int role) const
 {
+    Q_ASSERT(checkIndex(index, CheckIndexOption::IndexIsValid));
+
     if (role == Qt::DisplayRole || role == Qt::ToolTipRole) {
         const auto &accelerator = m_accelerators.at(index.row());
         switch (index.column()) {

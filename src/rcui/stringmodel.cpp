@@ -32,6 +32,8 @@ int StringModel::columnCount(const QModelIndex &parent) const
 
 QVariant StringModel::data(const QModelIndex &index, int role) const
 {
+    Q_ASSERT(checkIndex(index, CheckIndexOption::IndexIsValid));
+
     if (role == Qt::DisplayRole || role == Qt::ToolTipRole) {
         const auto &asset = m_strings.at(index.row());
         switch (index.column()) {

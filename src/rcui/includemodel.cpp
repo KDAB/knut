@@ -23,6 +23,8 @@ int IncludeModel::rowCount(const QModelIndex &parent) const
 
 QVariant IncludeModel::data(const QModelIndex &index, int role) const
 {
+    Q_ASSERT(checkIndex(index, CheckIndexOption::IndexIsValid));
+
     if (role == Qt::DisplayRole || role == Qt::ToolTipRole) {
         const auto &include = m_includes.at(index.row());
         return include.fileName;

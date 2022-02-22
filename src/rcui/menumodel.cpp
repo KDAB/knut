@@ -46,6 +46,8 @@ int MenuModel::columnCount(const QModelIndex &parent) const
 
 QVariant MenuModel::data(const QModelIndex &index, int role) const
 {
+    Q_ASSERT(checkIndex(index, CheckIndexOption::IndexIsValid));
+
     auto menu = indexToItem(index);
     if (role == Qt::DisplayRole || role == Qt::ToolTipRole) {
         switch (index.column()) {

@@ -23,6 +23,8 @@ int ToolBarModel::rowCount(const QModelIndex &parent) const
 
 QVariant ToolBarModel::data(const QModelIndex &index, int role) const
 {
+    Q_ASSERT(checkIndex(index, CheckIndexOption::IndexIsValid));
+
     if (role == Qt::DisplayRole || role == Qt::ToolTipRole) {
         const auto &item = m_items.at(index.row());
         if (item.id.isEmpty())

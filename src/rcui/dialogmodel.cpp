@@ -29,6 +29,8 @@ int DialogModel::columnCount(const QModelIndex &parent) const
 
 QVariant DialogModel::data(const QModelIndex &index, int role) const
 {
+    Q_ASSERT(checkIndex(index, CheckIndexOption::IndexIsValid));
+
     if (role == Qt::DisplayRole || role == Qt::ToolTipRole) {
         const auto &control = m_controls.at(index.row());
         switch (index.column()) {

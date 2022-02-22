@@ -77,6 +77,8 @@ int DataModel::columnCount(const QModelIndex &parent) const
 
 QVariant DataModel::data(const QModelIndex &index, int role) const
 {
+    Q_ASSERT(checkIndex(index, CheckIndexOption::IndexIsValid));
+
     if (role == Qt::DisplayRole) {
         int data = static_cast<int>(index.internalId());
         if (data == NoData)
