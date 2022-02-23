@@ -208,7 +208,7 @@ void MainWindow::showPalette()
     const int x = (rect.width() - m_palette->width()) / 2;
     const int y = rect.y();
 
-    m_palette->move(mapToGlobal({x, y}));
+    m_palette->move(mapToGlobal(QPoint {x, y}));
     m_palette->show();
     m_palette->raise();
 }

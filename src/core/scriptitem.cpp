@@ -30,8 +30,8 @@ ScriptItem::~ScriptItem() { }
 
 QQmlListProperty<QObject> ScriptItem::data()
 {
-    return QQmlListProperty<QObject>(this, nullptr, &ScriptItem::appendData, &ScriptItem::countData,
-                                     &ScriptItem::atData, &ScriptItem::clearData);
+    return QQmlListProperty<QObject>(this, this, &ScriptItem::appendData, &ScriptItem::countData, &ScriptItem::atData,
+                                     &ScriptItem::clearData);
 }
 
 void ScriptItem::appendData(QQmlListProperty<QObject> *list, QObject *obj)
@@ -43,14 +43,14 @@ void ScriptItem::appendData(QQmlListProperty<QObject> *list, QObject *obj)
     }
 }
 
-QObject *ScriptItem::atData(QQmlListProperty<QObject> *list, int index)
+QObject *ScriptItem::atData(QQmlListProperty<QObject> *list, Core::TypeSize index)
 {
     if (auto that = qobject_cast<ScriptItem *>(list->object))
         return that->m_data.at(index);
     return nullptr;
 }
 
-int ScriptItem::countData(QQmlListProperty<QObject> *list)
+TypeSize ScriptItem::countData(QQmlListProperty<QObject> *list)
 {
     if (auto that = qobject_cast<ScriptItem *>(list->object))
         return static_cast<int>(that->m_data.size());

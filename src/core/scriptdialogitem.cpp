@@ -98,7 +98,7 @@ QQmlPropertyMap *ScriptDialogItem::data() const
 
 QQmlListProperty<QObject> ScriptDialogItem::childrenData()
 {
-    return QQmlListProperty<QObject>(this, nullptr, &ScriptDialogItem::appendChild, &ScriptDialogItem::countChildren,
+    return QQmlListProperty<QObject>(this, this, &ScriptDialogItem::appendChild, &ScriptDialogItem::countChildren,
                                      &ScriptDialogItem::atChild, &ScriptDialogItem::clearChildren);
 }
 
@@ -218,14 +218,14 @@ void ScriptDialogItem::appendChild(QQmlListProperty<QObject> *list, QObject *obj
     }
 }
 
-QObject *ScriptDialogItem::atChild(QQmlListProperty<QObject> *list, int index)
+QObject *ScriptDialogItem::atChild(QQmlListProperty<QObject> *list, Core::TypeSize index)
 {
     if (auto that = qobject_cast<ScriptDialogItem *>(list->object))
         return that->m_children.at(index);
     return nullptr;
 }
 
-int ScriptDialogItem::countChildren(QQmlListProperty<QObject> *list)
+TypeSize ScriptDialogItem::countChildren(QQmlListProperty<QObject> *list)
 {
     if (auto that = qobject_cast<ScriptDialogItem *>(list->object))
         return static_cast<int>(that->m_children.size());

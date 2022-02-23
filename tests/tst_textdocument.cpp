@@ -6,7 +6,6 @@
 #include <QDir>
 #include <QFile>
 #include <QTest>
-#include <QTextCodec>
 #include <QTextStream>
 
 static const QString LoremIpsumText(R"(

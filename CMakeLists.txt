@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.15)
 include(FetchContent)
 
 project(knut VERSION 4.0 LANGUAGES CXX)
@@ -12,7 +12,7 @@ add_definitions(-DKNUT_VERSION="${PROJECT_VERSION}")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
-find_package(ECM 5.87.0 REQUIRED NO_MODULE)
+find_package(ECM 5.91.0 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 
 set(CMAKE_CXX_STANDARD 20)
@@ -55,7 +55,7 @@ if(USE_SYNTAX_HIGHLIGHTING)
     #KSyntaxHighlighting
     FetchContent_Declare(KSyntaxHighlighting
         GIT_REPOSITORY https://github.com/KDE/syntax-highlighting.git
-        GIT_TAG        v5.87.0
+        GIT_TAG        v5.91.0
     )
     # Don't build tests and examples
     set(KSYNTAXHIGHLIGHTING_USE_GUI OFF)

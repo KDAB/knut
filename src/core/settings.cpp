@@ -151,30 +151,34 @@ bool Settings::setValue(QString path, const QVariant &value)
         path.prepend('/');
 
     auto jsonPath = json::json_pointer(path.toStdString());
-    switch (value.type()) {
-    case QVariant::Bool:
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
+    switch (static_cast<QMetaType::Type>(value.type())) {
+#else
+    switch (static_cast<QMetaType::Type>(value.typeId())) {
+#endif
+    case QMetaType::Bool:
         m_settings[jsonPath] = value.toBool();
         m_projectSettings[jsonPath] = value.toBool();
         break;
-    case QVariant::Int:
-    case QVariant::LongLong:
+    case QMetaType::Int:
+    case QMetaType::LongLong:
         m_settings[jsonPath] = value.toInt();
         m_projectSettings[jsonPath] = value.toInt();
         break;
-    case QVariant::UInt:
-    case QVariant::ULongLong:
+    case QMetaType::UInt:
+    case QMetaType::ULongLong:
         m_settings[jsonPath] = value.toUInt();
         m_projectSettings[jsonPath] = value.toUInt();
         break;
-    case QVariant::Double:
+    case QMetaType::Double:
         m_settings[jsonPath] = value.toDouble();
         m_projectSettings[jsonPath] = value.toDouble();
         break;
-    case QVariant::String:
+    case QMetaType::QString:
         m_settings[jsonPath] = value.toString();
         m_projectSettings[jsonPath] = value.toString();
         break;
-    case QVariant::StringList:
+    case QMetaType::QStringList:
         m_settings[jsonPath] = value.toStringList();
         m_projectSettings[jsonPath] = value.toStringList();
         break;

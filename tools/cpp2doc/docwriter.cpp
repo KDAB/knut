@@ -269,7 +269,7 @@ QString DocWriter::typeToString(QString type) const
             bool doContinue = false;
             if (index != 0 && type[index - 1].isLetterOrNumber())
                 doContinue = true;
-            if (index + key.length() < type.length() && type[index + key.length() + 1].isLetterOrNumber())
+            if (index + key.length() < type.length() && type[index + key.length()].isLetterOrNumber())
                 doContinue = true;
             if (!doContinue)
                 type.replace(index, key.length(), QString("[%1](%2)").arg(key, m_typeFileMap.value(key)));
