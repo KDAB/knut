@@ -11,7 +11,7 @@ class LspDocument;
 class LspCache
 {
 public:
-    LspCache(LspDocument *document);
+    explicit LspCache(LspDocument *document);
 
     void clear();
 
@@ -22,7 +22,7 @@ private:
         HasSymbols = 0x01,
     };
 
-    LspDocument *m_document;
+    LspDocument *const m_document;
     QVector<Core::Symbol> m_symbols;
     int m_flags = 0;
 };

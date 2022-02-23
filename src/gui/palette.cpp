@@ -44,7 +44,7 @@ public:
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override
     {
-        Q_ASSERT(index.isValid());
+        Q_ASSERT(checkIndex(index, CheckIndexOption::IndexIsValid));
 
         switch (role) {
         case Qt::DisplayRole:
@@ -118,7 +118,7 @@ public:
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override
     {
-        Q_ASSERT(index.isValid());
+        Q_ASSERT(checkIndex(index, CheckIndexOption::IndexIsValid));
 
         const auto &list = Core::ScriptManager::instance()->scriptList();
 
@@ -162,7 +162,7 @@ public:
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override
     {
-        Q_ASSERT(index.isValid());
+        Q_ASSERT(checkIndex(index, CheckIndexOption::IndexIsValid));
 
         switch (role) {
         case Qt::DisplayRole:
@@ -176,7 +176,6 @@ public:
         case Qt::UserRole:
             return index.row();
         }
-
         return {};
     }
 
