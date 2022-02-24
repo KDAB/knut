@@ -77,13 +77,14 @@ private slots:
         QCOMPARE(ddxMap.value("IDC_MOUSEECHO"), "m_MouseEcho");
     }
 
-    void getSymbols()
+    void symbols()
     {
         CHECK_CLANGD_VERSION;
 
         Core::KnutCore core;
         Core::Project::instance()->setRoot(Test::testDataPath() + "/mfc/tutorial");
 
+        // get symbols
         auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open("TutorialDlg.cpp"));
         const auto cppSymbols = cppDocument->symbols();
 
@@ -114,6 +115,20 @@ private slots:
         QCOMPARE(hSymbols.last().name, "CTutorialDlg::m_hIcon");
         hDocument->selectRange(hSymbols.last().range);
         QCOMPARE(hDocument->selectedText(), "HICON m_hIcon");
+
+        // findSymbol
+        auto symbol = hDocument->findSymbol("DoDataExchange");
+        QCOMPARE(symbol.description, "void (int *)");
+        symbol = hDocument->findSymbol("DoDataExchange", Core::TextDocument::FindWholeWords);
+        QVERIFY(symbol.isNull());
+        symbol = hDocument->findSymbol("CTutorialDlg::DoDataExchange", Core::TextDocument::FindWholeWords);
+        QVERIFY(!symbol.isNull());
+        symbol = hDocument->findSymbol("vsliderbar", Core::TextDocument::FindCaseSensitively);
+        QVERIFY(symbol.isNull());
+        symbol = hDocument->findSymbol("vsliderbar");
+        QVERIFY(!symbol.isNull());
+        symbol = hDocument->findSymbol("On.*Clicked.*", Core::TextDocument::FindRegexp);
+        QVERIFY(!symbol.isNull());
     }
 };
 

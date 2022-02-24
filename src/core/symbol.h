@@ -16,6 +16,7 @@ struct Symbol
     Q_PROPERTY(Kind kind MEMBER kind);
     Q_PROPERTY(Core::TextRange range MEMBER range);
     Q_PROPERTY(Core::TextRange selectionRange MEMBER selectionRange);
+    Q_PROPERTY(bool isNull READ isNull CONSTANT)
 
 public:
     enum Kind {
@@ -53,6 +54,8 @@ public:
     Kind kind;
     TextRange range;
     TextRange selectionRange;
+
+    bool isNull() const { return name.isEmpty(); }
 };
 
 } // namespace Core

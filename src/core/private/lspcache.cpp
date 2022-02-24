@@ -18,20 +18,20 @@ void LspCache::clear()
     m_flags = 0;
 }
 
-QVector<Symbol> LspCache::symbols()
+const QVector<Symbol> &LspCache::symbols()
 {
     if (m_flags & HasSymbols)
         return m_symbols;
 
     if (!m_document->m_lspClient)
-        return {};
+        return m_symbols;
 
     // TODO cache the data
     Lsp::DocumentSymbolParams params;
     params.textDocument.uri = m_document->toUri();
     auto result = m_document->m_lspClient->documentSymbol(std::move(params));
     if (!result)
-        return {};
+        return m_symbols;
 
     // Wee only supports Lsp::DocumentSymbol for now
     Q_ASSERT(std::holds_alternative<std::vector<Lsp::DocumentSymbol>>(result.value()));

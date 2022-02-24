@@ -1,6 +1,7 @@
 #include "lspdocument.h"
 
 #include "private/lspcache.h"
+#include "string_utils.h"
 
 #include "lsp/client.h"
 #include "lsp/types.h"
@@ -10,6 +11,8 @@
 #include <QTextDocument>
 
 #include <spdlog/spdlog.h>
+
+#include <algorithm>
 
 namespace Core {
 
@@ -45,6 +48,36 @@ QVector<Core::Symbol> LspDocument::symbols() const
     spdlog::trace("LspDocument::symbols");
 
     return m_cache->symbols();
+}
+
+/*!
+ * \qmlmethod Symbol LspDocument::findSymbol( string name, int options = TextDocument.NoFindFlags)
+ * Find a symbol based on its `name`, using different find `options`.
+ *
+ * - `TextDocument.FindCaseSensitively`: match case
+ * - `TextDocument.FindWholeWords`: match only fully qualified symbol
+ * - `TextDocument.FindRegexp`: use a regexp
+ */
+Symbol LspDocument::findSymbol(const QString &name, int options)
+{
+    spdlog::trace("LspDocument::findSymbol {}", name.toStdString());
+
+    const auto &symbols = m_cache->symbols();
+    const auto regexp = (options & FindRegexp) ? createRegularExpression(name, options) : QRegularExpression {};
+    auto byName = [name, options, regexp](const Symbol &symbol) {
+        if (options & FindWholeWords)
+            return symbol.name.compare(name, (options & FindCaseSensitively) ? Qt::CaseSensitive : Qt::CaseInsensitive)
+                == 0;
+        else if (options & FindRegexp)
+            return regexp.match(symbol.name).hasMatch();
+        else
+            return symbol.name.contains(name,
+                                        (options & FindCaseSensitively) ? Qt::CaseSensitive : Qt::CaseInsensitive);
+    };
+    auto it = std::ranges::find_if(symbols, byName);
+    if (it != symbols.end())
+        return *it;
+    return {};
 }
 
 void LspDocument::didOpen()

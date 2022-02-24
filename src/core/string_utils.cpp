@@ -1,5 +1,7 @@
 #include "string_utils.h"
 
+#include "textdocument.h"
+
 #include <QSet>
 
 namespace Core {
@@ -200,6 +202,13 @@ QString expandRegExpReplacement(const QString &replaceText, const QStringList &c
         }
     }
     return result;
+}
+
+QRegularExpression createRegularExpression(const QString &txt, int flags)
+{
+    return QRegularExpression((flags & TextDocument::FindRegexp) ? txt : QRegularExpression::escape(txt),
+                              (flags & TextDocument::PreserveCase) ? QRegularExpression::NoPatternOption
+                                                                   : QRegularExpression::CaseInsensitiveOption);
 }
 
 } // namespace Migration

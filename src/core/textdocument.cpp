@@ -949,13 +949,13 @@ void TextDocument::selectToMark(Mark *mark)
 }
 
 /*!
- * \qmlmethod bool TextDocument::find( string text, int options = NoFindFlags)
+ * \qmlmethod bool TextDocument::find( string text, int options = TextDocument.NoFindFlags)
  * Searches the string `text` in the editor. Options could be a combination of:
  *
- * - `TextEditor.FindBackward`: search backward
- * - `TextEditor.FindCaseSensitively`: match case
- * - `TextEditor.FindWholeWords`: match only complete words
- * - `TextEditor.FindRegexp`: use a regexp, equivalent to calling `findRegexp`
+ * - `TextDocument.FindBackward`: search backward
+ * - `TextDocument.FindCaseSensitively`: match case
+ * - `TextDocument.FindWholeWords`: match only complete words
+ * - `TextDocument.FindRegexp`: use a regexp, equivalent to calling `findRegexp`
  *
  * Selects the match and returns `true` if a match is found.
  */
@@ -968,20 +968,13 @@ bool TextDocument::find(const QString &text, int options)
         return m_document->find(text, static_cast<QTextDocument::FindFlags>(options));
 }
 
-static QRegularExpression createRegularExpression(const QString &txt, int flags)
-{
-    return QRegularExpression((flags & TextDocument::FindRegexp) ? txt : QRegularExpression::escape(txt),
-                              (flags & TextDocument::PreserveCase) ? QRegularExpression::NoPatternOption
-                                                                   : QRegularExpression::CaseInsensitiveOption);
-}
-
 /*!
- * \qmlmethod bool TextDocument::findRegexp( string regexp, int options = NoFindFlags)
+ * \qmlmethod bool TextDocument::findRegexp( string regexp, int options = TextDocument.NoFindFlags)
  * Searches the string `regexp` in the editor using a regular expression. Options could be a combination of:
  *
- * - `TextEditor.FindBackward`: search backward
- * - `TextEditor.FindCaseSensitively`: match case
- * - `TextEditor.FindWholeWords`: match only complete words
+ * - `TextDocument.FindBackward`: search backward
+ * - `TextDocument.FindCaseSensitively`: match case
+ * - `TextDocument.FindWholeWords`: match only complete words
  *
  * Selects the match and returns `true` if a match is found.
  */
@@ -993,13 +986,13 @@ bool TextDocument::findRegexp(const QString &regexp, int options)
 }
 
 /*!
- * \qmlmethod bool TextDocument::replaceAll( string before, string after, int options = NoFindFlags)
+ * \qmlmethod bool TextDocument::replaceAll( string before, string after, int options = TextDocument.NoFindFlags)
  * Replace all occurences of the string `before` with `after`. Options could be a combination of:
  *
- * - `TextEditor.FindCaseSensitively`: match case
- * - `TextEditor.FindWholeWords`: match only complete words
- * - `TextEditor.FindRegexp`: use a regexp, equivalent to calling `findRegexp`
- * - `TextEditor.PreserveCase`: preserve case when replacing
+ * - `TextDocument.FindCaseSensitively`: match case
+ * - `TextDocument.FindWholeWords`: match only complete words
+ * - `TextDocument.FindRegexp`: use a regexp, equivalent to calling `findRegexp`
+ * - `TextDocument.PreserveCase`: preserve case when replacing
  *
  * If the option `TextEditor.PreserveCase` is used, it means:
  *
@@ -1047,7 +1040,7 @@ int TextDocument::replaceAll(const QString &before, const QString &after, int op
 }
 
 /*!
- * \qmlmethod bool TextDocument::replaceAllRegexp( string regexp, string after, int options = NoFindFlags)
+ * \qmlmethod bool TextDocument::replaceAllRegexp( string regexp, string after, int options = TextDocument.NoFindFlags)
  * Replace all occurences of the matches for the `regexp` with `after`. See the options from `replaceAll`.
  *
  * The captures coming from the regexp can be used in the replacement text, using `\1`..`\n` or `$1`..`$n`.

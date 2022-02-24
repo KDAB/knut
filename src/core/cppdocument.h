@@ -14,11 +14,11 @@ public:
 
     bool isHeader() const;
 
-    Q_INVOKABLE QString correspondingHeaderSource() const;
-    Q_INVOKABLE bool insertForwardDeclaration(const QString& fwddecl);
-
 public slots:
+    QString correspondingHeaderSource() const;
     Core::CppDocument *openHeaderSource();
+
+    bool insertForwardDeclaration(const QString &fwddecl);
 
     QVariantMap mfcExtractDDX(const QString &className);
 };

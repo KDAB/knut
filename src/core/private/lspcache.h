@@ -15,7 +15,7 @@ public:
 
     void clear();
 
-    QVector<Core::Symbol> symbols();
+    const QVector<Core::Symbol> &symbols();
 
 private:
     enum Flags {
