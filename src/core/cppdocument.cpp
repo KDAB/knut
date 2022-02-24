@@ -13,7 +13,7 @@
 #include <QVariantMap>
 #include <spdlog/spdlog.h>
 
-#include <ranges>
+#include <algorithm>
 
 namespace Core {
 

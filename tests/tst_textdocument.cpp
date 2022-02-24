@@ -133,14 +133,14 @@ private slots:
         document.gotoNextLine(2);
         QCOMPARE(document.line(), 3);
 
-        document.gotoPreviousCharacter(1);
+        document.gotoPreviousChar(1);
         QCOMPARE(document.line(), 2);
 
-        document.gotoDocumentStart();
+        document.gotoStartOfDocument();
         QCOMPARE(document.line(), 1);
         QCOMPARE(document.column(), 1);
         QCOMPARE(document.position(), 0);
-        document.gotoDocumentEnd();
+        document.gotoEndOfDocument();
         QCOMPARE(document.line(), 21);
         QCOMPARE(document.position(), 888);
 
@@ -149,17 +149,17 @@ private slots:
         QCOMPARE(document.currentWord(), "sapien");
         QCOMPARE(document.currentLine(), "In venenatis sapien eu ornare sollicitudin.");
 
-        document.gotoWordStart();
+        document.gotoStartOfWord();
         QCOMPARE(document.position(), 240);
-        document.gotoNextCharacter();
-        document.gotoWordEnd();
+        document.gotoNextChar();
+        document.gotoEndOfWord();
         QCOMPARE(document.position(), 246);
 
         document.gotoNextWord();
         QCOMPARE(document.currentWord(), "eu");
         document.gotoNextWord(5);
         QCOMPARE(document.currentWord(), "Nulla");
-        document.gotoNextCharacter();
+        document.gotoNextChar();
         // The next character move to the next line
         QCOMPARE(document.currentWord(), "Nulla");
     }
@@ -193,7 +193,7 @@ private slots:
         document.deleteRegion(598, 695);
 
         document.gotoLine(2);
-        document.selectLineEnd();
+        document.selectEndOfLine();
         document.copy();
         document.unselect();
         document.insert("\n");
@@ -211,7 +211,7 @@ private slots:
         document.gotoLine(10, 4);
         document.replace(10, "homo-");
 
-        document.gotoLineEnd();
+        document.gotoEndOfLine();
         document.deletePreviousCharacter(14);
         document.gotoNextLine(4);
         document.deleteNextCharacter(5);
@@ -236,7 +236,7 @@ private slots:
         document.selectToMark(mark);
         QCOMPARE(document.selectedText(), "Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n");
 
-        document.gotoDocumentEnd();
+        document.gotoEndOfDocument();
         document.gotoMark(mark);
         QCOMPARE(document.line(), 2);
     }

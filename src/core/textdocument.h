@@ -84,18 +84,18 @@ public slots:
 
     // Goto methods, to move around the document
     void gotoLine(int line, int column = 1);
-    void gotoLineStart();
-    void gotoLineEnd();
-    void gotoWordStart();
-    void gotoWordEnd();
+    void gotoStartOfLine();
+    void gotoEndOfLine();
+    void gotoStartOfWord();
+    void gotoEndOfWord();
     void gotoPreviousLine(int count = 1);
     void gotoNextLine(int count = 1);
-    void gotoPreviousCharacter(int count = 1);
-    void gotoNextCharacter(int count = 1);
+    void gotoPreviousChar(int count = 1);
+    void gotoNextChar(int count = 1);
     void gotoPreviousWord(int count = 1);
     void gotoNextWord(int count = 1);
-    void gotoDocumentStart();
-    void gotoDocumentEnd();
+    void gotoStartOfDocument();
+    void gotoEndOfDocument();
 
     // Selection methods
     void unselect();
@@ -103,16 +103,17 @@ public slots:
     void selectAll();
 
     void selectTo(int pos);
-    void selectLineStart();
-    void selectLineEnd();
-    void selectWordStart();
-    void selectWordEnd();
+    void selectStartOfLine();
+    void selectEndOfLine();
+    void selectStartOfWord();
+    void selectEndOfWord();
     void selectPreviousLine(int count = 1);
     void selectNextLine(int count = 1);
-    void selectPreviousCharacter(int count = 1);
-    void selectNextCharacter(int count = 1);
+    void selectPreviousChar(int count = 1);
+    void selectNextChar(int count = 1);
     void selectPreviousWord(int count = 1);
     void selectNextWord(int count = 1);
+    void selectRegion(int from, int to);
     void selectRange(const Core::TextRange &range);
 
     // Copy & paste
@@ -124,16 +125,19 @@ public slots:
     void remove(int length);
     void insert(const QString &text);
     void replace(int length, const QString &text);
+    void replace(int from, int to, const QString &text);
+    void replace(const Core::TextRange &range, const QString &text);
 
     // Deletion
     void deleteSelection();
-    void deleteRegion(int from, int to);
     void deleteEndOfLine();
     void deleteStartOfLine();
     void deleteEndOfWord();
     void deleteStartOfWord();
     void deletePreviousCharacter(int count = 1);
     void deleteNextCharacter(int count = 1);
+    void deleteRegion(int from, int to);
+    void deleteRange(const Core::TextRange &range);
 
     // Mark
     Core::Mark *createMark(int pos = -1);

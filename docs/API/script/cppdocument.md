@@ -24,6 +24,7 @@ Inherited properties: [LspDocument properties](../script/lspdocument.md#properti
 | | Name |
 |-|-|
 |string |**[correspondingHeaderSource](#correspondingHeaderSource)**()|
+|void |**[insertForwardDeclaration](#insertForwardDeclaration)**(string fwddecl)|
 |[CppDocument](../script/cppdocument.md) |**[openHeaderSource](#openHeaderSource)**()|
 
 Inherited methods: [LspDocument methods](../script/lspdocument.md#methods)
@@ -39,6 +40,20 @@ Return true if the current document is a header.
 #### <a name="correspondingHeaderSource"></a>string **correspondingHeaderSource**()
 
 Returns the corresponding source or header file path.
+
+#### <a name="insertForwardDeclaration"></a>void **insertForwardDeclaration**(string fwddecl)
+
+Inserts the forward declaration `fwddecl` into the current file.
+The method will check if the file is a header file, and also that the forward declaration starts with 'class ' or
+'struct '. Fully qualified the forward declaration to add namespaces: `class Foo::Bar::FooBar` will result in:
+
+```cpp
+namespace Foo {
+namespace Bar {
+class FooBar
+}
+}
+```
 
 #### <a name="openHeaderSource"></a>[CppDocument](../script/cppdocument.md) **openHeaderSource**()
 

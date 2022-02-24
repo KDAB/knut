@@ -36,47 +36,49 @@ Inherited properties: [Document properties](../script/document.md#properties)
 ||**[cut](#cut)**()|
 ||**[deleteEndOfLine](#deleteEndOfLine)**()|
 ||**[deleteEndOfWord](#deleteEndOfWord)**()|
-||**[deleteNextCharacter](#deleteNextCharacter)**(int count)|
-||**[deletePreviousCharacter](#deletePreviousCharacter)**(int count)|
+||**[deleteNextCharacter](#deleteNextCharacter)**(int count = 1)|
+||**[deletePreviousCharacter](#deletePreviousCharacter)**(int count = 1)|
+||**[deleteRange](#deleteRange)**([TextRange](../script/textrange.md) range)|
 ||**[deleteRegion](#deleteRegion)**(int from, int to)|
 ||**[deleteSelection](#deleteSelection)**()|
 ||**[deleteStartOfLine](#deleteStartOfLine)**()|
 ||**[deleteStartOfWord](#deleteStartOfWord)**()|
 |bool |**[find](#find)**(string text, int options = NoFindFlags)|
 |bool |**[findRegexp](#findRegexp)**(string regexp, int options = NoFindFlags)|
-||**[gotoDocumentEnd](#gotoDocumentEnd)**()|
-||**[gotoDocumentStart](#gotoDocumentStart)**()|
+||**[gotoEndOfDocument](#gotoEndOfDocument)**()|
+||**[gotoEndOfLine](#gotoEndOfLine)**()|
+||**[gotoEndOfWord](#gotoEndOfWord)**()|
 ||**[gotoLine](#gotoLine)**(int line, int column = 1)|
-||**[gotoLineEnd](#gotoLineEnd)**()|
-||**[gotoLineStart](#gotoLineStart)**()|
 ||**[gotoMark](#gotoMark)**([Mark](../script/mark.md) mark)|
-||**[gotoNextCharacter](#gotoNextCharacter)**(int count = 1)|
+||**[gotoNextChar](#gotoNextChar)**(int count = 1)|
 ||**[gotoNextLine](#gotoNextLine)**(int count = 1)|
 ||**[gotoNextWord](#gotoNextWord)**(int count = 1)|
-||**[gotoPreviousCharacter](#gotoPreviousCharacter)**(int count = 1)|
+||**[gotoPreviousChar](#gotoPreviousChar)**(int count = 1)|
 ||**[gotoPreviousLine](#gotoPreviousLine)**(int count = 1)|
 ||**[gotoPreviousWord](#gotoPreviousWord)**(int count = 1)|
-||**[gotoWordEnd](#gotoWordEnd)**()|
-||**[gotoWordStart](#gotoWordStart)**()|
+||**[gotoStartOfDocument](#gotoStartOfDocument)**()|
+||**[gotoStartOfLine](#gotoStartOfLine)**()|
+||**[gotoStartOfWord](#gotoStartOfWord)**()|
 |bool |**[hasSelection](#hasSelection)**()|
 ||**[paste](#paste)**()|
 ||**[redo](#redo)**()|
 |bool |**[replaceAll](#replaceAll)**(string before, string after, int options = NoFindFlags)|
 |bool |**[replaceAllRegexp](#replaceAllRegexp)**(string regexp, string after, int options = NoFindFlags)|
 ||**[selectAll](#selectAll)**()|
-||**[selectLineEnd](#selectLineEnd)**()|
-||**[selectLineStart](#selectLineStart)**(int count = 1)|
-||**[selectNextCharacter](#selectNextCharacter)**(int count = 1)|
+||**[selectEndOfLine](#selectEndOfLine)**()|
+||**[selectEndOfWord](#selectEndOfWord)**()|
+||**[selectNextChar](#selectNextChar)**(int count = 1)|
 ||**[selectNextLine](#selectNextLine)**(int count = 1)|
 ||**[selectNextWord](#selectNextWord)**(int count = 1)|
-||**[selectPreviousCharacter](#selectPreviousCharacter)**(int count = 1)|
+||**[selectPreviousChar](#selectPreviousChar)**(int count = 1)|
 ||**[selectPreviousLine](#selectPreviousLine)**(int count = 1)|
 ||**[selectPreviousWord](#selectPreviousWord)**(int count = 1)|
 ||**[selectRange](#selectRange)**([TextRange](../script/textrange.md) range)|
+||**[selectRegion](#selectRegion)**(int from, int to)|
+||**[selectStartOfLine](#selectStartOfLine)**(int count = 1)|
+||**[selectStartOfWord](#selectStartOfWord)**()|
 ||**[selectTo](#selectTo)**(int pos)|
 ||**[selectToMark](#selectToMark)**([Mark](../script/mark.md) mark)|
-||**[selectWordEnd](#selectWordEnd)**()|
-||**[selectWordStart](#selectWordStart)**()|
 ||**[undo](#undo)**()|
 ||**[unselect](#unselect)**()|
 
@@ -151,13 +153,17 @@ Deletes from the cursor position to the end of the line.
 
 Deletes from the cursor position to the end of the word.
 
-#### <a name="deleteNextCharacter"></a>**deleteNextCharacter**(int count)
+#### <a name="deleteNextCharacter"></a>**deleteNextCharacter**(int count = 1)
 
 Deletes the next `count` characters.
 
-#### <a name="deletePreviousCharacter"></a>**deletePreviousCharacter**(int count)
+#### <a name="deletePreviousCharacter"></a>**deletePreviousCharacter**(int count = 1)
 
 Deletes the previous `count` characters.
+
+#### <a name="deleteRange"></a>**deleteRange**([TextRange](../script/textrange.md) range)
+
+Deletes the range passed in parameter.
 
 #### <a name="deleteRegion"></a>**deleteRegion**(int from, int to)
 
@@ -196,31 +202,27 @@ Searches the string `regexp` in the editor using a regular expression. Options c
 
 Selects the match and returns `true` if a match is found.
 
-#### <a name="gotoDocumentEnd"></a>**gotoDocumentEnd**()
+#### <a name="gotoEndOfDocument"></a>**gotoEndOfDocument**()
 
 Goes to the document end.
 
-#### <a name="gotoDocumentStart"></a>**gotoDocumentStart**()
+#### <a name="gotoEndOfLine"></a>**gotoEndOfLine**()
 
-Goes to the document start.
+Goes to the end of the line.
+
+#### <a name="gotoEndOfWord"></a>**gotoEndOfWord**()
+
+Goes to the end of the word under the cursor.
 
 #### <a name="gotoLine"></a>**gotoLine**(int line, int column = 1)
 
 Goes to the given `line` and `column` in the editor. Lines and columns are 1-based.
 
-#### <a name="gotoLineEnd"></a>**gotoLineEnd**()
-
-Goes to the end of the line.
-
-#### <a name="gotoLineStart"></a>**gotoLineStart**()
-
-Goes to the start of the line.
-
 #### <a name="gotoMark"></a>**gotoMark**([Mark](../script/mark.md) mark)
 
 Go to the given `mark`.
 
-#### <a name="gotoNextCharacter"></a>**gotoNextCharacter**(int count = 1)
+#### <a name="gotoNextChar"></a>**gotoNextChar**(int count = 1)
 
 Goes to the next character, repeat the operation `count` times.
 
@@ -232,7 +234,7 @@ Goes to the next line, repeat the operation `count` times.
 
 Goes to the next word, repeat the operation `count` times.
 
-#### <a name="gotoPreviousCharacter"></a>**gotoPreviousCharacter**(int count = 1)
+#### <a name="gotoPreviousChar"></a>**gotoPreviousChar**(int count = 1)
 
 Goes to the previous character, repeat the operation `count` times.
 
@@ -244,11 +246,15 @@ Goes to the previous line, repeat the operation `count` times.
 
 Goes to the previous word, repeat the operation `count` times.
 
-#### <a name="gotoWordEnd"></a>**gotoWordEnd**()
+#### <a name="gotoStartOfDocument"></a>**gotoStartOfDocument**()
 
-Goes to the end of the word under the cursor.
+Goes to the document start.
 
-#### <a name="gotoWordStart"></a>**gotoWordStart**()
+#### <a name="gotoStartOfLine"></a>**gotoStartOfLine**()
+
+Goes to the start of the line.
+
+#### <a name="gotoStartOfWord"></a>**gotoStartOfWord**()
 
 Goes to the start of the word under the cursor.
 
@@ -296,15 +302,15 @@ Returns the number of changes done in the document.
 
 Selects all the text.
 
-#### <a name="selectLineEnd"></a>**selectLineEnd**()
+#### <a name="selectEndOfLine"></a>**selectEndOfLine**()
 
 Selects the text from the current position to the end of the line.
 
-#### <a name="selectLineStart"></a>**selectLineStart**(int count = 1)
+#### <a name="selectEndOfWord"></a>**selectEndOfWord**()
 
-Selects the text from the current position to the start of the line.
+Selects the text from the current position to the end of the word.
 
-#### <a name="selectNextCharacter"></a>**selectNextCharacter**(int count = 1)
+#### <a name="selectNextChar"></a>**selectNextChar**(int count = 1)
 
 Selects the next character, repeat the operation `count` times.
 
@@ -316,7 +322,7 @@ Selects the next line, repeat the operation `count` times.
 
 Selects the next word, repeat the operation `count` times.
 
-#### <a name="selectPreviousCharacter"></a>**selectPreviousCharacter**(int count = 1)
+#### <a name="selectPreviousChar"></a>**selectPreviousChar**(int count = 1)
 
 Selects the previous character, repeat the operation `count` times.
 
@@ -332,6 +338,18 @@ Selects the previous word, repeat the operation `count` times.
 
 Selects the range passed in parameter.
 
+#### <a name="selectRegion"></a>**selectRegion**(int from, int to)
+
+Selects the text between `from` and `to` positions.
+
+#### <a name="selectStartOfLine"></a>**selectStartOfLine**(int count = 1)
+
+Selects the text from the current position to the start of the line.
+
+#### <a name="selectStartOfWord"></a>**selectStartOfWord**()
+
+Selects the text from the current position to the start of the word.
+
 #### <a name="selectTo"></a>**selectTo**(int pos)
 
 Selects the text from the current position to `pos`.
@@ -339,14 +357,6 @@ Selects the text from the current position to `pos`.
 #### <a name="selectToMark"></a>**selectToMark**([Mark](../script/mark.md) mark)
 
 Select the text from the cursor position to the `mark`.
-
-#### <a name="selectWordEnd"></a>**selectWordEnd**()
-
-Selects the text from the current position to the end of the word.
-
-#### <a name="selectWordStart"></a>**selectWordStart**()
-
-Selects the text from the current position to the start of the word.
 
 #### <a name="undo"></a>**undo**()
 

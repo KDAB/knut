@@ -117,21 +117,21 @@ bool TextDocument::eventFilter(QObject *watched, QEvent *event)
         auto keyEvent = static_cast<QKeyEvent *>(event);
 
         if (keyEvent == QKeySequence::MoveToNextChar)
-            gotoNextCharacter();
+            gotoNextChar();
         else if (keyEvent == QKeySequence::MoveToPreviousChar)
-            gotoPreviousCharacter();
+            gotoPreviousChar();
         else if (keyEvent == QKeySequence::SelectNextChar)
-            selectNextCharacter();
+            selectNextChar();
         else if (keyEvent == QKeySequence::SelectPreviousChar)
-            selectPreviousCharacter();
+            selectPreviousChar();
         else if (keyEvent == QKeySequence::SelectNextWord)
             selectNextWord();
         else if (keyEvent == QKeySequence::SelectPreviousWord)
             selectPreviousWord();
         else if (keyEvent == QKeySequence::SelectStartOfLine)
-            selectLineStart();
+            selectStartOfLine();
         else if (keyEvent == QKeySequence::SelectEndOfLine)
-            selectLineEnd();
+            selectEndOfLine();
         else if (keyEvent == QKeySequence::SelectPreviousLine)
             selectPreviousLine();
         else if (keyEvent == QKeySequence::SelectNextLine)
@@ -145,13 +145,13 @@ bool TextDocument::eventFilter(QObject *watched, QEvent *event)
         else if (keyEvent == QKeySequence::MoveToPreviousLine)
             gotoPreviousLine();
         else if (keyEvent == QKeySequence::MoveToStartOfLine)
-            gotoLineStart();
+            gotoStartOfLine();
         else if (keyEvent == QKeySequence::MoveToEndOfLine)
-            gotoLineEnd();
+            gotoEndOfLine();
         else if (keyEvent == QKeySequence::MoveToStartOfDocument)
-            gotoDocumentStart();
+            gotoStartOfDocument();
         else if (keyEvent == QKeySequence::MoveToEndOfDocument)
-            gotoDocumentEnd();
+            gotoEndOfDocument();
         else if (keyEvent == QKeySequence::Undo)
             undo();
         else if (keyEvent == QKeySequence::Redo)
@@ -399,42 +399,42 @@ void TextDocument::gotoLine(int line, int column)
 }
 
 /*!
- * \qmlmethod TextDocument::gotoLineStart()
+ * \qmlmethod TextDocument::gotoStartOfLine()
  * Goes to the start of the line.
  */
-void TextDocument::gotoLineStart()
+void TextDocument::gotoStartOfLine()
 {
-    spdlog::trace("TextDocument::gotoLineStart");
+    spdlog::trace("TextDocument::gotoStartOfLine");
     movePosition(QTextCursor::StartOfLine);
 }
 
 /*!
- * \qmlmethod TextDocument::gotoLineEnd()
+ * \qmlmethod TextDocument::gotoEndOfLine()
  * Goes to the end of the line.
  */
-void TextDocument::gotoLineEnd()
+void TextDocument::gotoEndOfLine()
 {
-    spdlog::trace("TextDocument::gotoLineEnd");
+    spdlog::trace("TextDocument::gotoEndOfLine");
     movePosition(QTextCursor::EndOfLine);
 }
 
 /*!
- * \qmlmethod TextDocument::gotoWordStart()
+ * \qmlmethod TextDocument::gotoStartOfWord()
  * Goes to the start of the word under the cursor.
  */
-void TextDocument::gotoWordStart()
+void TextDocument::gotoStartOfWord()
 {
-    spdlog::trace("TextDocument::gotoWordStart");
+    spdlog::trace("TextDocument::gotoStartOfWord");
     movePosition(QTextCursor::StartOfWord);
 }
 
 /*!
- * \qmlmethod TextDocument::gotoWordEnd()
+ * \qmlmethod TextDocument::gotoEndOfWord()
  * Goes to the end of the word under the cursor.
  */
-void TextDocument::gotoWordEnd()
+void TextDocument::gotoEndOfWord()
 {
-    spdlog::trace("TextDocument::gotoWordEnd");
+    spdlog::trace("TextDocument::gotoEndOfWord");
     movePosition(QTextCursor::EndOfWord);
 }
 
@@ -459,22 +459,22 @@ void TextDocument::gotoPreviousLine(int count)
 }
 
 /*!
- * \qmlmethod TextDocument::gotoPreviousCharacter( int count = 1)
+ * \qmlmethod TextDocument::gotoPreviousChar( int count = 1)
  * Goes to the previous character, repeat the operation `count` times.
  */
-void TextDocument::gotoPreviousCharacter(int count)
+void TextDocument::gotoPreviousChar(int count)
 {
-    spdlog::trace("TextDocument::gotoPreviousCharacter");
+    spdlog::trace("TextDocument::gotoPreviousChar");
     movePosition(QTextCursor::PreviousCharacter, QTextCursor::MoveAnchor, count);
 }
 
 /*!
- * \qmlmethod TextDocument::gotoNextCharacter( int count = 1)
+ * \qmlmethod TextDocument::gotoNextChar( int count = 1)
  * Goes to the next character, repeat the operation `count` times.
  */
-void TextDocument::gotoNextCharacter(int count)
+void TextDocument::gotoNextChar(int count)
 {
-    spdlog::trace("TextDocument::gotoNextCharacter");
+    spdlog::trace("TextDocument::gotoNextChar");
     movePosition(QTextCursor::NextCharacter, QTextCursor::MoveAnchor, count);
 }
 
@@ -499,22 +499,22 @@ void TextDocument::gotoNextWord(int count)
 }
 
 /*!
- * \qmlmethod TextDocument::gotoDocumentStart()
+ * \qmlmethod TextDocument::gotoStartOfDocument()
  * Goes to the document start.
  */
-void TextDocument::gotoDocumentStart()
+void TextDocument::gotoStartOfDocument()
 {
-    spdlog::trace("TextDocument::gotoDocumentStart");
+    spdlog::trace("TextDocument::gotoStartOfDocument");
     movePosition(QTextCursor::Start);
 }
 
 /*!
- * \qmlmethod TextDocument::gotoDocumentEnd()
+ * \qmlmethod TextDocument::gotoEndOfDocument()
  * Goes to the document end.
  */
-void TextDocument::gotoDocumentEnd()
+void TextDocument::gotoEndOfDocument()
 {
-    spdlog::trace("TextDocument::gotoDocumentEnd");
+    spdlog::trace("TextDocument::gotoEndOfDocument");
     movePosition(QTextCursor::End);
 }
 
@@ -563,42 +563,42 @@ void TextDocument::selectTo(int pos)
 }
 
 /*!
- * \qmlmethod TextDocument::selectLineStart( int count = 1)
+ * \qmlmethod TextDocument::selectStartOfLine( int count = 1)
  * Selects the text from the current position to the start of the line.
  */
-void TextDocument::selectLineStart()
+void TextDocument::selectStartOfLine()
 {
-    spdlog::trace("TextDocument::selectLineStart");
+    spdlog::trace("TextDocument::selectStartOfLine");
     movePosition(QTextCursor::StartOfLine, QTextCursor::KeepAnchor);
 }
 
 /*!
- * \qmlmethod TextDocument::selectLineEnd()
+ * \qmlmethod TextDocument::selectEndOfLine()
  * Selects the text from the current position to the end of the line.
  */
-void TextDocument::selectLineEnd()
+void TextDocument::selectEndOfLine()
 {
-    spdlog::trace("TextDocument::selectLineEnd");
+    spdlog::trace("TextDocument::selectEndOfLine");
     movePosition(QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
 }
 
 /*!
- * \qmlmethod TextDocument::selectWordStart()
+ * \qmlmethod TextDocument::selectStartOfWord()
  * Selects the text from the current position to the start of the word.
  */
-void TextDocument::selectWordStart()
+void TextDocument::selectStartOfWord()
 {
-    spdlog::trace("TextDocument::selectWordStart");
+    spdlog::trace("TextDocument::selectStartOfWord");
     movePosition(QTextCursor::StartOfWord, QTextCursor::KeepAnchor);
 }
 
 /*!
- * \qmlmethod TextDocument::selectWordEnd()
+ * \qmlmethod TextDocument::selectEndOfWord()
  * Selects the text from the current position to the end of the word.
  */
-void TextDocument::selectWordEnd()
+void TextDocument::selectEndOfWord()
 {
-    spdlog::trace("TextDocument::selectWordEnd");
+    spdlog::trace("TextDocument::selectEndOfWord");
     movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
 }
 
@@ -623,22 +623,22 @@ void TextDocument::selectPreviousLine(int count)
 }
 
 /*!
- * \qmlmethod TextDocument::selectPreviousCharacter( int count = 1)
+ * \qmlmethod TextDocument::selectPreviousChar( int count = 1)
  * Selects the previous character, repeat the operation `count` times.
  */
-void TextDocument::selectPreviousCharacter(int count)
+void TextDocument::selectPreviousChar(int count)
 {
-    spdlog::trace("TextDocument::selectPreviousCharacter {}", count);
+    spdlog::trace("TextDocument::selectPreviousChar {}", count);
     movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor, count);
 }
 
 /*!
- * \qmlmethod TextDocument::selectNextCharacter( int count = 1)
+ * \qmlmethod TextDocument::selectNextChar( int count = 1)
  * Selects the next character, repeat the operation `count` times.
  */
-void TextDocument::selectNextCharacter(int count)
+void TextDocument::selectNextChar(int count)
 {
-    spdlog::trace("TextDocument::selectNextCharacter {}", count);
+    spdlog::trace("TextDocument::selectNextChar {}", count);
     movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, count);
 }
 
@@ -660,6 +660,19 @@ void TextDocument::selectNextWord(int count)
 {
     spdlog::trace("TextDocument::selectNextWord {}", count);
     movePosition(QTextCursor::NextWord, QTextCursor::KeepAnchor, count);
+}
+
+/*!
+ * \qmlmethod TextDocument::selectRegion( int from, int to)
+ * Selects the text between `from` and `to` positions.
+ */
+void TextDocument::selectRegion(int from, int to)
+{
+    spdlog::trace("TextDocument::selectRegion from {} to {}", from, to);
+    QTextCursor cursor(m_document->document());
+    cursor.setPosition(from, QTextCursor::MoveAnchor);
+    cursor.setPosition(to, QTextCursor::KeepAnchor);
+    m_document->setTextCursor(cursor);
 }
 
 /*!
@@ -742,6 +755,34 @@ void TextDocument::replace(int length, const QString &text)
 }
 
 /*!
+ * \qmlmethod TextEditor::replace( int length, string text)
+ * Replaces the text from `from` to `to` with the string `text`.
+ */
+void TextDocument::replace(int from, int to, const QString &text)
+{
+    spdlog::trace("TextDocument::replace from {} to {} by {}", from, to, text.toStdString());
+    QTextCursor cursor(m_document->document());
+    cursor.setPosition(from);
+    cursor.setPosition(to, QTextCursor::KeepAnchor);
+    cursor.insertText(text);
+    m_document->setTextCursor(cursor);
+}
+
+/*!
+ * \qmlmethod TextEditor::replace( TextRange range, string text)
+ * Replaces the text in the range `range` with the string `text`.
+ */
+void TextDocument::replace(const TextRange &range, const QString &text)
+{
+    spdlog::trace("TextDocument::replace from {} to {} by {}", range.start, range.end, text.toStdString());
+    QTextCursor cursor(m_document->document());
+    cursor.setPosition(range.start);
+    cursor.setPosition(range.end, QTextCursor::KeepAnchor);
+    cursor.insertText(text);
+    m_document->setTextCursor(cursor);
+}
+
+/*!
  * \qmlmethod TextDocument::deleteSelection()
  * Deletes the current selection, does nothing if no text is selected.
  */
@@ -761,6 +802,20 @@ void TextDocument::deleteRegion(int from, int to)
     QTextCursor cursor(m_document->document());
     cursor.setPosition(from);
     cursor.setPosition(to, QTextCursor::KeepAnchor);
+    cursor.removeSelectedText();
+    m_document->setTextCursor(cursor);
+}
+
+/*!
+ * \qmlmethod TextDocument::deleteRange( TextRange range)
+ * Deletes the range passed in parameter.
+ */
+void TextDocument::deleteRange(const TextRange &range)
+{
+    spdlog::trace("TextDocument::deleteRange {} - {}", range.start, range.end);
+    QTextCursor cursor(m_document->document());
+    cursor.setPosition(range.start, QTextCursor::MoveAnchor);
+    cursor.setPosition(range.end, QTextCursor::KeepAnchor);
     cursor.removeSelectedText();
     m_document->setTextCursor(cursor);
 }

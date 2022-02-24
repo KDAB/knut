@@ -17,7 +17,7 @@
 #include <QSignalBlocker>
 #include <QSortFilterProxyModel>
 
-#include <ranges>
+#include <algorithm>
 
 namespace Gui {
 
