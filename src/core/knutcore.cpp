@@ -7,11 +7,17 @@
 #include <QApplication>
 #include <QTimer>
 
+#include <spdlog/spdlog.h>
+
 namespace Core {
 
 KnutCore::KnutCore(QObject *parent)
     : QObject(parent)
 {
+#ifdef QT_DEBUG
+    spdlog::set_level(spdlog::level::trace);
+#endif
+
     // Initialize some singletons
     new Project(this);
     auto settings = new Settings(this);

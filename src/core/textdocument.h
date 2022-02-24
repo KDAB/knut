@@ -54,6 +54,8 @@ public:
     explicit TextDocument(QObject *parent = nullptr);
     ~TextDocument();
 
+    bool eventFilter(QObject *watched, QEvent *event) override;
+
     int column() const;
     int line() const;
     int lineCount() const;
@@ -130,8 +132,8 @@ public slots:
     void deleteStartOfLine();
     void deleteEndOfWord();
     void deleteStartOfWord();
-    void deletePreviousCharacter(int count);
-    void deleteNextCharacter(int count);
+    void deletePreviousCharacter(int count = 1);
+    void deleteNextCharacter(int count = 1);
 
     // Mark
     Core::Mark *createMark(int pos = -1);

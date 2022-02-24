@@ -4,6 +4,7 @@
 #include "string_utils.h"
 
 #include <QFile>
+#include <QKeyEvent>
 #include <QPlainTextEdit>
 #include <QRegularExpression>
 #include <QSignalBlocker>
@@ -105,6 +106,80 @@ TextDocument::TextDocument(Type type, QObject *parent)
     connect(m_document->document(), &QTextDocument::contentsChange, this, [this]() {
         setHasChanged(true);
     });
+    m_document->installEventFilter(this);
+}
+
+bool TextDocument::eventFilter(QObject *watched, QEvent *event)
+{
+    Q_ASSERT(watched == m_document);
+
+    if (event->type() == QEvent::KeyPress) {
+        auto keyEvent = static_cast<QKeyEvent *>(event);
+
+        if (keyEvent == QKeySequence::MoveToNextChar)
+            gotoNextCharacter();
+        else if (keyEvent == QKeySequence::MoveToPreviousChar)
+            gotoPreviousCharacter();
+        else if (keyEvent == QKeySequence::SelectNextChar)
+            selectNextCharacter();
+        else if (keyEvent == QKeySequence::SelectPreviousChar)
+            selectPreviousCharacter();
+        else if (keyEvent == QKeySequence::SelectNextWord)
+            selectNextWord();
+        else if (keyEvent == QKeySequence::SelectPreviousWord)
+            selectPreviousWord();
+        else if (keyEvent == QKeySequence::SelectStartOfLine)
+            selectLineStart();
+        else if (keyEvent == QKeySequence::SelectEndOfLine)
+            selectLineEnd();
+        else if (keyEvent == QKeySequence::SelectPreviousLine)
+            selectPreviousLine();
+        else if (keyEvent == QKeySequence::SelectNextLine)
+            selectNextLine();
+        else if (keyEvent == QKeySequence::MoveToNextWord)
+            gotoNextWord();
+        else if (keyEvent == QKeySequence::MoveToPreviousWord)
+            gotoPreviousWord();
+        else if (keyEvent == QKeySequence::MoveToNextLine)
+            gotoNextLine();
+        else if (keyEvent == QKeySequence::MoveToPreviousLine)
+            gotoPreviousLine();
+        else if (keyEvent == QKeySequence::MoveToStartOfLine)
+            gotoLineStart();
+        else if (keyEvent == QKeySequence::MoveToEndOfLine)
+            gotoLineEnd();
+        else if (keyEvent == QKeySequence::MoveToStartOfDocument)
+            gotoDocumentStart();
+        else if (keyEvent == QKeySequence::MoveToEndOfDocument)
+            gotoDocumentEnd();
+        else if (keyEvent == QKeySequence::Undo)
+            undo();
+        else if (keyEvent == QKeySequence::Redo)
+            redo();
+        else if (keyEvent == QKeySequence::Cut)
+            cut();
+        else if (keyEvent == QKeySequence::Copy)
+            copy();
+        else if (keyEvent == QKeySequence::Paste)
+            paste();
+        else if (keyEvent == QKeySequence::Delete)
+            m_document->textCursor().hasSelection() ? deleteSelection() : deleteNextCharacter();
+        else if (keyEvent == QKeySequence::Backspace
+                 || (keyEvent->key() == Qt::Key_Backspace
+                     && !(keyEvent->modifiers() & ~Qt::ShiftModifier))) // test is coming from QTextWidgetControl
+            m_document->textCursor().hasSelection() ? deleteSelection() : deletePreviousCharacter();
+        else if (keyEvent == QKeySequence::DeleteEndOfWord)
+            deleteEndOfWord();
+        else if (keyEvent == QKeySequence::DeleteStartOfWord)
+            deleteStartOfWord();
+        else if (keyEvent == QKeySequence::DeleteEndOfLine)
+            deleteEndOfLine();
+        else if (!keyEvent->text().isEmpty())
+            insert(keyEvent->text());
+
+        return true;
+    }
+    return Document::eventFilter(watched, event);
 }
 
 bool TextDocument::doSave(const QString &fileName)
@@ -724,7 +799,8 @@ void TextDocument::deleteEndOfWord()
 {
     spdlog::trace("TextDocument::deleteEndOfWord");
     QTextCursor cursor = m_document->textCursor();
-    cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
+    if (!cursor.hasSelection())
+        cursor.movePosition(QTextCursor::NextWord, QTextCursor::KeepAnchor);
     cursor.removeSelectedText();
     m_document->setTextCursor(cursor);
 }
@@ -737,13 +813,14 @@ void TextDocument::deleteStartOfWord()
 {
     spdlog::trace("TextDocument::deleteStartOfWord");
     QTextCursor cursor = m_document->textCursor();
-    cursor.movePosition(QTextCursor::StartOfWord, QTextCursor::KeepAnchor);
+    if (!cursor.hasSelection())
+        cursor.movePosition(QTextCursor::PreviousWord, QTextCursor::KeepAnchor);
     cursor.removeSelectedText();
     m_document->setTextCursor(cursor);
 }
 
 /*!
- * \qmlmethod TextDocument::deletePreviousCharacter(int count)
+ * \qmlmethod TextDocument::deletePreviousCharacter(int count = 1)
  * Deletes the previous `count` characters.
  */
 void TextDocument::deletePreviousCharacter(int count)
@@ -756,7 +833,7 @@ void TextDocument::deletePreviousCharacter(int count)
 }
 
 /*!
- * \qmlmethod TextDocument::deleteNextCharacter(int count)
+ * \qmlmethod TextDocument::deleteNextCharacter(int count = 1)
  * Deletes the next `count` characters.
  */
 void TextDocument::deleteNextCharacter(int count)
