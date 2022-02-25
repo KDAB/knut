@@ -9,6 +9,8 @@ set(PROJECT_SOURCES
     imageview.cpp
     knutmain.h
     knutmain.cpp
+    logviewer.h
+    logviewer.cpp
     mainwindow.h
     mainwindow.cpp
     mainwindow.ui

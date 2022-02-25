@@ -3,6 +3,7 @@
 
 #include "imageview.h"
 
+#include "logviewer.h"
 #include "optionsdialog.h"
 #include "palette.h"
 #include "rctoqrcdialog.h"
@@ -20,6 +21,7 @@
 
 #include <QApplication>
 #include <QDir>
+#include <QDockWidget>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QFileSystemModel>
@@ -32,6 +34,15 @@ namespace Gui {
 constexpr int MaximumRecentProjects = 10;
 constexpr char RecentProjectKey[] = "RecentProject";
 constexpr char SplitterKey[] = "MainWindow/SplitterSizes";
+
+static QDockWidget *createLogViewerDock(QWidget *parent)
+{
+    auto dock = new QDockWidget(parent);
+    dock->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
+    dock->setWidget(new LogViewer);
+    dock->setWindowTitle(dock->widget()->windowTitle());
+    return dock;
+}
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -47,6 +58,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->splitter->setStretchFactor(0, 0);
     ui->splitter->setStretchFactor(1, 1);
     setWindowTitle(QApplication::applicationName() + ' ' + QApplication::applicationVersion());
+
+    addDockWidget(Qt::BottomDockWidgetArea, createLogViewerDock(this));
 
     connect(ui->actionQuit, &QAction::triggered, this, &MainWindow::close);
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openProject);
