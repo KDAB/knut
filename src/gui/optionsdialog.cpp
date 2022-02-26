@@ -12,13 +12,10 @@
 
 namespace Gui {
 
-OptionsDialog::OptionsDialog(GuiSettings *settings, QWidget *parent)
+OptionsDialog::OptionsDialog(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::OptionsDialog)
-    , m_settings(settings)
 {
-    Q_ASSERT(settings);
-
     ui->setupUi(this);
 
     ui->styleCombo->addItems({"[Defaut]", "Fusion Light", "Fusion Dark"});
@@ -35,28 +32,28 @@ OptionsDialog::OptionsDialog(GuiSettings *settings, QWidget *parent)
 #endif
     initialize();
 
-    auto setStyle = [this](int idx) {
-        m_settings->setStyle(static_cast<GuiSettings::Style>(idx));
+    auto setStyle = [](int idx) {
+        GuiSettings::instance()->setStyle(static_cast<GuiSettings::Style>(idx));
     };
     connect(ui->styleCombo, qOverload<int>(&QComboBox::currentIndexChanged), this, setStyle);
 
     auto setTheme = [this](int idx) {
-        m_settings->setTheme(idx == 0 ? "" : ui->themeCombo->currentText());
+        GuiSettings::instance()->setTheme(idx == 0 ? "" : ui->themeCombo->currentText());
     };
     connect(ui->themeCombo, qOverload<int>(&QComboBox::currentIndexChanged), this, setTheme);
 
-    auto setFontFamily = [this](const QString &text) {
-        m_settings->setFontFamily(text);
+    auto setFontFamily = [](const QString &text) {
+        GuiSettings::instance()->setFontFamily(text);
     };
     connect(ui->fontCombo, &QComboBox::currentTextChanged, this, setFontFamily);
 
-    auto setFontSize = [this](const QString &text) {
-        m_settings->setFontSize(text.toInt());
+    auto setFontSize = [](const QString &text) {
+        GuiSettings::instance()->setFontSize(text.toInt());
     };
     connect(ui->fontSizeCombo, &QComboBox::currentTextChanged, this, setFontSize);
 
-    auto setWordWrap = [this](bool checked) {
-        m_settings->setWordWrap(checked);
+    auto setWordWrap = [](bool checked) {
+        GuiSettings::instance()->setWordWrap(checked);
     };
     connect(ui->wordWrapCheck, &QCheckBox::toggled, this, setWordWrap);
 }
@@ -65,13 +62,13 @@ OptionsDialog::~OptionsDialog() = default;
 
 void OptionsDialog::initialize()
 {
-    ui->styleCombo->setCurrentIndex(static_cast<int>(m_settings->style()));
-    const int themeIdx = ui->themeCombo->findText(m_settings->theme());
+    ui->styleCombo->setCurrentIndex(static_cast<int>(GuiSettings::instance()->style()));
+    const int themeIdx = ui->themeCombo->findText(GuiSettings::instance()->theme());
     ui->themeCombo->setCurrentIndex(themeIdx == -1 ? 0 : themeIdx);
 
-    ui->fontCombo->setCurrentText(m_settings->fontFamily());
-    ui->fontSizeCombo->setCurrentText(QString::number(m_settings->fontSize()));
-    ui->wordWrapCheck->setChecked(m_settings->isWordWrap());
+    ui->fontCombo->setCurrentText(GuiSettings::instance()->fontFamily());
+    ui->fontSizeCombo->setCurrentText(QString::number(GuiSettings::instance()->fontSize()));
+    ui->wordWrapCheck->setChecked(GuiSettings::instance()->isWordWrap());
 }
 
 } // namespace Gui

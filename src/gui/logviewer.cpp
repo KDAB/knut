@@ -1,7 +1,11 @@
 #include "logviewer.h"
 
+#include "guisettings.h"
+
 #include <QMetaObject>
 #include <QPlainTextEdit>
+#include <QSyntaxHighlighter>
+#include <QTextCharFormat>
 
 #include <spdlog/sinks/base_sink.h>
 #include <spdlog/spdlog.h>
@@ -9,6 +13,47 @@
 #include <mutex>
 
 namespace Gui {
+
+class LogHighlighter : public QSyntaxHighlighter
+{
+public:
+    LogHighlighter(QTextDocument *parent = nullptr)
+        : QSyntaxHighlighter(parent)
+    {
+        auto getFormat = [](const QColor &color, const QColor &background = {}) {
+            QTextCharFormat format;
+            format.setForeground(color);
+            if (background.isValid())
+                format.setBackground(background);
+            return format;
+        };
+        m_rules = {
+            {"[trace]", getFormat(QColor(128, 128, 128))},
+            {"[debug]", getFormat(Qt::cyan)},
+            {"[info]", getFormat(Qt::green)},
+            {"[warning]", getFormat(QColor(255, 220, 0))},
+            {"[error]", getFormat(Qt::red)},
+            {"[critical]", getFormat(Qt::white, Qt::red)},
+        };
+    }
+
+protected:
+    void highlightBlock(const QString &text) override
+    {
+        for (const auto &rule : std::as_const(m_rules)) {
+            if (int start = text.indexOf(rule.keyword); start != -1)
+                setFormat(start + 1, rule.keyword.length() - 2, rule.format);
+        }
+    }
+
+private:
+    struct HighlightingRule
+    {
+        QString keyword;
+        QTextCharFormat format;
+    };
+    QVector<HighlightingRule> m_rules;
+};
 
 template <typename Mutex>
 class qt_sink : public spdlog::sinks::base_sink<Mutex>
@@ -49,6 +94,11 @@ LogViewer::LogViewer(QWidget *parent)
     auto logger = spdlog::default_logger();
     logger->sinks().push_back(std::shared_ptr<spdlog::sinks::sink>(new qt_sink_mt(this)));
     setWindowTitle("Log Viewer");
+
+    new LogHighlighter(this->document());
+
+    GuiSettings::setupTextEdit(this);
+    setWordWrapMode(QTextOption::NoWrap);
 }
 
 LogViewer::~LogViewer() = default;

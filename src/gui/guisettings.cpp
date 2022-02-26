@@ -21,6 +21,7 @@ constexpr const char ThemeKey[] = "Interface/Theme";
 constexpr const char FontFamilyKey[] = "TextEditor/FontFamily";
 constexpr const char FontSizeKey[] = "TextEditor/FontSize";
 constexpr const char WordWrapKey[] = "TextEditor/WordWrap";
+constexpr const char IsDocument[] = "isDoc";
 
 GuiSettings::GuiSettings()
 {
@@ -31,6 +32,12 @@ GuiSettings::GuiSettings()
     m_fontSize = settings.value(FontSizeKey, m_fontSize).toInt();
     m_wordWrap = settings.value(WordWrapKey, m_wordWrap).toBool();
     updateStyle();
+}
+
+GuiSettings *GuiSettings::instance()
+{
+    static GuiSettings settings;
+    return &settings;
 }
 
 void GuiSettings::setStyle(Style style)
@@ -124,14 +131,20 @@ static void setupHighlighter(KSyntaxHighlighting::SyntaxHighlighter *highlighter
 }
 #endif
 
-void GuiSettings::setupTextEdit(QPlainTextEdit *textEdit, const QString &fileName) const
+void GuiSettings::setupDocumentTextEdit(QPlainTextEdit *textEdit, const QString &fileName)
 {
-    updateTextEdit(textEdit);
+    textEdit->setProperty(IsDocument, true);
+    instance()->updateTextEdit(textEdit);
 
 #ifdef USE_SYNTAX_HIGHLIGHTING
     auto highlighter = new KSyntaxHighlighting::SyntaxHighlighter(textEdit->document());
-    setupHighlighter(highlighter, m_theme, fileName);
+    setupHighlighter(highlighter, instance()->m_theme, fileName);
 #endif
+}
+
+void GuiSettings::setupTextEdit(QPlainTextEdit *textEdit)
+{
+    instance()->updateTextEdit(textEdit);
 }
 
 void GuiSettings::updateStyle() const
@@ -220,8 +233,12 @@ void GuiSettings::updateTextEdit(QPlainTextEdit *textEdit) const
     f.setPointSize(m_fontSize);
     textEdit->setFont(f);
     QFontMetrics fm(f);
-    textEdit->setTabStopDistance(4 * fm.horizontalAdvance(' '));
-    textEdit->setLineWrapMode(m_wordWrap ? QPlainTextEdit::WidgetWidth : QPlainTextEdit::NoWrap);
+
+    // Only for document text edits
+    if (textEdit->property(IsDocument).toBool()) {
+        textEdit->setTabStopDistance(4 * fm.horizontalAdvance(' '));
+        textEdit->setLineWrapMode(m_wordWrap ? QPlainTextEdit::WidgetWidth : QPlainTextEdit::NoWrap);
+    }
 }
 
 } // namespace Gui

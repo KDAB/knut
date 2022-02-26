@@ -1,8 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "guisettings.h"
 #include "imageview.h"
-
 #include "logviewer.h"
 #include "optionsdialog.h"
 #include "palette.h"
@@ -34,6 +34,8 @@ namespace Gui {
 constexpr int MaximumRecentProjects = 10;
 constexpr char RecentProjectKey[] = "RecentProject";
 constexpr char SplitterKey[] = "MainWindow/SplitterSizes";
+constexpr char GeometryKey[] = "MainWindow/Geometry";
+constexpr char WindowStateKey[] = "MainWindow/WindowState";
 
 static QDockWidget *createLogViewerDock(QWidget *parent)
 {
@@ -41,6 +43,7 @@ static QDockWidget *createLogViewerDock(QWidget *parent)
     dock->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
     dock->setWidget(new LogViewer);
     dock->setWindowTitle(dock->widget()->windowTitle());
+    dock->setObjectName(dock->widget()->metaObject()->className());
     return dock;
 }
 
@@ -94,12 +97,18 @@ MainWindow::MainWindow(QWidget *parent)
         changeCurrentDocument();
 }
 
-MainWindow::~MainWindow()
+MainWindow::~MainWindow() = default;
+
+void MainWindow::closeEvent(QCloseEvent *event)
 {
     Core::Project::instance()->closeAll();
 
     QSettings settings;
     settings.setValue(SplitterKey, ui->splitter->saveState());
+    settings.setValue(GeometryKey, saveGeometry());
+    settings.setValue(WindowStateKey, saveState());
+
+    QMainWindow::closeEvent(event);
 }
 
 void MainWindow::showEvent(QShowEvent *event)
@@ -107,6 +116,8 @@ void MainWindow::showEvent(QShowEvent *event)
     QMainWindow::showEvent(event);
     QSettings settings;
     ui->splitter->restoreState(settings.value(SplitterKey).toByteArray());
+    restoreGeometry(settings.value(GeometryKey).toByteArray());
+    restoreState(settings.value(WindowStateKey).toByteArray());
 }
 
 void MainWindow::openProject()
@@ -211,7 +222,7 @@ void MainWindow::runScript()
 
 void MainWindow::openOptions()
 {
-    OptionsDialog dialog(&m_settings, this);
+    OptionsDialog dialog(this);
     dialog.exec();
 }
 
@@ -243,19 +254,19 @@ void MainWindow::changeTab()
     ui->actionCreate_Ui->setEnabled(document->type() == Core::Document::Type::Rc);
 }
 
-static QWidget *widgetForDocument(Core::Document *document, const GuiSettings &settings)
+static QWidget *widgetForDocument(Core::Document *document)
 {
     switch (document->type()) {
     case Core::Document::Type::Cpp:
     case Core::Document::Type::Text: {
         auto textEdit = qobject_cast<Core::TextDocument *>(document)->textEdit();
-        settings.setupTextEdit(textEdit, document->fileName());
+        GuiSettings::setupDocumentTextEdit(textEdit, document->fileName());
         return textEdit;
     }
     case Core::Document::Type::Rc: {
         auto rcview = new RcUi::RcFileView();
         rcview->setRcFile(qobject_cast<Core::RcDocument *>(document)->data());
-        settings.setupTextEdit(rcview->textEdit(), document->fileName());
+        GuiSettings::setupDocumentTextEdit(rcview->textEdit(), document->fileName());
         return rcview;
     }
     case Core::Document::Type::Ui: {
@@ -301,7 +312,7 @@ void MainWindow::changeCurrentDocument()
     if (windowIndex == -1) {
         auto document = project->currentDocument();
         QDir dir(project->root());
-        auto widget = widgetForDocument(document, m_settings);
+        auto widget = widgetForDocument(document);
         widget->setWindowTitle(fileName);
         windowIndex = ui->tabWidget->addTab(widget, dir.relativeFilePath(fileName));
 

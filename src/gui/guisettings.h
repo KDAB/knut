@@ -15,7 +15,7 @@ public:
         FusionDark,
     };
 
-    GuiSettings();
+    static GuiSettings *instance();
 
     void setStyle(Style style);
     Style style() const;
@@ -32,9 +32,12 @@ public:
     void setWordWrap(bool wordWrap);
     bool isWordWrap() const;
 
-    void setupTextEdit(QPlainTextEdit *textEdit, const QString &fileName) const;
+    static void setupDocumentTextEdit(QPlainTextEdit *textEdit, const QString &fileName);
+    static void setupTextEdit(QPlainTextEdit *textEdit);
 
 private:
+    GuiSettings();
+
     void updateStyle() const;
     void updateTheme() const;
     void updateTextEdits() const;

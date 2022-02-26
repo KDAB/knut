@@ -1,7 +1,5 @@
 #pragma once
 
-#include "guisettings.h"
-
 #include <QMainWindow>
 
 #include <memory>
@@ -31,6 +29,7 @@ public:
     ~MainWindow();
 
 protected:
+    void closeEvent(QCloseEvent *event) override;
     void showEvent(QShowEvent *event) override;
 
 private:
@@ -55,7 +54,6 @@ private:
     QMenu *m_recentProjects = nullptr;
     QFileSystemModel *m_fileModel = nullptr;
     Palette *m_palette = nullptr;
-    GuiSettings m_settings;
 };
 
 } // namespace Gui
