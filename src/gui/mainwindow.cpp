@@ -3,7 +3,7 @@
 
 #include "guisettings.h"
 #include "imageview.h"
-#include "logviewer.h"
+#include "logpanel.h"
 #include "optionsdialog.h"
 #include "palette.h"
 #include "rctoqrcdialog.h"
@@ -28,20 +28,35 @@
 #include <QHeaderView>
 #include <QPlainTextEdit>
 #include <QSettings>
+#include <QTreeView>
 
 namespace Gui {
 
 constexpr int MaximumRecentProjects = 10;
 constexpr char RecentProjectKey[] = "RecentProject";
-constexpr char SplitterKey[] = "MainWindow/SplitterSizes";
 constexpr char GeometryKey[] = "MainWindow/Geometry";
 constexpr char WindowStateKey[] = "MainWindow/WindowState";
 
-static QDockWidget *createLogViewerDock(QWidget *parent)
+static QDockWidget *createProjectViewDock(QTreeView *treeView, QWidget *parent)
 {
     auto dock = new QDockWidget(parent);
-    dock->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
-    dock->setWidget(new LogViewer);
+    dock->setAllowedAreas(Qt::LeftDockWidgetArea);
+    dock->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    dock->setTitleBarWidget(new QWidget); // don't show title bar
+    dock->setWidget(treeView);
+    dock->setWindowTitle("Project");
+    dock->setObjectName("ProjectPanel");
+    treeView->header()->hide();
+    return dock;
+}
+
+static QDockWidget *createLogPanelDock(QWidget *parent)
+{
+    auto dock = new QDockWidget(parent);
+    dock->setAllowedAreas(Qt::BottomDockWidgetArea);
+    dock->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    dock->setTitleBarWidget(new QWidget); // don't show title bar
+    dock->setWidget(new LogPanel);
     dock->setWindowTitle(dock->widget()->windowTitle());
     dock->setObjectName(dock->widget()->metaObject()->className());
     return dock;
@@ -50,19 +65,20 @@ static QDockWidget *createLogViewerDock(QWidget *parent)
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , m_fileModel(new QFileSystemModel(this))
+    , m_projectView(new QTreeView(this))
+    , m_palette(new Palette(this))
 {
     setAttribute(Qt::WA_DeleteOnClose);
 
-    m_palette = new Palette(this);
     m_palette->hide();
 
     ui->setupUi(this);
-    ui->splitter->setSizes({275, 750});
-    ui->splitter->setStretchFactor(0, 0);
-    ui->splitter->setStretchFactor(1, 1);
     setWindowTitle(QApplication::applicationName() + ' ' + QApplication::applicationVersion());
 
-    addDockWidget(Qt::BottomDockWidgetArea, createLogViewerDock(this));
+    setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
+    addDockWidget(Qt::LeftDockWidgetArea, createProjectViewDock(m_projectView, this));
+    addDockWidget(Qt::BottomDockWidgetArea, createLogPanelDock(this));
 
     connect(ui->actionQuit, &QAction::triggered, this, &MainWindow::close);
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openProject);
@@ -79,13 +95,11 @@ MainWindow::MainWindow(QWidget *parent)
     ui->actionRecent_Projects->setMenu(m_recentProjects);
     updateRecentProjects();
 
-    ui->tabWidget->setDocumentMode(true);
     connect(ui->tabWidget, &QTabWidget::currentChanged, this, &MainWindow::changeTab);
 
-    m_fileModel = new QFileSystemModel(this);
-    ui->projectView->setModel(m_fileModel);
+    m_projectView->setModel(m_fileModel);
     for (int i = 1; i < m_fileModel->columnCount(); ++i)
-        ui->projectView->header()->hideSection(i);
+        m_projectView->header()->hideSection(i);
 
     auto project = Core::Project::instance();
     connect(project, &Core::Project::currentDocumentChanged, this, &MainWindow::changeCurrentDocument);
@@ -104,7 +118,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
     Core::Project::instance()->closeAll();
 
     QSettings settings;
-    settings.setValue(SplitterKey, ui->splitter->saveState());
     settings.setValue(GeometryKey, saveGeometry());
     settings.setValue(WindowStateKey, saveState());
 
@@ -115,7 +128,6 @@ void MainWindow::showEvent(QShowEvent *event)
 {
     QMainWindow::showEvent(event);
     QSettings settings;
-    ui->splitter->restoreState(settings.value(SplitterKey).toByteArray());
     restoreGeometry(settings.value(GeometryKey).toByteArray());
     restoreState(settings.value(WindowStateKey).toByteArray());
 }
@@ -142,8 +154,8 @@ void MainWindow::initProject(const QString &path)
 
     // Initalize tree view
     auto index = m_fileModel->setRootPath(path);
-    ui->projectView->setRootIndex(index);
-    connect(ui->projectView->selectionModel(), &QItemSelectionModel::currentChanged, this, &MainWindow::openDocument);
+    m_projectView->setRootIndex(index);
+    connect(m_projectView->selectionModel(), &QItemSelectionModel::currentChanged, this, &MainWindow::openDocument);
 
     // Disable menus, we can only load one project - restart Knut if needed
     ui->actionOpen->setEnabled(false);
@@ -242,7 +254,7 @@ void MainWindow::changeTab()
     if (ui->tabWidget->count() == 0) {
         ui->actionCreate_Qrc->setEnabled(false);
         ui->actionCreate_Ui->setEnabled(false);
-        ui->projectView->selectionModel()->clear();
+        m_projectView->selectionModel()->clear();
         return;
     }
 
@@ -325,7 +337,7 @@ void MainWindow::changeCurrentDocument()
         ui->tabWidget->currentWidget()->setFocus(Qt::OtherFocusReason);
 
     const QModelIndex &index = m_fileModel->index(fileName);
-    ui->projectView->setCurrentIndex(index);
+    m_projectView->setCurrentIndex(index);
 }
 
 } // namespace Gui

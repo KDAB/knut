@@ -6,6 +6,7 @@
 
 class QMenu;
 class QFileSystemModel;
+class QTreeView;
 
 namespace Core {
 class TextDocument;
@@ -52,8 +53,9 @@ private:
 private:
     std::unique_ptr<Ui::MainWindow> ui;
     QMenu *m_recentProjects = nullptr;
-    QFileSystemModel *m_fileModel = nullptr;
-    Palette *m_palette = nullptr;
+    QFileSystemModel *const m_fileModel = nullptr;
+    QTreeView *const m_projectView = nullptr;
+    Palette *const m_palette = nullptr;
 };
 
 } // namespace Gui

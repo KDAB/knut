@@ -1,4 +1,4 @@
-#include "logviewer.h"
+#include "logpanel.h"
 
 #include "guisettings.h"
 
@@ -88,12 +88,12 @@ private:
 };
 using qt_sink_mt = qt_sink<std::mutex>;
 
-LogViewer::LogViewer(QWidget *parent)
+LogPanel::LogPanel(QWidget *parent)
     : QPlainTextEdit(parent)
 {
     auto logger = spdlog::default_logger();
     logger->sinks().push_back(std::shared_ptr<spdlog::sinks::sink>(new qt_sink_mt(this)));
-    setWindowTitle("Log Viewer");
+    setWindowTitle("Log");
 
     new LogHighlighter(this->document());
 
@@ -101,6 +101,6 @@ LogViewer::LogViewer(QWidget *parent)
     setWordWrapMode(QTextOption::NoWrap);
 }
 
-LogViewer::~LogViewer() = default;
+LogPanel::~LogPanel() = default;
 
 } // namespace Gui

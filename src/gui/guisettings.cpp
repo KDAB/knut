@@ -183,6 +183,10 @@ void GuiSettings::updateStyle() const
         darkPalette.setColor(QPalette::ToolTipText, text);
         darkPalette.setColor(QPalette::Text, text);
         darkPalette.setColor(QPalette::Button, darkGray);
+        darkPalette.setColor(QPalette::Dark, darkGray);
+        darkPalette.setColor(QPalette::Mid, darkGray);
+        darkPalette.setColor(QPalette::Light, gray.darker());
+        darkPalette.setColor(QPalette::Midlight, gray.darker());
         darkPalette.setColor(QPalette::ButtonText, text);
         darkPalette.setColor(QPalette::Link, blue);
         darkPalette.setColor(QPalette::Highlight, blue);
@@ -192,6 +196,7 @@ void GuiSettings::updateStyle() const
         darkPalette.setColor(QPalette::Disabled, QPalette::WindowText, gray);
         darkPalette.setColor(QPalette::Disabled, QPalette::Text, gray);
         darkPalette.setColor(QPalette::Disabled, QPalette::Light, darkGray);
+        darkPalette.setColor(QPalette::Disabled, QPalette::Midlight, darkGray);
         qApp->setPalette(darkPalette);
         break;
     }
