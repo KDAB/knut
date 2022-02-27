@@ -4,7 +4,7 @@ set(PROJECT_SOURCES
     main.cpp
 )
 
-add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
+add_executable(${PROJECT_NAME} MACOSX_BUNDLE WIN32 ${PROJECT_SOURCES})
 target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
     knut-gui
