@@ -6,6 +6,7 @@
 #include "logpanel.h"
 #include "optionsdialog.h"
 #include "palette.h"
+#include "paneldock.h"
 #include "rctoqrcdialog.h"
 #include "rctouidialog.h"
 #include "runscriptdialog.h"
@@ -50,18 +51,6 @@ static QDockWidget *createProjectViewDock(QTreeView *treeView, QWidget *parent)
     return dock;
 }
 
-static QDockWidget *createLogPanelDock(QWidget *parent)
-{
-    auto dock = new QDockWidget(parent);
-    dock->setAllowedAreas(Qt::BottomDockWidgetArea);
-    dock->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    dock->setTitleBarWidget(new QWidget); // don't show title bar
-    dock->setWidget(new LogPanel);
-    dock->setWindowTitle(dock->widget()->windowTitle());
-    dock->setObjectName(dock->widget()->metaObject()->className());
-    return dock;
-}
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -78,7 +67,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
     addDockWidget(Qt::LeftDockWidgetArea, createProjectViewDock(m_projectView, this));
-    addDockWidget(Qt::BottomDockWidgetArea, createLogPanelDock(this));
+    auto panelDock = new PanelDock(this);
+    addDockWidget(Qt::BottomDockWidgetArea, panelDock);
+    panelDock->addPanel(make_panel<LogPanel>());
 
     connect(ui->actionQuit, &QAction::triggered, this, &MainWindow::close);
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openProject);

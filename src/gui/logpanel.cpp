@@ -2,10 +2,14 @@
 
 #include "guisettings.h"
 
+#include <QComboBox>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QMetaObject>
 #include <QPlainTextEdit>
 #include <QSyntaxHighlighter>
 #include <QTextCharFormat>
+#include <QToolButton>
 
 #include <spdlog/sinks/base_sink.h>
 #include <spdlog/spdlog.h>
@@ -88,19 +92,53 @@ private:
 };
 using qt_sink_mt = qt_sink<std::mutex>;
 
-LogPanel::LogPanel(QWidget *parent)
-    : QPlainTextEdit(parent)
+LogPanel::LogPanel()
+    : m_textEdit(new QPlainTextEdit)
+    , m_titleBar(new QWidget)
 {
     auto logger = spdlog::default_logger();
-    logger->sinks().push_back(std::shared_ptr<spdlog::sinks::sink>(new qt_sink_mt(this)));
-    setWindowTitle("Log");
+    logger->sinks().push_back(std::shared_ptr<spdlog::sinks::sink>(new qt_sink_mt(m_textEdit)));
 
-    new LogHighlighter(this->document());
+    // Setup text edit
+    new LogHighlighter(m_textEdit->document());
+    m_textEdit->setWordWrapMode(QTextOption::NoWrap);
+    GuiSettings::setupTextEdit(m_textEdit);
 
-    GuiSettings::setupTextEdit(this);
-    setWordWrapMode(QTextOption::NoWrap);
+    // Setup titlebar
+    auto layout = new QHBoxLayout(m_titleBar);
+    layout->setContentsMargins({});
+    layout->addWidget(new QLabel("Level:"));
+
+    auto levelCombo = new QComboBox(m_titleBar);
+    levelCombo->addItems({"trace", "debug", "info", "warning", "error", "critical"});
+    levelCombo->setCurrentIndex(logger->level());
+    layout->addWidget(levelCombo);
+    QObject::connect(levelCombo, qOverload<int>(&QComboBox::currentIndexChanged), levelCombo, [logger](int index) {
+        logger->set_level(static_cast<spdlog::level::level_enum>(index));
+    });
+
+    auto clearButton = new QToolButton(m_titleBar);
+    clearButton->setText("clear"); // TODO add an icon
+    clearButton->setAutoRaise(true);
+    layout->addWidget(clearButton);
+    QObject::connect(clearButton, &QToolButton::clicked, m_textEdit, &QPlainTextEdit::clear);
 }
 
 LogPanel::~LogPanel() = default;
+
+QWidget *LogPanel::widget() const
+{
+    return m_textEdit;
+}
+
+QWidget *LogPanel::toolBar() const
+{
+    return m_titleBar;
+}
+
+QString LogPanel::title() const
+{
+    return "Log";
+}
 
 } // namespace Gui
