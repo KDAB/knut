@@ -26,17 +26,18 @@ const QVector<Symbol> &LspCache::symbols()
     if (!m_document->m_lspClient)
         return m_symbols;
 
-    // TODO cache the data
     Lsp::DocumentSymbolParams params;
     params.textDocument.uri = m_document->toUri();
     auto result = m_document->m_lspClient->documentSymbol(std::move(params));
     if (!result)
         return m_symbols;
 
-    // Wee only supports Lsp::DocumentSymbol for now
-    Q_ASSERT(std::holds_alternative<std::vector<Lsp::DocumentSymbol>>(result.value()));
+    // We only supports Lsp::DocumentSymbol for now
+    if (!std::holds_alternative<std::vector<Lsp::DocumentSymbol>>(result.value())) {
+        Q_ASSERT(std::get<std::vector<Lsp::SymbolInformation>>(result.value()).empty());
+        return m_symbols;
+    }
     const auto lspSymbols = std::get<std::vector<Lsp::DocumentSymbol>>(result.value());
-    QVector<Symbol> symbols;
 
     // Create a recusive lambda to flatten the hierarchy
     // Add the full symbol name (with namespaces/classes)
