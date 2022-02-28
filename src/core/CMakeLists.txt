@@ -5,6 +5,8 @@ set(PROJECT_SOURCES
     private/lspcache.cpp
     cppdocument.h
     cppdocument.cpp
+    cppfunction.h
+    cppfunction.cpp
     dir.h
     dir.cpp
     document.h
@@ -46,6 +48,7 @@ set(PROJECT_SOURCES
     string_utils.h
     string_utils.cpp
     symbol.h
+    symbol.cpp
     testutil.h
     testutil.cpp
     textdocument.h

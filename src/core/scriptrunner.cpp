@@ -1,6 +1,7 @@
 #include "scriptrunner.h"
 
 #include "cppdocument.h"
+#include "cppfunction.h"
 #include "dir.h"
 #include "file.h"
 #include "fileinfo.h"
@@ -10,6 +11,7 @@
 #include "scriptdialogitem.h"
 #include "scriptitem.h"
 #include "settings.h"
+#include "symbol.h"
 #include "testutil.h"
 #include "textdocument.h"
 #include "textrange.h"
@@ -36,8 +38,11 @@ ScriptRunner::ScriptRunner(QObject *parent)
     : QObject(parent)
 {
     // Script objects registrations
+    qRegisterMetaType<Argument>();
+    qRegisterMetaType<CppFunction>();
     qRegisterMetaType<QDirValueType>();
     qRegisterMetaType<QFileInfoValueType>();
+    qRegisterMetaType<Symbol>();
     qRegisterMetaType<TextRange>();
 
     // Script

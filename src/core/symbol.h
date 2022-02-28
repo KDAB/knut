@@ -1,5 +1,6 @@
 #pragma once
 
+#include "cppfunction.h"
 #include "textrange.h"
 
 #include "lsp/types.h"
@@ -48,6 +49,8 @@ public:
         TypeParameter = static_cast<int>(Lsp::SymbolKind::TypeParameter),
     };
     Q_ENUM(Kind)
+
+    Q_INVOKABLE Core::CppFunction toFunction();
 
     QString name;
     QString description;
