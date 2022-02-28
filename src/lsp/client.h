@@ -4,8 +4,6 @@
 
 #include <QObject>
 
-#include <spdlog/spdlog.h>
-
 #include <string>
 
 namespace Lsp {
@@ -79,7 +77,6 @@ private:
 private:
     mutable int m_nextRequestId = 1;
     std::string m_languageId;
-    std::shared_ptr<spdlog::logger> m_clientLogger;
     ClientBackend *m_backend = nullptr;
     State m_state = Uninitialized;
 

@@ -9,20 +9,21 @@
 
 #include <QCoreApplication>
 #include <QDir>
+#include <QElapsedTimer>
 #include <QFileInfo>
 #include <QUrl>
-#include <spdlog/sinks/stdout_color_sinks.h>
+
+#include <spdlog/spdlog.h>
 
 namespace Lsp {
 
 template <typename Request>
-std::optional<typename Request::Result> sendRequest(ClientBackend *backend, std::shared_ptr<spdlog::logger> logger,
-                                                    Request request,
+std::optional<typename Request::Result> sendRequest(ClientBackend *backend, Request request,
                                                     std::function<void(typename Request::Result)> callback)
 {
     auto checkResponse = [&](typename Request::Response response) {
         if (!response.isValid() || response.error) {
-            logger->warn("Response error for request {} - {}", request.method,
+            spdlog::warn("Response error for request {} - {}", request.method,
                          response.error ? response.error->message : "");
             return false;
         }
@@ -36,7 +37,10 @@ std::optional<typename Request::Result> sendRequest(ClientBackend *backend, std:
         };
         backend->sendAsyncRequest(request, requestCallBack);
     } else {
+        QElapsedTimer time;
+        time.start();
         auto response = backend->sendRequest(request);
+        spdlog::trace("{} ms for handling request {}", static_cast<int>(time.elapsed()), request.method);
         if (checkResponse(response))
             return response.result;
     }
@@ -48,13 +52,6 @@ Client::Client(std::string languageId, QString program, QStringList arguments, Q
     , m_languageId(std::move(languageId))
     , m_backend(new ClientBackend(m_languageId, std::move(program), std::move(arguments), this))
 {
-    const auto clientLogName = m_languageId + "_client";
-    m_clientLogger = spdlog::get(clientLogName);
-    if (!m_clientLogger) {
-        m_clientLogger = spdlog::stdout_color_mt(clientLogName);
-        m_clientLogger->set_level(spdlog::level::debug);
-    }
-
     connect(m_backend, &ClientBackend::errorOccured, this, [this]() {
         setState(Error);
     });
@@ -75,7 +72,7 @@ bool Client::initialize(const QString &rootPath)
     if (!m_backend->start())
         return false;
 
-    m_clientLogger->debug("LSP server started");
+    spdlog::debug("LSP server started");
 
     InitializeRequest request;
     request.id = m_nextRequestId++;
@@ -187,14 +184,14 @@ std::optional<DocumentSymbolRequest::Result>
 Client::documentSymbol(DocumentSymbolParams &&params, std::function<void(DocumentSymbolRequest::Result)> asyncCallback)
 {
     if (!canSendDocumentSymbol()) {
-        m_clientLogger->error("{} not supported by LSP server", DocumentSymbolName);
+        spdlog::error("{} not supported by LSP server", DocumentSymbolName);
         return {};
     }
 
     DocumentSymbolRequest request;
     request.id = m_nextRequestId++;
     request.params = std::move(params);
-    return sendRequest(m_backend, m_clientLogger, request, asyncCallback);
+    return sendRequest(m_backend, request, asyncCallback);
 }
 
 std::string Client::toUri(const QString &path)
@@ -214,14 +211,14 @@ void Client::setState(State newState)
 bool Client::initializeCallback(InitializeRequest::Response response)
 {
     if (!response.isValid() || response.error) {
-        m_clientLogger->error("Error initializing the server");
+        spdlog::error("Error initializing the server");
         setState(Error);
         return false;
     }
 
     m_serverCapabilities = response.result->capabilities;
     m_backend->sendNotification(InitializedNotification());
-    m_clientLogger->debug("LSP server initialized");
+    spdlog::debug("LSP server initialized");
     setState(Initialized);
     return true;
 }
@@ -229,13 +226,13 @@ bool Client::initializeCallback(InitializeRequest::Response response)
 bool Client::shutdownCallback(ShutdownRequest::Response response)
 {
     if (!response.isValid() || response.error) {
-        m_clientLogger->error("Error shutting down the server");
+        spdlog::error("Error shutting down the server");
         setState(Error);
         return false;
     }
 
     m_backend->sendNotification(ExitNotification());
-    m_clientLogger->debug("LSP server exited");
+    spdlog::debug("LSP server exited");
     setState(Shutdown);
     return true;
 }

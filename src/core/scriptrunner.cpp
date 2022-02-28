@@ -26,7 +26,7 @@
 
 #include <QtQml/private/qqmlengine_p.h>
 
-#include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/spdlog.h>
 
 namespace Core {
 
@@ -35,12 +35,6 @@ static constexpr int ErrorCode = -1;
 ScriptRunner::ScriptRunner(QObject *parent)
     : QObject(parent)
 {
-    m_logger = spdlog::get("script");
-    if (!m_logger) {
-        m_logger = spdlog::stdout_color_mt("script");
-        m_logger->set_level(spdlog::level::debug);
-    }
-
     // Script objects registrations
     qRegisterMetaType<QDirValueType>();
     qRegisterMetaType<QFileInfoValueType>();
@@ -124,7 +118,7 @@ QVariant ScriptRunner::runScript(const QString &fileName, std::function<void()> 
             result = runQml(fullName, engine);
         // engine is deleted in runJavascript or runQml
     } else {
-        m_logger->error("File {} doesn't exist", fileName.toStdString());
+        spdlog::error("File {} doesn't exist", fileName.toStdString());
         return QVariant(ErrorCode);
     }
 
@@ -146,8 +140,8 @@ QQmlEngine *ScriptRunner::getEngine(const QString &fileName)
 
     auto logWarnings = [this](const QList<QQmlError> &warnings) {
         for (const auto &warning : warnings) {
-            m_logger->warn("{}({}): {}", QDir::toNativeSeparators(warning.url().toLocalFile()).toStdString(),
-                           warning.line(), warning.description().toStdString());
+            spdlog::warn("{}({}): {}", warning.url().toLocalFile().toStdString(), warning.line(),
+                         warning.description().toStdString());
             m_hasError = true;
         }
     };

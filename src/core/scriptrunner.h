@@ -5,8 +5,6 @@
 #include <QSharedPointer>
 #include <QString>
 
-#include <spdlog/spdlog.h>
-
 #include <functional>
 
 namespace Core {
@@ -42,7 +40,6 @@ private:
     friend class ScriptDialogItem;
     inline static QString currentScriptPath;
 
-    std::shared_ptr<spdlog::logger> m_logger;
     bool m_hasError = false;
     QList<QQmlError> m_errors;
 };

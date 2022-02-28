@@ -2,6 +2,8 @@
 
 #include <QVariant>
 
+#include <spdlog/spdlog.h>
+
 namespace Core {
 
 /*!
@@ -21,7 +23,6 @@ namespace Core {
 Message::Message(QObject *parent)
     : QObject(parent)
 {
-    m_logger = spdlog::get("script");
 }
 
 Message::~Message() { }
@@ -32,7 +33,7 @@ Message::~Message() { }
  */
 void Message::error(const QString &text)
 {
-    m_logger->error("{}", text.toStdString());
+    spdlog::error("{}", text.toStdString());
 }
 
 /*!
@@ -41,7 +42,7 @@ void Message::error(const QString &text)
  */
 void Message::log(const QString &text)
 {
-    m_logger->info("{}", text.toStdString());
+    spdlog::info("{}", text.toStdString());
 }
 
 /*!
@@ -50,7 +51,7 @@ void Message::log(const QString &text)
  */
 void Message::debug(const QString &text)
 {
-    m_logger->debug("{}", text.toStdString());
+    spdlog::debug("{}", text.toStdString());
 }
 
 /*!
@@ -59,7 +60,7 @@ void Message::debug(const QString &text)
  */
 void Message::warning(const QString &text)
 {
-    m_logger->warn("{}", text.toStdString());
+    spdlog::warn("{}", text.toStdString());
 }
 
 } // namespace Core

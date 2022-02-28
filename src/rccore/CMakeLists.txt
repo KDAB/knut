@@ -9,8 +9,6 @@ set(PROJECT_SOURCES
     rc_convert.cpp
     rc_parse.cpp
     rc_write.cpp
-    rc_utils.h
-    rc_utils.cpp
     stream.h
     stream.cpp
 )

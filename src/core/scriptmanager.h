@@ -3,8 +3,6 @@
 #include <QObject>
 #include <QStringList>
 
-#include <spdlog/spdlog.h>
-
 #include <functional>
 #include <vector>
 
@@ -67,8 +65,6 @@ private:
 
 private:
     inline static ScriptManager *m_instance = nullptr;
-
-    std::shared_ptr<spdlog::logger> m_logger;
 
     QFileSystemWatcher *const m_watcher;
     ScriptRunner *const m_runner;

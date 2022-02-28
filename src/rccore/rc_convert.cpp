@@ -1,11 +1,12 @@
 #include "rcfile.h"
 
 #include "lexer.h"
-#include "rc_utils.h"
 
 #include <QDir>
 #include <QHash>
 #include <QImage>
+
+#include <spdlog/spdlog.h>
 
 #include <algorithm>
 #include <cmath>
@@ -24,8 +25,8 @@ static QVector<Asset> splitToolBar(const Data &data, const ToolBar &toolBar, con
     const int width = toolBar.iconSize.width();
 
     if (iconCount * width != image.width()) {
-        logger()->warn("{}({}): asset and toolbar widths don't match for {}",
-                       QDir::toNativeSeparators(data.fileName).toStdString(), asset.line, asset.id.toStdString());
+        spdlog::warn("{}({}): asset and toolbar widths don't match for {}", data.fileName.toStdString(), asset.line,
+                     asset.id.toStdString());
     }
 
     QVector<Asset> assets;
@@ -222,8 +223,8 @@ static void convertStyles(const Data &data, Widget &widget, Data::Control &contr
     control.styles.removeOne(WSTABSTOP);
 
     if (!control.styles.isEmpty()) {
-        logger()->debug("{}({}): {} has unused styles {}", QDir::toNativeSeparators(data.fileName).toStdString(),
-                        control.line, control.id.toStdString(), control.styles.join(", ").toStdString());
+        spdlog::info("{}({}): {} has unused styles {}", data.fileName.toStdString(), control.line,
+                     control.id.toStdString(), control.styles.join(", ").toStdString());
     }
 }
 
@@ -663,8 +664,8 @@ static Widget convertControl(const Data &data, const QString &dialogId, Data::Co
     if (control.className == "MfcPropertyGrid")
         return convertTreeWidget(data, control);
 
-    logger()->critical("{}({}): unknown CONTROL {} / {}", QDir::toNativeSeparators(data.fileName).toStdString(),
-                       control.line, control.id.toStdString(), control.className.toStdString());
+    spdlog::critical("{}({}): unknown CONTROL {} / {}", data.fileName.toStdString(), control.line,
+                     control.id.toStdString(), control.className.toStdString());
 
     Widget widget;
     widget.className = "QWidget";
@@ -717,8 +718,8 @@ static Widget convertChildWidget(const Data &data, const QString &dialogId, Data
         widget = convertControl(data, dialogId, control, useIdForPixmap);
         break;
     default:
-        logger()->critical("{}({}): unknown control type {}", QDir::toNativeSeparators(data.fileName).toStdString(),
-                           control.line, Token {Token::Keyword, type}.toString().toStdString());
+        spdlog::error("{}({}): unknown control type {}", data.fileName.toStdString(), control.line,
+                      Token {Token::Keyword, type}.toString().toStdString());
     }
 
     widget.id = control.id;
@@ -801,8 +802,8 @@ Widget convertDialog(const Data &data, const Data::Dialog &d, Widget::Conversion
         widget.properties[WindowTitle] = dialog.caption;
 
     if (!dialog.styles.isEmpty()) {
-        logger()->debug("{}({}): {} has unused styles {}", QDir::toNativeSeparators(data.fileName).toStdString(),
-                        dialog.line, dialog.id.toStdString(), dialog.styles.join(", ").toStdString());
+        spdlog::info("{}({}): {} has unused styles {}", data.fileName.toStdString(), dialog.line,
+                     dialog.id.toStdString(), dialog.styles.join(", ").toStdString());
     }
 
     for (const auto &control : std::as_const(dialog.controls))
@@ -843,8 +844,8 @@ static void createActionForMenu(const Data &data, QVector<Action> &actions, QHas
     } else if (item.isAction()) {
         // We stop here in case of duplication in the menu
         if (actionIdMap.contains(item.id)) {
-            logger()->info("{}({}): duplicate action in menu {}", QDir::toNativeSeparators(data.fileName).toStdString(),
-                           item.line, item.id.toStdString());
+            spdlog::info("{}({}): duplicate action in menu {}", data.fileName.toStdString(), item.line,
+                         item.id.toStdString());
             return;
         }
 
@@ -865,8 +866,8 @@ static void createActionForMenu(const Data &data, QVector<Action> &actions, QHas
 static Shortcut createShortcut(const Data &data, const Data::Accelerator &accelerator)
 {
     if (accelerator.isUnknown()) {
-        logger()->warn("{}({}): unknown shortcut {} / {}", QDir::toNativeSeparators(data.fileName).toStdString(),
-                       accelerator.line, accelerator.id.toStdString(), accelerator.shortcut.toStdString());
+        spdlog::warn("{}({}): unknown shortcut {} / {}", data.fileName.toStdString(), accelerator.line,
+                     accelerator.id.toStdString(), accelerator.shortcut.toStdString());
         return {accelerator.shortcut, true};
     }
     return {accelerator.shortcut};

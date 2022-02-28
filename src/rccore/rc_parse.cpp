@@ -1,7 +1,6 @@
 #include "rcfile.h"
 
 #include "lexer.h"
-#include "rc_utils.h"
 #include "stream.h"
 
 #include <QDir>
@@ -11,6 +10,8 @@
 #include <QHash>
 #include <QKeySequence>
 #include <QTextStream>
+
+#include <spdlog/spdlog.h>
 
 namespace RcCore {
 
@@ -120,9 +121,8 @@ static void readDialogStatements(Lexer &lexer, Data::Dialog &dialog, const Data 
             dialog.styles = readStyles(lexer);
             break;
         default:
-            logger()->critical("{}({}): parser error on token {}",
-                               QDir::toNativeSeparators(lexer.fileName()).toStdString(), lexer.line(),
-                               token->prettyPrint().toStdString());
+            spdlog::error("{}({}): parser error on token {}", lexer.fileName().toStdString(), lexer.line(),
+                          token->prettyPrint().toStdString());
             break;
         }
     }
@@ -426,8 +426,8 @@ static Data::Accelerator readAccelerator(Lexer &lexer)
     }
     accelerator.shortcut = toShortcut(event, isAscii, modifiers);
     if (accelerator.shortcut.isEmpty()) {
-        logger()->warn("{}({}): parser unknown accelerator {}",
-                       QDir::toNativeSeparators(lexer.fileName()).toStdString(), lexer.line(), event.toStdString());
+        spdlog::warn("{}({}): parser unknown accelerator {}", lexer.fileName().toStdString(), lexer.line(),
+                     event.toStdString());
     }
     return accelerator;
 }
@@ -540,14 +540,12 @@ static MenuItem readMenuItem(Lexer &lexer, Data &data)
             case Keywords::MFSENABLED:
             case Keywords::MFTSTRING:
             case Keywords::MFTRIGHTJUSTIFY:
-                logger()->info("{}({}): parser unused token {}",
-                               QDir::toNativeSeparators(lexer.fileName()).toStdString(), lexer.line(),
-                               flagToken->prettyPrint().toStdString());
+                spdlog::info("{}({}): parser unused token {}", lexer.fileName().toStdString(), lexer.line(),
+                             flagToken->prettyPrint().toStdString());
                 break;
             default:
-                logger()->warn("{}({}): parser unhandled token {}",
-                               QDir::toNativeSeparators(lexer.fileName()).toStdString(), lexer.line(),
-                               flagToken->prettyPrint().toStdString());
+                spdlog::warn("{}({}): parser unhandled token {}", lexer.fileName().toStdString(), lexer.line(),
+                             flagToken->prettyPrint().toStdString());
             }
 
             const auto type = lexer.peek()->type;
@@ -573,9 +571,8 @@ static void readMenuChildren(Lexer &lexer, Data &data, QVector<MenuItem> &childr
             children.append(readMenuItem(lexer, data));
             break;
         default:
-            logger()->warn("{}({}): parser unhandled token {}",
-                           QDir::toNativeSeparators(lexer.fileName()).toStdString(), lexer.line(),
-                           token->prettyPrint().toStdString());
+            spdlog::warn("{}({}): parser unhandled token {}", lexer.fileName().toStdString(), lexer.line(),
+                         token->prettyPrint().toStdString());
         }
         token = lexer.next();
     }
@@ -649,9 +646,8 @@ static void readToolBar(Lexer &lexer, Data &data, const QString &id)
             break;
         }
         default:
-            logger()->warn("{}({}): parser unhandled token {}",
-                           QDir::toNativeSeparators(lexer.fileName()).toStdString(), lexer.line(),
-                           token->prettyPrint().toStdString());
+            spdlog::warn("{}({}): parser unhandled token {}", lexer.fileName().toStdString(), lexer.line(),
+                         token->prettyPrint().toStdString());
         }
         lexer.skipLine();
         token = lexer.next();
@@ -696,8 +692,8 @@ static Data::Control readControl(Lexer &lexer, Data &data, const std::optional<T
     control.type = static_cast<int>(controlType);
 
     if (!knownControls.contains(controlType)) {
-        logger()->warn("{}({}): parser unknown control {}", QDir::toNativeSeparators(lexer.fileName()).toStdString(),
-                       lexer.line(), token->prettyPrint().toStdString());
+        spdlog::warn("{}({}): parser unknown control {}", lexer.fileName().toStdString(), lexer.line(),
+                     token->prettyPrint().toStdString());
         return control;
     }
 
@@ -812,8 +808,8 @@ static void readResource(Lexer &lexer, Data &data, const std::optional<Token> &t
     case Keywords::HTML:
     case Keywords::MESSAGETABLE:
     case Keywords::REGISTRY:
-        logger()->info("{}({}): parser unused token {}", QDir::toNativeSeparators(lexer.fileName()).toStdString(),
-                       lexer.line(), token->prettyPrint().toStdString());
+        spdlog::info("{}({}): parser unused token {}", lexer.fileName().toStdString(), lexer.line(),
+                     token->prettyPrint().toStdString());
         lexer.skipLine();
         break;
     case Keywords::AFX_DIALOG_LAYOUT:
@@ -852,13 +848,13 @@ static void readResource(Lexer &lexer, Data &data, const std::optional<Token> &t
         break;
 
     case Keywords::BEGIN:
-        logger()->warn("{}({}): parser unhandled token {}", QDir::toNativeSeparators(lexer.fileName()).toStdString(),
-                       lexer.line(), token->prettyPrint().toStdString());
+        spdlog::warn("{}({}): parser unhandled token {}", lexer.fileName().toStdString(), lexer.line(),
+                     token->prettyPrint().toStdString());
         lexer.skipScope();
         break;
     default:
-        logger()->warn("{}({}): parser unhandled token {}", QDir::toNativeSeparators(lexer.fileName()).toStdString(),
-                       lexer.line(), token->prettyPrint().toStdString());
+        spdlog::warn("{}({}): parser unhandled token {}", lexer.fileName().toStdString(), lexer.line(),
+                     token->prettyPrint().toStdString());
         lexer.skipLine();
         break;
     }
@@ -878,9 +874,8 @@ static void readDirective(Lexer &lexer, Data &data, const QString &directive)
             if (fullPath.value().endsWith(".h")) {
                 QHash<int, QString> resourceMap = loadResourceFile(include.fileName);
                 if (resourceMap.isEmpty()) {
-                    logger()->warn("{}({}): parser can't load resource file {}",
-                                   QDir::toNativeSeparators(lexer.fileName()).toStdString(), lexer.line(),
-                                   include.fileName.toStdString());
+                    spdlog::warn("{}({}): parser can't load resource file {}", lexer.fileName().toStdString(),
+                                 lexer.line(), include.fileName.toStdString());
                 } else {
                     data.resourceMap.insert(resourceMap);
                 }
@@ -921,17 +916,15 @@ Data parse(const QString &fileName)
             case Token::Operator_Comma:
             case Token::Operator_Or:
             case Token::String:
-                logger()->critical("{}({}): parser error on token {}",
-                                   QDir::toNativeSeparators(lexer.fileName()).toStdString(), lexer.line(),
-                                   token->prettyPrint().toStdString());
+                spdlog::error("{}({}): parser error on token {}", lexer.fileName().toStdString(), lexer.line(),
+                              token->prettyPrint().toStdString());
                 break;
             case Token::Integer:
             case Token::Word:
                 // We can only read one integer/id/word
                 if (previousToken) {
-                    logger()->critical("{}({}): parser error on token {}",
-                                       QDir::toNativeSeparators(lexer.fileName()).toStdString(), lexer.line(),
-                                       token->prettyPrint().toStdString());
+                    spdlog::error("{}({}): parser error on token {}", lexer.fileName().toStdString(), lexer.line(),
+                                  token->prettyPrint().toStdString());
                 }
                 previousToken = token;
                 break;
@@ -946,12 +939,10 @@ Data parse(const QString &fileName)
             }
         }
     } catch (...) {
-        logger()->critical("{}({}): parser general error", QDir::toNativeSeparators(lexer.fileName()).toStdString(),
-                           lexer.line());
+        spdlog::critical("{}({}): parser general error", lexer.fileName().toStdString(), lexer.line());
         return {};
     }
-    logger()->info("{} parsing done in: {} ms", QDir::toNativeSeparators(lexer.fileName()).toStdString(),
-                   static_cast<int>(time.elapsed()));
+    spdlog::trace("{} ms for parsing {}", static_cast<int>(time.elapsed()), lexer.fileName().toStdString());
     data.isValid = true;
     return data;
 }

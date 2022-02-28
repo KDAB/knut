@@ -10,6 +10,8 @@
 #include <QTextStream>
 #include <QTimer>
 
+#include <spdlog/spdlog.h>
+
 namespace Core {
 
 ScriptManager::ScriptManager(QObject *parent)
@@ -18,8 +20,6 @@ ScriptManager::ScriptManager(QObject *parent)
     , m_runner(new ScriptRunner(this))
 {
     m_instance = this;
-
-    m_logger = spdlog::get("script");
 
     connect(m_watcher, &QFileSystemWatcher::directoryChanged, this, &ScriptManager::updateScriptDirectory);
 }
@@ -67,11 +67,11 @@ QStringList ScriptManager::directories() const
 
 void ScriptManager::runScript(const QString &fileName, bool async, bool log)
 {
-    m_logger->info("==> Start script {}", fileName.toStdString());
+    spdlog::debug("==> Start script {}", fileName.toStdString());
     ScriptRunner::EndScriptFunc logEndScript;
     if (log)
-        logEndScript = [this, fileName]() {
-            m_logger->info("<== End script {}", fileName.toStdString());
+        logEndScript = [fileName]() {
+            spdlog::debug("<== End script {}", fileName.toStdString());
         };
 
     if (async)
@@ -157,11 +157,11 @@ void ScriptManager::doRunScript(const QString &fileName, std::function<void()> e
     if (m_runner->hasError()) {
         const auto errors = m_runner->errors();
         for (const auto &error : errors)
-            m_logger->error("{}({}): {}", QDir::toNativeSeparators(error.url().toLocalFile()).toStdString(),
-                            error.line(), error.description().toStdString());
+            spdlog::error("{}({}): {}", error.url().toLocalFile().toStdString(), error.line(),
+                          error.description().toStdString());
     } else {
         if (result.isValid())
-            m_logger->debug("Script result is {}", result.toString().toStdString());
+            spdlog::info("Script result is {}", result.toString().toStdString());
     }
     emit scriptFinished(result);
 }
