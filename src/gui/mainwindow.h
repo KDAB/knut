@@ -53,6 +53,9 @@ private:
 
     void createDock(QWidget *widget, Qt::DockWidgetArea area, QWidget *toolbar = nullptr);
 
+    // LSP
+    void followSymbol();
+
 private:
     std::unique_ptr<Ui::MainWindow> ui;
     QMenu *m_recentProjects = nullptr;

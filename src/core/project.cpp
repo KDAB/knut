@@ -269,7 +269,7 @@ Document *Project::get(QString fileName)
             m_documents.push_back(doc);
             Q_EMIT documentsChanged();
         } else {
-            spdlog::error("Project::open {} - unknow document type", fi.suffix().toStdString());
+            spdlog::error("Project::open {} - unknown document type", fi.suffix().toStdString());
             return nullptr;
         }
     }

@@ -110,9 +110,14 @@ bool Client::initialize(const QString &rootPath)
         semanticTokens.requests.full = true;
         semanticTokens.formats = {TokenFormat::Relative};
 
+        DeclarationClientCapabilities declaration;
+        declaration.dynamicRegistration = false;
+        declaration.linkSupport = true;
+
         TextDocumentClientCapabilities textDocument;
         textDocument.synchronization = synchronization;
         textDocument.documentSymbol = symbol;
+        textDocument.declaration = declaration;
         textDocument.semanticTokens = semanticTokens;
         request.params.capabilities.textDocument = textDocument;
     }
@@ -189,6 +194,20 @@ Client::documentSymbol(DocumentSymbolParams &&params, std::function<void(Documen
     }
 
     DocumentSymbolRequest request;
+    request.id = m_nextRequestId++;
+    request.params = std::move(params);
+    return sendRequest(m_backend, request, asyncCallback);
+}
+
+std::optional<DeclarationRequest::Result>
+Client::declaration(DeclarationParams &&params, std::function<void(DeclarationRequest::Result)> asyncCallback /* = {}*/)
+{
+    if (!canSendDeclaration()) {
+        spdlog::error("{} not supported by LSP server", DeclarationName);
+        return {};
+    }
+
+    DeclarationRequest request;
     request.id = m_nextRequestId++;
     request.params = std::move(params);
     return sendRequest(m_backend, request, asyncCallback);
@@ -281,4 +300,16 @@ bool Client::canSendDocumentSymbol() const
     return false;
 }
 
+bool Client::canSendDeclaration() const
+{
+    Q_ASSERT(m_state == Initialized);
+    // TODO handle dynamic capabilities
+    if (auto declarationProvider = m_serverCapabilities.declarationProvider) {
+        if (std::holds_alternative<DeclarationOptions>(declarationProvider.value())
+            || std::get<bool>(declarationProvider.value())) {
+            return true;
+        }
+    }
+    return false;
+}
 } // namespace Lsp

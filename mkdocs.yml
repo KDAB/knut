@@ -3,7 +3,7 @@ site_name: Knut v4.0
 theme:
   name: material
   palette:
-    - scheme: default
+    - scheme: kdab
       toggle:
         icon: material/toggle-switch-off-outline
         name: Switch to dark mode

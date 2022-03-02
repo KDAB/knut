@@ -1,6 +1,7 @@
 #pragma once
 
 #include "requests.h"
+#include "types.h"
 
 #include <QObject>
 
@@ -57,6 +58,15 @@ public:
     std::optional<DocumentSymbolRequest::Result>
     documentSymbol(DocumentSymbolParams &&params,
                    std::function<void(DocumentSymbolRequest::Result)> asyncCallback = {});
+    /**
+     * Sends the declaration request and returns the list of locations.
+     * If asyncCallback is not null, the request will be sent asynchronously and the callback called once the respone
+     * has arrive. Otherwise, the request is synchronous, and the result is returned. An empty optional means there was
+     * an error.
+     */
+    std::optional<DeclarationRequest::Result>
+    declaration(DeclarationParams &&params,
+            std::function<void(DeclarationRequest::Result)> asyncCallback = {});
 
     State state() const { return m_state; }
 
@@ -73,6 +83,7 @@ private:
     bool canSendWorkspaceFoldersChanges() const;
     bool canSendOpenCloseChanges() const;
     bool canSendDocumentSymbol() const;
+    bool canSendDeclaration() const;
 
 private:
     mutable int m_nextRequestId = 1;

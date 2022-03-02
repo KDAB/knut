@@ -42,7 +42,7 @@
      <x>0</x>
      <y>0</y>
      <width>1280</width>
-     <height>21</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -76,9 +76,19 @@
     </property>
     <addaction name="actionSwitch_Header_Source"/>
    </widget>
+   <widget class="QMenu" name="menu_LSP">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="title">
+     <string>&amp;LSP</string>
+    </property>
+    <addaction name="actionFollow_Symbol"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Rc"/>
    <addaction name="menuCpp"/>
+   <addaction name="menu_LSP"/>
   </widget>
   <action name="actionQuit">
    <property name="text">
@@ -168,6 +178,17 @@
    </property>
    <property name="shortcut">
     <string>F4</string>
+   </property>
+  </action>
+  <action name="actionFollow_Symbol">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Follow Symbol</string>
+   </property>
+   <property name="shortcut">
+    <string>F2</string>
    </property>
   </action>
  </widget>

@@ -12,6 +12,7 @@
 #include <QPlainTextEdit>
 #include <QRegularExpression>
 #include <QVariantMap>
+
 #include <spdlog/spdlog.h>
 
 #include <algorithm>

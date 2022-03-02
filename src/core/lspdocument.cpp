@@ -7,6 +7,8 @@
 #include "lsp/client.h"
 #include "lsp/types.h"
 
+#include "project.h"
+
 #include <QPlainTextEdit>
 #include <QTextBlock>
 #include <QTextDocument>
@@ -40,6 +42,11 @@ void LspDocument::setLspClient(Lsp::Client *client)
     m_lspClient = client;
 }
 
+bool LspDocument::hasLspClient() const
+{
+    return m_lspClient != nullptr;
+}
+
 /*!
  * \qmlmethod vector<Symbol> LspDocument::symbols()
  * Returns the list of symbols in the current document.
@@ -49,6 +56,92 @@ QVector<Core::Symbol> LspDocument::symbols() const
     LOG("LspDocument::symbols");
 
     return m_cache->symbols();
+}
+
+Document *LspDocument::followSymbol() const
+{
+    LOG("LspDocument::followSymbol");
+
+    if (!client()) {
+        spdlog::error("followSymbol: LspDocument is missing LSP client!");
+        return nullptr;
+    }
+
+    Q_ASSERT(textEdit());
+
+    auto cursor = textEdit()->textCursor();
+    // Set the cursor position to the beginning of any selected text.
+    // That way, calling followSymbol twice in a row causes Clangd
+    // to switch between delcaration and definition.
+    cursor.setPosition(cursor.selectionStart());
+    auto line = cursor.blockNumber();
+    auto character = cursor.positionInBlock();
+
+    Lsp::DeclarationParams params;
+    params.textDocument.uri = toUri();
+    params.position.line = line;
+    params.position.character = character;
+
+    // At least with clangd, the "declaration" LSP call acts like followSymbol, it will:
+    // - Go to the declaration, if the symbol under cursor is a use
+    // - Go to the declaration, if the symbol under cursor is a definition
+    // - Go to the definition, if the symbol under cursor is a declaration
+    auto result = client()->declaration(std::move(params));
+
+    if (!result.has_value()) {
+        spdlog::warn("followSymbol: Empty return value!");
+        return nullptr;
+    }
+
+    auto locations = std::vector<Lsp::Location>();
+
+    if (std::holds_alternative<Lsp::Location>(*result)) {
+        auto location = std::get<Lsp::Location>(*result);
+        locations.push_back(location);
+    } else if (std::holds_alternative<std::vector<Lsp::Location>>(*result)) {
+        locations = std::move(std::get<std::vector<Lsp::Location>>(*result));
+
+    } else if (std::holds_alternative<std::vector<Lsp::LocationLink>>(*result)) {
+        auto locationLinks = std::get<std::vector<Lsp::LocationLink>>(*result);
+
+        for (const auto &link : locationLinks) {
+            Lsp::Location location = {.uri = link.targetUri, .range = link.targetSelectionRange};
+            locations.push_back(location);
+        }
+    } else {
+        spdlog::warn("followSymbol: Unknown return type!");
+    }
+
+    if (locations.empty()) {
+        return nullptr;
+    }
+
+    if (locations.size() > 1) {
+        spdlog::warn("followSymbol: Multiple locations returned!");
+    }
+    // Heuristic: If multiple locations were found, use the last one.
+    auto location = locations.back();
+
+    QUrl url(QString::fromStdString(location.uri));
+
+    Q_ASSERT(url.isLocalFile());
+    auto filepath = url.toLocalFile();
+
+    auto *document = Project::instance()->open(filepath);
+
+    if (document) {
+        auto *lspDocument = dynamic_cast<LspDocument *>(document);
+        if (lspDocument) {
+            auto cursor = lspDocument->textEdit()->textCursor();
+
+            lspDocument->selectRange(lspDocument->toRange(location.range));
+        } else {
+            spdlog::warn("followSymbol: Opened document '{}' is not an LspDocument",
+                         document->fileName().toStdString());
+        }
+    }
+
+    return document;
 }
 
 /*!

@@ -1,4 +1,6 @@
 #include "mainwindow.h"
+#include "core/cppdocument.h"
+#include "core/lspdocument.h"
 #include "ui_mainwindow.h"
 
 #include "guisettings.h"
@@ -83,6 +85,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionShow_Palette, &QAction::triggered, this, &MainWindow::showPalette);
     connect(ui->actionClose_Document, &QAction::triggered, this, &MainWindow::closeDocument);
     connect(ui->actionSwitch_Header_Source, &QAction::triggered, this, &MainWindow::switchHeaderSource);
+
+    connect(ui->actionFollow_Symbol, &QAction::triggered, this, &MainWindow::followSymbol);
 
     m_recentProjects = new QMenu(this);
     ui->actionRecent_Projects->setMenu(m_recentProjects);
@@ -241,6 +245,15 @@ void MainWindow::createDock(QWidget *widget, Qt::DockWidgetArea area, QWidget *t
         }
     }
 }
+void MainWindow::followSymbol()
+{
+    auto *project = Core::Project::instance();
+    auto *document = dynamic_cast<Core::LspDocument *>(project->currentDocument());
+
+    if (document) {
+        document->followSymbol();
+    }
+}
 
 void MainWindow::saveDocument()
 {
@@ -358,7 +371,8 @@ static void updateTabTitle(QTabWidget *tabWidget, int index, bool hasChanged)
 void MainWindow::changeCurrentDocument()
 {
     auto project = Core::Project::instance();
-    const QString fileName = project->currentDocument()->fileName();
+    auto *document = project->currentDocument();
+    const QString fileName = document->fileName();
 
     // find index of the document, if any
     int windowIndex = -1;
@@ -387,6 +401,14 @@ void MainWindow::changeCurrentDocument()
 
     const QModelIndex &index = m_fileModel->index(fileName);
     m_projectView->setCurrentIndex(index);
+
+    // Enable/Disable the LSP menu
+    auto *lspDocument = dynamic_cast<Core::LspDocument *>(document);
+    auto hasLsp = lspDocument != nullptr && lspDocument->hasLspClient();
+    this->ui->menu_LSP->setEnabled(hasLsp);
+    for (auto &action : this->ui->menu_LSP->actions()) {
+        action->setEnabled(hasLsp);
+    }
 }
 
 } // namespace Gui

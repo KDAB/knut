@@ -695,10 +695,7 @@ void TextDocument::selectRegion(int from, int to)
 void TextDocument::selectRange(const TextRange &range)
 {
     LOG("TextDocument::selectRange", range);
-    QTextCursor cursor = m_document->textCursor();
-    cursor.setPosition(range.start, QTextCursor::MoveAnchor);
-    cursor.setPosition(range.end, QTextCursor::KeepAnchor);
-    m_document->setTextCursor(cursor);
+    selectRegion(range.start, range.end);
 }
 
 /*!

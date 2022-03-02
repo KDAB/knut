@@ -50,4 +50,6 @@ add_knut_test(tst_uidocument tst_uidocument.cpp knut-core)
 
 add_knut_test(tst_cppdocument tst_cppdocument.cpp knut-core)
 
+add_knut_test(tst_lspdocument tst_lspdocument.cpp knut-core)
+
 add_knut_test(tst_symbol tst_symbol.cpp knut-core)

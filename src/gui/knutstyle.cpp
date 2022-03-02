@@ -45,7 +45,7 @@ void KnutStyle::polish(QWidget *widget)
     if (isPanel(widget)) {
         widget->setSizePolicy(widget->sizePolicy().horizontalPolicy(), QSizePolicy::Preferred);
         if (auto toolButton = qobject_cast<QToolButton *>(widget))
-            widget->setAttribute(Qt::WA_Hover);
+            toolButton->setAttribute(Qt::WA_Hover);
     } else if (auto frame = qobject_cast<QFrame *>(widget)) {
         if (frame->frameShape() & QFrame::Panel)
             frame->setFrameShape(QFrame::NoFrame);
