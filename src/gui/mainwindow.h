@@ -50,6 +50,8 @@ private:
     void changeCurrentDocument();
     void saveAllDocuments();
 
+    void createDock(QWidget *widget, Qt::DockWidgetArea area, QWidget *toolbar = nullptr);
+
 private:
     std::unique_ptr<Ui::MainWindow> ui;
     QMenu *m_recentProjects = nullptr;

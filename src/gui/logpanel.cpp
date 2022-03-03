@@ -92,17 +92,20 @@ private:
 };
 using qt_sink_mt = qt_sink<std::mutex>;
 
-LogPanel::LogPanel()
-    : m_textEdit(new QPlainTextEdit)
+LogPanel::LogPanel(QWidget *parent)
+    : QPlainTextEdit(parent)
     , m_toolBar(new QWidget)
 {
+    setWindowTitle("Log Output");
+    setObjectName("LogPanel");
+
     auto logger = spdlog::default_logger();
-    logger->sinks().push_back(std::shared_ptr<spdlog::sinks::sink>(new qt_sink_mt(m_textEdit)));
+    logger->sinks().push_back(std::shared_ptr<spdlog::sinks::sink>(new qt_sink_mt(this)));
 
     // Setup text edit
-    new LogHighlighter(m_textEdit->document());
-    m_textEdit->setWordWrapMode(QTextOption::NoWrap);
-    GuiSettings::setupTextEdit(m_textEdit);
+    new LogHighlighter(document());
+    setWordWrapMode(QTextOption::NoWrap);
+    GuiSettings::setupTextEdit(this);
 
     // Setup titlebar
     auto layout = new QHBoxLayout(m_toolBar);
@@ -121,24 +124,14 @@ LogPanel::LogPanel()
     clearButton->setText("clear"); // TODO add an icon
     clearButton->setAutoRaise(true);
     layout->addWidget(clearButton);
-    QObject::connect(clearButton, &QToolButton::clicked, m_textEdit, &QPlainTextEdit::clear);
+    QObject::connect(clearButton, &QToolButton::clicked, this, &QPlainTextEdit::clear);
 }
 
 LogPanel::~LogPanel() = default;
 
-QWidget *LogPanel::widget() const
-{
-    return m_textEdit;
-}
-
 QWidget *LogPanel::toolBar() const
 {
     return m_toolBar;
-}
-
-QString LogPanel::title() const
-{
-    return "Log";
 }
 
 } // namespace Gui

@@ -1,24 +1,20 @@
 #pragma once
 
-#include "abstractpanel.h"
+#include <QPlainTextEdit>
 
-class QPlainTextEdit;
 class QToolButton;
 
 namespace Gui {
 
-class LogPanel : public AbstractPanel
+class LogPanel : public QPlainTextEdit
 {
 public:
-    explicit LogPanel();
+    explicit LogPanel(QWidget *parent = nullptr);
     ~LogPanel();
 
-    QWidget *widget() const override;
-    QWidget *toolBar() const override;
-    QString title() const override;
+    QWidget *toolBar() const;
 
 private:
-    QPlainTextEdit *const m_textEdit = nullptr;
     QWidget *const m_toolBar = nullptr;
 };
 

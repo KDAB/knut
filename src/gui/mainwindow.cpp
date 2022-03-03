@@ -6,7 +6,6 @@
 #include "logpanel.h"
 #include "optionsdialog.h"
 #include "palette.h"
-#include "paneldock.h"
 #include "rctoqrcdialog.h"
 #include "rctouidialog.h"
 #include "runscriptdialog.h"
@@ -27,8 +26,10 @@
 #include <QFileInfo>
 #include <QFileSystemModel>
 #include <QHeaderView>
+#include <QLabel>
 #include <QPlainTextEdit>
 #include <QSettings>
+#include <QToolButton>
 #include <QTreeView>
 
 namespace Gui {
@@ -38,19 +39,6 @@ constexpr char RecentProjectKey[] = "RecentProject";
 constexpr char GeometryKey[] = "MainWindow/Geometry";
 constexpr char WindowStateKey[] = "MainWindow/WindowState";
 
-static QDockWidget *createProjectViewDock(QTreeView *treeView, QWidget *parent)
-{
-    auto dock = new QDockWidget(parent);
-    dock->setAllowedAreas(Qt::LeftDockWidgetArea);
-    dock->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    dock->setTitleBarWidget(new QWidget); // don't show title bar
-    dock->setWidget(treeView);
-    dock->setWindowTitle("Project");
-    dock->setObjectName("ProjectPanel");
-    treeView->header()->hide();
-    return dock;
-}
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -58,6 +46,9 @@ MainWindow::MainWindow(QWidget *parent)
     , m_projectView(new QTreeView(this))
     , m_palette(new Palette(this))
 {
+    // Initialize the settings before anything
+    GuiSettings::instance();
+
     setAttribute(Qt::WA_DeleteOnClose);
 
     m_palette->hide();
@@ -66,10 +57,15 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle(QApplication::applicationName() + ' ' + QApplication::applicationVersion());
 
     setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
-    addDockWidget(Qt::LeftDockWidgetArea, createProjectViewDock(m_projectView, this));
-    auto panelDock = new PanelDock(this);
-    addDockWidget(Qt::BottomDockWidgetArea, panelDock);
-    panelDock->addPanel(make_panel<LogPanel>());
+    setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
+
+    m_projectView->header()->hide();
+    m_projectView->setWindowTitle("Project");
+    m_projectView->setObjectName("Project");
+    createDock(m_projectView, Qt::LeftDockWidgetArea);
+
+    auto logPanel = new LogPanel(this);
+    createDock(logPanel, Qt::BottomDockWidgetArea, logPanel->toolBar());
 
     connect(ui->actionQuit, &QAction::triggered, this, &MainWindow::close);
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openProject);
@@ -182,6 +178,40 @@ void MainWindow::openDocument(const QModelIndex &index)
 void MainWindow::saveAllDocuments()
 {
     Core::Project::instance()->saveAllDocuments();
+}
+
+void MainWindow::createDock(QWidget *widget, Qt::DockWidgetArea area, QWidget *toolbar)
+{
+    Q_ASSERT(!widget->windowTitle().isEmpty());
+    Q_ASSERT(!widget->objectName().isEmpty());
+
+    auto dock = new QDockWidget(this);
+    dock->setWidget(widget);
+    dock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
+    dock->setWindowTitle(widget->windowTitle());
+    dock->setObjectName(widget->objectName() + "Dock");
+
+    auto titleBar = new QWidget(dock);
+    auto layout = new QHBoxLayout(titleBar);
+    layout->setContentsMargins({5, 0, 0, 0});
+    layout->addWidget(new QLabel(widget->windowTitle()));
+    if (toolbar) {
+        layout->addSpacing(10);
+        auto separator = new QFrame(titleBar);
+        separator->setFrameShape(QFrame::VLine);
+        layout->addWidget(separator);
+        layout->addSpacing(10);
+        layout->addWidget(toolbar);
+    }
+    layout->addStretch(1);
+    auto closeButton = new QToolButton(toolbar);
+    closeButton->setIcon(style()->standardIcon(QStyle::SP_TitleBarCloseButton));
+    closeButton->setAutoRaise(true);
+    layout->addWidget(closeButton);
+    connect(closeButton, &QToolButton::clicked, dock, &QDockWidget::close);
+
+    dock->setTitleBarWidget(titleBar);
+    addDockWidget(area, dock);
 }
 
 void MainWindow::saveDocument()

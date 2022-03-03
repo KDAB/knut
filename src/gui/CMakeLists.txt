@@ -1,7 +1,6 @@
 project(knut-gui LANGUAGES CXX)
 
 set(PROJECT_SOURCES
-    abstractpanel.h
     fileselector.h
     fileselector.cpp
     guisettings.h
@@ -20,8 +19,6 @@ set(PROJECT_SOURCES
     optionsdialog.h
     optionsdialog.cpp
     optionsdialog.ui
-    paneldock.h
-    paneldock.cpp
     palette.h
     palette.cpp
     palette.ui

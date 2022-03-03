@@ -6,8 +6,6 @@ class QPlainTextEdit;
 
 namespace Gui {
 
-class KnutStyle;
-
 class GuiSettings
 {
 public:
@@ -50,7 +48,6 @@ private:
     QString m_fontFamily = "Courier New";
     int m_fontSize = 10;
     bool m_wordWrap = false;
-    KnutStyle *const m_proxyStyle = nullptr;
 };
 
 } // namespace Gui

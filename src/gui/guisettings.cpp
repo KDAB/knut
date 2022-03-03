@@ -26,7 +26,6 @@ constexpr const char WordWrapKey[] = "TextEditor/WordWrap";
 constexpr const char IsDocument[] = "isDoc";
 
 GuiSettings::GuiSettings()
-    : m_proxyStyle(new KnutStyle)
 {
     QSettings settings;
     m_style = static_cast<GuiSettings::Style>(settings.value(StyleKey, m_style).toInt());
@@ -155,24 +154,22 @@ void GuiSettings::updateStyle() const
     // Store the name of the default style... else there's no way to get it back
     static QString defaultStyle = qApp->style()->objectName();
 
-    qApp->setStyle(m_proxyStyle);
-
     switch (m_style) {
     case GuiSettings::DefaultStyle: {
         auto style = QStyleFactory::create(defaultStyle);
-        m_proxyStyle->setBaseStyle(style);
+        qApp->setStyle(style);
         qApp->setPalette(style->standardPalette());
         break;
     }
     case GuiSettings::FusionLight: {
-        auto style = QStyleFactory::create("Fusion");
-        m_proxyStyle->setBaseStyle(style);
+        auto style = new KnutStyle("Fusion");
+        qApp->setStyle(style);
         qApp->setPalette(style->standardPalette());
         break;
     }
     case GuiSettings::FusionDark: {
-        auto style = QStyleFactory::create("Fusion");
-        m_proxyStyle->setBaseStyle(style);
+        auto style = new KnutStyle("Fusion");
+        qApp->setStyle(style);
 
         const QColor darkGray(64, 66, 65);
         const QColor gray(128, 128, 128);
@@ -189,10 +186,6 @@ void GuiSettings::updateStyle() const
         darkPalette.setColor(QPalette::ToolTipText, text);
         darkPalette.setColor(QPalette::Text, text);
         darkPalette.setColor(QPalette::Button, darkGray);
-        darkPalette.setColor(QPalette::Dark, darkGray);
-        darkPalette.setColor(QPalette::Mid, darkGray);
-        darkPalette.setColor(QPalette::Light, gray.darker());
-        darkPalette.setColor(QPalette::Midlight, gray.darker());
         darkPalette.setColor(QPalette::ButtonText, text);
         darkPalette.setColor(QPalette::Link, blue);
         darkPalette.setColor(QPalette::Highlight, blue);
