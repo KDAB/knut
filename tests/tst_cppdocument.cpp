@@ -49,7 +49,7 @@ private slots:
         Core::KnutCore core;
         Core::Project::instance()->setRoot(Test::testDataPath() + "/cppdocument");
 
-        Test::FileTester file(Test::testDataPath() + "/cppdocument/test/forward_declaration_original.h");
+        Test::FileTester file(Test::testDataPath() + "/cppdocument/forward_declaration_original.h");
         Core::CppDocument headerFile;
         headerFile.load(file.fileName());
         QCOMPARE(headerFile.insertForwardDeclaration("class Foo"), true);
@@ -75,6 +75,37 @@ private slots:
         QCOMPARE(ddxMap.size(), 8);
         QCOMPARE(ddxMap.value("IDC_ECHO_AREA"), "m_EchoText");
         QCOMPARE(ddxMap.value("IDC_MOUSEECHO"), "m_MouseEcho");
+    }
+
+    void tstStartEndBlock()
+    {
+        Core::KnutCore core;
+        Core::Project::instance()->setRoot(Test::testDataPath() + "/cppdocument");
+
+        auto document = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open("testblock.cpp"));
+
+        // When cursor position is at the beginning of block
+        document->setPosition(0);
+        QCOMPARE(document->gotoBlockStart(), 0);
+        QCOMPARE(document->gotoBlockEnd(), 0);
+
+        // When cursor position is at the end of block
+        document->setPosition(419);
+        QCOMPARE(document->gotoBlockStart(), 53);
+        QCOMPARE(document->gotoBlockEnd(), 419);
+
+        // When cursor position is in between blocks
+        document->setPosition(57);
+        QCOMPARE(document->gotoBlockStart(), 53);
+        QCOMPARE(document->gotoBlockEnd(), 419);
+
+        document->setPosition(70);
+        QCOMPARE(document->gotoBlockStart(), 64);
+        QCOMPARE(document->gotoBlockEnd(), 115);
+
+        document->setPosition(330);
+        QCOMPARE(document->gotoBlockStart(), 311);
+        QCOMPARE(document->gotoBlockEnd(), 390);
     }
 };
 

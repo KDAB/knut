@@ -34,30 +34,34 @@ protected:
     void showEvent(QShowEvent *event) override;
 
 private:
+    // File
     void openProject();
-    void initProject(const QString &path);
-    void updateRecentProjects();
-    void openDocument(const QModelIndex &index);
     void saveDocument();
+    void saveAllDocuments();
     void closeDocument();
-    void createQrc();
-    void createUi();
     void runScript();
     void openOptions();
     void showPalette();
-    void updateActions();
     void returnToEditor();
 
-    void changeTab();
-    void changeCurrentDocument();
-    void saveAllDocuments();
-    void switchHeaderSource();
-
-    void createDock(QWidget *widget, Qt::DockWidgetArea area, QWidget *toolbar = nullptr);
-
-    // LSP
+    // C++
     void followSymbol();
     void switchDeclarationDefinition();
+    void switchHeaderSource();
+    void gotoBlockStart();
+    void gotoBlockEnd();
+
+    // Rc
+    void createQrc();
+    void createUi();
+
+    void updateActions();
+    void initProject(const QString &path);
+    void openDocument(const QModelIndex &index);
+    void updateRecentProjects();
+    void changeTab();
+    void changeCurrentDocument();
+    void createDock(QWidget *widget, Qt::DockWidgetArea area, QWidget *toolbar = nullptr);
 
 private:
     std::unique_ptr<Ui::MainWindow> ui;

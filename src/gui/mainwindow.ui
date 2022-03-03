@@ -92,6 +92,9 @@
     <addaction name="actionReplace"/>
     <addaction name="actionFind_Next"/>
     <addaction name="actionFind_Previous"/>
+    <addaction name="separator"/>
+    <addaction name="actionGoto_BlockStart"/>
+    <addaction name="actionGoto_BlockEnd"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menuEdit"/>
@@ -236,6 +239,22 @@
    </property>
    <property name="shortcut">
     <string>Shift+F3</string>
+   </property>
+  </action>
+  <action name="actionGoto_BlockStart">
+   <property name="text">
+    <string>Go to Block Start</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+[</string>
+   </property>
+  </action>
+  <action name="actionGoto_BlockEnd">
+   <property name="text">
+    <string>Go to Block End</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+]</string>
    </property>
   </action>
  </widget>

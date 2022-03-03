@@ -11,6 +11,7 @@
 #include <QHash>
 #include <QPlainTextEdit>
 #include <QRegularExpression>
+#include <QTextDocument>
 #include <QVariantMap>
 
 #include <spdlog/spdlog.h>
@@ -276,6 +277,93 @@ QVariantMap CppDocument::mfcExtractDDX(const QString &className)
         }
     }
     return map;
+}
+
+/*!
+ * \qmlmethod int CppDocument::gotoBlockStart()
+ * Move the cursor to the start of the block it's in, and returns the new cursor position.
+ * A block is definied by {} or () or [].
+ */
+int CppDocument::gotoBlockStart(int count)
+{
+    LOG_AND_MERGE("CppDocument::gotoBlockStart", count);
+
+    QTextCursor cursor = textEdit()->textCursor();
+    while (count != 0) {
+        cursor.setPosition(moveBlock(cursor.position(), QTextCursor::PreviousCharacter));
+        --count;
+    }
+    textEdit()->setTextCursor(cursor);
+    return cursor.position();
+}
+
+/*!
+ * \qmlmethod int CppDocument::gotoBlockEnd()
+ * Move the cursor to the end of the block it's in, and returns the new cursor position.
+ * A block is definied by {} or () or [].
+ */
+int CppDocument::gotoBlockEnd(int count)
+{
+    LOG_AND_MERGE("CppDocument::gotoBlockEnd", count);
+
+    QTextCursor cursor = textEdit()->textCursor();
+    while (count != 0) {
+        cursor.setPosition(moveBlock(cursor.position(), QTextCursor::NextCharacter));
+        --count;
+    }
+    textEdit()->setTextCursor(cursor);
+    return cursor.position();
+}
+
+/**
+ * \brief Internal method to move to the start or end of a block
+ * \param startPos current cursor position
+ * \param direction the iteration
+ * \return position of the start or end of the block
+ */
+int CppDocument::moveBlock(int startPos, QTextCursor::MoveOperation direction)
+{
+    Q_ASSERT(direction == QTextCursor::NextCharacter || direction == QTextCursor::PreviousCharacter);
+
+    QTextDocument *doc = textEdit()->document();
+    Q_ASSERT(doc);
+
+    const int inc = direction == QTextCursor::NextCharacter ? 1 : -1;
+    const int lastPos = direction == QTextCursor::NextCharacter ? textEdit()->document()->characterCount() - 1 : 0;
+    if (startPos == lastPos)
+        return startPos;
+    int pos = startPos + inc;
+    QChar currentChar = doc->characterAt(pos);
+
+    // Set teh characters delimiter that increment or decrement the counter when iterating
+    auto incCounterChar =
+        direction == QTextCursor::NextCharacter ? QVector<QChar> {'(', '{', '['} : QVector<QChar> {')', '}', ']'};
+    auto decCounterChar =
+        direction == QTextCursor::PreviousCharacter ? QVector<QChar> {'(', '{', '['} : QVector<QChar> {')', '}', ']'};
+
+    // If the character next is a sepcial one, go inside the block
+    if (incCounterChar.contains(currentChar))
+        pos += inc;
+
+    // Iterate to find the other side of the block
+    int counter = 0;
+    pos += inc;
+    while (pos != lastPos) {
+        currentChar = doc->characterAt(pos);
+
+        if (incCounterChar.contains(currentChar)) {
+            counter++;
+
+        } else if (decCounterChar.contains(currentChar)) {
+            counter--;
+
+            // When counter is negative, we have found the other side of the block
+            if (counter < 0)
+                return pos + std::max(inc, 0);
+        }
+        pos += inc;
+    }
+    return startPos;
 }
 
 } // namespace Core

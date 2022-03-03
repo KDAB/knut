@@ -89,6 +89,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionReplace, &QAction::triggered, ui->findWidget, &FindWidget::open);
     connect(ui->actionFind_Next, &QAction::triggered, ui->findWidget, &FindWidget::findNext);
     connect(ui->actionFind_Previous, &QAction::triggered, ui->findWidget, &FindWidget::findPrevious);
+    connect(ui->actionGoto_BlockEnd, &QAction::triggered, this, &MainWindow::gotoBlockEnd);
+    connect(ui->actionGoto_BlockStart, &QAction::triggered, this, &MainWindow::gotoBlockStart);
 
     connect(ui->actionSwitch_Header_Source, &QAction::triggered, this, &MainWindow::switchHeaderSource);
     connect(ui->actionFollow_Symbol, &QAction::triggered, this, &MainWindow::followSymbol);
@@ -124,10 +126,20 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::switchHeaderSource()
 {
-    auto currDoc = qobject_cast<Core::CppDocument *>(Core::Project::instance()->currentDocument());
-    if (currDoc != nullptr) {
-        currDoc->openHeaderSource();
-    }
+    if (auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->currentDocument()))
+        cppDocument->openHeaderSource();
+}
+
+void MainWindow::gotoBlockStart()
+{
+    if (auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->currentDocument()))
+        cppDocument->gotoBlockStart();
+}
+
+void MainWindow::gotoBlockEnd()
+{
+    if (auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->currentDocument()))
+        cppDocument->gotoBlockEnd();
 }
 
 MainWindow::~MainWindow() = default;
@@ -346,6 +358,8 @@ void MainWindow::updateActions()
     ui->actionReplace->setEnabled(textDocument != nullptr);
     ui->actionFind_Next->setEnabled(textDocument != nullptr);
     ui->actionFind_Previous->setEnabled(textDocument != nullptr);
+    ui->actionGoto_BlockEnd->setEnabled(textDocument != nullptr);
+    ui->actionGoto_BlockStart->setEnabled(textDocument != nullptr);
 
     auto *lspDocument = qobject_cast<Core::LspDocument *>(document);
     const bool lspEnabled = lspDocument && lspDocument->hasLspClient();

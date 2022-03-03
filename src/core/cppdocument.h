@@ -22,6 +22,12 @@ public slots:
     bool insertForwardDeclaration(const QString &fwddecl);
 
     QVariantMap mfcExtractDDX(const QString &className);
+
+    int gotoBlockStart(int count = 1);
+    int gotoBlockEnd(int count = 1);
+
+private:
+    int moveBlock(int startPos, QTextCursor::MoveOperation direction);
 };
 
 } // namespace Core
