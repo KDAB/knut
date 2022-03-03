@@ -1,5 +1,7 @@
 #include "guisettings.h"
 
+#include "knutstyle.h"
+
 #ifdef USE_SYNTAX_HIGHLIGHTING
 #include <definition.h>
 #include <repository.h>
@@ -24,6 +26,7 @@ constexpr const char WordWrapKey[] = "TextEditor/WordWrap";
 constexpr const char IsDocument[] = "isDoc";
 
 GuiSettings::GuiSettings()
+    : m_proxyStyle(new KnutStyle)
 {
     QSettings settings;
     m_style = static_cast<GuiSettings::Style>(settings.value(StyleKey, m_style).toInt());
@@ -152,21 +155,24 @@ void GuiSettings::updateStyle() const
     // Store the name of the default style... else there's no way to get it back
     static QString defaultStyle = qApp->style()->objectName();
 
+    qApp->setStyle(m_proxyStyle);
+
     switch (m_style) {
     case GuiSettings::DefaultStyle: {
         auto style = QStyleFactory::create(defaultStyle);
-        qApp->setStyle(style);
+        m_proxyStyle->setBaseStyle(style);
         qApp->setPalette(style->standardPalette());
         break;
     }
     case GuiSettings::FusionLight: {
         auto style = QStyleFactory::create("Fusion");
-        qApp->setStyle(style);
+        m_proxyStyle->setBaseStyle(style);
         qApp->setPalette(style->standardPalette());
         break;
     }
     case GuiSettings::FusionDark: {
-        qApp->setStyle(QStyleFactory::create("Fusion"));
+        auto style = QStyleFactory::create("Fusion");
+        m_proxyStyle->setBaseStyle(style);
 
         const QColor darkGray(64, 66, 65);
         const QColor gray(128, 128, 128);

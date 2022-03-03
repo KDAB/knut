@@ -6,7 +6,7 @@
 #include <memory>
 
 class QStackedWidget;
-class QButtonGroup;
+class QTabBar;
 
 namespace Gui {
 
@@ -25,7 +25,7 @@ private:
     std::vector<std::unique_ptr<AbstractPanel>> m_panels;
     QStackedWidget *const m_panelStack;
     QStackedWidget *const m_toolBarStack;
-    QButtonGroup *const m_panelButtonGroup;
+    QTabBar *const m_panelTab;
 };
 
 } // namespace Gui

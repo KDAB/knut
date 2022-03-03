@@ -10,6 +10,8 @@ set(PROJECT_SOURCES
     imageview.cpp
     knutmain.h
     knutmain.cpp
+    knutstyle.h
+    knutstyle.cpp
     logpanel.h
     logpanel.cpp
     mainwindow.h

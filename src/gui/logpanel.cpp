@@ -94,7 +94,7 @@ using qt_sink_mt = qt_sink<std::mutex>;
 
 LogPanel::LogPanel()
     : m_textEdit(new QPlainTextEdit)
-    , m_titleBar(new QWidget)
+    , m_toolBar(new QWidget)
 {
     auto logger = spdlog::default_logger();
     logger->sinks().push_back(std::shared_ptr<spdlog::sinks::sink>(new qt_sink_mt(m_textEdit)));
@@ -105,11 +105,11 @@ LogPanel::LogPanel()
     GuiSettings::setupTextEdit(m_textEdit);
 
     // Setup titlebar
-    auto layout = new QHBoxLayout(m_titleBar);
+    auto layout = new QHBoxLayout(m_toolBar);
     layout->setContentsMargins({});
     layout->addWidget(new QLabel("Level:"));
 
-    auto levelCombo = new QComboBox(m_titleBar);
+    auto levelCombo = new QComboBox(m_toolBar);
     levelCombo->addItems({"trace", "debug", "info", "warning", "error", "critical"});
     levelCombo->setCurrentIndex(logger->level());
     layout->addWidget(levelCombo);
@@ -117,7 +117,7 @@ LogPanel::LogPanel()
         logger->set_level(static_cast<spdlog::level::level_enum>(index));
     });
 
-    auto clearButton = new QToolButton(m_titleBar);
+    auto clearButton = new QToolButton(m_toolBar);
     clearButton->setText("clear"); // TODO add an icon
     clearButton->setAutoRaise(true);
     layout->addWidget(clearButton);
@@ -133,7 +133,7 @@ QWidget *LogPanel::widget() const
 
 QWidget *LogPanel::toolBar() const
 {
-    return m_titleBar;
+    return m_toolBar;
 }
 
 QString LogPanel::title() const

@@ -19,7 +19,7 @@ public:
 
 private:
     QPlainTextEdit *const m_textEdit = nullptr;
-    QWidget *const m_titleBar = nullptr;
+    QWidget *const m_toolBar = nullptr;
 };
 
 } // namespace Gui

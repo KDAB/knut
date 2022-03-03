@@ -2,10 +2,11 @@
 
 #include "abstractpanel.h"
 
-#include <QButtonGroup>
 #include <QHBoxLayout>
 #include <QStackedWidget>
+#include <QTabBar>
 #include <QToolButton>
+#include <QVariant>
 
 namespace Gui {
 
@@ -13,7 +14,7 @@ PanelDock::PanelDock(QWidget *parent)
     : QDockWidget(parent)
     , m_panelStack(new QStackedWidget(this))
     , m_toolBarStack(new QStackedWidget(this))
-    , m_panelButtonGroup(new QButtonGroup(this))
+    , m_panelTab(new QTabBar(this))
 {
     setAllowedAreas(Qt::BottomDockWidgetArea);
     setFeatures(QDockWidget::NoDockWidgetFeatures);
@@ -23,12 +24,15 @@ PanelDock::PanelDock(QWidget *parent)
     auto titleBar = new QWidget(this);
     auto layout = new QHBoxLayout(titleBar);
     layout->setContentsMargins({});
+    layout->addWidget(m_panelTab);
     layout->addStretch(1);
     layout->addWidget(m_toolBarStack);
+    m_toolBarStack->setProperty("panel", true);
+    m_panelTab->setDocumentMode(true);
     setTitleBarWidget(titleBar);
 
-    connect(m_panelButtonGroup, &QButtonGroup::idClicked, m_panelStack, &QStackedWidget::setCurrentIndex);
-    connect(m_panelButtonGroup, &QButtonGroup::idClicked, m_toolBarStack, &QStackedWidget::setCurrentIndex);
+    connect(m_panelTab, &QTabBar::currentChanged, m_panelStack, &QStackedWidget::setCurrentIndex);
+    connect(m_panelTab, &QTabBar::currentChanged, m_toolBarStack, &QStackedWidget::setCurrentIndex);
 }
 
 PanelDock::~PanelDock() = default;
@@ -37,16 +41,7 @@ void PanelDock::addPanel(std::unique_ptr<AbstractPanel> panel)
 {
     m_panelStack->addWidget(panel->widget());
     m_toolBarStack->addWidget(panel->toolBar());
-
-    auto panelButton = new QToolButton(this);
-    panelButton->setText(panel->title());
-    panelButton->setAutoRaise(true);
-    panelButton->setCheckable(true);
-    panelButton->setChecked(m_panels.empty());
-
-    const int id = static_cast<int>(m_panels.size());
-    m_panelButtonGroup->addButton(panelButton, id);
-    static_cast<QHBoxLayout *>(titleBarWidget()->layout())->insertWidget(id, panelButton);
+    m_panelTab->addTab(panel->title());
 
     m_panels.push_back(std::move(panel));
 }
