@@ -18,6 +18,7 @@
 #include "core/textdocument.h"
 #include "core/uidocument.h"
 #include "rcui/rcfileview.h"
+#include <core/cppdocument.h>
 
 #include <QApplication>
 #include <QDir>
@@ -77,6 +78,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionSaveAll, &QAction::triggered, this, &MainWindow::saveAllDocuments);
     connect(ui->actionShow_Palette, &QAction::triggered, this, &MainWindow::showPalette);
     connect(ui->actionClose_Document, &QAction::triggered, this, &MainWindow::closeDocument);
+    connect(ui->actionSwitch_Header_Source, &QAction::triggered, this, &MainWindow::switchHeaderSource);
 
     m_recentProjects = new QMenu(this);
     ui->actionRecent_Projects->setMenu(m_recentProjects);
@@ -96,6 +98,14 @@ MainWindow::MainWindow(QWidget *parent)
         initProject(path);
     if (project->currentDocument())
         changeCurrentDocument();
+}
+
+void MainWindow::switchHeaderSource()
+{
+    auto currDoc = qobject_cast<Core::CppDocument *>(Core::Project::instance()->currentDocument());
+    if (currDoc != nullptr) {
+        currDoc->openHeaderSource();
+    }
 }
 
 MainWindow::~MainWindow() = default;
@@ -284,6 +294,7 @@ void MainWindow::changeTab()
 
     ui->actionCreate_Qrc->setEnabled(document->type() == Core::Document::Type::Rc);
     ui->actionCreate_Ui->setEnabled(document->type() == Core::Document::Type::Rc);
+    ui->actionSwitch_Header_Source->setEnabled(document->type() == Core::Document::Type::Cpp);
 }
 
 static QWidget *widgetForDocument(Core::Document *document)

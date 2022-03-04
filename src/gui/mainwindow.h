@@ -49,6 +49,7 @@ private:
     void changeTab();
     void changeCurrentDocument();
     void saveAllDocuments();
+    void switchHeaderSource();
 
     void createDock(QWidget *widget, Qt::DockWidgetArea area, QWidget *toolbar = nullptr);
 

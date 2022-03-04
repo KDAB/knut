@@ -70,8 +70,15 @@
     <addaction name="actionCreate_Qrc"/>
     <addaction name="actionCreate_Ui"/>
    </widget>
+   <widget class="QMenu" name="menuCpp">
+    <property name="title">
+     <string>&amp;Cpp</string>
+    </property>
+    <addaction name="actionSwitch_Header_Source"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Rc"/>
+   <addaction name="menuCpp"/>
   </widget>
   <action name="actionQuit">
    <property name="text">
@@ -153,6 +160,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+W</string>
+   </property>
+  </action>
+  <action name="actionSwitch_Header_Source">
+   <property name="text">
+    <string>Switch Header/Source</string>
+   </property>
+   <property name="shortcut">
+    <string>F4</string>
    </property>
   </action>
  </widget>
