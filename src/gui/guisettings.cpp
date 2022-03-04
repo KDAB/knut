@@ -9,12 +9,18 @@
 #include <theme.h>
 #endif
 
+#include <QAction>
 #include <QApplication>
+#include <QPainter>
 #include <QPlainTextEdit>
 #include <QSettings>
 #include <QStyle>
 #include <QStyleFactory>
+#include <QToolButton>
 #include <QWidget>
+
+#include <algorithm>
+#include <functional>
 
 namespace Gui {
 
@@ -149,6 +155,12 @@ void GuiSettings::setupTextEdit(QPlainTextEdit *textEdit)
     instance()->updateTextEdit(textEdit);
 }
 
+void GuiSettings::setIcon(QObject *object, const QString &asset)
+{
+    GuiSettings::instance()->updateIcon(object, asset);
+    GuiSettings::instance()->m_iconInfos.push_back({object, asset});
+}
+
 void GuiSettings::updateStyle() const
 {
     // Store the name of the default style... else there's no way to get it back
@@ -204,6 +216,7 @@ void GuiSettings::updateStyle() const
     // Update the theme only if it's the default one, as it's palette based
     if (m_theme.isEmpty())
         updateTheme();
+    updateIcons();
 }
 
 void GuiSettings::updateTheme() const
@@ -243,6 +256,36 @@ void GuiSettings::updateTextEdit(QPlainTextEdit *textEdit) const
         textEdit->setTabStopDistance(4 * fm.horizontalAdvance(' '));
         textEdit->setLineWrapMode(m_wordWrap ? QPlainTextEdit::WidgetWidth : QPlainTextEdit::NoWrap);
     }
+}
+
+void GuiSettings::updateIcons() const
+{
+    for (const auto &info : m_iconInfos) {
+        if (info.object)
+            updateIcon(info.object, info.asset);
+    }
+}
+
+void GuiSettings::updateIcon(QObject *object, const QString &asset) const
+{
+    if (!object)
+        return;
+
+    QColor iconColor = qApp->palette().color(QPalette::Text);
+
+    QPixmap pix(asset);
+    if (iconColor != Qt::black) {
+        QPainter p;
+        p.begin(&pix);
+        p.setCompositionMode(QPainter::CompositionMode_SourceIn);
+        p.fillRect(0, 0, pix.width(), pix.height(), iconColor);
+        p.end();
+    }
+
+    if (auto button = qobject_cast<QAbstractButton *>(object))
+        button->setIcon(pix);
+    else if (auto action = qobject_cast<QAction *>(object))
+        action->setIcon(pix);
 }
 
 } // namespace Gui

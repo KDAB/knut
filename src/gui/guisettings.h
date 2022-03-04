@@ -1,8 +1,13 @@
 #pragma once
 
+#include <QPixmap>
+#include <QPointer>
 #include <QString>
 
+#include <vector>
+
 class QPlainTextEdit;
+class QObject;
 
 namespace Gui {
 
@@ -35,6 +40,8 @@ public:
     static void setupDocumentTextEdit(QPlainTextEdit *textEdit, const QString &fileName);
     static void setupTextEdit(QPlainTextEdit *textEdit);
 
+    static void setIcon(QObject *object, const QString &asset);
+
 private:
     GuiSettings();
 
@@ -42,12 +49,21 @@ private:
     void updateTheme() const;
     void updateTextEdits() const;
     void updateTextEdit(QPlainTextEdit *textEdit) const;
+    void updateIcons() const;
+    void updateIcon(QObject *object, const QString &asset) const;
 
     Style m_style = DefaultStyle;
     QString m_theme;
     QString m_fontFamily = "Courier New";
     int m_fontSize = 10;
     bool m_wordWrap = false;
+
+    struct IconInfo
+    {
+        QPointer<QObject> object;
+        QString asset;
+    };
+    std::vector<IconInfo> m_iconInfos;
 };
 
 } // namespace Gui

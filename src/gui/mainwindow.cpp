@@ -60,7 +60,7 @@ MainWindow::MainWindow(QWidget *parent)
     setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
     m_projectView->header()->hide();
-    m_projectView->setWindowTitle("Project");
+    m_projectView->setWindowTitle(tr("Project"));
     m_projectView->setObjectName("Project");
     createDock(m_projectView, Qt::LeftDockWidgetArea);
 
@@ -205,7 +205,8 @@ void MainWindow::createDock(QWidget *widget, Qt::DockWidgetArea area, QWidget *t
     }
     layout->addStretch(1);
     auto closeButton = new QToolButton(toolbar);
-    closeButton->setIcon(style()->standardIcon(QStyle::SP_TitleBarCloseButton));
+    GuiSettings::setIcon(closeButton, ":/gui/close.png");
+    closeButton->setToolTip(tr("Close"));
     closeButton->setAutoRaise(true);
     layout->addWidget(closeButton);
     connect(closeButton, &QToolButton::clicked, dock, &QDockWidget::close);

@@ -96,7 +96,7 @@ LogPanel::LogPanel(QWidget *parent)
     : QPlainTextEdit(parent)
     , m_toolBar(new QWidget)
 {
-    setWindowTitle("Log Output");
+    setWindowTitle(tr("Log Output"));
     setObjectName("LogPanel");
 
     auto logger = spdlog::default_logger();
@@ -121,7 +121,8 @@ LogPanel::LogPanel(QWidget *parent)
     });
 
     auto clearButton = new QToolButton(m_toolBar);
-    clearButton->setText("clear"); // TODO add an icon
+    GuiSettings::setIcon(clearButton, ":/gui/delete-sweep.png");
+    clearButton->setToolTip(tr("Clear"));
     clearButton->setAutoRaise(true);
     layout->addWidget(clearButton);
     QObject::connect(clearButton, &QToolButton::clicked, this, &QPlainTextEdit::clear);
