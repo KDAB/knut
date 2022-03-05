@@ -7,6 +7,7 @@ namespace Gui {
 class KnutStyle : public QProxyStyle
 {
     Q_OBJECT
+
 public:
     using QProxyStyle::QProxyStyle;
 
@@ -16,6 +17,12 @@ public:
 
     void drawPrimitive(PrimitiveElement element, const QStyleOption *option, QPainter *painter,
                        const QWidget *widget) const override;
+
+    void drawControl(ControlElement element, const QStyleOption *option, QPainter *painter,
+                     const QWidget *widget = nullptr) const override;
+
+    void drawComplexControl(ComplexControl control, const QStyleOptionComplex *option, QPainter *painter,
+                            const QWidget *widget = nullptr) const override;
 };
 
 } // namespace Gui

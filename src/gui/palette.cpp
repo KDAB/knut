@@ -221,7 +221,7 @@ public:
 //=============================================================================
 
 Palette::Palette(QWidget *parent)
-    : QWidget(parent, Qt::Popup)
+    : QFrame(parent, Qt::Popup)
     , ui(new Ui::Palette)
 {
     ui->setupUi(this);

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QAbstractItemModel>
-#include <QWidget>
+#include <QFrame>
 
 #include <functional>
 #include <memory>
@@ -15,7 +15,7 @@ namespace Ui {
     class Palette;
 }
 
-class Palette : public QWidget
+class Palette : public QFrame
 {
     Q_OBJECT
 

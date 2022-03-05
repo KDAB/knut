@@ -198,6 +198,10 @@ void GuiSettings::updateStyle() const
         darkPalette.setColor(QPalette::ToolTipText, text);
         darkPalette.setColor(QPalette::Text, text);
         darkPalette.setColor(QPalette::Button, darkGray);
+        darkPalette.setColor(QPalette::Light, gray.lighter());
+        darkPalette.setColor(QPalette::Midlight, gray);
+        darkPalette.setColor(QPalette::Mid, darkGray.lighter());
+        darkPalette.setColor(QPalette::Dark, darkGray);
         darkPalette.setColor(QPalette::ButtonText, text);
         darkPalette.setColor(QPalette::Link, blue);
         darkPalette.setColor(QPalette::Highlight, blue);
@@ -271,7 +275,7 @@ void GuiSettings::updateIcon(QObject *object, const QString &asset) const
     if (!object)
         return;
 
-    QColor iconColor = qApp->palette().color(QPalette::Text);
+    QColor iconColor = qApp->palette().windowText().color();
 
     QPixmap pix(asset);
     if (iconColor != Qt::black) {

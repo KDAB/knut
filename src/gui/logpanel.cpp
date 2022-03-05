@@ -110,15 +110,6 @@ LogPanel::LogPanel(QWidget *parent)
     // Setup titlebar
     auto layout = new QHBoxLayout(m_toolBar);
     layout->setContentsMargins({});
-    layout->addWidget(new QLabel("Level:"));
-
-    auto levelCombo = new QComboBox(m_toolBar);
-    levelCombo->addItems({"trace", "debug", "info", "warning", "error", "critical"});
-    levelCombo->setCurrentIndex(logger->level());
-    layout->addWidget(levelCombo);
-    QObject::connect(levelCombo, qOverload<int>(&QComboBox::currentIndexChanged), levelCombo, [logger](int index) {
-        logger->set_level(static_cast<spdlog::level::level_enum>(index));
-    });
 
     auto clearButton = new QToolButton(m_toolBar);
     GuiSettings::setIcon(clearButton, ":/gui/delete-sweep.png");
@@ -126,6 +117,15 @@ LogPanel::LogPanel(QWidget *parent)
     clearButton->setAutoRaise(true);
     layout->addWidget(clearButton);
     QObject::connect(clearButton, &QToolButton::clicked, this, &QPlainTextEdit::clear);
+
+    layout->addWidget(new QLabel(tr("Level:")));
+    auto levelCombo = new QComboBox(m_toolBar);
+    levelCombo->addItems({"trace", "debug", "info", "warning", "error", "critical"});
+    levelCombo->setCurrentIndex(logger->level());
+    layout->addWidget(levelCombo);
+    QObject::connect(levelCombo, qOverload<int>(&QComboBox::currentIndexChanged), levelCombo, [logger](int index) {
+        logger->set_level(static_cast<spdlog::level::level_enum>(index));
+    });
 }
 
 LogPanel::~LogPanel() = default;

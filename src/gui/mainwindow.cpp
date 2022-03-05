@@ -196,11 +196,10 @@ void MainWindow::createDock(QWidget *widget, Qt::DockWidgetArea area, QWidget *t
     layout->setContentsMargins({5, 0, 0, 0});
     layout->addWidget(new QLabel(widget->windowTitle()));
     if (toolbar) {
-        layout->addSpacing(10);
+        layout->addSpacing(5 * layout->spacing());
         auto separator = new QFrame(titleBar);
         separator->setFrameShape(QFrame::VLine);
         layout->addWidget(separator);
-        layout->addSpacing(10);
         layout->addWidget(toolbar);
     }
     layout->addStretch(1);
@@ -262,9 +261,8 @@ void MainWindow::openOptions()
 
 void MainWindow::showPalette()
 {
-    const QRect rect = centralWidget()->geometry();
-    const int x = (rect.width() - m_palette->width()) / 2;
-    const int y = rect.y();
+    const int x = (width() - m_palette->width()) / 2;
+    const int y = menuBar()->height() - 1;
 
     m_palette->move(mapToGlobal(QPoint {x, y}));
     m_palette->show();
