@@ -21,12 +21,11 @@ KnutCore::KnutCore(QObject *parent)
 #endif
 
     // Initialize some singletons
-    new Project(this);
     auto settings = new Settings(this);
-    new ScriptManager(this);
-
-    // Need to be done once ScriptManager exists
     settings->loadUserSettings();
+
+    new Project(this);
+    new ScriptManager(this);
 }
 
 void KnutCore::process(const QCoreApplication &app)

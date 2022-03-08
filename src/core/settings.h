@@ -1,7 +1,6 @@
 #pragma once
 
 #include "document.h"
-#include "json_utils.h"
 
 #include <QObject>
 #include <QStringList>
@@ -10,8 +9,6 @@
 
 #include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
-
-#include <optional>
 
 namespace Core {
 
@@ -32,14 +29,7 @@ class Settings : public QObject
     Q_OBJECT
 
 public:
-    //! Store settings relative to a LSP server
-    struct LspServer
-    {
-        Document::Type type;
-        QString program;
-        QStringList arguments;
-    };
-
+    static inline const char LspServers[] = "/lsp";
     static inline const char RcDialogFlags[] = "/rc/dialog_flags";
     static inline const char RcDialogScaleX[] = "/rc/dialog_scalex";
     static inline const char RcDialogScaleY[] = "/rc/dialog_scaley";
@@ -92,11 +82,12 @@ public:
 
     Q_INVOKABLE bool setValue(QString path, const QVariant &value);
 
-    QString userPath() const;
-    QString projectPath() const;
+    QString userFilePath() const;
+    QString projectFilePath() const;
 
 signals:
-    void projectSettingsSaved();
+    void settingsLoaded();
+    void settingsSaved();
 
 protected:
     Settings(QObject *parent = nullptr);
@@ -105,22 +96,19 @@ private:
     friend class KnutCore;
 
     void loadKnutSettings();
-    std::optional<nlohmann::json> loadSettings(const QString &name, bool log = true);
-    void saveSettings(const QString &name, const nlohmann::json &settings);
-    void addScriptPaths(const nlohmann::json &settings);
     void updateScriptPaths(const QString &path, bool add);
+    void saveSettings();
+    bool isUser() const;
 
 private:
     inline static Settings *m_instance = nullptr;
 
     nlohmann::json m_settings;
+    nlohmann::json m_userSettings;
     nlohmann::json m_projectSettings;
-    QString m_userPath;
     QString m_projectPath;
     QTimer *m_saveTimer = nullptr;
 };
-
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Settings::LspServer, type, program, arguments);
 
 } // namespace Core
 

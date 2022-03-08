@@ -61,6 +61,7 @@ private:
 
     void doRunScript(const QString &fileName, std::function<void()> endFunc = {});
 
+    void updateDirectories();
     void updateScriptDirectory(const QString &path);
 
 private:

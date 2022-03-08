@@ -25,9 +25,9 @@ SettingsWidget::SettingsWidget(QWidget *parent)
     connect(ui->addButton, &QPushButton::clicked, this, &SettingsWidget::addScriptPath);
     connect(ui->removeButton, &QPushButton::clicked, this, &SettingsWidget::removeScriptPath);
 
-    ui->userPath->setText(Core::Settings::instance()->userPath());
+    ui->userPath->setText(Core::Settings::instance()->userFilePath());
     ui->openUserButton->setDisabled(ui->userPath->text().isEmpty());
-    ui->projectPath->setText(Core::Settings::instance()->projectPath());
+    ui->projectPath->setText(Core::Settings::instance()->projectFilePath());
     ui->openProjectButton->setDisabled(ui->projectPath->text().isEmpty());
 
     connect(ui->scriptPathList, &QListWidget::itemSelectionChanged, this, [this]() {
@@ -54,14 +54,14 @@ void SettingsWidget::addScriptPath()
     const QString scriptPath = QFileDialog::getExistingDirectory(this, "Add Script Path", QDir::currentPath());
     if (scriptPath.isEmpty())
         return;
-    Core::Settings::instance()->addScriptPath(scriptPath);
+    Core::ScriptManager::instance()->addDirectory(scriptPath);
     updateScriptPaths();
 }
 
 void SettingsWidget::removeScriptPath()
 {
     const QString scriptPath = ui->scriptPathList->selectedItems().first()->text();
-    Core::Settings::instance()->removeScriptPath(scriptPath);
+    Core::ScriptManager::instance()->removeDirectory(scriptPath);
     updateScriptPaths();
 }
 

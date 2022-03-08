@@ -1,4 +1,5 @@
 #include "scriptmanager.h"
+#include "settings.h"
 
 #include "scriptrunner.h"
 
@@ -22,6 +23,8 @@ ScriptManager::ScriptManager(QObject *parent)
     m_instance = this;
 
     connect(m_watcher, &QFileSystemWatcher::directoryChanged, this, &ScriptManager::updateScriptDirectory);
+    connect(Settings::instance(), &Settings::settingsLoaded, this, &ScriptManager::updateDirectories);
+    updateDirectories();
 }
 
 ScriptManager::~ScriptManager()
@@ -42,22 +45,14 @@ const ScriptManager::ScriptList &ScriptManager::scriptList() const
 
 void ScriptManager::addDirectory(const QString &path)
 {
-    QFileInfo fi(path);
-    if (!fi.exists())
-        return;
-
-    // Check that the path does not already exist
-    if (m_directories.contains(fi.absoluteFilePath()))
-        return;
-
-    m_directories.append(fi.absoluteFilePath());
-    addScriptsFromPath(fi.absoluteFilePath());
+    addScriptsFromPath(path);
+    Settings::instance()->addScriptPath(path);
 }
 
 void ScriptManager::removeDirectory(const QString &path)
 {
-    m_directories.removeAll(path);
     removeScriptsFromPath(path);
+    Settings::instance()->removeScriptPath(path);
 }
 
 QStringList ScriptManager::directories() const
@@ -84,7 +79,6 @@ void ScriptManager::runScript(const QString &fileName, bool async, bool log)
 
 void ScriptManager::addScript(const QString &fileName)
 {
-
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly))
         return;
@@ -129,6 +123,16 @@ void ScriptManager::updateScriptDirectory(const QString &path)
 
 void ScriptManager::addScriptsFromPath(const QString &path)
 {
+    QFileInfo fi(path);
+    if (!fi.exists())
+        return;
+    Q_ASSERT(path == fi.absoluteFilePath());
+
+    // Check that the path does not already exist
+    if (m_directories.contains(path))
+        return;
+
+    m_directories.append(path);
     m_watcher->addPath(path);
 
     const QStringList files = scriptListFromDir(path);
@@ -138,6 +142,8 @@ void ScriptManager::addScriptsFromPath(const QString &path)
 
 void ScriptManager::removeScriptsFromPath(const QString &path)
 {
+    m_directories.removeAll(path);
+
     if (m_watcher->directories().contains(path))
         m_watcher->removePath(path);
 
@@ -164,6 +170,13 @@ void ScriptManager::doRunScript(const QString &fileName, std::function<void()> e
             spdlog::info("Script result is {}", result.toString().toStdString());
     }
     emit scriptFinished(result);
+}
+
+void ScriptManager::updateDirectories()
+{
+    const auto directories = Settings::instance()->value<QStringList>(Settings::ScriptPaths);
+    for (const auto &path : directories)
+        addScriptsFromPath(path);
 }
 
 } // namespace Core

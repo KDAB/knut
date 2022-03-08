@@ -1,3 +1,4 @@
+#include "core/project_p.h"
 #include "core/settings.h"
 
 #include "common/test_utils.h"
@@ -36,16 +37,16 @@ private slots:
         // Default values
         QCOMPARE(settings.hasValue("/lsp"), true);
         QCOMPARE(settings.hasValue("lsp"), true);
-        const auto lspServers = settings.value<std::vector<Core::Settings::LspServer>>("/lsp");
+        const auto lspServers = settings.value<std::vector<Core::LspServer>>("/lsp");
         QCOMPARE(lspServers.size(), 1);
         QCOMPARE(lspServers.front().program, "clangd");
         QCOMPARE(lspServers.front().arguments.size(), 0);
 
         // Load settings
         settings.loadProjectSettings(Test::testDataPath() + "/settings");
-        const auto newServers = settings.value<std::vector<Core::Settings::LspServer>>("/lsp");
+        const auto newServers = settings.value<std::vector<Core::LspServer>>("/lsp");
         QCOMPARE(settings.hasValue("/foobar/foo"), true);
-        Core::Settings::LspServer testData = {Core::Document::Type::Cpp, "notclangd", {"foo", "bar"}};
+        Core::LspServer testData = {Core::Document::Type::Cpp, "notclangd", {"foo", "bar"}};
         QCOMPARE(newServers.front().program, testData.program);
         QCOMPARE(newServers.front().arguments, testData.arguments);
     }
@@ -79,7 +80,7 @@ private slots:
         Test::FileTester file(Test::testDataPath() + "/settings/setValue/knut_original.json");
         Test::LogSilencer ls;
         SettingsFixture settings;
-        QSignalSpy settingsSaved(&settings, &Core::Settings::projectSettingsSaved);
+        QSignalSpy settingsSaved(&settings, &Core::Settings::settingsSaved);
 
         settings.loadProjectSettings(Test::testDataPath() + "/settings/setValue");
         QCOMPARE(settings.value("/rc/dialog_scalex").toDouble(), 1.5);

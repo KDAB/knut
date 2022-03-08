@@ -1,4 +1,5 @@
 #include "project.h"
+#include "project_p.h"
 
 #include "cppdocument.h"
 #include "imagedocument.h"
@@ -207,14 +208,13 @@ static Document *createDocument(const QString &suffix)
 
 Lsp::Client *Project::getClient(Document::Type type)
 {
-    static const char Lsp[] = "/lsp";
-    static auto lspServers = Settings::instance()->value<std::vector<Settings::LspServer>>(Lsp);
+    static auto lspServers = Settings::instance()->value<std::vector<LspServer>>(Settings::LspServers);
 
     auto cit = m_lspClients.find(type);
     if (cit != m_lspClients.end())
         return cit->second;
 
-    auto sit = std::find_if(lspServers.cbegin(), lspServers.cend(), [type](const Settings::LspServer &server) {
+    auto sit = std::find_if(lspServers.cbegin(), lspServers.cend(), [type](const LspServer &server) {
         return server.type == type;
     });
     if (sit == lspServers.cend())

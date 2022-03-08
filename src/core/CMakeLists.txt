@@ -26,6 +26,7 @@ set(PROJECT_SOURCES
     message.cpp
     project.h
     project.cpp
+    project_p.h
     qdirvaluetype.h
     qdirvaluetype.cpp
     qfileinfovaluetype.h
