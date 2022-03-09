@@ -11,6 +11,7 @@
 #include <QTextBlock>
 #include <QTextDocument>
 #include <QTextStream>
+#include <private/qwidgettextcontrol_p.h>
 
 #include <spdlog/spdlog.h>
 
@@ -174,8 +175,11 @@ bool TextDocument::eventFilter(QObject *watched, QEvent *event)
             deleteStartOfWord();
         else if (keyEvent == QKeySequence::DeleteEndOfLine)
             deleteEndOfLine();
-        else if (!keyEvent->text().isEmpty())
-            insert(keyEvent->text());
+        else if (!keyEvent->text().isEmpty()) {
+            auto control = m_document->findChild<QWidgetTextControl *>();
+            if (control->isAcceptableInput(keyEvent))
+                insert(keyEvent->text());
+        }
 
         return true;
     }
