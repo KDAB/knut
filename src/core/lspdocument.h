@@ -22,9 +22,8 @@ public:
 
     void setLspClient(Lsp::Client *client);
 
-public slots:
-    Core::Symbol findSymbol(const QString &name, int options = NoFindFlags);
-    QVector<Core::Symbol> symbols() const;
+    Q_INVOKABLE Core::Symbol findSymbol(const QString &name, int options = NoFindFlags) const;
+    Q_INVOKABLE QVector<Core::Symbol> symbols() const;
 
 protected:
     explicit LspDocument(Type type, QObject *parent = nullptr);

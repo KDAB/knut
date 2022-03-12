@@ -65,7 +65,6 @@ public:
 
     Q_INVOKABLE QChar separator() const;
 
-    bool setCurrentPath(const QString &path);
     Q_INVOKABLE inline Core::QDirValueType current() const { return QDirValueType(currentPath()); }
     QString currentPath() const;
 
@@ -79,18 +78,21 @@ public:
     Q_INVOKABLE inline Core::QDirValueType temp() const { return QDirValueType(tempPath()); }
     QString tempPath() const;
 
-    Q_INVOKABLE QString toNativeSeparators(const QString &pathName) const;
-    Q_INVOKABLE QString fromNativeSeparators(const QString &pathName) const;
+public slots:
+    bool setCurrentPath(const QString &path);
 
-    Q_INVOKABLE bool isRelativePath(const QString &path) const;
-    Q_INVOKABLE bool isAbsolutePath(const QString &path) const { return !isRelativePath(path); }
+    static QString toNativeSeparators(const QString &pathName);
+    static QString fromNativeSeparators(const QString &pathName);
 
-    Q_INVOKABLE bool match(const QStringList &filters, const QString &fileName) const;
-    Q_INVOKABLE bool match(const QString &filter, const QString &fileName) const;
+    static bool isRelativePath(const QString &path);
+    static bool isAbsolutePath(const QString &path) { return !isRelativePath(path); }
 
-    Q_INVOKABLE QString cleanPath(const QString &path) const;
+    static bool match(const QStringList &filters, const QString &fileName);
+    static bool match(const QString &filter, const QString &fileName);
 
-    Q_INVOKABLE Core::QDirValueType create(const QString &path) const;
+    static QString cleanPath(const QString &path);
+
+    static Core::QDirValueType create(const QString &path);
 
 signals:
     void currentPathChanged(const QString &path);

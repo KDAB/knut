@@ -12,14 +12,15 @@ public:
     explicit File(QObject *parent = nullptr);
     ~File() override;
 
-    Q_INVOKABLE bool copy(const QString &fileName, const QString &newName);
-    Q_INVOKABLE bool exists(const QString &fileName);
-    Q_INVOKABLE bool remove(const QString &fileName);
-    Q_INVOKABLE bool rename(const QString &oldName, const QString &newName);
+public slots:
+    static bool copy(const QString &fileName, const QString &newName);
+    static bool exists(const QString &fileName);
+    static bool remove(const QString &fileName);
+    static bool rename(const QString &oldName, const QString &newName);
 
-    Q_INVOKABLE bool touch(const QString &fileName);
+    static bool touch(const QString &fileName);
 
-    Q_INVOKABLE QString readAll(const QString &fileName);
+    static QString readAll(const QString &fileName);
 };
 
 } // namespace Core

@@ -59,7 +59,7 @@ QVector<Core::Symbol> LspDocument::symbols() const
  * - `TextDocument.FindWholeWords`: match only fully qualified symbol
  * - `TextDocument.FindRegexp`: use a regexp
  */
-Symbol LspDocument::findSymbol(const QString &name, int options)
+Symbol LspDocument::findSymbol(const QString &name, int options) const
 {
     LOG("LspDocument::findSymbol", name, options);
 

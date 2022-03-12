@@ -19,12 +19,14 @@ public:
     UiWidget(pugi::xml_node widget, bool isRoot = false, QObject *parent = nullptr);
 
     QString name() const;
-    void setName(const QString &newName);
 
     QString className() const;
-    void setClassName(const QString &newClassName);
 
     bool isRoot() const { return m_isRoot; }
+
+public slots:
+    void setName(const QString &newName);
+    void setClassName(const QString &newClassName);
 
 private:
     friend UiDocument;

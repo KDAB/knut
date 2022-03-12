@@ -5,6 +5,7 @@
 #include "dir.h"
 #include "file.h"
 #include "fileinfo.h"
+#include "mark.h"
 #include "message.h"
 #include "project.h"
 #include "rcdocument.h"
@@ -69,6 +70,7 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qmlRegisterType<ScriptDialogItem>("Script", 1, 0, "ScriptDialog");
     qmlRegisterType<ScriptItem>("Script", 1, 0, "Script");
     qmlRegisterType<TextDocument>("Script", 1, 0, "TextDocument");
+    qmlRegisterUncreatableType<Mark>("Script", 1, 0, "Mark", "Only created by TextDocument");
     qmlRegisterType<UiDocument>("Script", 1, 0, "UiDocument");
     qmlRegisterUncreatableType<UiWidget>("Script", 1, 0, "UiWidget", "Only created by UiDocument");
     qmlRegisterType<CppDocument>("Script", 1, 0, "CppDocument");

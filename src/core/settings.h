@@ -80,10 +80,11 @@ public:
     Q_INVOKABLE bool hasValue(QString path) const;
     Q_INVOKABLE QVariant value(QString path, const QVariant &defaultValue = {}) const;
 
-    Q_INVOKABLE bool setValue(QString path, const QVariant &value);
-
     QString userFilePath() const;
     QString projectFilePath() const;
+
+public slots:
+    bool setValue(QString path, const QVariant &value);
 
 signals:
     void settingsLoaded();

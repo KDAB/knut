@@ -14,9 +14,10 @@ public:
     explicit FileInfo(QObject *parent = nullptr);
     ~FileInfo() override;
 
-    Q_INVOKABLE bool exists(const QString &file);
+public slots:
+    static bool exists(const QString &file);
 
-    Q_INVOKABLE Core::QFileInfoValueType create(const QString &file);
+    static Core::QFileInfoValueType create(const QString &file);
 };
 
 } // namespace Core

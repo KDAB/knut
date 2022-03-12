@@ -1063,6 +1063,7 @@ int TextDocument::replaceAllRegexp(const QString &regexp, const QString &after, 
 
 void TextDocument::setLineEnding(LineEnding newLineEnding)
 {
+    LOG("TextDocument::setLineEnding", newLineEnding);
     if (m_lineEnding == newLineEnding)
         return;
     setHasChanged(true);

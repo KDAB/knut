@@ -61,24 +61,25 @@ public:
     int lineCount() const;
 
     int position() const;
-    void setPosition(int newPosition);
     void convertPosition(int pos, int *line, int *column) const;
 
     QString text() const;
-    void setText(const QString &newText);
     QString currentLine() const;
     QString currentWord() const;
 
     QString selectedText() const;
 
     LineEnding lineEnding() const;
-    void setLineEnding(LineEnding newLineEnding);
 
     bool hasUtf8Bom() const;
 
     QPlainTextEdit *textEdit() const;
 
 public slots:
+    void setPosition(int newPosition);
+    void setText(const QString &newText);
+    void setLineEnding(Core::TextDocument::LineEnding newLineEnding);
+
     void undo();
     void redo();
 
@@ -170,8 +171,6 @@ protected:
                       int count = 1);
 
 private:
-    friend Mark;
-
     // TODO: use a QTextDocument maybe, to avoid creating a widget
     // The QPlainTextEdit has a nicer API, so it's slightly easier with that now
     QPointer<QPlainTextEdit> m_document;

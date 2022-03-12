@@ -1,5 +1,7 @@
 #include "dir.h"
 
+#include "logger.h"
+
 #include <QVariant>
 
 namespace Core {
@@ -45,24 +47,27 @@ Dir::~Dir() { }
 /*!
  * \qmlmethod string Dir::toNativeSeparators( string pathName)
  */
-QString Dir::toNativeSeparators(const QString &pathName) const
+QString Dir::toNativeSeparators(const QString &pathName)
 {
+    LOG("Dir::toNativeSeparators", pathName);
     return QDir::toNativeSeparators(pathName);
 }
 
 /*!
  * \qmlmethod string Dir::fromNativeSeparators( string pathName)
  */
-QString Dir::fromNativeSeparators(const QString &pathName) const
+QString Dir::fromNativeSeparators(const QString &pathName)
 {
+    LOG("Dir::fromNativeSeparators", pathName);
     return QDir::fromNativeSeparators(pathName);
 }
 
 /*!
  * \qmlmethod bool Dir::isRelativePath( string path)
  */
-bool Dir::isRelativePath(const QString &path) const
+bool Dir::isRelativePath(const QString &path)
 {
+    LOG("Dir::isRelativePath", path);
     return QDir::isRelativePath(path);
 }
 
@@ -73,6 +78,7 @@ QChar Dir::separator() const
 
 bool Dir::setCurrentPath(const QString &path)
 {
+    LOG("Dir::setCurrentPath", path);
     if (path != QDir::currentPath()) {
         if (QDir::setCurrent(path)) {
             emit currentPathChanged(path);
@@ -126,29 +132,33 @@ QString Dir::tempPath() const
  * \qmlmethod bool Dir::match( array<string> filters, string fileName)
  * \qmlmethod bool Dir::match( string filter, string fileName)
  */
-bool Dir::match(const QStringList &filters, const QString &fileName) const
+bool Dir::match(const QStringList &filters, const QString &fileName)
 {
+    LOG("Dir::match", filters, fileName);
     return QDir::match(filters, fileName);
 }
 
-bool Dir::match(const QString &filter, const QString &fileName) const
+bool Dir::match(const QString &filter, const QString &fileName)
 {
+    LOG("Dir::match", filter, fileName);
     return QDir::match(filter, fileName);
 }
 
 /*!
  * \qmlmethod string Dir::cleanPath( string path)
  */
-QString Dir::cleanPath(const QString &path) const
+QString Dir::cleanPath(const QString &path)
 {
+    LOG("Dir::cleanPath", path);
     return QDir::cleanPath(path);
 }
 
 /*!
  * \qmlmethod QDirValueType Dir::create( string path)
  */
-QDirValueType Dir::create(const QString &path) const
+QDirValueType Dir::create(const QString &path)
 {
+    LOG("Dir::create", path);
     return QDirValueType(path);
 }
 

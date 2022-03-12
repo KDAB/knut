@@ -41,7 +41,7 @@ Mark::Mark(TextDocument *editor, int pos)
     , m_pos(pos)
 {
     Q_ASSERT(editor);
-    auto document = editor->m_document->document();
+    auto document = editor->textEdit()->document();
     connect(document, &QTextDocument::contentsChange, this, &Mark::update);
 }
 
@@ -100,13 +100,11 @@ void Mark::update(int from, int charsRemoved, int charsAdded)
     if (m_pos <= from)
         return;
 
-    const int delta = charsAdded - charsRemoved;
-
     // Overlap the position
     if (m_pos <= from + charsRemoved)
         m_pos = from;
     else
-        m_pos += delta;
+        m_pos += charsAdded - charsRemoved;
 }
 
 } // namespace Core
