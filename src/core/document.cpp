@@ -1,5 +1,7 @@
 #include "document.h"
 
+#include "logger.h"
+
 #include <QFile>
 #include <QUrl>
 
@@ -62,6 +64,7 @@ const QString &Document::fileName() const
 
 void Document::setFileName(const QString &newFileName)
 {
+    LOG("Document::setFileName", newFileName);
     if (m_fileName == newFileName)
         return;
     load(newFileName);
@@ -107,7 +110,7 @@ int Document::revision() const
  */
 bool Document::load(const QString &fileName)
 {
-    spdlog::trace("Document::load {}", fileName.toStdString());
+    LOG("Document::load", fileName);
     if (fileName.isEmpty()) {
         spdlog::warn("Document::load - fileName is empty");
         return false;
@@ -128,7 +131,7 @@ bool Document::load(const QString &fileName)
  */
 bool Document::save()
 {
-    spdlog::trace("Document::save {}", m_fileName.toStdString());
+    LOG("Document::save");
     if (m_fileName.isEmpty()) {
         spdlog::error("Document::save - fileName is empty");
         return false;
@@ -146,7 +149,7 @@ bool Document::save()
  */
 bool Document::saveAs(const QString &fileName)
 {
-    spdlog::trace("Document::saveAs {} as {}", m_fileName.toStdString(), fileName.toStdString());
+    LOG("Document::saveAs", fileName);
     if (fileName.isEmpty()) {
         spdlog::error("Document::saveAs - fileName is empty");
         return false;
@@ -167,9 +170,14 @@ bool Document::saveAs(const QString &fileName)
     return saveDone;
 }
 
+/*!
+ * \qmlmethod bool Document::close()
+ * Close the current document. If the current document has some changes, save them
+ * automatically.
+ */
 void Document::close()
 {
-    spdlog::trace("Document::close {}", m_fileName.toStdString());
+    LOG("Document::close");
     if (m_fileName.isEmpty())
         return;
     if (m_hasChanged)

@@ -20,6 +20,8 @@ set(PROJECT_SOURCES
     imagedocument.cpp
     knutcore.h
     knutcore.cpp
+    logger.h
+    logger.cpp
     lspdocument.h
     lspdocument.cpp
     mark.h

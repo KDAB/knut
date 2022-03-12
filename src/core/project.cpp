@@ -3,6 +3,7 @@
 
 #include "cppdocument.h"
 #include "imagedocument.h"
+#include "logger.h"
 #include "rcdocument.h"
 #include "settings.h"
 #include "textdocument.h"
@@ -77,6 +78,7 @@ const QString &Project::root() const
 
 bool Project::setRoot(const QString &newRoot)
 {
+    LOG("Project::setRoot", newRoot);
     QDir dir(newRoot);
     if (m_root == dir.absolutePath())
         return true;
@@ -110,7 +112,7 @@ QStringList Project::allFiles(PathType type) const
     if (m_root.isEmpty())
         return {};
 
-    spdlog::trace("Project::allFiles");
+    LOG("Project::allFiles", type);
 
     QDir dir(m_root);
     QDirIterator it(m_root, QDirIterator::Subdirectories);
@@ -138,7 +140,7 @@ QStringList Project::allFilesWithExtension(const QString &extension, PathType ty
     if (m_root.isEmpty())
         return {};
 
-    spdlog::trace("Project::allFilesWithExtension {}", extension.toStdString());
+    LOG("Project::allFilesWithExtension", extension, type);
 
     QDir dir(m_root);
     QDirIterator it(m_root, QDirIterator::Subdirectories);
@@ -166,7 +168,7 @@ QStringList Project::allFilesWithExtensions(const QStringList &extensions, PathT
     if (m_root.isEmpty())
         return {};
 
-    spdlog::trace("Project::allFilesWithExtensions {}", extensions.join('|').toStdString());
+    LOG("Project::allFilesWithExtensions", extensions, type);
 
     QDir dir(m_root);
     QDirIterator it(m_root, QDirIterator::Subdirectories);
@@ -241,7 +243,7 @@ const QVector<Document *> &Project::documents() const
  */
 Document *Project::get(QString fileName)
 {
-    spdlog::trace("Project::get {}", fileName.toStdString());
+    LOG("Project::get", fileName);
 
     QFileInfo fi(fileName);
     if (!fi.exists() && fi.isRelative())
@@ -282,10 +284,10 @@ Document *Project::get(QString fileName)
  */
 Document *Project::open(QString fileName)
 {
-    spdlog::trace("Project::open {}", fileName.toStdString());
-
     if (m_current && m_current->fileName() == fileName)
         return m_current;
+
+    LOG("Project::open", fileName);
 
     m_current = get(fileName);
     emit currentDocumentChanged();
@@ -299,6 +301,7 @@ Document *Project::open(QString fileName)
  */
 void Project::closeAll()
 {
+    LOG("Project::closeAll");
     for (auto d : std::as_const(m_documents))
         d->close();
 }
@@ -314,7 +317,7 @@ Core::Document *Project::currentDocument() const
  */
 void Project::saveAllDocuments()
 {
-    spdlog::trace("Project::saveAllDocuments");
+    LOG("Project::saveAllDocuments");
 
     for (auto d : std::as_const(m_documents)) {
         if (d->hasChanged()) {

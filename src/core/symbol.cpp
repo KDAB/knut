@@ -1,5 +1,7 @@
 #include "symbol.h"
 
+#include "logger.h"
+
 #include <spdlog/spdlog.h>
 
 namespace Core {
@@ -78,7 +80,7 @@ namespace Core {
 
 CppFunction Symbol::toFunction()
 {
-    spdlog::trace("Symbol::toFunction {}", name.toStdString());
+    LOG("Symbol::toFunction");
 
     if ((kind == Method) || (kind == Function)) {
         QString desc = this->description;

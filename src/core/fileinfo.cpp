@@ -1,5 +1,7 @@
 #include "fileinfo.h"
 
+#include "logger.h"
+
 #include <QFileInfo>
 
 namespace Core {
@@ -27,6 +29,7 @@ FileInfo::~FileInfo() { }
  */
 bool FileInfo::exists(const QString &file)
 {
+    LOG("FileInfo::exists", file);
     return QFileInfo::exists(file);
 }
 
@@ -35,6 +38,7 @@ bool FileInfo::exists(const QString &file)
  */
 QFileInfoValueType FileInfo::create(const QString &file)
 {
+    LOG("FileInfo::create", file);
     return QFileInfoValueType(file);
 }
 

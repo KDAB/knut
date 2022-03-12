@@ -1,5 +1,6 @@
 #include "settings.h"
 
+#include "logger.h"
 #include "rcdocument.h"
 #include "scriptmanager.h"
 
@@ -19,7 +20,7 @@ static std::optional<nlohmann::json> loadSettings(const QString &name, bool log 
         try {
             auto settings = nlohmann::json::parse(file.readAll().constData());
             if (log)
-                spdlog::trace("Settings::loadSettings {}", name.toStdString());
+                spdlog::debug("Settings::loadSettings {}", name.toStdString());
             return settings;
         } catch (...) {
             if (log)
@@ -103,7 +104,7 @@ void Settings::loadProjectSettings(const QString &rootDir)
  */
 bool Settings::hasValue(QString path) const
 {
-    spdlog::trace("Settings::hasValue {}", path.toStdString());
+    LOG("Settings::hasValue", path);
 
     if (!path.startsWith('/'))
         path.prepend('/');
@@ -116,9 +117,11 @@ bool Settings::hasValue(QString path) const
  */
 QVariant Settings::value(QString path, const QVariant &defaultValue) const
 {
+    if (defaultValue.isValid())
+        LOG("Settings::value", path, defaultValue);
+    else
+        LOG("Settings::value", path);
     try {
-        spdlog::trace("Settings::value {}", path.toStdString());
-
         if (!path.startsWith('/'))
             path.prepend('/');
 
@@ -160,7 +163,7 @@ QVariant Settings::value(QString path, const QVariant &defaultValue) const
  */
 bool Settings::setValue(QString path, const QVariant &value)
 {
-    spdlog::trace("Settings::setValue {} in {}", value.toString().toStdString(), path.toStdString());
+    LOG("Settings::setValue", path, value);
 
     if (value.isNull()) {
         spdlog::error("Settings::setValue {} in {} - value is null", value.toString().toStdString(),

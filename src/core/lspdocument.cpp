@@ -1,5 +1,6 @@
 #include "lspdocument.h"
 
+#include "logger.h"
 #include "private/lspcache.h"
 #include "string_utils.h"
 
@@ -45,7 +46,7 @@ void LspDocument::setLspClient(Lsp::Client *client)
  */
 QVector<Core::Symbol> LspDocument::symbols() const
 {
-    spdlog::trace("LspDocument::symbols");
+    LOG("LspDocument::symbols");
 
     return m_cache->symbols();
 }
@@ -60,7 +61,7 @@ QVector<Core::Symbol> LspDocument::symbols() const
  */
 Symbol LspDocument::findSymbol(const QString &name, int options)
 {
-    spdlog::trace("LspDocument::findSymbol {}", name.toStdString());
+    LOG("LspDocument::findSymbol", name, options);
 
     const auto &symbols = m_cache->symbols();
     const auto regexp = (options & FindRegexp) ? createRegularExpression(name, options) : QRegularExpression {};

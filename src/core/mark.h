@@ -30,8 +30,6 @@ public slots:
 
 private:
     bool checkEditor() const;
-
-private slots:
     void update(int from, int charsRemoved, int charsAdded);
 
 private:

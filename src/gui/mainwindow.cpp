@@ -112,8 +112,6 @@ MainWindow::~MainWindow() = default;
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    Core::Project::instance()->closeAll();
-
     QSettings settings;
     settings.setValue(GeometryKey, saveGeometry());
     settings.setValue(WindowStateKey, saveState());

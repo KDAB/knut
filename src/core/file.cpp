@@ -1,5 +1,7 @@
 #include "file.h"
 
+#include "logger.h"
+
 #include <QFile>
 #include <QTextStream>
 
@@ -28,6 +30,7 @@ File::~File() { }
  */
 bool File::copy(const QString &fileName, const QString &newName)
 {
+    LOG("File::copy", fileName, newName);
     return QFile::copy(fileName, newName);
 }
 
@@ -36,6 +39,7 @@ bool File::copy(const QString &fileName, const QString &newName)
  */
 bool File::exists(const QString &fileName)
 {
+    LOG("File::exists", fileName);
     return QFile::exists(fileName);
 }
 
@@ -44,6 +48,7 @@ bool File::exists(const QString &fileName)
  */
 bool File::remove(const QString &fileName)
 {
+    LOG("File::remove", fileName);
     return QFile::remove(fileName);
 }
 
@@ -52,6 +57,7 @@ bool File::remove(const QString &fileName)
  */
 bool File::rename(const QString &oldName, const QString &newName)
 {
+    LOG("File::rename", oldName, newName);
     return QFile::rename(oldName, newName);
 }
 
@@ -60,6 +66,7 @@ bool File::rename(const QString &oldName, const QString &newName)
  */
 bool File::touch(const QString &fileName)
 {
+    LOG("File::touch", fileName);
     QFile file(fileName);
     return file.open(QFile::Append);
 }
@@ -69,6 +76,7 @@ bool File::touch(const QString &fileName)
  */
 QString File::readAll(const QString &fileName)
 {
+    LOG("File::readAll", fileName);
     QFile file(fileName);
     if (file.open(QFile::ReadOnly | QIODevice::Text)) {
         QTextStream stream(&file);

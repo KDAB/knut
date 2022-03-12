@@ -1,5 +1,6 @@
 #include "mark.h"
 
+#include "logger.h"
 #include "textdocument.h"
 
 #include <QPlainTextEdit>
@@ -80,6 +81,7 @@ int Mark::column() const
  */
 void Mark::restore()
 {
+    LOG("Mark::restore");
     if (checkEditor())
         m_editor->gotoMark(this);
 }

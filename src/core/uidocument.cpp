@@ -1,5 +1,7 @@
 #include "uidocument.h"
 
+#include "logger.h"
+
 #include <QFile>
 #include <QUiLoader>
 #include <QWidget>
@@ -34,7 +36,7 @@ UiDocument::UiDocument(QObject *parent)
  */
 UiWidget *UiDocument::findWidget(const QString &name) const
 {
-    spdlog::trace("UiDocument::findWidget {}", name.toStdString());
+    LOG("UiDocument::findWidget", name);
 
     auto it = std::find_if(m_widgets.cbegin(), m_widgets.cend(), [name](UiWidget *widget) {
         return widget->name() == name;
@@ -50,6 +52,8 @@ UiWidget *UiDocument::findWidget(const QString &name) const
  */
 void UiDocument::preview()
 {
+    LOG("UiDocument::preview");
+
     QUiLoader loader;
 
     QFile file(fileName());
@@ -127,7 +131,7 @@ QString UiWidget::name() const
 
 void UiWidget::setName(const QString &newName)
 {
-    spdlog::trace("UiWidget::setName {} => {}", m_widget.attribute("name").value(), newName.toStdString());
+    LOG("UiWidget::setName", newName);
 
     m_widget.attribute("name").set_value(newName.toLatin1().constData());
     if (m_isRoot) {
@@ -145,7 +149,7 @@ QString UiWidget::className() const
 
 void UiWidget::setClassName(const QString &newClassName)
 {
-    spdlog::trace("UiWidget::setClassName {} => {}", m_widget.attribute("class").value(), newClassName.toStdString());
+    LOG("UiWidget::setClassName", newClassName);
 
     m_widget.attribute("class").set_value(newClassName.toLatin1().constData());
     qobject_cast<UiDocument *>(parent())->setHasChanged(true);
