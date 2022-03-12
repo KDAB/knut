@@ -33,27 +33,29 @@ nav:
         - Unit tests: contributing/unit-tests.md
     - Script API:
         - Script Module:
-            - CppDocument: API/script/cppdocument.md
-            - Dir: API/script/dir.md
-            - Document: API/script/document.md
-            - File: API/script/file.md
-            - FileInfo: API/script/fileinfo.md
-            - LspDocument: API/script/lspdocument.md
-            - Mark: API/script/mark.md
-            - Message: API/script/message.md
-            - Project: API/script/project.md
-            - QDirValueType: API/script/qdirvaluetype.md
-            - QFileInfoValueType: API/script/qfileinfovaluetype.md
-            - Script: API/script/script.md
-            - ScriptDialog: API/script/scriptdialog.md
-            - Settings: API/script/settings.md
-            - Symbol: API/script/symbol.md
-            - TextDocument: API/script/textdocument.md
-            - TextRange: API/script/textrange.md
-            - UiDocument: API/script/uidocument.md
-            - UiWidget: API/script/uiwidget.md
-            - UserDialog: API/script/userdialog.md
-            - Utils: API/script/utils.md
+             - Argument: API/script/argument.md
+             - CppDocument: API/script/cppdocument.md
+             - CppFunction: API/script/cppfunction.md
+             - Dir: API/script/dir.md
+             - Document: API/script/document.md
+             - File: API/script/file.md
+             - FileInfo: API/script/fileinfo.md
+             - LspDocument: API/script/lspdocument.md
+             - Mark: API/script/mark.md
+             - Message: API/script/message.md
+             - Project: API/script/project.md
+             - QDirValueType: API/script/qdirvaluetype.md
+             - QFileInfoValueType: API/script/qfileinfovaluetype.md
+             - Script: API/script/script.md
+             - ScriptDialog: API/script/scriptdialog.md
+             - Settings: API/script/settings.md
+             - Symbol: API/script/symbol.md
+             - TextDocument: API/script/textdocument.md
+             - TextRange: API/script/textrange.md
+             - UiDocument: API/script/uidocument.md
+             - UiWidget: API/script/uiwidget.md
+             - UserDialog: API/script/userdialog.md
+             - Utils: API/script/utils.md
         - Script.Mfc Module:
              - Action: API/script.mfc/action.md
              - Asset: API/script.mfc/asset.md

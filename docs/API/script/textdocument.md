@@ -43,8 +43,8 @@ Inherited properties: [Document properties](../script/document.md#properties)
 ||**[deleteSelection](#deleteSelection)**()|
 ||**[deleteStartOfLine](#deleteStartOfLine)**()|
 ||**[deleteStartOfWord](#deleteStartOfWord)**()|
-|bool |**[find](#find)**(string text, int options = NoFindFlags)|
-|bool |**[findRegexp](#findRegexp)**(string regexp, int options = NoFindFlags)|
+|bool |**[find](#find)**(string text, int options = TextDocument.NoFindFlags)|
+|bool |**[findRegexp](#findRegexp)**(string regexp, int options = TextDocument.NoFindFlags)|
 ||**[gotoEndOfDocument](#gotoEndOfDocument)**()|
 ||**[gotoEndOfLine](#gotoEndOfLine)**()|
 ||**[gotoEndOfWord](#gotoEndOfWord)**()|
@@ -62,8 +62,8 @@ Inherited properties: [Document properties](../script/document.md#properties)
 |bool |**[hasSelection](#hasSelection)**()|
 ||**[paste](#paste)**()|
 ||**[redo](#redo)**()|
-|bool |**[replaceAll](#replaceAll)**(string before, string after, int options = NoFindFlags)|
-|bool |**[replaceAllRegexp](#replaceAllRegexp)**(string regexp, string after, int options = NoFindFlags)|
+|bool |**[replaceAll](#replaceAll)**(string before, string after, int options = TextDocument.NoFindFlags)|
+|bool |**[replaceAllRegexp](#replaceAllRegexp)**(string regexp, string after, int options = TextDocument.NoFindFlags)|
 ||**[selectAll](#selectAll)**()|
 ||**[selectEndOfLine](#selectEndOfLine)**()|
 ||**[selectEndOfWord](#selectEndOfWord)**()|
@@ -181,24 +181,24 @@ Deletes from the cursor position to the start of the line.
 
 Deletes from the cursor position to the start of the word.
 
-#### <a name="find"></a>bool **find**(string text, int options = NoFindFlags)
+#### <a name="find"></a>bool **find**(string text, int options = TextDocument.NoFindFlags)
 
 Searches the string `text` in the editor. Options could be a combination of:
 
-- `TextEditor.FindBackward`: search backward
-- `TextEditor.FindCaseSensitively`: match case
-- `TextEditor.FindWholeWords`: match only complete words
-- `TextEditor.FindRegexp`: use a regexp, equivalent to calling `findRegexp`
+- `TextDocument.FindBackward`: search backward
+- `TextDocument.FindCaseSensitively`: match case
+- `TextDocument.FindWholeWords`: match only complete words
+- `TextDocument.FindRegexp`: use a regexp, equivalent to calling `findRegexp`
 
 Selects the match and returns `true` if a match is found.
 
-#### <a name="findRegexp"></a>bool **findRegexp**(string regexp, int options = NoFindFlags)
+#### <a name="findRegexp"></a>bool **findRegexp**(string regexp, int options = TextDocument.NoFindFlags)
 
 Searches the string `regexp` in the editor using a regular expression. Options could be a combination of:
 
-- `TextEditor.FindBackward`: search backward
-- `TextEditor.FindCaseSensitively`: match case
-- `TextEditor.FindWholeWords`: match only complete words
+- `TextDocument.FindBackward`: search backward
+- `TextDocument.FindCaseSensitively`: match case
+- `TextDocument.FindWholeWords`: match only complete words
 
 Selects the match and returns `true` if a match is found.
 
@@ -270,14 +270,14 @@ Pastes text in the clipboard.
 
 Redo the last action.
 
-#### <a name="replaceAll"></a>bool **replaceAll**(string before, string after, int options = NoFindFlags)
+#### <a name="replaceAll"></a>bool **replaceAll**(string before, string after, int options = TextDocument.NoFindFlags)
 
 Replace all occurences of the string `before` with `after`. Options could be a combination of:
 
-- `TextEditor.FindCaseSensitively`: match case
-- `TextEditor.FindWholeWords`: match only complete words
-- `TextEditor.FindRegexp`: use a regexp, equivalent to calling `findRegexp`
-- `TextEditor.PreserveCase`: preserve case when replacing
+- `TextDocument.FindCaseSensitively`: match case
+- `TextDocument.FindWholeWords`: match only complete words
+- `TextDocument.FindRegexp`: use a regexp, equivalent to calling `findRegexp`
+- `TextDocument.PreserveCase`: preserve case when replacing
 
 If the option `TextEditor.PreserveCase` is used, it means:
 
@@ -290,7 +290,7 @@ the occurrence only.
 
 Returns the number of changes done in the document.
 
-#### <a name="replaceAllRegexp"></a>bool **replaceAllRegexp**(string regexp, string after, int options = NoFindFlags)
+#### <a name="replaceAllRegexp"></a>bool **replaceAllRegexp**(string regexp, string after, int options = TextDocument.NoFindFlags)
 
 Replace all occurences of the matches for the `regexp` with `after`. See the options from `replaceAll`.
 

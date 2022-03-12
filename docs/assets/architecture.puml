@@ -11,5 +11,6 @@ gui -->> rcui
 gui -->> core
 rcui -->> rccore
 core -->> lsp
+core -->> rccore
 lsp --> clangd
 @enduml

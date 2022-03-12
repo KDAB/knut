@@ -40,3 +40,17 @@ The `Project` class is the root of everything, as it's the class used to create 
 ![project classes](../assets/project-classes.svg)
 
 All objects exported **must be declared** inside the `ScriptRunner` class constructor. This class, as the name suggest, is used to run the scripts.
+
+### LSP server
+
+!!! warning
+    For now, knut has only been tested with clangd LSP server.
+
+When using a LSP server, different log files are created (next to the knut executable):
+
+- *extension*_messages.log: contains all the different json messages exchanged between the client and the server
+- *extension*_server.log: all the logs coming from the server
+
+*extension* being the extension used for the language, typically `cpp` for C++ files.
+
+The first one can be loaded directly in this online [lsp-viewer](https://lampepfl.github.io/lsp-viewer/).

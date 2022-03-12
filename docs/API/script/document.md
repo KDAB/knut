@@ -24,6 +24,7 @@ import Script 1.0
 
 | | Name |
 |-|-|
+|bool |**[close](#close)**()|
 |bool |**[load](#load)**(string fileName)|
 |bool |**[save](#save)**()|
 |bool |**[saveAs](#saveAs)**(string fileName)|
@@ -64,6 +65,11 @@ are:
 - `Document.Rc`
 
 ## Method Documentation
+
+#### <a name="close"></a>bool **close**()
+
+Close the current document. If the current document has some changes, save them
+automatically.
 
 #### <a name="load"></a>bool **load**(string fileName)
 

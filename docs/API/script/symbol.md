@@ -28,7 +28,7 @@ Return more detail for this symbol, e.g the signature of a function.
 
 #### <a name="kind"></a>Kind **kind**
 
-Return the kind of this symbol. Available symbole kinds are:
+Return the kind of this symbol. Available symbol kinds are:
 
 - `Symbol.File`
 - `Symbol.Module`

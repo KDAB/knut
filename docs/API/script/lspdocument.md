@@ -20,11 +20,20 @@ Inherited properties: [TextDocument properties](../script/textdocument.md#proper
 
 | | Name |
 |-|-|
+|[Symbol](../script/symbol.md) |**[findSymbol](#findSymbol)**(string name, int options = TextDocument.NoFindFlags)|
 |vector<[Symbol](../script/symbol.md)> |**[symbols](#symbols)**()|
 
 Inherited methods: [TextDocument methods](../script/textdocument.md#methods)
 
 ## Method Documentation
+
+#### <a name="findSymbol"></a>[Symbol](../script/symbol.md) **findSymbol**(string name, int options = TextDocument.NoFindFlags)
+
+Find a symbol based on its `name`, using different find `options`.
+
+- `TextDocument.FindCaseSensitively`: match case
+- `TextDocument.FindWholeWords`: match only fully qualified symbol
+- `TextDocument.FindRegexp`: use a regexp
 
 #### <a name="symbols"></a>vector<[Symbol](../script/symbol.md)> **symbols**()
 

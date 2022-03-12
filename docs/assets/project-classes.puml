@@ -14,7 +14,6 @@ abstract class Document {
 }
 class TextDocument {
   QPlainTextEdit m_document
-  Lsp::Client* m_client
   string text()
   string currentLine()
 }
@@ -24,6 +23,10 @@ class RcDocument {
 }
 class RcCore::Data
 class ImageDocument
+class LspDocument {
+  Lsp::Client* m_client
+  vector<Symbol> symbols()
+}
 class CppDocument {
   bool isHeader()
   CppDocument* openHeaderSource()
@@ -40,9 +43,10 @@ Document <|-- UiDocument
 Document <|-- RcDocument
 RcDocument o-- RcCore::Data
 Document <|-- ImageDocument
-TextDocument <|-- CppDocument
+TextDocument <|-- LspDocument
+LspDocument <|-- CppDocument
 Project o-- Lsp::Client
-TextDocument *-- Lsp::Client
+LspDocument *-- Lsp::Client
 
 
 @enduml
