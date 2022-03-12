@@ -73,7 +73,7 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qmlRegisterUncreatableType<UiWidget>("Script", 1, 0, "UiWidget", "Only created by UiDocument");
     qmlRegisterType<CppDocument>("Script", 1, 0, "CppDocument");
 
-    // Script.Mfc
+    // Script.Rc
     qRegisterMetaType<RcCore::Asset>();
     qRegisterMetaType<QVector<RcCore::Asset>>();
     qRegisterMetaType<RcCore::ToolBarItem>();
@@ -91,7 +91,7 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qRegisterMetaType<RcCore::Action>();
     qRegisterMetaType<QVector<RcCore::Action>>();
 
-    qmlRegisterType<RcDocument>("Script.Mfc", 1, 0, "RcDocument");
+    qmlRegisterType<RcDocument>("Script.Rc", 1, 0, "RcDocument");
 
     // Script.Test
     qmlRegisterSingletonType<TestUtil>("Script.Test", 1, 0, "TestUtil", [](QQmlEngine *, QJSEngine *) {

@@ -3,7 +3,7 @@
 Description of a RC file asset. [More...](#detailed-description)
 
 ```qml
-import Script.Mfc 1.0
+import Script.Rc 1.0
 ```
 
 <table>

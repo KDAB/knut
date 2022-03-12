@@ -3,7 +3,7 @@
 Description of a RC file menu. [More...](#detailed-description)
 
 ```qml
-import Script.Mfc 1.0
+import Script.Rc 1.0
 ```
 
 <table>
@@ -14,7 +14,7 @@ import Script.Mfc 1.0
 
 | | Name |
 |-|-|
-|array<[MenuItem](../script.mfc/menuitem.md)|**[children](#children)**|
+|array<[MenuItem](../script.rc/menuitem.md)|**[children](#children)**|
 |string|**[id](#id)**|
 
 ## Methods
@@ -25,7 +25,7 @@ import Script.Mfc 1.0
 
 ## Property Documentation
 
-#### <a name="children"></a>array<[MenuItem](../script.mfc/menuitem.md) **children**
+#### <a name="children"></a>array<[MenuItem](../script.rc/menuitem.md) **children**
 
 This property holds the list of menu items inside the menu.
 
