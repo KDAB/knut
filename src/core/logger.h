@@ -30,7 +30,7 @@ public:
     template <typename... Ts>
     void logData(const QString &name, bool merge, Ts... params)
     {
-        auto data = LogData {name, {(QVariant::fromValue(params), ...)}};
+        auto data = LogData {name, QVariantList({(QVariant::fromValue(params), ...)})};
         addData(std::move(data), merge);
     }
 
@@ -81,6 +81,16 @@ QString toString(const T &data)
 }
 
 /**
+ * @brief The LoggerDisabler class is a RAII class to temporary disable logging
+ */
+class LoggerDisabler
+{
+public:
+    LoggerDisabler();
+    ~LoggerDisabler();
+};
+
+/**
  * @brief The LoggerObject class is a utility class to help logging API calls
  *
  * This class ensure that only the first API call is logged, subsequent calls done by the first one won't.
@@ -114,6 +124,7 @@ public:
     ~LoggerObject();
 
 private:
+    friend LoggerDisabler;
     friend HistoryModel;
 
     LoggerObject();

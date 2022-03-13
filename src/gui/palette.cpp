@@ -1,11 +1,13 @@
 #include "palette.h"
 #include "ui_palette.h"
 
-#include <core/lspdocument.h>
-#include <core/project.h>
-#include <core/scriptmanager.h>
-#include <core/symbol.h>
-#include <core/textdocument.h>
+#include "core/logger.h"
+#include "core/lspdocument.h"
+#include "core/project.h"
+#include "core/scriptmanager.h"
+#include "core/symbol.h"
+#include "core/textdocument.h"
+#include "core/utils.h"
 
 #include <QAbstractTableModel>
 #include <QDirIterator>
@@ -151,7 +153,7 @@ public:
     {
         if (parent.isValid())
             return 0;
-        return getSymbols().count();
+        return m_symbols.count();
     }
     int columnCount(const QModelIndex &parent = QModelIndex()) const override
     {
@@ -168,24 +170,29 @@ public:
         case Qt::DisplayRole:
         case Qt::ToolTipRole:
             if (index.column() == 0 && role == Qt::DisplayRole) {
-                return getSymbols().at(index.row()).name;
+                return m_symbols.at(index.row()).name;
             } else if (index.column() == 1) {
-                return getSymbols().at(index.row()).description;
+                return m_symbols.at(index.row()).description;
             }
             break;
         case Qt::UserRole:
-            return index.row();
+            return m_symbols.at(index.row()).name;
         }
         return {};
     }
 
-private:
-    QVector<Core::Symbol> getSymbols() const
+    void resetSymbols()
     {
+        Core::LoggerDisabler ld;
+        beginResetModel();
+        m_symbols.clear();
         if (auto lspDocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->currentDocument()))
-            return lspDocument->symbols();
-        return {};
+            m_symbols = lspDocument->symbols();
+        endResetModel();
     }
+
+private:
+    QVector<Core::Symbol> m_symbols;
 };
 
 //=============================================================================
@@ -353,13 +360,13 @@ void Palette::updateListHeight()
 void Palette::addFileSelector()
 {
     auto fileModel = std::make_unique<FileModel>();
-    auto fileReset = [model = fileModel.get()]() {
+    auto resetFiles = [model = fileModel.get()]() {
         model->resetFileInfo();
     };
-    auto fileSelection = [](const QVariant &path) {
+    auto selectFile = [](const QVariant &path) {
         Core::Project::instance()->open(path.toString());
     };
-    m_selectors.push_back(Selector {"", std::move(fileModel), fileReset, fileSelection});
+    m_selectors.push_back(Selector {"", std::move(fileModel), resetFiles, selectFile});
 }
 
 void Palette::addLineSelector()
@@ -381,24 +388,25 @@ void Palette::addLineSelector()
 void Palette::addScriptSelector()
 {
     auto runScript = [](const QVariant &fileName) {
-        Core::ScriptManager::instance()->runScript(fileName.toString());
+        Core::Utils::runScript(fileName.toString());
     };
     m_selectors.push_back(Selector {".", std::make_unique<ScriptModel>(), {}, runScript});
 }
 
 void Palette::addSymbolSelector()
 {
-    auto gotoSymbol = [](const QVariant &index) {
-        auto lspDocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->currentDocument());
-        bool isInt;
-        const int symbol = index.toInt(&isInt);
-        if (isInt && lspDocument) {
-            lspDocument->selectRange(lspDocument->symbols().at(symbol).selectionRange);
+    auto symbolModel = std::make_unique<SymbolModel>();
+    auto resetSymbols = [model = symbolModel.get()]() {
+        model->resetSymbols();
+    };
+    auto gotoSymbol = [](const QVariant &symbolName) {
+        if (auto lspDocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->currentDocument())) {
+            lspDocument->selectSymbol(symbolName.toString());
             lspDocument->textEdit()->setFocus(Qt::OtherFocusReason);
             lspDocument->textEdit()->centerCursor();
         }
     };
-    m_selectors.push_back(Selector {"@", std::make_unique<SymbolModel>(), {}, gotoSymbol});
+    m_selectors.push_back(Selector {"@", std::move(symbolModel), resetSymbols, gotoSymbol});
 }
 
 } // namespace Gui

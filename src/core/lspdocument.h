@@ -25,6 +25,9 @@ public:
     Q_INVOKABLE Core::Symbol findSymbol(const QString &name, int options = NoFindFlags) const;
     Q_INVOKABLE QVector<Core::Symbol> symbols() const;
 
+public slots:
+    void selectSymbol(const QString &name, int options = NoFindFlags);
+
 protected:
     explicit LspDocument(Type type, QObject *parent = nullptr);
 

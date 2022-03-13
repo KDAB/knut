@@ -121,4 +121,14 @@ void HistoryModel::addData(LogData data, bool merge)
     emit dataChanged(lastIndex, lastIndex);
 }
 
+LoggerDisabler::LoggerDisabler()
+{
+    LoggerObject::m_canLog = false;
+}
+
+LoggerDisabler::~LoggerDisabler()
+{
+    LoggerObject::m_canLog = true;
+}
+
 } // namespace Core

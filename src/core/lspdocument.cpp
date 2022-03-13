@@ -52,6 +52,24 @@ QVector<Core::Symbol> LspDocument::symbols() const
 }
 
 /*!
+ * \qmlmethod void LspDocument::selectSymbol( string name, int options = TextDocument.NoFindFlags)
+ * Select a symbol based on its `name`, using different find `options`.
+ *
+ * - `TextDocument.FindCaseSensitively`: match case
+ * - `TextDocument.FindWholeWords`: match only fully qualified symbol
+ * - `TextDocument.FindRegexp`: use a regexp
+ *
+ * If no symbols are found, do nothing.
+ */
+void LspDocument::selectSymbol(const QString &name, int options)
+{
+    LOG("LspDocument::selectSymbol", name, options);
+    auto symbol = findSymbol(name, options);
+    if (!symbol.isNull())
+        selectRange(symbol.selectionRange);
+}
+
+/*!
  * \qmlmethod Symbol LspDocument::findSymbol( string name, int options = TextDocument.NoFindFlags)
  * Find a symbol based on its `name`, using different find `options`.
  *
