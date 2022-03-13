@@ -14,7 +14,7 @@ public:
     int start;
     int end;
 
-    QString toString() const { return QString("{%1, %2}").arg(start).arg(end); }
+    Q_INVOKABLE QString toString() const { return QString("{%1, %2}").arg(start).arg(end); }
 
     auto operator<=>(const TextRange &) const = default;
 };

@@ -7,6 +7,7 @@
 #include <QLabel>
 #include <QMetaObject>
 #include <QPlainTextEdit>
+#include <QPointer>
 #include <QSyntaxHighlighter>
 #include <QTextCharFormat>
 #include <QToolButton>
@@ -73,6 +74,9 @@ public:
 protected:
     void sink_it_(const spdlog::details::log_msg &msg) override
     {
+        if (!m_textEdit)
+            return;
+
         spdlog::memory_buf_t formatted;
         spdlog::sinks::base_sink<Mutex>::formatter_->format(msg, formatted);
 
@@ -88,7 +92,7 @@ protected:
     }
 
 private:
-    QPlainTextEdit *const m_textEdit;
+    QPointer<QPlainTextEdit> m_textEdit;
 };
 using qt_sink_mt = qt_sink<std::mutex>;
 
@@ -116,19 +120,17 @@ LogPanel::LogPanel(QWidget *parent)
     clearButton->setToolTip(tr("Clear"));
     clearButton->setAutoRaise(true);
     layout->addWidget(clearButton);
-    QObject::connect(clearButton, &QToolButton::clicked, this, &QPlainTextEdit::clear);
+    connect(clearButton, &QToolButton::clicked, this, &QPlainTextEdit::clear);
 
     layout->addWidget(new QLabel(tr("Level:")));
     auto levelCombo = new QComboBox(m_toolBar);
     levelCombo->addItems({"trace", "debug", "info", "warning", "error", "critical"});
     levelCombo->setCurrentIndex(logger->level());
     layout->addWidget(levelCombo);
-    QObject::connect(levelCombo, qOverload<int>(&QComboBox::currentIndexChanged), levelCombo, [logger](int index) {
+    connect(levelCombo, qOverload<int>(&QComboBox::currentIndexChanged), levelCombo, [logger](int index) {
         logger->set_level(static_cast<spdlog::level::level_enum>(index));
     });
 }
-
-LogPanel::~LogPanel() = default;
 
 QWidget *LogPanel::toolBar() const
 {

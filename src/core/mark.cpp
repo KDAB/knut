@@ -75,6 +75,11 @@ int Mark::column() const
     return column;
 }
 
+QString Mark::toString() const
+{
+    return QStringLiteral("{%1}").arg(position());
+}
+
 /*!
  * \qmlmethod Mark::restore()
  * Returns the cursor position in the editor to the position saved by this object.

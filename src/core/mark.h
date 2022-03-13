@@ -25,6 +25,8 @@ public:
     int line() const;
     int column() const;
 
+    Q_INVOKABLE QString toString() const;
+
 public slots:
     void restore();
 

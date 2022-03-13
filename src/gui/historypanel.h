@@ -1,13 +1,14 @@
 #pragma once
 
-#include <QPlainTextEdit>
+#include <QTreeView>
 
 namespace Gui {
 
-class LogPanel : public QPlainTextEdit
+class HistoryPanel : public QTreeView
 {
+    Q_OBJECT
 public:
-    explicit LogPanel(QWidget *parent = nullptr);
+    explicit HistoryPanel(QWidget *parent = nullptr);
 
     QWidget *toolBar() const;
 

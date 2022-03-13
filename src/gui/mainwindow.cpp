@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 
 #include "guisettings.h"
+#include "historypanel.h"
 #include "imageview.h"
 #include "logpanel.h"
 #include "optionsdialog.h"
@@ -68,6 +69,9 @@ MainWindow::MainWindow(QWidget *parent)
     auto logPanel = new LogPanel(this);
     createDock(logPanel, Qt::BottomDockWidgetArea, logPanel->toolBar());
 
+    auto historyPanel = new HistoryPanel(this);
+    createDock(historyPanel, Qt::BottomDockWidgetArea, historyPanel->toolBar());
+
     connect(ui->actionQuit, &QAction::triggered, this, &MainWindow::close);
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openProject);
     connect(ui->actionCreate_Qrc, &QAction::triggered, this, &MainWindow::createQrc);
@@ -112,6 +116,10 @@ MainWindow::~MainWindow() = default;
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+    // We need to close everything, as the document's plaintext edit are going to be deleted by the MainWindow, and the
+    // Project destructor will arrive too late.
+    Core::Project::instance()->closeAll();
+
     QSettings settings;
     settings.setValue(GeometryKey, saveGeometry());
     settings.setValue(WindowStateKey, saveState());
@@ -219,7 +227,19 @@ void MainWindow::createDock(QWidget *widget, Qt::DockWidgetArea area, QWidget *t
     connect(closeButton, &QToolButton::clicked, dock, &QDockWidget::close);
 
     dock->setTitleBarWidget(titleBar);
+
     addDockWidget(area, dock);
+
+    // Tabify all docks on the same area into the
+    const auto dockWidgets = findChildren<QDockWidget *>();
+    for (auto dockWidget : dockWidgets) {
+        if (dockWidget == dock)
+            continue;
+        if (dockWidgetArea(dockWidget) == area) {
+            tabifyDockWidget(dockWidget, dock);
+            return;
+        }
+    }
 }
 
 void MainWindow::saveDocument()

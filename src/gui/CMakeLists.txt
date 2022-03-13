@@ -5,6 +5,8 @@ set(PROJECT_SOURCES
     fileselector.cpp
     guisettings.h
     guisettings.cpp
+    historypanel.h
+    historypanel.cpp
     imageview.h
     imageview.cpp
     knutmain.h
