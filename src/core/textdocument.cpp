@@ -174,6 +174,10 @@ bool TextDocument::eventFilter(QObject *watched, QEvent *event)
                  || (keyEvent->key() == Qt::Key_Backspace
                      && !(keyEvent->modifiers() & ~Qt::ShiftModifier))) // test is coming from QTextWidgetControl
             m_document->textCursor().hasSelection() ? deleteSelection() : deletePreviousCharacter();
+        else if (keyEvent == QKeySequence::InsertParagraphSeparator)
+            insert("\n");
+        else if (keyEvent == QKeySequence::InsertLineSeparator)
+            insert(QString(QChar::LineSeparator));
         else if (keyEvent == QKeySequence::DeleteEndOfWord)
             deleteEndOfWord();
         else if (keyEvent == QKeySequence::DeleteStartOfWord)
