@@ -154,6 +154,10 @@ bool TextDocument::eventFilter(QObject *watched, QEvent *event)
             gotoStartOfDocument();
         else if (keyEvent == QKeySequence::MoveToEndOfDocument)
             gotoEndOfDocument();
+        else if ((keyEvent->key() == Qt::Key_Backtab))
+            removeIndent();
+        else if (keyEvent->key() == Qt::Key_Tab)
+            indent();
         else if (keyEvent == QKeySequence::Undo)
             undo();
         else if (keyEvent == QKeySequence::Redo)
@@ -1059,6 +1063,68 @@ int TextDocument::replaceAllRegexp(const QString &regexp, const QString &after, 
 {
     LOG("TextDocument::replaceAllRegexp", regexp, after, options);
     return replaceAll(regexp, after, options | FindRegexp);
+}
+
+/*!
+ * \qmlmethod void TextDocument::indent(const QString &strSub)
+ * Indents the single Line as well as selected text.
+ * If the cursor has a selection, all selected line will have indentation and remains selected.
+ * by default it will use tab for indentation.
+ * Indent Characters can be changed to spaces by passing them as an argument.
+ */
+void TextDocument::indent(const QString &strSub)
+{
+    spdlog::trace("TextDocument::indent {}", strSub.toStdString());
+    QTextCursor cursor = m_document->textCursor();
+
+    cursor.beginEditBlock();
+    int nSlctStart = 0, nSlctEnd = 0, countTab = 0;
+    if (cursor.hasSelection()) {
+        nSlctStart = cursor.selectionStart();
+        nSlctEnd = cursor.selectionEnd();
+        cursor.setPosition(nSlctStart);
+
+        while (cursor.position() < (nSlctEnd + countTab)) {
+            cursor.insertText(strSub); // by default it will insert the tab.
+            countTab += strSub.length();
+            cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor);
+        }
+        cursor.setPosition(nSlctStart, QTextCursor::MoveAnchor); // To keep the lines selected.
+        cursor.setPosition(nSlctEnd + countTab, QTextCursor::KeepAnchor);
+    } else {
+        cursor.insertText(strSub); // by default it will insert the tab.
+    }
+    cursor.endEditBlock();
+    m_document->setTextCursor(cursor);
+}
+
+/*!
+ * \qmlmethod void TextDocument::removeIndent(const QString &strSub )
+ * Removes one level of Indentation for single Line as well as selected text.
+ * By default it removes the tab.
+ * Pass the spaces as argument if spaces where used during indentation.
+ * It will keep the selection as it is and do nothing if no more identation left.
+ */
+void TextDocument::removeIndent(const QString &strSub)
+{
+    spdlog::trace("TextDocument::removeIndent{}", strSub.toStdString());
+    QTextCursor cursor = m_document->textCursor(); // contains the selection
+    if (cursor.hasSelection()) {
+        int nSlctEnd = cursor.selectionEnd();
+        cursor.setPosition(cursor.selectionStart());
+        while (cursor.position() < nSlctEnd) {
+            cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, strSub.length());
+            if (cursor.selectedText() == strSub) {
+                cursor.removeSelectedText();
+            }
+            cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor);
+        }
+    } else {
+        cursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor, strSub.length());
+        if (cursor.selectedText() == strSub) {
+            cursor.removeSelectedText();
+        }
+    }
 }
 
 void TextDocument::setLineEnding(LineEnding newLineEnding)

@@ -241,6 +241,31 @@ private slots:
         QCOMPARE(document.line(), 2);
     }
 
+    void indent()
+    {
+        Test::FileTester file(Test::testDataPath() + "/textdocument/indent_original.txt");
+        Core::TextDocument document;
+        document.load(file.fileName());
+
+        document.gotoLine(4);
+        document.indent();
+        document.save();
+        document.gotoLine(7, 4);
+        document.removeIndent();
+        document.removeIndent();
+        document.save();
+        document.gotoLine(10);
+        document.selectNextLine();
+        document.indent();
+        document.save();
+        document.gotoLine(16);
+        document.selectNextLine();
+        document.removeIndent();
+        document.save();
+
+        QVERIFY(file.compare());
+    }
+
     void findReplace()
     {
         Test::FileTester file(Test::testDataPath() + "/textdocument/findreplace_original.txt");

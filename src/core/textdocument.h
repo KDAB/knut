@@ -153,6 +153,10 @@ public slots:
     int replaceAll(const QString &before, const QString &after, int options = NoFindFlags);
     int replaceAllRegexp(const QString &regexp, const QString &after, int options = NoFindFlags);
 
+    // Indentation
+    void indent(const QString &strSub = "\t");
+    void removeIndent(const QString &strSub = "\t");
+
 signals:
     void positionChanged();
     void textChanged();
