@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>534</width>
-    <height>329</height>
+    <height>286</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -46,7 +46,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
-      <string>Text Editor</string>
+      <string>Text Editor Interface</string>
      </property>
      <layout class="QFormLayout" name="formLayout_2">
       <item row="0" column="0">
@@ -173,16 +173,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_3">
-     <property name="title">
-      <string>Scripts</string>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="Gui::SettingsWidget" name="widget" native="true"/>
-      </item>
-     </layout>
-    </widget>
+    <widget class="Gui::SettingsWidget" name="widget" native="true"/>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">

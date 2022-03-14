@@ -1,12 +1,15 @@
 #include "settingswidget.h"
 #include "ui_settingswidget.h"
 
+#include "core/project.h"
 #include "core/scriptmanager.h"
 #include "core/settings.h"
+#include "core/textdocument_p.h"
 
 #include <QApplication>
 #include <QDesktopServices>
 #include <QFileDialog>
+#include <QIntValidator>
 #include <QUrl>
 
 #include <algorithm>
@@ -33,6 +36,22 @@ SettingsWidget::SettingsWidget(QWidget *parent)
     connect(ui->scriptPathList, &QListWidget::itemSelectionChanged, this, [this]() {
         ui->removeButton->setEnabled(ui->scriptPathList->selectedItems().size());
     });
+
+    ui->tabSize->setValidator(new QIntValidator(ui->tabSize));
+
+    ui->textEditorGroup->setDisabled(Core::Project::instance()->root().isEmpty());
+    const auto settings = Core::Settings::instance()->value<Core::TabSettings>(Core::Settings::Tab);
+    ui->insertSpacesCheck->setChecked(settings.insertSpaces);
+    ui->tabSize->setText(QString::number(settings.tabSize));
+
+    auto changeTextEditorSettings = [this]() {
+        auto settings = Core::Settings::instance()->value<Core::TabSettings>(Core::Settings::Tab);
+        settings.insertSpaces = ui->insertSpacesCheck->isChecked();
+        settings.tabSize = ui->tabSize->text().toInt();
+        Core::Settings::instance()->setValue(Core::Settings::Tab, settings);
+    };
+    connect(ui->insertSpacesCheck, &QCheckBox::toggled, this, changeTextEditorSettings);
+    connect(ui->tabSize, &QLineEdit::textEdited, this, changeTextEditorSettings);
 
     updateScriptPaths();
 }

@@ -211,6 +211,7 @@ bool Settings::setValue(QString path, const QVariant &value)
                       path.toStdString());
         return false;
     }
+    emit settingsChanged(path);
     // Asynchronous save
     m_saveTimer->start();
     return true;

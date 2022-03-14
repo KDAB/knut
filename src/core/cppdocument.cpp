@@ -52,8 +52,8 @@ bool CppDocument::isHeader() const
 
 static QStringList matchingSuffixes(bool header)
 {
-    static const char MimeTypes[] = "/mime_types";
-    static const auto mimeTypes = Settings::instance()->value<std::map<std::string, Document::Type>>(MimeTypes);
+    static const auto mimeTypes =
+        Settings::instance()->value<std::map<std::string, Document::Type>>(Settings::MimeTypes);
 
     QStringList suffixes;
     for (const auto &it : mimeTypes) {

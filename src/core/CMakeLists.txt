@@ -55,6 +55,7 @@ set(PROJECT_SOURCES
     testutil.cpp
     textdocument.h
     textdocument.cpp
+    textdocument_p.h
     textrange.h
     uidocument.h
     uidocument.cpp

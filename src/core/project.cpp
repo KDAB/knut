@@ -185,8 +185,8 @@ QStringList Project::allFilesWithExtensions(const QStringList &extensions, PathT
 
 static Document *createDocument(const QString &suffix)
 {
-    static const char MimeTypes[] = "/mime_types";
-    static const auto mimeTypes = Settings::instance()->value<std::map<std::string, Document::Type>>(MimeTypes);
+    static const auto mimeTypes =
+        Settings::instance()->value<std::map<std::string, Document::Type>>(Settings::MimeTypes);
 
     auto it = mimeTypes.find(suffix.toStdString());
     if (it == mimeTypes.end())

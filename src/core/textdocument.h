@@ -75,6 +75,8 @@ public:
 
     QPlainTextEdit *textEdit() const;
 
+    QString tab() const;
+
 public slots:
     void setPosition(int newPosition);
     void setText(const QString &newText);

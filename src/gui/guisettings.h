@@ -1,8 +1,9 @@
 #pragma once
 
+#include <QFont>
+#include <QObject>
 #include <QPixmap>
 #include <QPointer>
-#include <QString>
 
 #include <vector>
 
@@ -11,8 +12,9 @@ class QObject;
 
 namespace Gui {
 
-class GuiSettings
+class GuiSettings : public QObject
 {
+    Q_OBJECT
 public:
     enum Style {
         DefaultStyle = 0,
@@ -48,7 +50,13 @@ private:
     void updateStyle() const;
     void updateTheme() const;
     void updateTextEdits() const;
-    void updateTextEdit(QPlainTextEdit *textEdit) const;
+    struct TextEditSettings
+    {
+        QFont font;
+        int tabStop;
+    };
+    TextEditSettings computeTextEditSettings() const;
+    void updateTextEdit(QPlainTextEdit *textEdit, const TextEditSettings &settings) const;
     void updateIcons() const;
     void updateIcon(QObject *object, const QString &asset) const;
 

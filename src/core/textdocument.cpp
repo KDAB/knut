@@ -1,7 +1,9 @@
 #include "textdocument.h"
+#include "textdocument_p.h"
 
 #include "logger.h"
 #include "mark.h"
+#include "settings.h"
 #include "string_utils.h"
 
 #include <QFile>
@@ -358,6 +360,17 @@ bool TextDocument::hasUtf8Bom() const
 QPlainTextEdit *TextDocument::textEdit() const
 {
     return m_document;
+}
+
+/**
+ * \brief Returns the string when pressing on the tab key
+ */
+QString TextDocument::tab() const
+{
+    auto settings = Settings::instance()->value<TabSettings>(Settings::Tab);
+    if (settings.insertSpaces)
+        return QString(' ', settings.tabSize);
+    return QStringLiteral("\t");
 }
 
 /*!

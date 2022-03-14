@@ -2,6 +2,9 @@
 
 #include "knutstyle.h"
 
+#include "core/settings.h"
+#include "core/textdocument_p.h"
+
 #ifdef USE_SYNTAX_HIGHLIGHTING
 #include <definition.h>
 #include <repository.h>
@@ -32,6 +35,7 @@ constexpr const char WordWrapKey[] = "TextEditor/WordWrap";
 constexpr const char IsDocument[] = "isDoc";
 
 GuiSettings::GuiSettings()
+    : QObject()
 {
     QSettings settings;
     m_style = static_cast<GuiSettings::Style>(settings.value(StyleKey, m_style).toInt());
@@ -40,6 +44,12 @@ GuiSettings::GuiSettings()
     m_fontSize = settings.value(FontSizeKey, m_fontSize).toInt();
     m_wordWrap = settings.value(WordWrapKey, m_wordWrap).toBool();
     updateStyle();
+
+    auto updateIfTabSettings = [this](const QString &path) {
+        if (path == Core::Settings::Tab)
+            updateTextEdits();
+    };
+    connect(Core::Settings::instance(), &Core::Settings::settingsChanged, this, updateIfTabSettings);
 }
 
 GuiSettings *GuiSettings::instance()
@@ -142,7 +152,7 @@ static void setupHighlighter(KSyntaxHighlighting::SyntaxHighlighter *highlighter
 void GuiSettings::setupDocumentTextEdit(QPlainTextEdit *textEdit, const QString &fileName)
 {
     textEdit->setProperty(IsDocument, true);
-    instance()->updateTextEdit(textEdit);
+    instance()->updateTextEdit(textEdit, instance()->computeTextEditSettings());
 
 #ifdef USE_SYNTAX_HIGHLIGHTING
     auto highlighter = new KSyntaxHighlighting::SyntaxHighlighter(textEdit->document());
@@ -152,7 +162,7 @@ void GuiSettings::setupDocumentTextEdit(QPlainTextEdit *textEdit, const QString 
 
 void GuiSettings::setupTextEdit(QPlainTextEdit *textEdit)
 {
-    instance()->updateTextEdit(textEdit);
+    instance()->updateTextEdit(textEdit, instance()->computeTextEditSettings());
 }
 
 void GuiSettings::setIcon(QObject *object, const QString &asset)
@@ -240,24 +250,32 @@ void GuiSettings::updateTheme() const
 void GuiSettings::updateTextEdits() const
 {
     const auto topLevels = QApplication::topLevelWidgets();
+    const auto textEditSettings = computeTextEditSettings();
     for (auto topLevel : topLevels) {
         const auto textEdits = topLevel->findChildren<QPlainTextEdit *>();
         for (auto *textEdit : textEdits)
-            updateTextEdit(textEdit);
+            updateTextEdit(textEdit, textEditSettings);
     }
 }
 
-void GuiSettings::updateTextEdit(QPlainTextEdit *textEdit) const
+GuiSettings::TextEditSettings GuiSettings::computeTextEditSettings() const
 {
-    auto f = textEdit->font();
+    auto f = QApplication::font();
     f.setFamily(m_fontFamily);
     f.setPointSize(m_fontSize);
-    textEdit->setFont(f);
+
     QFontMetrics fm(f);
+    const auto tabSettings = Core::Settings::instance()->value<Core::TabSettings>(Core::Settings::Tab);
+    return {f, tabSettings.tabSize * fm.horizontalAdvance(' ')};
+}
+
+void GuiSettings::updateTextEdit(QPlainTextEdit *textEdit, const TextEditSettings &settings) const
+{
+    textEdit->setFont(settings.font);
 
     // Only for document text edits
     if (textEdit->property(IsDocument).toBool()) {
-        textEdit->setTabStopDistance(4 * fm.horizontalAdvance(' '));
+        textEdit->setTabStopDistance(settings.tabStop);
         textEdit->setLineWrapMode(m_wordWrap ? QPlainTextEdit::WidgetWidth : QPlainTextEdit::NoWrap);
     }
 }

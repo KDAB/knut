@@ -28,5 +28,11 @@
         "bmp": "image_type",
         "jpg": "image_type",
         "ico": "image_type"
+    },
+    "text_editor": {
+        "tab": {
+            "insertSpaces": true,
+            "tabSize": 4
+        }
     }
 }
