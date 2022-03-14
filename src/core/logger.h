@@ -30,8 +30,9 @@ public:
     template <typename... Ts>
     void logData(const QString &name, bool merge, Ts... params)
     {
-        auto data = LogData {name, QVariantList({(QVariant::fromValue(params), ...)})};
-        addData(std::move(data), merge);
+        QVariantList paramList;
+        (paramList.push_back(QVariant::fromValue(params)), ...);
+        addData(LogData {name, std::move(paramList)}, merge);
     }
 
 private:
@@ -41,7 +42,7 @@ private:
         QVariantList params;
     };
 
-    void addData(LogData data, bool merge);
+    void addData(LogData &&data, bool merge);
 
     std::vector<LogData> m_data;
 };
@@ -98,17 +99,17 @@ public:
 class LoggerObject
 {
 public:
-    explicit LoggerObject(const QString &name, bool /*unused*/)
+    explicit LoggerObject(QString name, bool /*unused*/)
         : LoggerObject()
     {
         if (!m_canLog)
             return;
         if (m_model)
             m_model->logData(name);
-        log(name);
+        log(std::move(name));
     }
     template <typename... Ts>
-    explicit LoggerObject(const QString &name, bool merge, Ts... params)
+    explicit LoggerObject(QString name, bool merge, Ts... params)
         : LoggerObject()
     {
         if (!m_canLog)
@@ -116,9 +117,10 @@ public:
         if (m_model)
             m_model->logData(name, merge, params...);
 
-        QStringList paramStrings({(toString(params), ...)});
-        QString result = name + " - " + paramStrings.join("' ");
-        log(result);
+        QStringList paramList;
+        (paramList.push_back(toString(params)), ...);
+        QString result = name + " - " + paramList.join(", ");
+        log(std::move(result));
     }
 
     ~LoggerObject();
@@ -128,7 +130,7 @@ private:
     friend HistoryModel;
 
     LoggerObject();
-    void log(const QString &string);
+    void log(QString &&string);
 
     inline static bool m_canLog = true;
     bool m_firstLogger = false;

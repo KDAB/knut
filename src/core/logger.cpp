@@ -15,7 +15,7 @@ LoggerObject::~LoggerObject()
         m_canLog = true;
 }
 
-void LoggerObject::log(const QString &string)
+void LoggerObject::log(QString &&string)
 {
     spdlog::trace(string.toStdString());
     m_canLog = false;
@@ -85,7 +85,7 @@ void HistoryModel::clear()
     endResetModel();
 }
 
-void HistoryModel::addData(LogData data, bool merge)
+void HistoryModel::addData(LogData &&data, bool merge)
 {
     if (!merge || m_data.empty() || m_data.back().name != data.name) {
         beginInsertRows({}, static_cast<int>(m_data.size()), static_cast<int>(m_data.size()));
