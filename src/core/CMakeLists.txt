@@ -3,6 +3,8 @@ project(knut-core LANGUAGES CXX)
 set(PROJECT_SOURCES
     private/lspcache.h
     private/lspcache.cpp
+    cppclass.h
+    cppclass.cpp
     cppdocument.h
     cppdocument.cpp
     cppfunction.h

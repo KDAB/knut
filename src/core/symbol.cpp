@@ -1,6 +1,10 @@
 #include "symbol.h"
 
+#include "cppclass.h"
 #include "logger.h"
+
+#include <core/lspdocument.h>
+#include <core/project.h>
 
 #include <spdlog/spdlog.h>
 
@@ -71,12 +75,45 @@ namespace Core {
  */
 
 /*!
+ * \qmlmethod Core::CppClass Core::Symbol::toClass()
+ * Returns a `Core::CppClass` structure for current `Core::Symbol`.
+ * The method checks if the `Kind` of `Core::Symbol` is `Kind::Class`. If so
+ * then it finds all the members of the class from the list of symbols in
+ * current document, adds them in `CppClass` structure, and returns it.
+ * If not, then it returns an empty Core::CppClass structure.
+ */
+
+/*!
  * \qmlmethod Core::CppFunction Core::Symbol::toFunction()
  * Returns a `Core::CppFunction` structure for current `Core::Symbol`.
- * The method checks if the `Kind` of `Core::Symbol` is either `Kind::Method` or `Kind::Function`.
- * If so then it extracts information from `Symbol::description`, fills it in `CppFunction` structure, and returns it.
+ * The method checks if the `Kind` of `Core::Symbol` is either `Kind::Method`
+ * or `Kind::Function`. If so then it extracts information from
+ * `Symbol::description`, fills it in `CppFunction` structure, and returns it.
  * If not, then it returns an empty Core::CppFunction structure.
  */
+
+CppClass Symbol::toClass()
+{
+    LOG("Symbol::toClass");
+
+    if (kind == Class) {
+        QVector<Symbol> members;
+        if (auto lspDocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->currentDocument())) {
+            for (auto &symbol : lspDocument->symbols()) {
+                if (symbol.name.startsWith(name) && (symbol.name != name)
+                    && ((symbol.kind == Symbol::Method) || (symbol.kind == Symbol::Field))) {
+                    members.append(symbol);
+                }
+            }
+        }
+
+        return CppClass {.name = name, .members = std::move(members)};
+    } else {
+        spdlog::warn("Symbol::toClass - {} should be a `Class`.", name.toStdString());
+
+        return CppClass();
+    }
+}
 
 CppFunction Symbol::toFunction()
 {
@@ -103,10 +140,16 @@ CppFunction Symbol::toFunction()
 
         return CppFunction {name, returnType, arguments, range};
     } else {
-        spdlog::warn("Symbol::toFunction {} - should be either a `Method` or a `Function`.", name.toStdString());
+        spdlog::warn("Symbol::toFunction - {} should be either a `Method` or a `Function`.", name.toStdString());
 
         return CppFunction();
     }
+}
+
+bool operator==(const Symbol &left, const Symbol &right)
+{
+    return ((left.name == right.name) && (left.description == right.description) && (left.kind == right.kind)
+            && (left.range == right.range) && (left.selectionRange == right.selectionRange));
 }
 
 } // namespace Core

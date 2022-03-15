@@ -9,6 +9,8 @@
 
 namespace Core {
 
+struct CppClass;
+
 struct Symbol
 {
     Q_GADGET
@@ -50,6 +52,7 @@ public:
     };
     Q_ENUM(Kind)
 
+    Q_INVOKABLE Core::CppClass toClass();
     Q_INVOKABLE Core::CppFunction toFunction();
 
     QString name;
@@ -60,6 +63,7 @@ public:
 
     bool isNull() const { return name.isEmpty(); }
 };
+bool operator==(const Symbol &left, const Symbol &right);
 
 } // namespace Core
 

@@ -1,5 +1,6 @@
 #include "scriptrunner.h"
 
+#include "cppclass.h"
 #include "cppdocument.h"
 #include "cppfunction.h"
 #include "dir.h"
@@ -40,6 +41,7 @@ ScriptRunner::ScriptRunner(QObject *parent)
 {
     // Script objects registrations
     qRegisterMetaType<Argument>();
+    qRegisterMetaType<CppClass>();
     qRegisterMetaType<CppFunction>();
     qRegisterMetaType<QDirValueType>();
     qRegisterMetaType<QFileInfoValueType>();
