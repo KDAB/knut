@@ -253,7 +253,7 @@ void MainWindow::closeDocument()
 {
     auto document = Core::Project::instance()->currentDocument();
     if (document)
-        document->save();
+        document->close();
     ui->tabWidget->removeTab(ui->tabWidget->currentIndex());
 }
 
