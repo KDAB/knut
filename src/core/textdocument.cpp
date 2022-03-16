@@ -1012,6 +1012,59 @@ bool TextDocument::findRegexp(const QString &regexp, int options)
 }
 
 /*!
+ * \qmlmethod bool TextDocument::replaceOne( string before, string after, int options = TextDocument.NoFindFlags)
+ * Replace one occurence of the string `before` with `after`. Options could be a combination of:
+ *
+ * - `TextDocument.FindCaseSensitively`: match case
+ * - `TextDocument.FindWholeWords`: match only complete words
+ * - `TextDocument.FindRegexp`: use a regexp, equivalent to calling `findRegexp`
+ * - `TextDocument.PreserveCase`: preserve case when replacing
+ *
+ * If the option `TextEditor.PreserveCase` is used, it means:
+ *
+ * - All upper-case occurrences are replaced with the upper-case new text.
+ * - All lower-case occurrences are replaced with the lower-case new text.
+ * - Capitalized occurrences are replaced with the capitalized new text.
+ * - Other occurrences are replaced with the new text as entered. If an occurrence and the new text have the same prefix
+ * or suffix, then the case of the prefix and/or suffix are preserved, and the other rules are applied on the rest of
+ * the occurrence only.
+ *
+ * Returns true if a change occurs in the document..
+ */
+bool TextDocument::replaceOne(const QString &before, const QString &after, int options)
+{
+    LOG("TextDocument::replaceOne", before, after, options);
+
+    auto cursor = m_document->textCursor();
+    cursor.movePosition(QTextCursor::Start);
+    m_document->setTextCursor(cursor);
+
+    const bool usesRegExp = options & FindRegexp;
+    const bool preserveCase = options & PreserveCase;
+
+    auto regexp = createRegularExpression(before, options);
+
+    if (m_document->find(regexp, static_cast<QTextDocument::FindFlags>(options))) {
+        cursor.beginEditBlock();
+        auto found = m_document->textCursor();
+        cursor.setPosition(found.selectionStart());
+        cursor.setPosition(found.selectionEnd(), QTextCursor::KeepAnchor);
+        QString afterText = after;
+        if (usesRegExp) {
+            QRegularExpressionMatch match = regexp.match(found.selectedText());
+            afterText = expandRegExpReplacement(after, match.capturedTexts());
+        } else if (preserveCase) {
+            afterText = matchCaseReplacement(cursor.selectedText(), after);
+        }
+        cursor.insertText(afterText);
+        cursor.endEditBlock();
+        return true;
+    }
+
+    return false;
+}
+
+/*!
  * \qmlmethod bool TextDocument::replaceAll( string before, string after, int options = TextDocument.NoFindFlags)
  * Replace all occurences of the string `before` with `after`. Options could be a combination of:
  *

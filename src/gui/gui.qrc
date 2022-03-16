@@ -3,6 +3,9 @@
         <file>gui/tile.png</file>
         <file>gui/close.png</file>
         <file>gui/delete-sweep.png</file>
+        <file>gui/format-letter-case.png</file>
+        <file>gui/regex.png</file>
+        <file>gui/whole-word.png</file>
     </qresource>
     <qresource prefix="/org.kde.syntax-highlighting/syntax-addons">
         <file alias="rc.xml">gui/rc.xml</file>

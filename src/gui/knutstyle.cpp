@@ -32,9 +32,10 @@ private:
 
 static bool isPanel(const QWidget *widget)
 {
+    widget = widget->parentWidget();
     while (widget) {
-        if (auto dock = qobject_cast<QDockWidget *>(widget->parentWidget()))
-            return dock->titleBarWidget() == widget;
+        if (widget->property("panelWidget").toBool())
+            return true;
         widget = widget->parentWidget();
     }
     return false;
@@ -51,6 +52,10 @@ void KnutStyle::polish(QWidget *widget)
             frame->setFrameShape(QFrame::NoFrame);
     } else if (auto tabBar = qobject_cast<QTabBar *>(widget)) {
         tabBar->setDrawBase(false);
+    }
+
+    if (widget->inherits("QLineEditIconButton")) {
+        widget->installEventFilter(this);
     }
 
     QProxyStyle::polish(widget);
@@ -212,6 +217,19 @@ void KnutStyle::drawComplexControl(ComplexControl control, const QStyleOptionCom
     default:
         QProxyStyle::drawComplexControl(control, option, painter, widget);
     }
+}
+
+bool KnutStyle::eventFilter(QObject *watched, QEvent *event)
+{
+    if (watched->inherits("QLineEditIconButton") && event->type() == QEvent::Paint) {
+        auto button = qobject_cast<QToolButton *>(watched);
+        if (button->isChecked()) {
+            QPainter painter(button);
+            const QRect rect(0, 0, button->width(), button->height());
+            painter.fillRect(rect, button->palette().highlight().color());
+        }
+    }
+    return QProxyStyle::eventFilter(watched, event);
 }
 
 } // namespace Gui

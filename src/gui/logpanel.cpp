@@ -102,6 +102,7 @@ LogPanel::LogPanel(QWidget *parent)
 {
     setWindowTitle(tr("Log Output"));
     setObjectName("LogPanel");
+    setReadOnly(true);
 
     auto logger = spdlog::default_logger();
     logger->sinks().push_back(std::shared_ptr<spdlog::sinks::sink>(new qt_sink_mt(this)));

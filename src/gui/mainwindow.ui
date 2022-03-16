@@ -15,6 +15,9 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="spacing">
+     <number>0</number>
+    </property>
     <property name="leftMargin">
      <number>0</number>
     </property>
@@ -34,6 +37,9 @@
       </property>
      </widget>
     </item>
+    <item>
+     <widget class="Gui::FindWidget" name="findWidget" native="true"/>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -42,7 +48,7 @@
      <x>0</x>
      <y>0</y>
      <width>1280</width>
-     <height>24</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -70,26 +76,27 @@
     <addaction name="actionCreate_Qrc"/>
     <addaction name="actionCreate_Ui"/>
    </widget>
-   <widget class="QMenu" name="menuCpp">
+   <widget class="QMenu" name="menuC">
     <property name="title">
-     <string>&amp;Cpp</string>
+     <string>&amp;C++</string>
     </property>
     <addaction name="actionSwitch_Header_Source"/>
-   </widget>
-   <widget class="QMenu" name="menu_LSP">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="title">
-     <string>&amp;LSP</string>
-    </property>
     <addaction name="actionFollow_Symbol"/>
-    <addaction name="actionSwitch_Function_Declaration_Definition"/>
+    <addaction name="actionSwitch_Decl_Def"/>
+   </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <addaction name="actionFind"/>
+    <addaction name="actionReplace"/>
+    <addaction name="actionFind_Next"/>
+    <addaction name="actionFind_Previous"/>
    </widget>
    <addaction name="menu_File"/>
+   <addaction name="menuEdit"/>
+   <addaction name="menuC"/>
    <addaction name="menu_Rc"/>
-   <addaction name="menuCpp"/>
-   <addaction name="menu_LSP"/>
   </widget>
   <action name="actionQuit">
    <property name="text">
@@ -113,17 +120,11 @@
    </property>
   </action>
   <action name="actionCreate_Qrc">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
    <property name="text">
     <string>Create Qrc...</string>
    </property>
   </action>
   <action name="actionCreate_Ui">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
    <property name="text">
     <string>Create Ui...</string>
    </property>
@@ -182,9 +183,6 @@
    </property>
   </action>
   <action name="actionFollow_Symbol">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
    <property name="text">
     <string>Follow Symbol</string>
    </property>
@@ -192,10 +190,7 @@
     <string>F2</string>
    </property>
   </action>
-  <action name="actionSwitch_Function_Declaration_Definition">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
+  <action name="actionSwitch_Decl_Def">
    <property name="text">
     <string>Switch Function Declaration/Definition</string>
    </property>
@@ -203,7 +198,55 @@
     <string>Shift+F2</string>
    </property>
   </action>
+  <action name="actionFind">
+   <property name="text">
+    <string>Find...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="actionReplace">
+   <property name="text">
+    <string>Replace...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+H</string>
+   </property>
+  </action>
+  <action name="actionReturnEditor">
+   <property name="text">
+    <string>Return to Editor</string>
+   </property>
+   <property name="shortcut">
+    <string>Esc</string>
+   </property>
+  </action>
+  <action name="actionFind_Next">
+   <property name="text">
+    <string>Find Next</string>
+   </property>
+   <property name="shortcut">
+    <string>F3</string>
+   </property>
+  </action>
+  <action name="actionFind_Previous">
+   <property name="text">
+    <string>Find Previous</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+F3</string>
+   </property>
+  </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Gui::FindWidget</class>
+   <extends>QWidget</extends>
+   <header>findwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

@@ -45,6 +45,8 @@ private:
     void runScript();
     void openOptions();
     void showPalette();
+    void updateActions();
+    void returnToEditor();
 
     void changeTab();
     void changeCurrentDocument();

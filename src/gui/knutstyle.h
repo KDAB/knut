@@ -23,6 +23,8 @@ public:
 
     void drawComplexControl(ComplexControl control, const QStyleOptionComplex *option, QPainter *painter,
                             const QWidget *widget = nullptr) const override;
+
+    bool eventFilter(QObject *watched, QEvent *event) override;
 };
 
 } // namespace Gui

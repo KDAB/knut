@@ -76,19 +76,28 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->actionQuit, &QAction::triggered, this, &MainWindow::close);
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openProject);
-    connect(ui->actionCreate_Qrc, &QAction::triggered, this, &MainWindow::createQrc);
-    connect(ui->actionCreate_Ui, &QAction::triggered, this, &MainWindow::createUi);
     connect(ui->actionRun_Script, &QAction::triggered, this, &MainWindow::runScript);
     connect(ui->actionOptions, &QAction::triggered, this, &MainWindow::openOptions);
     connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveDocument);
     connect(ui->actionSaveAll, &QAction::triggered, this, &MainWindow::saveAllDocuments);
     connect(ui->actionShow_Palette, &QAction::triggered, this, &MainWindow::showPalette);
     connect(ui->actionClose_Document, &QAction::triggered, this, &MainWindow::closeDocument);
-    connect(ui->actionSwitch_Header_Source, &QAction::triggered, this, &MainWindow::switchHeaderSource);
 
+    ui->findWidget->hide();
+    connect(ui->actionFind, &QAction::triggered, ui->findWidget, &FindWidget::open);
+    connect(ui->actionReplace, &QAction::triggered, ui->findWidget, &FindWidget::open);
+    connect(ui->actionFind_Next, &QAction::triggered, ui->findWidget, &FindWidget::findNext);
+    connect(ui->actionFind_Previous, &QAction::triggered, ui->findWidget, &FindWidget::findPrevious);
+
+    connect(ui->actionSwitch_Header_Source, &QAction::triggered, this, &MainWindow::switchHeaderSource);
     connect(ui->actionFollow_Symbol, &QAction::triggered, this, &MainWindow::followSymbol);
-    connect(ui->actionSwitch_Function_Declaration_Definition, &QAction::triggered, this,
-            &MainWindow::switchDeclarationDefinition);
+    connect(ui->actionSwitch_Decl_Def, &QAction::triggered, this, &MainWindow::switchDeclarationDefinition);
+
+    connect(ui->actionCreate_Qrc, &QAction::triggered, this, &MainWindow::createQrc);
+    connect(ui->actionCreate_Ui, &QAction::triggered, this, &MainWindow::createUi);
+
+    addAction(ui->actionReturnEditor);
+    connect(ui->actionReturnEditor, &QAction::triggered, this, &MainWindow::returnToEditor);
 
     m_recentProjects = new QMenu(this);
     ui->actionRecent_Projects->setMenu(m_recentProjects);
@@ -108,6 +117,8 @@ MainWindow::MainWindow(QWidget *parent)
         initProject(path);
     if (project->currentDocument())
         changeCurrentDocument();
+
+    updateActions();
 }
 
 void MainWindow::switchHeaderSource()
@@ -214,8 +225,9 @@ void MainWindow::createDock(QWidget *widget, Qt::DockWidgetArea area, QWidget *t
     dock->setObjectName(widget->objectName() + "Dock");
 
     auto titleBar = new QWidget(dock);
+    titleBar->setProperty("panelWidget", true);
     auto layout = new QHBoxLayout(titleBar);
-    layout->setContentsMargins({5, 0, 0, 0});
+    layout->setContentsMargins({6, 0, 0, 0});
     layout->addWidget(new QLabel(widget->windowTitle()));
     if (toolbar) {
         layout->addSpacing(5 * layout->spacing());
@@ -322,6 +334,39 @@ void MainWindow::showPalette()
     m_palette->raise();
 }
 
+void MainWindow::updateActions()
+{
+    auto document = Core::Project::instance()->currentDocument();
+
+    ui->actionClose_Document->setEnabled(document != nullptr);
+
+    auto *textDocument = qobject_cast<Core::TextDocument *>(document);
+    ui->actionFind->setEnabled(textDocument != nullptr);
+    ui->actionReplace->setEnabled(textDocument != nullptr);
+    ui->actionFind_Next->setEnabled(textDocument != nullptr);
+    ui->actionFind_Previous->setEnabled(textDocument != nullptr);
+
+    auto *lspDocument = qobject_cast<Core::LspDocument *>(document);
+    const bool lspEnabled = lspDocument && lspDocument->hasLspClient();
+    ui->actionFollow_Symbol->setEnabled(lspEnabled);
+    ui->actionSwitch_Decl_Def->setEnabled(lspEnabled);
+
+    const bool cppEnabled = lspDocument && qobject_cast<Core::LspDocument *>(document);
+    ui->actionSwitch_Header_Source->setEnabled(cppEnabled);
+
+    const bool rcEnabled = qobject_cast<Core::RcDocument *>(document);
+    ui->actionCreate_Qrc->setEnabled(rcEnabled);
+    ui->actionCreate_Ui->setEnabled(rcEnabled);
+}
+
+void MainWindow::returnToEditor()
+{
+    if (QApplication::focusWidget() == ui->tabWidget->currentWidget())
+        ui->findWidget->hide();
+    else
+        ui->tabWidget->currentWidget()->setFocus(Qt::FocusReason::ShortcutFocusReason);
+}
+
 void MainWindow::changeTab()
 {
     if (ui->tabWidget->count() == 0) {
@@ -383,8 +428,7 @@ static void updateTabTitle(QTabWidget *tabWidget, int index, bool hasChanged)
 void MainWindow::changeCurrentDocument()
 {
     auto project = Core::Project::instance();
-    auto *document = project->currentDocument();
-    const QString fileName = document->fileName();
+    const QString fileName = project->currentDocument()->fileName();
 
     // find index of the document, if any
     int windowIndex = -1;
@@ -413,14 +457,7 @@ void MainWindow::changeCurrentDocument()
 
     const QModelIndex &index = m_fileModel->index(fileName);
     m_projectView->setCurrentIndex(index);
-
-    // Enable/Disable the LSP menu
-    auto *lspDocument = dynamic_cast<Core::LspDocument *>(document);
-    auto hasLsp = lspDocument != nullptr && lspDocument->hasLspClient();
-    this->ui->menu_LSP->setEnabled(hasLsp);
-    for (auto &action : this->ui->menu_LSP->actions()) {
-        action->setEnabled(hasLsp);
-    }
+    updateActions();
 }
 
 } // namespace Gui
