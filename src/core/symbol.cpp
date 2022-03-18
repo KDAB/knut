@@ -74,6 +74,11 @@ namespace Core {
  * picked, e.g. the name of a function. Must be contained by the `range`.
  */
 
+bool Symbol::isNull() const
+{
+    return name.isEmpty();
+}
+
 /*!
  * \qmlmethod Core::CppClass Core::Symbol::toClass()
  * Returns a `Core::CppClass` structure for current `Core::Symbol`.
@@ -82,16 +87,6 @@ namespace Core {
  * current document, adds them in `CppClass` structure, and returns it.
  * If not, then it returns an empty Core::CppClass structure.
  */
-
-/*!
- * \qmlmethod Core::CppFunction Core::Symbol::toFunction()
- * Returns a `Core::CppFunction` structure for current `Core::Symbol`.
- * The method checks if the `Kind` of `Core::Symbol` is either `Kind::Method`
- * or `Kind::Function`. If so then it extracts information from
- * `Symbol::description`, fills it in `CppFunction` structure, and returns it.
- * If not, then it returns an empty Core::CppFunction structure.
- */
-
 CppClass Symbol::toClass()
 {
     LOG("Symbol::toClass");
@@ -100,10 +95,8 @@ CppClass Symbol::toClass()
         QVector<Symbol> members;
         if (auto lspDocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->currentDocument())) {
             for (auto &symbol : lspDocument->symbols()) {
-                if (symbol.name.startsWith(name) && (symbol.name != name)
-                    && ((symbol.kind == Symbol::Method) || (symbol.kind == Symbol::Field))) {
+                if (range.contains(symbol.range) && name != symbol.name)
                     members.append(symbol);
-                }
             }
         }
 
@@ -115,6 +108,14 @@ CppClass Symbol::toClass()
     }
 }
 
+/*!
+ * \qmlmethod Core::CppFunction Core::Symbol::toFunction()
+ * Returns a `Core::CppFunction` structure for current `Core::Symbol`.
+ * The method checks if the `Kind` of `Core::Symbol` is either `Kind::Method`
+ * or `Kind::Function`. If so then it extracts information from
+ * `Symbol::description`, fills it in `CppFunction` structure, and returns it.
+ * If not, then it returns an empty Core::CppFunction structure.
+ */
 CppFunction Symbol::toFunction()
 {
     LOG("Symbol::toFunction");
@@ -144,12 +145,6 @@ CppFunction Symbol::toFunction()
 
         return CppFunction();
     }
-}
-
-bool operator==(const Symbol &left, const Symbol &right)
-{
-    return ((left.name == right.name) && (left.description == right.description) && (left.kind == right.kind)
-            && (left.range == right.range) && (left.selectionRange == right.selectionRange));
 }
 
 } // namespace Core

@@ -3,11 +3,11 @@
 #include <string>
 
 class MyObject {
-  public:
+public:
     MyObject(const std::string& message);
-
+    ~MyObject();
     void sayMessage();
 
-  private:
+private:
     std::string m_message;
 };

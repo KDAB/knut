@@ -103,7 +103,7 @@ private slots:
         verifySwitchDeclarationDefinition(cppfile, headerfile, 9, "sayMessage");
 
         // Cursor at function declaration - select Definition
-        verifySwitchDeclarationDefinition(headerfile, cppfile, 10, "sayMessage");
+        verifySwitchDeclarationDefinition(headerfile, cppfile, 13, "sayMessage");
 
         // Cursor at constructor definition - select Declaration
         cppfile->gotoStartOfDocument();

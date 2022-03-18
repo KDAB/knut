@@ -61,9 +61,10 @@ public:
     TextRange range;
     TextRange selectionRange;
 
-    bool isNull() const { return name.isEmpty(); }
+    bool isNull() const;
+
+    bool operator==(const Symbol &) const = default;
 };
-bool operator==(const Symbol &left, const Symbol &right);
 
 } // namespace Core
 

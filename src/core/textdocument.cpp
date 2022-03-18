@@ -21,22 +21,6 @@
 namespace Core {
 
 /*!
- * \qmltype TextRange
- * \brief Define a range of text in a text document
- * \inqmlmodule Script
- * \since 4.0
- * \sa TextDocument
- */
-/*!
- * \qmlproperty int TextRange::start
- * Start position of the range.
- */
-/*!
- * \qmlproperty int TextRange::end
- * End position of the range.
- */
-
-/*!
  * \qmltype TextDocument
  * \brief Document object for text files.
  * \instantiates Core::TextDocument

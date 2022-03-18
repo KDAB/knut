@@ -59,6 +59,7 @@ set(PROJECT_SOURCES
     textdocument.cpp
     textdocument_p.h
     textrange.h
+    textrange.cpp
     uidocument.h
     uidocument.cpp
     userdialog.h

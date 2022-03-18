@@ -1,6 +1,6 @@
 #include "core/cppclass.h"
-#include "core/cppdocument.h"
 #include "core/knutcore.h"
+#include "core/lspdocument.h"
 #include "core/project.h"
 #include "core/symbol.h"
 
@@ -121,41 +121,21 @@ private slots:
     void toClass()
     {
         Core::KnutCore core;
-        Core::Project::instance()->setRoot(Test::testDataPath() + "/symbol/");
+        Core::Project::instance()->setRoot(Test::testDataPath() + "/cpp-project");
 
-        QVector<Core::Symbol> members;
-        members.append(Core::Symbol {.name = "Base::TestDocument::isParent",
-                                     .description = "bool () const",
-                                     .kind = Core::Symbol::Method,
-                                     .range = Core::TextRange {.start = 86, .end = 107},
-                                     .selectionRange = Core::TextRange {.start = 91, .end = 99}});
-        members.append(Core::Symbol {.name = "Base::TestDocument::childrenCount",
-                                     .description = "int (const int &)",
-                                     .kind = Core::Symbol::Method,
-                                     .range = Core::TextRange {.start = 113, .end = 147},
-                                     .selectionRange = Core::TextRange {.start = 117, .end = 130}});
-        members.append(Core::Symbol {.name = "Base::TestDocument::rows",
-                                     .description = "int",
-                                     .kind = Core::Symbol::Field,
-                                     .range = Core::TextRange {.start = 154, .end = 162},
-                                     .selectionRange = Core::TextRange {.start = 158, .end = 162}});
-        members.append(Core::Symbol {.name = "Base::TestDocument::columns",
-                                     .description = "int",
-                                     .kind = Core::Symbol::Field,
-                                     .range = Core::TextRange {.start = 168, .end = 179},
-                                     .selectionRange = Core::TextRange {.start = 172, .end = 179}});
-        auto testCppClass = Core::CppClass {.name = "Base::TestDocument", .members = std::move(members)};
+        auto lspDocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->open("myobject.h"));
+        Core::Symbol symbol = lspDocument->symbols().at(0);
+        QCOMPARE(symbol.kind, Core::Symbol::Class);
 
-        Core::Symbol testSymbol;
-        auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open("test_cppclass.h"));
-        for (auto &symbol : cppDocument->symbols()) {
-            if (symbol.kind == Core::Symbol::Class) {
-                testSymbol = symbol;
-                break;
-            }
-        }
-
-        QCOMPARE(testSymbol.toClass(), testCppClass);
+        Core::CppClass symbolClass = symbol.toClass();
+        QCOMPARE(symbolClass.name, "MyObject");
+        QCOMPARE(symbolClass.members.size(), 4);
+        QCOMPARE(symbolClass.members.first().name, "MyObject::MyObject");
+        QCOMPARE(symbolClass.members.first().kind, Core::Symbol::Constructor);
+        QCOMPARE(symbolClass.members.at(2).name, "MyObject::sayMessage");
+        QCOMPARE(symbolClass.members.at(2).kind, Core::Symbol::Method);
+        QCOMPARE(symbolClass.members.last().name, "MyObject::m_message");
+        QCOMPARE(symbolClass.members.last().kind, Core::Symbol::Field);
     }
 };
 
