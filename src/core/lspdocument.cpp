@@ -55,75 +55,76 @@ bool LspDocument::hasLspClient() const
 QVector<Core::Symbol> LspDocument::symbols() const
 {
     LOG("LspDocument::symbols");
-
+    if (!checkClient())
+        return {};
     return m_cache->symbols();
 }
 
+/*!
+ * \qmlmethod LspDocument::followSymbol()
+ * Follow the symbol under the cursor.
+ *
+ * - Go to the declaration, if the symbol under cursor is a use
+ * - Go to the declaration, if the symbol under cursor is a function definition
+ * - Go to the definition, if the symbol under cursor is a function declaration
+ */
 Document *LspDocument::followSymbol()
 {
     LOG("LspDocument::followSymbol");
+    if (!checkClient())
+        return {};
 
-    if (!client()) {
-        spdlog::error("followSymbol: LspDocument is missing LSP client!");
-        return nullptr;
-    }
-
-    Q_ASSERT(textEdit());
-
-    auto cursor = textEdit()->textCursor();
     // Set the cursor position to the beginning of any selected text.
     // That way, calling followSymbol twice in a row causes Clangd
     // to switch between delcaration and definition.
-    cursor.setPosition(cursor.selectionStart());
-    auto line = cursor.blockNumber();
-    auto character = cursor.positionInBlock();
+    auto cursor = textEdit()->textCursor();
+    return followSymbol(cursor.selectionStart());
+}
+
+/**
+ * At least with clangd, the "declaration" LSP call acts like followSymbol, it will:
+ * - Go to the declaration, if the symbol under cursor is a use
+ * - Go to the declaration, if the symbol under cursor is a definition
+ * - Go to the definition, if the symbol under cursor is a declaration
+ */
+Document *LspDocument::followSymbol(int pos)
+{
+    auto cursor = textEdit()->textCursor();
+    cursor.setPosition(pos);
 
     Lsp::DeclarationParams params;
     params.textDocument.uri = toUri();
-    params.position.line = line;
-    params.position.character = character;
+    params.position.line = cursor.blockNumber();
+    params.position.character = cursor.positionInBlock();
 
-    // At least with clangd, the "declaration" LSP call acts like followSymbol, it will:
-    // - Go to the declaration, if the symbol under cursor is a use
-    // - Go to the declaration, if the symbol under cursor is a definition
-    // - Go to the definition, if the symbol under cursor is a declaration
     auto result = client()->declaration(std::move(params));
 
-    if (!result.has_value()) {
-        spdlog::warn("followSymbol: Empty return value!");
-        return nullptr;
-    }
+    Q_ASSERT(result.has_value());
 
     auto locations = std::vector<Lsp::Location>();
 
     if (std::holds_alternative<Lsp::Location>(*result)) {
         auto location = std::get<Lsp::Location>(*result);
         locations.push_back(location);
+
     } else if (std::holds_alternative<std::vector<Lsp::Location>>(*result)) {
         locations = std::move(std::get<std::vector<Lsp::Location>>(*result));
 
     } else if (std::holds_alternative<std::vector<Lsp::LocationLink>>(*result)) {
         auto locationLinks = std::get<std::vector<Lsp::LocationLink>>(*result);
-
-        for (const auto &link : locationLinks) {
-            Lsp::Location location = {.uri = link.targetUri, .range = link.targetSelectionRange};
-            locations.push_back(location);
-        }
-    } else {
-        spdlog::warn("followSymbol: Unknown return type!");
+        for (const auto &link : locationLinks)
+            locations.push_back({link.targetUri, link.targetSelectionRange});
     }
 
-    if (locations.empty()) {
+    if (locations.empty())
         return nullptr;
-    }
 
-    if (locations.size() > 1) {
-        spdlog::warn("followSymbol: Multiple locations returned!");
-    }
+    if (locations.size() > 1)
+        spdlog::warn("LspDocument::followSymbol: Multiple locations returned!");
     // Heuristic: If multiple locations were found, use the last one.
     auto location = locations.back();
 
-    QUrl url(QString::fromStdString(location.uri));
+    auto url = QUrl::fromEncoded(QByteArray::fromStdString(location.uri));
 
     Q_ASSERT(url.isLocalFile());
     auto filepath = url.toLocalFile();
@@ -133,11 +134,9 @@ Document *LspDocument::followSymbol()
     if (document) {
         auto *lspDocument = dynamic_cast<LspDocument *>(document);
         if (lspDocument) {
-            auto cursor = lspDocument->textEdit()->textCursor();
-
             lspDocument->selectRange(lspDocument->toRange(location.range));
         } else {
-            spdlog::warn("followSymbol: Opened document '{}' is not an LspDocument",
+            spdlog::warn("LspDocument::followSymbol: Opened document '{}' is not an LspDocument",
                          document->fileName().toStdString());
         }
     }
@@ -145,11 +144,15 @@ Document *LspDocument::followSymbol()
     return document;
 }
 
+/*!
+ * \qmlmethod LspDocument::switchDeclarationDefinition()
+ * Switch between the function declaration or definition.
+ */
 Document *LspDocument::switchDeclarationDefinition()
 {
     LOG("LspDocument::switchDeclarationDefinition");
-
-    Q_ASSERT(textEdit());
+    if (!checkClient())
+        return {};
 
     auto cursor = textEdit()->textCursor();
     auto symbolList = symbols();
@@ -162,13 +165,11 @@ Document *LspDocument::switchDeclarationDefinition()
     });
 
     if (currentFunction == symbolList.end()) {
-        spdlog::info("switchDeclarationDefinition: Cursor is currently not within a function!");
+        spdlog::info("LspDocument::switchDeclarationDefinition: Cursor is currently not within a function!");
         return nullptr;
     }
 
-    selectRange(currentFunction->selectionRange);
-
-    return followSymbol();
+    return followSymbol(currentFunction->selectionRange.start);
 }
 
 /*!
@@ -184,6 +185,8 @@ Document *LspDocument::switchDeclarationDefinition()
 void LspDocument::selectSymbol(const QString &name, int options)
 {
     LOG("LspDocument::selectSymbol", name, options);
+    if (!checkClient())
+        return;
     auto symbol = findSymbol(name, options);
     if (!symbol.isNull())
         selectRange(symbol.selectionRange);
@@ -200,6 +203,8 @@ void LspDocument::selectSymbol(const QString &name, int options)
 Symbol LspDocument::findSymbol(const QString &name, int options) const
 {
     LOG("LspDocument::findSymbol", name, options);
+    if (!checkClient())
+        return {};
 
     const auto &symbols = m_cache->symbols();
     const auto regexp = (options & FindRegexp) ? createRegularExpression(name, options) : QRegularExpression {};
@@ -270,6 +275,16 @@ int LspDocument::toPos(const Lsp::Position &pos) const
 TextRange LspDocument::toRange(const Lsp::Range &range) const
 {
     return {toPos(range.start), toPos(range.end)};
+}
+
+bool LspDocument::checkClient() const
+{
+    Q_ASSERT(textEdit());
+    if (!client()) {
+        spdlog::error("LspDocument {} has no LSP client - API not available", fileName().toStdString());
+        return false;
+    }
+    return true;
 }
 
 void LspDocument::changeContent(int position, int charsRemoved, int charsAdded)

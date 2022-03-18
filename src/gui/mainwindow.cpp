@@ -428,6 +428,8 @@ static void updateTabTitle(QTabWidget *tabWidget, int index, bool hasChanged)
 void MainWindow::changeCurrentDocument()
 {
     auto project = Core::Project::instance();
+    if (!project->currentDocument())
+        return;
     const QString fileName = project->currentDocument()->fileName();
 
     // find index of the document, if any

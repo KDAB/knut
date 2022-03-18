@@ -24,10 +24,10 @@ public:
 
     Q_INVOKABLE Core::Symbol findSymbol(const QString &name, int options = NoFindFlags) const;
     Q_INVOKABLE QVector<Core::Symbol> symbols() const;
-    Q_INVOKABLE Document *followSymbol();
-    Q_INVOKABLE Document *switchDeclarationDefinition();
 
 public slots:
+    Document *followSymbol();
+    Document *switchDeclarationDefinition();
     void selectSymbol(const QString &name, int options = NoFindFlags);
     bool hasLspClient() const;
 
@@ -43,6 +43,8 @@ protected:
     TextRange toRange(const Lsp::Range &range) const;
 
 private:
+    bool checkClient() const;
+    Document *followSymbol(int pos);
     void changeContent(int position, int charsRemoved, int charsAdded);
 
     friend LspCache;
