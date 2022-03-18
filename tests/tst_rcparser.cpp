@@ -13,7 +13,7 @@ class TestRcParser : public QObject
 private slots:
     void testDialog()
     {
-        Test::LogSilencer ls {"rc"};
+        Test::LogSilencer ls;
         Data data = parse(Test::testDataPath() + "/mfc/dialog/dialog.rc");
 
         QCOMPARE(data.isValid, true);
@@ -39,7 +39,7 @@ private slots:
 
     void testAccelerator()
     {
-        Test::LogSilencer ls {"rc"};
+        Test::LogSilencer ls;
         Data data = parse(Test::testDataPath() + "/rcfiles/accelerators/Accelerators.rc");
 
         QCOMPARE(data.isValid, true);
@@ -63,7 +63,7 @@ private slots:
 
     void testLuaDebugger()
     {
-        Test::LogSilencer ls {"rc"};
+        Test::LogSilencer ls;
         Data data = parse(Test::testDataPath() + "/rcfiles/luaDebugger/LuaDebugger.rc");
 
         QCOMPARE(data.isValid, true);
@@ -117,14 +117,14 @@ private slots:
 
     void test2048Game()
     {
-        Test::LogSilencer ls {"rc"};
+        Test::LogSilencer ls;
         Data data = parse(Test::testDataPath() + "/rcfiles/2048Game/2048Game.rc");
         QCOMPARE(data.isValid, true);
     }
 
     void testCryEdit()
     {
-        Test::LogSilencer ls {"rc"};
+        Test::LogSilencer ls;
         Data data = parse(Test::testDataPath() + "/rcfiles/cryEdit/CryEdit.rc");
         QCOMPARE(data.isValid, true);
     }

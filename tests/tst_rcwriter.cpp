@@ -17,7 +17,7 @@ class TestRcWriter : public QObject
 private slots:
     void testQrc()
     {
-        Test::LogSilencer ls {"rc"};
+        Test::LogSilencer ls;
         Data data = parse(Test::testDataPath() + "/rcfiles/2048Game/2048Game.rc");
 
         // Defaut settings test
@@ -53,7 +53,7 @@ private slots:
 
     void testConvertDialog()
     {
-        Test::LogSilencer ls {"rc"};
+        Test::LogSilencer ls;
         Data data = parse(Test::testDataPath() + "/rcfiles/2048Game/2048Game.rc");
         auto result = convertDialog(data, data.dialogs.value(1), RcCore::Widget::AllFlags);
 
@@ -76,7 +76,7 @@ private slots:
 
     void testWriteDialog()
     {
-        Test::LogSilencer ls {"rc"};
+        Test::LogSilencer ls;
         Data data = parse(Test::testDataPath() + "/rcfiles/cryEdit/CryEdit.rc");
 
         QUiLoader loader;
@@ -110,7 +110,7 @@ private slots:
 
     void testConvertAction()
     {
-        Test::LogSilencer ls {"rc"};
+        Test::LogSilencer ls;
         Data data = parse(Test::testDataPath() + "/rcfiles/2048Game/2048Game.rc");
 
         // MainFrame menu and shortcuts and toolbar

@@ -11,8 +11,6 @@
 class TestLspDocument : public QObject
 {
     Q_OBJECT
-private slots:
-    void initTestCase() { Q_INIT_RESOURCE(core); }
 
     void verifySymbol(Core::LspDocument *document, const Core::Symbol &symbol, const QString &name,
                       Core::Symbol::Kind kind, const QString &selectionText)
@@ -23,6 +21,20 @@ private slots:
         document->selectRange(symbol.selectionRange);
         QCOMPARE(document->selectedText(), selectionText);
     }
+
+    void verifySwitchDeclarationDefinition(Core::LspDocument *sourcefile, Core::LspDocument *targetfile, int line,
+                                           const QString &selectedText)
+    {
+        auto result = dynamic_cast<Core::LspDocument *>(sourcefile->switchDeclarationDefinition());
+        QVERIFY(result);
+        QCOMPARE(result, targetfile);
+        auto cursor = result->textEdit()->textCursor();
+        QCOMPARE(cursor.blockNumber(), line - 1);
+        QCOMPARE(cursor.selectedText(), selectedText);
+    }
+
+private slots:
+    void initTestCase() { Q_INIT_RESOURCE(core); }
 
     void symbols()
     {
@@ -109,6 +121,9 @@ private slots:
         Core::Project::instance()->setRoot(Test::testDataPath() + "/cpp-project/");
         auto lspdocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->open("main.cpp"));
 
+        // Pre-open files, so clang has time to index them
+        Core::Project::instance()->get("myobject.cpp");
+
         // Select the first use of the MyObject -> goTo declaration of the instance
         QVERIFY(lspdocument->find("object.sayMessage()"));
 
@@ -141,7 +156,7 @@ private slots:
         QVERIFY(result);
         QVERIFY(result->fileName().endsWith("myobject.cpp"));
         cursor = result->textEdit()->textCursor();
-        QCOMPARE(cursor.blockNumber(), 9); // lines are 0-indexed, so 9 => line 10
+        QCOMPARE(cursor.blockNumber(), 12); // lines are 0-indexed, so 12 => line 13
         QCOMPARE(cursor.selectedText(), QString("sayMessage"));
 
         // Selected a function definition -> goTo function declaration
@@ -151,17 +166,6 @@ private slots:
         cursor = result->textEdit()->textCursor();
         QCOMPARE(cursor.blockNumber(), 8); // lines are 0-indexed, so 9 => line 10
         QCOMPARE(cursor.selectedText(), QString("sayMessage"));
-    }
-
-    void verifySwitchDeclarationDefinition(Core::LspDocument *sourcefile, Core::LspDocument *targetfile, int line,
-                                           const QString &selectedText)
-    {
-        auto result = dynamic_cast<Core::LspDocument *>(sourcefile->switchDeclarationDefinition());
-        QVERIFY(result);
-        QCOMPARE(result, targetfile);
-        auto cursor = result->textEdit()->textCursor();
-        QCOMPARE(cursor.blockNumber(), line - 1);
-        QCOMPARE(cursor.selectedText(), selectedText);
     }
 
     void switchDeclarationDefinition()
