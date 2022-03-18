@@ -77,58 +77,92 @@ private slots:
         QCOMPARE(ddxMap.value("IDC_MOUSEECHO"), "m_MouseEcho");
     }
 
+    void verifySymbol(Core::CppDocument *document, const Core::Symbol &symbol, const QString &name,
+                      Core::Symbol::Kind kind, const QString &selectionText)
+    {
+        QVERIFY(!symbol.isNull());
+        QCOMPARE(symbol.name, name);
+        QCOMPARE(symbol.kind, kind);
+        document->selectRange(symbol.selectionRange);
+        QCOMPARE(document->selectedText(), selectionText);
+    }
+
     void symbols()
     {
         CHECK_CLANGD_VERSION;
 
         Core::KnutCore core;
-        Core::Project::instance()->setRoot(Test::testDataPath() + "/mfc/tutorial");
+        auto project = Core::Project::instance();
+        project->setRoot(Test::testDataPath() + "/cpp-project");
 
-        // get symbols
-        auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open("TutorialDlg.cpp"));
+        auto cppDocument = qobject_cast<Core::CppDocument *>(project->open("myobject.cpp"));
         const auto cppSymbols = cppDocument->symbols();
+        QCOMPARE(cppSymbols.size(), 2);
 
-        QCOMPARE(cppSymbols.size(), 15);
-        const auto constructor = cppSymbols.first();
-        QCOMPARE(constructor.kind, Core::Symbol::Constructor);
-        QCOMPARE(constructor.name, "CTutorialDlg::CTutorialDlg");
-        cppDocument->selectRange(constructor.selectionRange);
-        const QString constructorName = cppDocument->selectedText();
-        QCOMPARE(constructorName, "CTutorialDlg");
+        auto constructor = cppSymbols.first();
+        verifySymbol(cppDocument, constructor, "MyObject::MyObject", Core::Symbol::Kind::Constructor, "MyObject");
         cppDocument->selectRange(constructor.range);
-        const QString constructorCode = cppDocument->selectedText();
-        QVERIFY(constructorCode.startsWith("CTutorialDlg::CTutorialDlg(CWnd* pParent)"));
-        QVERIFY(constructorCode.endsWith('}'));
+        QCOMPARE(cppDocument->selectedText(),
+                 QString(
+                     R"(MyObject::MyObject(const std::string& message)
+  : m_message(message)
+{})"));
 
-        QCOMPARE(cppSymbols.at(1).kind, Core::Symbol::Method);
-        QCOMPARE(cppSymbols.at(1).name, "CTutorialDlg::DoDataExchange");
-        QCOMPARE(cppSymbols.at(1).description, "void (CDataExchange *)");
+        auto function = cppSymbols.last();
+        verifySymbol(cppDocument, function, "MyObject::sayMessage", Core::Symbol::Kind::Method, "sayMessage");
+        cppDocument->selectRange(function.range);
+        QCOMPARE(cppDocument->selectedText(),
+                 QString(
+                     R"EOF(void MyObject::sayMessage() {
+  std::cout << m_message << std::endl;
+})EOF"));
 
-        auto hDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open("TutorialDlg.h"));
-        const auto hSymbols = hDocument->symbols();
+        auto headerDocument = cppDocument->openHeaderSource();
+        QVERIFY(headerDocument);
+        QVERIFY(headerDocument->fileName().endsWith("myobject.h"));
 
-        QCOMPARE(hSymbols.size(), 26);
-        QCOMPARE(hSymbols.first().kind, Core::Symbol::Class);
-        QCOMPARE(hSymbols.first().name, "CTutorialDlg");
+        const auto headerSymbols = headerDocument->symbols();
+        QCOMPARE(headerSymbols.size(), 4);
 
-        QCOMPARE(hSymbols.last().kind, Core::Symbol::Field);
-        QCOMPARE(hSymbols.last().name, "CTutorialDlg::m_hIcon");
-        hDocument->selectRange(hSymbols.last().range);
-        QCOMPARE(hDocument->selectedText(), "HICON m_hIcon");
+        verifySymbol(headerDocument, headerSymbols.at(0), "MyObject", Core::Symbol::Kind::Class, "MyObject");
+        verifySymbol(headerDocument, headerSymbols.at(1), "MyObject::MyObject", Core::Symbol::Kind::Constructor,
+                     "MyObject");
+        verifySymbol(headerDocument, headerSymbols.at(2), "MyObject::sayMessage", Core::Symbol::Kind::Method,
+                     "sayMessage");
+        verifySymbol(headerDocument, headerSymbols.at(3), "MyObject::m_message", Core::Symbol::Kind::Field,
+                     "m_message");
+    }
 
-        // findSymbol
-        auto symbol = hDocument->findSymbol("DoDataExchange");
-        QCOMPARE(symbol.description, "void (int *)");
-        symbol = hDocument->findSymbol("DoDataExchange", Core::TextDocument::FindWholeWords);
+    void findSymbol()
+    {
+        CHECK_CLANGD_VERSION;
+
+        Core::KnutCore core;
+        auto project = Core::Project::instance();
+        project->setRoot(Test::testDataPath() + "/cpp-project");
+
+        auto headerDocument = qobject_cast<Core::CppDocument *>(project->open("myobject.h"));
+
+        auto symbol = headerDocument->findSymbol("MyObject", Core::TextDocument::FindWholeWords);
+        verifySymbol(headerDocument, symbol, "MyObject", Core::Symbol::Kind::Class, "MyObject");
+
+        symbol = headerDocument->findSymbol("m_message", Core::TextDocument::FindWholeWords);
         QVERIFY(symbol.isNull());
-        symbol = hDocument->findSymbol("CTutorialDlg::DoDataExchange", Core::TextDocument::FindWholeWords);
-        QVERIFY(!symbol.isNull());
-        symbol = hDocument->findSymbol("vsliderbar", Core::TextDocument::FindCaseSensitively);
+
+        symbol = headerDocument->findSymbol("m_message");
+        verifySymbol(headerDocument, symbol, "MyObject::m_message", Core::Symbol::Kind::Field, "m_message");
+
+        symbol = headerDocument->findSymbol("saymessage", Core::TextDocument::FindCaseSensitively);
         QVERIFY(symbol.isNull());
-        symbol = hDocument->findSymbol("vsliderbar");
-        QVERIFY(!symbol.isNull());
-        symbol = hDocument->findSymbol("On.*Clicked.*", Core::TextDocument::FindRegexp);
-        QVERIFY(!symbol.isNull());
+
+        symbol = headerDocument->findSymbol("saymessage");
+        verifySymbol(headerDocument, symbol, "MyObject::sayMessage", Core::Symbol::Kind::Method, "sayMessage");
+
+        symbol = headerDocument->findSymbol("m.message");
+        QVERIFY(symbol.isNull());
+
+        symbol = headerDocument->findSymbol("m.message", Core::TextDocument::FindRegexp);
+        verifySymbol(headerDocument, symbol, "MyObject::m_message", Core::Symbol::Kind::Field, "m_message");
     }
 };
 
