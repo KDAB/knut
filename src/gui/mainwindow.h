@@ -55,6 +55,7 @@ private:
 
     // LSP
     void followSymbol();
+    void switchDeclarationDefinition();
 
 private:
     std::unique_ptr<Ui::MainWindow> ui;

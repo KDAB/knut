@@ -84,6 +84,7 @@
      <string>&amp;LSP</string>
     </property>
     <addaction name="actionFollow_Symbol"/>
+    <addaction name="actionSwitch_Function_Declaration_Definition"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Rc"/>
@@ -189,6 +190,17 @@
    </property>
    <property name="shortcut">
     <string>F2</string>
+   </property>
+  </action>
+  <action name="actionSwitch_Function_Declaration_Definition">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Switch Function Declaration/Definition</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+F2</string>
    </property>
   </action>
  </widget>

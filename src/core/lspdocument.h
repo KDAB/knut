@@ -24,7 +24,8 @@ public:
 
     Q_INVOKABLE Core::Symbol findSymbol(const QString &name, int options = NoFindFlags) const;
     Q_INVOKABLE QVector<Core::Symbol> symbols() const;
-    Q_INVOKABLE Document *followSymbol() const;
+    Q_INVOKABLE Document *followSymbol();
+    Q_INVOKABLE Document *switchDeclarationDefinition();
 
 public slots:
     void selectSymbol(const QString &name, int options = NoFindFlags);

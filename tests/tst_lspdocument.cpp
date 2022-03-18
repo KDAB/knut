@@ -65,6 +65,54 @@ private slots:
         QCOMPARE(cursor.blockNumber(), 8); // lines are 0-indexed, so 9 => line 10
         QCOMPARE(cursor.selectedText(), QString("sayMessage"));
     }
+
+    void verifySwitchDeclarationDefinition(Core::LspDocument *sourcefile, Core::LspDocument *targetfile, int line,
+                                           const QString &selectedText)
+    {
+        auto result = dynamic_cast<Core::LspDocument *>(sourcefile->switchDeclarationDefinition());
+        QVERIFY(result);
+        QCOMPARE(result, targetfile);
+        auto cursor = result->textEdit()->textCursor();
+        QCOMPARE(cursor.blockNumber(), line - 1);
+        QCOMPARE(cursor.selectedText(), selectedText);
+    }
+
+    void switchDeclarationDefinition()
+    {
+        CHECK_CLANGD_VERSION;
+
+        Core::KnutCore core;
+        auto project = Core::Project::instance();
+        project->setRoot(Test::testDataPath() + "/cpp-project/");
+        auto mainfile = qobject_cast<Core::LspDocument *>(project->open("main.cpp"));
+        auto cppfile = qobject_cast<Core::LspDocument *>(project->open("myobject.cpp"));
+        auto headerfile = qobject_cast<Core::LspDocument *>(project->open("myobject.h"));
+
+        // Cursor outside of a function - do nothing
+        mainfile->gotoStartOfDocument();
+        auto oldcursor = mainfile->textEdit()->textCursor();
+        QVERIFY(!mainfile->switchDeclarationDefinition());
+        QCOMPARE(mainfile->textEdit()->textCursor(), oldcursor);
+
+        // Cursor within a function without declaration -> Select definition
+        QVERIFY(mainfile->find("object.sayMessage()"));
+        verifySwitchDeclarationDefinition(mainfile, mainfile, 5, "main");
+
+        // Cursor within function definition - select Declaration
+        QVERIFY(cppfile->find("cout"));
+        verifySwitchDeclarationDefinition(cppfile, headerfile, 9, "sayMessage");
+
+        // Cursor at function declaration - select Definition
+        verifySwitchDeclarationDefinition(headerfile, cppfile, 10, "sayMessage");
+
+        // Cursor at constructor definition - select Declaration
+        cppfile->gotoStartOfDocument();
+        QVERIFY(cppfile->find("MyObject::MyObject"));
+        verifySwitchDeclarationDefinition(cppfile, headerfile, 7, "MyObject");
+
+        // Cursor at constructor declaration - select Definition
+        verifySwitchDeclarationDefinition(headerfile, cppfile, 6, "MyObject");
+    }
 };
 
 QTEST_MAIN(TestLspDocument)

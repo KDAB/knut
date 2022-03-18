@@ -8,6 +8,7 @@
 #include "lsp/types.h"
 
 #include "project.h"
+#include "symbol.h"
 
 #include <QPlainTextEdit>
 #include <QTextBlock>
@@ -58,7 +59,7 @@ QVector<Core::Symbol> LspDocument::symbols() const
     return m_cache->symbols();
 }
 
-Document *LspDocument::followSymbol() const
+Document *LspDocument::followSymbol()
 {
     LOG("LspDocument::followSymbol");
 
@@ -142,6 +143,32 @@ Document *LspDocument::followSymbol() const
     }
 
     return document;
+}
+
+Document *LspDocument::switchDeclarationDefinition()
+{
+    LOG("LspDocument::switchDeclarationDefinition");
+
+    Q_ASSERT(textEdit());
+
+    auto cursor = textEdit()->textCursor();
+    auto symbolList = symbols();
+
+    auto currentFunction = std::find_if(symbolList.begin(), symbolList.end(), [&cursor](const auto &symbol) {
+        auto isInRange = symbol.range.start <= cursor.position() && cursor.position() <= symbol.range.end;
+        auto isFunction = symbol.kind == Symbol::Kind::Function || symbol.kind == Symbol::Kind::Constructor
+            || symbol.kind == Symbol::Kind::Method;
+        return isInRange && isFunction;
+    });
+
+    if (currentFunction == symbolList.end()) {
+        spdlog::info("switchDeclarationDefinition: Cursor is currently not within a function!");
+        return nullptr;
+    }
+
+    selectRange(currentFunction->selectionRange);
+
+    return followSymbol();
 }
 
 /*!

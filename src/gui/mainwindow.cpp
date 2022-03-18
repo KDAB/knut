@@ -87,6 +87,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionSwitch_Header_Source, &QAction::triggered, this, &MainWindow::switchHeaderSource);
 
     connect(ui->actionFollow_Symbol, &QAction::triggered, this, &MainWindow::followSymbol);
+    connect(ui->actionSwitch_Function_Declaration_Definition, &QAction::triggered, this,
+            &MainWindow::switchDeclarationDefinition);
 
     m_recentProjects = new QMenu(this);
     ui->actionRecent_Projects->setMenu(m_recentProjects);
@@ -252,6 +254,16 @@ void MainWindow::followSymbol()
 
     if (document) {
         document->followSymbol();
+    }
+}
+
+void MainWindow::switchDeclarationDefinition()
+{
+    auto *project = Core::Project::instance();
+    auto *document = dynamic_cast<Core::LspDocument *>(project->currentDocument());
+
+    if (document) {
+        document->switchDeclarationDefinition();
     }
 }
 
