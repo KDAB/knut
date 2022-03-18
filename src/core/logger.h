@@ -7,6 +7,8 @@
 
 #include <vector>
 
+#include <spdlog/spdlog.h>
+
 namespace Core {
 
 class HistoryModel : public QAbstractTableModel
@@ -87,8 +89,12 @@ QString toString(const T &data)
 class LoggerDisabler
 {
 public:
-    LoggerDisabler();
+    LoggerDisabler(bool silenceAll = false);
     ~LoggerDisabler();
+
+private:
+    bool m_silenceAll = false;
+    spdlog::level::level_enum m_level = spdlog::level::off;
 };
 
 /**

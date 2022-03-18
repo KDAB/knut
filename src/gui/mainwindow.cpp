@@ -14,14 +14,15 @@
 #include "runscriptdialog.h"
 #include "uiview.h"
 
+#include "core/cppdocument.h"
 #include "core/document.h"
 #include "core/imagedocument.h"
+#include "core/logger.h"
 #include "core/project.h"
 #include "core/rcdocument.h"
 #include "core/textdocument.h"
 #include "core/uidocument.h"
 #include "rcui/rcfileview.h"
-#include <core/cppdocument.h>
 
 #include <QApplication>
 #include <QDir>
@@ -431,6 +432,12 @@ void MainWindow::changeCurrentDocument()
     if (!project->currentDocument())
         return;
     const QString fileName = project->currentDocument()->fileName();
+
+    // open the header/source file for C++, so LSP server can also index it
+    if (auto cppDocument = qobject_cast<Core::CppDocument *>(project->currentDocument())) {
+        Core::LoggerDisabler ld(true);
+        project->get(cppDocument->correspondingHeaderSource());
+    }
 
     // find index of the document, if any
     int windowIndex = -1;

@@ -121,14 +121,21 @@ void HistoryModel::addData(LogData &&data, bool merge)
     emit dataChanged(lastIndex, lastIndex);
 }
 
-LoggerDisabler::LoggerDisabler()
+LoggerDisabler::LoggerDisabler(bool silenceAll)
+    : m_silenceAll(silenceAll)
 {
     LoggerObject::m_canLog = false;
+    if (m_silenceAll) {
+        m_level = spdlog::default_logger()->level();
+        spdlog::default_logger()->set_level(spdlog::level::off);
+    }
 }
 
 LoggerDisabler::~LoggerDisabler()
 {
     LoggerObject::m_canLog = true;
+    if (m_silenceAll)
+        spdlog::default_logger()->set_level(m_level);
 }
 
 } // namespace Core
