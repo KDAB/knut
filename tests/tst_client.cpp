@@ -56,28 +56,28 @@ private slots:
         Lsp::Client client("cpp", "clangd", {"--log=verbose", "--pretty"});
         auto logs = Test::LogSilencers {"cpp_client", "cpp_server", "cpp_messages"};
 
-        client.initialize(Test::testDataPath() + "/mfc/dialog");
+        client.initialize(Test::testDataPath() + "/cpp-project");
 
-        QFile file(Test::testDataPath() + "/mfc/dialog/dialog.cpp");
+        QFile file(Test::testDataPath() + "/cpp-project/myobject.cpp");
         if (file.open(QIODevice::ReadOnly)) {
             QTextStream stream(&file);
             Lsp::DidOpenTextDocumentParams openParams;
-            openParams.textDocument.uri = Lsp::Client::toUri(Test::testDataPath() + "/mfc/dialog/dialog.cpp");
+            openParams.textDocument.uri = Lsp::Client::toUri(Test::testDataPath() + "/cpp-project/myobject.cpp");
             openParams.textDocument.version = 1;
             openParams.textDocument.text = stream.readAll().toStdString();
             openParams.textDocument.languageId = "cpp";
             client.didOpen(std::move(openParams));
 
             Lsp::DocumentSymbolParams params;
-            params.textDocument.uri = Lsp::Client::toUri(Test::testDataPath() + "/mfc/dialog/dialog.cpp");
+            params.textDocument.uri = Lsp::Client::toUri(Test::testDataPath() + "/cpp-project/myobject.cpp");
             auto result = client.documentSymbol(std::move(params));
             QVERIFY(std::holds_alternative<std::vector<Lsp::DocumentSymbol>>(result.value()));
             auto symbols = std::get<std::vector<Lsp::DocumentSymbol>>(result.value());
             QVERIFY(!symbols.empty());
             auto lastSymbol = symbols.back();
-            QCOMPARE(lastSymbol.name, "CdialogApp::InitInstance");
-            QCOMPARE(lastSymbol.range.start.line, 32);
-            QCOMPARE(lastSymbol.range.end.line, 83);
+            QCOMPARE(lastSymbol.name, "MyObject::sayMessage");
+            QCOMPARE(lastSymbol.range.start.line, 12);
+            QCOMPARE(lastSymbol.range.end.line, 14);
         }
 
         client.shutdown();
