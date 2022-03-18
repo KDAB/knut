@@ -14,6 +14,93 @@ class TestLspDocument : public QObject
 private slots:
     void initTestCase() { Q_INIT_RESOURCE(core); }
 
+    void verifySymbol(Core::LspDocument *document, const Core::Symbol &symbol, const QString &name,
+                      Core::Symbol::Kind kind, const QString &selectionText)
+    {
+        QVERIFY(!symbol.isNull());
+        QCOMPARE(symbol.name, name);
+        QCOMPARE(symbol.kind, kind);
+        document->selectRange(symbol.selectionRange);
+        QCOMPARE(document->selectedText(), selectionText);
+    }
+
+    void symbols()
+    {
+        CHECK_CLANGD_VERSION;
+
+        Core::KnutCore core;
+        auto project = Core::Project::instance();
+        project->setRoot(Test::testDataPath() + "/cpp-project");
+
+        auto cppDocument = qobject_cast<Core::LspDocument *>(project->open("myobject.cpp"));
+        const auto cppSymbols = cppDocument->symbols();
+        QCOMPARE(cppSymbols.size(), 3);
+
+        auto constructor = cppSymbols.first();
+        verifySymbol(cppDocument, constructor, "MyObject::MyObject", Core::Symbol::Kind::Constructor, "MyObject");
+        cppDocument->selectRange(constructor.range);
+        QCOMPARE(cppDocument->selectedText(),
+                 QString(
+                     R"(MyObject::MyObject(const std::string& message)
+  : m_message(message)
+{})"));
+
+        auto function = cppSymbols.last();
+        verifySymbol(cppDocument, function, "MyObject::sayMessage", Core::Symbol::Kind::Method, "sayMessage");
+        cppDocument->selectRange(function.range);
+        QCOMPARE(cppDocument->selectedText(),
+                 QString(
+                     R"EOF(void MyObject::sayMessage() {
+  std::cout << m_message << std::endl;
+})EOF"));
+
+        auto headerDocument = qobject_cast<Core::LspDocument *>(project->open("myobject.h"));
+
+        const auto headerSymbols = headerDocument->symbols();
+        QCOMPARE(headerSymbols.size(), 5);
+
+        verifySymbol(headerDocument, headerSymbols.at(0), "MyObject", Core::Symbol::Kind::Class, "MyObject");
+        verifySymbol(headerDocument, headerSymbols.at(1), "MyObject::MyObject", Core::Symbol::Kind::Constructor,
+                     "MyObject");
+        verifySymbol(headerDocument, headerSymbols.at(2), "MyObject::~MyObject", Core::Symbol::Kind::Constructor, "~");
+        verifySymbol(headerDocument, headerSymbols.at(3), "MyObject::sayMessage", Core::Symbol::Kind::Method,
+                     "sayMessage");
+        verifySymbol(headerDocument, headerSymbols.at(4), "MyObject::m_message", Core::Symbol::Kind::Field,
+                     "m_message");
+    }
+
+    void findSymbol()
+    {
+        CHECK_CLANGD_VERSION;
+
+        Core::KnutCore core;
+        auto project = Core::Project::instance();
+        project->setRoot(Test::testDataPath() + "/cpp-project");
+
+        auto headerDocument = qobject_cast<Core::LspDocument *>(project->open("myobject.h"));
+
+        auto symbol = headerDocument->findSymbol("MyObject", Core::TextDocument::FindWholeWords);
+        verifySymbol(headerDocument, symbol, "MyObject", Core::Symbol::Kind::Class, "MyObject");
+
+        symbol = headerDocument->findSymbol("m_message", Core::TextDocument::FindWholeWords);
+        QVERIFY(symbol.isNull());
+
+        symbol = headerDocument->findSymbol("m_message");
+        verifySymbol(headerDocument, symbol, "MyObject::m_message", Core::Symbol::Kind::Field, "m_message");
+
+        symbol = headerDocument->findSymbol("saymessage", Core::TextDocument::FindCaseSensitively);
+        QVERIFY(symbol.isNull());
+
+        symbol = headerDocument->findSymbol("saymessage");
+        verifySymbol(headerDocument, symbol, "MyObject::sayMessage", Core::Symbol::Kind::Method, "sayMessage");
+
+        symbol = headerDocument->findSymbol("m.message");
+        QVERIFY(symbol.isNull());
+
+        symbol = headerDocument->findSymbol("m.message", Core::TextDocument::FindRegexp);
+        verifySymbol(headerDocument, symbol, "MyObject::m_message", Core::Symbol::Kind::Field, "m_message");
+    }
+
     void followSymbol()
     {
         CHECK_CLANGD_VERSION;
