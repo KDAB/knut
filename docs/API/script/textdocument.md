@@ -60,10 +60,13 @@ Inherited properties: [Document properties](../script/document.md#properties)
 ||**[gotoStartOfLine](#gotoStartOfLine)**()|
 ||**[gotoStartOfWord](#gotoStartOfWord)**()|
 |bool |**[hasSelection](#hasSelection)**()|
+||**[indent](#indent)**()|
 ||**[paste](#paste)**()|
 ||**[redo](#redo)**()|
+||**[removeIndent](#removeIndent)**()|
 |bool |**[replaceAll](#replaceAll)**(string before, string after, int options = TextDocument.NoFindFlags)|
 |bool |**[replaceAllRegexp](#replaceAllRegexp)**(string regexp, string after, int options = TextDocument.NoFindFlags)|
+|bool |**[replaceOne](#replaceOne)**(string before, string after, int options = TextDocument.NoFindFlags)|
 ||**[selectAll](#selectAll)**()|
 ||**[selectEndOfLine](#selectEndOfLine)**()|
 ||**[selectEndOfWord](#selectEndOfWord)**()|
@@ -262,6 +265,10 @@ Goes to the start of the word under the cursor.
 
 Returns true if the editor has a selection.
 
+#### <a name="indent"></a>**indent**()
+
+Indents the current line. If there's a selection, indent all lines in the selection.
+
 #### <a name="paste"></a>**paste**()
 
 Pastes text in the clipboard.
@@ -269,6 +276,10 @@ Pastes text in the clipboard.
 #### <a name="redo"></a>**redo**()
 
 Redo the last action.
+
+#### <a name="removeIndent"></a>**removeIndent**()
+
+Indents the current line. If there's a selection, indent all lines in the selection.
 
 #### <a name="replaceAll"></a>bool **replaceAll**(string before, string after, int options = TextDocument.NoFindFlags)
 
@@ -297,6 +308,26 @@ Replace all occurences of the matches for the `regexp` with `after`. See the opt
 The captures coming from the regexp can be used in the replacement text, using `\1`..`\n` or `$1`..`$n`.
 
 Returns the number of changes done in the document.
+
+#### <a name="replaceOne"></a>bool **replaceOne**(string before, string after, int options = TextDocument.NoFindFlags)
+
+Replace one occurence of the string `before` with `after`. Options could be a combination of:
+
+- `TextDocument.FindCaseSensitively`: match case
+- `TextDocument.FindWholeWords`: match only complete words
+- `TextDocument.FindRegexp`: use a regexp, equivalent to calling `findRegexp`
+- `TextDocument.PreserveCase`: preserve case when replacing
+
+If the option `TextEditor.PreserveCase` is used, it means:
+
+- All upper-case occurrences are replaced with the upper-case new text.
+- All lower-case occurrences are replaced with the lower-case new text.
+- Capitalized occurrences are replaced with the capitalized new text.
+- Other occurrences are replaced with the new text as entered. If an occurrence and the new text have the same prefix
+or suffix, then the case of the prefix and/or suffix are preserved, and the other rules are applied on the rest of
+the occurrence only.
+
+Returns true if a change occurs in the document..
 
 #### <a name="selectAll"></a>**selectAll**()
 

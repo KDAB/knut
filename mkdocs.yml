@@ -34,6 +34,7 @@ nav:
     - Script API:
         - Script Module:
              - Argument: API/script/argument.md
+             - CppClass: API/script/cppclass.md
              - CppDocument: API/script/cppdocument.md
              - CppFunction: API/script/cppfunction.md
              - Dir: API/script/dir.md

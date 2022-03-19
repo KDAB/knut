@@ -62,16 +62,20 @@ namespace Core {
 
 /*!
  * \qmlproperty TextRange Symbol::range
- * The range enclosing this symbol not including leading/trailing whitespace
- * but everything else like comments. This information is typically used to
- * determine if the clients cursor is inside the symbol to reveal in the
- * symbol in the UI.
+ * The range enclosing this symbol not including leading/trailing whitespace but everything else like comments. This
+ * information is typically used to determine if the clients cursor is inside the symbol to reveal in the symbol in the
+ * UI.
  */
 
 /*!
  * \qmlproperty TextRange Symbol::selectionRange
- * The range that should be selected and revealed when this symbol is being
- * picked, e.g. the name of a function. Must be contained by the `range`.
+ * The range that should be selected and revealed when this symbol is being picked, e.g. the name of a function. Must be
+ * contained by the `range`.
+ */
+
+/*!
+ * \qmlproperty bool Symbol::isNull
+ * This property returns `true` if the symbol is null.
  */
 
 bool Symbol::isNull() const
@@ -80,18 +84,17 @@ bool Symbol::isNull() const
 }
 
 /*!
- * \qmlmethod Core::CppClass Core::Symbol::toClass()
- * Returns a `Core::CppClass` structure for current `Core::Symbol`.
- * The method checks if the `Kind` of `Core::Symbol` is `Kind::Class`. If so
- * then it finds all the members of the class from the list of symbols in
- * current document, adds them in `CppClass` structure, and returns it.
- * If not, then it returns an empty Core::CppClass structure.
+ * \qmlmethod CppClass Symbol::toClass()
+ * Returns a structure representing the class for the current symbol.
+ * The method checks if the `kind` of the symbol for `Symbol::Class` or `Symbol::Struct`. If so then it finds all the
+ * members of the class from the list of symbols in current document, adds them in `CppClass` structure, and returns it.
+ * If not, then it returns an empty structure.
  */
 CppClass Symbol::toClass()
 {
     LOG("Symbol::toClass");
 
-    if (kind == Class) {
+    if (kind == Class || kind == Struct) {
         QVector<Symbol> members;
         if (auto lspDocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->currentDocument())) {
             for (auto &symbol : lspDocument->symbols()) {
@@ -109,18 +112,17 @@ CppClass Symbol::toClass()
 }
 
 /*!
- * \qmlmethod Core::CppFunction Core::Symbol::toFunction()
- * Returns a `Core::CppFunction` structure for current `Core::Symbol`.
- * The method checks if the `Kind` of `Core::Symbol` is either `Kind::Method`
- * or `Kind::Function`. If so then it extracts information from
- * `Symbol::description`, fills it in `CppFunction` structure, and returns it.
- * If not, then it returns an empty Core::CppFunction structure.
+ * \qmlmethod CppFunction Symbol::toFunction()
+ * Returns a `CppFunction` structure for current `Symbol::Symbol`.
+ * The method checks if the `kind` of the symbol for `Symbol::Method` or `Symbol::Function`. If so then it extracts
+ * information from `Symbol::description`, fills it in `CppFunction` structure, and returns it. If not, then it returns
+ * an empty structure.
  */
 CppFunction Symbol::toFunction()
 {
     LOG("Symbol::toFunction");
 
-    if ((kind == Method) || (kind == Function)) {
+    if (kind == Method || kind == Function) {
         QString desc = this->description;
         // TODO: Add logic to handle type-qualifiers.
         // For now, discard type-qualifier, if found any.

@@ -1201,7 +1201,7 @@ void TextDocument::doIndent(int tabCount)
 }
 
 /*!
- * \qmlmethod void TextDocument::indent()
+ * \qmlmethod TextDocument::indent()
  * Indents the current line. If there's a selection, indent all lines in the selection.
  */
 void TextDocument::indent()
@@ -1211,7 +1211,7 @@ void TextDocument::indent()
 }
 
 /*!
- * \qmlmethod void TextDocument::removeIndent()
+ * \qmlmethod TextDocument::removeIndent()
  * Indents the current line. If there's a selection, indent all lines in the selection.
  */
 void TextDocument::removeIndent()

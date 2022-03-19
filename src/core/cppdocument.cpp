@@ -167,7 +167,7 @@ CppDocument *CppDocument::openHeaderSource()
 }
 
 /*!
- * \qmlmethod void CppDocument::insertForwardDeclaration(string fwddecl)
+ * \qmlmethod CppDocument::insertForwardDeclaration(string fwddecl)
  * Inserts the forward declaration `fwddecl` into the current file.
  * The method will check if the file is a header file, and also that the forward declaration starts with 'class ' or
  * 'struct '. Fully qualified the forward declaration to add namespaces: `class Foo::Bar::FooBar` will result in:

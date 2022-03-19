@@ -25,7 +25,7 @@ import Script 1.0
 |array<string> |**[allFiles](#allFiles)**(PathType type = RelativeToRoot)|
 |array<string> |**[allFilesWithExtension](#allFilesWithExtension)**(string extension, PathType type = RelativeToRoot)|
 |array<string> |**[allFilesWithExtensions](#allFilesWithExtensions)**(array<string> extensions, PathType type = RelativeToRoot)|
-|void |**[closeAll](#closeAll)**()|
+||**[closeAll](#closeAll)**()|
 |[Document](../script/document.md) |**[get](#get)**(string fileName)|
 |[Document](../script/document.md) |**[open](#open)**(string fileName)|
 ||**[saveAllDocuments](#saveAllDocuments)**()|
@@ -74,7 +74,7 @@ Returns all files with an extenstion from `extensions` in the current project.
 - `Project.FullPath`
 - `Project.RelativeToRoot`
 
-#### <a name="closeAll"></a>void **closeAll**()
+#### <a name="closeAll"></a>**closeAll**()
 
 Close all documents. If the document has some changes, save the changes.
 

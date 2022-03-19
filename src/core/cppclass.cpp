@@ -15,7 +15,7 @@ namespace Core {
  */
 
 /*!
- * \qmlproperty QVector<Core::Symbol> CppClass::members
+ * \qmlproperty vector<Symbol> CppClass::members
  * Returns the list of members (both data and functions) of this class.
  */
 

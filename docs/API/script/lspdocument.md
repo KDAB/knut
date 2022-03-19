@@ -21,6 +21,9 @@ Inherited properties: [TextDocument properties](../script/textdocument.md#proper
 | | Name |
 |-|-|
 |[Symbol](../script/symbol.md) |**[findSymbol](#findSymbol)**(string name, int options = TextDocument.NoFindFlags)|
+||**[followSymbol](#followSymbol)**()|
+||**[selectSymbol](#selectSymbol)**(string name, int options = TextDocument.NoFindFlags)|
+||**[switchDeclarationDefinition](#switchDeclarationDefinition)**()|
 |vector<[Symbol](../script/symbol.md)> |**[symbols](#symbols)**()|
 
 Inherited methods: [TextDocument methods](../script/textdocument.md#methods)
@@ -34,6 +37,28 @@ Find a symbol based on its `name`, using different find `options`.
 - `TextDocument.FindCaseSensitively`: match case
 - `TextDocument.FindWholeWords`: match only fully qualified symbol
 - `TextDocument.FindRegexp`: use a regexp
+
+#### <a name="followSymbol"></a>**followSymbol**()
+
+Follow the symbol under the cursor.
+
+- Go to the declaration, if the symbol under cursor is a use
+- Go to the declaration, if the symbol under cursor is a function definition
+- Go to the definition, if the symbol under cursor is a function declaration
+
+#### <a name="selectSymbol"></a>**selectSymbol**(string name, int options = TextDocument.NoFindFlags)
+
+Select a symbol based on its `name`, using different find `options`.
+
+- `TextDocument.FindCaseSensitively`: match case
+- `TextDocument.FindWholeWords`: match only fully qualified symbol
+- `TextDocument.FindRegexp`: use a regexp
+
+If no symbols are found, do nothing.
+
+#### <a name="switchDeclarationDefinition"></a>**switchDeclarationDefinition**()
+
+Switch between the function declaration or definition.
 
 #### <a name="symbols"></a>vector<[Symbol](../script/symbol.md)> **symbols**()
 

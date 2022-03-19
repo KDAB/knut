@@ -20,7 +20,7 @@ namespace Core {
  */
 
 /*!
- * \qmlproperty QVector<Argument> CppFunction::arguments
+ * \qmlproperty vector<Argument> CppFunction::arguments
  * Returns the list of arguments being passed to this function.
  */
 

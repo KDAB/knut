@@ -10,14 +10,14 @@ import Script 1.0
 
 | | Name |
 |-|-|
-|QVector<[Argument](../script/argument.md)>|**[arguments](#arguments)**|
+|vector<[Argument](../script/argument.md)>|**[arguments](#arguments)**|
 |string|**[name](#name)**|
 |[TextRange](../script/textrange.md)|**[range](#range)**|
 |string|**[returnType](#returnType)**|
 
 ## Property Documentation
 
-#### <a name="arguments"></a>QVector<[Argument](../script/argument.md)> **arguments**
+#### <a name="arguments"></a>vector<[Argument](../script/argument.md)> **arguments**
 
 Returns the list of arguments being passed to this function.
 

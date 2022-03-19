@@ -296,7 +296,7 @@ Document *Project::open(QString fileName)
 }
 
 /*!
- * \qmlmethod void Project::closeAll()
+ * \qmlmethod Project::closeAll()
  * Close all documents. If the document has some changes, save the changes.
  */
 void Project::closeAll()

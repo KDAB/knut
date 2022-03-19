@@ -24,7 +24,9 @@ Inherited properties: [LspDocument properties](../script/lspdocument.md#properti
 | | Name |
 |-|-|
 |string |**[correspondingHeaderSource](#correspondingHeaderSource)**()|
-|void |**[insertForwardDeclaration](#insertForwardDeclaration)**(string fwddecl)|
+|int |**[gotoBlockEnd](#gotoBlockEnd)**()|
+|int |**[gotoBlockStart](#gotoBlockStart)**()|
+||**[insertForwardDeclaration](#insertForwardDeclaration)**(string fwddecl)|
 |[CppDocument](../script/cppdocument.md) |**[openHeaderSource](#openHeaderSource)**()|
 
 Inherited methods: [LspDocument methods](../script/lspdocument.md#methods)
@@ -41,7 +43,17 @@ Return true if the current document is a header.
 
 Returns the corresponding source or header file path.
 
-#### <a name="insertForwardDeclaration"></a>void **insertForwardDeclaration**(string fwddecl)
+#### <a name="gotoBlockEnd"></a>int **gotoBlockEnd**()
+
+Move the cursor to the end of the block it's in, and returns the new cursor position.
+A block is definied by {} or () or [].
+
+#### <a name="gotoBlockStart"></a>int **gotoBlockStart**()
+
+Move the cursor to the start of the block it's in, and returns the new cursor position.
+A block is definied by {} or () or [].
+
+#### <a name="insertForwardDeclaration"></a>**insertForwardDeclaration**(string fwddecl)
 
 Inserts the forward declaration `fwddecl` into the current file.
 The method will check if the file is a header file, and also that the forward declaration starts with 'class ' or
