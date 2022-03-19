@@ -260,6 +260,7 @@ void MainWindow::createDock(QWidget *widget, Qt::DockWidgetArea area, QWidget *t
     dock->setTitleBarWidget(titleBar);
 
     addDockWidget(area, dock);
+    ui->menu_View->addAction(dock->toggleViewAction());
 
     // Tabify all docks on the same area into the
     const auto dockWidgets = findChildren<QDockWidget *>();

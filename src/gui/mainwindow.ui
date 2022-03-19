@@ -86,7 +86,7 @@
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
-     <string>Edit</string>
+     <string>&amp;Edit</string>
     </property>
     <addaction name="actionFind"/>
     <addaction name="actionReplace"/>
@@ -96,8 +96,14 @@
     <addaction name="actionGoto_BlockStart"/>
     <addaction name="actionGoto_BlockEnd"/>
    </widget>
+   <widget class="QMenu" name="menu_View">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menuEdit"/>
+   <addaction name="menu_View"/>
    <addaction name="menuC"/>
    <addaction name="menu_Rc"/>
   </widget>
