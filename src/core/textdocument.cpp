@@ -1116,66 +1116,108 @@ int TextDocument::replaceAllRegexp(const QString &regexp, const QString &after, 
     return replaceAll(regexp, after, options | FindRegexp);
 }
 
-/*!
- * \qmlmethod void TextDocument::indent(const QString &strSub)
- * Indents the single Line as well as selected text.
- * If the cursor has a selection, all selected line will have indentation and remains selected.
- * by default it will use tab for indentation.
- * Indent Characters can be changed to spaces by passing them as an argument.
- */
-void TextDocument::indent(const QString &strSub)
+static int columnAt(const QString &text, int position, int tabSize)
 {
-    spdlog::trace("TextDocument::indent {}", strSub.toStdString());
+    int column = 0;
+    for (int i = 0; i < position; ++i) {
+        if (text.at(i) == '\t')
+            column = column - (column % tabSize) + tabSize;
+        else
+            ++column;
+    }
+    return column;
+}
+
+static int firstNonSpace(const QString &text)
+{
+    int i = 0;
+    while (i < text.size()) {
+        if (!text.at(i).isSpace())
+            return i;
+        ++i;
+    }
+    return i;
+}
+
+static int indentOneLine(QTextCursor &cursor, int tabCount, const TabSettings &settings)
+{
+    QString text = cursor.selectedText();
+    cursor.removeSelectedText();
+
+    const int oldSize = text.size();
+    const int firstChar = firstNonSpace(text);
+    const int startColumn = columnAt(text, firstChar, settings.tabSize);
+    const int indentSize = qMax(startColumn / settings.tabSize + tabCount, 0);
+
+    text.remove(0, firstChar);
+    if (settings.insertSpaces)
+        text = QString(indentSize * settings.tabSize, ' ') + text;
+    else
+        text = QString(indentSize, '\t') + text;
+
+    cursor.insertText(text);
+    return text.size() - oldSize;
+}
+
+void TextDocument::doIndent(int tabCount)
+{
+    const auto settings = Core::Settings::instance()->value<Core::TabSettings>(Core::Settings::Tab);
+
     QTextCursor cursor = m_document->textCursor();
+    const bool hasSelection = cursor.hasSelection();
+    const int lineStart = m_document->document()->findBlock(cursor.selectionStart()).blockNumber();
+    const int lineEnd = m_document->document()->findBlock(cursor.selectionEnd()).blockNumber();
+
+    // Move the position to the beginning of the first line
+    int startPosition = cursor.position();
+    cursor.setPosition(cursor.selectionStart());
+    cursor.movePosition(QTextCursor::StartOfLine, QTextCursor::MoveAnchor);
 
     cursor.beginEditBlock();
-    int nSlctStart = 0, nSlctEnd = 0, countTab = 0;
-    if (cursor.hasSelection()) {
-        nSlctStart = cursor.selectionStart();
-        nSlctEnd = cursor.selectionEnd();
-        cursor.setPosition(nSlctStart);
-
-        while (cursor.position() < (nSlctEnd + countTab)) {
-            cursor.insertText(strSub); // by default it will insert the tab.
-            countTab += strSub.length();
+    if (hasSelection) {
+        startPosition = cursor.position();
+        // Iterate through all line, and change the indentation
+        for (int line = lineStart; line <= lineEnd; ++line) {
+            cursor.movePosition(QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
+            indentOneLine(cursor, tabCount, settings);
             cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor);
+            cursor.movePosition(QTextCursor::StartOfLine, QTextCursor::MoveAnchor);
         }
-        cursor.setPosition(nSlctStart, QTextCursor::MoveAnchor); // To keep the lines selected.
-        cursor.setPosition(nSlctEnd + countTab, QTextCursor::KeepAnchor);
+        const int endPosition = cursor.position();
+        // Select whole the lines indented
+        cursor.setPosition(startPosition);
+        cursor.setPosition(endPosition - 1, QTextCursor::KeepAnchor);
     } else {
-        cursor.insertText(strSub); // by default it will insert the tab.
+        cursor.movePosition(QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
+        startPosition += indentOneLine(cursor, tabCount, settings);
+        const int finalLine = m_document->document()->findBlock(startPosition).blockNumber();
+        if (finalLine != lineStart)
+            gotoLine(lineStart + 1);
+        else
+            cursor.setPosition(startPosition);
     }
     cursor.endEditBlock();
     m_document->setTextCursor(cursor);
 }
 
 /*!
- * \qmlmethod void TextDocument::removeIndent(const QString &strSub )
- * Removes one level of Indentation for single Line as well as selected text.
- * By default it removes the tab.
- * Pass the spaces as argument if spaces where used during indentation.
- * It will keep the selection as it is and do nothing if no more identation left.
+ * \qmlmethod void TextDocument::indent()
+ * Indents the current line. If there's a selection, indent all lines in the selection.
  */
-void TextDocument::removeIndent(const QString &strSub)
+void TextDocument::indent()
 {
-    spdlog::trace("TextDocument::removeIndent{}", strSub.toStdString());
-    QTextCursor cursor = m_document->textCursor(); // contains the selection
-    if (cursor.hasSelection()) {
-        int nSlctEnd = cursor.selectionEnd();
-        cursor.setPosition(cursor.selectionStart());
-        while (cursor.position() < nSlctEnd) {
-            cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, strSub.length());
-            if (cursor.selectedText() == strSub) {
-                cursor.removeSelectedText();
-            }
-            cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor);
-        }
-    } else {
-        cursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor, strSub.length());
-        if (cursor.selectedText() == strSub) {
-            cursor.removeSelectedText();
-        }
-    }
+    LOG("TextDocument::indent");
+    doIndent(1);
+}
+
+/*!
+ * \qmlmethod void TextDocument::removeIndent()
+ * Indents the current line. If there's a selection, indent all lines in the selection.
+ */
+void TextDocument::removeIndent()
+{
+    LOG("TextDocument::removeIndent{}");
+    doIndent(-1);
 }
 
 void TextDocument::setLineEnding(LineEnding newLineEnding)

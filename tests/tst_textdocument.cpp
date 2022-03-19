@@ -1,3 +1,4 @@
+#include "core/knutcore.h"
 #include "core/textdocument.h"
 #include "core/utils.h"
 
@@ -243,21 +244,19 @@ private slots:
 
     void indent()
     {
+        Core::KnutCore core;
         Test::FileTester file(Test::testDataPath() + "/textdocument/indent_original.txt");
         Core::TextDocument document;
         document.load(file.fileName());
 
         document.gotoLine(4);
         document.indent();
-        document.save();
         document.gotoLine(7, 4);
         document.removeIndent();
         document.removeIndent();
-        document.save();
         document.gotoLine(10);
         document.selectNextLine();
         document.indent();
-        document.save();
         document.gotoLine(16);
         document.selectNextLine();
         document.removeIndent();

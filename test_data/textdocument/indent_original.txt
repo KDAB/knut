@@ -7,8 +7,8 @@ Proin non mi placerat, ultricies diam sit amet, ultricies nisi.
 				Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 Quisque convallis ipsum ac odio aliquet tincidunt.
 
-Mauris ut magna vitae mauris fringilla condimentum.
-Proin non mi placerat, ultricies diam sit amet, ultricies nisi.
+  Mauris ut magna vitae mauris fringilla condimentum.
+ Proin non mi placerat, ultricies diam sit amet, ultricies nisi.
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 Quisque convallis ipsum ac odio aliquet tincidunt.

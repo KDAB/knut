@@ -157,8 +157,8 @@ public slots:
     int replaceAllRegexp(const QString &regexp, const QString &after, int options = NoFindFlags);
 
     // Indentation
-    void indent(const QString &strSub = "\t");
-    void removeIndent(const QString &strSub = "\t");
+    void indent();
+    void removeIndent();
 
 signals:
     void positionChanged();
@@ -172,12 +172,13 @@ protected:
     bool doSave(const QString &fileName) override;
     bool doLoad(const QString &fileName) override;
 
+private:
+    void doIndent(int tabCount);
     void detectFormat(const QByteArray &data);
 
     void movePosition(QTextCursor::MoveOperation operation, QTextCursor::MoveMode mode = QTextCursor::MoveAnchor,
                       int count = 1);
 
-private:
     // TODO: use a QTextDocument maybe, to avoid creating a widget
     // The QPlainTextEdit has a nicer API, so it's slightly easier with that now
     QPointer<QPlainTextEdit> m_document;
