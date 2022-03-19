@@ -55,8 +55,20 @@ QVariant HistoryModel::data(const QModelIndex &index, int role) const
         case ParamCol: {
             const auto &params = m_data.at(index.row()).params;
             QStringList paramStrings;
-            for (const auto &param : params)
-                paramStrings.push_back(param.toString());
+            for (const auto &param : params) {
+                QString text = param.toString();
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
+                if (static_cast<QMetaType::Type>(param.type()) == QMetaType::QString) {
+#else
+                if (static_cast<QMetaType::Type>(param.typeId()) == QMetaType::QString) {
+#endif
+                    text.replace('\n', "\\n");
+                    text.replace('\t', "\\t");
+                    text.append('"');
+                    text.prepend('"');
+                }
+                paramStrings.push_back(text);
+            }
             return paramStrings.join(", ");
         }
         }

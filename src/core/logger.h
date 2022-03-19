@@ -64,9 +64,12 @@ concept HasPointerToString = requires(const T &t)
 template <class T>
 QString toString(const T &data)
 {
-    if constexpr (std::is_same_v<std::remove_cv_t<T>, QString>)
-        return data;
-    else if constexpr (std::is_same_v<std::remove_cv_t<T>, bool>)
+    if constexpr (std::is_same_v<std::remove_cv_t<T>, QString>) {
+        QString text = data;
+        text.replace('\n', "\\n");
+        text.replace('\t', "\\t");
+        return text;
+    } else if constexpr (std::is_same_v<std::remove_cv_t<T>, bool>)
         return data ? "true" : "false";
     else if constexpr (std::is_floating_point_v<T> || std::is_integral_v<T>)
         return QString::number(data);

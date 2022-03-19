@@ -1,7 +1,8 @@
 #include "scriptmanager.h"
-#include "settings.h"
 
+#include "logger.h"
 #include "scriptrunner.h"
+#include "settings.h"
 
 #include <QDir>
 #include <QDirIterator>
@@ -174,6 +175,7 @@ void ScriptManager::doRunScript(const QString &fileName, std::function<void()> e
 
 void ScriptManager::updateDirectories()
 {
+    LoggerDisabler ld(true);
     const auto directories = Settings::instance()->value<QStringList>(Settings::ScriptPaths);
     for (const auto &path : directories)
         addScriptsFromPath(path);
