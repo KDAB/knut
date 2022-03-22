@@ -51,6 +51,78 @@ bool CppDocument::isHeader() const
     return isHeaderSuffix(fi.suffix());
 }
 
+/*!
+ * \qmlmethod CppDocument::commentSelection()
+ * Comments the selected lines (or current line if there's no selection) in current document.
+ *
+ * - If there's no selection, current line is commented using `//`.
+ * - If there's a valid selection and the start and end position of the selection are before any text of the lines,
+ *   all of the selected lines are commented using `//`.
+ * - If there's a valid selection and the start and/or end position of the selection are between any text of the
+ *   lines, all of the selected lines are commented using multi-line comment.
+ * - If selection or position is invalid or out of range, or the position is on an empty line, the document remains
+ *   unchanged.
+ */
+void CppDocument::commentSelection()
+{
+    LOG("CppDocument::commentSelection");
+
+    QTextCursor cursor = textEdit()->textCursor();
+    cursor.beginEditBlock();
+
+    if (hasSelection()) {
+        int selectionStartPos = cursor.selectionStart();
+        int selectionEndPos = cursor.selectionEnd();
+
+        // Preparing to check if the start and end positions of the selection are before any text of the lines
+        cursor.setPosition(selectionStartPos);
+        cursor.movePosition(QTextCursor::StartOfLine, QTextCursor::KeepAnchor);
+        const QString str1 = cursor.selectedText().trimmed();
+        cursor.setPosition(selectionEndPos);
+        cursor.movePosition(QTextCursor::StartOfLine, QTextCursor::KeepAnchor);
+        const QString str2 = cursor.selectedText().trimmed();
+
+        int selectionOffset = 0;
+        if (str1.isEmpty() && str2.isEmpty()) {
+            // Comment all lines in the selected region with "//"
+            cursor.setPosition(selectionStartPos);
+            cursor.movePosition(QTextCursor::StartOfLine);
+            selectionStartPos = cursor.position();
+
+            cursor.setPosition(selectionEndPos);
+            cursor.movePosition(QTextCursor::StartOfLine);
+
+            do {
+                cursor.insertText("//");
+                selectionOffset += 2;
+                cursor.movePosition(QTextCursor::Up);
+                cursor.movePosition(QTextCursor::StartOfLine);
+            } while (cursor.position() >= selectionStartPos);
+        } else {
+            // Comment the selected region using "/*" and "*/"
+            cursor.setPosition(selectionEndPos);
+            cursor.insertText("*/");
+            selectionOffset += 2;
+            cursor.setPosition(selectionStartPos);
+            cursor.insertText("/*");
+            selectionOffset += 2;
+        }
+
+        cursor.setPosition(selectionEndPos + selectionOffset);
+        cursor.setPosition(selectionStartPos, QTextCursor::KeepAnchor);
+    } else {
+        cursor.select(QTextCursor::LineUnderCursor);
+        // If the line is not empty, then comment it using "//"
+        if (!cursor.selectedText().isEmpty()) {
+            cursor.movePosition(QTextCursor::StartOfLine);
+            cursor.insertText("//");
+        }
+    }
+
+    cursor.endEditBlock();
+    textEdit()->setTextCursor(cursor);
+}
+
 static QStringList matchingSuffixes(bool header)
 {
     static const auto mimeTypes =

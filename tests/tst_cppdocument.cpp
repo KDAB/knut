@@ -107,6 +107,75 @@ private slots:
         QCOMPARE(document->gotoBlockStart(), 311);
         QCOMPARE(document->gotoBlockEnd(), 390);
     }
+
+    void commentSelection_data()
+    {
+        QTest::addColumn<int>("regionStartPos");
+        QTest::addColumn<int>("regionEndPos");
+        QTest::addColumn<QString>("resultantFilePath");
+
+        // #1.1 Selection starts and ends between characters - on different lines
+        QTest::newRow("01-1-multi-line-between-to-between")
+            << 23 << 53 << (Test::testDataPath() + "/cppdocument/comment_test/main-01.cpp");
+
+        // #1.2 Selection starts and ends between characters - on different lines - with range set in reverse order
+        QTest::newRow("01-2-multi-line-between-to-between-reverse")
+            << 53 << 23 << (Test::testDataPath() + "/cppdocument/comment_test/main-01.cpp");
+
+        // #2 Selection starts before characters and ends between characters - on different lines
+        QTest::newRow("02-multi-line-before-to-between")
+            << 15 << 53 << (Test::testDataPath() + "/cppdocument/comment_test/main-02.cpp");
+
+        // #3 Selection starts between characters and ends before characters - on different lines
+        QTest::newRow("03-multi-line-between-to-before")
+            << 23 << 45 << (Test::testDataPath() + "/cppdocument/comment_test/main-03.cpp");
+
+        // #4 Selection starts and ends before characters - on different lines
+        QTest::newRow("04-multi-line-before-to-before")
+            << 15 << 45 << (Test::testDataPath() + "/cppdocument/comment_test/main-04.cpp");
+
+        // #5 Selection starts and ends between characters - on same line
+        QTest::newRow("05-single-line-between-to-between")
+            << 18 << 23 << (Test::testDataPath() + "/cppdocument/comment_test/main-05.cpp");
+
+        // #6 Selection starts before characters and ends between characters - on same line
+        QTest::newRow("06-single-line-before-to-between")
+            << 15 << 23 << (Test::testDataPath() + "/cppdocument/comment_test/main-06.cpp");
+
+        // #7 Selection starts and ends before characters - on same line
+        QTest::newRow("07-single-line-before-to-before")
+            << 14 << 16 << (Test::testDataPath() + "/cppdocument/comment_test/main-07.cpp");
+
+        // #8 There is no selection - but the position is valid
+        QTest::newRow("08-no-selection-valid-position")
+            << 30 << -1 << (Test::testDataPath() + "/cppdocument/comment_test/main-08.cpp");
+
+        // #9 There is no selection - the position is valid - but on an empty line
+        QTest::newRow("09-no-selection-valid-position-empty-line")
+            << 58 << -1 << (Test::testDataPath() + "/cppdocument/comment_test/main-no-change.cpp");
+    }
+
+    void commentSelection()
+    {
+        QFETCH(int, regionStartPos);
+        QFETCH(int, regionEndPos);
+        QFETCH(QString, resultantFilePath);
+
+        Core::KnutCore core;
+        Core::Project::instance()->setRoot(Test::testDataPath() + "/cppdocument/comment_test");
+
+        auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open("main.cpp"));
+        if (regionEndPos == -1) {
+            cppDocument->setPosition(regionStartPos);
+        } else {
+            cppDocument->selectRegion(regionStartPos, regionEndPos);
+        }
+        cppDocument->commentSelection();
+        cppDocument->save();
+        QVERIFY(Test::compareFiles(cppDocument->fileName(), resultantFilePath));
+        cppDocument->undo();
+        cppDocument->save();
+    }
 };
 
 QTEST_MAIN(TestCppDocument)

@@ -20,6 +20,7 @@ public slots:
     Core::CppDocument *openHeaderSource();
 
     bool insertForwardDeclaration(const QString &fwddecl);
+    void commentSelection();
 
     QVariantMap mfcExtractDDX(const QString &className);
 

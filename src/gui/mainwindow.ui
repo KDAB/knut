@@ -83,6 +83,8 @@
     <addaction name="actionSwitch_Header_Source"/>
     <addaction name="actionFollow_Symbol"/>
     <addaction name="actionSwitch_Decl_Def"/>
+    <addaction name="separator"/>
+    <addaction name="actionComment_Selection"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -261,6 +263,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+]</string>
+   </property>
+  </action>
+  <action name="actionComment_Selection">
+   <property name="text">
+    <string>Comment &amp;Selection</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+/</string>
    </property>
   </action>
  </widget>

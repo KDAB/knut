@@ -75,6 +75,7 @@ MainWindow::MainWindow(QWidget *parent)
     auto historyPanel = new HistoryPanel(this);
     createDock(historyPanel, Qt::BottomDockWidgetArea, historyPanel->toolBar());
 
+    // File
     connect(ui->actionQuit, &QAction::triggered, this, &MainWindow::close);
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openProject);
     connect(ui->actionRun_Script, &QAction::triggered, this, &MainWindow::runScript);
@@ -84,6 +85,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionShow_Palette, &QAction::triggered, this, &MainWindow::showPalette);
     connect(ui->actionClose_Document, &QAction::triggered, this, &MainWindow::closeDocument);
 
+    // Edit
     ui->findWidget->hide();
     connect(ui->actionFind, &QAction::triggered, ui->findWidget, &FindWidget::open);
     connect(ui->actionReplace, &QAction::triggered, ui->findWidget, &FindWidget::open);
@@ -92,10 +94,13 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionGoto_BlockEnd, &QAction::triggered, this, &MainWindow::gotoBlockEnd);
     connect(ui->actionGoto_BlockStart, &QAction::triggered, this, &MainWindow::gotoBlockStart);
 
+    // C++
     connect(ui->actionSwitch_Header_Source, &QAction::triggered, this, &MainWindow::switchHeaderSource);
     connect(ui->actionFollow_Symbol, &QAction::triggered, this, &MainWindow::followSymbol);
     connect(ui->actionSwitch_Decl_Def, &QAction::triggered, this, &MainWindow::switchDeclarationDefinition);
+    connect(ui->actionComment_Selection, &QAction::triggered, this, &MainWindow::commentSelection);
 
+    // Rc
     connect(ui->actionCreate_Qrc, &QAction::triggered, this, &MainWindow::createQrc);
     connect(ui->actionCreate_Ui, &QAction::triggered, this, &MainWindow::createUi);
 
@@ -140,6 +145,14 @@ void MainWindow::gotoBlockEnd()
 {
     if (auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->currentDocument()))
         cppDocument->gotoBlockEnd();
+}
+
+void MainWindow::commentSelection()
+{
+    auto currDoc = qobject_cast<Core::CppDocument *>(Core::Project::instance()->currentDocument());
+    if (currDoc != nullptr) {
+        currDoc->commentSelection();
+    }
 }
 
 MainWindow::~MainWindow() = default;
@@ -367,8 +380,9 @@ void MainWindow::updateActions()
     ui->actionFollow_Symbol->setEnabled(lspEnabled);
     ui->actionSwitch_Decl_Def->setEnabled(lspEnabled);
 
-    const bool cppEnabled = lspDocument && qobject_cast<Core::LspDocument *>(document);
+    const bool cppEnabled = lspDocument && qobject_cast<Core::CppDocument *>(document);
     ui->actionSwitch_Header_Source->setEnabled(cppEnabled);
+    ui->actionComment_Selection->setEnabled(cppEnabled);
 
     const bool rcEnabled = qobject_cast<Core::RcDocument *>(document);
     ui->actionCreate_Qrc->setEnabled(rcEnabled);

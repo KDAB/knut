@@ -50,6 +50,7 @@ private:
     void switchHeaderSource();
     void gotoBlockStart();
     void gotoBlockEnd();
+    void commentSelection();
 
     // Rc
     void createQrc();
