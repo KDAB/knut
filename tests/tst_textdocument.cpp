@@ -252,8 +252,7 @@ private slots:
         document.gotoLine(4);
         document.indent();
         document.gotoLine(7, 4);
-        document.removeIndent();
-        document.removeIndent();
+        document.removeIndent(2);
         document.gotoLine(10);
         document.selectNextLine();
         document.indent();

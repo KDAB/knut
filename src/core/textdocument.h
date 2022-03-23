@@ -82,8 +82,8 @@ public slots:
     void setText(const QString &newText);
     void setLineEnding(Core::TextDocument::LineEnding newLineEnding);
 
-    void undo();
-    void redo();
+    void undo(int count = 1);
+    void redo(int count = 1);
 
     // Goto methods, to move around the document
     void gotoLine(int line, int column = 1);
@@ -157,8 +157,8 @@ public slots:
     int replaceAllRegexp(const QString &regexp, const QString &after, int options = NoFindFlags);
 
     // Indentation
-    void indent();
-    void removeIndent();
+    void indent(int count = 1);
+    void removeIndent(int count = 1);
 
 signals:
     void positionChanged();

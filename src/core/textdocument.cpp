@@ -358,23 +358,29 @@ QString TextDocument::tab() const
 }
 
 /*!
- * \qmlmethod TextDocument::undo()
- * Undo the last action.
+ * \qmlmethod TextDocument::undo(int count)
+ * Undo `count` times the last actions.
  */
-void TextDocument::undo()
+void TextDocument::undo(int count)
 {
-    LOG("TextDocument::undo");
-    m_document->undo();
+    LOG_AND_MERGE("TextDocument::undo", count);
+    while (count != 0) {
+        m_document->undo();
+        --count;
+    }
 }
 
 /*!
- * \qmlmethod TextDocument::redo()
- * Redo the last action.
+ * \qmlmethod TextDocument::redo(int count)
+ * Redo `count` times the last actions.
  */
-void TextDocument::redo()
+void TextDocument::redo(int count)
 {
-    LOG("TextDocument::redo");
-    m_document->redo();
+    LOG_AND_MERGE("TextDocument::redo", count);
+    while (count != 0) {
+        m_document->redo();
+        --count;
+    }
 }
 
 void TextDocument::movePosition(QTextCursor::MoveOperation operation, QTextCursor::MoveMode mode, int count)
@@ -1171,24 +1177,24 @@ void TextDocument::doIndent(int tabCount)
     // Move the position to the beginning of the first line
     int startPosition = cursor.position();
     cursor.setPosition(cursor.selectionStart());
-    cursor.movePosition(QTextCursor::StartOfLine, QTextCursor::MoveAnchor);
 
     cursor.beginEditBlock();
     if (hasSelection) {
         startPosition = cursor.position();
         // Iterate through all line, and change the indentation
         for (int line = lineStart; line <= lineEnd; ++line) {
-            cursor.movePosition(QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
-            indentOneLine(cursor, tabCount, settings);
+            cursor.select(QTextCursor::LineUnderCursor);
+            const int delta = indentOneLine(cursor, tabCount, settings);
+            if (line == lineStart)
+                startPosition += delta;
             cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor);
-            cursor.movePosition(QTextCursor::StartOfLine, QTextCursor::MoveAnchor);
         }
         const int endPosition = cursor.position();
         // Select whole the lines indented
         cursor.setPosition(startPosition);
         cursor.setPosition(endPosition - 1, QTextCursor::KeepAnchor);
     } else {
-        cursor.movePosition(QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
+        cursor.select(QTextCursor::LineUnderCursor);
         startPosition += indentOneLine(cursor, tabCount, settings);
         const int finalLine = m_document->document()->findBlock(startPosition).blockNumber();
         if (finalLine != lineStart)
@@ -1201,23 +1207,29 @@ void TextDocument::doIndent(int tabCount)
 }
 
 /*!
- * \qmlmethod TextDocument::indent()
- * Indents the current line. If there's a selection, indent all lines in the selection.
+ * \qmlmethod TextDocument::indent(int count)
+ * Indents the current line `count` times. If there's a selection, indent all lines in the selection.
  */
-void TextDocument::indent()
+void TextDocument::indent(int count)
 {
-    LOG("TextDocument::indent");
-    doIndent(1);
+    LOG_AND_MERGE("TextDocument::indent", count);
+    while (count != 0) {
+        doIndent(1);
+        --count;
+    }
 }
 
 /*!
- * \qmlmethod TextDocument::removeIndent()
- * Indents the current line. If there's a selection, indent all lines in the selection.
+ * \qmlmethod TextDocument::removeIndent(int count)
+ * Indents the current line `count` times. If there's a selection, indent all lines in the selection.
  */
-void TextDocument::removeIndent()
+void TextDocument::removeIndent(int count)
 {
-    LOG("TextDocument::removeIndent{}");
-    doIndent(-1);
+    LOG_AND_MERGE("TextDocument::removeIndent{}", count);
+    while (count != 0) {
+        doIndent(-1);
+        --count;
+    }
 }
 
 void TextDocument::setLineEnding(LineEnding newLineEnding)

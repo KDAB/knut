@@ -352,9 +352,10 @@ QVariantMap CppDocument::mfcExtractDDX(const QString &className)
 }
 
 /*!
- * \qmlmethod int CppDocument::gotoBlockStart()
+ * \qmlmethod int CppDocument::gotoBlockStart(int count)
  * Move the cursor to the start of the block it's in, and returns the new cursor position.
  * A block is definied by {} or () or [].
+ * Do it `count` times.
  */
 int CppDocument::gotoBlockStart(int count)
 {
@@ -370,9 +371,10 @@ int CppDocument::gotoBlockStart(int count)
 }
 
 /*!
- * \qmlmethod int CppDocument::gotoBlockEnd()
+ * \qmlmethod int CppDocument::gotoBlockEnd(int count)
  * Move the cursor to the end of the block it's in, and returns the new cursor position.
  * A block is definied by {} or () or [].
+ * Do it `count` times.
  */
 int CppDocument::gotoBlockEnd(int count)
 {
