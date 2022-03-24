@@ -134,7 +134,8 @@ void HistoryModel::addData(LogData &&data, bool merge)
 }
 
 LoggerDisabler::LoggerDisabler(bool silenceAll)
-    : m_silenceAll(silenceAll)
+    : m_originalCanLog(LoggerObject::m_canLog)
+    , m_silenceAll(silenceAll)
 {
     LoggerObject::m_canLog = false;
     if (m_silenceAll) {
@@ -145,7 +146,7 @@ LoggerDisabler::LoggerDisabler(bool silenceAll)
 
 LoggerDisabler::~LoggerDisabler()
 {
-    LoggerObject::m_canLog = true;
+    LoggerObject::m_canLog = m_originalCanLog;
     if (m_silenceAll)
         spdlog::default_logger()->set_level(m_level);
 }

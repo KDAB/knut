@@ -96,6 +96,7 @@ public:
     ~LoggerDisabler();
 
 private:
+    bool m_originalCanLog = true;
     bool m_silenceAll = false;
     spdlog::level::level_enum m_level = spdlog::level::off;
 };
