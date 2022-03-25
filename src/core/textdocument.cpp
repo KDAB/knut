@@ -140,6 +140,10 @@ bool TextDocument::eventFilter(QObject *watched, QEvent *event)
             gotoStartOfDocument();
         else if (keyEvent == QKeySequence::MoveToEndOfDocument)
             gotoEndOfDocument();
+        else if (keyEvent == QKeySequence::MoveToNextPage)
+            return false;
+        else if (keyEvent == QKeySequence::MoveToPreviousPage)
+            return false;
         else if ((keyEvent->key() == Qt::Key_Backtab))
             removeIndent();
         else if (keyEvent->key() == Qt::Key_Tab)
