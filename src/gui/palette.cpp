@@ -325,7 +325,7 @@ void Palette::clickItem(const QModelIndex &index)
     Q_ASSERT(selector.selectionFunc);
 
     if (!index.isValid()) {
-        const auto text = ui->lineEdit->text().mid(selector.prefix.length());
+        const auto text = ui->lineEdit->text().mid(selector.prefix.length()).simplified();
         selector.selectionFunc(text);
     } else {
         const QString text = index.data(Qt::UserRole).toString();
