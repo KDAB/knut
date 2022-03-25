@@ -50,6 +50,17 @@ public:
     void didClose(DidCloseTextDocumentParams &&params);
 
     /**
+     * Sends the didChange notification, when a document has been changed
+     */
+    void didChange(DidChangeTextDocumentParams &&params);
+
+    /**
+     * Query which kind of document changes can be sent to the server.
+     * Either Full or Incremental.
+     */
+    bool canSendDocumentChanges(TextDocumentSyncKind kind) const;
+
+    /**
      * Sends the documentSymbol requests, and returns the list of symbols
      * If asyncCallback is not null, the request will be sent asynchronously and the callback called once the respone
      * has arrive. Otherwise, the request is synchronous, and the result is returned. An empty optional means there was
@@ -65,8 +76,7 @@ public:
      * an error.
      */
     std::optional<DeclarationRequest::Result>
-    declaration(DeclarationParams &&params,
-            std::function<void(DeclarationRequest::Result)> asyncCallback = {});
+    declaration(DeclarationParams &&params, std::function<void(DeclarationRequest::Result)> asyncCallback = {});
 
     State state() const { return m_state; }
 

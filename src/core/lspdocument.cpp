@@ -132,7 +132,7 @@ Document *LspDocument::followSymbol(int pos)
     auto *document = Project::instance()->open(filepath);
 
     if (document) {
-        auto *lspDocument = dynamic_cast<LspDocument *>(document);
+        auto *lspDocument = qobject_cast<LspDocument *>(document);
         if (lspDocument) {
             lspDocument->selectRange(lspDocument->toRange(location.range));
         } else {
@@ -277,6 +277,11 @@ TextRange LspDocument::toRange(const Lsp::Range &range) const
     return {toPos(range.start), toPos(range.end)};
 }
 
+int LspDocument::revision() const
+{
+    return m_revision;
+}
+
 bool LspDocument::checkClient() const
 {
     Q_ASSERT(textEdit());
@@ -293,6 +298,39 @@ void LspDocument::changeContent(int position, int charsRemoved, int charsAdded)
     Q_UNUSED(charsRemoved)
     Q_UNUSED(charsAdded)
     m_cache->clear();
+
+    if (!checkClient()) {
+        return;
+    }
+
+    if (client()->canSendDocumentChanges(Lsp::TextDocumentSyncKind::Full)
+        || client()->canSendDocumentChanges(Lsp::TextDocumentSyncKind::Incremental)) {
+        // TODO: We currently always send the entire document to the Language server, even
+        // if it suppports incremental changes.
+        // Change this, so we also send incremental updates.
+        //
+        // This currently isn't implemented, as changeContent only gets called *after*
+        // the change has happened, but the LSP server needs the locations from *before* the change
+        // has happened, which can no longer be queried.
+
+        Lsp::VersionedTextDocumentIdentifier document;
+        document.version = ++m_revision;
+        document.uri = toUri();
+
+        std::vector<Lsp::TextDocumentContentChangeEvent> events;
+        Lsp::TextDocumentContentChangeEvent event;
+
+        event.text = text().toStdString();
+        events.emplace_back(std::move(event));
+
+        Lsp::DidChangeTextDocumentParams params;
+        params.textDocument = document;
+        params.contentChanges = events;
+
+        client()->didChange(std::move(params));
+    } else {
+        spdlog::error("LSP server does not support Document changes!");
+    }
 }
 
 } // namespace Core

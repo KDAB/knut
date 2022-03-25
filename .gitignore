@@ -81,6 +81,7 @@ build*/
 site/
 
 .cache/
+compile_commands.json
 
 cpp_messages.log
 cpp_server.log

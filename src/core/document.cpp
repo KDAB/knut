@@ -98,11 +98,6 @@ bool Document::hasChanged() const
     return m_hasChanged;
 }
 
-int Document::revision() const
-{
-    return m_revision;
-}
-
 /*!
  * \qmlmethod bool Document::load(string fileName)
  * Load the document `fileName` **without changing the type**. If the current document has some changes, save them
@@ -163,7 +158,6 @@ bool Document::saveAs(const QString &fileName)
     }
     bool saveDone = doSave(m_fileName);
     if (saveDone) {
-        m_revision = 0;
         setHasChanged(false);
         didOpen();
     }
@@ -191,8 +185,6 @@ void Document::setHasChanged(bool newHasChanged)
     if (m_hasChanged == newHasChanged)
         return;
     m_hasChanged = newHasChanged;
-    if (newHasChanged)
-        ++m_revision;
     emit hasChangedChanged();
 }
 

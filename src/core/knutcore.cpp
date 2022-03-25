@@ -56,7 +56,7 @@ void KnutCore::process(const QStringList &arguments)
         const int nColumn = parser.value("column").toInt();
         if (nLine > 0) {
             Core::Document *currDoc = Project::instance()->currentDocument();
-            auto tDoc = dynamic_cast<Core::TextDocument *>(currDoc);
+            auto tDoc = qobject_cast<Core::TextDocument *>(currDoc);
             if (tDoc != nullptr) {
                 tDoc->gotoLine(nLine, nColumn);
             }

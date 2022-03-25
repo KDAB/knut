@@ -12,6 +12,9 @@ class TestLspDocument : public QObject
 {
     Q_OBJECT
 
+    std::unique_ptr<Core::KnutCore> core;
+    Core::Project *project;
+
     void verifySymbol(Core::LspDocument *document, const Core::Symbol &symbol, const QString &name,
                       Core::Symbol::Kind kind, const QString &selectionText)
     {
@@ -25,7 +28,7 @@ class TestLspDocument : public QObject
     void verifySwitchDeclarationDefinition(Core::LspDocument *sourcefile, Core::LspDocument *targetfile, int line,
                                            const QString &selectedText)
     {
-        auto result = dynamic_cast<Core::LspDocument *>(sourcefile->switchDeclarationDefinition());
+        auto result = qobject_cast<Core::LspDocument *>(sourcefile->switchDeclarationDefinition());
         QVERIFY(result);
         QCOMPARE(result, targetfile);
         auto cursor = result->textEdit()->textCursor();
@@ -36,13 +39,38 @@ class TestLspDocument : public QObject
 private slots:
     void initTestCase() { Q_INIT_RESOURCE(core); }
 
+    // We have to copy the cpp-project directory, so the regression
+    // test can edit it without actually changing the files.
+    void init()
+    {
+        QDir dir(Test::testDataPath());
+
+        dir.mkpath("cpp-project-copy");
+
+        QDir src(Test::testDataPath() + "/cpp-project");
+        QDir dest(Test::testDataPath() + "/cpp-project-copy");
+        for (QString file : src.entryList(QDir::Files)) {
+            QFile::copy(src.path() + QDir::separator() + file, dest.path() + QDir::separator() + file);
+        }
+
+        core = std::make_unique<Core::KnutCore>();
+        project = Core::Project::instance();
+        project->setRoot(Test::testDataPath() + "/cpp-project-copy");
+    }
+
+    void cleanup()
+    {
+        project = nullptr;
+        core.reset();
+
+        QDir dir(Test::testDataPath() + "/cpp-project-copy");
+
+        dir.removeRecursively();
+    }
+
     void symbols()
     {
         CHECK_CLANGD_VERSION;
-
-        Core::KnutCore core;
-        auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/cpp-project");
 
         auto cppDocument = qobject_cast<Core::LspDocument *>(project->open("myobject.cpp"));
         const auto cppSymbols = cppDocument->symbols();
@@ -85,10 +113,6 @@ private slots:
     {
         CHECK_CLANGD_VERSION;
 
-        Core::KnutCore core;
-        auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/cpp-project");
-
         auto headerDocument = qobject_cast<Core::LspDocument *>(project->open("myobject.h"));
 
         auto symbol = headerDocument->findSymbol("MyObject", Core::TextDocument::FindWholeWords);
@@ -117,9 +141,7 @@ private slots:
     {
         CHECK_CLANGD_VERSION;
 
-        Core::KnutCore core;
-        Core::Project::instance()->setRoot(Test::testDataPath() + "/cpp-project/");
-        auto lspdocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->open("main.cpp"));
+        auto lspdocument = qobject_cast<Core::LspDocument *>(project->open("main.cpp"));
 
         // Pre-open files, so clang has time to index them
         Core::Project::instance()->get("myobject.cpp");
@@ -127,7 +149,7 @@ private slots:
         // Select the first use of the MyObject -> goTo declaration of the instance
         QVERIFY(lspdocument->find("object.sayMessage()"));
 
-        auto result = dynamic_cast<Core::LspDocument *>(lspdocument->followSymbol());
+        auto result = qobject_cast<Core::LspDocument *>(lspdocument->followSymbol());
 
         QCOMPARE(result, lspdocument);
         QVERIFY(lspdocument->hasSelection());
@@ -144,7 +166,7 @@ private slots:
 
         // Select a function call -> goto Function declaration
         QVERIFY(lspdocument->find("sayMessage()"));
-        result = dynamic_cast<Core::LspDocument *>(lspdocument->followSymbol());
+        result = qobject_cast<Core::LspDocument *>(lspdocument->followSymbol());
         QVERIFY(result);
         QVERIFY(result->fileName().endsWith("myobject.h"));
         cursor = result->textEdit()->textCursor();
@@ -152,7 +174,7 @@ private slots:
         QCOMPARE(cursor.selectedText(), QString("sayMessage"));
 
         // Selected a function declaration -> goTo function definition
-        result = dynamic_cast<Core::LspDocument *>(result->followSymbol());
+        result = qobject_cast<Core::LspDocument *>(result->followSymbol());
         QVERIFY(result);
         QVERIFY(result->fileName().endsWith("myobject.cpp"));
         cursor = result->textEdit()->textCursor();
@@ -160,7 +182,7 @@ private slots:
         QCOMPARE(cursor.selectedText(), QString("sayMessage"));
 
         // Selected a function definition -> goTo function declaration
-        result = dynamic_cast<Core::LspDocument *>(result->followSymbol());
+        result = qobject_cast<Core::LspDocument *>(result->followSymbol());
         QVERIFY(result);
         QVERIFY(result->fileName().endsWith("myobject.h"));
         cursor = result->textEdit()->textCursor();
@@ -172,9 +194,6 @@ private slots:
     {
         CHECK_CLANGD_VERSION;
 
-        Core::KnutCore core;
-        auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/cpp-project/");
         auto mainfile = qobject_cast<Core::LspDocument *>(project->open("main.cpp"));
         auto cppfile = qobject_cast<Core::LspDocument *>(project->open("myobject.cpp"));
         auto headerfile = qobject_cast<Core::LspDocument *>(project->open("myobject.h"));
@@ -203,6 +222,28 @@ private slots:
 
         // Cursor at constructor declaration - select Definition
         verifySwitchDeclarationDefinition(headerfile, cppfile, 6, "MyObject");
+    }
+
+    // Regression test for KNUT-42 - LSP doesn't get notified of changes in Editor
+    void KNUT42_regressionInsertText()
+    {
+        CHECK_CLANGD_VERSION;
+
+        auto mainfile = qobject_cast<Core::LspDocument *>(project->open("main.cpp"));
+        auto headerfile = qobject_cast<Core::LspDocument *>(project->open("myobject.h"));
+
+        mainfile->gotoStartOfDocument();
+
+        // Changing the code will cause the Language server to become out of sync with the
+        // state in Knut. Therefore the next language server call will fail.
+        mainfile->insert("\n");
+
+        QVERIFY(mainfile->find("sayMessage"));
+        auto result = qobject_cast<Core::LspDocument *>(mainfile->followSymbol());
+        QCOMPARE(result, headerfile);
+        auto cursor = result->textEdit()->textCursor();
+        QCOMPARE(cursor.blockNumber(), 9 - 1); // lines are 0-indexed, so subtract 1
+        QCOMPARE(cursor.selectedText(), QString("sayMessage"));
     }
 };
 

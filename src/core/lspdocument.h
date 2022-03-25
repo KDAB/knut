@@ -42,6 +42,8 @@ protected:
     int toPos(const Lsp::Position &pos) const;
     TextRange toRange(const Lsp::Range &range) const;
 
+    int revision() const;
+
 private:
     bool checkClient() const;
     Document *followSymbol(int pos);
@@ -50,6 +52,8 @@ private:
     friend LspCache;
     QPointer<Lsp::Client> m_lspClient;
     std::unique_ptr<LspCache> m_cache;
+
+    int m_revision = 0;
 };
 
 } // namespace Core

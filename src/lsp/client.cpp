@@ -185,6 +185,16 @@ void Client::didClose(DidCloseTextDocumentParams &&params)
     m_backend->sendNotification(notification);
 }
 
+void Client::didChange(DidChangeTextDocumentParams &&params)
+{
+    if (!canSendOpenCloseChanges())
+        return;
+
+    DidChangeNotification notification;
+    notification.params = std::move(params);
+    m_backend->sendNotification(notification);
+}
+
 std::optional<DocumentSymbolRequest::Result>
 Client::documentSymbol(DocumentSymbolParams &&params, std::function<void(DocumentSymbolRequest::Result)> asyncCallback)
 {
@@ -282,6 +292,22 @@ bool Client::canSendOpenCloseChanges() const
         } else {
             auto syncOptions = std::get<TextDocumentSyncOptions>(textDocument.value());
             return syncOptions.openClose.value_or(false);
+        }
+    }
+    return false;
+}
+
+bool Client::canSendDocumentChanges(TextDocumentSyncKind kind) const
+{
+    Q_ASSERT(m_state == Initialized);
+    // TODO handle dynamic capabilities
+    if (auto textDocument = m_serverCapabilities.textDocumentSync) {
+        if (std::holds_alternative<TextDocumentSyncKind>(textDocument.value())) {
+            auto syncKind = std::get<TextDocumentSyncKind>(textDocument.value());
+            return syncKind == kind;
+        } else {
+            auto syncOptions = std::get<TextDocumentSyncOptions>(textDocument.value());
+            return syncOptions.change.value_or(TextDocumentSyncKind::None) == kind;
         }
     }
     return false;

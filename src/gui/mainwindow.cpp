@@ -289,7 +289,7 @@ void MainWindow::createDock(QWidget *widget, Qt::DockWidgetArea area, QWidget *t
 void MainWindow::followSymbol()
 {
     auto *project = Core::Project::instance();
-    auto *document = dynamic_cast<Core::LspDocument *>(project->currentDocument());
+    auto *document = qobject_cast<Core::LspDocument *>(project->currentDocument());
 
     if (document) {
         document->followSymbol();
@@ -299,7 +299,7 @@ void MainWindow::followSymbol()
 void MainWindow::switchDeclarationDefinition()
 {
     auto *project = Core::Project::instance();
-    auto *document = dynamic_cast<Core::LspDocument *>(project->currentDocument());
+    auto *document = qobject_cast<Core::LspDocument *>(project->currentDocument());
 
     if (document) {
         document->switchDeclarationDefinition();

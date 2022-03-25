@@ -234,7 +234,7 @@ CppDocument *CppDocument::openHeaderSource()
     LOG("CppDocument::openHeaderSource");
     const QString fileName = correspondingHeaderSource();
     if (!fileName.isEmpty())
-        return dynamic_cast<CppDocument *>(Project::instance()->open(fileName));
+        return qobject_cast<CppDocument *>(Project::instance()->open(fileName));
     return nullptr;
 }
 
