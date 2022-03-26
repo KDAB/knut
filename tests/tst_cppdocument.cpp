@@ -176,6 +176,123 @@ private slots:
         cppDocument->undo();
         cppDocument->save();
     }
+
+    void insertCodeInMethod()
+    {
+        Core::KnutCore core;
+        Core::Project::instance()->setRoot(Test::testDataPath() + "/cppdocument");
+
+        if (auto cppDocument =
+                qobject_cast<Core::CppDocument *>(Core::Project::instance()->open("insert_code_original.h"))) {
+
+            // Insert code at the start of the method
+            bool isCodeInserted =
+                cppDocument->insertCodeInMethod("updateActions", "// added this new line at the start of this method",
+                                                Core::CppDocument::StartOfMethod);
+            QCOMPARE(isCodeInserted, false);
+            cppDocument->close();
+        }
+
+        Test::FileTester file_cpp(Test::testDataPath() + "/cppdocument/insert_code_original.cpp");
+        if (auto cppDocument =
+                qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(file_cpp.fileName()))) {
+            // NOTE: Code insertion won't work for this case because (as of now) LSP couldn't find a non-static function
+            //       symbol in a C++ file.
+            // Insert code at the end of the method
+            if (cppDocument->insertCodeInMethod(
+                    "MainWindow::nonStaticMethod",
+                    "// added following new lines at the end of this method"
+                    "\ncppDocument->commentSelection();"
+                    "\ncppDocument->save();"
+                    "\nQVERIFY(Test::compareFiles(cppDocument->fileName(), resultantFilePath));"
+                    "\ncppDocument->undo(); cppDocument->save();",
+                    Core::CppDocument::EndOfMethod))
+                cppDocument->save();
+            cppDocument->close();
+        }
+
+        if (auto cppDocument =
+                qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(file_cpp.fileName()))) {
+            // Insert code at the end of the method
+            if (cppDocument->insertCodeInMethod("shortMethod", "// added this new line at the end of this method",
+                                                Core::CppDocument::EndOfMethod))
+                cppDocument->save();
+            cppDocument->close();
+        }
+
+        if (auto cppDocument =
+                qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(file_cpp.fileName()))) {
+            // Insert code at the start of the method
+            if (cppDocument->insertCodeInMethod("shortMethod", "// added this new line at the start of this method",
+                                                Core::CppDocument::StartOfMethod))
+                cppDocument->save();
+            cppDocument->close();
+        }
+
+        if (auto cppDocument =
+                qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(file_cpp.fileName()))) {
+            // Insert code at the end of the method
+            if (cppDocument->insertCodeInMethod(
+                    "longMethod1",
+                    "// added following new lines at the end of this method"
+                    "\ncppDocument->commentSelection();"
+                    "\ncppDocument->save();"
+                    "\nQVERIFY(Test::compareFiles(cppDocument->fileName(), resultantFilePath));"
+                    "\ncppDocument->undo(); cppDocument->save();",
+                    Core::CppDocument::EndOfMethod))
+                cppDocument->save();
+            cppDocument->close();
+        }
+
+        if (auto cppDocument =
+                qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(file_cpp.fileName()))) {
+            // Insert code at the start of the method
+            if (cppDocument->insertCodeInMethod(
+                    "longMethod1",
+                    "// added following new lines at the start of this method"
+                    "\ncppDocument->commentSelection();"
+                    "\ncppDocument->save();"
+                    "\nQVERIFY(Test::compareFiles(cppDocument->fileName(), resultantFilePath));"
+                    "\ncppDocument->undo(); cppDocument->save();",
+                    Core::CppDocument::StartOfMethod))
+                cppDocument->save();
+            cppDocument->close();
+        }
+
+        if (auto cppDocument =
+                qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(file_cpp.fileName()))) {
+            // Insert code at the end of the method
+            if (cppDocument->insertCodeInMethod(
+                    "longMethod2",
+                    "// added following new lines at the end of this method"
+                    "\ncppDocument->commentSelection();"
+                    "\ncppDocument->save();"
+                    "\nQVERIFY(Test::compareFiles(cppDocument->fileName(), resultantFilePath));"
+                    "\ncppDocument->undo(); cppDocument->save();"
+                    "\n",
+                    Core::CppDocument::EndOfMethod))
+                cppDocument->save();
+            cppDocument->close();
+        }
+
+        if (auto cppDocument =
+                qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(file_cpp.fileName()))) {
+            // Insert code at the start of the method
+            if (cppDocument->insertCodeInMethod(
+                    "longMethod2",
+                    "// added following new lines at the start of this method"
+                    "\ncppDocument->commentSelection();"
+                    "\ncppDocument->save();"
+                    "\nQVERIFY(Test::compareFiles(cppDocument->fileName(), resultantFilePath));"
+                    "\ncppDocument->undo(); cppDocument->save();"
+                    "\n",
+                    Core::CppDocument::StartOfMethod))
+                cppDocument->save();
+            cppDocument->close();
+        }
+
+        QVERIFY(file_cpp.compare());
+    }
 };
 
 QTEST_MAIN(TestCppDocument)

@@ -12,6 +12,9 @@ class CppDocument : public LspDocument
 public:
     explicit CppDocument(QObject *parent = nullptr);
 
+    enum Position { StartOfMethod, EndOfMethod };
+    Q_ENUM(Position)
+
     bool isHeader() const;
 
     Q_INVOKABLE QString correspondingHeaderSource() const;
@@ -19,6 +22,8 @@ public:
 public slots:
     Core::CppDocument *openHeaderSource();
 
+    bool insertCodeInMethod(const QString &methodName, QString code,
+                            Core::CppDocument::Position insertAt = Position::StartOfMethod);
     bool insertForwardDeclaration(const QString &fwddecl);
     void commentSelection();
 

@@ -254,6 +254,76 @@ CppDocument *CppDocument::openHeaderSource()
 }
 
 /*!
+ * \qmlmethod CppDocument::insertCodeInMethod(string methodName, string code, Position insertAt)
+ *
+ * Provides a fast way to add some code in an existing method definition. Does nothing if the method does not exist in
+ * the current document.
+ *
+ * This method will find a method in the current file with name matching with `methodName`. If the method exists in the
+ * current document, then it will insert the supplied `code` either at the beginning of the method, or at the end of the
+ * method, depending on the `insertAt` argument.
+ */
+bool CppDocument::insertCodeInMethod(const QString &methodName, QString code, Position insertAt)
+{
+    LOG("CppDocument::insertCodeInMethod", methodName, code, insertAt);
+
+    auto symbol = findSymbol(methodName);
+    if (symbol.isNull()) {
+        spdlog::warn("CppDocument::insertCodeInMethod: No symbol found for {}.", methodName.toStdString());
+        return false;
+    }
+
+    if ((symbol.kind != Symbol::Function) && (symbol.kind != Symbol::Method)) {
+        spdlog::warn("CppDocument::insertCodeInMethod: {} is not a function or a method.", symbol.name.toStdString());
+        return false;
+    }
+
+    QTextCursor cursor = textEdit()->textCursor();
+    cursor.setPosition(symbol.range.end);
+    cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor);
+    if (cursor.selectedText() != "}") {
+        spdlog::warn("CppDocument::insertCodeInMethod: {} is not a function definition.", symbol.name.toStdString());
+        return false;
+    }
+
+    cursor.beginEditBlock();
+    // Goto the end and move back one character
+    cursor.setPosition(symbol.range.end);
+    cursor.movePosition(QTextCursor::PreviousCharacter);
+
+    const QString strTab = tab();
+    if (insertAt == StartOfMethod) {
+        // Goto the start of the block
+        textEdit()->setTextCursor(cursor);
+        cursor.setPosition(gotoBlockStart());
+        // Move forward one character
+        cursor.movePosition(QTextCursor::NextCharacter);
+        // Insert a new line
+        cursor.insertText("\n");
+    }
+
+    // Insert an indent before the first line
+    cursor.insertText(strTab);
+    // Insert an indent before every line in the code
+    code.replace("\n", ("\n" + strTab));
+
+    if (insertAt == EndOfMethod)
+        if (!code.endsWith("\n" + strTab))
+            code.append("\n");
+
+    // If there's an extra tab at the end, chop it
+    if (code.endsWith(strTab))
+        code.chop(strTab.length());
+
+    cursor.insertText(code);
+    cursor.endEditBlock();
+
+    textEdit()->setTextCursor(cursor);
+
+    return true;
+}
+
+/*!
  * \qmlmethod CppDocument::insertForwardDeclaration(string fwddecl)
  * Inserts the forward declaration `fwddecl` into the current file.
  * The method will check if the file is a header file, and also that the forward declaration starts with 'class ' or
@@ -328,7 +398,7 @@ QVariantMap CppDocument::mfcExtractDDX(const QString &className)
 
     QVariantMap map;
 
-    // TODO: use semantic information coming from LSP instead of regexp to find the method
+    // TODO: Use semantic information coming from LSP instead of regexp to find the method
 
     const QString source = text();
     const QRegularExpression searchFunctionExpression(QString(R"*(void\s*%1\s*::DoDataExchange\s*\()*").arg(className),
@@ -424,13 +494,13 @@ int CppDocument::moveBlock(int startPos, QTextCursor::MoveOperation direction)
     int pos = startPos + inc;
     QChar currentChar = doc->characterAt(pos);
 
-    // Set teh characters delimiter that increment or decrement the counter when iterating
+    // Set the characters delimiter that increment or decrement the counter when iterating
     auto incCounterChar =
         direction == QTextCursor::NextCharacter ? QVector<QChar> {'(', '{', '['} : QVector<QChar> {')', '}', ']'};
     auto decCounterChar =
         direction == QTextCursor::PreviousCharacter ? QVector<QChar> {'(', '{', '['} : QVector<QChar> {')', '}', ']'};
 
-    // If the character next is a sepcial one, go inside the block
+    // If the character next is a special one, go inside the block
     if (incCounterChar.contains(currentChar))
         pos += inc;
 

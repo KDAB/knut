@@ -365,7 +365,7 @@ QString TextDocument::tab() const
 {
     auto settings = Settings::instance()->value<TabSettings>(Settings::Tab);
     if (settings.insertSpaces)
-        return QString(' ', settings.tabSize);
+        return QString(settings.tabSize, ' ');
     return QStringLiteral("\t");
 }
 
