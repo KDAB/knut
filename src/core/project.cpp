@@ -243,7 +243,7 @@ const QVector<Document *> &Project::documents() const
  */
 Document *Project::get(QString fileName)
 {
-    LOG("Project::get", fileName);
+    LOG("Project::get", LOG_ARG("path", fileName));
 
     QFileInfo fi(fileName);
     if (!fi.exists() && fi.isRelative())
@@ -274,7 +274,7 @@ Document *Project::get(QString fileName)
         }
     }
 
-    return doc;
+    LOG_RETURN("document", doc);
 }
 
 /*!
@@ -287,12 +287,12 @@ Document *Project::open(QString fileName)
     if (m_current && m_current->fileName() == fileName)
         return m_current;
 
-    LOG("Project::open", fileName);
+    LOG("Project::open", LOG_ARG("path", fileName));
 
     m_current = get(fileName);
     emit currentDocumentChanged();
 
-    return m_current;
+    LOG_RETURN("document", m_current);
 }
 
 /*!

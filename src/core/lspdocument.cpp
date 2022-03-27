@@ -78,7 +78,7 @@ Document *LspDocument::followSymbol()
     // That way, calling followSymbol twice in a row causes Clangd
     // to switch between delcaration and definition.
     auto cursor = textEdit()->textCursor();
-    return followSymbol(cursor.selectionStart());
+    LOG_RETURN("document", followSymbol(cursor.selectionStart()));
 }
 
 /**
@@ -169,7 +169,7 @@ Document *LspDocument::switchDeclarationDefinition()
         return nullptr;
     }
 
-    return followSymbol(currentFunction->selectionRange.start);
+    LOG_RETURN("document", followSymbol(currentFunction->selectionRange.start));
 }
 
 /*!
@@ -184,7 +184,7 @@ Document *LspDocument::switchDeclarationDefinition()
  */
 void LspDocument::selectSymbol(const QString &name, int options)
 {
-    LOG("LspDocument::selectSymbol", name, options);
+    LOG("LspDocument::selectSymbol", LOG_ARG("text", name), options);
     if (!checkClient())
         return;
     auto symbol = findSymbol(name, options);
@@ -202,7 +202,7 @@ void LspDocument::selectSymbol(const QString &name, int options)
  */
 Symbol LspDocument::findSymbol(const QString &name, int options) const
 {
-    LOG("LspDocument::findSymbol", name, options);
+    LOG("LspDocument::findSymbol", LOG_ARG("text", name), options);
     if (!checkClient())
         return {};
 

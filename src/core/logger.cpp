@@ -56,9 +56,9 @@ QVariant HistoryModel::data(const QModelIndex &index, int role) const
             const auto &params = m_data.at(index.row()).params;
             QStringList paramStrings;
             for (const auto &param : params) {
-                QString text = param.toString();
+                QString text = param.value.toString();
 #if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
-                if (static_cast<QMetaType::Type>(param.type()) == QMetaType::QString) {
+                if (static_cast<QMetaType::Type>(param.value.type()) == QMetaType::QString) {
 #else
                 if (static_cast<QMetaType::Type>(param.typeId()) == QMetaType::QString) {
 #endif
@@ -67,9 +67,12 @@ QVariant HistoryModel::data(const QModelIndex &index, int role) const
                     text.append('"');
                     text.prepend('"');
                 }
+                if (!param.name.isEmpty())
+                    text.prepend(QString("%1: ").arg(param.name));
                 paramStrings.push_back(text);
             }
-            return paramStrings.join(", ");
+            const QString returnVariable = m_data.at(index.row()).returnArg.name;
+            return paramStrings.join(", ") + (returnVariable.isEmpty() ? "" : (" => " + returnVariable));
         }
         }
     }
@@ -97,6 +100,11 @@ void HistoryModel::clear()
     endResetModel();
 }
 
+void HistoryModel::logData(const QString &name)
+{
+    addData(LogData {name, {}, {}}, false);
+}
+
 void HistoryModel::addData(LogData &&data, bool merge)
 {
     if (!merge || m_data.empty() || m_data.back().name != data.name) {
@@ -108,22 +116,22 @@ void HistoryModel::addData(LogData &&data, bool merge)
 
     auto &lastData = m_data.back();
     // Add parameters together
-    for (int i = 0; i < data.params.size(); ++i) {
+    for (size_t i = 0; i < data.params.size(); ++i) {
         const auto &param = data.params[i];
         auto &lastParam = lastData.params[i];
 #if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
-        switch (static_cast<QMetaType::Type>(param.type())) {
+        switch (static_cast<QMetaType::Type>(param.value.type())) {
 #else
         switch (static_cast<QMetaType::Type>(param.typeId())) {
 #endif
         case QMetaType::Int:
-            lastParam = lastParam.toInt() + param.toInt();
+            lastParam.value = lastParam.value.toInt() + param.value.toInt();
             break;
         case QMetaType::QString:
-            lastParam = lastParam.toString() + param.toString();
+            lastParam.value = lastParam.value.toString() + param.value.toString();
             break;
         case QMetaType::QStringList:
-            lastParam = lastParam.toStringList() + param.toStringList();
+            lastParam.value = lastParam.value.toStringList() + param.value.toStringList();
             break;
         default:
             Q_UNREACHABLE();

@@ -200,7 +200,7 @@ QString CppDocument::correspondingHeaderSource() const
             cache[testFileName] = fileName();
             spdlog::debug("CppDocument::correspondingHeaderSource {} => {}", fileName().toStdString(),
                           testFileName.toStdString());
-            return testFileName;
+            LOG_RETURN("path", testFileName);
         }
     }
 
@@ -232,7 +232,7 @@ QString CppDocument::correspondingHeaderSource() const
         cache[bestFileName] = fileName();
         spdlog::debug("CppDocument::correspondingHeaderSource {} => {}", fileName().toStdString(),
                       bestFileName.toStdString());
-        return bestFileName;
+        LOG_RETURN("path", bestFileName);
     }
 
     spdlog::warn("CppDocument::correspondingHeaderSource {} - not found ", fileName().toStdString());
@@ -249,7 +249,7 @@ CppDocument *CppDocument::openHeaderSource()
     LOG("CppDocument::openHeaderSource");
     const QString fileName = correspondingHeaderSource();
     if (!fileName.isEmpty())
-        return qobject_cast<CppDocument *>(Project::instance()->open(fileName));
+        LOG_RETURN("document", qobject_cast<CppDocument *>(Project::instance()->open(fileName)));
     return nullptr;
 }
 
@@ -269,7 +269,7 @@ CppDocument *CppDocument::openHeaderSource()
  */
 bool CppDocument::insertForwardDeclaration(const QString &fwddecl)
 {
-    LOG("CppDocument::insertForwardDeclaration", fwddecl);
+    LOG("CppDocument::insertForwardDeclaration", LOG_ARG("text", fwddecl));
     if (!isHeader()) {
         spdlog::warn("CppDocument::insertForwardDeclaration: {} - is not a header file. ", fileName().toStdString());
         return false;
@@ -324,7 +324,7 @@ bool CppDocument::insertForwardDeclaration(const QString &fwddecl)
  */
 QVariantMap CppDocument::mfcExtractDDX(const QString &className)
 {
-    LOG("CppDocument::mfcExtractDDX", className);
+    LOG("CppDocument::mfcExtractDDX", LOG_ARG("text", className));
 
     QVariantMap map;
 
