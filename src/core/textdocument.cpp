@@ -945,6 +945,8 @@ Mark *TextDocument::createMark(int pos)
  */
 void TextDocument::gotoMark(Mark *mark)
 {
+    if (!mark)
+        return;
     LOG("TextDocument::gotoMark", LOG_ARG("mark", mark));
     if (mark->m_editor != this) {
         spdlog::error("Can't use a mark from another editor.");
@@ -962,6 +964,8 @@ void TextDocument::gotoMark(Mark *mark)
  */
 void TextDocument::selectToMark(Mark *mark)
 {
+    if (!mark)
+        return;
     LOG("TextDocument::selectToMark", LOG_ARG("mark", mark));
     if (mark->m_editor != this) {
         spdlog::error("Can't use a mark from another editor.");

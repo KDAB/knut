@@ -39,6 +39,8 @@ set(PROJECT_SOURCES
     settingswidget.h
     settingswidget.cpp
     settingswidget.ui
+    textview.h
+    textview.cpp
     uiview.h
     uiview.cpp
     gui.qrc

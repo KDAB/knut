@@ -44,6 +44,11 @@ private:
     void showPalette();
     void returnToEditor();
 
+    // Edit
+    void toggleMark();
+    void goToMark();
+    void selectToMark();
+
     // C++
     void followSymbol();
     void switchDeclarationDefinition();

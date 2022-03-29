@@ -97,6 +97,10 @@
     <addaction name="separator"/>
     <addaction name="actionGoto_BlockStart"/>
     <addaction name="actionGoto_BlockEnd"/>
+    <addaction name="separator"/>
+    <addaction name="actionToggle_Mark"/>
+    <addaction name="actionGoTo_Mark"/>
+    <addaction name="actionSelectTo_Mark"/>
    </widget>
    <widget class="QMenu" name="menu_View">
     <property name="title">
@@ -271,6 +275,30 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+/</string>
+   </property>
+  </action>
+  <action name="actionToggle_Mark">
+   <property name="text">
+    <string>Toggle Mark</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+M</string>
+   </property>
+  </action>
+  <action name="actionGoTo_Mark">
+   <property name="text">
+    <string>Go to Mark</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Up</string>
+   </property>
+  </action>
+  <action name="actionSelectTo_Mark">
+   <property name="text">
+    <string>Select to Mark</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Down</string>
    </property>
   </action>
  </widget>

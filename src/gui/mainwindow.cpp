@@ -12,6 +12,7 @@
 #include "rctoqrcdialog.h"
 #include "rctouidialog.h"
 #include "runscriptdialog.h"
+#include "textview.h"
 #include "uiview.h"
 
 #include "core/cppdocument.h"
@@ -93,6 +94,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionFind_Previous, &QAction::triggered, ui->findWidget, &FindWidget::findPrevious);
     connect(ui->actionGoto_BlockEnd, &QAction::triggered, this, &MainWindow::gotoBlockEnd);
     connect(ui->actionGoto_BlockStart, &QAction::triggered, this, &MainWindow::gotoBlockStart);
+    connect(ui->actionToggle_Mark, &QAction::triggered, this, &MainWindow::toggleMark);
+    connect(ui->actionGoTo_Mark, &QAction::triggered, this, &MainWindow::goToMark);
+    connect(ui->actionSelectTo_Mark, &QAction::triggered, this, &MainWindow::selectToMark);
 
     // C++
     connect(ui->actionSwitch_Header_Source, &QAction::triggered, this, &MainWindow::switchHeaderSource);
@@ -361,6 +365,13 @@ void MainWindow::showPalette()
     m_palette->raise();
 }
 
+static TextView *textViewForDocument(Core::Document *document)
+{
+    if (auto textDocument = qobject_cast<Core::TextDocument *>(document))
+        return static_cast<TextView *>(textDocument->textEdit()->parentWidget());
+    return nullptr;
+}
+
 void MainWindow::updateActions()
 {
     auto document = Core::Project::instance()->currentDocument();
@@ -374,6 +385,10 @@ void MainWindow::updateActions()
     ui->actionFind_Previous->setEnabled(textDocument != nullptr);
     ui->actionGoto_BlockEnd->setEnabled(textDocument != nullptr);
     ui->actionGoto_BlockStart->setEnabled(textDocument != nullptr);
+    auto *textView = textViewForDocument(textDocument);
+    ui->actionToggle_Mark->setEnabled(textDocument != nullptr);
+    ui->actionGoTo_Mark->setEnabled(textDocument != nullptr && textView->hasMark());
+    ui->actionSelectTo_Mark->setEnabled(textDocument != nullptr && textView->hasMark());
 
     auto *lspDocument = qobject_cast<Core::LspDocument *>(document);
     const bool lspEnabled = lspDocument && lspDocument->hasLspClient();
@@ -395,6 +410,29 @@ void MainWindow::returnToEditor()
         ui->findWidget->hide();
     else
         ui->tabWidget->currentWidget()->setFocus(Qt::FocusReason::ShortcutFocusReason);
+}
+
+void MainWindow::toggleMark()
+{
+    auto document = Core::Project::instance()->currentDocument();
+    if (auto *textView = textViewForDocument(document)) {
+        textView->toggleMark();
+        updateActions();
+    }
+}
+
+void MainWindow::goToMark()
+{
+    auto document = Core::Project::instance()->currentDocument();
+    if (auto *textView = textViewForDocument(document))
+        textView->gotoMark();
+}
+
+void MainWindow::selectToMark()
+{
+    auto document = Core::Project::instance()->currentDocument();
+    if (auto *textView = textViewForDocument(document))
+        textView->selectToMark();
 }
 
 void MainWindow::changeTab()
@@ -420,9 +458,9 @@ static QWidget *widgetForDocument(Core::Document *document)
     switch (document->type()) {
     case Core::Document::Type::Cpp:
     case Core::Document::Type::Text: {
-        auto textEdit = qobject_cast<Core::TextDocument *>(document)->textEdit();
-        GuiSettings::setupDocumentTextEdit(textEdit, document->fileName());
-        return textEdit;
+        auto textView = new TextView();
+        textView->setTextDocument(qobject_cast<Core::TextDocument *>(document));
+        return textView;
     }
     case Core::Document::Type::Rc: {
         auto rcview = new RcUi::RcFileView();
