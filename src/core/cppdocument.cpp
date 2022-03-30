@@ -70,6 +70,9 @@ void CppDocument::commentSelection()
     QTextCursor cursor = textEdit()->textCursor();
     cursor.beginEditBlock();
 
+    int cursorPos = cursor.position();
+    int selectionOffset = 0;
+
     if (hasSelection()) {
         int selectionStartPos = cursor.selectionStart();
         int selectionEndPos = cursor.selectionEnd();
@@ -77,19 +80,21 @@ void CppDocument::commentSelection()
         // Preparing to check if the start and end positions of the selection are before any text of the lines
         cursor.setPosition(selectionStartPos);
         cursor.movePosition(QTextCursor::StartOfLine, QTextCursor::KeepAnchor);
-        const QString str1 = cursor.selectedText().trimmed();
+        const QString str1 = cursor.selectedText();
         cursor.setPosition(selectionEndPos);
         cursor.movePosition(QTextCursor::StartOfLine, QTextCursor::KeepAnchor);
-        const QString str2 = cursor.selectedText().trimmed();
+        const QString str2 = cursor.selectedText();
 
-        int selectionOffset = 0;
-        if (str1.isEmpty() && str2.isEmpty()) {
+        if (str1.trimmed().isEmpty() && str2.trimmed().isEmpty()) {
             // Comment all lines in the selected region with "//"
             cursor.setPosition(selectionStartPos);
             cursor.movePosition(QTextCursor::StartOfLine);
             selectionStartPos = cursor.position();
 
             cursor.setPosition(selectionEndPos);
+            // If the end of selection is at the beginning of the line, don't comment out the line the cursor is in.
+            if (str2.isEmpty())
+                cursor.movePosition(QTextCursor::Left);
             cursor.movePosition(QTextCursor::StartOfLine);
 
             do {
@@ -108,15 +113,25 @@ void CppDocument::commentSelection()
             selectionOffset += 2;
         }
 
-        cursor.setPosition(selectionEndPos + selectionOffset);
-        cursor.setPosition(selectionStartPos, QTextCursor::KeepAnchor);
+        // Set the selection after commenting
+        if (cursorPos == selectionEndPos) {
+            cursor.setPosition(selectionStartPos);
+            cursor.setPosition(selectionEndPos + selectionOffset, QTextCursor::KeepAnchor);
+        } else {
+            cursor.setPosition(selectionEndPos + selectionOffset);
+            cursor.setPosition(selectionStartPos, QTextCursor::KeepAnchor);
+        }
     } else {
         cursor.select(QTextCursor::LineUnderCursor);
         // If the line is not empty, then comment it using "//"
         if (!cursor.selectedText().isEmpty()) {
             cursor.movePosition(QTextCursor::StartOfLine);
             cursor.insertText("//");
+            selectionOffset += 2;
         }
+
+        // Set the position after commenting
+        cursor.setPosition(cursorPos + selectionOffset);
     }
 
     cursor.endEditBlock();
