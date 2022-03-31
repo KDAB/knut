@@ -107,11 +107,19 @@
      <string>&amp;View</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menu_Help">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionAbout_Knut"/>
+    <addaction name="actionAbout_Qt"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menuEdit"/>
    <addaction name="menu_View"/>
    <addaction name="menuC"/>
    <addaction name="menu_Rc"/>
+   <addaction name="menu_Help"/>
   </widget>
   <action name="actionQuit">
    <property name="text">
@@ -299,6 +307,16 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Down</string>
+   </property>
+  </action>
+  <action name="actionAbout_Knut">
+   <property name="text">
+    <string>About Knut</string>
+   </property>
+  </action>
+  <action name="actionAbout_Qt">
+   <property name="text">
+    <string>About Qt</string>
    </property>
   </action>
  </widget>

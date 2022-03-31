@@ -61,6 +61,9 @@ private:
     void createQrc();
     void createUi();
 
+    // Help
+    void aboutKnut();
+
     void updateActions();
     void initProject(const QString &path);
     void openDocument(const QModelIndex &index);
