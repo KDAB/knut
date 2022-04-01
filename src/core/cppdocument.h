@@ -32,6 +32,9 @@ public slots:
     int gotoBlockStart(int count = 1);
     int gotoBlockEnd(int count = 1);
 
+    int selectBlockStart(int count = 1);
+    int selectBlockEnd(int count = 1);
+
 private:
     int moveBlock(int startPos, QTextCursor::MoveOperation direction);
 };

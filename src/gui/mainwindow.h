@@ -55,6 +55,8 @@ private:
     void switchHeaderSource();
     void gotoBlockStart();
     void gotoBlockEnd();
+    void selectBlockStart();
+    void selectBlockEnd();
     void commentSelection();
 
     // Rc

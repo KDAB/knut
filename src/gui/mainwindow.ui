@@ -98,6 +98,9 @@
     <addaction name="actionGoto_BlockStart"/>
     <addaction name="actionGoto_BlockEnd"/>
     <addaction name="separator"/>
+    <addaction name="actionSelect_to_Block_Start"/>
+    <addaction name="actionSelect_to_Block_End"/>
+    <addaction name="separator"/>
     <addaction name="actionToggle_Mark"/>
     <addaction name="actionGoTo_Mark"/>
     <addaction name="actionSelectTo_Mark"/>
@@ -283,6 +286,22 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+/</string>
+   </property>
+  </action>
+  <action name="actionSelect_to_Block_Start">
+   <property name="text">
+    <string>Select to Block Start</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+[</string>
+   </property>
+  </action>
+  <action name="actionSelect_to_Block_End">
+   <property name="text">
+    <string>Select to Block End</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+]</string>
    </property>
   </action>
   <action name="actionToggle_Mark">

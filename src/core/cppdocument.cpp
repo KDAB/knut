@@ -438,9 +438,9 @@ QVariantMap CppDocument::mfcExtractDDX(const QString &className)
 
 /*!
  * \qmlmethod int CppDocument::gotoBlockStart(int count)
- * Move the cursor to the start of the block it's in, and returns the new cursor position.
+ * Moves the cursor to the start of the block it's in, and returns the new cursor position.
  * A block is definied by {} or () or [].
- * Do it `count` times.
+ * Does it `count` times.
  */
 int CppDocument::gotoBlockStart(int count)
 {
@@ -457,9 +457,9 @@ int CppDocument::gotoBlockStart(int count)
 
 /*!
  * \qmlmethod int CppDocument::gotoBlockEnd(int count)
- * Move the cursor to the end of the block it's in, and returns the new cursor position.
+ * Moves the cursor to the end of the block it's in, and returns the new cursor position.
  * A block is definied by {} or () or [].
- * Do it `count` times.
+ * Does it `count` times.
  */
 int CppDocument::gotoBlockEnd(int count)
 {
@@ -472,6 +472,56 @@ int CppDocument::gotoBlockEnd(int count)
     }
     textEdit()->setTextCursor(cursor);
     return cursor.position();
+}
+
+/*!
+ * \qmlmethod int CppDocument::selectBlockStart()
+ * Selects the text from current cursor position to the start of the block, and returns the new cursor position.
+ * A block is definied by {} or () or [].
+ * Does it `count` times.
+ */
+int CppDocument::selectBlockStart(int count)
+{
+    LOG_AND_MERGE("CppDocument::selectBlockStart", count);
+
+    QTextCursor cursor = textEdit()->textCursor();
+    const int selectionStart = std::max(cursor.selectionStart(), cursor.selectionEnd());
+    while (count != 0) {
+        cursor.setPosition(moveBlock(cursor.position(), QTextCursor::PreviousCharacter));
+        --count;
+    }
+    const int blockStartPos = cursor.position();
+
+    cursor.setPosition(selectionStart, QTextCursor::MoveAnchor);
+    cursor.setPosition(blockStartPos, QTextCursor::KeepAnchor);
+
+    textEdit()->setTextCursor(cursor);
+    return blockStartPos;
+}
+
+/*!
+ * \qmlmethod int CppDocument::selectBlockEnd()
+ * Selects the text from current cursor position to the end of the block, and returns the new cursor position.
+ * A block is definied by {} or () or [].
+ * Does it `count` times.
+ */
+int CppDocument::selectBlockEnd(int count)
+{
+    LOG_AND_MERGE("CppDocument::selectBlockEnd", count);
+
+    QTextCursor cursor = textEdit()->textCursor();
+    const int selectionStart = std::min(cursor.selectionStart(), cursor.selectionEnd());
+    while (count != 0) {
+        cursor.setPosition(moveBlock(cursor.position(), QTextCursor::NextCharacter));
+        --count;
+    }
+    const int blockEndPos = cursor.position();
+
+    cursor.setPosition(selectionStart, QTextCursor::MoveAnchor);
+    cursor.setPosition(blockEndPos, QTextCursor::KeepAnchor);
+
+    textEdit()->setTextCursor(cursor);
+    return blockEndPos;
 }
 
 /**

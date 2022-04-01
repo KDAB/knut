@@ -95,6 +95,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionFind_Previous, &QAction::triggered, ui->findWidget, &FindWidget::findPrevious);
     connect(ui->actionGoto_BlockEnd, &QAction::triggered, this, &MainWindow::gotoBlockEnd);
     connect(ui->actionGoto_BlockStart, &QAction::triggered, this, &MainWindow::gotoBlockStart);
+    connect(ui->actionSelect_to_Block_End, &QAction::triggered, this, &MainWindow::selectBlockEnd);
+    connect(ui->actionSelect_to_Block_Start, &QAction::triggered, this, &MainWindow::selectBlockStart);
     connect(ui->actionToggle_Mark, &QAction::triggered, this, &MainWindow::toggleMark);
     connect(ui->actionGoTo_Mark, &QAction::triggered, this, &MainWindow::goToMark);
     connect(ui->actionSelectTo_Mark, &QAction::triggered, this, &MainWindow::selectToMark);
@@ -154,6 +156,18 @@ void MainWindow::gotoBlockEnd()
 {
     if (auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->currentDocument()))
         cppDocument->gotoBlockEnd();
+}
+
+void MainWindow::selectBlockStart()
+{
+    if (auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->currentDocument()))
+        cppDocument->selectBlockStart();
+}
+
+void MainWindow::selectBlockEnd()
+{
+    if (auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->currentDocument()))
+        cppDocument->selectBlockEnd();
 }
 
 void MainWindow::commentSelection()
@@ -402,6 +416,8 @@ void MainWindow::updateActions()
     ui->actionFind_Previous->setEnabled(textDocument != nullptr);
     ui->actionGoto_BlockEnd->setEnabled(textDocument != nullptr);
     ui->actionGoto_BlockStart->setEnabled(textDocument != nullptr);
+    ui->actionSelect_to_Block_End->setEnabled(textDocument != nullptr);
+    ui->actionSelect_to_Block_Start->setEnabled(textDocument != nullptr);
     auto *textView = textViewForDocument(textDocument);
     ui->actionToggle_Mark->setEnabled(textDocument != nullptr);
     ui->actionGoTo_Mark->setEnabled(textDocument != nullptr && textView->hasMark());
