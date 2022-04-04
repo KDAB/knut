@@ -346,14 +346,14 @@ bool CppDocument::insertForwardDeclaration(const QString &fwddecl)
     }
 
     int spacePos = fwddecl.indexOf(' ');
-    auto classOrStruct = fwddecl.leftRef(spacePos);
-    if (fwddecl.isEmpty() || (classOrStruct != "class" && classOrStruct != "struct")) {
+    auto classOrStruct = QStringView(fwddecl).left(spacePos);
+    if (fwddecl.isEmpty() || (classOrStruct != QStringLiteral("class") && classOrStruct != QStringLiteral("struct"))) {
         spdlog::warn("CppDocument::insertForwardDeclaration: {} - should start with 'class ' or 'struct '. ",
                      fwddecl.toStdString());
         return false;
     }
 
-    auto qualifierList = fwddecl.midRef(spacePos + 1).split("::");
+    auto qualifierList = QStringView(fwddecl).mid(spacePos + 1).split(QStringLiteral("::"));
     std::ranges::reverse(qualifierList);
 
     // Get the un-qualified declaration

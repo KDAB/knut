@@ -60,7 +60,7 @@ QVariant HistoryModel::data(const QModelIndex &index, int role) const
 #if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
                 if (static_cast<QMetaType::Type>(param.value.type()) == QMetaType::QString) {
 #else
-                if (static_cast<QMetaType::Type>(param.typeId()) == QMetaType::QString) {
+                if (static_cast<QMetaType::Type>(param.value.typeId()) == QMetaType::QString) {
 #endif
                     text.replace('\n', "\\n");
                     text.replace('\t', "\\t");
@@ -122,7 +122,7 @@ void HistoryModel::addData(LogData &&data, bool merge)
 #if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
         switch (static_cast<QMetaType::Type>(param.value.type())) {
 #else
-        switch (static_cast<QMetaType::Type>(param.typeId())) {
+        switch (static_cast<QMetaType::Type>(param.value.typeId())) {
 #endif
         case QMetaType::Int:
             lastParam.value = lastParam.value.toInt() + param.value.toInt();
