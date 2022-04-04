@@ -364,7 +364,7 @@ void MainWindow::createUi()
 
 void MainWindow::aboutKnut()
 {
-    auto text = QString(R"(<h1>About Knut</h1>
+    auto text = tr(R"(<h1>About Knut</h1>
 Knut version %1<br/><br/>
 
 Knut names has nothing to do with Knut Irvin, nor with Knut the polar bear.<br/>

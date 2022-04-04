@@ -23,11 +23,15 @@ Inherited properties: [LspDocument properties](../script/lspdocument.md#properti
 
 | | Name |
 |-|-|
+||**[commentSelection](#commentSelection)**()|
 |string |**[correspondingHeaderSource](#correspondingHeaderSource)**()|
-|int |**[gotoBlockEnd](#gotoBlockEnd)**()|
-|int |**[gotoBlockStart](#gotoBlockStart)**()|
+|int |**[gotoBlockEnd](#gotoBlockEnd)**(int count)|
+|int |**[gotoBlockStart](#gotoBlockStart)**(int count)|
+||**[insertCodeInMethod](#insertCodeInMethod)**(string methodName, string code, Position insertAt)|
 ||**[insertForwardDeclaration](#insertForwardDeclaration)**(string fwddecl)|
 |[CppDocument](../script/cppdocument.md) |**[openHeaderSource](#openHeaderSource)**()|
+|int |**[selectBlockEnd](#selectBlockEnd)**()|
+|int |**[selectBlockStart](#selectBlockStart)**()|
 
 Inherited methods: [LspDocument methods](../script/lspdocument.md#methods)
 
@@ -39,19 +43,42 @@ Return true if the current document is a header.
 
 ## Method Documentation
 
+#### <a name="commentSelection"></a>**commentSelection**()
+
+Comments the selected lines (or current line if there's no selection) in current document.
+
+- If there's no selection, current line is commented using `//`.
+- If there's a valid selection and the start and end position of the selection are before any text of the lines,
+  all of the selected lines are commented using `//`.
+- If there's a valid selection and the start and/or end position of the selection are between any text of the
+  lines, all of the selected lines are commented using multi-line comment.
+- If selection or position is invalid or out of range, or the position is on an empty line, the document remains
+  unchanged.
+
 #### <a name="correspondingHeaderSource"></a>string **correspondingHeaderSource**()
 
 Returns the corresponding source or header file path.
 
-#### <a name="gotoBlockEnd"></a>int **gotoBlockEnd**()
+#### <a name="gotoBlockEnd"></a>int **gotoBlockEnd**(int count)
 
-Move the cursor to the end of the block it's in, and returns the new cursor position.
+Moves the cursor to the end of the block it's in, and returns the new cursor position.
 A block is definied by {} or () or [].
+Does it `count` times.
 
-#### <a name="gotoBlockStart"></a>int **gotoBlockStart**()
+#### <a name="gotoBlockStart"></a>int **gotoBlockStart**(int count)
 
-Move the cursor to the start of the block it's in, and returns the new cursor position.
+Moves the cursor to the start of the block it's in, and returns the new cursor position.
 A block is definied by {} or () or [].
+Does it `count` times.
+
+#### <a name="insertCodeInMethod"></a>**insertCodeInMethod**(string methodName, string code, Position insertAt)
+
+Provides a fast way to add some code in an existing method definition. Does nothing if the method does not exist in
+the current document.
+
+This method will find a method in the current file with name matching with `methodName`. If the method exists in the
+current document, then it will insert the supplied `code` either at the beginning of the method, or at the end of the
+method, depending on the `insertAt` argument.
 
 #### <a name="insertForwardDeclaration"></a>**insertForwardDeclaration**(string fwddecl)
 
@@ -71,3 +98,15 @@ class FooBar
 
 Opens the corresponding source or header files, the current document is the new file.
 If no files have been found, it's a no-op.
+
+#### <a name="selectBlockEnd"></a>int **selectBlockEnd**()
+
+Selects the text from current cursor position to the end of the block, and returns the new cursor position.
+A block is definied by {} or () or [].
+Does it `count` times.
+
+#### <a name="selectBlockStart"></a>int **selectBlockStart**()
+
+Selects the text from current cursor position to the start of the block, and returns the new cursor position.
+A block is definied by {} or () or [].
+Does it `count` times.

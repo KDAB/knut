@@ -60,10 +60,10 @@ Inherited properties: [Document properties](../script/document.md#properties)
 ||**[gotoStartOfLine](#gotoStartOfLine)**()|
 ||**[gotoStartOfWord](#gotoStartOfWord)**()|
 |bool |**[hasSelection](#hasSelection)**()|
-||**[indent](#indent)**()|
+||**[indent](#indent)**(int count)|
 ||**[paste](#paste)**()|
-||**[redo](#redo)**()|
-||**[removeIndent](#removeIndent)**()|
+||**[redo](#redo)**(int count)|
+||**[removeIndent](#removeIndent)**(int count)|
 |bool |**[replaceAll](#replaceAll)**(string before, string after, int options = TextDocument.NoFindFlags)|
 |bool |**[replaceAllRegexp](#replaceAllRegexp)**(string regexp, string after, int options = TextDocument.NoFindFlags)|
 |bool |**[replaceOne](#replaceOne)**(string before, string after, int options = TextDocument.NoFindFlags)|
@@ -82,7 +82,7 @@ Inherited properties: [Document properties](../script/document.md#properties)
 ||**[selectStartOfWord](#selectStartOfWord)**()|
 ||**[selectTo](#selectTo)**(int pos)|
 ||**[selectToMark](#selectToMark)**([Mark](../script/mark.md) mark)|
-||**[undo](#undo)**()|
+||**[undo](#undo)**(int count)|
 ||**[unselect](#unselect)**()|
 
 Inherited methods: [Document methods](../script/document.md#methods)
@@ -265,21 +265,21 @@ Goes to the start of the word under the cursor.
 
 Returns true if the editor has a selection.
 
-#### <a name="indent"></a>**indent**()
+#### <a name="indent"></a>**indent**(int count)
 
-Indents the current line. If there's a selection, indent all lines in the selection.
+Indents the current line `count` times. If there's a selection, indent all lines in the selection.
 
 #### <a name="paste"></a>**paste**()
 
 Pastes text in the clipboard.
 
-#### <a name="redo"></a>**redo**()
+#### <a name="redo"></a>**redo**(int count)
 
-Redo the last action.
+Redo `count` times the last actions.
 
-#### <a name="removeIndent"></a>**removeIndent**()
+#### <a name="removeIndent"></a>**removeIndent**(int count)
 
-Indents the current line. If there's a selection, indent all lines in the selection.
+Indents the current line `count` times. If there's a selection, indent all lines in the selection.
 
 #### <a name="replaceAll"></a>bool **replaceAll**(string before, string after, int options = TextDocument.NoFindFlags)
 
@@ -389,9 +389,9 @@ Selects the text from the current position to `pos`.
 
 Select the text from the cursor position to the `mark`.
 
-#### <a name="undo"></a>**undo**()
+#### <a name="undo"></a>**undo**(int count)
 
-Undo the last action.
+Undo `count` times the last actions.
 
 #### <a name="unselect"></a>**unselect**()
 
