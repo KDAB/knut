@@ -63,7 +63,8 @@ QStringList ScriptManager::directories() const
 
 void ScriptManager::runScript(const QString &fileName, bool async, bool log)
 {
-    spdlog::debug("==> Start script {}", fileName.toStdString());
+    if (log)
+        spdlog::debug("==> Start script {}", fileName.toStdString());
     ScriptRunner::EndScriptFunc logEndScript;
     if (log)
         logEndScript = [fileName]() {

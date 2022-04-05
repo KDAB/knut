@@ -12,6 +12,7 @@
 #include "rctoqrcdialog.h"
 #include "rctouidialog.h"
 #include "runscriptdialog.h"
+#include "scriptpanel.h"
 #include "textview.h"
 #include "uiview.h"
 
@@ -76,6 +77,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     auto historyPanel = new HistoryPanel(this);
     createDock(historyPanel, Qt::BottomDockWidgetArea, historyPanel->toolBar());
+
+    auto scriptPanel = new ScriptPanel(this);
+    createDock(scriptPanel, Qt::RightDockWidgetArea, scriptPanel->toolBar());
 
     // File
     connect(ui->actionQuit, &QAction::triggered, this, &MainWindow::close);

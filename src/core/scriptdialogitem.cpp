@@ -177,7 +177,7 @@ void ScriptDialogItem::setUiFile(const QString &fileName)
             }
         }
     } else {
-        spdlog::get("script")->error("Can't open {}", fileName.toStdString());
+        spdlog::error("Can't open {}", fileName.toStdString());
     }
 }
 

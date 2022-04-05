@@ -36,6 +36,8 @@ set(PROJECT_SOURCES
     runscriptdialog.h
     runscriptdialog.cpp
     runscriptdialog.ui
+    scriptpanel.h
+    scriptpanel.cpp
     settingswidget.h
     settingswidget.cpp
     settingswidget.ui

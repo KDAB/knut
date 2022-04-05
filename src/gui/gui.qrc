@@ -6,6 +6,11 @@
         <file>gui/format-letter-case.png</file>
         <file>gui/regex.png</file>
         <file>gui/whole-word.png</file>
+        <file>gui/content-save.png</file>
+        <file>gui/file.png</file>
+        <file>gui/folder-open.png</file>
+        <file>gui/play.png</file>
+        <file>gui/rc.xml</file>
     </qresource>
     <qresource prefix="/org.kde.syntax-highlighting/syntax-addons">
         <file alias="rc.xml">gui/rc.xml</file>

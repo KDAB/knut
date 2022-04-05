@@ -388,7 +388,7 @@ void Palette::addLineSelector()
 void Palette::addScriptSelector()
 {
     auto runScript = [](const QVariant &fileName) {
-        Core::Utils::runScript(fileName.toString());
+        Core::Utils::runScript(fileName.toString(), true);
     };
     m_selectors.push_back(Selector {".", std::make_unique<ScriptModel>(), {}, runScript});
 }
