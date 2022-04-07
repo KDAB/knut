@@ -68,6 +68,12 @@ QWidget *ScriptPanel::toolBar() const
     return m_toolBar;
 }
 
+void ScriptPanel::setNewScript(const QString &script)
+{
+    newScript();
+    setPlainText(script);
+}
+
 void ScriptPanel::openScript()
 {
     const QString fileName = QFileDialog::getOpenFileName(this, tr("Open Script"), "", "Script files (*.qml *.js)");

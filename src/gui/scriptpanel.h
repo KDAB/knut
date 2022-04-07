@@ -14,6 +14,8 @@ public:
 
     QWidget *toolBar() const;
 
+    void setNewScript(const QString &script);
+
 private:
     void openScript();
     void newScript();

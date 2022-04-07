@@ -2,6 +2,8 @@
 
 #include <spdlog/spdlog.h>
 
+#include <QHash>
+
 namespace Core {
 
 LoggerObject::LoggerObject()
@@ -98,6 +100,71 @@ void HistoryModel::clear()
     beginResetModel();
     m_data.clear();
     endResetModel();
+}
+
+QString HistoryModel::createScript(int start, int end)
+{
+    std::tie(start, end) = std::minmax(start, end);
+    Q_ASSERT(start > 0 && start <= end && end < static_cast<int>(m_data.size()));
+
+    QString scriptText = "// Description of the script\nfunction main() {\n";
+
+    QHash<QString, QVariant> returnVariables;
+
+    for (int row = start; row <= end; ++row) {
+        const auto &data = m_data.at(row);
+        auto apiCall = data.name;
+
+        // Set the return value
+        if (!data.returnArg.isEmpty()) {
+            const auto &name = data.returnArg.name;
+            scriptText += (returnVariables.contains(name) ? "" : "var ") + name + " = ";
+            returnVariables[name] = data.returnArg.value;
+        }
+
+        // Check if we need to create the document, and change the API call as it's not a singleton
+        if (data.name.contains("Document::")) {
+            if (!returnVariables.contains("document"))
+                scriptText += "var document = Project.currentDocument\n";
+            returnVariables["document"] = {};
+            apiCall = "document." + apiCall.mid(apiCall.indexOf("::") + 2);
+        }
+        scriptText += apiCall;
+
+        // Pass the parameters
+        QStringList paramStrings;
+        for (const auto &param : data.params) {
+            if (!param.name.isEmpty() && returnVariables.value(param.name) == param.value) {
+                paramStrings.append(param.name);
+                continue;
+            }
+
+            QString text = param.value.toString();
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
+            if (static_cast<QMetaType::Type>(param.value.type()) == QMetaType::QString) {
+#else
+            if (static_cast<QMetaType::Type>(param.value.typeId()) == QMetaType::QString) {
+#endif
+                text.replace('\n', "\\n");
+                text.replace('\t', "\\t");
+                text.append('"');
+                text.prepend('"');
+            }
+            paramStrings.push_back(text);
+        }
+
+        scriptText.append(QString("(%1)\n").arg(paramStrings.join(", ")));
+    }
+
+    scriptText += "}\n";
+    return scriptText;
+}
+
+QString HistoryModel::createScript(const QModelIndex &startIndex, const QModelIndex &endIndex)
+{
+    Q_ASSERT(checkIndex(startIndex, CheckIndexOption::IndexIsValid)
+             && checkIndex(endIndex, CheckIndexOption::IndexIsValid));
+    return createScript(startIndex.row(), endIndex.row());
 }
 
 void HistoryModel::logData(const QString &name)

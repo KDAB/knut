@@ -80,6 +80,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     auto scriptPanel = new ScriptPanel(this);
     createDock(scriptPanel, Qt::RightDockWidgetArea, scriptPanel->toolBar());
+    connect(historyPanel, &HistoryPanel::scriptCreated, scriptPanel, &ScriptPanel::setNewScript);
 
     // File
     connect(ui->actionQuit, &QAction::triggered, this, &MainWindow::close);

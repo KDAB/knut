@@ -2,6 +2,10 @@
 
 #include <QTreeView>
 
+namespace Core {
+class HistoryModel;
+}
+
 namespace Gui {
 
 class HistoryPanel : public QTreeView
@@ -12,8 +16,14 @@ public:
 
     QWidget *toolBar() const;
 
+signals:
+    void scriptCreated(const QString &script);
+
 private:
+    void createScript();
+
     QWidget *const m_toolBar = nullptr;
+    Core::HistoryModel *const m_model = nullptr;
 };
 
 } // namespace Gui
