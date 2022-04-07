@@ -60,7 +60,7 @@ ScriptPanel::ScriptPanel(QWidget *parent)
     auto playButton = createButton(":/gui/play.png", tr("Play"));
     connect(playButton, &QToolButton::clicked, this, &ScriptPanel::playScript);
 
-    layout->addSpacing(50);
+    layout->addSpacing(20);
 }
 
 QWidget *ScriptPanel::toolBar() const

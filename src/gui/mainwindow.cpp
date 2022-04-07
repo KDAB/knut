@@ -79,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent)
     createDock(historyPanel, Qt::BottomDockWidgetArea, historyPanel->toolBar());
 
     auto scriptPanel = new ScriptPanel(this);
-    createDock(scriptPanel, Qt::RightDockWidgetArea, scriptPanel->toolBar());
+    createDock(scriptPanel, Qt::LeftDockWidgetArea, scriptPanel->toolBar());
     connect(historyPanel, &HistoryPanel::scriptCreated, scriptPanel, &ScriptPanel::setNewScript);
 
     // File
@@ -310,6 +310,7 @@ void MainWindow::createDock(QWidget *widget, Qt::DockWidgetArea area, QWidget *t
             continue;
         if (dockWidgetArea(dockWidget) == area) {
             tabifyDockWidget(dockWidget, dock);
+            dockWidget->raise();
             return;
         }
     }
@@ -444,7 +445,7 @@ void MainWindow::updateActions()
 
 void MainWindow::returnToEditor()
 {
-    if (QApplication::focusWidget() == ui->tabWidget->currentWidget())
+    if (ui->tabWidget->currentWidget()->hasFocus())
         ui->findWidget->hide();
     else
         ui->tabWidget->currentWidget()->setFocus(Qt::FocusReason::ShortcutFocusReason);

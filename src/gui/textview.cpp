@@ -63,6 +63,7 @@ void TextView::setTextDocument(Core::TextDocument *document)
     layout->addWidget(textEdit);
     textEdit->setVisible(true);
     textEdit->installEventFilter(this);
+    setFocusProxy(textEdit);
     connect(textEdit->document(), &QTextDocument::contentsChanged, this, &TextView::updateMarkRect);
     GuiSettings::setupDocumentTextEdit(textEdit, document->fileName());
 }
