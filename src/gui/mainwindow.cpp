@@ -53,6 +53,8 @@ MainWindow::MainWindow(QWidget *parent)
     , m_fileModel(new QFileSystemModel(this))
     , m_projectView(new QTreeView(this))
     , m_palette(new Palette(this))
+    , m_historyPanel(new HistoryPanel(this))
+    , m_scriptPanel(new ScriptPanel(this))
 {
     // Initialize the settings before anything
     GuiSettings::instance();
@@ -74,23 +76,29 @@ MainWindow::MainWindow(QWidget *parent)
 
     auto logPanel = new LogPanel(this);
     createDock(logPanel, Qt::BottomDockWidgetArea, logPanel->toolBar());
+    createDock(m_historyPanel, Qt::BottomDockWidgetArea, m_historyPanel->toolBar());
+    createDock(m_scriptPanel, Qt::LeftDockWidgetArea, m_scriptPanel->toolBar());
 
-    auto historyPanel = new HistoryPanel(this);
-    createDock(historyPanel, Qt::BottomDockWidgetArea, historyPanel->toolBar());
-
-    auto scriptPanel = new ScriptPanel(this);
-    createDock(scriptPanel, Qt::LeftDockWidgetArea, scriptPanel->toolBar());
-    connect(historyPanel, &HistoryPanel::scriptCreated, scriptPanel, &ScriptPanel::setNewScript);
+    connect(m_historyPanel, &HistoryPanel::scriptCreated, m_scriptPanel, &ScriptPanel::setNewScript);
+    connect(m_historyPanel, &HistoryPanel::recordingChanged, m_scriptPanel, &ScriptPanel::setDisabled);
+    connect(m_historyPanel, &HistoryPanel::recordingChanged, m_scriptPanel->toolBar(), &ScriptPanel::setDisabled);
+    connect(m_historyPanel, &HistoryPanel::recordingChanged, this, &MainWindow::updateScriptActions);
+    connect(m_scriptPanel, &ScriptPanel::textChanged, this, &MainWindow::updateScriptActions);
 
     // File
     connect(ui->actionQuit, &QAction::triggered, this, &MainWindow::close);
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openProject);
-    connect(ui->actionRun_Script, &QAction::triggered, this, &MainWindow::runScript);
     connect(ui->actionOptions, &QAction::triggered, this, &MainWindow::openOptions);
     connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveDocument);
     connect(ui->actionSaveAll, &QAction::triggered, this, &MainWindow::saveAllDocuments);
     connect(ui->actionShow_Palette, &QAction::triggered, this, &MainWindow::showPalette);
     connect(ui->actionClose_Document, &QAction::triggered, this, &MainWindow::closeDocument);
+
+    // Script
+    connect(ui->actionRun_Script, &QAction::triggered, this, &MainWindow::runScript);
+    connect(ui->actionStartRecordingScript, &QAction::triggered, m_historyPanel, &HistoryPanel::startRecording);
+    connect(ui->actionStopRecordingScript, &QAction::triggered, m_historyPanel, &HistoryPanel::stopRecording);
+    connect(ui->actionPlayLastScript, &QAction::triggered, m_scriptPanel, &ScriptPanel::playScript);
 
     // Edit
     ui->findWidget->hide();
@@ -143,6 +151,7 @@ MainWindow::MainWindow(QWidget *parent)
         changeCurrentDocument();
 
     updateActions();
+    updateScriptActions();
 }
 
 void MainWindow::switchHeaderSource()
@@ -441,6 +450,13 @@ void MainWindow::updateActions()
     const bool rcEnabled = qobject_cast<Core::RcDocument *>(document);
     ui->actionCreate_Qrc->setEnabled(rcEnabled);
     ui->actionCreate_Ui->setEnabled(rcEnabled);
+}
+
+void MainWindow::updateScriptActions()
+{
+    ui->actionStartRecordingScript->setEnabled(!m_historyPanel->isRecording());
+    ui->actionStopRecordingScript->setEnabled(m_historyPanel->isRecording());
+    ui->actionPlayLastScript->setEnabled(!m_historyPanel->isRecording() && m_scriptPanel->hasScript());
 }
 
 void MainWindow::returnToEditor()

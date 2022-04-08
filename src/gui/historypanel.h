@@ -2,6 +2,8 @@
 
 #include <QTreeView>
 
+class QToolButton;
+
 namespace Core {
 class HistoryModel;
 }
@@ -16,14 +18,21 @@ public:
 
     QWidget *toolBar() const;
 
+    bool isRecording() const;
+    void startRecording();
+    void stopRecording();
+
 signals:
+    void recordingChanged(bool isRecording);
     void scriptCreated(const QString &script);
 
 private:
-    void createScript();
+    void createScriptFromSelection();
 
     QWidget *const m_toolBar = nullptr;
+    QToolButton *const m_clearButton = nullptr;
     Core::HistoryModel *const m_model = nullptr;
+    int m_startRow = -1;
 };
 
 } // namespace Gui

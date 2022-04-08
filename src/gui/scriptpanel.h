@@ -16,11 +16,13 @@ public:
 
     void setNewScript(const QString &script);
 
+    bool hasScript() const;
+    void playScript();
+
 private:
     void openScript();
     void newScript();
     void saveScript();
-    void playScript();
 
     QWidget *const m_toolBar = nullptr;
     QLabel *m_scriptName = nullptr;

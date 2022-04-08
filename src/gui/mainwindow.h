@@ -16,6 +16,8 @@ class RcDocument;
 namespace Gui {
 
 class Palette;
+class HistoryPanel;
+class ScriptPanel;
 
 namespace Ui {
     class MainWindow;
@@ -39,10 +41,12 @@ private:
     void saveDocument();
     void saveAllDocuments();
     void closeDocument();
-    void runScript();
     void openOptions();
     void showPalette();
     void returnToEditor();
+
+    // Script
+    void runScript();
 
     // Edit
     void toggleMark();
@@ -67,6 +71,8 @@ private:
     void aboutKnut();
 
     void updateActions();
+    void updateScriptActions();
+
     void initProject(const QString &path);
     void openDocument(const QModelIndex &index);
     void updateRecentProjects();
@@ -80,6 +86,8 @@ private:
     QFileSystemModel *const m_fileModel = nullptr;
     QTreeView *const m_projectView = nullptr;
     Palette *const m_palette = nullptr;
+    HistoryPanel *const m_historyPanel = nullptr;
+    ScriptPanel *const m_scriptPanel = nullptr;
 };
 
 } // namespace Gui

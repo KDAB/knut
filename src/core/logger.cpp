@@ -46,6 +46,22 @@ int HistoryModel::columnCount(const QModelIndex &parent) const
     return ColumnCount;
 }
 
+static QString variantToString(const QVariant &variant)
+{
+    QString text = variant.toString();
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
+    if (static_cast<QMetaType::Type>(variant.type()) == QMetaType::QString) {
+#else
+    if (static_cast<QMetaType::Type>(variant.typeId()) == QMetaType::QString) {
+#endif
+        text.replace('\n', "\\n");
+        text.replace('\t', "\\t");
+        text.append('"');
+        text.prepend('"');
+    }
+    return text;
+}
+
 QVariant HistoryModel::data(const QModelIndex &index, int role) const
 {
     Q_ASSERT(checkIndex(index, CheckIndexOption::IndexIsValid));
@@ -58,17 +74,7 @@ QVariant HistoryModel::data(const QModelIndex &index, int role) const
             const auto &params = m_data.at(index.row()).params;
             QStringList paramStrings;
             for (const auto &param : params) {
-                QString text = param.value.toString();
-#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
-                if (static_cast<QMetaType::Type>(param.value.type()) == QMetaType::QString) {
-#else
-                if (static_cast<QMetaType::Type>(param.value.typeId()) == QMetaType::QString) {
-#endif
-                    text.replace('\n', "\\n");
-                    text.replace('\t', "\\t");
-                    text.append('"');
-                    text.prepend('"');
-                }
+                QString text = variantToString(param.value);
                 if (!param.name.isEmpty())
                     text.prepend(QString("%1: ").arg(param.name));
                 paramStrings.push_back(text);
@@ -115,21 +121,22 @@ QString HistoryModel::createScript(int start, int end)
         const auto &data = m_data.at(row);
         auto apiCall = data.name;
 
-        // Set the return value
-        if (!data.returnArg.isEmpty()) {
-            const auto &name = data.returnArg.name;
-            scriptText += (returnVariables.contains(name) ? "" : "var ") + name + " = ";
-            returnVariables[name] = data.returnArg.value;
-        }
-
         // Check if we need to create the document, and change the API call as it's not a singleton
         if (data.name.contains("Document::")) {
             if (!returnVariables.contains("document"))
                 scriptText += "var document = Project.currentDocument\n";
             returnVariables["document"] = {};
             apiCall = "document." + apiCall.mid(apiCall.indexOf("::") + 2);
+        } else {
+            apiCall.replace("::", ".");
         }
-        scriptText += apiCall;
+
+        // Set the return value
+        if (!data.returnArg.isEmpty()) {
+            const auto &name = data.returnArg.name;
+            scriptText += (returnVariables.contains(name) ? "" : "var ") + name + " = ";
+            returnVariables[name] = data.returnArg.value;
+        }
 
         // Pass the parameters
         QStringList paramStrings;
@@ -139,21 +146,11 @@ QString HistoryModel::createScript(int start, int end)
                 continue;
             }
 
-            QString text = param.value.toString();
-#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
-            if (static_cast<QMetaType::Type>(param.value.type()) == QMetaType::QString) {
-#else
-            if (static_cast<QMetaType::Type>(param.value.typeId()) == QMetaType::QString) {
-#endif
-                text.replace('\n', "\\n");
-                text.replace('\t', "\\t");
-                text.append('"');
-                text.prepend('"');
-            }
+            QString text = variantToString(param.value);
             paramStrings.push_back(text);
         }
 
-        scriptText.append(QString("(%1)\n").arg(paramStrings.join(", ")));
+        scriptText.append(QString("%1(%2)\n").arg(apiCall, paramStrings.join(", ")));
     }
 
     scriptText += "}\n";

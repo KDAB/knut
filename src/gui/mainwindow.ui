@@ -64,21 +64,20 @@
     <addaction name="actionClose_Document"/>
     <addaction name="separator"/>
     <addaction name="actionShow_Palette"/>
-    <addaction name="actionRun_Script"/>
     <addaction name="actionOptions"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menu_Rc">
     <property name="title">
-     <string>&amp;Rc</string>
+     <string>Rc</string>
     </property>
     <addaction name="actionCreate_Qrc"/>
     <addaction name="actionCreate_Ui"/>
    </widget>
    <widget class="QMenu" name="menuC">
     <property name="title">
-     <string>&amp;C++</string>
+     <string>C++</string>
     </property>
     <addaction name="actionSwitch_Header_Source"/>
     <addaction name="actionFollow_Symbol"/>
@@ -117,7 +116,18 @@
     <addaction name="actionAbout_Knut"/>
     <addaction name="actionAbout_Qt"/>
    </widget>
+   <widget class="QMenu" name="menu_Script">
+    <property name="title">
+     <string>&amp;Script</string>
+    </property>
+    <addaction name="actionRun_Script"/>
+    <addaction name="separator"/>
+    <addaction name="actionStartRecordingScript"/>
+    <addaction name="actionStopRecordingScript"/>
+    <addaction name="actionPlayLastScript"/>
+   </widget>
    <addaction name="menu_File"/>
+   <addaction name="menu_Script"/>
    <addaction name="menuEdit"/>
    <addaction name="menu_View"/>
    <addaction name="menuC"/>
@@ -336,6 +346,33 @@
   <action name="actionAbout_Qt">
    <property name="text">
     <string>About Qt</string>
+   </property>
+  </action>
+  <action name="actionStartRecordingScript">
+   <property name="text">
+    <string>Record Script</string>
+   </property>
+   <property name="toolTip">
+    <string>Start Recording Script</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+[</string>
+   </property>
+  </action>
+  <action name="actionStopRecordingScript">
+   <property name="text">
+    <string>Stop Recording Script</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+]</string>
+   </property>
+  </action>
+  <action name="actionPlayLastScript">
+   <property name="text">
+    <string>Play Last Script</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+R</string>
    </property>
   </action>
  </widget>

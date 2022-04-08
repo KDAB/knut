@@ -10,6 +10,7 @@
 #include <QFrame>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QScrollBar>
 #include <QTemporaryFile>
 #include <QToolButton>
 
@@ -72,6 +73,12 @@ void ScriptPanel::setNewScript(const QString &script)
 {
     newScript();
     setPlainText(script);
+    verticalScrollBar()->setValue(verticalScrollBar()->maximum());
+}
+
+bool ScriptPanel::hasScript() const
+{
+    return toPlainText().isSimpleText();
 }
 
 void ScriptPanel::openScript()
@@ -120,6 +127,7 @@ void ScriptPanel::playScript()
     Core::LoggerDisabler ld;
 
     if (!m_fileName.isEmpty()) {
+        saveScript();
         Core::ScriptManager::instance()->runScript(m_fileName, false, false);
         return;
     }
