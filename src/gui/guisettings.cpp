@@ -222,6 +222,7 @@ void GuiSettings::updateStyle() const
         darkPalette.setColor(QPalette::Disabled, QPalette::Text, gray);
         darkPalette.setColor(QPalette::Disabled, QPalette::Light, darkGray);
         darkPalette.setColor(QPalette::Disabled, QPalette::Midlight, darkGray);
+        darkPalette.setColor(QPalette::PlaceholderText, gray);
         qApp->setPalette(darkPalette);
         break;
     }
