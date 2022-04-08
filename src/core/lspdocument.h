@@ -12,6 +12,7 @@ struct Range;
 namespace Core {
 
 class LspCache;
+struct RegexpTransform;
 
 class LspDocument : public TextDocument
 {
@@ -24,6 +25,7 @@ public:
 
     Q_INVOKABLE Core::Symbol findSymbol(const QString &name, int options = NoFindFlags) const;
     Q_INVOKABLE QVector<Core::Symbol> symbols() const;
+    Q_INVOKABLE void transformSymbol(const QString &symbolName, const QString &jsonFileName);
 
 public slots:
     Document *followSymbol();
@@ -48,6 +50,9 @@ private:
     bool checkClient() const;
     Document *followSymbol(int pos);
     void changeContent(int position, int charsRemoved, int charsAdded);
+
+    // JSON Transformations
+    void regexpTransform(const RegexpTransform &transform, const std::unordered_map<QString, QString> &regexpContext);
 
     friend LspCache;
     QPointer<Lsp::Client> m_lspClient;

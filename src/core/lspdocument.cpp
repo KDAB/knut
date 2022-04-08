@@ -1,5 +1,6 @@
 #include "lspdocument.h"
 
+#include "json_utils.h"
 #include "logger.h"
 #include "private/lspcache.h"
 #include "string_utils.h"
@@ -10,9 +11,11 @@
 #include "project.h"
 #include "symbol.h"
 
+#include <QFile>
 #include <QPlainTextEdit>
 #include <QTextBlock>
 #include <QTextDocument>
+#include <QTextStream>
 
 #include <spdlog/spdlog.h>
 
@@ -58,6 +61,78 @@ QVector<Core::Symbol> LspDocument::symbols() const
     if (!checkClient())
         return {};
     return m_cache->symbols();
+}
+
+struct RegexpTransform
+{
+    QString from;
+    QString to;
+};
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(RegexpTransform, from, to);
+
+struct Transforms
+{
+    std::vector<RegexpTransform> patterns;
+};
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Transforms, patterns);
+
+void LspDocument::regexpTransform(const RegexpTransform &transform,
+                                  const std::unordered_map<QString, QString> &regexpContext)
+{
+    spdlog::trace("LspDocument::regexpTransform");
+
+    auto from = transform.from;
+    auto to = transform.to;
+
+    for (const auto &contextPair : regexpContext) {
+        auto key = QString("${%1}").arg(QRegularExpression::escape(contextPair.first));
+        auto value = QRegularExpression::escape(contextPair.second);
+        from.replace(key, value);
+        to.replace(key, value);
+    }
+
+    // Use the FindBackward flag, so that nested Regexp Transforms will
+    // replace the "inner" item first.
+    replaceAllRegexp(from, to, TextDocument::FindBackward | TextDocument::PreserveCase);
+}
+
+/*!
+ * \qmlmethod void LspDocument::transformSymbol(const QString &symbolName, const QString &jsonFileName)
+ *
+ * Runs a list of transformations defined in a JSON file on the given \a symbolName.
+ * The JSON file is loaded from the path specified in \a jsonFileName.
+ */
+void LspDocument::transformSymbol(const QString &symbolName, const QString &jsonFileName)
+{
+    LOG("LspDocument::transformSymbol", LOG_ARG("text", symbolName), jsonFileName);
+
+    QFile file(jsonFileName);
+    if (!file.open(QFile::ReadOnly | QFile::Text)) {
+        spdlog::error("LspDocument::transformSymbol - Could not open JSON file: '{}'", jsonFileName.toStdString());
+        return;
+    }
+    QTextStream in(&file);
+
+    nlohmann::json transformJson;
+    try {
+        transformJson = nlohmann::json::parse(in.readAll().toStdString());
+    } catch (nlohmann::json::exception &exception) {
+        spdlog::error("LspDocument::transformSymbol - JSON parsing failed: {}", exception.what());
+        return;
+    }
+
+    try {
+        auto transforms = transformJson.get<Transforms>();
+
+        std::unordered_map<QString, QString> regexpContext;
+        regexpContext["symbol"] = symbolName;
+        for (const auto &pattern : transforms.patterns) {
+            regexpTransform(pattern, regexpContext);
+        }
+    } catch (nlohmann::json::exception &exception) {
+        spdlog::error("LspDocument::transformSymbol - Not a valid Transform JSON: {}", exception.what());
+        return;
+    }
 }
 
 /*!

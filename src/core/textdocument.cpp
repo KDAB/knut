@@ -1091,14 +1091,15 @@ int TextDocument::replaceAll(const QString &before, const QString &after, int op
 {
     LOG("TextDocument::replaceAll", LOG_ARG("text", before), after, options);
 
-    int count = 0;
-    auto cursor = m_document->textCursor();
-    cursor.movePosition(QTextCursor::Start);
-    m_document->setTextCursor(cursor);
-    cursor.beginEditBlock();
-
+    const bool backwards = options & FindBackward;
     const bool usesRegExp = options & FindRegexp;
     const bool preserveCase = options & PreserveCase;
+
+    int count = 0;
+    auto cursor = m_document->textCursor();
+    cursor.movePosition(backwards ? QTextCursor::End : QTextCursor::Start);
+    m_document->setTextCursor(cursor);
+    cursor.beginEditBlock();
 
     auto regexp = createRegularExpression(before, options);
 

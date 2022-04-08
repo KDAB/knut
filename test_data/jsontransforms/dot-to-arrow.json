@@ -1,0 +1,9 @@
+{
+    "patterns": [
+        {
+            "_description": "Convert direct member access to pointer access",
+            "from": "([^\\w\\\"]|^)${symbol}\\.",
+            "to": "$1${symbol}->"
+        }
+    ]
+}
