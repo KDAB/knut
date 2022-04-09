@@ -77,7 +77,7 @@ void KnutCore::process(const QStringList &arguments)
 
 void KnutCore::initParser(QCommandLineParser &parser) const
 {
-    parser.setApplicationDescription("Automation tool for source code editing");
+    parser.setApplicationDescription("Automation tool for code transformation using scripts");
     parser.addHelpOption();
     parser.addVersionOption();
 

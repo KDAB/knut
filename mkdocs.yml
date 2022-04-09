@@ -27,6 +27,10 @@ repo_name: knut
 
 nav:
     - Home: index.md
+    - Getting Started:
+        - Writing a script: getting-started/script.md
+        - Command line interface: getting-started/cli.md
+        - User interface: getting-started/gui.md
     - Contributing:
         - Getting started: contributing/getting-started.md
         - Architecture: contributing/architecture.md
