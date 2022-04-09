@@ -1,6 +1,8 @@
 #include "palette.h"
 #include "ui_palette.h"
 
+#include "gui_constants.h"
+
 #include "core/logger.h"
 #include "core/lspdocument.h"
 #include "core/project.h"
@@ -232,6 +234,7 @@ Palette::Palette(QWidget *parent)
     , ui(new Ui::Palette)
 {
     ui->setupUi(this);
+    setFixedWidth(Constants::PaletteWidth);
 
     m_proxyModel = new SortFilterProxyModel(this);
     m_proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);

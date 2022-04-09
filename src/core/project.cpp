@@ -235,23 +235,15 @@ const QVector<Document *> &Project::documents() const
     return m_documents;
 }
 
-/*!
- * \qmlmethod Document Project::get(string fileName)
- * Get the document for the given `fileName`. If the document is not opented yet, open it. If the document already
- * exists, returns the same instance, a document can't be open twice. If the fileName is relative, use the root path as
- * the base.
- */
-Document *Project::get(QString fileName)
+Document *Project::getDocument(QString fileName, bool moveToBack)
 {
-    LOG("Project::get", LOG_ARG("path", fileName));
-
     QFileInfo fi(fileName);
     if (!fi.exists() && fi.isRelative())
         fileName = m_root + '/' + fileName;
     else
         fileName = fi.absoluteFilePath();
 
-    auto findIt = std::find_if(m_documents.cbegin(), m_documents.cend(), [fileName](auto document) {
+    auto findIt = std::find_if(m_documents.begin(), m_documents.end(), [fileName](auto document) {
         return document->fileName() == fileName;
     });
 
@@ -259,6 +251,8 @@ Document *Project::get(QString fileName)
 
     if (findIt != m_documents.cend()) {
         doc = *findIt;
+        if (moveToBack)
+            std::rotate(findIt, findIt + 1, m_documents.end());
     } else {
         doc = createDocument(fi.suffix());
         if (doc) {
@@ -273,8 +267,20 @@ Document *Project::get(QString fileName)
             return nullptr;
         }
     }
+    return doc;
+}
 
-    LOG_RETURN("document", doc);
+/*!
+ * \qmlmethod Document Project::get(string fileName)
+ * Get the document for the given `fileName`. If the document is not opented yet, open it. If the document already
+ * exists, returns the same instance, a document can't be open twice. If the fileName is relative, use the root path as
+ * the base.
+ */
+Document *Project::get(QString fileName)
+{
+    LOG("Project::get", LOG_ARG("path", fileName));
+
+    LOG_RETURN("document", getDocument(fileName, false));
 }
 
 /*!
@@ -289,7 +295,7 @@ Document *Project::open(QString fileName)
 
     LOG("Project::open", LOG_ARG("path", fileName));
 
-    m_current = get(fileName);
+    m_current = getDocument(fileName, true);
     emit currentDocumentChanged();
 
     LOG_RETURN("document", m_current);
@@ -324,6 +330,23 @@ void Project::saveAllDocuments()
             d->save();
         }
     }
+}
+
+/*!
+ * \qmlmethod Project::openPrevious(int index)
+ * Open a previously opened document. `index` is the position of this document in the last opened document.
+ *
+ * `document.openPrevious(1)` (the default) opens the last document, like Ctrl+Tab in any editors.
+ */
+Document *Project::openPrevious(int index)
+{
+    LOG("Project::openPrevious", index);
+
+    Q_ASSERT(index < m_documents.size());
+    index = m_documents.size() - index - 1;
+    const QString &fileName = m_documents.at(index)->fileName();
+
+    LOG_RETURN("document", open(fileName));
 }
 
 } // namespace Core

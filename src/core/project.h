@@ -51,6 +51,7 @@ public slots:
     Core::Document *open(QString fileName);
     void closeAll();
     void saveAllDocuments();
+    Core::Document *openPrevious(int index = 1);
 
 signals:
     void rootChanged();
@@ -61,6 +62,7 @@ private:
     friend class KnutCore;
     explicit Project(QObject *parent = nullptr);
 
+    Core::Document *getDocument(QString fileName, bool moveToBack = false);
     Lsp::Client *getClient(Document::Type type);
 
 private:

@@ -1,11 +1,14 @@
 project(knut-gui LANGUAGES CXX)
 
 set(PROJECT_SOURCES
+    documentpalette.h
+    documentpalette.cpp
     fileselector.h
     fileselector.cpp
     findwidget.h
     findwidget.cpp
     findwidget.ui
+    gui_constants.h
     guisettings.h
     guisettings.cpp
     historypanel.h

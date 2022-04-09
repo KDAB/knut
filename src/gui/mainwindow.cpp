@@ -3,6 +3,7 @@
 #include "core/lspdocument.h"
 #include "ui_mainwindow.h"
 
+#include "documentpalette.h"
 #include "guisettings.h"
 #include "historypanel.h"
 #include "imageview.h"
@@ -55,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
     , m_palette(new Palette(this))
     , m_historyPanel(new HistoryPanel(this))
     , m_scriptPanel(new ScriptPanel(this))
+    , m_documentPalette(new DocumentPalette(this))
 {
     // Initialize the settings before anything
     GuiSettings::instance();
@@ -62,6 +64,7 @@ MainWindow::MainWindow(QWidget *parent)
     setAttribute(Qt::WA_DeleteOnClose);
 
     m_palette->hide();
+    m_documentPalette->hide();
 
     ui->setupUi(this);
     setWindowTitle(QApplication::applicationName() + ' ' + QApplication::applicationVersion());
@@ -130,6 +133,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     addAction(ui->actionReturnEditor);
     connect(ui->actionReturnEditor, &QAction::triggered, this, &MainWindow::returnToEditor);
+
+    addAction(ui->actionShowDocumentPalette);
+    connect(ui->actionShowDocumentPalette, &QAction::triggered, this, &MainWindow::showDocumentPalette);
 
     m_recentProjects = new QMenu(this);
     ui->actionRecent_Projects->setMenu(m_recentProjects);
@@ -409,6 +415,15 @@ void MainWindow::showPalette()
     m_palette->move(mapToGlobal(QPoint {x, y}));
     m_palette->show();
     m_palette->raise();
+}
+
+void MainWindow::showDocumentPalette()
+{
+    const int x = (width() - m_documentPalette->width()) / 2;
+    const int y = menuBar()->height() - 1;
+
+    m_documentPalette->move(mapToGlobal(QPoint {x, y}));
+    m_documentPalette->showWindow();
 }
 
 static TextView *textViewForDocument(Core::Document *document)

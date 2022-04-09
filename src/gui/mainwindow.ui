@@ -375,6 +375,17 @@
     <string>Alt+R</string>
    </property>
   </action>
+  <action name="actionShowDocumentPalette">
+   <property name="text">
+    <string>Show Document Palette...</string>
+   </property>
+   <property name="toolTip">
+    <string>Show Document Palette</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Tab</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

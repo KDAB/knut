@@ -18,6 +18,7 @@ namespace Gui {
 class Palette;
 class HistoryPanel;
 class ScriptPanel;
+class DocumentPalette;
 
 namespace Ui {
     class MainWindow;
@@ -43,6 +44,7 @@ private:
     void closeDocument();
     void openOptions();
     void showPalette();
+    void showDocumentPalette();
     void returnToEditor();
 
     // Script
@@ -88,6 +90,7 @@ private:
     Palette *const m_palette = nullptr;
     HistoryPanel *const m_historyPanel = nullptr;
     ScriptPanel *const m_scriptPanel = nullptr;
+    DocumentPalette *const m_documentPalette = nullptr;
 };
 
 } // namespace Gui
