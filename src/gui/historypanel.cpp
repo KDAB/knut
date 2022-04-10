@@ -44,7 +44,7 @@ HistoryPanel::HistoryPanel(QWidget *parent)
     setSelectionMode(QAbstractItemView::ContiguousSelection);
     setContextMenuPolicy(Qt::ActionsContextMenu);
 
-    auto action = new QAction(tr("Create script"));
+    auto action = new QAction(tr("Create Script"));
     connect(action, &QAction::triggered, this, &HistoryPanel::createScriptFromSelection);
     addAction(action);
 }

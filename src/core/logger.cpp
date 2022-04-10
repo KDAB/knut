@@ -111,7 +111,7 @@ void HistoryModel::clear()
 QString HistoryModel::createScript(int start, int end)
 {
     std::tie(start, end) = std::minmax(start, end);
-    Q_ASSERT(start > 0 && start <= end && end < static_cast<int>(m_data.size()));
+    Q_ASSERT(start >= 0 && start <= end && end < static_cast<int>(m_data.size()));
 
     QString scriptText = "// Description of the script\nfunction main() {\n";
 
