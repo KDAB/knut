@@ -36,6 +36,16 @@ namespace Core {
 
 static constexpr int ErrorCode = -1;
 
+template <typename Object>
+void addProperties(QSet<QString> &properties)
+{
+    for (int i = 0; i < Object::staticMetaObject.propertyCount(); ++i) {
+        QString className = Object::staticMetaObject.className();
+        properties.insert(
+            QString("%1::%2").arg(className.split("::").last()).arg(Object::staticMetaObject.property(i).name()));
+    }
+}
+
 ScriptRunner::ScriptRunner(QObject *parent)
     : QObject(parent)
 {
@@ -101,6 +111,28 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qmlRegisterSingletonType<TestUtil>("Script.Test", 1, 0, "TestUtil", [](QQmlEngine *, QJSEngine *) {
         return new TestUtil();
     });
+
+    // Properties
+    addProperties<Argument>(m_properties);
+    addProperties<CppClass>(m_properties);
+    addProperties<CppFunction>(m_properties);
+    addProperties<QDirValueType>(m_properties);
+    addProperties<QFileInfoValueType>(m_properties);
+    addProperties<Symbol>(m_properties);
+    addProperties<TextRange>(m_properties);
+    addProperties<Dir>(m_properties);
+    addProperties<FileInfo>(m_properties);
+    addProperties<File>(m_properties);
+    addProperties<Message>(m_properties);
+    addProperties<Utils>(m_properties);
+    addProperties<UserDialog>(m_properties);
+    addProperties<Document>(m_properties);
+    addProperties<TextDocument>(m_properties);
+    addProperties<Mark>(m_properties);
+    addProperties<UiDocument>(m_properties);
+    addProperties<UiWidget>(m_properties);
+    addProperties<CppDocument>(m_properties);
+    addProperties<RcDocument>(m_properties);
 }
 
 ScriptRunner::~ScriptRunner() { }
@@ -132,6 +164,11 @@ QVariant ScriptRunner::runScript(const QString &fileName, std::function<void()> 
     }
 
     return result;
+}
+
+bool ScriptRunner::isProperty(const QString &apiCall)
+{
+    return m_properties.contains(apiCall);
 }
 
 QQmlEngine *ScriptRunner::getEngine(const QString &fileName)

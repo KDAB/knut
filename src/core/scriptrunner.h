@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include <QQmlEngine>
+#include <QSet>
 #include <QSharedPointer>
 #include <QString>
 
@@ -30,6 +31,8 @@ public:
     bool hasError() const { return m_hasError; }
     QList<QQmlError> errors() const { return m_errors; }
 
+    static bool isProperty(const QString &apiCall);
+
 private:
     QQmlEngine *getEngine(const QString &fileName);
     QVariant runJavascript(const QString &fileName, QQmlEngine *engine);
@@ -42,6 +45,8 @@ private:
 
     bool m_hasError = false;
     QList<QQmlError> m_errors;
+
+    inline static QSet<QString> m_properties = {};
 };
 
 } // namespace Core

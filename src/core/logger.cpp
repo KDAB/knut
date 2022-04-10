@@ -1,5 +1,7 @@
 #include "logger.h"
 
+#include "scriptrunner.h"
+
 #include <spdlog/spdlog.h>
 
 #include <QHash>
@@ -119,7 +121,8 @@ QString HistoryModel::createScript(int start, int end)
 
     for (int row = start; row <= end; ++row) {
         const auto &data = m_data.at(row);
-        auto apiCall = data.name;
+        QString apiCall = data.name;
+        const bool isProperty = ScriptRunner::isProperty(apiCall);
 
         // Check if we need to create the document, and change the API call as it's not a singleton
         if (data.name.contains("Document::")) {
@@ -150,7 +153,14 @@ QString HistoryModel::createScript(int start, int end)
             paramStrings.push_back(text);
         }
 
-        scriptText.append(QString("%1(%2)\n").arg(apiCall, paramStrings.join(", ")));
+        if (isProperty) {
+            if (paramStrings.isEmpty())
+                scriptText.append(apiCall + '\n');
+            else
+                scriptText.append(QString("%1 = %2\n").arg(apiCall, paramStrings.first()));
+        } else {
+            scriptText.append(QString("%1(%2)\n").arg(apiCall, paramStrings.join(", ")));
+        }
     }
 
     scriptText += "}\n";
