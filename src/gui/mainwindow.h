@@ -64,6 +64,7 @@ private:
     void selectBlockStart();
     void selectBlockEnd();
     void commentSelection();
+    void toggleSection();
 
     // Rc
     void createQrc();

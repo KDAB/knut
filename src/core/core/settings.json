@@ -34,5 +34,13 @@
             "insertSpaces": true,
             "tabSize": 4
         }
+    },
+    "toggle_section": {
+        "tag": "KDAB_TEMPORARILY_REMOVED",
+        "debug": "qDebug(\"%1 is commented out\")",
+        "return_values": {
+            "BOOL": "false",
+            "int": "-1"
+        }
     }
 }

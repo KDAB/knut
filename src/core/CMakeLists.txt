@@ -7,6 +7,7 @@ set(PROJECT_SOURCES
     cppclass.cpp
     cppdocument.h
     cppdocument.cpp
+    cppdocument_p.h
     cppfunction.h
     cppfunction.cpp
     dir.h

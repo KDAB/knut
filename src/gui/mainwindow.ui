@@ -84,6 +84,7 @@
     <addaction name="actionSwitch_Decl_Def"/>
     <addaction name="separator"/>
     <addaction name="actionComment_Selection"/>
+    <addaction name="actionToggleSection"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -292,7 +293,7 @@
   </action>
   <action name="actionComment_Selection">
    <property name="text">
-    <string>Comment &amp;Selection</string>
+    <string>Comment Selection</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+/</string>
@@ -384,6 +385,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Tab</string>
+   </property>
+  </action>
+  <action name="actionToggleSection">
+   <property name="text">
+    <string>Toggle Section</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+/</string>
    </property>
   </action>
  </widget>

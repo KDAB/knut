@@ -61,7 +61,6 @@ public:
     int lineCount() const;
 
     int position() const;
-    void convertPosition(int pos, int *line, int *column) const;
 
     QString text() const;
     QString currentLine() const;
@@ -171,6 +170,10 @@ protected:
 
     bool doSave(const QString &fileName) override;
     bool doLoad(const QString &fileName) override;
+
+    friend Mark;
+    void convertPosition(int pos, int *line, int *column) const;
+    int position(QTextCursor::MoveOperation operation, int pos) const;
 
 private:
     void doIndent(int tabCount);

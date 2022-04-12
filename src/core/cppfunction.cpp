@@ -31,6 +31,11 @@ namespace Core {
  */
 
 /*!
+ * \qmlproperty bool CppFunction::isNull
+ * This property returns `true` if the function is null.
+ */
+
+/*!
  * \qmltype Argument
  * \brief Represents an argument to be passed to the function
  * \instantiates Core::Argument
@@ -56,6 +61,11 @@ bool operator==(const CppFunction &left, const CppFunction &right)
 {
     return ((left.name == right.name) && (left.returnType == right.returnType) && (left.arguments == right.arguments)
             && (left.range == right.range));
+}
+
+bool CppFunction::isNull() const
+{
+    return name.isNull();
 }
 
 } // namespace Core

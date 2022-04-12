@@ -28,12 +28,15 @@ struct CppFunction
     Q_PROPERTY(QString returnType MEMBER returnType)
     Q_PROPERTY(QVector<Argument> arguments MEMBER arguments)
     Q_PROPERTY(Core::TextRange range MEMBER range)
+    Q_PROPERTY(bool isNull READ isNull CONSTANT)
 
 public:
     QString name;
     QString returnType;
     QVector<Argument> arguments;
     TextRange range;
+
+    bool isNull() const;
 };
 bool operator==(const CppFunction &left, const CppFunction &right);
 

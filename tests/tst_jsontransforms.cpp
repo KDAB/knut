@@ -18,18 +18,19 @@ private slots:
     {
         CHECK_CLANGD_VERSION;
 
-        Core::KnutCore core;
-        auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/jsontransforms");
-
         Test::FileTester tester(Test::testDataPath() + "/jsontransforms/dot-to-arrow_original.cpp");
+        {
+            Core::KnutCore core;
+            auto project = Core::Project::instance();
+            project->setRoot(Test::testDataPath() + "/jsontransforms");
 
-        auto cppDocument = qobject_cast<Core::LspDocument *>(project->open("dot-to-arrow.cpp"));
+            auto cppDocument = qobject_cast<Core::LspDocument *>(project->open("dot-to-arrow.cpp"));
 
-        cppDocument->transformSymbol("object", Test::testDataPath() + "/jsontransforms/dot-to-arrow.json");
-        cppDocument->save();
+            cppDocument->transformSymbol("object", Test::testDataPath() + "/jsontransforms/dot-to-arrow.json");
+            cppDocument->save();
 
-        Q_ASSERT(tester.compare());
+            QVERIFY(tester.compare());
+        }
     }
 };
 

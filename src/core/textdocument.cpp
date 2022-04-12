@@ -304,6 +304,20 @@ void TextDocument::convertPosition(int pos, int *line, int *column) const
     }
 }
 
+int TextDocument::position(QTextCursor::MoveOperation operation, int pos) const
+{
+    auto cursor = m_document->textCursor();
+
+    if (pos != -1)
+        cursor.setPosition(pos);
+
+    if (operation == QTextCursor::NoMove)
+        return cursor.position();
+
+    cursor.movePosition(operation);
+    return cursor.position();
+}
+
 QString TextDocument::text() const
 {
     LOG("TextDocument::text");
@@ -397,10 +411,9 @@ void TextDocument::redo(int count)
 
 void TextDocument::movePosition(QTextCursor::MoveOperation operation, QTextCursor::MoveMode mode, int count)
 {
-    for (int i = 0; i < count; ++i) {
-        m_document->moveCursor(operation, mode);
-        m_document->setTextCursor(m_document->textCursor());
-    }
+    auto cursor = m_document->textCursor();
+    cursor.movePosition(operation, mode, count);
+    m_document->setTextCursor(cursor);
 }
 
 /*!

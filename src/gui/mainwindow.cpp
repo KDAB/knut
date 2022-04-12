@@ -122,6 +122,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionFollow_Symbol, &QAction::triggered, this, &MainWindow::followSymbol);
     connect(ui->actionSwitch_Decl_Def, &QAction::triggered, this, &MainWindow::switchDeclarationDefinition);
     connect(ui->actionComment_Selection, &QAction::triggered, this, &MainWindow::commentSelection);
+    connect(ui->actionToggleSection, &QAction::triggered, this, &MainWindow::toggleSection);
 
     // Rc
     connect(ui->actionCreate_Qrc, &QAction::triggered, this, &MainWindow::createQrc);
@@ -192,10 +193,14 @@ void MainWindow::selectBlockEnd()
 
 void MainWindow::commentSelection()
 {
-    auto currDoc = qobject_cast<Core::CppDocument *>(Core::Project::instance()->currentDocument());
-    if (currDoc != nullptr) {
-        currDoc->commentSelection();
-    }
+    if (auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->currentDocument()))
+        cppDocument->commentSelection();
+}
+
+void MainWindow::toggleSection()
+{
+    if (auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->currentDocument()))
+        cppDocument->toggleSection();
 }
 
 MainWindow::~MainWindow() = default;

@@ -213,38 +213,26 @@ private slots:
         // Regression test for KNUT-42 - LSP doesn't get notified of changes in Editor
         CHECK_CLANGD_VERSION;
 
-        QDir dir(Test::testDataPath());
+        Test::FileTester file(Test::testDataPath() + "/cpp-project/notify_original.cpp");
+        {
+            Core::KnutCore core;
+            auto project = Core::Project::instance();
+            project->setRoot(Test::testDataPath() + "/cpp-project");
 
-        dir.mkpath("cpp-project-copy");
+            auto cppFile = qobject_cast<Core::LspDocument *>(Core::Project::instance()->get(file.fileName()));
 
-        QDir src(Test::testDataPath() + "/cpp-project");
-        QDir dest(Test::testDataPath() + "/cpp-project-copy");
-        const auto files = src.entryList(QDir::Files);
-        for (const auto &file : files) {
-            QFile::copy(src.path() + QDir::separator() + file, dest.path() + QDir::separator() + file);
+            const auto before = cppFile->findSymbol("Section::bar").range;
+            QCOMPARE(before.start, 326);
+            QCOMPARE(before.end, 386);
+
+            // Changing the code will cause the Language server to become out of sync with the
+            // state in Knut. Therefore the next language server call will fail.
+            cppFile->gotoStartOfDocument();
+            cppFile->insert("\n");
+            const auto after = cppFile->findSymbol("Section::bar").range;
+            QCOMPARE(after.start, 327);
+            QCOMPARE(after.end, 387);
         }
-
-        Core::KnutCore core;
-        auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/cpp-project-copy");
-
-        auto mainfile = qobject_cast<Core::LspDocument *>(project->open("main.cpp"));
-        auto headerfile = qobject_cast<Core::LspDocument *>(project->open("myobject.h"));
-
-        mainfile->gotoStartOfDocument();
-
-        // Changing the code will cause the Language server to become out of sync with the
-        // state in Knut. Therefore the next language server call will fail.
-        mainfile->insert("\n");
-
-        QVERIFY(mainfile->find("sayMessage"));
-        auto result = qobject_cast<Core::LspDocument *>(mainfile->followSymbol());
-        QCOMPARE(result, headerfile);
-        auto cursor = result->textEdit()->textCursor();
-        QCOMPARE(cursor.blockNumber(), 9 - 1); // lines are 0-indexed, so subtract 1
-        QCOMPARE(cursor.selectedText(), QString("sayMessage"));
-
-        dest.removeRecursively();
     }
 };
 

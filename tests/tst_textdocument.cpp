@@ -188,42 +188,44 @@ private slots:
     void edition()
     {
         Test::FileTester file(Test::testDataPath() + "/textdocument/loremipsum_original.txt");
-        Core::TextDocument document;
-        document.load(file.fileName());
+        {
+            Core::TextDocument document;
+            document.load(file.fileName());
 
-        document.deleteRegion(598, 695);
+            document.deleteRegion(598, 695);
 
-        document.gotoLine(2);
-        document.selectEndOfLine();
-        document.copy();
-        document.unselect();
-        document.insert("\n");
-        document.paste();
+            document.gotoLine(2);
+            document.selectEndOfLine();
+            document.copy();
+            document.unselect();
+            document.insert("\n");
+            document.paste();
 
-        document.gotoLine(6);
-        document.insert("Hello World!\n");
+            document.gotoLine(6);
+            document.insert("Hello World!\n");
 
-        document.gotoNextLine();
-        document.selectNextWord(2);
-        document.deleteSelection();
-        document.gotoNextWord(2);
-        document.deleteEndOfLine();
+            document.gotoNextLine();
+            document.selectNextWord(2);
+            document.deleteSelection();
+            document.gotoNextWord(2);
+            document.deleteEndOfLine();
 
-        document.gotoLine(10, 4);
-        document.replace(10, "homo-");
+            document.gotoLine(10, 4);
+            document.replace(10, "homo-");
 
-        document.gotoEndOfLine();
-        document.deletePreviousCharacter(14);
-        document.gotoNextLine(4);
-        document.deleteNextCharacter(5);
+            document.gotoEndOfLine();
+            document.deletePreviousCharacter(14);
+            document.gotoNextLine(4);
+            document.deleteNextCharacter(5);
 
-        document.save();
-        QVERIFY(file.compare());
+            document.save();
+            QVERIFY(file.compare());
 
-        for (int i = 0; i < 9; ++i) // 9 editions done
-            document.undo();
+            for (int i = 0; i < 9; ++i) // 9 editions done
+                document.undo();
 
-        QCOMPARE(document.text(), LoremIpsumText);
+            QCOMPARE(document.text(), LoremIpsumText);
+        }
     }
 
     void mark()
@@ -244,61 +246,65 @@ private slots:
 
     void indent()
     {
-        Core::KnutCore core;
         Test::FileTester file(Test::testDataPath() + "/textdocument/indent_original.txt");
-        Core::TextDocument document;
-        document.load(file.fileName());
+        {
+            Core::KnutCore core;
+            Core::TextDocument document;
+            document.load(file.fileName());
 
-        document.gotoLine(4);
-        document.indent();
-        document.gotoLine(7, 4);
-        document.removeIndent(2);
-        document.gotoLine(10);
-        document.selectNextLine();
-        document.indent();
-        document.gotoLine(16);
-        document.selectNextLine();
-        document.removeIndent();
-        document.save();
+            document.gotoLine(4);
+            document.indent();
+            document.gotoLine(7, 4);
+            document.removeIndent(2);
+            document.gotoLine(10);
+            document.selectNextLine();
+            document.indent();
+            document.gotoLine(16);
+            document.selectNextLine();
+            document.removeIndent();
+            document.save();
 
-        QVERIFY(file.compare());
+            QVERIFY(file.compare());
+        }
     }
 
     void findReplace()
     {
         Test::FileTester file(Test::testDataPath() + "/textdocument/findreplace_original.txt");
-        Core::TextDocument document;
-        document.load(file.fileName());
+        {
+            Core::TextDocument document;
+            document.load(file.fileName());
 
-        document.gotoLine(4);
-        QVERIFY(document.find("LOREM"));
-        QCOMPARE(document.line(), 7);
-        QCOMPARE(document.selectedText(), "Lorem");
-        QVERIFY(!document.find("LOREM", Core::TextDocument::FindCaseSensitively));
+            document.gotoLine(4);
+            QVERIFY(document.find("LOREM"));
+            QCOMPARE(document.line(), 7);
+            QCOMPARE(document.selectedText(), "Lorem");
+            QVERIFY(!document.find("LOREM", Core::TextDocument::FindCaseSensitively));
 
-        document.gotoLine(8);
-        QVERIFY(document.find("Lor"));
-        QCOMPARE(document.line(), 13);
-        QCOMPARE(document.selectedText(), "Lor");
-        QCOMPARE(document.currentWord(), "Lorem");
-        QVERIFY(!document.find("Lor", Core::TextDocument::FindWholeWords));
+            document.gotoLine(8);
+            QVERIFY(document.find("Lor"));
+            QCOMPARE(document.line(), 13);
+            QCOMPARE(document.selectedText(), "Lor");
+            QCOMPARE(document.currentWord(), "Lorem");
+            QVERIFY(!document.find("Lor", Core::TextDocument::FindWholeWords));
 
-        document.gotoLine(14);
-        QVERIFY(document.find("m\\w*s",
-                              Core::TextDocument::FindCaseSensitively | Core::TextDocument::FindWholeWords
-                                  | Core::TextDocument::FindRegexp));
-        QCOMPARE(document.line(), 16);
-        QCOMPARE(document.selectedText(), "mauris");
-        document.insert("REPLACE TEXT");
+            document.gotoLine(14);
+            QVERIFY(document.find("m\\w*s",
+                                  Core::TextDocument::FindCaseSensitively | Core::TextDocument::FindWholeWords
+                                      | Core::TextDocument::FindRegexp));
+            QCOMPARE(document.line(), 16);
+            QCOMPARE(document.selectedText(), "mauris");
+            document.insert("REPLACE TEXT");
 
-        document.replaceAll("Lorem", "Merol");
-        document.replaceAll("m\\w*s", "siruam",
-                            Core::TextDocument::FindCaseSensitively | Core::TextDocument::FindWholeWords
-                                | Core::TextDocument::FindRegexp);
-        document.replaceAll(", ([\\w ]*), ", "~~ \\1 ~~ ", Core::TextDocument::FindRegexp);
+            document.replaceAll("Lorem", "Merol");
+            document.replaceAll("m\\w*s", "siruam",
+                                Core::TextDocument::FindCaseSensitively | Core::TextDocument::FindWholeWords
+                                    | Core::TextDocument::FindRegexp);
+            document.replaceAll(", ([\\w ]*), ", "~~ \\1 ~~ ", Core::TextDocument::FindRegexp);
 
-        document.save();
-        QVERIFY(file.compare());
+            document.save();
+            QVERIFY(file.compare());
+        }
     }
 };
 

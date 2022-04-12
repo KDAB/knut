@@ -35,23 +35,25 @@ private slots:
     void save()
     {
         Test::FileTester file(Test::testDataPath() + "/uidocument/IDD_LIGHTING_original.ui");
-        Core::UiDocument document;
-        document.load(file.fileName());
+        {
+            Core::UiDocument document;
+            document.load(file.fileName());
 
-        const auto widgets = document.widgets();
-        QCOMPARE(widgets.count(), 50);
+            const auto widgets = document.widgets();
+            QCOMPARE(widgets.count(), 50);
 
-        auto root = widgets.first();
-        root->setClassName("QWidget");
-        root->setName("Lighting");
+            auto root = widgets.first();
+            root->setClassName("QWidget");
+            root->setName("Lighting");
 
-        auto widget = document.findWidget("IDC_LIGHTING_SUNDIR_EDIT");
-        widget->setClassName("QPushButton");
-        widget->setName("LightingSundirEdit");
+            auto widget = document.findWidget("IDC_LIGHTING_SUNDIR_EDIT");
+            widget->setClassName("QPushButton");
+            widget->setName("LightingSundirEdit");
 
-        document.save();
+            document.save();
 
-        QVERIFY(file.compare());
+            QVERIFY(file.compare());
+        }
     }
 };
 

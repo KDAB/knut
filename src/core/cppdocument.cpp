@@ -1,4 +1,5 @@
 #include "cppdocument.h"
+#include "cppdocument_p.h"
 
 #include "logger.h"
 #include "project.h"
@@ -573,6 +574,112 @@ int CppDocument::moveBlock(int startPos, QTextCursor::MoveOperation direction)
         pos += inc;
     }
     return startPos;
+}
+
+/*!
+ * \qmlmethod CppDocument::toggleSection
+ * Comment out a section of the code using `#ifdef` / `#endif`. The variable used is defined by the settings.
+ * ```
+ * "toggle_section": {
+ *     "tag": "KDAB_TEMPORARILY_REMOVED",
+ *     "debug": "qDebug("%1 is commented out")"
+ *     "return_values": {
+ *         "BOOL": "false"
+ *     }
+ * }
+ * ```
+ * `debug` is the debug line to show, if empty it won't show anything. `return_values` gives a mapping for the value
+ * returned by the function. In this example, if the returned type is `BOOL`, it will return `false`. If text is
+ * selected, it comment out the lines of the selected text. Otherwise, it will comment the function the cursor is in. In
+ * the latter case, if the function is already commented, it will remove the commented section.
+ */
+void CppDocument::toggleSection()
+{
+    LOG("CppDocument::toggleSection");
+
+    auto sectionSettings = Settings::instance()->value<ToggleSectionSettings>(Settings::ToggleSection);
+    const QString endifString = QStringLiteral("#endif // ") + sectionSettings.tag;
+    const QString ifdefString = QStringLiteral("#ifdef ") + sectionSettings.tag;
+    const QString elseString = QStringLiteral("#else // ") + sectionSettings.tag;
+    const QString newLine = QStringLiteral("\n");
+
+    QTextCursor cursor = textEdit()->textCursor();
+    if (cursor.hasSelection()) {
+        // If there's a selection, just add #ifdef/#endif
+        cursor.beginEditBlock();
+        auto [min, max] = std::minmax(cursor.selectionStart(), cursor.selectionEnd());
+        int line, col;
+        convertPosition(max, &line, &col);
+        // Add #endif / #ifdef, starts to the end or min/max won't be right
+        cursor.setPosition(position(QTextCursor::EndOfLine, col == 1 ? max - 1 : max));
+        cursor.insertText(newLine + endifString);
+        cursor.setPosition(position(QTextCursor::StartOfLine, min));
+        cursor.insertText(ifdefString + newLine);
+        // Move after the #endif
+        cursor.endEditBlock();
+        textEdit()->setTextCursor(cursor);
+        gotoLine(line + 3);
+
+    } else {
+        // Check that we are in a function
+        auto isFunction = [](const Symbol &symbol) {
+            return symbol.kind == Symbol::Method || symbol.kind == Symbol::Function
+                || symbol.kind == Symbol::Constructor;
+        };
+        auto symbol = currentSymbol(isFunction);
+        if (symbol.isNull())
+            return;
+
+        auto cursorPos = cursor.position();
+
+        cursor.beginEditBlock();
+        // Start from the end
+        cursor.setPosition(symbol.range.end);
+        cursor.movePosition(QTextCursor::StartOfLine);
+        cursor.movePosition(QTextCursor::Up, QTextCursor::KeepAnchor);
+
+        if (cursor.selectedText().startsWith(endifString)) {
+            // The function is already commented out, remove the comments
+            int start = textEdit()->document()->find(elseString, cursor, QTextDocument::FindBackward).selectionStart();
+            if (start > symbol.range.start)
+                cursor.setPosition(start, QTextCursor::KeepAnchor);
+            cursor.removeSelectedText();
+            cursor.setPosition(moveBlock(cursor.position(), QTextCursor::PreviousCharacter));
+            cursor.movePosition(QTextCursor::Down);
+            cursor.movePosition(QTextCursor::StartOfLine);
+            cursor.movePosition(QTextCursor::Down, QTextCursor::KeepAnchor);
+            cursor.removeSelectedText();
+            cursorPos -= ifdefString.length() + 1;
+        } else {
+            // Comment out the function with #if/#def, make sure to return something if needed
+            cursor.setPosition(symbol.range.end);
+            cursor.movePosition(QTextCursor::PreviousCharacter);
+
+            QString text = elseString + newLine;
+            if (!sectionSettings.debug.isEmpty())
+                text += tab() + sectionSettings.debug.arg(symbol.name) + ";\n";
+            const QString returnType = symbol.toFunction().returnType;
+            auto it = sectionSettings.return_values.find(returnType.toStdString());
+            if (it != sectionSettings.return_values.end())
+                text += tab() + QString("return %1;\n").arg(QString::fromStdString(it->second));
+            else if (returnType.isEmpty() || returnType == "void")
+                text += tab() + "return;\n";
+            else if (returnType.endsWith('*'))
+                text += tab() + "return nullptr;\n";
+            else
+                text += tab() + "return {};\n";
+            text += endifString + newLine;
+            cursor.insertText(text);
+
+            cursor.setPosition(moveBlock(cursor.position(), QTextCursor::PreviousCharacter));
+            cursor.movePosition(QTextCursor::NextCharacter);
+            cursor.insertText(newLine + ifdefString);
+            cursorPos += ifdefString.length() + 1;
+        }
+        cursor.endEditBlock();
+        textEdit()->setTextCursor(cursor);
+        setPosition(cursorPos);
+    }
 }
 
 } // namespace Core

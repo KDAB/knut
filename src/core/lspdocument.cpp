@@ -51,6 +51,23 @@ bool LspDocument::hasLspClient() const
     return m_lspClient != nullptr;
 }
 
+/**
+ * Returns the symbol the cursor is in, or an empty symbol otherwise
+ * The function is used to filter out the symbol
+ */
+Symbol LspDocument::currentSymbol(std::function<bool(const Symbol &)> filterFunc) const
+{
+    const int pos = textEdit()->textCursor().position();
+
+    auto symbolList = symbols();
+    std::ranges::reverse(symbolList);
+    for (auto symbol : symbolList) {
+        if (symbol.range.contains(pos) && (!filterFunc || filterFunc(symbol)))
+            return symbol;
+    }
+    return {};
+}
+
 /*!
  * \qmlmethod vector<Symbol> LspDocument::symbols()
  * Returns the list of symbols in the current document.
@@ -99,8 +116,8 @@ void LspDocument::regexpTransform(const RegexpTransform &transform,
 /*!
  * \qmlmethod void LspDocument::transformSymbol(const QString &symbolName, const QString &jsonFileName)
  *
- * Runs a list of transformations defined in a JSON file on the given \a symbolName.
- * The JSON file is loaded from the path specified in \a jsonFileName.
+ * Runs a list of transformations defined in a JSON file on the given `symbolName`.
+ * The JSON file is loaded from the path specified in `jsonFileName`.
  */
 void LspDocument::transformSymbol(const QString &symbolName, const QString &jsonFileName)
 {

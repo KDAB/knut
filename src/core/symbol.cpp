@@ -122,7 +122,7 @@ CppFunction Symbol::toFunction()
 {
     LOG("Symbol::toFunction");
 
-    if (kind == Method || kind == Function) {
+    if (kind == Method || kind == Function || kind == Constructor) {
         QString desc = this->description;
         // TODO: Add logic to handle type-qualifiers.
         // For now, discard type-qualifier, if found any.
@@ -143,7 +143,7 @@ CppFunction Symbol::toFunction()
 
         return CppFunction {name, returnType, arguments, range};
     } else {
-        spdlog::warn("Symbol::toFunction - {} should be either a `Method` or a `Function`.", name.toStdString());
+        spdlog::warn("Symbol::toFunction - {} should be either a method or a function.", name.toStdString());
 
         return CppFunction();
     }
