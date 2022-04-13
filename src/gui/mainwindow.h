@@ -51,6 +51,7 @@ private:
     void runScript();
 
     // Edit
+    void selectAll();
     void toggleMark();
     void goToMark();
     void selectToMark();

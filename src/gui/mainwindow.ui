@@ -85,21 +85,22 @@
     <addaction name="separator"/>
     <addaction name="actionComment_Selection"/>
     <addaction name="actionToggleSection"/>
+    <addaction name="separator"/>
+    <addaction name="actionGoto_BlockStart"/>
+    <addaction name="actionGoto_BlockEnd"/>
+    <addaction name="actionSelect_to_Block_Start"/>
+    <addaction name="actionSelect_to_Block_End"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
      <string>&amp;Edit</string>
     </property>
+    <addaction name="actionSelectAll"/>
+    <addaction name="separator"/>
     <addaction name="actionFind"/>
     <addaction name="actionReplace"/>
     <addaction name="actionFind_Next"/>
     <addaction name="actionFind_Previous"/>
-    <addaction name="separator"/>
-    <addaction name="actionGoto_BlockStart"/>
-    <addaction name="actionGoto_BlockEnd"/>
-    <addaction name="separator"/>
-    <addaction name="actionSelect_to_Block_Start"/>
-    <addaction name="actionSelect_to_Block_End"/>
     <addaction name="separator"/>
     <addaction name="actionToggle_Mark"/>
     <addaction name="actionGoTo_Mark"/>
@@ -393,6 +394,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+/</string>
+   </property>
+  </action>
+  <action name="actionSelectAll">
+   <property name="text">
+    <string>Select &amp;All</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
    </property>
   </action>
  </widget>

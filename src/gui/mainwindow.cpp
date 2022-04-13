@@ -105,14 +105,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Edit
     ui->findWidget->hide();
+    connect(ui->actionSelectAll, &QAction::triggered, this, &MainWindow::selectAll);
     connect(ui->actionFind, &QAction::triggered, ui->findWidget, &FindWidget::open);
     connect(ui->actionReplace, &QAction::triggered, ui->findWidget, &FindWidget::open);
     connect(ui->actionFind_Next, &QAction::triggered, ui->findWidget, &FindWidget::findNext);
     connect(ui->actionFind_Previous, &QAction::triggered, ui->findWidget, &FindWidget::findPrevious);
-    connect(ui->actionGoto_BlockEnd, &QAction::triggered, this, &MainWindow::gotoBlockEnd);
-    connect(ui->actionGoto_BlockStart, &QAction::triggered, this, &MainWindow::gotoBlockStart);
-    connect(ui->actionSelect_to_Block_End, &QAction::triggered, this, &MainWindow::selectBlockEnd);
-    connect(ui->actionSelect_to_Block_Start, &QAction::triggered, this, &MainWindow::selectBlockStart);
     connect(ui->actionToggle_Mark, &QAction::triggered, this, &MainWindow::toggleMark);
     connect(ui->actionGoTo_Mark, &QAction::triggered, this, &MainWindow::goToMark);
     connect(ui->actionSelectTo_Mark, &QAction::triggered, this, &MainWindow::selectToMark);
@@ -123,6 +120,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionSwitch_Decl_Def, &QAction::triggered, this, &MainWindow::switchDeclarationDefinition);
     connect(ui->actionComment_Selection, &QAction::triggered, this, &MainWindow::commentSelection);
     connect(ui->actionToggleSection, &QAction::triggered, this, &MainWindow::toggleSection);
+    connect(ui->actionGoto_BlockEnd, &QAction::triggered, this, &MainWindow::gotoBlockEnd);
+    connect(ui->actionGoto_BlockStart, &QAction::triggered, this, &MainWindow::gotoBlockStart);
+    connect(ui->actionSelect_to_Block_End, &QAction::triggered, this, &MainWindow::selectBlockEnd);
+    connect(ui->actionSelect_to_Block_Start, &QAction::triggered, this, &MainWindow::selectBlockStart);
 
     // Rc
     connect(ui->actionCreate_Qrc, &QAction::triggered, this, &MainWindow::createQrc);
@@ -445,14 +446,11 @@ void MainWindow::updateActions()
     ui->actionClose_Document->setEnabled(document != nullptr);
 
     auto *textDocument = qobject_cast<Core::TextDocument *>(document);
+    ui->actionSelectAll->setEnabled(textDocument != nullptr);
     ui->actionFind->setEnabled(textDocument != nullptr);
     ui->actionReplace->setEnabled(textDocument != nullptr);
     ui->actionFind_Next->setEnabled(textDocument != nullptr);
     ui->actionFind_Previous->setEnabled(textDocument != nullptr);
-    ui->actionGoto_BlockEnd->setEnabled(textDocument != nullptr);
-    ui->actionGoto_BlockStart->setEnabled(textDocument != nullptr);
-    ui->actionSelect_to_Block_End->setEnabled(textDocument != nullptr);
-    ui->actionSelect_to_Block_Start->setEnabled(textDocument != nullptr);
     auto *textView = textViewForDocument(textDocument);
     ui->actionToggle_Mark->setEnabled(textDocument != nullptr);
     ui->actionGoTo_Mark->setEnabled(textDocument != nullptr && textView->hasMark());
@@ -466,6 +464,10 @@ void MainWindow::updateActions()
     const bool cppEnabled = lspDocument && qobject_cast<Core::CppDocument *>(document);
     ui->actionSwitch_Header_Source->setEnabled(cppEnabled);
     ui->actionComment_Selection->setEnabled(cppEnabled);
+    ui->actionGoto_BlockEnd->setEnabled(cppEnabled);
+    ui->actionGoto_BlockStart->setEnabled(cppEnabled);
+    ui->actionSelect_to_Block_End->setEnabled(cppEnabled);
+    ui->actionSelect_to_Block_Start->setEnabled(cppEnabled);
 
     const bool rcEnabled = qobject_cast<Core::RcDocument *>(document);
     ui->actionCreate_Qrc->setEnabled(rcEnabled);
@@ -485,6 +487,12 @@ void MainWindow::returnToEditor()
         ui->findWidget->hide();
     else
         ui->tabWidget->currentWidget()->setFocus(Qt::FocusReason::ShortcutFocusReason);
+}
+
+void MainWindow::selectAll()
+{
+    if (auto textDocument = qobject_cast<Core::TextDocument *>(Core::Project::instance()->currentDocument()))
+        textDocument->selectAll();
 }
 
 void MainWindow::toggleMark()

@@ -174,6 +174,8 @@ bool TextDocument::eventFilter(QObject *watched, QEvent *event)
             deleteStartOfWord();
         else if (keyEvent == QKeySequence::DeleteEndOfLine)
             deleteEndOfLine();
+        else if (keyEvent == QKeySequence::SelectAll)
+            selectAll();
         else if (!keyEvent->text().isEmpty()) {
             auto control = m_document->findChild<QWidgetTextControl *>();
             if (control->isAcceptableInput(keyEvent))
