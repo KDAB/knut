@@ -345,7 +345,7 @@ static Widget convertLabel(const Data &data, Data::Control &control, bool useIdF
         widget.properties[Alignment] = "Qt::AlignHCenter";
 
     if (control.styles.removeOne(SSSUNKEN)) {
-        widget.properties[FrameShape] = "QFrame::Plain";
+        widget.properties[FrameShape] = "QFrame::Box";
         widget.properties[FrameShadow] = "QFrame::Sunken";
     }
 
