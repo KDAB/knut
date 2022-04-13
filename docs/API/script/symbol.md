@@ -88,12 +88,20 @@ contained by the `range`.
 
 #### <a name="toClass"></a>[CppClass](../script/cppclass.md) **toClass**()
 
+
+!!! Warning "Experimental API"
+    The API here is still experimental, and may change in follow-up release. Use it at your own risk.
+
 Returns a structure representing the class for the current symbol.
 The method checks if the `kind` of the symbol for `Symbol::Class` or `Symbol::Struct`. If so then it finds all the
 members of the class from the list of symbols in current document, adds them in `CppClass` structure, and returns it.
 If not, then it returns an empty structure.
 
 #### <a name="toFunction"></a>[CppFunction](../script/cppfunction.md) **toFunction**()
+
+
+!!! Warning "Experimental API"
+    The API here is still experimental, and may change in follow-up release. Use it at your own risk.
 
 Returns a `CppFunction` structure for current `Symbol::Symbol`.
 The method checks if the `kind` of the symbol for `Symbol::Method` or `Symbol::Function`. If so then it extracts

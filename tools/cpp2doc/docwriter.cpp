@@ -42,6 +42,12 @@ void DocWriter::saveDocumentation()
     qDebug().noquote() << nav;
 }
 
+static const char Experimental[] = R"(
+
+!!! Warning "Experimental API"
+    The API here is still experimental, and may change in follow-up release. Use it at your own risk.
+)";
+
 // %1 type name
 // %2 type brief
 // %3 type module
@@ -84,7 +90,7 @@ void DocWriter::writeTypeFile(const Data::TypeBlock &type)
     }
     QTextStream stream(&file);
 
-    stream << QString(TypeFile).arg(type.name, type.brief, type.qmlModule);
+    stream << QString(TypeFile).arg(type.name + (type.isExperimental ? Experimental : ""), type.brief, type.qmlModule);
 
     if (!type.since.isEmpty()) {
         if (type.inherits.isEmpty()) {
@@ -150,6 +156,8 @@ void DocWriter::writeTypeFile(const Data::TypeBlock &type)
         stream << "\n## Property Documentation\n";
         for (const auto &prop : properties) {
             stream << QString("\n#### <a name=\"%1\"></a>%2 **%1**\n").arg(prop.name, typeToString(prop.type));
+            if (prop.isExperimental)
+                stream << Experimental;
             if (!prop.since.isEmpty())
                 stream << QString(SinceTypeFile).arg(prop.since);
             if (!prop.description.isEmpty())
@@ -164,6 +172,8 @@ void DocWriter::writeTypeFile(const Data::TypeBlock &type)
             for (const auto &def : method.methods)
                 defs.push_back(methodToString(def, false));
             stream << QString("\n#### <a name=\"%1\"></a>%2\n").arg(method.methods.front().name, defs.join("<br/>"));
+            if (method.isExperimental)
+                stream << Experimental;
             if (!method.since.isEmpty())
                 stream << QString(SinceTypeFile).arg(method.since);
             if (!method.description.isEmpty())
@@ -175,6 +185,8 @@ void DocWriter::writeTypeFile(const Data::TypeBlock &type)
         for (const auto &signal : qmlSignals) {
             stream << QString("\n#### <a name=\"%1\"></a>%2\n")
                           .arg(signal.method.name, methodToString(signal.method, false));
+            if (signal.isExperimental)
+                stream << Experimental;
             if (!signal.since.isEmpty())
                 stream << QString(SinceTypeFile).arg(signal.since);
             if (!signal.description.isEmpty())

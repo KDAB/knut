@@ -25,6 +25,7 @@ Inherited properties: [TextDocument properties](../script/textdocument.md#proper
 ||**[selectSymbol](#selectSymbol)**(string name, int options = TextDocument.NoFindFlags)|
 ||**[switchDeclarationDefinition](#switchDeclarationDefinition)**()|
 |vector<[Symbol](../script/symbol.md)> |**[symbols](#symbols)**()|
+||**[transformSymbol](#transformSymbol)**(const QString &symbolName, const QString &jsonFileName)|
 
 Inherited methods: [TextDocument methods](../script/textdocument.md#methods)
 
@@ -39,6 +40,10 @@ Find a symbol based on its `name`, using different find `options`.
 - `TextDocument.FindRegexp`: use a regexp
 
 #### <a name="followSymbol"></a>**followSymbol**()
+
+
+!!! Warning "Experimental API"
+    The API here is still experimental, and may change in follow-up release. Use it at your own risk.
 
 Follow the symbol under the cursor.
 
@@ -58,8 +63,21 @@ If no symbols are found, do nothing.
 
 #### <a name="switchDeclarationDefinition"></a>**switchDeclarationDefinition**()
 
+
+!!! Warning "Experimental API"
+    The API here is still experimental, and may change in follow-up release. Use it at your own risk.
+
 Switch between the function declaration or definition.
 
 #### <a name="symbols"></a>vector<[Symbol](../script/symbol.md)> **symbols**()
 
 Returns the list of symbols in the current document.
+
+#### <a name="transformSymbol"></a>**transformSymbol**(const QString &symbolName, const QString &jsonFileName)
+
+
+!!! Warning "Experimental API"
+    The API here is still experimental, and may change in follow-up release. Use it at your own risk.
+
+Runs a list of transformations defined in a JSON file on the given `symbolName`.
+The JSON file is loaded from the path specified in `jsonFileName`.

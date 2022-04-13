@@ -89,6 +89,7 @@ bool Symbol::isNull() const
  * The method checks if the `kind` of the symbol for `Symbol::Class` or `Symbol::Struct`. If so then it finds all the
  * members of the class from the list of symbols in current document, adds them in `CppClass` structure, and returns it.
  * If not, then it returns an empty structure.
+ * \todo
  */
 CppClass Symbol::toClass()
 {
@@ -117,6 +118,7 @@ CppClass Symbol::toClass()
  * The method checks if the `kind` of the symbol for `Symbol::Method` or `Symbol::Function`. If so then it extracts
  * information from `Symbol::description`, fills it in `CppFunction` structure, and returns it. If not, then it returns
  * an empty structure.
+ * \todo
  */
 CppFunction Symbol::toFunction()
 {

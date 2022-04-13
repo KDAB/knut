@@ -211,6 +211,8 @@ void SourceParser::parseBlock(const QString &line, Data::Block &block)
         block.since = line.mid(7);
     else if (line.startsWith("\\sa"))
         block.seeAlso.push_back(line.mid(4));
+    else if (line.startsWith("\\todo"))
+        block.isExperimental = true;
     else if (line.startsWith("\\"))
         return; // Tag not handled
     else if (line.isEmpty() && block.description.isEmpty())

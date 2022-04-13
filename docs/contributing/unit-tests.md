@@ -33,6 +33,17 @@ QVERIFY(file.compare());
 
 To use it, include `"common/test_utils.h".
 
+If you use the `FileTester` with LSP, make sure to close the LSP server (the `KnutCore` object must be destroyed for that):
+
+```cpp
+Test::FileTester file(Test::testDataPath() + "/cpp-project/section_original.cpp");
+{
+    Core::KnutCore core;
+    auto project = Core::Project::instance();
+    //...
+} // the core is destroyed before the FileTester
+```
+
 ### Enabling or disabling tests
 
 Some tests can't be run without `clangd` or with a version of `clangd` older than 13.0.

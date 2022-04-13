@@ -13,6 +13,7 @@ struct Data
         QString description;
         QString since;
         QStringList seeAlso;
+        bool isExperimental = false;
     };
 
     struct TypeBlock : public Block

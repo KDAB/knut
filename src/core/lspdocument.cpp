@@ -114,10 +114,11 @@ void LspDocument::regexpTransform(const RegexpTransform &transform,
 }
 
 /*!
- * \qmlmethod void LspDocument::transformSymbol(const QString &symbolName, const QString &jsonFileName)
+ * \qmlmethod LspDocument::transformSymbol(const QString &symbolName, const QString &jsonFileName)
  *
  * Runs a list of transformations defined in a JSON file on the given `symbolName`.
  * The JSON file is loaded from the path specified in `jsonFileName`.
+ * \todo
  */
 void LspDocument::transformSymbol(const QString &symbolName, const QString &jsonFileName)
 {
@@ -159,6 +160,7 @@ void LspDocument::transformSymbol(const QString &symbolName, const QString &json
  * - Go to the declaration, if the symbol under cursor is a use
  * - Go to the declaration, if the symbol under cursor is a function definition
  * - Go to the definition, if the symbol under cursor is a function declaration
+ * \todo
  */
 Document *LspDocument::followSymbol()
 {
@@ -239,6 +241,7 @@ Document *LspDocument::followSymbol(int pos)
 /*!
  * \qmlmethod LspDocument::switchDeclarationDefinition()
  * Switch between the function declaration or definition.
+ * \todo
  */
 Document *LspDocument::switchDeclarationDefinition()
 {

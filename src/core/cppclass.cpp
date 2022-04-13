@@ -7,6 +7,7 @@ namespace Core {
  * \brief Represents a class in the current file
  * \instantiates Core::CppClass
  * \inqmlmodule Script
+ * \todo
  */
 
 /*!

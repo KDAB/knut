@@ -1,5 +1,9 @@
 # CppDocument
 
+!!! Warning "Experimental API"
+    The API here is still experimental, and may change in follow-up release. Use it at your own risk.
+
+
 Document object for a C++ file (source or header) [More...](#detailed-description)
 
 ```qml

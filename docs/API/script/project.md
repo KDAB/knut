@@ -28,6 +28,7 @@ import Script 1.0
 ||**[closeAll](#closeAll)**()|
 |[Document](../script/document.md) |**[get](#get)**(string fileName)|
 |[Document](../script/document.md) |**[open](#open)**(string fileName)|
+||**[openPrevious](#openPrevious)**(int index)|
 ||**[saveAllDocuments](#saveAllDocuments)**()|
 
 ## Detailed Description
@@ -88,6 +89,12 @@ the base.
 
 Opens a document for the given `fileName`. If the document already exists, returns the same instance, a document
 can't be open twice. If the fileName is relative, use the root path as the base.
+
+#### <a name="openPrevious"></a>**openPrevious**(int index)
+
+Open a previously opened document. `index` is the position of this document in the last opened document.
+
+`document.openPrevious(1)` (the default) opens the last document, like Ctrl+Tab in any editors.
 
 #### <a name="saveAllDocuments"></a>**saveAllDocuments**()
 

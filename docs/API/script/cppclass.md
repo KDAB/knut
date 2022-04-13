@@ -1,5 +1,9 @@
 # CppClass
 
+!!! Warning "Experimental API"
+    The API here is still experimental, and may change in follow-up release. Use it at your own risk.
+
+
 Represents a class in the current file [More...](#detailed-description)
 
 ```qml
