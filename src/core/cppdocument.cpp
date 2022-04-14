@@ -578,7 +578,7 @@ int CppDocument::moveBlock(int startPos, QTextCursor::MoveOperation direction)
 }
 
 /*!
- * \qmlmethod CppDocument::toggleSection
+ * \qmlmethod CppDocument::toggleSection()
  * Comment out a section of the code using `#ifdef` / `#endif`. The variable used is defined by the settings.
  * ```
  * "toggle_section": {

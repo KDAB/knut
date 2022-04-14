@@ -36,6 +36,7 @@ Inherited properties: [LspDocument properties](../script/lspdocument.md#properti
 |[CppDocument](../script/cppdocument.md) |**[openHeaderSource](#openHeaderSource)**()|
 |int |**[selectBlockEnd](#selectBlockEnd)**()|
 |int |**[selectBlockStart](#selectBlockStart)**()|
+||**[toggleSection](#toggleSection)**()|
 
 Inherited methods: [LspDocument methods](../script/lspdocument.md#methods)
 
@@ -114,3 +115,20 @@ Does it `count` times.
 Selects the text from current cursor position to the start of the block, and returns the new cursor position.
 A block is definied by {} or () or [].
 Does it `count` times.
+
+#### <a name="toggleSection"></a>**toggleSection**()
+
+Comment out a section of the code using `#ifdef` / `#endif`. The variable used is defined by the settings.
+```
+"toggle_section": {
+    "tag": "KDAB_TEMPORARILY_REMOVED",
+    "debug": "qDebug("%1 is commented out")"
+    "return_values": {
+        "BOOL": "false"
+    }
+}
+```
+`debug` is the debug line to show, if empty it won't show anything. `return_values` gives a mapping for the value
+returned by the function. In this example, if the returned type is `BOOL`, it will return `false`. If text is
+selected, it comment out the lines of the selected text. Otherwise, it will comment the function the cursor is in. In
+the latter case, if the function is already commented, it will remove the commented section.
