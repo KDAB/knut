@@ -34,7 +34,7 @@ UserDialog::UserDialog(QQmlEngine *parent)
 }
 
 /*!
- * \qmlmethod string UserDialog::getOpenFileName( string caption, string dir = "", string filters = "")
+ * \qmlmethod string UserDialog::getOpenFileName(string caption, string dir = "", string filters = "")
  * Returns an existing file selected by the user. Returns `null` if the user cancel.
  *
  * The dialog's caption is set to `caption`, the initial directory set to `dir` and only files
@@ -49,7 +49,7 @@ QJSValue UserDialog::getOpenFileName(const QString &caption, const QString &dir,
 }
 
 /*!
- * \qmlmethod string UserDialog::getSaveFileName( string caption, string dir = "", string filters = "")
+ * \qmlmethod string UserDialog::getSaveFileName(string caption, string dir = "", string filters = "")
  * Returns a file name selected by the user. Returns `null` if the user cancel.
  *
  * The dialog's caption is set to `caption`, the initial directory set to `dir` and only files
@@ -64,7 +64,7 @@ QJSValue UserDialog::getSaveFileName(const QString &caption, const QString &dir,
 }
 
 /*!
- * \qmlmethod string UserDialog::getExistingDirectory( string caption, string dir = "")
+ * \qmlmethod string UserDialog::getExistingDirectory(string caption, string dir = "")
  * Returns an existing directory selected by the user. Returns `null` if the user cancel.
  *
  * The dialog's caption is set to `caption`, the initial directory set to `dir`.
@@ -79,7 +79,7 @@ QJSValue UserDialog::getExistingDirectory(const QString &caption, const QString 
 
 // clang-format off
 /*!
- * \qmlmethod string UserDialog::getItem( string title, string label, array<string> items, int current = 0, bool editable = false)
+ * \qmlmethod string UserDialog::getItem(string title, string label, array<string> items, int current = 0, bool editable = false)
  * Returns a string selected among a pre-defined list. Returns `null` if the user cancel.
  *
  * The dialog's caption is set to `title`, the `label` is displayed and `items` contain the
@@ -99,7 +99,7 @@ QJSValue UserDialog::getItem(const QString &title, const QString &label, const Q
 
 // clang-format off
 /*!
- * \qmlmethod double UserDialog::getDouble( string title, string label, real value = 0.0, int decimals = 1, real step = 1.0, real min = -2147483647.0, real max = 2147483647.0)
+ * \qmlmethod double UserDialog::getDouble(string title, string label, real value = 0.0, int decimals = 1, real step = 1.0, real min = -2147483647.0, real max = 2147483647.0)
  * Returns a double entered by the user. Returns `null` if the user cancel.
  *
  * The dialog's caption is set to `title`, the `label` is displayed and the initial value is
@@ -121,7 +121,7 @@ QJSValue UserDialog::getDouble(const QString &title, const QString &label, doubl
 
 // clang-format off
 /*!
- * \qmlmethod int UserDialog::getInt( string title, string label, int value = 0, int step = 1, int min = -2147483647, int max = 2147483647)
+ * \qmlmethod int UserDialog::getInt(string title, string label, int value = 0, int step = 1, int min = -2147483647, int max = 2147483647)
  * Returns an integer entered by the user. Returns `null` if the user cancel.
  *
  * The dialog's caption is set to `title`, the `label` is displayed and the initial value is
@@ -139,7 +139,7 @@ QJSValue UserDialog::getInt(const QString &title, const QString &label, int valu
 }
 
 /*!
- * \qmlmethod string UserDialog::getText( string title, string label, string text = "")
+ * \qmlmethod string UserDialog::getText(string title, string label, string text = "")
  * Returns a string entered by the user. Returns `null` if the user cancel.
  *
  * The dialog's caption is set to `title`, the `label` is displayed and the initial value is
@@ -155,7 +155,7 @@ QJSValue UserDialog::getText(const QString &title, const QString &label, const Q
 }
 
 /*!
- * \qmlmethod UserDialog::information( string title, string text )
+ * \qmlmethod UserDialog::information(string title, string text )
  * Show an information dialog.
  */
 void UserDialog::information(const QString &title, const QString &text)
@@ -164,7 +164,7 @@ void UserDialog::information(const QString &title, const QString &text)
 }
 
 /*!
- * \qmlmethod UserDialog::warning( string title, string text )
+ * \qmlmethod UserDialog::warning(string title, string text )
  * Show a warning dialog.
  */
 void UserDialog::warning(const QString &title, const QString &text)
@@ -173,7 +173,7 @@ void UserDialog::warning(const QString &title, const QString &text)
 }
 
 /*!
- * \qmlmethod UserDialog::critical( string title, string text )
+ * \qmlmethod UserDialog::critical(string title, string text )
  * Show a critical dialog.
  */
 void UserDialog::critical(const QString &title, const QString &text)

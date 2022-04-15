@@ -138,7 +138,7 @@ bool Document::save()
 }
 
 /*!
- * \qmlmethod bool Document::saveAs( string fileName)
+ * \qmlmethod bool Document::saveAs(string fileName)
  * Save the current document as fileName, the previous file (if it exists) is not changed, and the current document
  * takes the new `fileName`. In case of error put the error text in the `errorString` property.
  */

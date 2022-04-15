@@ -268,7 +268,7 @@ Document *LspDocument::switchDeclarationDefinition()
 }
 
 /*!
- * \qmlmethod LspDocument::selectSymbol( string name, int options = TextDocument.NoFindFlags)
+ * \qmlmethod LspDocument::selectSymbol(string name, int options = TextDocument.NoFindFlags)
  * Select a symbol based on its `name`, using different find `options`.
  *
  * - `TextDocument.FindCaseSensitively`: match case
@@ -288,7 +288,7 @@ void LspDocument::selectSymbol(const QString &name, int options)
 }
 
 /*!
- * \qmlmethod Symbol LspDocument::findSymbol( string name, int options = TextDocument.NoFindFlags)
+ * \qmlmethod Symbol LspDocument::findSymbol(string name, int options = TextDocument.NoFindFlags)
  * Find a symbol based on its `name`, using different find `options`.
  *
  * - `TextDocument.FindCaseSensitively`: match case

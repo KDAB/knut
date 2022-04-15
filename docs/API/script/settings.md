@@ -14,6 +14,7 @@ import Script 1.0
 
 | | Name |
 |-|-|
+|bool |**[hasValue](#hasValue)**(string path)|
 |variant |**[setValue](#setValue)**(string path, variant value)|
 |variant |**[value](#value)**(string path, variant defaultValue = null)|
 
@@ -28,6 +29,10 @@ The settings are stored in a json file, and could be:
 - array<string>
 
 ## Method Documentation
+
+#### <a name="hasValue"></a>bool **hasValue**(string path)
+
+Returns true if the project settings has a settings `path`.
 
 #### <a name="setValue"></a>variant **setValue**(string path, variant value)
 

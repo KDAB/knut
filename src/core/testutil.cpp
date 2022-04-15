@@ -50,7 +50,7 @@ int TestUtil::callerLine(int frameIndex) const
 }
 
 /*!
- * \qmlmethod TestUtil::compareFiles( string file, string expected, bool eolLF = true)
+ * \qmlmethod TestUtil::compareFiles(string file, string expected, bool eolLF = true)
  * Compares the content of the two files, and return true if they are the same.
  * If `eolLF` true, compareFiles will change the EOL of files to LF for comparison.
  */

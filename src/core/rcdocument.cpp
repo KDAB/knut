@@ -94,7 +94,7 @@ QVector<RcCore::ToolBar> RcDocument::toolBars() const
 }
 
 /*!
- * \qmlmethod ToolBar RcDocument::toolBar( string id)
+ * \qmlmethod ToolBar RcDocument::toolBar(string id)
  * Returns the toolbar for the given `id`.
  */
 RcCore::ToolBar RcDocument::toolBar(const QString &id) const
@@ -109,7 +109,7 @@ RcCore::ToolBar RcDocument::toolBar(const QString &id) const
 }
 
 /*!
- * \qmlmethod Widget RcDocument::dialog( string id, int flags, real scaleX, real scaleY)
+ * \qmlmethod Widget RcDocument::dialog(string id, int flags, real scaleX, real scaleY)
  * \sa RcDocument::writeDialogToUi
  * Returns the dialog for the given `id`.
  *
@@ -139,7 +139,7 @@ RcCore::Widget RcDocument::dialog(const QString &id, int flags, double scaleX, d
 }
 
 /*!
- * \qmlmethod Menu RcDocument::menu( string id)
+ * \qmlmethod Menu RcDocument::menu(string id)
  * Returns the menu for the given `id`.
  */
 RcCore::Menu RcDocument::menu(const QString &id) const
@@ -231,7 +231,7 @@ QList<RcCore::String> RcDocument::strings() const
 }
 
 /*!
- * \qmlmethod string RcDocument::text( string id)
+ * \qmlmethod string RcDocument::text(string id)
  * Return the string for the given `id`.
  */
 QString RcDocument::string(const QString &id) const
@@ -256,7 +256,7 @@ QVector<RcCore::Menu> RcDocument::menus() const
 }
 
 /*!
- * \qmlmethod RcDocument::convertAssets( int flags)
+ * \qmlmethod RcDocument::convertAssets(int flags)
  * \sa RcDocument::writeAssetsToImage
  * \sa RcDocument::writeAssetsToQrc
  *
@@ -278,17 +278,20 @@ void RcDocument::convertAssets(int flags)
     }
 }
 
+// clang-format off
 /*!
- * \qmlmethod array<Action> RcDocument::convertActions( array<string> menus, array<string> accelerators, array<string>
- * toolBars, int flags) Returns a list of actions fomr the given `menus`' ids, `accelerators`' ids and `toolBars`' ids.
+ * \qmlmethod array<Action> RcDocument::convertActions(array<string> menus, array<string> accelerators, array<string> toolBars, int flags)
+ * \todo
+ * Returns a list of actions fomr the given `menus`' ids, `accelerators`' ids and `toolBars`' ids.
  *
  * The `flags` are used to fill the iconPath of the action:
  *
  * - `RcDocument.RemoveUnknown`: remove the unknown assets
- * - `RcDocument.SplitToolBar`: split oolbars strip into individual icon, one per action
+ * - `RcDocument.SplitToolBar`: split toolbar's strips into individual icon, one per action
  * - `RcDocument.ConvertToPng`: convert BMPs to PNGs, needed if we want to also change the transparency
  * - `RcDocument.AllFlags`: combination of all above
  */
+// clang-format on
 QVector<RcCore::Action> RcDocument::convertActions(const QStringList &menus, const QStringList &accelerators,
                                                    const QStringList &toolBars, int flags)
 {
@@ -302,7 +305,7 @@ QVector<RcCore::Action> RcDocument::convertActions(const QStringList &menus, con
 }
 
 /*!
- * \qmlmethod bool RcDocument::writeAssetsToImage( int flags)
+ * \qmlmethod bool RcDocument::writeAssetsToImage(int flags)
  * \sa RcDocument::convertAssets
  * Writes the assets to images, using `flags` for transparency settings. Returns `true` if no issues.
  *
@@ -328,7 +331,7 @@ bool RcDocument::writeAssetsToImage(int flags)
 }
 
 /*!
- * \qmlmethod bool RcDocument::writeAssetsToQrc( string fileName)
+ * \qmlmethod bool RcDocument::writeAssetsToQrc(string fileName)
  * \sa RcDocument::convertAssets
  * Writes a qrc file with the given `fileName`. Returns `true` if no issues.
  *
@@ -350,7 +353,7 @@ bool RcDocument::writeAssetsToQrc(const QString &fileName)
 }
 
 /*!
- * \qmlmethod bool RcDocument::writeDialogToUi( Widget dialog, string fileName)
+ * \qmlmethod bool RcDocument::writeDialogToUi(Widget dialog, string fileName)
  * \sa RcDocument::dialog
  * Writes a ui file for the given `dialog`, to the given `fileName`. Return `true` if no issues.
  */
@@ -367,7 +370,7 @@ bool RcDocument::writeDialogToUi(const RcCore::Widget &dialog, const QString &fi
 }
 
 /*!
- * \qmlmethod bool RcDocument::previewDialog( Widget dialog )
+ * \qmlmethod bool RcDocument::previewDialog(Widget dialog )
  * \sa RcDocument::dialog
  * Preview the result of the conversion RC->UI
  */

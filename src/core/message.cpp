@@ -28,7 +28,7 @@ Message::Message(QObject *parent)
 Message::~Message() { }
 
 /*!
- * \qmlmethod Message::error( string text)
+ * \qmlmethod Message::error(string text)
  * Shows the message `text` as an error in the log.
  */
 void Message::error(const QString &text)
@@ -37,7 +37,7 @@ void Message::error(const QString &text)
 }
 
 /*!
- * \qmlmethod Message::log( string text)
+ * \qmlmethod Message::log(string text)
  * Shows the message `text` as a log in the log.
  */
 void Message::log(const QString &text)
@@ -46,7 +46,7 @@ void Message::log(const QString &text)
 }
 
 /*!
- * \qmlmethod Message::debug( string text)
+ * \qmlmethod Message::debug(string text)
  * Shows the message `text` as a debug in the log.
  */
 void Message::debug(const QString &text)
@@ -55,7 +55,7 @@ void Message::debug(const QString &text)
 }
 
 /*!
- * \qmlmethod Message::warning( string text)
+ * \qmlmethod Message::warning(string text)
  * Shows the message `text` as a warning in the log.
  */
 void Message::warning(const QString &text)

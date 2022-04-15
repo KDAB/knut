@@ -45,7 +45,7 @@ Dir::Dir(const QString &currentScriptPath, QObject *parent)
 Dir::~Dir() { }
 
 /*!
- * \qmlmethod string Dir::toNativeSeparators( string pathName)
+ * \qmlmethod string Dir::toNativeSeparators(string pathName)
  */
 QString Dir::toNativeSeparators(const QString &pathName)
 {
@@ -54,7 +54,7 @@ QString Dir::toNativeSeparators(const QString &pathName)
 }
 
 /*!
- * \qmlmethod string Dir::fromNativeSeparators( string pathName)
+ * \qmlmethod string Dir::fromNativeSeparators(string pathName)
  */
 QString Dir::fromNativeSeparators(const QString &pathName)
 {
@@ -63,7 +63,7 @@ QString Dir::fromNativeSeparators(const QString &pathName)
 }
 
 /*!
- * \qmlmethod bool Dir::isRelativePath( string path)
+ * \qmlmethod bool Dir::isRelativePath(string path)
  */
 bool Dir::isRelativePath(const QString &path)
 {
@@ -129,8 +129,8 @@ QString Dir::tempPath() const
 }
 
 /*!
- * \qmlmethod bool Dir::match( array<string> filters, string fileName)
- * \qmlmethod bool Dir::match( string filter, string fileName)
+ * \qmlmethod bool Dir::match(array<string> filters, string fileName)
+ * \qmlmethod bool Dir::match(string filter, string fileName)
  */
 bool Dir::match(const QStringList &filters, const QString &fileName)
 {
@@ -145,7 +145,7 @@ bool Dir::match(const QString &filter, const QString &fileName)
 }
 
 /*!
- * \qmlmethod string Dir::cleanPath( string path)
+ * \qmlmethod string Dir::cleanPath(string path)
  */
 QString Dir::cleanPath(const QString &path)
 {
@@ -154,7 +154,7 @@ QString Dir::cleanPath(const QString &path)
 }
 
 /*!
- * \qmlmethod QDirValueType Dir::create( string path)
+ * \qmlmethod QDirValueType Dir::create(string path)
  */
 QDirValueType Dir::create(const QString &path)
 {

@@ -99,7 +99,7 @@ void Settings::loadProjectSettings(const QString &rootDir)
 }
 
 /*!
- * \qmlmethod bool ProjectSettings::hasValue( string path)
+ * \qmlmethod bool Settings::hasValue(string path)
  * Returns true if the project settings has a settings `path`.
  */
 bool Settings::hasValue(QString path) const
@@ -112,7 +112,7 @@ bool Settings::hasValue(QString path) const
 }
 
 /*!
- * \qmlmethod variant Settings::value( string path, variant defaultValue = null)
+ * \qmlmethod variant Settings::value(string path, variant defaultValue = null)
  * Returns the value of the settings `path`, or `defaultValue` if the settings does not exist.
  */
 QVariant Settings::value(QString path, const QVariant &defaultValue) const
@@ -158,7 +158,7 @@ QVariant Settings::value(QString path, const QVariant &defaultValue) const
 }
 
 /*!
- * \qmlmethod variant Settings::setValue( string path, variant value)
+ * \qmlmethod variant Settings::setValue(string path, variant value)
  * Adds a new value `value` to the project settings at the given `path`. Returns `true` if the operation succeeded.
  */
 bool Settings::setValue(QString path, const QVariant &value)

@@ -100,7 +100,7 @@ bool Project::setRoot(const QString &newRoot)
 }
 
 /*!
- * \qmlmethod array<string> Project::allFiles( PathType type = RelativeToRoot)
+ * \qmlmethod array<string> Project::allFiles(PathType type = RelativeToRoot)
  * Returns all files in the current project.
  * `type` defines the type of path, and can be one of those values:
  *
@@ -128,7 +128,7 @@ QStringList Project::allFiles(PathType type) const
 }
 
 /*!
- * \qmlmethod array<string> Project::allFilesWithExtension( string extension, PathType type = RelativeToRoot)
+ * \qmlmethod array<string> Project::allFilesWithExtension(string extension, PathType type = RelativeToRoot)
  * Returns all files with the `extension` given in the current project.
  * `type` defines the type of path, and can be one of those values:
  *
@@ -156,7 +156,7 @@ QStringList Project::allFilesWithExtension(const QString &extension, PathType ty
 }
 
 /*!
- * \qmlmethod array<string> Project::allFilesWithExtensions( array<string> extensions, PathType type = RelativeToRoot)
+ * \qmlmethod array<string> Project::allFilesWithExtensions(array<string> extensions, PathType type = RelativeToRoot)
  * Returns all files with an extenstion from `extensions` in the current project.
  * `type` defines the type of path, and can be one of those values:
  *

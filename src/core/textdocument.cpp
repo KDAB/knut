@@ -419,7 +419,7 @@ void TextDocument::movePosition(QTextCursor::MoveOperation operation, QTextCurso
 }
 
 /*!
- * \qmlmethod TextDocument::gotoLine( int line, int column = 1)
+ * \qmlmethod TextDocument::gotoLine(int line, int column = 1)
  * Goes to the given `line` and `column` in the editor. Lines and columns are 1-based.
  * \sa TextDocument::line
  * \sa TextDocument::column
@@ -482,7 +482,7 @@ void TextDocument::gotoEndOfWord()
 }
 
 /*!
- * \qmlmethod TextDocument::gotoNextLine( int count = 1)
+ * \qmlmethod TextDocument::gotoNextLine(int count = 1)
  * Goes to the next line, repeat the operation `count` times.
  */
 void TextDocument::gotoNextLine(int count)
@@ -492,7 +492,7 @@ void TextDocument::gotoNextLine(int count)
 }
 
 /*!
- * \qmlmethod TextDocument::gotoPreviousLine( int count = 1)
+ * \qmlmethod TextDocument::gotoPreviousLine(int count = 1)
  * Goes to the previous line, repeat the operation `count` times.
  */
 void TextDocument::gotoPreviousLine(int count)
@@ -502,7 +502,7 @@ void TextDocument::gotoPreviousLine(int count)
 }
 
 /*!
- * \qmlmethod TextDocument::gotoPreviousChar( int count = 1)
+ * \qmlmethod TextDocument::gotoPreviousChar(int count = 1)
  * Goes to the previous character, repeat the operation `count` times.
  */
 void TextDocument::gotoPreviousChar(int count)
@@ -512,7 +512,7 @@ void TextDocument::gotoPreviousChar(int count)
 }
 
 /*!
- * \qmlmethod TextDocument::gotoNextChar( int count = 1)
+ * \qmlmethod TextDocument::gotoNextChar(int count = 1)
  * Goes to the next character, repeat the operation `count` times.
  */
 void TextDocument::gotoNextChar(int count)
@@ -522,7 +522,7 @@ void TextDocument::gotoNextChar(int count)
 }
 
 /*!
- * \qmlmethod TextDocument::gotoPreviousWord( int count = 1)
+ * \qmlmethod TextDocument::gotoPreviousWord(int count = 1)
  * Goes to the previous word, repeat the operation `count` times.
  */
 void TextDocument::gotoPreviousWord(int count)
@@ -532,7 +532,7 @@ void TextDocument::gotoPreviousWord(int count)
 }
 
 /*!
- * \qmlmethod TextDocument::gotoNextWord( int count = 1)
+ * \qmlmethod TextDocument::gotoNextWord(int count = 1)
  * Goes to the next word, repeat the operation `count` times.
  */
 void TextDocument::gotoNextWord(int count)
@@ -594,7 +594,7 @@ void TextDocument::selectAll()
 }
 
 /*!
- * \qmlmethod TextDocument::selectTo( int pos)
+ * \qmlmethod TextDocument::selectTo(int pos)
  * Selects the text from the current position to `pos`.
  */
 void TextDocument::selectTo(int pos)
@@ -606,7 +606,7 @@ void TextDocument::selectTo(int pos)
 }
 
 /*!
- * \qmlmethod TextDocument::selectStartOfLine( int count = 1)
+ * \qmlmethod TextDocument::selectStartOfLine(int count = 1)
  * Selects the text from the current position to the start of the line.
  */
 void TextDocument::selectStartOfLine()
@@ -646,7 +646,7 @@ void TextDocument::selectEndOfWord()
 }
 
 /*!
- * \qmlmethod TextDocument::selectNextLine( int count = 1)
+ * \qmlmethod TextDocument::selectNextLine(int count = 1)
  * Selects the next line, repeat the operation `count` times.
  */
 void TextDocument::selectNextLine(int count)
@@ -656,7 +656,7 @@ void TextDocument::selectNextLine(int count)
 }
 
 /*!
- * \qmlmethod TextDocument::selectPreviousLine( int count = 1)
+ * \qmlmethod TextDocument::selectPreviousLine(int count = 1)
  * Selectes the previous line, repeat the operation `count` times.
  */
 void TextDocument::selectPreviousLine(int count)
@@ -666,7 +666,7 @@ void TextDocument::selectPreviousLine(int count)
 }
 
 /*!
- * \qmlmethod TextDocument::selectPreviousChar( int count = 1)
+ * \qmlmethod TextDocument::selectPreviousChar(int count = 1)
  * Selects the previous character, repeat the operation `count` times.
  */
 void TextDocument::selectPreviousChar(int count)
@@ -676,7 +676,7 @@ void TextDocument::selectPreviousChar(int count)
 }
 
 /*!
- * \qmlmethod TextDocument::selectNextChar( int count = 1)
+ * \qmlmethod TextDocument::selectNextChar(int count = 1)
  * Selects the next character, repeat the operation `count` times.
  */
 void TextDocument::selectNextChar(int count)
@@ -686,7 +686,7 @@ void TextDocument::selectNextChar(int count)
 }
 
 /*!
- * \qmlmethod TextDocument::selectPreviousWord( int count = 1)
+ * \qmlmethod TextDocument::selectPreviousWord(int count = 1)
  * Selects the previous word, repeat the operation `count` times.
  */
 void TextDocument::selectPreviousWord(int count)
@@ -696,7 +696,7 @@ void TextDocument::selectPreviousWord(int count)
 }
 
 /*!
- * \qmlmethod TextDocument::selectNextWord( int count = 1)
+ * \qmlmethod TextDocument::selectNextWord(int count = 1)
  * Selects the next word, repeat the operation `count` times.
  */
 void TextDocument::selectNextWord(int count)
@@ -706,7 +706,7 @@ void TextDocument::selectNextWord(int count)
 }
 
 /*!
- * \qmlmethod TextDocument::selectRegion( int from, int to)
+ * \qmlmethod TextDocument::selectRegion(int from, int to)
  * Selects the text between `from` and `to` positions.
  */
 void TextDocument::selectRegion(int from, int to)
@@ -719,7 +719,7 @@ void TextDocument::selectRegion(int from, int to)
 }
 
 /*!
- * \qmlmethod TextDocument::selectRange( TextRange range)
+ * \qmlmethod TextDocument::selectRange(TextRange range)
  * Selects the range passed in parameter.
  */
 void TextDocument::selectRange(const TextRange &range)
@@ -759,7 +759,7 @@ void TextDocument::cut()
 }
 
 /*!
- * \qmlmethod TextEditor::remove( int length)
+ * \qmlmethod TextDocument::remove(int length)
  * Remove `length` character from the current position.
  */
 void TextDocument::remove(int length)
@@ -772,7 +772,7 @@ void TextDocument::remove(int length)
 }
 
 /*!
- * \qmlmethod TextEditor::insert( string text)
+ * \qmlmethod TextDocument::insert(string text)
  * Inserts the string `text` at the current position. If some text is selected it will be replaced.
  */
 void TextDocument::insert(const QString &text)
@@ -782,7 +782,7 @@ void TextDocument::insert(const QString &text)
 }
 
 /*!
- * \qmlmethod TextEditor::insertAtLine( string text, int line = -1)
+ * \qmlmethod TextDocument::insertAtLine(string text, int line = -1)
  * Inserts the string `text` at `line`. If `line` is -1, insert the text at the current position. `line` is 1-based.
  */
 void TextDocument::insertAtLine(const QString &text, int line)
@@ -803,7 +803,7 @@ void TextDocument::insertAtLine(const QString &text, int line)
 }
 
 /*!
- * \qmlmethod TextEditor::replace( int length, string text)
+ * \qmlmethod TextDocument::replace(int length, string text)
  * Replaces `length` characters from the current position with the string `text`.
  */
 void TextDocument::replace(int length, const QString &text)
@@ -816,7 +816,7 @@ void TextDocument::replace(int length, const QString &text)
 }
 
 /*!
- * \qmlmethod TextDocument::replace( int length, string text)
+ * \qmlmethod TextDocument::replace(int length, string text)
  * Replaces the text from `from` to `to` with the string `text`.
  */
 void TextDocument::replace(int from, int to, const QString &text)
@@ -830,7 +830,7 @@ void TextDocument::replace(int from, int to, const QString &text)
 }
 
 /*!
- * \qmlmethod TextEditor::replace( TextRange range, string text)
+ * \qmlmethod TextDocument::replace(TextRange range, string text)
  * Replaces the text in the range `range` with the string `text`.
  */
 void TextDocument::replace(const TextRange &range, const QString &text)
@@ -844,7 +844,7 @@ void TextDocument::replace(const TextRange &range, const QString &text)
 }
 
 /*!
- * \qmlmethod TextDocument::deleteLine( int line = -1)
+ * \qmlmethod TextDocument::deleteLine(int line = -1)
  * Remove a the line `line`. If `line` is -1, remove the current line. `line` is 1-based.
  */
 void TextDocument::deleteLine(int line)
@@ -876,7 +876,7 @@ void TextDocument::deleteSelection()
 }
 
 /*!
- * \qmlmethod TextDocument::deleteRegion( int from, int to)
+ * \qmlmethod TextDocument::deleteRegion(int from, int to)
  * Deletes the text between `from` and `to` positions.
  */
 void TextDocument::deleteRegion(int from, int to)
@@ -890,7 +890,7 @@ void TextDocument::deleteRegion(int from, int to)
 }
 
 /*!
- * \qmlmethod TextDocument::deleteRange( TextRange range)
+ * \qmlmethod TextDocument::deleteRange(TextRange range)
  * Deletes the range passed in parameter.
  */
 void TextDocument::deleteRange(const TextRange &range)
@@ -984,7 +984,7 @@ void TextDocument::deleteNextCharacter(int count)
 }
 
 /*!
- * \qmlmethod Mark TextDocument::createMark( int pos = -1)
+ * \qmlmethod Mark TextDocument::createMark(int pos = -1)
  * Create a mark at the given position `pos`. If `pos` is -1, it will create a mark at the
  * current position.
  * \sa Mark
@@ -998,7 +998,7 @@ Mark *TextDocument::createMark(int pos)
 }
 
 /*!
- * \qmlmethod TextDocument::gotoMark( Mark mark)
+ * \qmlmethod TextDocument::gotoMark(Mark mark)
  * Go to the given `mark`.
  */
 void TextDocument::gotoMark(Mark *mark)
@@ -1017,7 +1017,7 @@ void TextDocument::gotoMark(Mark *mark)
 }
 
 /*!
- * \qmlmethod TextDocument::selectToMark( Mark mark)
+ * \qmlmethod TextDocument::selectToMark(Mark mark)
  * Select the text from the cursor position to the `mark`.
  */
 void TextDocument::selectToMark(Mark *mark)
@@ -1036,7 +1036,7 @@ void TextDocument::selectToMark(Mark *mark)
 }
 
 /*!
- * \qmlmethod bool TextDocument::find( string text, int options = TextDocument.NoFindFlags)
+ * \qmlmethod bool TextDocument::find(string text, int options = TextDocument.NoFindFlags)
  * Searches the string `text` in the editor. Options could be a combination of:
  *
  * - `TextDocument.FindBackward`: search backward
@@ -1056,7 +1056,7 @@ bool TextDocument::find(const QString &text, int options)
 }
 
 /*!
- * \qmlmethod bool TextDocument::findRegexp( string regexp, int options = TextDocument.NoFindFlags)
+ * \qmlmethod bool TextDocument::findRegexp(string regexp, int options = TextDocument.NoFindFlags)
  * Searches the string `regexp` in the editor using a regular expression. Options could be a combination of:
  *
  * - `TextDocument.FindBackward`: search backward
@@ -1073,7 +1073,7 @@ bool TextDocument::findRegexp(const QString &regexp, int options)
 }
 
 /*!
- * \qmlmethod bool TextDocument::replaceOne( string before, string after, int options = TextDocument.NoFindFlags)
+ * \qmlmethod bool TextDocument::replaceOne(string before, string after, int options = TextDocument.NoFindFlags)
  * Replace one occurence of the string `before` with `after`. Options could be a combination of:
  *
  * - `TextDocument.FindCaseSensitively`: match case
@@ -1126,7 +1126,7 @@ bool TextDocument::replaceOne(const QString &before, const QString &after, int o
 }
 
 /*!
- * \qmlmethod bool TextDocument::replaceAll( string before, string after, int options = TextDocument.NoFindFlags)
+ * \qmlmethod bool TextDocument::replaceAll(string before, string after, int options = TextDocument.NoFindFlags)
  * Replace all occurences of the string `before` with `after`. Options could be a combination of:
  *
  * - `TextDocument.FindCaseSensitively`: match case
@@ -1181,7 +1181,7 @@ int TextDocument::replaceAll(const QString &before, const QString &after, int op
 }
 
 /*!
- * \qmlmethod bool TextDocument::replaceAllRegexp( string regexp, string after, int options = TextDocument.NoFindFlags)
+ * \qmlmethod bool TextDocument::replaceAllRegexp(string regexp, string after, int options = TextDocument.NoFindFlags)
  * Replace all occurences of the matches for the `regexp` with `after`. See the options from `replaceAll`.
  *
  * The captures coming from the regexp can be used in the replacement text, using `\1`..`\n` or `$1`..`$n`.

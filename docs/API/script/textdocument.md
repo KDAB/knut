@@ -36,6 +36,7 @@ Inherited properties: [Document properties](../script/document.md#properties)
 ||**[cut](#cut)**()|
 ||**[deleteEndOfLine](#deleteEndOfLine)**()|
 ||**[deleteEndOfWord](#deleteEndOfWord)**()|
+||**[deleteLine](#deleteLine)**(int line = -1)|
 ||**[deleteNextCharacter](#deleteNextCharacter)**(int count = 1)|
 ||**[deletePreviousCharacter](#deletePreviousCharacter)**(int count = 1)|
 ||**[deleteRange](#deleteRange)**([TextRange](../script/textrange.md) range)|
@@ -61,9 +62,15 @@ Inherited properties: [Document properties](../script/document.md#properties)
 ||**[gotoStartOfWord](#gotoStartOfWord)**()|
 |bool |**[hasSelection](#hasSelection)**()|
 ||**[indent](#indent)**(int count)|
+||**[insert](#insert)**(string text)|
+||**[insertAtLine](#insertAtLine)**(string text, int line = -1)|
 ||**[paste](#paste)**()|
 ||**[redo](#redo)**(int count)|
+||**[remove](#remove)**(int length)|
 ||**[removeIndent](#removeIndent)**(int count)|
+||**[replace](#replace)**(int length, string text)|
+||**[replace](#replace)**([TextRange](../script/textrange.md) range, string text)|
+||**[replace](#replace)**(int length, string text)|
 |bool |**[replaceAll](#replaceAll)**(string before, string after, int options = TextDocument.NoFindFlags)|
 |bool |**[replaceAllRegexp](#replaceAllRegexp)**(string regexp, string after, int options = TextDocument.NoFindFlags)|
 |bool |**[replaceOne](#replaceOne)**(string before, string after, int options = TextDocument.NoFindFlags)|
@@ -155,6 +162,10 @@ Deletes from the cursor position to the end of the line.
 #### <a name="deleteEndOfWord"></a>**deleteEndOfWord**()
 
 Deletes from the cursor position to the end of the word.
+
+#### <a name="deleteLine"></a>**deleteLine**(int line = -1)
+
+Remove a the line `line`. If `line` is -1, remove the current line. `line` is 1-based.
 
 #### <a name="deleteNextCharacter"></a>**deleteNextCharacter**(int count = 1)
 
@@ -269,6 +280,14 @@ Returns true if the editor has a selection.
 
 Indents the current line `count` times. If there's a selection, indent all lines in the selection.
 
+#### <a name="insert"></a>**insert**(string text)
+
+Inserts the string `text` at the current position. If some text is selected it will be replaced.
+
+#### <a name="insertAtLine"></a>**insertAtLine**(string text, int line = -1)
+
+Inserts the string `text` at `line`. If `line` is -1, insert the text at the current position. `line` is 1-based.
+
 #### <a name="paste"></a>**paste**()
 
 Pastes text in the clipboard.
@@ -277,9 +296,25 @@ Pastes text in the clipboard.
 
 Redo `count` times the last actions.
 
+#### <a name="remove"></a>**remove**(int length)
+
+Remove `length` character from the current position.
+
 #### <a name="removeIndent"></a>**removeIndent**(int count)
 
 Indents the current line `count` times. If there's a selection, indent all lines in the selection.
+
+#### <a name="replace"></a>**replace**(int length, string text)
+
+Replaces the text from `from` to `to` with the string `text`.
+
+#### <a name="replace"></a>**replace**([TextRange](../script/textrange.md) range, string text)
+
+Replaces the text in the range `range` with the string `text`.
+
+#### <a name="replace"></a>**replace**(int length, string text)
+
+Replaces `length` characters from the current position with the string `text`.
 
 #### <a name="replaceAll"></a>bool **replaceAll**(string before, string after, int options = TextDocument.NoFindFlags)
 

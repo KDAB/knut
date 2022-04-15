@@ -34,7 +34,7 @@ Utils::Utils(QObject *parent)
 Utils::~Utils() { }
 
 /*!
- * \qmlmethod string Utils::getEnv( string varName)
+ * \qmlmethod string Utils::getEnv(string varName)
  * Returns the value of the environment variable `varName`.
  */
 QString Utils::getEnv(const QString &varName)
@@ -45,7 +45,7 @@ QString Utils::getEnv(const QString &varName)
 }
 
 /*!
- * \qmlmethod string Utils::getGlobal( string varName)
+ * \qmlmethod string Utils::getGlobal(string varName)
  * Returns the value of the global `varName`. A global value is a value set by a script, and
  * persistent only in the current knut execution (it will disappear once closed).
  *
@@ -60,7 +60,7 @@ QString Utils::getGlobal(const QString &varName)
 }
 
 /*!
- * \qmlmethod Utils::setGlobal( string varName, string value)
+ * \qmlmethod Utils::setGlobal(string varName, string value)
  * Sets the global value `varName` to `value`. A global value is a value set by a script, and
  * persistent only in the current Qt Creator execution (it will disappear once closed).
  *
@@ -75,7 +75,7 @@ void Utils::setGlobal(const QString &varName, const QString &value)
 }
 
 /*!
- * \qmlmethod Utils::addScriptPath( string path, bool projectOnly)
+ * \qmlmethod Utils::addScriptPath(string path, bool projectOnly)
  * Adds the script directory `path` from another script.
  *
  * Could be useful to load multiple paths at once, by creating a *init.js* file like this:
@@ -97,7 +97,7 @@ void Utils::addScriptPath(const QString &path)
 }
 
 /*!
- * \qmlmethod Utils::runScript( string path, bool log)
+ * \qmlmethod Utils::runScript(string path, bool log)
  * Runs the script given by `path`. If `log` is true, it will also log the run of the script.
  */
 void Utils::runScript(const QString &path, bool log)
@@ -109,7 +109,7 @@ void Utils::runScript(const QString &path, bool log)
 }
 
 /*!
- * \qmlmethod Utils::sleep( int msecs)
+ * \qmlmethod Utils::sleep(int msecs)
  * Sleeps for `msecs` milliseconds.
  */
 void Utils::sleep(int msecs)
@@ -124,7 +124,7 @@ void Utils::sleep(int msecs)
 }
 
 /*!
- * \qmlmethod string Utils::mktemp( string pattern)
+ * \qmlmethod string Utils::mktemp(string pattern)
  * Creates and returns the name of a temporory file based on a `pattern`.
  * This function is copied from UtilsJsExtension::mktemp from Qt Creator.
  */
@@ -154,7 +154,7 @@ QString Utils::mktemp(const QString &pattern)
 }
 
 /*!
- * \qmlmethod string Utils::convertCase( string str, Case from, Case to)
+ * \qmlmethod string Utils::convertCase(string str, Case from, Case to)
  * Converts and returns the string `str` with a different case pattern: from `from` to `to`.
  *
  * The different cases are:
@@ -173,7 +173,7 @@ QString Utils::convertCase(const QString &str, Case from, Case to)
 }
 
 /*!
- * \qmlmethod string Utils::copyToClipboard( string text)
+ * \qmlmethod string Utils::copyToClipboard(string text)
  * Copy the text to the clipboard
  */
 void Utils::copyToClipboard(const QString &text)

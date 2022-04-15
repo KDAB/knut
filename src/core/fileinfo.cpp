@@ -25,7 +25,7 @@ FileInfo::FileInfo(QObject *parent)
 FileInfo::~FileInfo() { }
 
 /*!
- * \qmlmethod bool FileInfo::exists( string file)
+ * \qmlmethod bool FileInfo::exists(string file)
  */
 bool FileInfo::exists(const QString &file)
 {
@@ -34,7 +34,7 @@ bool FileInfo::exists(const QString &file)
 }
 
 /*!
- * \qmlmethod QFileInfoValueType FileInfo::create( string file)
+ * \qmlmethod QFileInfoValueType FileInfo::create(string file)
  */
 QFileInfoValueType FileInfo::create(const QString &file)
 {

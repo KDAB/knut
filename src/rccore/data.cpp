@@ -139,10 +139,6 @@ namespace RcCore {
  * \qmlproperty array<MenuItem Menu::children
  * This property holds the list of menu items inside the menu.
  */
-/*!
- * \qmlmethod bool Menu::contains( string id )
- * Returns true if the menu contains the given `id`
- */
 
 /*!
  * \qmltype Shortcut
@@ -281,6 +277,10 @@ static bool containActionId(const QString &id, const MenuItem &menuItem)
     return false;
 }
 
+/*!
+ * \qmlmethod bool Menu::contains(string id)
+ * Returns true if the menu contains the given `id`
+ */
 bool Menu::contains(const QString &id)
 {
     for (const auto &child : std::as_const(children)) {

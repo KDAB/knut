@@ -29,6 +29,7 @@ import Script.Rc 1.0
 
 | | Name |
 |-|-|
+|array<[Action](../script.rc/action.md)> |**[convertActions](#convertActions)**(array<string> menus, array<string> accelerators, array<string> toolBars, int flags)|
 ||**[convertAssets](#convertAssets)**(int flags)|
 |[Widget](../script.rc/widget.md) |**[dialog](#dialog)**(string id, int flags, real scaleX, real scaleY)|
 |[Menu](../script.rc/menu.md) |**[menu](#menu)**(string id)|
@@ -84,6 +85,21 @@ This read-only property defines if the RC file is valid for our parser.
 Note that the RC file may be valid, and our parser needs to be updated.
 
 ## Method Documentation
+
+#### <a name="convertActions"></a>array<[Action](../script.rc/action.md)> **convertActions**(array<string> menus, array<string> accelerators, array<string> toolBars, int flags)
+
+
+!!! Warning "Experimental API"
+    The API here is still experimental, and may change in follow-up release. Use it at your own risk.
+
+Returns a list of actions fomr the given `menus`' ids, `accelerators`' ids and `toolBars`' ids.
+
+The `flags` are used to fill the iconPath of the action:
+
+- `RcDocument.RemoveUnknown`: remove the unknown assets
+- `RcDocument.SplitToolBar`: split toolbar's strips into individual icon, one per action
+- `RcDocument.ConvertToPng`: convert BMPs to PNGs, needed if we want to also change the transparency
+- `RcDocument.AllFlags`: combination of all above
 
 #### <a name="convertAssets"></a>**convertAssets**(int flags)
 

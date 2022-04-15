@@ -31,7 +31,7 @@ UiDocument::UiDocument(QObject *parent)
 }
 
 /*!
- * \qmlmethod UiWidget UiDocument::findWidget( string name)
+ * \qmlmethod UiWidget UiDocument::findWidget(string name)
  * Returns the widget for the given `name`.
  */
 UiWidget *UiDocument::findWidget(const QString &name) const

@@ -116,7 +116,7 @@ bool QDirValueType::isAbsolute() const
 }
 
 /*!
- * \qmlmethod bool QDirValueType::cd( string dirName)
+ * \qmlmethod bool QDirValueType::cd(string dirName)
  */
 bool QDirValueType::cd(const QString &dirName)
 {
@@ -132,7 +132,7 @@ bool QDirValueType::cdUp()
 }
 
 /*!
- * \qmlmethod string QDirValueType::at( int pos)
+ * \qmlmethod string QDirValueType::at(int pos)
  */
 QString QDirValueType::at(int pos) const
 {
@@ -143,9 +143,9 @@ QString QDirValueType::at(int pos) const
 }
 
 /*!
- * \qmlmethod array<string> QDirValueType::entryList( int filters, int sort)
- * \qmlmethod array<string> QDirValueType::entryList( string nameFilter, int filters, int sort)
- * \qmlmethod array<string> QDirValueType::entryList( array<string> nameFilters, int filters, int sort)
+ * \qmlmethod array<string> QDirValueType::entryList(int filters, int sort)
+ * \qmlmethod array<string> QDirValueType::entryList(string nameFilter, int filters, int sort)
+ * \qmlmethod array<string> QDirValueType::entryList(array<string> nameFilters, int filters, int sort)
  * `filters` is a combination of (default is `Dir.NoFilter`):
  *
  * - `Dir.Dirs`
@@ -200,7 +200,7 @@ QStringList QDirValueType::entryList(const QStringList &nameFilters, int filters
 }
 
 /*!
- * \qmlmethod bool QDirValueType::mkdir( string dirName)
+ * \qmlmethod bool QDirValueType::mkdir(string dirName)
  */
 bool QDirValueType::mkdir(const QString &dirName) const
 {
@@ -208,7 +208,7 @@ bool QDirValueType::mkdir(const QString &dirName) const
 }
 
 /*!
- * \qmlmethod bool QDirValueType::rmdir( string dirName)
+ * \qmlmethod bool QDirValueType::rmdir(string dirName)
  */
 bool QDirValueType::rmdir(const QString &dirName) const
 {
@@ -216,7 +216,7 @@ bool QDirValueType::rmdir(const QString &dirName) const
 }
 
 /*!
- * \qmlmethod bool QDirValueType::mkpath( string dirPath)
+ * \qmlmethod bool QDirValueType::mkpath(string dirPath)
  */
 bool QDirValueType::mkpath(const QString &dirPath) const
 {
@@ -224,7 +224,7 @@ bool QDirValueType::mkpath(const QString &dirPath) const
 }
 
 /*!
- * \qmlmethod bool QDirValueType::rmpath( string dirPath)
+ * \qmlmethod bool QDirValueType::rmpath(string dirPath)
  */
 bool QDirValueType::rmpath(const QString &dirPath) const
 {
@@ -248,7 +248,7 @@ bool QDirValueType::makeAbsolute()
 }
 
 /*!
- * \qmlmethod bool QDirValueType::remove( string fileName)
+ * \qmlmethod bool QDirValueType::remove(string fileName)
  */
 bool QDirValueType::remove(const QString &fileName)
 {
@@ -256,7 +256,7 @@ bool QDirValueType::remove(const QString &fileName)
 }
 
 /*!
- * \qmlmethod bool QDirValueType::rename( string oldName, string newName)
+ * \qmlmethod bool QDirValueType::rename(string oldName, string newName)
  */
 bool QDirValueType::rename(const QString &oldName, const QString &newName)
 {
@@ -264,7 +264,7 @@ bool QDirValueType::rename(const QString &oldName, const QString &newName)
 }
 
 /*!
- * \qmlmethod bool QDirValueType::fileExists( string name)
+ * \qmlmethod bool QDirValueType::fileExists(string name)
  */
 bool QDirValueType::fileExists(const QString &name) const
 {

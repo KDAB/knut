@@ -26,7 +26,7 @@ File::File(QObject *parent)
 File::~File() { }
 
 /*!
- * \qmlmethod bool File::copy( string fileName, string newName)
+ * \qmlmethod bool File::copy(string fileName, string newName)
  */
 bool File::copy(const QString &fileName, const QString &newName)
 {
@@ -35,7 +35,7 @@ bool File::copy(const QString &fileName, const QString &newName)
 }
 
 /*!
- * \qmlmethod bool File::exists( string fileName)
+ * \qmlmethod bool File::exists(string fileName)
  */
 bool File::exists(const QString &fileName)
 {
@@ -44,7 +44,7 @@ bool File::exists(const QString &fileName)
 }
 
 /*!
- * \qmlmethod bool File::remove( string fileName)
+ * \qmlmethod bool File::remove(string fileName)
  */
 bool File::remove(const QString &fileName)
 {
@@ -53,7 +53,7 @@ bool File::remove(const QString &fileName)
 }
 
 /*!
- * \qmlmethod bool File::rename( string oldName, string newName)
+ * \qmlmethod bool File::rename(string oldName, string newName)
  */
 bool File::rename(const QString &oldName, const QString &newName)
 {
@@ -62,7 +62,7 @@ bool File::rename(const QString &oldName, const QString &newName)
 }
 
 /*!
- * \qmlmethod bool File::touch( string fileName)
+ * \qmlmethod bool File::touch(string fileName)
  */
 bool File::touch(const QString &fileName)
 {
@@ -72,7 +72,7 @@ bool File::touch(const QString &fileName)
 }
 
 /*!
- * \qmlmethod string File::readAll( string fileName)
+ * \qmlmethod string File::readAll(string fileName)
  */
 QString File::readAll(const QString &fileName)
 {

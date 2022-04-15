@@ -33,6 +33,7 @@ Inherited properties: [LspDocument properties](../script/lspdocument.md#properti
 |int |**[gotoBlockStart](#gotoBlockStart)**(int count)|
 ||**[insertCodeInMethod](#insertCodeInMethod)**(string methodName, string code, Position insertAt)|
 ||**[insertForwardDeclaration](#insertForwardDeclaration)**(string fwddecl)|
+||**[insertInclude](#insertInclude)**(string include, bool newGroup = false)|
 |[CppDocument](../script/cppdocument.md) |**[openHeaderSource](#openHeaderSource)**()|
 |int |**[selectBlockEnd](#selectBlockEnd)**()|
 |int |**[selectBlockStart](#selectBlockStart)**()|
@@ -99,6 +100,16 @@ class FooBar
 }
 ```
 
+#### <a name="insertInclude"></a>**insertInclude**(string include, bool newGroup = false)
+
+Inserts a new include line in the file. If the include is already in, do nothing (and returns true).
+
+The `include` string should be either `<foo.h>` or `"foo.h"`, it will returns false otherwise.
+The method will try to find the best group of includes to insert into, a group of includes being consecutive includes
+in the file.
+
+If `newGroup` is true, it will insert the include at the end, with a new line separating the other includes.
+
 #### <a name="openHeaderSource"></a>[CppDocument](../script/cppdocument.md) **openHeaderSource**()
 
 Opens the corresponding source or header files, the current document is the new file.
@@ -118,7 +129,7 @@ Does it `count` times.
 
 #### <a name="toggleSection"></a>**toggleSection**()
 
-Comment out a section of the code using `#ifdef` / `#endif`. The variable used is defined by the settings.
+Comments out a section of the code using `#ifdef` / `#endif`. The variable used is defined by the settings.
 ```
 "toggle_section": {
     "tag": "KDAB_TEMPORARILY_REMOVED",
