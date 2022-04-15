@@ -113,6 +113,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionToggle_Mark, &QAction::triggered, this, &MainWindow::toggleMark);
     connect(ui->actionGoTo_Mark, &QAction::triggered, this, &MainWindow::goToMark);
     connect(ui->actionSelectTo_Mark, &QAction::triggered, this, &MainWindow::selectToMark);
+    connect(ui->actionDeleteLine, &QAction::triggered, this, &MainWindow::deleteLine);
 
     // C++
     connect(ui->actionSwitch_Header_Source, &QAction::triggered, this, &MainWindow::switchHeaderSource);
@@ -451,6 +452,7 @@ void MainWindow::updateActions()
     ui->actionReplace->setEnabled(textDocument != nullptr);
     ui->actionFind_Next->setEnabled(textDocument != nullptr);
     ui->actionFind_Previous->setEnabled(textDocument != nullptr);
+    ui->actionDeleteLine->setEnabled(textDocument != nullptr);
     auto *textView = textViewForDocument(textDocument);
     ui->actionToggle_Mark->setEnabled(textDocument != nullptr);
     ui->actionGoTo_Mark->setEnabled(textDocument != nullptr && textView->hasMark());
@@ -516,6 +518,12 @@ void MainWindow::selectToMark()
     auto document = Core::Project::instance()->currentDocument();
     if (auto *textView = textViewForDocument(document))
         textView->selectToMark();
+}
+
+void MainWindow::deleteLine()
+{
+    if (auto textDocument = qobject_cast<Core::TextDocument *>(Core::Project::instance()->currentDocument()))
+        textDocument->deleteLine();
 }
 
 void MainWindow::changeTab()

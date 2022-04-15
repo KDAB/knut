@@ -105,6 +105,8 @@
     <addaction name="actionToggle_Mark"/>
     <addaction name="actionGoTo_Mark"/>
     <addaction name="actionSelectTo_Mark"/>
+    <addaction name="separator"/>
+    <addaction name="actionDeleteLine"/>
    </widget>
    <widget class="QMenu" name="menu_View">
     <property name="title">
@@ -402,6 +404,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="actionDeleteLine">
+   <property name="text">
+    <string>Delete Line</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Backspace</string>
    </property>
   </action>
  </widget>

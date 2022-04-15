@@ -860,6 +860,8 @@ void TextDocument::deleteLine(int line)
         const QTextBlock &block = m_document->document()->findBlockByNumber(blockNumber);
         if (block.isValid())
             cursor = QTextCursor(block);
+    } else {
+        cursor.movePosition(QTextCursor::StartOfLine);
     }
     cursor.movePosition(QTextCursor::Down, QTextCursor::KeepAnchor);
     cursor.removeSelectedText();
