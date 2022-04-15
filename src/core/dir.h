@@ -85,7 +85,7 @@ public slots:
     static QString fromNativeSeparators(const QString &pathName);
 
     static bool isRelativePath(const QString &path);
-    static bool isAbsolutePath(const QString &path) { return !isRelativePath(path); }
+    static bool isAbsolutePath(const QString &path);
 
     static bool match(const QStringList &filters, const QString &fileName);
     static bool match(const QString &filter, const QString &fileName);

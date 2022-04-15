@@ -10,6 +10,10 @@ Represents a class in the current file [More...](#detailed-description)
 import Script 1.0
 ```
 
+<table>
+<tr><td>Since:</td><td>Knut 4.0</td></tr>
+</table>
+
 ## Properties
 
 | | Name |

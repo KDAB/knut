@@ -1,9 +1,5 @@
 # CppDocument
 
-!!! Warning "Experimental API"
-    The API here is still experimental, and may change in follow-up release. Use it at your own risk.
-
-
 Document object for a C++ file (source or header) [More...](#detailed-description)
 
 ```qml
@@ -35,6 +31,7 @@ Inherited properties: [LspDocument properties](../script/lspdocument.md#properti
 ||**[insertForwardDeclaration](#insertForwardDeclaration)**(string fwddecl)|
 ||**[insertInclude](#insertInclude)**(string include, bool newGroup = false)|
 |[CppDocument](../script/cppdocument.md) |**[openHeaderSource](#openHeaderSource)**()|
+||**[removeInclude](#removeInclude)**(string include)|
 |int |**[selectBlockEnd](#selectBlockEnd)**()|
 |int |**[selectBlockStart](#selectBlockStart)**()|
 ||**[toggleSection](#toggleSection)**()|
@@ -115,6 +112,12 @@ If `newGroup` is true, it will insert the include at the end, with a new line se
 Opens the corresponding source or header files, the current document is the new file.
 If no files have been found, it's a no-op.
 
+#### <a name="removeInclude"></a>**removeInclude**(string include)
+
+Remove `include` from the file. If the include is not in the file, do nothing (and returns true).
+
+The `include` string should be either `<foo.h>` or `"foo.h"`, it will returns false otherwise.
+
 #### <a name="selectBlockEnd"></a>int **selectBlockEnd**()
 
 Selects the text from current cursor position to the end of the block, and returns the new cursor position.
@@ -130,10 +133,10 @@ Does it `count` times.
 #### <a name="toggleSection"></a>**toggleSection**()
 
 Comments out a section of the code using `#ifdef` / `#endif`. The variable used is defined by the settings.
-```
+```json
 "toggle_section": {
     "tag": "KDAB_TEMPORARILY_REMOVED",
-    "debug": "qDebug("%1 is commented out")"
+    "debug": "qDebug(\"%1 is commented out\")"
     "return_values": {
         "BOOL": "false"
     }

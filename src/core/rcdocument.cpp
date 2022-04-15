@@ -155,6 +155,7 @@ RcCore::Menu RcDocument::menu(const QString &id) const
 
 QStringList RcDocument::dialogIds() const
 {
+    LOG("RcDocument::dialogIds");
     if (m_data.isValid) {
         const auto &dialogs = m_data.dialogs;
         QStringList result;
@@ -170,6 +171,7 @@ QStringList RcDocument::dialogIds() const
 
 QStringList RcDocument::menuIds() const
 {
+    LOG("RcDocument::menuIds");
     if (m_data.isValid) {
         const auto &menus = m_data.menus;
         QStringList result;
@@ -185,6 +187,7 @@ QStringList RcDocument::menuIds() const
 
 QStringList RcDocument::acceleratorIds() const
 {
+    LOG("RcDocument::acceleratorIds");
     if (m_data.isValid) {
         const auto &accelerators = m_data.acceleratorTables;
         QStringList result;
@@ -201,6 +204,7 @@ QStringList RcDocument::acceleratorIds() const
 
 QStringList RcDocument::toolbarIds() const
 {
+    LOG("RcDocument::toolbarIds");
     if (m_data.isValid) {
         const auto &toolbars = m_data.toolBars;
         QStringList result;
@@ -216,6 +220,7 @@ QStringList RcDocument::toolbarIds() const
 
 QStringList RcDocument::stringIds() const
 {
+    LOG("RcDocument::stringIds");
     if (m_data.isValid)
         return m_data.strings.keys();
     return {};

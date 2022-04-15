@@ -271,6 +271,7 @@ int TextDocument::line() const
 
 int TextDocument::lineCount() const
 {
+    LOG("TextDocument::lineCount");
     return m_document->document()->lineCount();
 }
 
@@ -282,7 +283,7 @@ int TextDocument::position() const
 
 void TextDocument::setPosition(int newPosition)
 {
-    LOG("TextDocument::setPosition", LOG_ARG("pos", newPosition));
+    LOG("TextDocument::position", LOG_ARG("pos", newPosition));
 
     if (position() == newPosition)
         return;
@@ -328,7 +329,7 @@ QString TextDocument::text() const
 
 void TextDocument::setText(const QString &newText)
 {
-    LOG("TextDocument::setText", LOG_ARG("text", newText));
+    LOG("TextDocument::text", LOG_ARG("text", newText));
 
     m_document->setPlainText(newText);
 }

@@ -7,7 +7,7 @@ import Script 1.0
 ```
 
 <table>
-<tr><td>Since:</td><td>Knut 1.0</td></tr>
+<tr><td>Since:</td><td>Knut 4.0</td></tr>
 </table>
 
 ## Properties
@@ -26,7 +26,9 @@ import Script 1.0
 ## Detailed Description
 
 The Mark object helps you track a logical possition in a file.
-Its line and column properties will change as text are deleted or inserted before the mark.
+Its `line` and `column` properties will change as text are deleted or inserted before the mark.
+
+A mark is always created by a [TextDocument](textdocument.md).
 
 ## Property Documentation
 

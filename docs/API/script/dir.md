@@ -31,6 +31,7 @@ import Script 1.0
 |[QDirValueType](../script/qdirvaluetype.md) |**[currentScript](#currentScript)**()|
 |string |**[fromNativeSeparators](#fromNativeSeparators)**(string pathName)|
 |[QDirValueType](../script/qdirvaluetype.md) |**[home](#home)**()|
+|bool |**[isAbsolutePath](#isAbsolutePath)**(string path)|
 |bool |**[isRelativePath](#isRelativePath)**(string path)|
 |bool |**[match](#match)**(array<string> filters, string fileName)|
 |bool |**[match](#match)**(string filter, string fileName)|
@@ -70,6 +71,8 @@ documentation.
 #### <a name="fromNativeSeparators"></a>string **fromNativeSeparators**(string pathName)
 
 #### <a name="home"></a>[QDirValueType](../script/qdirvaluetype.md) **home**()
+
+#### <a name="isAbsolutePath"></a>bool **isAbsolutePath**(string path)
 
 #### <a name="isRelativePath"></a>bool **isRelativePath**(string path)
 

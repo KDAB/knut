@@ -29,7 +29,6 @@ namespace Core {
  * \inqmlmodule Script
  * \since 4.0
  * \inherits LspDocument
- * \todo
  */
 
 /*!
@@ -587,10 +586,10 @@ int CppDocument::moveBlock(int startPos, QTextCursor::MoveOperation direction)
 /*!
  * \qmlmethod CppDocument::toggleSection()
  * Comments out a section of the code using `#ifdef` / `#endif`. The variable used is defined by the settings.
- * ```
+ * ```json
  * "toggle_section": {
  *     "tag": "KDAB_TEMPORARILY_REMOVED",
- *     "debug": "qDebug("%1 is commented out")"
+ *     "debug": "qDebug(\"%1 is commented out\")"
  *     "return_values": {
  *         "BOOL": "false"
  *     }
@@ -721,6 +720,12 @@ bool CppDocument::insertInclude(const QString &include, bool newGroup)
     return true;
 }
 
+/*!
+ * \qmlmethod CppDocument::removeInclude(string include)
+ * Remove `include` from the file. If the include is not in the file, do nothing (and returns true).
+ *
+ * The `include` string should be either `<foo.h>` or `"foo.h"`, it will returns false otherwise.
+ */
 bool CppDocument::removeInclude(const QString &include)
 {
     LOG("CppDocument::removeInclude", LOG_ARG("text", include));

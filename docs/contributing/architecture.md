@@ -35,16 +35,20 @@ High-level architecture description.
 
 ### Project
 
-The `Project` class is the root of everything, as it's the class used to create all documents.
+The `Project` class is the root of everything, as it's the class used to create all documents. Then each document has a specific API to work with the type of document (for example, a CppDocument has a `switchDeclarationDefinition()` method).
 
 ![project classes](../assets/project-classes.svg)
 
-All objects exported **must be declared** inside the `ScriptRunner` class constructor. This class, as the name suggest, is used to run the scripts.
+All objects exported **must be declared** inside the `ScriptRunner` class constructor. This class, as the name suggest, is used to run the scripts. Also make sure to add the object properties at the end of the constructor, for example:
+```cpp
+addProperties<CppDocument>(m_properties);
+```
+This will store all property's names for this object, and is used when recording a script from the ui, to make a difference between a property call and a method call.
 
 ### LSP server
 
 !!! warning
-    For now, knut has only been tested with clangd LSP server.
+    For now, knut has only been tested with clangd LSP server, and require at least version 13.0.
 
 When using a LSP server, different log files are created (next to the knut executable):
 

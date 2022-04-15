@@ -15,11 +15,13 @@ namespace Core {
  * \brief Keeps track of a position in a text document.
  * \instantiates Core::Mark
  * \inqmlmodule Script
- * \since 1.0
+ * \since 4.0
  * \sa TextDocument
  *
  * The Mark object helps you track a logical possition in a file.
- * Its line and column properties will change as text are deleted or inserted before the mark.
+ * Its `line` and `column` properties will change as text are deleted or inserted before the mark.
+ *
+ * A mark is always created by a [TextDocument](textdocument.md).
  */
 
 /*!

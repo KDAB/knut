@@ -1,6 +1,6 @@
 # Message
 
-Provides methods to display different messages to the user. [More...](#detailed-description)
+Singleton with methods to display different messages to the user. [More...](#detailed-description)
 
 ```qml
 import Script 1.0
@@ -24,7 +24,7 @@ import Script 1.0
 The `message` property in QML can be used to display different messages to the user, via logs.
 
 ```qml
-message.log("Hello World!")
+Message.log("Hello World!")
 ```
 
 ## Method Documentation

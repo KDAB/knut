@@ -71,6 +71,15 @@ bool Dir::isRelativePath(const QString &path)
     return QDir::isRelativePath(path);
 }
 
+/*!
+ * \qmlmethod bool Dir::isAbsolutePath(string path)
+ */
+bool Dir::isAbsolutePath(const QString &path)
+{
+    LOG("Dir::isAbsolutePath", path);
+    return !isRelativePath(path);
+}
+
 QChar Dir::separator() const
 {
     return QDir::separator();
