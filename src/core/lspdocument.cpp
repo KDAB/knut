@@ -1,8 +1,8 @@
 #include "lspdocument.h"
+#include "lspdocument_p.h"
 
 #include "json_utils.h"
 #include "logger.h"
-#include "private/lspcache.h"
 #include "string_utils.h"
 
 #include "lsp/client.h"

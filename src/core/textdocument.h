@@ -126,11 +126,13 @@ public slots:
     // Text handling
     void remove(int length);
     void insert(const QString &text);
+    void insertAtLine(const QString &text, int line = -1);
     void replace(int length, const QString &text);
     void replace(int from, int to, const QString &text);
     void replace(const Core::TextRange &range, const QString &text);
 
     // Deletion
+    void deleteLine(int line = -1);
     void deleteSelection();
     void deleteEndOfLine();
     void deleteStartOfLine();

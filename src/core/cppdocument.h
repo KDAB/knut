@@ -2,7 +2,11 @@
 
 #include "lspdocument.h"
 
+#include <memory>
+
 namespace Core {
+
+class CppCache;
 
 class CppDocument : public LspDocument
 {
@@ -11,6 +15,7 @@ class CppDocument : public LspDocument
 
 public:
     explicit CppDocument(QObject *parent = nullptr);
+    ~CppDocument();
 
     enum Position { StartOfMethod, EndOfMethod };
     Q_ENUM(Position)
@@ -37,8 +42,14 @@ public slots:
 
     void toggleSection();
 
+    bool insertInclude(const QString &include, bool newGroup = false);
+    bool removeInclude(const QString &include);
+
 private:
     int moveBlock(int startPos, QTextCursor::MoveOperation direction);
+
+    friend CppCache;
+    std::unique_ptr<CppCache> m_cache;
 };
 
 } // namespace Core

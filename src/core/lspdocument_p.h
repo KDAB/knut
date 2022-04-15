@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../symbol.h"
+#include "symbol.h"
 
 #include <QVector>
 

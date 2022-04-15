@@ -12,6 +12,7 @@
 #include <QHash>
 #include <QPlainTextEdit>
 #include <QRegularExpression>
+#include <QTextBlock>
 #include <QTextDocument>
 #include <QVariantMap>
 
@@ -38,8 +39,14 @@ namespace Core {
 
 CppDocument::CppDocument(QObject *parent)
     : LspDocument(Type::Cpp, parent)
+    , m_cache(std::make_unique<CppCache>(this))
 {
+    connect(textEdit()->document(), &QTextDocument::contentsChange, [this]() {
+        m_cache->clear();
+    });
 }
+
+CppDocument::~CppDocument() = default;
 
 static bool isHeaderSuffix(const QString &suffix)
 {
@@ -579,7 +586,7 @@ int CppDocument::moveBlock(int startPos, QTextCursor::MoveOperation direction)
 
 /*!
  * \qmlmethod CppDocument::toggleSection()
- * Comment out a section of the code using `#ifdef` / `#endif`. The variable used is defined by the settings.
+ * Comments out a section of the code using `#ifdef` / `#endif`. The variable used is defined by the settings.
  * ```
  * "toggle_section": {
  *     "tag": "KDAB_TEMPORARILY_REMOVED",
@@ -681,6 +688,57 @@ void CppDocument::toggleSection()
         textEdit()->setTextCursor(cursor);
         setPosition(cursorPos);
     }
+}
+
+/*!
+ * \qmlmethod CppDocument::insertInclude(string include, bool newGroup = false)
+ * Inserts a new include line in the file. If the include is already in, do nothing (and returns true).
+ *
+ * The `include` string should be either `<foo.h>` or `"foo.h"`, it will returns false otherwise.
+ * The method will try to find the best group of includes to insert into, a group of includes being consecutive includes
+ * in the file.
+ *
+ * If `newGroup` is true, it will insert the include at the end, with a new line separating the other includes.
+ */
+bool CppDocument::insertInclude(const QString &include, bool newGroup)
+{
+    LOG("CppDocument::insertInclude", LOG_ARG("text", include), newGroup);
+
+    auto includePos = m_cache->includePositionForInsertion(include, newGroup);
+    if (!includePos) {
+        spdlog::error(R"(CppDocument::insertInclude - the include '{}' is malformed, should be '<foo.h>' or '"foo.h"')",
+                      include.toStdString());
+        return false;
+    }
+
+    if (includePos->alreadyExists()) {
+        spdlog::info("CppDocument::insertInclude - the include '{}' is already included.");
+        return true;
+    }
+
+    const QString text = (includePos->newGroup ? "\n#include " : "#include ") + include + '\n';
+    insertAtLine(text, includePos->line);
+    return true;
+}
+
+bool CppDocument::removeInclude(const QString &include)
+{
+    LOG("CppDocument::removeInclude", LOG_ARG("text", include));
+
+    auto line = m_cache->includePositionForRemoval(include);
+    if (!line) {
+        spdlog::error(R"(CppDocument::removeInclude - the include '{}' is malformed, should be '<foo.h>' or '"foo.h"')",
+                      include.toStdString());
+        return false;
+    }
+
+    if (line.value() == -1) {
+        spdlog::info("CppDocument::removeInclude - the include '{}' is not included.");
+        return true;
+    }
+
+    deleteLine(line.value());
+    return true;
 }
 
 } // namespace Core

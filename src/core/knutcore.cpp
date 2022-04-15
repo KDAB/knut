@@ -3,13 +3,12 @@
 #include "project.h"
 #include "scriptmanager.h"
 #include "settings.h"
+#include "textdocument.h"
 
 #include <QApplication>
 #include <QTimer>
 
 #include <spdlog/spdlog.h>
-
-#include <core/textdocument.h>
 
 namespace Core {
 

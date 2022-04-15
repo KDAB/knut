@@ -331,7 +331,41 @@ private slots:
 
             cppFile->save();
             QVERIFY(file.compare());
-            cppFile->close();
+        }
+    }
+
+    void insertRemoveInclude()
+    {
+        Test::FileTester file(Test::testDataPath() + "/cppdocument/include_test/include_original.cpp");
+        {
+            Core::KnutCore core;
+            Core::Project::instance()->setRoot(Test::testDataPath() + "/cppdocument/include_test");
+            auto cppFile = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(file.fileName()));
+
+            // Add include files
+            QVERIFY(cppFile->insertInclude(R"("folder/foobar.h")"));
+            cppFile->insertInclude("<QPushButton>");
+            cppFile->insertInclude("<memory>", true);
+
+            // Mal-formed includes
+            cppFile->insertInclude(R"("foobar.h)");
+            cppFile->insertInclude(R"(<foobar.h)");
+            cppFile->insertInclude(R"(foobar.h")");
+            QVERIFY(!cppFile->insertInclude(R"(foobar.h>)"));
+
+            // Remove include files
+            QVERIFY(cppFile->removeInclude(R"("bar.h")"));
+            cppFile->removeInclude("<spdlog/spdlog.h>");
+            cppFile->removeInclude("<QComboBox>");
+
+            // Mal-formed includes
+            cppFile->removeInclude(R"("foobar.h)");
+            cppFile->removeInclude(R"(<foobar.h)");
+            cppFile->removeInclude(R"(foobar.h")");
+            QVERIFY(!cppFile->removeInclude(R"(foobar.h>)"));
+
+            cppFile->save();
+            QVERIFY(file.compare());
         }
     }
 };

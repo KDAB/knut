@@ -1,13 +1,12 @@
 project(knut-core LANGUAGES CXX)
 
 set(PROJECT_SOURCES
-    private/lspcache.h
-    private/lspcache.cpp
     cppclass.h
     cppclass.cpp
     cppdocument.h
     cppdocument.cpp
     cppdocument_p.h
+    cppdocument_p.cpp
     cppfunction.h
     cppfunction.cpp
     dir.h
@@ -27,6 +26,8 @@ set(PROJECT_SOURCES
     logger.cpp
     lspdocument.h
     lspdocument.cpp
+    lspdocument_p.h
+    lspdocument_p.cpp
     mark.h
     mark.cpp
     message.h

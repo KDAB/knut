@@ -1,5 +1,4 @@
-#include "lspcache.h"
-
+#include "lspdocument_p.h"
 #include "lspdocument.h"
 
 #include "lsp/client.h"

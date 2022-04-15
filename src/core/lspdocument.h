@@ -4,6 +4,7 @@
 #include "textdocument.h"
 
 #include <functional>
+#include <memory>
 
 namespace Lsp {
 class Client;

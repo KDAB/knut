@@ -782,6 +782,27 @@ void TextDocument::insert(const QString &text)
 }
 
 /*!
+ * \qmlmethod TextEditor::insertAtLine( string text, int line = -1)
+ * Inserts the string `text` at `line`. If `line` is -1, insert the text at the current position. `line` is 1-based.
+ */
+void TextDocument::insertAtLine(const QString &text, int line)
+{
+    if (line == -1)
+        LOG("TextDocument::insertAtLine", LOG_ARG("text", text));
+    else
+        LOG("TextDocument::insertAtLine", LOG_ARG("text", text), LOG_ARG("line", line));
+
+    QTextCursor cursor = m_document->textCursor();
+    if (line > 0) {
+        const int blockNumber = qMin(line, m_document->document()->blockCount()) - 1;
+        const QTextBlock &block = m_document->document()->findBlockByNumber(blockNumber);
+        if (block.isValid())
+            cursor = QTextCursor(block);
+    }
+    cursor.insertText(text);
+}
+
+/*!
  * \qmlmethod TextEditor::replace( int length, string text)
  * Replaces `length` characters from the current position with the string `text`.
  */
@@ -795,7 +816,7 @@ void TextDocument::replace(int length, const QString &text)
 }
 
 /*!
- * \qmlmethod TextEditor::replace( int length, string text)
+ * \qmlmethod TextDocument::replace( int length, string text)
  * Replaces the text from `from` to `to` with the string `text`.
  */
 void TextDocument::replace(int from, int to, const QString &text)
@@ -820,6 +841,28 @@ void TextDocument::replace(const TextRange &range, const QString &text)
     cursor.setPosition(range.end, QTextCursor::KeepAnchor);
     cursor.insertText(text);
     m_document->setTextCursor(cursor);
+}
+
+/*!
+ * \qmlmethod TextDocument::deleteLine( int line = -1)
+ * Remove a the line `line`. If `line` is -1, remove the current line. `line` is 1-based.
+ */
+void TextDocument::deleteLine(int line)
+{
+    if (line == -1)
+        LOG("TextDocument::removeLine");
+    else
+        LOG("TextDocument::removeLine", LOG_ARG("line", line));
+
+    QTextCursor cursor = m_document->textCursor();
+    if (line > 0) {
+        const int blockNumber = qMin(line, m_document->document()->blockCount()) - 1;
+        const QTextBlock &block = m_document->document()->findBlockByNumber(blockNumber);
+        if (block.isValid())
+            cursor = QTextCursor(block);
+    }
+    cursor.movePosition(QTextCursor::Down, QTextCursor::KeepAnchor);
+    cursor.removeSelectedText();
 }
 
 /*!
