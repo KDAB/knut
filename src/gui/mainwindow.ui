@@ -48,7 +48,7 @@
      <x>0</x>
      <y>0</y>
      <width>1440</width>
-     <height>21</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -90,6 +90,8 @@
     <addaction name="actionGoto_BlockEnd"/>
     <addaction name="actionSelect_to_Block_Start"/>
     <addaction name="actionSelect_to_Block_End"/>
+    <addaction name="separator"/>
+    <addaction name="actionTransform_Symbol"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -412,6 +414,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+Backspace</string>
+   </property>
+  </action>
+  <action name="actionTransform_Symbol">
+   <property name="text">
+    <string>Transform Symbol</string>
    </property>
   </action>
  </widget>

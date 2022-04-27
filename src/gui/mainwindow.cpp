@@ -23,6 +23,7 @@
 #include "core/logger.h"
 #include "core/project.h"
 #include "core/rcdocument.h"
+#include "core/scriptmanager.h"
 #include "core/textdocument.h"
 #include "core/uidocument.h"
 #include "rcui/rcfileview.h"
@@ -125,6 +126,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionGoto_BlockStart, &QAction::triggered, this, &MainWindow::gotoBlockStart);
     connect(ui->actionSelect_to_Block_End, &QAction::triggered, this, &MainWindow::selectBlockEnd);
     connect(ui->actionSelect_to_Block_Start, &QAction::triggered, this, &MainWindow::selectBlockStart);
+    connect(ui->actionTransform_Symbol, &QAction::triggered, this, &MainWindow::transformSymbol);
 
     // Rc
     connect(ui->actionCreate_Qrc, &QAction::triggered, this, &MainWindow::createQrc);
@@ -203,6 +205,15 @@ void MainWindow::toggleSection()
 {
     if (auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->currentDocument()))
         cppDocument->toggleSection();
+}
+
+void MainWindow::transformSymbol()
+{
+    if (qobject_cast<Core::LspDocument *>(Core::Project::instance()->currentDocument())) {
+        auto *scriptManager = Core::ScriptManager::instance();
+
+        scriptManager->runScript(":/scripts/qml/transform-symbol.qml");
+    }
 }
 
 MainWindow::~MainWindow() = default;
@@ -462,6 +473,7 @@ void MainWindow::updateActions()
     const bool lspEnabled = lspDocument && lspDocument->hasLspClient();
     ui->actionFollow_Symbol->setEnabled(lspEnabled);
     ui->actionSwitch_Decl_Def->setEnabled(lspEnabled);
+    ui->actionTransform_Symbol->setEnabled(lspEnabled);
 
     const bool cppEnabled = lspDocument && qobject_cast<Core::CppDocument *>(document);
     ui->actionSwitch_Header_Source->setEnabled(cppEnabled);

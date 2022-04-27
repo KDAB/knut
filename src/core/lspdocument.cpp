@@ -11,6 +11,8 @@
 #include "project.h"
 #include "symbol.h"
 
+#include "scriptmanager.h"
+
 #include <QFile>
 #include <QPlainTextEdit>
 #include <QTextBlock>

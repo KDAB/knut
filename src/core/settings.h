@@ -37,6 +37,7 @@ public:
     static inline const char RcAssetFlags[] = "/rc/asset_flags";
     static inline const char RcAssetColors[] = "/rc/asset_transparent_colors";
     static inline const char ScriptPaths[] = "/script_paths";
+    static inline const char JsonPaths[] = "/json_paths";
     static inline const char Tab[] = "/text_editor/tab";
     static inline const char ToggleSection[] = "/toggle_section";
 
@@ -83,6 +84,8 @@ public:
 
     Q_INVOKABLE bool hasValue(QString path) const;
     Q_INVOKABLE QVariant value(QString path, const QVariant &defaultValue = {}) const;
+
+    Q_INVOKABLE QStringList jsonFiles() const;
 
     QString userFilePath() const;
     QString projectFilePath() const;

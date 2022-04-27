@@ -42,5 +42,8 @@
             "BOOL": "false",
             "int": "-1"
         }
-    }
+    },
+    "json_paths": [
+        ":/scripts/json/"
+    ]
 }

@@ -157,6 +157,22 @@ QVariant Settings::value(QString path, const QVariant &defaultValue) const
     return defaultValue;
 }
 
+QStringList Settings::jsonFiles() const
+{
+    auto paths = value<QStringList>(Settings::JsonPaths);
+
+    auto results = QStringList();
+    for (const auto &path : paths) {
+        QDir dir(path);
+        auto entries = dir.entryList(QDir::Files);
+        std::transform(entries.begin(), entries.end(), entries.begin(), [&path](const auto &entry) {
+            return path + entry;
+        });
+        results.append(entries);
+    }
+    return results;
+}
+
 /*!
  * \qmlmethod variant Settings::setValue(string path, variant value)
  * Adds a new value `value` to the project settings at the given `path`. Returns `true` if the operation succeeded.
