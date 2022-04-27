@@ -446,11 +446,11 @@ static Widget convertListWidget(const Data &data, Data::Control &control)
     if (control.styles.removeOne(WSHSCROLL))
         widget.properties[HorizontalScrollBarPolicy] = alwaysOn ? "Qt::ScrollBarAlwaysOn" : "Qt::ScrollBarAsNeeded";
     else
-        widget.properties[HorizontalScrollBarPolicy] = "ScrollBarAlwaysOff";
+        widget.properties[HorizontalScrollBarPolicy] = "Qt::ScrollBarAlwaysOff";
     if (control.styles.removeOne(WSVSCROLL))
         widget.properties[VerticalScrollBarPolicy] = alwaysOn ? "Qt::ScrollBarAlwaysOn" : "Qt::ScrollBarAsNeeded";
     else
-        widget.properties[VerticalScrollBarPolicy] = "ScrollBarAlwaysOff";
+        widget.properties[VerticalScrollBarPolicy] = "Qt::ScrollBarAlwaysOff";
 
     convertStyles(data, widget, control, true);
     return widget;
