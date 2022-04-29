@@ -466,6 +466,7 @@ void MainWindow::updateActions()
     const bool cppEnabled = lspDocument && qobject_cast<Core::CppDocument *>(document);
     ui->actionSwitch_Header_Source->setEnabled(cppEnabled);
     ui->actionComment_Selection->setEnabled(cppEnabled);
+    ui->actionToggleSection->setEnabled(cppEnabled);
     ui->actionGoto_BlockEnd->setEnabled(cppEnabled);
     ui->actionGoto_BlockStart->setEnabled(cppEnabled);
     ui->actionSelect_to_Block_End->setEnabled(cppEnabled);
