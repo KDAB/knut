@@ -241,6 +241,7 @@ Palette::Palette(QWidget *parent)
     ui->treeView->setModel(m_proxyModel);
 
     ui->treeView->setStyleSheet("QTreeView::item { padding: 5px }");
+    ui->treeView->setRootIsDecorated(false);
 
     connect(ui->lineEdit, &QLineEdit::textChanged, this, &Palette::changeText);
     connect(ui->treeView, &QTreeView::clicked, this, &Palette::clickItem);
