@@ -76,8 +76,8 @@ private slots:
             QVERIFY(!symbols.empty());
             auto lastSymbol = symbols.back();
             QCOMPARE(lastSymbol.name, "MyObject::sayMessage");
-            QCOMPARE(lastSymbol.range.start.line, 12);
-            QCOMPARE(lastSymbol.range.end.line, 14);
+            QCOMPARE(lastSymbol.range.start.line, 16);
+            QCOMPARE(lastSymbol.range.end.line, 18);
         }
 
         client.shutdown();

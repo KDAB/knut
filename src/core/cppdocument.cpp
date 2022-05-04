@@ -746,4 +746,120 @@ bool CppDocument::removeInclude(const QString &include)
     return true;
 }
 
+/**
+ * Delete the fully qualified method with the given signature.
+ * If signature is empty, will delete all overloads.
+ * The method will only be deleted within this document, no other documents will be modified.
+ */
+void CppDocument::deleteMethodLocal(const QString &methodName, const QString &signature)
+{
+    auto doesNotMatchMethod = [&methodName, &signature](const auto &symbol) {
+        auto isFunction = symbol.kind == Symbol::Kind::Function || symbol.kind == Symbol::Kind::Constructor
+            || symbol.kind == Symbol::Kind::Method;
+
+        // clangd returns the signature of the function in the symbol description
+        auto matchesSignature = !signature.isEmpty() && symbol.description == signature;
+
+        return symbol.name != methodName || !isFunction || !matchesSignature;
+    };
+
+    auto symbolList = symbols();
+
+    symbolList.erase(std::remove_if(symbolList.begin(), symbolList.end(), doesNotMatchMethod), symbolList.end());
+
+    // Sort the symbols so that we remove them end-to-start
+    // That way removing a function won't change the position of the other functions.
+    // This assumes the ranges don't overlap.
+    std::sort(symbolList.begin(), symbolList.end(), [](const auto &symbol1, const auto &symbol2) {
+        return symbol1.range.start > symbol2.range.start;
+    });
+
+    for (const auto &symbol : symbolList) {
+        spdlog::trace("CppDocument::deleteMethodLocal: Removing symbol '{}'", symbol.name.toStdString());
+
+        deleteSymbol(symbol);
+    }
+}
+
+/*!
+ * \qmlmethod void CppDocument::deleteMethod(string methodName, string signature)
+ *
+ * Delete the method or function with the specified `methodName` and optional `signature`.
+ * The method definition/declaration will be deleted from the current file,
+ * as well as the corresponding header/source file.
+ * References to the method will not be deleted.
+ *
+ * The `methodName` must be fully qualified, i.e. "<Namespaces>::<Class>::<Method>".
+ *
+ * The `signature` must be in the form: "<return type> (<first parameter type>, <second parameter type>, <...>)".
+ * i.e. for a function with the following declaration:
+ *
+ * ``` cpp
+ * void myFunction(const QString& a, int b);
+ * ```
+ *
+ * The `signature` would be:
+ *
+ * ```
+ * void (const QString&, int)
+ * ```
+ *
+ * If an empty string is provided as the `signature`, all overloads of the function are deleted as well.
+ */
+void CppDocument::deleteMethod(const QString &methodName, const QString &signature)
+{
+    LOG("CppDocument::deleteMethod", methodName, signature);
+
+    if (auto headerSource = openHeaderSource()) {
+        headerSource->deleteMethodLocal(methodName, signature);
+
+        // Open *this* document again
+        Project::instance()->openPrevious();
+    }
+
+    deleteMethodLocal(methodName, signature);
+}
+
+/*!
+ * \qmlmethod void CppDocument::deleteMethod(string methodName)
+ *
+ * Deletes a method of the specified `methodName`, without matching a specific `signature`.
+ * Therefore, all overloads of the function will be deleted.
+ *
+ * Also see: CppDocument::deleteMethod(string methodName, string signature)
+ */
+void CppDocument::deleteMethod(const QString &methodName)
+{
+    LOG("CppDocument::deleteMethod", LOG_ARG("text", methodName));
+
+    deleteMethod(methodName, "" /*empty string means ignore signature*/);
+}
+
+/*!
+ * \qmlmethod void CppDocument::deleteMethod()
+ *
+ * Deletes the method/function at the current cursor position.
+ * Overloads of the function will not be deleted!
+ *
+ * Also see: CppDocument::deleteMethod(const QString& methodName, const QString& signature)
+ */
+void CppDocument::deleteMethod()
+{
+    LOG("CppDocument::deleteMethod");
+
+    auto isFunction = [](const auto &symbol) {
+        return symbol.kind == Symbol::Kind::Function || symbol.kind == Symbol::Kind::Method
+            || symbol.kind == Symbol::Kind::Constructor;
+    };
+
+    auto symbol = currentSymbol(isFunction);
+
+    if (symbol.isNull()) {
+        spdlog::error(
+            "CppDocument::deleteMethod: Cursor is not currently within a function definition or declaration!");
+    } else {
+        deleteMethod(symbol.name, symbol.description);
+    }
+}
+
 } // namespace Core

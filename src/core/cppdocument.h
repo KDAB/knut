@@ -44,8 +44,13 @@ public slots:
 
     bool insertInclude(const QString &include, bool newGroup = false);
     bool removeInclude(const QString &include);
+    void deleteMethod();
+    void deleteMethod(const QString &methodName, const QString &signature);
+    void deleteMethod(const QString &methodName);
 
 private:
+    void deleteMethodLocal(const QString &methodName, const QString &signature = "");
+
     int moveBlock(int startPos, QTextCursor::MoveOperation direction);
 
     friend CppCache;

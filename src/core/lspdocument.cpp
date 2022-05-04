@@ -70,6 +70,47 @@ Symbol LspDocument::currentSymbol(std::function<bool(const Symbol &)> filterFunc
     return {};
 }
 
+/**
+ * Deletes the specified symbols text range, as well as leading whitespace
+ * and trailing semicolon/newline character.
+ */
+void LspDocument::deleteSymbol(const Symbol &symbol)
+{
+    auto range = symbol.range;
+
+    // Include any leading whitespace (excluding newlines).
+    auto leading = Core::TextRange {range.start, range.start + 1};
+    while (leading.start > 0) {
+        leading.start--;
+        leading.end--;
+        selectRange(leading);
+
+        if (selectedText() != " " && selectedText() != "\t") {
+            break;
+        }
+
+        range.start--;
+    }
+
+    // Include a trailing semicolon and up to one trailing newline
+    auto trailing = Core::TextRange {range.end, range.end + 1};
+    selectRange(trailing);
+    if (selectedText() == ";") {
+        range.end++;
+
+        trailing.start++;
+        trailing.end++;
+        selectRange(trailing);
+    }
+
+    if (selectedText() == "\n") {
+        range.end++;
+    }
+
+    this->selectRange(range);
+    this->deleteSelection();
+}
+
 /*!
  * \qmlmethod vector<Symbol> LspDocument::symbols()
  * Returns the list of symbols in the current document.

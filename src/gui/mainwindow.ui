@@ -92,6 +92,7 @@
     <addaction name="actionSelect_to_Block_End"/>
     <addaction name="separator"/>
     <addaction name="actionTransform_Symbol"/>
+    <addaction name="actionDelete_Method"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -445,6 +446,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+P</string>
+   </property>
+  </action>
+  <action name="actionDelete_Method">
+   <property name="text">
+    <string>Delete Method</string>
    </property>
   </action>
  </widget>

@@ -29,11 +29,15 @@ inline QString testDataPath()
 inline bool compareFiles(const QString &file, const QString &expected, bool eolLF = true)
 {
     QFile file1(file);
-    if (!file1.open(QIODevice::ReadOnly))
+    if (!file1.open(QIODevice::ReadOnly)) {
+        spdlog::error("compareFiles: Reading file {} failed!", file.toStdString());
         return false;
+    }
     QFile file2(expected);
-    if (!file2.open(QIODevice::ReadOnly))
+    if (!file2.open(QIODevice::ReadOnly)) {
+        spdlog::error("compareFiles: Reading file {} failed!", expected.toStdString());
         return false;
+    }
 
     auto data1 = file1.readAll();
     auto data2 = file2.readAll();
@@ -41,7 +45,15 @@ inline bool compareFiles(const QString &file, const QString &expected, bool eolL
         data1.replace("\r\n", "\n");
         data2.replace("\r\n", "\n");
     }
-    return data1 == data2;
+    auto result = data1 == data2;
+
+    if (!result) {
+        spdlog::warn("Comparison of files {} and {} failed", file.toStdString(), expected.toStdString());
+        spdlog::warn("{}:\n{}", file.toStdString(), data1.toStdString());
+        spdlog::warn("{}:\n{}", expected.toStdString(), data2.toStdString());
+    }
+
+    return result;
 }
 
 /**

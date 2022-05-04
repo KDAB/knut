@@ -6,7 +6,6 @@ class MyObject {
 public:
     MyObject(const std::string& message);
     ~MyObject();
-    void sayMessage();
     void sayMessage(const std::string& test);
 
 private:

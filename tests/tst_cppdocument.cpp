@@ -368,6 +368,30 @@ private slots:
             QVERIFY(file.compare());
         }
     }
+
+    void deleteMethod()
+    {
+        auto folder = Test::testDataPath() + "/cppdocument/delete_method";
+        Test::FileTester cppfile(folder + "/myobject_original.cpp");
+        Test::FileTester headerfile(folder + "/myobject_original.h");
+
+        {
+            Core::KnutCore core;
+            Core::Project::instance()->setRoot(folder);
+            auto cpp = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(cppfile.fileName()));
+
+            QVERIFY(cpp != nullptr);
+            cpp->deleteMethod("MyObject::sayMessage", "void ()");
+
+            cpp->save();
+            auto header = cpp->openHeaderSource();
+            QVERIFY(header);
+            header->save();
+
+            QVERIFY(cppfile.compare());
+            QVERIFY(headerfile.compare());
+        }
+    }
 };
 
 QTEST_MAIN(TestCppDocument)

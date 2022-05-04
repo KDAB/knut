@@ -46,7 +46,7 @@ private slots:
 
         auto cppDocument = qobject_cast<Core::LspDocument *>(project->open("myobject.cpp"));
         const auto cppSymbols = cppDocument->symbols();
-        QCOMPARE(cppSymbols.size(), 3);
+        QCOMPARE(cppSymbols.size(), 4);
 
         auto constructor = cppSymbols.first();
         verifySymbol(cppDocument, constructor, "MyObject::MyObject", Core::Symbol::Kind::Constructor, "MyObject");
@@ -62,14 +62,14 @@ private slots:
         cppDocument->selectRange(function.range);
         QCOMPARE(cppDocument->selectedText(),
                  QString(
-                     R"EOF(void MyObject::sayMessage() {
-  std::cout << m_message << std::endl;
+                     R"EOF(void MyObject::sayMessage(const std::string& test) {
+  std::cout << test << std::endl;
 })EOF"));
 
         auto headerDocument = qobject_cast<Core::LspDocument *>(project->open("myobject.h"));
 
         const auto headerSymbols = headerDocument->symbols();
-        QCOMPARE(headerSymbols.size(), 5);
+        QCOMPARE(headerSymbols.size(), 6);
 
         verifySymbol(headerDocument, headerSymbols.at(0), "MyObject", Core::Symbol::Kind::Class, "MyObject");
         verifySymbol(headerDocument, headerSymbols.at(1), "MyObject::MyObject", Core::Symbol::Kind::Constructor,
@@ -77,7 +77,9 @@ private slots:
         verifySymbol(headerDocument, headerSymbols.at(2), "MyObject::~MyObject", Core::Symbol::Kind::Constructor, "~");
         verifySymbol(headerDocument, headerSymbols.at(3), "MyObject::sayMessage", Core::Symbol::Kind::Method,
                      "sayMessage");
-        verifySymbol(headerDocument, headerSymbols.at(4), "MyObject::m_message", Core::Symbol::Kind::Field,
+        verifySymbol(headerDocument, headerSymbols.at(4), "MyObject::sayMessage", Core::Symbol::Kind::Method,
+                     "sayMessage");
+        verifySymbol(headerDocument, headerSymbols.at(5), "MyObject::m_message", Core::Symbol::Kind::Field,
                      "m_message");
     }
 

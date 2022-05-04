@@ -133,6 +133,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionSelect_to_Block_End, &QAction::triggered, this, &MainWindow::selectBlockEnd);
     connect(ui->actionSelect_to_Block_Start, &QAction::triggered, this, &MainWindow::selectBlockStart);
     connect(ui->actionTransform_Symbol, &QAction::triggered, this, &MainWindow::transformSymbol);
+    connect(ui->actionDelete_Method, &QAction::triggered, this, &MainWindow::deleteMethod);
 
     // Rc
     connect(ui->actionCreate_Qrc, &QAction::triggered, this, &MainWindow::createQrc);
@@ -227,6 +228,12 @@ void MainWindow::transformSymbol()
 
         scriptManager->runScript(":/scripts/qml/transform-symbol.qml");
     }
+}
+
+void MainWindow::deleteMethod()
+{
+    if (auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->currentDocument()))
+        cppDocument->deleteMethod();
 }
 
 MainWindow::~MainWindow() = default;
@@ -481,6 +488,7 @@ void MainWindow::updateActions()
     ui->actionGoto_BlockStart->setEnabled(cppEnabled);
     ui->actionSelect_to_Block_End->setEnabled(cppEnabled);
     ui->actionSelect_to_Block_Start->setEnabled(cppEnabled);
+    ui->actionDelete_Method->setEnabled(cppEnabled);
 
     const bool rcEnabled = qobject_cast<Core::RcDocument *>(document);
     ui->actionCreate_Qrc->setEnabled(rcEnabled);

@@ -68,6 +68,7 @@ private:
     void commentSelection();
     void toggleSection();
     void transformSymbol();
+    void deleteMethod();
 
     // Rc
     void createQrc();

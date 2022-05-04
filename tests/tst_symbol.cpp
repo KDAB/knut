@@ -129,7 +129,7 @@ private slots:
 
         Core::CppClass symbolClass = symbol.toClass();
         QCOMPARE(symbolClass.name, "MyObject");
-        QCOMPARE(symbolClass.members.size(), 4);
+        QCOMPARE(symbolClass.members.size(), 5);
         QCOMPARE(symbolClass.members.first().name, "MyObject::MyObject");
         QCOMPARE(symbolClass.members.first().kind, Core::Symbol::Constructor);
         QCOMPARE(symbolClass.members.at(2).name, "MyObject::sayMessage");

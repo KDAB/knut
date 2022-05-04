@@ -33,6 +33,7 @@ public:
     bool hasLspClient() const;
 
     Symbol currentSymbol(std::function<bool(const Symbol &)> filterFunc) const;
+    void deleteSymbol(const Symbol &symbol);
 
 public slots:
     Document *followSymbol();
