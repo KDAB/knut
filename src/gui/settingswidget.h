@@ -26,6 +26,10 @@ private:
     void removeScriptPath();
     void updateScriptPaths();
 
+    void addJsonPath();
+    void removeJsonPath();
+    void updateJsonPaths();
+
 private:
     std::unique_ptr<Ui::SettingsWidget> ui;
 };

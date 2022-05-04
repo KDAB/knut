@@ -52,6 +52,9 @@ public:
     void addScriptPath(const QString &path);
     void removeScriptPath(const QString &path);
 
+    void addJsonPath(const QString &path);
+    void removeJsonPath(const QString &path);
+
     template <typename T>
     T value(std::string path) const
     {
@@ -105,9 +108,10 @@ private:
     friend class KnutCore;
 
     void loadKnutSettings();
-    void updateScriptPaths(const QString &path, bool add);
+    void updatePaths(const QString &path, const std::string &json_path, bool add);
     void saveSettings();
     bool isUser() const;
+    void mergeSettings(const nlohmann::json &settings);
 
 private:
     inline static Settings *m_instance = nullptr;
