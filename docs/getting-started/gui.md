@@ -50,3 +50,33 @@ You can also create a script directly from the History Panel: select the lines o
 ![Knut create script from history](gui-historyscript.gif)
 
 The script will be available in the Script Panel, like previously.
+
+## Code transformation
+
+!!! Warning "Experimental"
+    The feature is still experimental, the json format may change and new transformations will be added later.
+
+The UI let you do transformation based on json description. This is using the [transformSymbol](../API/script/lspdocument.md#transformSymbol) API.
+
+Code transformation is used to transform API call for a specific symbol: just put your cursor on a symbol, and use `C++`>`Transform Symbol...` (or `Ctrl+T`). This will open a window like this:
+
+![Knut transform dialog](gui-transform.png)
+
+You can create different json files for different transformations, Json file paths are set in the `Symbol Transformations` settings (see the Options dialog). A json file look like this:
+
+```json
+{
+    "patterns": [
+        {
+            "_description": "Convert direct member access to pointer access",
+            "from": "([^\\w\\\"]|^)${symbol}\\.",
+            "to": "$1${symbol}->"
+        }
+    ]
+}
+```
+
+This file describe a list of patterns to be matched and replaced, using regular expressions:
+
+- `\1..\n` or `$1..$n` are used for the regexp captures
+- `${symbol}` will be replaced by the symbol name

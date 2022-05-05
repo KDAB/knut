@@ -98,8 +98,6 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Transforms, patterns);
 void LspDocument::regexpTransform(const RegexpTransform &transform,
                                   const std::unordered_map<QString, QString> &regexpContext)
 {
-    spdlog::trace("LspDocument::regexpTransform");
-
     auto from = transform.from;
     auto to = transform.to;
 
