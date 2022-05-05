@@ -406,11 +406,13 @@ void MainWindow::aboutKnut()
     auto text = tr(R"(<h1>About Knut</h1>
 Knut version %1<br/><br/>
 
-Knut names has nothing to do with Knut Irvin, nor with Knut the polar bear.<br/>
+Knut name has nothing to do with Knut Irvin, nor with Knut the polar bear.<br/>
 The name Knut is coming from St Knut, which marks the end of the Christmas and holiday season in Sweden.<br/>
 See Wikipedia article: <a href="https://en.wikipedia.org/wiki/Saint_Knut%27s_Day">Saint Knut's Day</a>.)")
                     .arg(KNUT_VERSION);
-    QMessageBox::information(this, tr("About Knut"), text);
+    QMessageBox dialog(QMessageBox::Information, tr("About Knut"), text, QMessageBox::Ok, this);
+    dialog.setIconPixmap(QPixmap(":/gui/icons/knut-64.png"));
+    dialog.exec();
 }
 
 void MainWindow::runScript()
