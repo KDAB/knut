@@ -83,5 +83,17 @@
                 "CCACHE_DISABLE" : "ON"
             }
         }
+    ],
+    "testPresets": [
+        {
+            "name": "test",
+            "description": "Runs the QTestLib based tests",
+            "configurePreset": "debug"
+        },
+        {
+            "name": "test-asan",
+            "description": "Runs the QTestLib based tests (asan support)",
+            "configurePreset": "asan"
+        }
     ]
 }
