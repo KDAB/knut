@@ -56,6 +56,8 @@ private:
     void goToMark();
     void selectToMark();
     void deleteLine();
+    void undo();
+    void redo();
 
     // C++
     void followSymbol();
