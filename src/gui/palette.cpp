@@ -12,14 +12,19 @@
 #include "core/utils.h"
 
 #include <QAbstractTableModel>
+#include <QAction>
 #include <QDirIterator>
 #include <QFileInfo>
 #include <QHeaderView>
 #include <QKeyEvent>
+#include <QMainWindow>
+#include <QMenu>
+#include <QMenuBar>
 #include <QPlainTextEdit>
 #include <QShowEvent>
 #include <QSignalBlocker>
 #include <QSortFilterProxyModel>
+#include <QTimer>
 
 #include <algorithm>
 
@@ -198,6 +203,65 @@ private:
 };
 
 //=============================================================================
+// Model listing all actions
+//=============================================================================
+class ActionModel : public QAbstractTableModel
+{
+public:
+    using QAbstractTableModel::QAbstractTableModel;
+
+    void setActions(const QList<QAction *> &actions)
+    {
+        beginResetModel();
+        m_actions = actions;
+        endResetModel();
+    }
+
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override
+    {
+        if (parent.isValid())
+            return 0;
+        return m_actions.count();
+    }
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override
+    {
+        if (parent.isValid())
+            return 0;
+        return 2;
+    }
+
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override
+    {
+        Q_ASSERT(checkIndex(index, CheckIndexOption::IndexIsValid));
+
+        switch (role) {
+        case Qt::DisplayRole:
+            if (index.column() == 0)
+                return m_actions.at(index.row())->text().remove('&');
+            else
+                return m_actions.at(index.row())->shortcut().toString(QKeySequence::NativeText);
+        case Qt::ToolTipRole:
+            return m_actions.at(index.row())->text();
+        case Qt::UserRole:
+            return QVariant::fromValue(m_actions.at(index.row()));
+        }
+        return {};
+    }
+
+    Qt::ItemFlags flags(const QModelIndex &index) const override
+    {
+        Q_ASSERT(checkIndex(index, CheckIndexOption::IndexIsValid));
+
+        if (!m_actions.at(index.row())->isEnabled())
+            return {};
+        return QAbstractTableModel::flags(index);
+    }
+
+private:
+    QList<QAction *> m_actions;
+};
+
+//=============================================================================
 // Proxy model used to sort and display the data
 //=============================================================================
 class SortFilterProxyModel : public QSortFilterProxyModel
@@ -247,10 +311,14 @@ Palette::Palette(QWidget *parent)
     connect(ui->treeView, &QTreeView::clicked, this, &Palette::clickItem);
     ui->lineEdit->installEventFilter(this);
 
-    addFileSelector();
-    addLineSelector();
-    addScriptSelector();
-    addSymbolSelector();
+    auto init = [this]() {
+        addFileSelector();
+        addLineSelector();
+        addScriptSelector();
+        addSymbolSelector();
+        addActionSelector();
+    };
+    QTimer::singleShot(0, init);
 }
 
 Palette::~Palette() = default;
@@ -261,11 +329,25 @@ bool Palette::eventFilter(QObject *watched, QEvent *event)
     if (event->type() == QEvent::KeyPress) {
         auto keyEvent = static_cast<QKeyEvent *>(event);
         if (keyEvent->key() == Qt::Key_Up) {
-            const int newRow = std::max(ui->treeView->currentIndex().row() - 1, 0);
-            ui->treeView->setCurrentIndex(ui->treeView->model()->index(newRow, 0));
+            int row = ui->treeView->currentIndex().row();
+            do {
+                row = std::max(row - 1, 0);
+                auto index = ui->treeView->model()->index(row, 0);
+                if (ui->treeView->model()->flags(index) & Qt::ItemFlag::ItemIsEnabled) {
+                    ui->treeView->setCurrentIndex(index);
+                    break;
+                }
+            } while (row != 0);
         } else if (keyEvent->key() == Qt::Key_Down) {
-            const int newRow = std::min(ui->treeView->currentIndex().row() + 1, ui->treeView->model()->rowCount() - 1);
-            ui->treeView->setCurrentIndex(ui->treeView->model()->index(newRow, 0));
+            int row = ui->treeView->currentIndex().row();
+            do {
+                row = std::min(row + 1, ui->treeView->model()->rowCount() - 1);
+                auto index = ui->treeView->model()->index(row, 0);
+                if (ui->treeView->model()->flags(index) & Qt::ItemFlag::ItemIsEnabled) {
+                    ui->treeView->setCurrentIndex(index);
+                    break;
+                }
+            } while (row != ui->treeView->model()->rowCount() - 1);
         } else if (keyEvent->key() == Qt::Key_Return) {
             clickItem(ui->treeView->currentIndex());
         }
@@ -332,8 +414,7 @@ void Palette::clickItem(const QModelIndex &index)
         const auto text = ui->lineEdit->text().mid(selector.prefix.length()).simplified();
         selector.selectionFunc(text);
     } else {
-        const QString text = index.data(Qt::UserRole).toString();
-        m_selectors.at(m_currentSelector).selectionFunc(text);
+        m_selectors.at(m_currentSelector).selectionFunc(index.data(Qt::UserRole));
     }
     hide();
 }
@@ -411,6 +492,39 @@ void Palette::addSymbolSelector()
         }
     };
     m_selectors.push_back(Selector {"@", std::move(symbolModel), resetSymbols, gotoSymbol});
+}
+
+static void actionsFromMenu(QMenu *menu, QList<QAction *> &actions)
+{
+    const auto &menuActions = menu->actions();
+    for (QAction *action : menuActions) {
+        if (action->isSeparator())
+            continue;
+        else if (action->menu()) {
+            if (action->menu()->objectName() == "recentProjects")
+                continue;
+            actionsFromMenu(action->menu(), actions);
+        } else
+            actions.push_back(action);
+    }
+}
+
+void Palette::addActionSelector()
+{
+    auto actionModel = std::make_unique<ActionModel>();
+
+    QList<QAction *> actions;
+    const auto &menus = qobject_cast<QMainWindow *>(parentWidget())->menuBar()->findChildren<QMenu *>();
+    for (QMenu *menu : menus)
+        actionsFromMenu(menu, actions);
+    actionModel->setActions(actions);
+
+    auto runAction = [](const QVariant &action) {
+        auto val = action.value<QAction *>();
+        if (val && val->isEnabled())
+            val->trigger();
+    };
+    m_selectors.push_back(Selector {"/", std::move(actionModel), {}, runAction});
 }
 
 } // namespace Gui

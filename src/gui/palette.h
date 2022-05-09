@@ -39,6 +39,7 @@ private:
     void addLineSelector();
     void addScriptSelector();
     void addSymbolSelector();
+    void addActionSelector();
 
     struct Selector
     {

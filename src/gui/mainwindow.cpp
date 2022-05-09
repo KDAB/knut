@@ -143,6 +143,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionShowDocumentPalette, &QAction::triggered, this, &MainWindow::showDocumentPalette);
 
     m_recentProjects = new QMenu(this);
+    m_recentProjects->setObjectName("recentProjects");
     ui->actionRecent_Projects->setMenu(m_recentProjects);
     updateRecentProjects();
 
