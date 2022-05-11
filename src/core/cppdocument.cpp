@@ -281,7 +281,7 @@ bool CppDocument::insertCodeInMethod(const QString &methodName, QString code, Po
         return false;
     }
 
-    if ((symbol.kind != Symbol::Function) && (symbol.kind != Symbol::Method)) {
+    if ((symbol.kind != Symbol::Function) && (symbol.kind != Symbol::Method) && (symbol.kind != Symbol::Constructor)) {
         spdlog::warn("CppDocument::insertCodeInMethod: {} is not a function or a method.", symbol.name.toStdString());
         return false;
     }
@@ -711,7 +711,7 @@ bool CppDocument::insertInclude(const QString &include, bool newGroup)
     }
 
     if (includePos->alreadyExists()) {
-        spdlog::info("CppDocument::insertInclude - the include '{}' is already included.");
+        spdlog::info("CppDocument::insertInclude - the include '{}' is already included.", include.toStdString());
         return true;
     }
 
