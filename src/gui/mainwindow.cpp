@@ -95,7 +95,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionOptions, &QAction::triggered, this, &MainWindow::openOptions);
     connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveDocument);
     connect(ui->actionSaveAll, &QAction::triggered, this, &MainWindow::saveAllDocuments);
-    connect(ui->actionShow_Palette, &QAction::triggered, this, &MainWindow::showPalette);
+    connect(ui->actionShow_Palette, &QAction::triggered, this, [this]() {
+        m_palette->showPalette();
+    });
     connect(ui->actionClose_Document, &QAction::triggered, this, &MainWindow::closeDocument);
 
     // Script
@@ -136,6 +138,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionCreate_Qrc, &QAction::triggered, this, &MainWindow::createQrc);
     connect(ui->actionCreate_Ui, &QAction::triggered, this, &MainWindow::createUi);
 
+    // View
+    auto showCommandPalette = [this]() {
+        m_palette->showPalette(">");
+    };
+    connect(ui->actionCommandPalette, &QAction::triggered, this, showCommandPalette);
+
     // About
     connect(ui->actionAbout_Knut, &QAction::triggered, this, &MainWindow::aboutKnut);
     connect(ui->actionAbout_Qt, &QAction::triggered, qApp, &QApplication::aboutQt);
@@ -144,10 +152,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionReturnEditor, &QAction::triggered, this, &MainWindow::returnToEditor);
 
     addAction(ui->actionShowDocumentPalette);
-    connect(ui->actionShowDocumentPalette, &QAction::triggered, this, &MainWindow::showDocumentPalette);
+    connect(ui->actionShowDocumentPalette, &QAction::triggered, m_documentPalette, &DocumentPalette::showWindow);
 
     m_recentProjects = new QMenu(this);
-    m_recentProjects->setObjectName("recentProjects");
+    m_recentProjects->setObjectName("recentProjectsMenu");
     ui->actionRecent_Projects->setMenu(m_recentProjects);
     updateRecentProjects();
 
@@ -430,25 +438,6 @@ void MainWindow::openOptions()
 {
     OptionsDialog dialog(this);
     dialog.exec();
-}
-
-void MainWindow::showPalette()
-{
-    const int x = (width() - m_palette->width()) / 2;
-    const int y = menuBar()->height() - 1;
-
-    m_palette->move(mapToGlobal(QPoint {x, y}));
-    m_palette->show();
-    m_palette->raise();
-}
-
-void MainWindow::showDocumentPalette()
-{
-    const int x = (width() - m_documentPalette->width()) / 2;
-    const int y = menuBar()->height() - 1;
-
-    m_documentPalette->move(mapToGlobal(QPoint {x, y}));
-    m_documentPalette->showWindow();
 }
 
 static TextView *textViewForDocument(Core::Document *document)

@@ -7,6 +7,7 @@
 #include <memory>
 #include <vector>
 
+class QMainWindow;
 class QSortFilterProxyModel;
 
 namespace Gui {
@@ -20,10 +21,12 @@ class Palette : public QFrame
     Q_OBJECT
 
 public:
-    explicit Palette(QWidget *parent = nullptr);
+    explicit Palette(QMainWindow *parent);
     ~Palette();
 
     bool eventFilter(QObject *watched, QEvent *event) override;
+
+    void showPalette(const QString &prefix = {});
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;

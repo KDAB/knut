@@ -117,6 +117,8 @@
     <property name="title">
      <string>&amp;View</string>
     </property>
+    <addaction name="actionCommandPalette"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="title">
@@ -435,6 +437,14 @@
   <action name="actionRedo">
    <property name="text">
     <string>Redo</string>
+   </property>
+  </action>
+  <action name="actionCommandPalette">
+   <property name="text">
+    <string>Command Palette...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+P</string>
    </property>
   </action>
  </widget>

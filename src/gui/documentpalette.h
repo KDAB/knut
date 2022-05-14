@@ -2,13 +2,15 @@
 
 #include <QListWidget>
 
+class QMainWindow;
+
 namespace Gui {
 
 class DocumentPalette : public QListWidget
 {
     Q_OBJECT
 public:
-    explicit DocumentPalette(QWidget *parent = nullptr);
+    explicit DocumentPalette(QMainWindow *parent);
 
     void showWindow();
 

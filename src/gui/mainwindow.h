@@ -43,8 +43,6 @@ private:
     void saveAllDocuments();
     void closeDocument();
     void openOptions();
-    void showPalette();
-    void showDocumentPalette();
     void returnToEditor();
 
     // Script

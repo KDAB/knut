@@ -293,7 +293,7 @@ public:
 // Palette
 //=============================================================================
 
-Palette::Palette(QWidget *parent)
+Palette::Palette(QMainWindow *parent)
     : QFrame(parent, Qt::Popup)
     , ui(new Ui::Palette)
 {
@@ -353,6 +353,18 @@ bool Palette::eventFilter(QObject *watched, QEvent *event)
         }
     }
     return false;
+}
+
+void Palette::showPalette(const QString &prefix)
+{
+    const int x = (parentWidget()->width() - width()) / 2;
+    const int y = qobject_cast<QMainWindow *>(parentWidget())->menuBar()->height() - 1;
+
+    move(parentWidget()->mapToGlobal(QPoint {x, y}));
+    show();
+    raise();
+    if (!prefix.isEmpty())
+        ui->lineEdit->setText(prefix);
 }
 
 void Palette::keyPressEvent(QKeyEvent *event)
@@ -501,7 +513,7 @@ static void actionsFromMenu(QMenu *menu, QList<QAction *> &actions)
         if (action->isSeparator())
             continue;
         else if (action->menu()) {
-            if (action->menu()->objectName() == "recentProjects")
+            if (action->menu()->objectName() == "recentProjectsMenu")
                 continue;
             actionsFromMenu(action->menu(), actions);
         } else
@@ -524,7 +536,7 @@ void Palette::addActionSelector()
         if (val && val->isEnabled())
             val->trigger();
     };
-    m_selectors.push_back(Selector {"/", std::move(actionModel), {}, runAction});
+    m_selectors.push_back(Selector {">", std::move(actionModel), {}, runAction});
 }
 
 } // namespace Gui

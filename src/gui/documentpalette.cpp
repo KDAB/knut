@@ -6,12 +6,14 @@
 
 #include <QFileInfo>
 #include <QKeyEvent>
+#include <QMainWindow>
+#include <QMenuBar>
 
 #include <algorithm>
 
 namespace Gui {
 
-DocumentPalette::DocumentPalette(QWidget *parent)
+DocumentPalette::DocumentPalette(QMainWindow *parent)
     : QListWidget(parent)
 {
     setWindowFlag(Qt::Popup);
@@ -30,7 +32,10 @@ DocumentPalette::DocumentPalette(QWidget *parent)
 void DocumentPalette::showWindow()
 {
     fillList();
-    if (count() > 2) {
+    if (count() > 1) {
+        const int x = (parentWidget()->width() - width()) / 2;
+        const int y = qobject_cast<QMainWindow *>(parentWidget())->menuBar()->height() - 1;
+        move(parentWidget()->mapToGlobal(QPoint {x, y}));
         show();
         raise();
         setCurrentRow(1);

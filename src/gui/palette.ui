@@ -46,7 +46,7 @@
      <item>
       <widget class="QLineEdit" name="lineEdit">
        <property name="placeholderText">
-        <string>Search by filenames (append : to go to line or @ to go to symbol or . to run a script)</string>
+        <string>Search files by name (append : to go to line or @ to go to symbol or . to run a script)</string>
        </property>
        <property name="clearButtonEnabled">
         <bool>true</bool>
