@@ -74,8 +74,8 @@ endif()
 option(USE_SYNTAX_HIGHLIGHTING "Enable syntax highlighting in IDE" ON)
 if(USE_SYNTAX_HIGHLIGHTING)
     FetchContent_Declare(KSyntaxHighlighting
-        GIT_REPOSITORY https://github.com/KDE/syntax-highlighting.git
-        GIT_TAG        v5.91.0
+        GIT_REPOSITORY https://github.com/narnaud/syntax-highlighting.git
+        GIT_TAG        b8dce05d42aa7a8b8baea4f708d5278961a693fd
     )
     # Don't build tests and examples
     set(KSYNTAXHIGHLIGHTING_USE_GUI OFF)
