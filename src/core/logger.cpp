@@ -56,8 +56,10 @@ static QString variantToString(const QVariant &variant)
 #else
     if (static_cast<QMetaType::Type>(variant.typeId()) == QMetaType::QString) {
 #endif
-        text.replace('\n', "\\n");
-        text.replace('\t', "\\t");
+        text.replace('\\', R"(\\)");
+        text.replace('\n', R"(\n)");
+        text.replace('\t', R"(\t)");
+        text.replace('"', R"(\")");
         text.append('"');
         text.prepend('"');
     }
