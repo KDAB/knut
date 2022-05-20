@@ -1,0 +1,27 @@
+#pragma once
+
+#include "something.h"
+
+namespace SFoo {
+namespace SBar {
+struct Uno;
+}
+}
+
+struct Neo;
+
+namespace Foo {
+namespace Bar {
+class FooBar;
+}
+}
+
+class Foo;
+
+namespace Foo {
+
+class Something
+{
+};
+
+} // namespace Foo

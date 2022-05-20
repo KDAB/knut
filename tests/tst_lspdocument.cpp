@@ -42,7 +42,7 @@ private slots:
 
         Core::KnutCore core;
         auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/cpp-project");
+        project->setRoot(Test::testDataPath() + "/projects/cpp-project");
 
         auto cppDocument = qobject_cast<Core::LspDocument *>(project->open("myobject.cpp"));
         const auto cppSymbols = cppDocument->symbols();
@@ -54,7 +54,7 @@ private slots:
         QCOMPARE(cppDocument->selectedText(),
                  QString(
                      R"(MyObject::MyObject(const std::string& message)
-  : m_message(message)
+    : m_message(message)
 {})"));
 
         auto function = cppSymbols.last();
@@ -62,9 +62,9 @@ private slots:
         cppDocument->selectRange(function.range);
         QCOMPARE(cppDocument->selectedText(),
                  QString(
-                     R"EOF(void MyObject::sayMessage(const std::string& test) {
-  std::cout << test << std::endl;
-})EOF"));
+                     R"(void MyObject::sayMessage(const std::string& test) {
+    std::cout << test << std::endl;
+})"));
 
         auto headerDocument = qobject_cast<Core::LspDocument *>(project->open("myobject.h"));
 
@@ -89,7 +89,7 @@ private slots:
 
         Core::KnutCore core;
         auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/cpp-project");
+        project->setRoot(Test::testDataPath() + "/projects/cpp-project");
 
         auto headerDocument = qobject_cast<Core::LspDocument *>(project->open("myobject.h"));
 
@@ -121,7 +121,7 @@ private slots:
 
         Core::KnutCore core;
         auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/cpp-project");
+        project->setRoot(Test::testDataPath() + "/projects/cpp-project");
 
         auto lspdocument = qobject_cast<Core::LspDocument *>(project->open("main.cpp"));
 
@@ -178,7 +178,7 @@ private slots:
 
         Core::KnutCore core;
         auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/cpp-project");
+        project->setRoot(Test::testDataPath() + "/projects/cpp-project");
 
         auto mainfile = qobject_cast<Core::LspDocument *>(project->open("main.cpp"));
         auto cppfile = qobject_cast<Core::LspDocument *>(project->open("myobject.cpp"));
@@ -215,7 +215,7 @@ private slots:
         // Regression test for KNUT-42 - LSP doesn't get notified of changes in Editor
         CHECK_CLANGD_VERSION;
 
-        Test::FileTester file(Test::testDataPath() + "/cpp-project/notify_original.cpp");
+        Test::FileTester file(Test::testDataPath() + "/tst_lspdocument/notifyEditorChanges/section.cpp");
         {
             Core::KnutCore core;
             auto project = Core::Project::instance();

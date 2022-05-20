@@ -14,18 +14,18 @@ private slots:
     void testDialog()
     {
         Test::LogSilencer ls;
-        Data data = parse(Test::testDataPath() + "/mfc/dialog/dialog.rc");
+        Data data = parse(Test::testDataPath() + "/rcfiles/dialog/dialog.rc");
 
         QCOMPARE(data.isValid, true);
 
         // Includes - afxres includes are discarded
         QCOMPARE(data.includes.size(), 7);
-        QCOMPARE(data.includes.first().fileName, QString(Test::testDataPath() + "/mfc/dialog/resource.h"));
+        QCOMPARE(data.includes.first().fileName, QString(Test::testDataPath() + "/rcfiles/dialog/resource.h"));
         QCOMPARE(data.resourceMap.value(100), "IDD_ABOUTBOX");
         QCOMPARE(data.resourceMap.value(102), "IDD_DIALOG_DIALOG");
 
         QCOMPARE(data.icons.size(), 1);
-        QCOMPARE(data.icons.value(0).fileName, Test::testDataPath() + "/mfc/dialog/res/dialog.ico");
+        QCOMPARE(data.icons.value(0).fileName, Test::testDataPath() + "/rcfiles/dialog/res/dialog.ico");
 
         QCOMPARE(data.strings.size(), 1);
         QCOMPARE(data.strings.value(QLatin1String("IDS_ABOUTBOX")).text, "&About dialog...");

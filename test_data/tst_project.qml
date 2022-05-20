@@ -7,24 +7,24 @@ TestCase {
     name: "Project"
 
     function test_allFiles() {
-        Project.root = Dir.currentScriptPath + "/mfc/dialog"
+        Project.root = Dir.currentScriptPath + "/projects/mfc-tutorial"
 
         var files = Project.allFiles();
-        compare(files.length, 12)
-        compare(files[0], "dialog.aps")
+        compare(files.length, 10)
+        compare(files[0], "MFC_UpdateGUI.rc")
 
         var rcFiles = Project.allFilesWithExtension("rc");
         compare(rcFiles.length, 1)
-        compare(rcFiles[0], "dialog.rc")
+        compare(rcFiles[0], "MFC_UpdateGUI.rc")
     }
 
     function test_open() {
-        Project.root = Dir.currentScriptPath + "/mfc/dialog"
+        Project.root = Dir.currentScriptPath + "/projects/mfc-tutorial"
 
-        var txtdoc = Project.open("dialog.cpp")
+        var txtdoc = Project.open("TutorialDlg.cpp")
         compare(txtdoc.type, Document.Cpp)
 
-        var rcdoc = Project.open("dialog.rc")
+        var rcdoc = Project.open("MFC_UpdateGUI.rc")
         compare(rcdoc.type, Document.Rc)
     }
 

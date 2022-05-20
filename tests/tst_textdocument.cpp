@@ -41,7 +41,7 @@ private slots:
     void load()
     {
         Core::TextDocument document;
-        document.load(Test::testDataPath() + "/textdocument/loremipsum_lf_utf8.txt");
+        document.load(Test::testDataPath() + "/tst_textdocument/loremipsum_lf_utf8.txt");
 
         QVERIFY(QFile::exists(document.fileName()));
 
@@ -58,14 +58,15 @@ private slots:
         QTest::addColumn<Core::TextDocument::LineEnding>("lineEnding");
         QTest::addColumn<bool>("bom");
 
-        QTest::newRow("loremipsum_lf_utf8") << Test::testDataPath() + "/textdocument/loremipsum_lf_utf8.txt"
+        QTest::newRow("loremipsum_lf_utf8") << Test::testDataPath() + "/tst_textdocument/loremipsum_lf_utf8.txt"
                                             << Core::TextDocument::LFLineEnding << false;
-        QTest::newRow("loremipsum_crlf_ansi") << Test::testDataPath() + "/textdocument/loremipsum_crlf_ansi.txt"
+        QTest::newRow("loremipsum_crlf_ansi") << Test::testDataPath() + "/tst_textdocument/loremipsum_crlf_ansi.txt"
                                               << Core::TextDocument::CRLFLineEnding << false;
-        QTest::newRow("loremipsum_crlf_utf8") << Test::testDataPath() + "/textdocument/loremipsum_crlf_utf8.txt"
+        QTest::newRow("loremipsum_crlf_utf8") << Test::testDataPath() + "/tst_textdocument/loremipsum_crlf_utf8.txt"
                                               << Core::TextDocument::CRLFLineEnding << false;
-        QTest::newRow("loremipsum_crlf_utf8bom") << Test::testDataPath() + "/textdocument/loremipsum_crlf_utf8bom.txt"
-                                                 << Core::TextDocument::CRLFLineEnding << true;
+        QTest::newRow("loremipsum_crlf_utf8bom")
+            << Test::testDataPath() + "/tst_textdocument/loremipsum_crlf_utf8bom.txt"
+            << Core::TextDocument::CRLFLineEnding << true;
     }
 
     void detectAndSaveCodec()
@@ -104,11 +105,11 @@ private slots:
         document.saveAs(saveFileName);
         QVERIFY(!document.hasChanged());
 #if defined(Q_OS_WIN)
-        QVERIFY(Test::compareFiles(document.fileName(), Test::testDataPath() + "/textdocument/loremipsum_crlf_utf8.txt",
-                                   false));
+        QVERIFY(Test::compareFiles(document.fileName(),
+                                   Test::testDataPath() + "/tst_textdocument/loremipsum_crlf_utf8.txt", false));
 #else
-        QVERIFY(Test::compareFiles(document.fileName(), Test::testDataPath() + "/textdocument/loremipsum_lf_utf8.txt",
-                                   false));
+        QVERIFY(Test::compareFiles(document.fileName(),
+                                   Test::testDataPath() + "/tst_textdocument/loremipsum_lf_utf8.txt", false));
 #endif
         document.setText("Not much to see");
         QVERIFY(document.hasChanged());
@@ -126,7 +127,7 @@ private slots:
     void navigation()
     {
         Core::TextDocument document;
-        document.load(Test::testDataPath() + "/textdocument/loremipsum_lf_utf8.txt");
+        document.load(Test::testDataPath() + "/tst_textdocument/loremipsum_lf_utf8.txt");
 
         QCOMPARE(document.line(), 1);
         QCOMPARE(document.column(), 1);
@@ -168,7 +169,7 @@ private slots:
     void selection()
     {
         Core::TextDocument document;
-        document.load(Test::testDataPath() + "/textdocument/loremipsum_lf_utf8.txt");
+        document.load(Test::testDataPath() + "/tst_textdocument/loremipsum_lf_utf8.txt");
         QVERIFY(document.selectedText().isEmpty());
 
         document.selectAll();
@@ -187,7 +188,7 @@ private slots:
 
     void edition()
     {
-        Test::FileTester file(Test::testDataPath() + "/textdocument/loremipsum_original.txt");
+        Test::FileTester file(Test::testDataPath() + "/tst_textdocument/edition/loremipsum.txt");
         {
             Core::TextDocument document;
             document.load(file.fileName());
@@ -231,7 +232,7 @@ private slots:
     void mark()
     {
         Core::TextDocument document;
-        document.load(Test::testDataPath() + "/textdocument/loremipsum_lf_utf8.txt");
+        document.load(Test::testDataPath() + "/tst_textdocument/loremipsum_lf_utf8.txt");
 
         document.gotoLine(2);
         auto mark = document.createMark();
@@ -246,7 +247,7 @@ private slots:
 
     void indent()
     {
-        Test::FileTester file(Test::testDataPath() + "/textdocument/indent_original.txt");
+        Test::FileTester file(Test::testDataPath() + "/tst_textdocument/indent/indent.txt");
         {
             Core::KnutCore core;
             Core::TextDocument document;
@@ -270,7 +271,7 @@ private slots:
 
     void findReplace()
     {
-        Test::FileTester file(Test::testDataPath() + "/textdocument/findreplace_original.txt");
+        Test::FileTester file(Test::testDataPath() + "/tst_textdocument/findReplace/findreplace.txt");
         {
             Core::TextDocument document;
             document.load(file.fileName());

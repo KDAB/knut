@@ -10,7 +10,7 @@
 
 using namespace RcCore;
 
-class TestRcWriter : public QObject
+class TestRcwriter : public QObject
 {
     Q_OBJECT
 
@@ -29,7 +29,7 @@ private slots:
                 buffer.close();
             }
             if (buffer.open(QIODevice::ReadOnly)) {
-                QFile file(Test::testDataPath() + "/rcwriter/qrc_expected_default.qrc");
+                QFile file(Test::testDataPath() + "/tst_rcwriter/qrc_expected_default.qrc");
                 file.open(QIODevice::ReadOnly);
                 QCOMPARE(buffer.readAll(), file.readAll());
             }
@@ -44,7 +44,7 @@ private slots:
                 buffer.close();
             }
             if (buffer.open(QIODevice::ReadOnly)) {
-                QFile file(Test::testDataPath() + "/rcwriter/qrc_expected_noalias_onlyexist.qrc");
+                QFile file(Test::testDataPath() + "/tst_rcwriter/qrc_expected_noalias_onlyexist.qrc");
                 file.open(QIODevice::ReadOnly);
                 QCOMPARE(buffer.readAll(), file.readAll());
             }
@@ -96,7 +96,7 @@ private slots:
             }
             if (buffer.open(QIODevice::ReadOnly)) {
                 if (dialogIds.contains(dialog.id)) {
-                    QFile file(Test::testDataPath() + QStringLiteral("/rcwriter/%1.ui").arg(dialog.id));
+                    QFile file(Test::testDataPath() + QStringLiteral("/tst_rcwriter/%1.ui").arg(dialog.id));
                     file.open(QIODevice::ReadOnly);
                     QCOMPARE(buffer.readAll(), file.readAll());
                 } else {
@@ -144,6 +144,6 @@ private slots:
     }
 };
 
-QTEST_MAIN(TestRcWriter)
+QTEST_MAIN(TestRcwriter)
 
 #include "tst_rcwriter.moc"

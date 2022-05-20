@@ -121,7 +121,7 @@ private slots:
     void toClass()
     {
         Core::KnutCore core;
-        Core::Project::instance()->setRoot(Test::testDataPath() + "/cpp-project");
+        Core::Project::instance()->setRoot(Test::testDataPath() + "/projects/cpp-project");
 
         auto lspDocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->open("myobject.h"));
         Core::Symbol symbol = lspDocument->symbols().at(0);

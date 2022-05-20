@@ -33,17 +33,17 @@ private slots:
         Lsp::Client client("cpp", "clangd", {"--log=verbose", "--pretty"});
         auto logs = Test::LogSilencers {"cpp_client", "cpp_server", "cpp_messages"};
 
-        client.initialize(Test::testDataPath() + "/cppdocument");
+        client.initialize(Test::testDataPath() + "/tst_client");
 
         Lsp::DidOpenTextDocumentParams openParams;
-        openParams.textDocument.uri = Lsp::Client::toUri(Test::testDataPath() + "/cppdocument/test/hello.cpp");
+        openParams.textDocument.uri = Lsp::Client::toUri(Test::testDataPath() + "/tst_client/myobject.cpp");
         openParams.textDocument.version = 1;
         openParams.textDocument.text = "";
         openParams.textDocument.languageId = "cpp";
         client.didOpen(std::move(openParams));
 
         Lsp::DidCloseTextDocumentParams closeParams;
-        closeParams.textDocument.uri = Lsp::Client::toUri(Test::testDataPath() + "/cppdocument/test/hello.cpp");
+        closeParams.textDocument.uri = Lsp::Client::toUri(Test::testDataPath() + "/tst_client/myobject.cpp");
         client.didClose(std::move(closeParams));
 
         client.shutdown();
@@ -56,20 +56,20 @@ private slots:
         Lsp::Client client("cpp", "clangd", {"--log=verbose", "--pretty"});
         auto logs = Test::LogSilencers {"cpp_client", "cpp_server", "cpp_messages"};
 
-        client.initialize(Test::testDataPath() + "/cpp-project");
+        client.initialize(Test::testDataPath() + "/tst_client");
 
-        QFile file(Test::testDataPath() + "/cpp-project/myobject.cpp");
+        QFile file(Test::testDataPath() + "/tst_client/myobject.cpp");
         if (file.open(QIODevice::ReadOnly)) {
             QTextStream stream(&file);
             Lsp::DidOpenTextDocumentParams openParams;
-            openParams.textDocument.uri = Lsp::Client::toUri(Test::testDataPath() + "/cpp-project/myobject.cpp");
+            openParams.textDocument.uri = Lsp::Client::toUri(Test::testDataPath() + "/tst_client/myobject.cpp");
             openParams.textDocument.version = 1;
             openParams.textDocument.text = stream.readAll().toStdString();
             openParams.textDocument.languageId = "cpp";
             client.didOpen(std::move(openParams));
 
             Lsp::DocumentSymbolParams params;
-            params.textDocument.uri = Lsp::Client::toUri(Test::testDataPath() + "/cpp-project/myobject.cpp");
+            params.textDocument.uri = Lsp::Client::toUri(Test::testDataPath() + "/tst_client/myobject.cpp");
             auto result = client.documentSymbol(std::move(params));
             QVERIFY(std::holds_alternative<std::vector<Lsp::DocumentSymbol>>(result.value()));
             auto symbols = std::get<std::vector<Lsp::DocumentSymbol>>(result.value());

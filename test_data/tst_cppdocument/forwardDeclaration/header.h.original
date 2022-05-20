@@ -1,0 +1,11 @@
+#pragma once
+
+#include "something.h"
+
+namespace Foo {
+
+class Something
+{
+};
+
+} // namespace Foo

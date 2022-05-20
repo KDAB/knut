@@ -5,7 +5,9 @@ repos:
     rev: v3.2.0
     hooks:
     -   id: trailing-whitespace
+        exclude: ^test_data/
     -   id: end-of-file-fixer
+        exclude: ^test_data/
     -   id: check-case-conflict
     -   id: check-merge-conflict
 -   repo: https://github.com/pre-commit/mirrors-clang-format

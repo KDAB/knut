@@ -64,11 +64,11 @@ inline bool compareFiles(const QString &file, const QString &expected, bool eolL
 class FileTester
 {
 public:
-    FileTester(const QString &original)
-        : m_original(original)
+    FileTester(const QString &fileName)
+        : m_original(fileName)
     {
-        m_file = m_original;
-        m_file.replace("_original", "");
+        m_file = fileName;
+        m_original.append(".original");
         QFile::copy(m_original, m_file);
     }
     ~FileTester() { QFile::remove(m_file); }
@@ -77,8 +77,8 @@ public:
 
     bool compare() const
     {
-        QString expected = m_original;
-        expected.replace("_original", "_expected");
+        QString expected = m_file;
+        expected.append(".expected");
         return compareFiles(m_file, expected);
     }
 

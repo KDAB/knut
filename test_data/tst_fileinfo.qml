@@ -14,7 +14,7 @@ TestCase {
     }
 
     function test_fileInfo() {
-        var absolute = FileInfo.create(Dir.currentScriptPath + "/fileinfo/test.cpp")
+        var absolute = FileInfo.create(Dir.currentScriptPath + "/tst_fileinfo/test.cpp")
         var relative = FileInfo.create("relative")
 
         compare(absolute.exists, true)

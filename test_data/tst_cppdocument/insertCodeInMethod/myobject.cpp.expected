@@ -1,0 +1,27 @@
+#include "myobject.h"
+
+#include <iostream>
+
+
+MyObject::MyObject(const std::string& message)
+    : m_message(message)
+{}
+
+MyObject::~MyObject()
+{}
+
+void MyObject::sayMessage() {
+    // added this new line at the start of this method
+    std::cout << m_message << std::endl;
+    // added this new line at the end of this method
+}
+
+static void displayString(const std::string& test) {
+    // added this new line at the start of this method
+    std::cout << test << std::endl;
+    // added this new line at the end of this method
+}
+
+void MyObject::sayMessage(const std::string& test) {
+    displayString(test);
+}

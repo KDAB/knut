@@ -43,7 +43,7 @@ private slots:
         QCOMPARE(lspServers.front().arguments.size(), 0);
 
         // Load settings
-        settings.loadProjectSettings(Test::testDataPath() + "/settings");
+        settings.loadProjectSettings(Test::testDataPath() + "/tst_settings");
         const auto newServers = settings.value<std::vector<Core::LspServer>>("/lsp");
         QCOMPARE(settings.hasValue("/foobar/foo"), true);
         Core::LspServer testData = {Core::Document::Type::Cpp, "notclangd", {"foo", "bar"}};
@@ -56,7 +56,7 @@ private slots:
         Test::LogSilencer ls;
         SettingsFixture settings;
 
-        settings.loadProjectSettings(Test::testDataPath() + "/settings");
+        settings.loadProjectSettings(Test::testDataPath() + "/tst_settings");
 
         QCOMPARE(settings.value("/answer").toInt(), 42);
         QCOMPARE(settings.value("/pi").toFloat(), 3.14f);
@@ -77,12 +77,12 @@ private slots:
 
     void setValue()
     {
-        Test::FileTester file(Test::testDataPath() + "/settings/setValue/knut_original.json");
+        Test::FileTester file(Test::testDataPath() + "/tst_settings/setValue/knut.json");
         Test::LogSilencer ls;
         SettingsFixture settings;
         QSignalSpy settingsSaved(&settings, &Core::Settings::settingsSaved);
 
-        settings.loadProjectSettings(Test::testDataPath() + "/settings/setValue");
+        settings.loadProjectSettings(Test::testDataPath() + "/tst_settings/setValue");
         QCOMPARE(settings.value("/rc/dialog_scalex").toDouble(), 1.5);
 
         settings.setValue("/rc/dialog_scalex", 2.0);

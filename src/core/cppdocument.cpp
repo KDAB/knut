@@ -386,7 +386,7 @@ bool CppDocument::insertForwardDeclaration(const QString &fwddecl)
     if (!cursor.isNull()) {
         cursor.beginEditBlock();
         cursor.movePosition(QTextCursor::EndOfLine, QTextCursor::MoveAnchor);
-        cursor.insertText("\n" + result + "\n");
+        cursor.insertText("\n\n" + result);
         cursor.endEditBlock();
         return true;
     }

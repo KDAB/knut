@@ -16,7 +16,7 @@
         QFileInfo fi(Test::testDataPath() + "/tst_" #name ".qml");                                                     \
         QVERIFY(fi.exists());                                                                                          \
         QStringList arguments {"knut.exe", "-s", fi.absoluteFilePath()};                                               \
-        QDir dir(Test::testDataPath() + "/" #name);                                                                    \
+        QDir dir(Test::testDataPath() + "/tst_" #name);                                                                \
         if (dir.exists())                                                                                              \
             arguments.append({"-r", dir.absolutePath()});                                                              \
         Core::KnutCore knut;                                                                                           \

@@ -14,7 +14,7 @@ private slots:
     void load()
     {
         Core::UiDocument document;
-        document.load(Test::testDataPath() + QStringLiteral("/uidocument/IDD_ABCCOMPILE.ui"));
+        document.load(Test::testDataPath() + QStringLiteral("/tst_uidocument/IDD_ABCCOMPILE.ui"));
 
         const auto widgets = document.widgets();
         QCOMPARE(widgets.count(), 21);
@@ -34,7 +34,7 @@ private slots:
 
     void save()
     {
-        Test::FileTester file(Test::testDataPath() + "/uidocument/IDD_LIGHTING_original.ui");
+        Test::FileTester file(Test::testDataPath() + "/tst_uidocument/IDD_LIGHTING.ui");
         {
             Core::UiDocument document;
             document.load(file.fileName());

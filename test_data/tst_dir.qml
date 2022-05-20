@@ -53,7 +53,7 @@ TestCase {
     }
 
     function test_filter() {
-        var testcase = Dir.create(Dir.currentScriptPath + "/dir")
+        var testcase = Dir.create(Dir.currentScriptPath + "/tst_dir")
 
         var files = testcase.entryList()
         compare(files.length, 7)
@@ -73,7 +73,7 @@ TestCase {
         files = testcase.entryList(Dir.Files | Dir.NoDotAndDotDot, Dir.Size | Dir.Reversed)
         compare(files, ["a","b","c"])
 
-        testcase = Dir.create(Dir.currentScriptPath + "/dir/x" )
+        testcase = Dir.create(Dir.currentScriptPath + "/tst_dir/x" )
         files = testcase.entryList("*.txt", Dir.Files, Dir.Name )
         compare(files,["abc.txt","def.txt"])
 
@@ -85,7 +85,7 @@ TestCase {
         var dir = Dir.currentScript()
         var filesHere = dir.entryList()
 
-        verify(dir.cd("dir"))
+        verify(dir.cd("tst_dir"))
         var files = dir.entryList(Dir.Files, Dir.Name )
         compare(files,["a","b","c"])
 

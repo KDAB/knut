@@ -19,17 +19,17 @@ private slots:
         QTest::addColumn<QString>("headerOrSource");
         QTest::addColumn<QString>("sourceOrHeader");
 
-        QTest::newRow("cpp") << Test::testDataPath() + "/cppdocument/test/hello.cpp"
-                             << Test::testDataPath() + "/cppdocument/test/hello.h";
-        QTest::newRow("h") << Test::testDataPath() + "/cppdocument/test/hello.h"
-                           << Test::testDataPath() + "/cppdocument/test/hello.cpp";
-        QTest::newRow("cxx") << Test::testDataPath() + "/cppdocument/test/world.cxx"
-                             << Test::testDataPath() + "/cppdocument/test/world.hpp";
-        QTest::newRow("folder") << Test::testDataPath() + "/cppdocument/folder1/foo.cpp"
-                                << Test::testDataPath() + "/cppdocument/folder2/foo.h";
-        QTest::newRow("subfolder") << Test::testDataPath() + "/cppdocument/test/subfolder1/foo.cpp"
-                                   << Test::testDataPath() + "/cppdocument/test/subfolder2/foo.h";
-        QTest::newRow("notexist") << Test::testDataPath() + "/cppdocument/test/bar.cpp"
+        QTest::newRow("cpp") << Test::testDataPath() + "/tst_cppdocument/headerSource/test/hello.cpp"
+                             << Test::testDataPath() + "/tst_cppdocument/headerSource/test/hello.h";
+        QTest::newRow("h") << Test::testDataPath() + "/tst_cppdocument/headerSource/test/hello.h"
+                           << Test::testDataPath() + "/tst_cppdocument/headerSource/test/hello.cpp";
+        QTest::newRow("cxx") << Test::testDataPath() + "/tst_cppdocument/headerSource/test/world.cxx"
+                             << Test::testDataPath() + "/tst_cppdocument/headerSource/test/world.hpp";
+        QTest::newRow("folder") << Test::testDataPath() + "/tst_cppdocument/headerSource/folder1/foo.cpp"
+                                << Test::testDataPath() + "/tst_cppdocument/headerSource/folder2/foo.h";
+        QTest::newRow("subfolder") << Test::testDataPath() + "/tst_cppdocument/headerSource/test/subfolder1/foo.cpp"
+                                   << Test::testDataPath() + "/tst_cppdocument/headerSource/test/subfolder2/foo.h";
+        QTest::newRow("notexist") << Test::testDataPath() + "/tst_cppdocument/headerSource/test/bar.cpp"
                                   << "";
     }
 
@@ -39,17 +39,17 @@ private slots:
         QFETCH(QString, sourceOrHeader);
 
         Core::KnutCore core;
-        Core::Project::instance()->setRoot(Test::testDataPath() + "/cppdocument");
+        Core::Project::instance()->setRoot(Test::testDataPath() + "/tst_cppdocument/headerSource");
         auto document = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(headerOrSource));
         QCOMPARE(sourceOrHeader, document->correspondingHeaderSource());
     }
 
-    void insertForwardDeclInHeader()
+    void insertForwardDeclaration()
     {
-        Test::FileTester file(Test::testDataPath() + "/cppdocument/forward_declaration_original.h");
+        Test::FileTester file(Test::testDataPath() + "/tst_cppdocument/forwardDeclaration/header.h");
         {
             Core::KnutCore core;
-            Core::Project::instance()->setRoot(Test::testDataPath() + "/cppdocument");
+            Core::Project::instance()->setRoot(Test::testDataPath() + "/tst_cppdocument/forwardDeclaration");
 
             auto headerFile = qobject_cast<Core::CppDocument *>(Core::Project::instance()->get(file.fileName()));
             QCOMPARE(headerFile->insertForwardDeclaration("class Foo"), true);
@@ -67,7 +67,7 @@ private slots:
     void extractDataExchange()
     {
         Core::KnutCore core;
-        Core::Project::instance()->setRoot(Test::testDataPath() + "/mfc/tutorial");
+        Core::Project::instance()->setRoot(Test::testDataPath() + "/projects/mfc-tutorial");
 
         auto document = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open("TutorialDlg.cpp"));
         auto ddxMap = document->mfcExtractDDX("CTutorialDlg");
@@ -77,12 +77,12 @@ private slots:
         QCOMPARE(ddxMap.value("IDC_MOUSEECHO"), "m_MouseEcho");
     }
 
-    void tstStartEndBlock()
+    void gotoBlockStartEnd()
     {
         Core::KnutCore core;
-        Core::Project::instance()->setRoot(Test::testDataPath() + "/cppdocument");
+        Core::Project::instance()->setRoot(Test::testDataPath() + "/tst_cppdocument/blockStartEnd");
 
-        auto document = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open("testblock.cpp"));
+        auto document = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open("source.cpp"));
 
         // When cursor position is at the beginning of block
         document->setPosition(0);
@@ -116,43 +116,43 @@ private slots:
 
         // #1.1 Selection starts and ends between characters - on different lines
         QTest::newRow("01-1-multi-line-between-to-between")
-            << 23 << 53 << (Test::testDataPath() + "/cppdocument/comment_test/main-01.cpp");
+            << 23 << 53 << (Test::testDataPath() + "/tst_cppdocument/commentSelection/main-01.cpp");
 
         // #1.2 Selection starts and ends between characters - on different lines - with range set in reverse order
         QTest::newRow("01-2-multi-line-between-to-between-reverse")
-            << 53 << 23 << (Test::testDataPath() + "/cppdocument/comment_test/main-01.cpp");
+            << 53 << 23 << (Test::testDataPath() + "/tst_cppdocument/commentSelection/main-01.cpp");
 
         // #2 Selection starts before characters and ends between characters - on different lines
         QTest::newRow("02-multi-line-before-to-between")
-            << 15 << 53 << (Test::testDataPath() + "/cppdocument/comment_test/main-02.cpp");
+            << 15 << 53 << (Test::testDataPath() + "/tst_cppdocument/commentSelection/main-02.cpp");
 
         // #3 Selection starts between characters and ends before characters - on different lines
         QTest::newRow("03-multi-line-between-to-before")
-            << 23 << 45 << (Test::testDataPath() + "/cppdocument/comment_test/main-03.cpp");
+            << 23 << 45 << (Test::testDataPath() + "/tst_cppdocument/commentSelection/main-03.cpp");
 
         // #4 Selection starts and ends before characters - on different lines
         QTest::newRow("04-multi-line-before-to-before")
-            << 15 << 45 << (Test::testDataPath() + "/cppdocument/comment_test/main-04.cpp");
+            << 15 << 45 << (Test::testDataPath() + "/tst_cppdocument/commentSelection/main-04.cpp");
 
         // #5 Selection starts and ends between characters - on same line
         QTest::newRow("05-single-line-between-to-between")
-            << 18 << 23 << (Test::testDataPath() + "/cppdocument/comment_test/main-05.cpp");
+            << 18 << 23 << (Test::testDataPath() + "/tst_cppdocument/commentSelection/main-05.cpp");
 
         // #6 Selection starts before characters and ends between characters - on same line
         QTest::newRow("06-single-line-before-to-between")
-            << 15 << 23 << (Test::testDataPath() + "/cppdocument/comment_test/main-06.cpp");
+            << 15 << 23 << (Test::testDataPath() + "/tst_cppdocument/commentSelection/main-06.cpp");
 
         // #7 Selection starts and ends before characters - on same line
         QTest::newRow("07-single-line-before-to-before")
-            << 14 << 16 << (Test::testDataPath() + "/cppdocument/comment_test/main-07.cpp");
+            << 14 << 16 << (Test::testDataPath() + "/tst_cppdocument/commentSelection/main-07.cpp");
 
         // #8 There is no selection - but the position is valid
         QTest::newRow("08-no-selection-valid-position")
-            << 30 << -1 << (Test::testDataPath() + "/cppdocument/comment_test/main-08.cpp");
+            << 30 << -1 << (Test::testDataPath() + "/tst_cppdocument/commentSelection/main-08.cpp");
 
         // #9 There is no selection - the position is valid - but on an empty line
         QTest::newRow("09-no-selection-valid-position-empty-line")
-            << 58 << -1 << (Test::testDataPath() + "/cppdocument/comment_test/main-no-change.cpp");
+            << 58 << -1 << (Test::testDataPath() + "/tst_cppdocument/commentSelection/main-no-change.cpp");
     }
 
     void commentSelection()
@@ -162,7 +162,7 @@ private slots:
         QFETCH(QString, resultantFilePath);
 
         Core::KnutCore core;
-        Core::Project::instance()->setRoot(Test::testDataPath() + "/cppdocument/comment_test");
+        Core::Project::instance()->setRoot(Test::testDataPath() + "/tst_cppdocument/commentSelection");
 
         auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open("main.cpp"));
         if (regionEndPos == -1) {
@@ -179,121 +179,34 @@ private slots:
 
     void insertCodeInMethod()
     {
-        Test::FileTester file_cpp(Test::testDataPath() + "/cppdocument/insert_code_original.cpp");
+        CHECK_CLANGD_VERSION;
+
+        Test::FileTester file(Test::testDataPath() + "/tst_cppdocument/insertCodeInMethod/myobject.cpp");
         {
             Core::KnutCore core;
-            Core::Project::instance()->setRoot(Test::testDataPath() + "/cppdocument");
+            Core::Project::instance()->setRoot(Test::testDataPath() + "/tst_cppdocument/insertCodeInMethod");
 
-            if (auto cppDocument =
-                    qobject_cast<Core::CppDocument *>(Core::Project::instance()->open("insert_code_original.h"))) {
+            auto header = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open("myobject.h"));
+            // Insert code at the start of the method
+            bool isCodeInserted =
+                header->insertCodeInMethod("MyObject::sayMessage", "// added this new line at the start of this method",
+                                           Core::CppDocument::StartOfMethod);
+            QCOMPARE(isCodeInserted, false);
 
-                // Insert code at the start of the method
-                bool isCodeInserted = cppDocument->insertCodeInMethod(
-                    "updateActions", "// added this new line at the start of this method",
-                    Core::CppDocument::StartOfMethod);
-                QCOMPARE(isCodeInserted, false);
-                cppDocument->close();
-            }
+            auto source = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(file.fileName()));
 
-            if (auto cppDocument =
-                    qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(file_cpp.fileName()))) {
-                // NOTE: Code insertion won't work for this case because (as of now) LSP couldn't find a non-static
-                // function
-                //       symbol in a C++ file.
-                // Insert code at the end of the method
-                if (cppDocument->insertCodeInMethod(
-                        "MainWindow::nonStaticMethod",
-                        "// added following new lines at the end of this method"
-                        "\ncppDocument->commentSelection();"
-                        "\ncppDocument->save();"
-                        "\nQVERIFY(Test::compareFiles(cppDocument->fileName(), resultantFilePath));"
-                        "\ncppDocument->undo(); cppDocument->save();",
-                        Core::CppDocument::EndOfMethod))
-                    cppDocument->save();
-                cppDocument->close();
-            }
+            source->insertCodeInMethod("MyObject::sayMessage", "// added this new line at the start of this method",
+                                       Core::CppDocument::StartOfMethod);
+            source->insertCodeInMethod("sayMessage", "// added this new line at the end of this method",
+                                       Core::CppDocument::EndOfMethod);
 
-            if (auto cppDocument =
-                    qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(file_cpp.fileName()))) {
-                // Insert code at the end of the method
-                if (cppDocument->insertCodeInMethod("shortMethod", "// added this new line at the end of this method",
-                                                    Core::CppDocument::EndOfMethod))
-                    cppDocument->save();
-                cppDocument->close();
-            }
+            source->insertCodeInMethod("displayString", "// added this new line at the start of this method",
+                                       Core::CppDocument::StartOfMethod);
+            source->insertCodeInMethod("displayString", "// added this new line at the end of this method",
+                                       Core::CppDocument::EndOfMethod);
+            source->save();
 
-            if (auto cppDocument =
-                    qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(file_cpp.fileName()))) {
-                // Insert code at the start of the method
-                if (cppDocument->insertCodeInMethod("shortMethod", "// added this new line at the start of this method",
-                                                    Core::CppDocument::StartOfMethod))
-                    cppDocument->save();
-                cppDocument->close();
-            }
-
-            if (auto cppDocument =
-                    qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(file_cpp.fileName()))) {
-                // Insert code at the end of the method
-                if (cppDocument->insertCodeInMethod(
-                        "longMethod1",
-                        "// added following new lines at the end of this method"
-                        "\ncppDocument->commentSelection();"
-                        "\ncppDocument->save();"
-                        "\nQVERIFY(Test::compareFiles(cppDocument->fileName(), resultantFilePath));"
-                        "\ncppDocument->undo(); cppDocument->save();",
-                        Core::CppDocument::EndOfMethod))
-                    cppDocument->save();
-                cppDocument->close();
-            }
-
-            if (auto cppDocument =
-                    qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(file_cpp.fileName()))) {
-                // Insert code at the start of the method
-                if (cppDocument->insertCodeInMethod(
-                        "longMethod1",
-                        "// added following new lines at the start of this method"
-                        "\ncppDocument->commentSelection();"
-                        "\ncppDocument->save();"
-                        "\nQVERIFY(Test::compareFiles(cppDocument->fileName(), resultantFilePath));"
-                        "\ncppDocument->undo(); cppDocument->save();",
-                        Core::CppDocument::StartOfMethod))
-                    cppDocument->save();
-                cppDocument->close();
-            }
-
-            if (auto cppDocument =
-                    qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(file_cpp.fileName()))) {
-                // Insert code at the end of the method
-                if (cppDocument->insertCodeInMethod(
-                        "longMethod2",
-                        "// added following new lines at the end of this method"
-                        "\ncppDocument->commentSelection();"
-                        "\ncppDocument->save();"
-                        "\nQVERIFY(Test::compareFiles(cppDocument->fileName(), resultantFilePath));"
-                        "\ncppDocument->undo(); cppDocument->save();"
-                        "\n",
-                        Core::CppDocument::EndOfMethod))
-                    cppDocument->save();
-                cppDocument->close();
-            }
-
-            if (auto cppDocument =
-                    qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(file_cpp.fileName()))) {
-                // Insert code at the start of the method
-                if (cppDocument->insertCodeInMethod(
-                        "longMethod2",
-                        "// added following new lines at the start of this method"
-                        "\ncppDocument->commentSelection();"
-                        "\ncppDocument->save();"
-                        "\nQVERIFY(Test::compareFiles(cppDocument->fileName(), resultantFilePath));"
-                        "\ncppDocument->undo(); cppDocument->save();"
-                        "\n",
-                        Core::CppDocument::StartOfMethod))
-                    cppDocument->save();
-                cppDocument->close();
-            }
-
-            QVERIFY(file_cpp.compare());
+            QVERIFY(file.compare());
         }
     }
 
@@ -301,11 +214,11 @@ private slots:
     {
         CHECK_CLANGD_VERSION;
 
-        Test::FileTester file(Test::testDataPath() + "/cpp-project/section_original.cpp");
+        Test::FileTester file(Test::testDataPath() + "/tst_cppdocument/toggleSection/section.cpp");
         {
             Core::KnutCore core;
             auto project = Core::Project::instance();
-            project->setRoot(Test::testDataPath() + "/cpp-project");
+            project->setRoot(Test::testDataPath() + "/tst_cppdocument/toggleSection");
 
             auto cppFile = qobject_cast<Core::CppDocument *>(Core::Project::instance()->get(file.fileName()));
 
@@ -336,10 +249,10 @@ private slots:
 
     void insertRemoveInclude()
     {
-        Test::FileTester file(Test::testDataPath() + "/cppdocument/include_test/include_original.cpp");
+        Test::FileTester file(Test::testDataPath() + "/tst_cppdocument/insertRemoveInclude/include.cpp");
         {
             Core::KnutCore core;
-            Core::Project::instance()->setRoot(Test::testDataPath() + "/cppdocument/include_test");
+            Core::Project::instance()->setRoot(Test::testDataPath() + "/tst_cppdocument/insertRemoveInclude");
             auto cppFile = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(file.fileName()));
 
             // Add include files
@@ -371,9 +284,11 @@ private slots:
 
     void deleteMethod()
     {
-        auto folder = Test::testDataPath() + "/cppdocument/delete_method";
-        Test::FileTester cppfile(folder + "/myobject_original.cpp");
-        Test::FileTester headerfile(folder + "/myobject_original.h");
+        CHECK_CLANGD_VERSION;
+
+        auto folder = Test::testDataPath() + "/tst_cppdocument/deleteMethod";
+        Test::FileTester cppfile(folder + "/myobject.cpp");
+        Test::FileTester headerfile(folder + "/myobject.h");
 
         {
             Core::KnutCore core;

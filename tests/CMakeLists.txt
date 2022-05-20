@@ -30,6 +30,7 @@ endfunction()
 add_knut_test(tst_jsonify tst_jsonify.cpp nlohmann_json::nlohmann_json)
 
 add_knut_test(tst_clientbackend tst_clientbackend.cpp knut-lsp)
+
 add_knut_test(tst_client tst_client.cpp knut-lsp)
 
 add_knut_test(tst_settings tst_settings.cpp knut-core)
