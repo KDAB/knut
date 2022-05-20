@@ -18,7 +18,21 @@ public:
     explicit OptionsDialog(QWidget *parent = nullptr);
     ~OptionsDialog();
 
-    void initialize();
+    void addSettings(QWidget *widget);
+
+private:
+    void openUserSettings();
+    void openProjectSettings();
+
+    void addScriptPath();
+    void removeScriptPath();
+    void updateScriptPaths();
+
+    void addJsonPath();
+    void removeJsonPath();
+    void updateJsonPaths();
+
+    void changePage();
 
 private:
     std::unique_ptr<Ui::OptionsDialog> ui;

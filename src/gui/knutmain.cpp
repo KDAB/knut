@@ -1,31 +1,10 @@
 #include "knutmain.h"
 
 #include "mainwindow.h"
+#include "optionsdialog.h"
 #include "runscriptdialog.h"
-#include "settingswidget.h"
-
-#include <QDialog>
-#include <QDialogButtonBox>
-#include <QVBoxLayout>
 
 namespace Gui {
-
-class SettingsDialog : public QDialog
-{
-public:
-    explicit SettingsDialog(QWidget *parent = nullptr)
-        : QDialog(parent)
-    {
-        setWindowTitle("Settings Dialog");
-
-        auto dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Close);
-        connect(dialogButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
-
-        auto layout = new QVBoxLayout(this);
-        layout->addWidget(new SettingsWidget);
-        layout->addWidget(dialogButtonBox);
-    }
-};
 
 KnutMain::KnutMain(QObject *parent)
     : Core::KnutCore(parent)
@@ -60,7 +39,7 @@ void KnutMain::doParse(const QCommandLineParser &parser) const
 
     bool settingsDialog = parser.isSet("gui-settings");
     if (settingsDialog) {
-        auto dialog = new SettingsDialog;
+        auto dialog = new OptionsDialog;
         dialog->show();
         return;
     }

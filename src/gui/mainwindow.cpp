@@ -7,6 +7,7 @@
 #include "guisettings.h"
 #include "historypanel.h"
 #include "imageview.h"
+#include "interfacesettings.h"
 #include "logpanel.h"
 #include "optionsdialog.h"
 #include "palette.h"
@@ -444,6 +445,7 @@ void MainWindow::runScript()
 void MainWindow::openOptions()
 {
     OptionsDialog dialog(this);
+    dialog.addSettings(new InterfaceSettings);
     dialog.exec();
 }
 

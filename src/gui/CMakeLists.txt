@@ -15,6 +15,9 @@ set(PROJECT_SOURCES
     historypanel.cpp
     imageview.h
     imageview.cpp
+    interfacesettings.h
+    interfacesettings.cpp
+    interfacesettings.ui
     knutmain.h
     knutmain.cpp
     knutstyle.h
@@ -41,9 +44,6 @@ set(PROJECT_SOURCES
     runscriptdialog.ui
     scriptpanel.h
     scriptpanel.cpp
-    settingswidget.h
-    settingswidget.cpp
-    settingswidget.ui
     textview.h
     textview.cpp
     uiview.h
