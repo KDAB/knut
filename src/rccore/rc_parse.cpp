@@ -484,11 +484,11 @@ static void readDialogInit(Lexer &lexer, Data &data, const QString &id)
             const auto bytes = lexer.next()->toString();
             if (bytes.startsWith("0x"))
                 text += QString(bytes.at(4)) + bytes.at(5) + bytes.at(2) + bytes.at(3);
-            else
-                text += "00";
             lexer.skipComma();
             size -= 2;
         }
+        if (text.endsWith("00"))
+            text.chop(2);
         dialogData.values[controlId].push_back(QString::fromLocal8Bit(QByteArray::fromHex(text.toLocal8Bit())));
     }
     lexer.next(); // END

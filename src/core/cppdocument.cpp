@@ -754,18 +754,19 @@ bool CppDocument::removeInclude(const QString &include)
 void CppDocument::deleteMethodLocal(const QString &methodName, const QString &signature)
 {
     auto doesNotMatchMethod = [&methodName, &signature](const auto &symbol) {
-        auto isFunction = symbol.kind == Symbol::Kind::Function || symbol.kind == Symbol::Kind::Constructor
+        const auto isFunction = symbol.kind == Symbol::Kind::Function || symbol.kind == Symbol::Kind::Constructor
             || symbol.kind == Symbol::Kind::Method;
 
-        // clangd returns the signature of the function in the symbol description
-        auto matchesSignature = !signature.isEmpty() && symbol.description == signature;
-
-        return symbol.name != methodName || !isFunction || !matchesSignature;
+        if (signature.isEmpty())
+            return !isFunction || symbol.name != methodName;
+        else
+            return !isFunction || symbol.name != methodName || symbol.description != signature;
     };
 
     auto symbolList = symbols();
-
     symbolList.erase(std::remove_if(symbolList.begin(), symbolList.end(), doesNotMatchMethod), symbolList.end());
+    if (symbolList.empty())
+        return;
 
     // Sort the symbols so that we remove them end-to-start
     // That way removing a function won't change the position of the other functions.
@@ -810,13 +811,11 @@ void CppDocument::deleteMethod(const QString &methodName, const QString &signatu
 {
     LOG("CppDocument::deleteMethod", methodName, signature);
 
-    if (auto headerSource = openHeaderSource()) {
+    QString headerSourceName = correspondingHeaderSource();
+    if (!headerSourceName.isEmpty()) {
+        auto headerSource = qobject_cast<CppDocument *>(Project::instance()->get(headerSourceName));
         headerSource->deleteMethodLocal(methodName, signature);
-
-        // Open *this* document again
-        Project::instance()->openPrevious();
     }
-
     deleteMethodLocal(methodName, signature);
 }
 

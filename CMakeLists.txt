@@ -102,7 +102,6 @@ add_subdirectory(scripts)
 add_subdirectory(src)
 add_subdirectory(tools)
 add_subdirectory(tests)
-add_subdirectory(test_data)
 
 file(GLOB DOCS_FILES README.md mkdocs.yml docs/*.md docs/contributing/*.md docs/getting-started/*.md)
 add_custom_target(docs SOURCES ${DOCS_FILES})
