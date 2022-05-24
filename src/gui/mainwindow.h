@@ -19,6 +19,7 @@ class Palette;
 class HistoryPanel;
 class ScriptPanel;
 class DocumentPalette;
+class ShortcutManager;
 
 namespace Ui {
     class MainWindow;
@@ -31,6 +32,9 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+    QList<QAction *> menuActions() const;
+    ShortcutManager *shortcutManager() const;
 
 protected:
     void closeEvent(QCloseEvent *event) override;
@@ -96,6 +100,7 @@ private:
     HistoryPanel *const m_historyPanel = nullptr;
     ScriptPanel *const m_scriptPanel = nullptr;
     DocumentPalette *const m_documentPalette = nullptr;
+    ShortcutManager *const m_shortcutManager = nullptr;
 };
 
 } // namespace Gui

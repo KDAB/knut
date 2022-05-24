@@ -15,6 +15,8 @@
 #include "rctouidialog.h"
 #include "runscriptdialog.h"
 #include "scriptpanel.h"
+#include "shortcutmanager.h"
+#include "shortcutsettings.h"
 #include "textview.h"
 #include "uiview.h"
 
@@ -40,6 +42,7 @@
 #include <QMessageBox>
 #include <QPlainTextEdit>
 #include <QSettings>
+#include <QShortcut>
 #include <QToolButton>
 #include <QTreeView>
 
@@ -59,6 +62,7 @@ MainWindow::MainWindow(QWidget *parent)
     , m_historyPanel(new HistoryPanel(this))
     , m_scriptPanel(new ScriptPanel(this))
     , m_documentPalette(new DocumentPalette(this))
+    , m_shortcutManager(new ShortcutManager(this))
 {
     // Initialize the settings before anything
     GuiSettings::instance();
@@ -96,13 +100,13 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionOptions, &QAction::triggered, this, &MainWindow::openOptions);
     connect(ui->actionSave, &QAction::triggered, this, &MainWindow::saveDocument);
     connect(ui->actionSaveAll, &QAction::triggered, this, &MainWindow::saveAllDocuments);
-    connect(ui->actionShow_Palette, &QAction::triggered, this, [this]() {
+    connect(ui->actionShowPalette, &QAction::triggered, this, [this]() {
         m_palette->showPalette();
     });
-    connect(ui->actionClose_Document, &QAction::triggered, this, &MainWindow::closeDocument);
+    connect(ui->actionCloseDocument, &QAction::triggered, this, &MainWindow::closeDocument);
 
     // Script
-    connect(ui->actionRun_Script, &QAction::triggered, this, &MainWindow::runScript);
+    connect(ui->actionRunScript, &QAction::triggered, this, &MainWindow::runScript);
     connect(ui->actionStartRecordingScript, &QAction::triggered, m_historyPanel, &HistoryPanel::startRecording);
     connect(ui->actionStopRecordingScript, &QAction::triggered, m_historyPanel, &HistoryPanel::stopRecording);
     connect(ui->actionPlayLastScript, &QAction::triggered, m_scriptPanel, &ScriptPanel::playScript);
@@ -112,11 +116,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionSelectAll, &QAction::triggered, this, &MainWindow::selectAll);
     connect(ui->actionFind, &QAction::triggered, ui->findWidget, &FindWidget::open);
     connect(ui->actionReplace, &QAction::triggered, ui->findWidget, &FindWidget::open);
-    connect(ui->actionFind_Next, &QAction::triggered, ui->findWidget, &FindWidget::findNext);
-    connect(ui->actionFind_Previous, &QAction::triggered, ui->findWidget, &FindWidget::findPrevious);
-    connect(ui->actionToggle_Mark, &QAction::triggered, this, &MainWindow::toggleMark);
-    connect(ui->actionGoTo_Mark, &QAction::triggered, this, &MainWindow::goToMark);
-    connect(ui->actionSelectTo_Mark, &QAction::triggered, this, &MainWindow::selectToMark);
+    connect(ui->actionFindNext, &QAction::triggered, ui->findWidget, &FindWidget::findNext);
+    connect(ui->actionFindPrevious, &QAction::triggered, ui->findWidget, &FindWidget::findPrevious);
+    connect(ui->actionToggleMark, &QAction::triggered, this, &MainWindow::toggleMark);
+    connect(ui->actionGotoMark, &QAction::triggered, this, &MainWindow::goToMark);
+    connect(ui->actionSelectToMark, &QAction::triggered, this, &MainWindow::selectToMark);
     connect(ui->actionDeleteLine, &QAction::triggered, this, &MainWindow::deleteLine);
     connect(ui->actionUndo, &QAction::triggered, this, &MainWindow::undo);
     connect(ui->actionRedo, &QAction::triggered, this, &MainWindow::redo);
@@ -124,21 +128,21 @@ MainWindow::MainWindow(QWidget *parent)
     ui->actionUndo->setShortcut(QKeySequence::Undo);
 
     // C++
-    connect(ui->actionSwitch_Header_Source, &QAction::triggered, this, &MainWindow::switchHeaderSource);
-    connect(ui->actionFollow_Symbol, &QAction::triggered, this, &MainWindow::followSymbol);
-    connect(ui->actionSwitch_Decl_Def, &QAction::triggered, this, &MainWindow::switchDeclarationDefinition);
-    connect(ui->actionComment_Selection, &QAction::triggered, this, &MainWindow::commentSelection);
+    connect(ui->actionSwitchHeaderSource, &QAction::triggered, this, &MainWindow::switchHeaderSource);
+    connect(ui->actionFollowSymbol, &QAction::triggered, this, &MainWindow::followSymbol);
+    connect(ui->actionSwitchDeclDef, &QAction::triggered, this, &MainWindow::switchDeclarationDefinition);
+    connect(ui->actionCommentSelection, &QAction::triggered, this, &MainWindow::commentSelection);
     connect(ui->actionToggleSection, &QAction::triggered, this, &MainWindow::toggleSection);
-    connect(ui->actionGoto_BlockEnd, &QAction::triggered, this, &MainWindow::gotoBlockEnd);
-    connect(ui->actionGoto_BlockStart, &QAction::triggered, this, &MainWindow::gotoBlockStart);
-    connect(ui->actionSelect_to_Block_End, &QAction::triggered, this, &MainWindow::selectBlockEnd);
-    connect(ui->actionSelect_to_Block_Start, &QAction::triggered, this, &MainWindow::selectBlockStart);
-    connect(ui->actionTransform_Symbol, &QAction::triggered, this, &MainWindow::transformSymbol);
-    connect(ui->actionDelete_Method, &QAction::triggered, this, &MainWindow::deleteMethod);
+    connect(ui->actionGotoBlockEnd, &QAction::triggered, this, &MainWindow::gotoBlockEnd);
+    connect(ui->actionGotoBlockStart, &QAction::triggered, this, &MainWindow::gotoBlockStart);
+    connect(ui->actionSelectToBlockEnd, &QAction::triggered, this, &MainWindow::selectBlockEnd);
+    connect(ui->actionSelectToBlockStart, &QAction::triggered, this, &MainWindow::selectBlockStart);
+    connect(ui->actionTransformSymbol, &QAction::triggered, this, &MainWindow::transformSymbol);
+    connect(ui->actionDeleteMethod, &QAction::triggered, this, &MainWindow::deleteMethod);
 
     // Rc
-    connect(ui->actionCreate_Qrc, &QAction::triggered, this, &MainWindow::createQrc);
-    connect(ui->actionCreate_Ui, &QAction::triggered, this, &MainWindow::createUi);
+    connect(ui->actionCreateQrc, &QAction::triggered, this, &MainWindow::createQrc);
+    connect(ui->actionCreateUi, &QAction::triggered, this, &MainWindow::createUi);
 
     // View
     auto showCommandPalette = [this]() {
@@ -147,18 +151,18 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionCommandPalette, &QAction::triggered, this, showCommandPalette);
 
     // About
-    connect(ui->actionAbout_Knut, &QAction::triggered, this, &MainWindow::aboutKnut);
-    connect(ui->actionAbout_Qt, &QAction::triggered, qApp, &QApplication::aboutQt);
+    connect(ui->actionAboutKnut, &QAction::triggered, this, &MainWindow::aboutKnut);
+    connect(ui->actionAboutQt, &QAction::triggered, qApp, &QApplication::aboutQt);
 
-    addAction(ui->actionReturnEditor);
-    connect(ui->actionReturnEditor, &QAction::triggered, this, &MainWindow::returnToEditor);
+    addAction(ui->actionReturnToEditor);
+    connect(ui->actionReturnToEditor, &QAction::triggered, this, &MainWindow::returnToEditor);
 
-    addAction(ui->actionShowDocumentPalette);
-    connect(ui->actionShowDocumentPalette, &QAction::triggered, m_documentPalette, &DocumentPalette::showWindow);
+    addAction(ui->actionGotoPreviousInHistory);
+    connect(ui->actionGotoPreviousInHistory, &QAction::triggered, m_documentPalette, &DocumentPalette::showWindow);
 
     m_recentProjects = new QMenu(this);
     m_recentProjects->setObjectName("recentProjectsMenu");
-    ui->actionRecent_Projects->setMenu(m_recentProjects);
+    ui->actionRecentProjects->setMenu(m_recentProjects);
     updateRecentProjects();
 
     connect(ui->tabWidget, &QTabWidget::currentChanged, this, &MainWindow::changeTab);
@@ -178,6 +182,36 @@ MainWindow::MainWindow(QWidget *parent)
 
     updateActions();
     updateScriptActions();
+}
+
+static void actionsFromMenu(QMenu *menu, QList<QAction *> &actions)
+{
+    const auto &menuActions = menu->actions();
+    for (QAction *action : menuActions) {
+        if (action->isSeparator())
+            continue;
+        else if (action->menu()) {
+            if (action->menu()->objectName() == "recentProjectsMenu")
+                continue;
+            actionsFromMenu(action->menu(), actions);
+        } else
+            actions.push_back(action);
+    }
+}
+
+QList<QAction *> MainWindow::menuActions() const
+{
+    QList<QAction *> actions;
+    const auto &menus = menuBar()->findChildren<QMenu *>();
+    for (QMenu *menu : menus)
+        actionsFromMenu(menu, actions);
+    actions.append(QMainWindow::actions());
+    return actions;
+}
+
+ShortcutManager *MainWindow::shortcutManager() const
+{
+    return m_shortcutManager;
 }
 
 void MainWindow::switchHeaderSource()
@@ -287,7 +321,7 @@ void MainWindow::initProject(const QString &path)
 
     // Disable menus, we can only load one project - restart Knut if needed
     ui->actionOpen->setEnabled(false);
-    ui->actionRecent_Projects->setEnabled(false);
+    ui->actionRecentProjects->setEnabled(false);
 }
 
 void MainWindow::updateRecentProjects()
@@ -305,7 +339,7 @@ void MainWindow::updateRecentProjects()
             initProject(path);
         });
     }
-    ui->actionRecent_Projects->setEnabled(numRecentProjects > 0);
+    ui->actionRecentProjects->setEnabled(numRecentProjects > 0);
 }
 
 void MainWindow::openDocument(const QModelIndex &index)
@@ -355,6 +389,7 @@ void MainWindow::createDock(QWidget *widget, Qt::DockWidgetArea area, QWidget *t
     dock->setTitleBarWidget(titleBar);
 
     addDockWidget(area, dock);
+    dock->toggleViewAction()->setObjectName("action" + widget->windowTitle().remove(' '));
     ui->menu_View->addAction(dock->toggleViewAction());
 
     // Tabify all docks on the same area into the
@@ -445,7 +480,8 @@ void MainWindow::runScript()
 void MainWindow::openOptions()
 {
     OptionsDialog dialog(this);
-    dialog.addSettings(new InterfaceSettings);
+    dialog.addSettings(new InterfaceSettings(this));
+    dialog.addSettings(new ShortcutSettings(this));
     dialog.exec();
 }
 
@@ -460,41 +496,41 @@ void MainWindow::updateActions()
 {
     auto document = Core::Project::instance()->currentDocument();
 
-    ui->actionClose_Document->setEnabled(document != nullptr);
+    ui->actionCloseDocument->setEnabled(document != nullptr);
 
     auto *textDocument = qobject_cast<Core::TextDocument *>(document);
     ui->actionSelectAll->setEnabled(textDocument != nullptr);
     ui->actionFind->setEnabled(textDocument != nullptr);
     ui->actionReplace->setEnabled(textDocument != nullptr);
-    ui->actionFind_Next->setEnabled(textDocument != nullptr);
-    ui->actionFind_Previous->setEnabled(textDocument != nullptr);
+    ui->actionFindNext->setEnabled(textDocument != nullptr);
+    ui->actionFindPrevious->setEnabled(textDocument != nullptr);
     ui->actionDeleteLine->setEnabled(textDocument != nullptr);
     ui->actionUndo->setEnabled(textDocument != nullptr);
     ui->actionRedo->setEnabled(textDocument != nullptr);
     auto *textView = textViewForDocument(textDocument);
-    ui->actionToggle_Mark->setEnabled(textDocument != nullptr);
-    ui->actionGoTo_Mark->setEnabled(textDocument != nullptr && textView->hasMark());
-    ui->actionSelectTo_Mark->setEnabled(textDocument != nullptr && textView->hasMark());
+    ui->actionToggleMark->setEnabled(textDocument != nullptr);
+    ui->actionGotoMark->setEnabled(textDocument != nullptr && textView->hasMark());
+    ui->actionSelectToMark->setEnabled(textDocument != nullptr && textView->hasMark());
 
     auto *lspDocument = qobject_cast<Core::LspDocument *>(document);
     const bool lspEnabled = lspDocument && lspDocument->hasLspClient();
-    ui->actionFollow_Symbol->setEnabled(lspEnabled);
-    ui->actionSwitch_Decl_Def->setEnabled(lspEnabled);
-    ui->actionTransform_Symbol->setEnabled(lspEnabled);
+    ui->actionFollowSymbol->setEnabled(lspEnabled);
+    ui->actionSwitchDeclDef->setEnabled(lspEnabled);
+    ui->actionTransformSymbol->setEnabled(lspEnabled);
 
     const bool cppEnabled = lspDocument && qobject_cast<Core::CppDocument *>(document);
-    ui->actionSwitch_Header_Source->setEnabled(cppEnabled);
-    ui->actionComment_Selection->setEnabled(cppEnabled);
+    ui->actionSwitchHeaderSource->setEnabled(cppEnabled);
+    ui->actionCommentSelection->setEnabled(cppEnabled);
     ui->actionToggleSection->setEnabled(cppEnabled);
-    ui->actionGoto_BlockEnd->setEnabled(cppEnabled);
-    ui->actionGoto_BlockStart->setEnabled(cppEnabled);
-    ui->actionSelect_to_Block_End->setEnabled(cppEnabled);
-    ui->actionSelect_to_Block_Start->setEnabled(cppEnabled);
-    ui->actionDelete_Method->setEnabled(cppEnabled);
+    ui->actionGotoBlockEnd->setEnabled(cppEnabled);
+    ui->actionGotoBlockStart->setEnabled(cppEnabled);
+    ui->actionSelectToBlockEnd->setEnabled(cppEnabled);
+    ui->actionSelectToBlockStart->setEnabled(cppEnabled);
+    ui->actionDeleteMethod->setEnabled(cppEnabled);
 
     const bool rcEnabled = qobject_cast<Core::RcDocument *>(document);
-    ui->actionCreate_Qrc->setEnabled(rcEnabled);
-    ui->actionCreate_Ui->setEnabled(rcEnabled);
+    ui->actionCreateQrc->setEnabled(rcEnabled);
+    ui->actionCreateUi->setEnabled(rcEnabled);
 }
 
 void MainWindow::updateScriptActions()
@@ -562,8 +598,8 @@ void MainWindow::redo()
 void MainWindow::changeTab()
 {
     if (ui->tabWidget->count() == 0) {
-        ui->actionCreate_Qrc->setEnabled(false);
-        ui->actionCreate_Ui->setEnabled(false);
+        ui->actionCreateQrc->setEnabled(false);
+        ui->actionCreateUi->setEnabled(false);
         m_projectView->selectionModel()->clear();
         return;
     }
@@ -572,9 +608,9 @@ void MainWindow::changeTab()
     if (!document)
         return;
 
-    ui->actionCreate_Qrc->setEnabled(document->type() == Core::Document::Type::Rc);
-    ui->actionCreate_Ui->setEnabled(document->type() == Core::Document::Type::Rc);
-    ui->actionSwitch_Header_Source->setEnabled(document->type() == Core::Document::Type::Cpp);
+    ui->actionCreateQrc->setEnabled(document->type() == Core::Document::Type::Rc);
+    ui->actionCreateUi->setEnabled(document->type() == Core::Document::Type::Rc);
+    ui->actionSwitchHeaderSource->setEnabled(document->type() == Core::Document::Type::Cpp);
 }
 
 static QWidget *widgetForDocument(Core::Document *document)

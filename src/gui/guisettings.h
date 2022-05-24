@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QFont>
+#include <QHash>
 #include <QObject>
 #include <QPixmap>
 #include <QPointer>
@@ -39,6 +40,12 @@ public:
     void setWordWrap(bool wordWrap);
     bool isWordWrap() const;
 
+    using ShortcutList = QHash<QString, QString>;
+    void removeAllShortcuts();
+    void setShortcut(const QString &id, const QString &shortcut);
+    void removeShortcut(const QString &id);
+    ShortcutList shortcuts() const;
+
     static void setupDocumentTextEdit(QPlainTextEdit *textEdit, const QString &fileName);
     static void setupTextEdit(QPlainTextEdit *textEdit);
 
@@ -49,6 +56,7 @@ private:
 
     void updateStyle() const;
     void updateTheme() const;
+
     void updateTextEdits() const;
     struct TextEditSettings
     {
@@ -57,6 +65,7 @@ private:
     };
     TextEditSettings computeTextEditSettings() const;
     void updateTextEdit(QPlainTextEdit *textEdit, const TextEditSettings &settings) const;
+
     void updateIcons() const;
     void updateIcon(QObject *object, const QString &asset) const;
 

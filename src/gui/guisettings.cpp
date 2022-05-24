@@ -29,6 +29,7 @@ namespace Gui {
 
 constexpr const char StyleKey[] = "Interface/Style";
 constexpr const char ThemeKey[] = "Interface/Theme";
+constexpr const char ShortcutsKey[] = "Interface/Shortcuts";
 constexpr const char FontFamilyKey[] = "TextEditor/FontFamily";
 constexpr const char FontSizeKey[] = "TextEditor/FontSize";
 constexpr const char WordWrapKey[] = "TextEditor/WordWrap";
@@ -131,6 +132,40 @@ void GuiSettings::setWordWrap(bool wordWrap)
 bool GuiSettings::isWordWrap() const
 {
     return m_wordWrap;
+}
+
+void GuiSettings::removeAllShortcuts()
+{
+    QSettings settings;
+    settings.beginGroup(ShortcutsKey);
+    const auto &keys = settings.childKeys();
+    for (auto key : keys)
+        settings.remove(key);
+}
+
+void GuiSettings::setShortcut(const QString &id, const QString &shortcut)
+{
+    QSettings settings;
+    settings.beginGroup(ShortcutsKey);
+    settings.setValue(id, shortcut);
+}
+
+void GuiSettings::removeShortcut(const QString &id)
+{
+    QSettings settings;
+    settings.beginGroup(ShortcutsKey);
+    settings.remove(id);
+}
+
+GuiSettings::ShortcutList GuiSettings::shortcuts() const
+{
+    ShortcutList shortcuts;
+    QSettings settings;
+    settings.beginGroup(ShortcutsKey);
+    const auto &keys = settings.childKeys();
+    for (auto key : keys)
+        shortcuts[key] = settings.value(key).toString();
+    return shortcuts;
 }
 
 #ifdef USE_SYNTAX_HIGHLIGHTING

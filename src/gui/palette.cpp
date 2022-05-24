@@ -2,6 +2,7 @@
 #include "ui_palette.h"
 
 #include "gui_constants.h"
+#include "mainwindow.h"
 
 #include "core/logger.h"
 #include "core/lspdocument.h"
@@ -17,8 +18,6 @@
 #include <QFileInfo>
 #include <QHeaderView>
 #include <QKeyEvent>
-#include <QMainWindow>
-#include <QMenu>
 #include <QMenuBar>
 #include <QPlainTextEdit>
 #include <QShowEvent>
@@ -506,30 +505,11 @@ void Palette::addSymbolSelector()
     m_selectors.push_back(Selector {"@", std::move(symbolModel), resetSymbols, gotoSymbol});
 }
 
-static void actionsFromMenu(QMenu *menu, QList<QAction *> &actions)
-{
-    const auto &menuActions = menu->actions();
-    for (QAction *action : menuActions) {
-        if (action->isSeparator())
-            continue;
-        else if (action->menu()) {
-            if (action->menu()->objectName() == "recentProjectsMenu")
-                continue;
-            actionsFromMenu(action->menu(), actions);
-        } else
-            actions.push_back(action);
-    }
-}
-
 void Palette::addActionSelector()
 {
     auto actionModel = std::make_unique<ActionModel>();
 
-    QList<QAction *> actions;
-    const auto &menus = qobject_cast<QMainWindow *>(parentWidget())->menuBar()->findChildren<QMenu *>();
-    for (QMenu *menu : menus)
-        actionsFromMenu(menu, actions);
-    actionModel->setActions(actions);
+    actionModel->setActions(qobject_cast<MainWindow *>(parentWidget())->menuActions());
 
     auto runAction = [](const QVariant &action) {
         auto val = action.value<QAction *>();
