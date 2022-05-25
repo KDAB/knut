@@ -157,6 +157,8 @@ void GuiSettings::setupDocumentTextEdit(QPlainTextEdit *textEdit, const QString 
 #ifdef USE_SYNTAX_HIGHLIGHTING
     auto highlighter = new KSyntaxHighlighting::SyntaxHighlighter(textEdit->document());
     setupHighlighter(highlighter, instance()->m_theme, fileName);
+#else
+    Q_UNUSED(fileName)
 #endif
 }
 

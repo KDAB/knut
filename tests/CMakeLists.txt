@@ -52,6 +52,7 @@ add_knut_test(tst_rcwriter tst_rcwriter.cpp knut-rccore Qt::UiTools)
 add_knut_test(tst_uidocument tst_uidocument.cpp knut-core)
 
 add_knut_test(tst_cppdocument tst_cppdocument.cpp knut-core)
+add_knut_test(tst_cppdocument_clangd tst_cppdocument_clangd.cpp knut-core)
 
 add_knut_test(tst_lspdocument tst_lspdocument.cpp knut-core)
 
