@@ -50,6 +50,8 @@ public slots:
 
 signals:
     void scriptFinished(const QVariant &result);
+    void scriptAdded(const Core::ScriptManager::Script &script);
+    void scriptRemoved(const Core::ScriptManager::Script &script);
 
 private:
     friend class KnutCore;

@@ -90,6 +90,7 @@ void ScriptManager::addScript(const QString &fileName)
     const QString description = line.startsWith("//") ? line.mid(2).simplified() : "";
     QFileInfo fi(fileName);
     m_scriptList.push_back(Script {fi.fileName(), fileName, description});
+    emit scriptAdded(m_scriptList.back());
 }
 
 static QStringList scriptListFromDir(const QString &path)
@@ -114,7 +115,9 @@ void ScriptManager::updateScriptDirectory(const QString &path)
             files.removeAll(it->fileName);
             ++it;
         } else {
+            auto script = *it;
             it = m_scriptList.erase(it);
+            emit scriptRemoved(script);
         }
     }
 
@@ -152,10 +155,13 @@ void ScriptManager::removeScriptsFromPath(const QString &path)
     const QStringList files = scriptListFromDir(path);
     auto it = m_scriptList.begin();
     while (it != m_scriptList.end()) {
-        if (files.contains(it->fileName))
+        if (files.contains(it->fileName)) {
+            auto script = *it;
             it = m_scriptList.erase(it);
-        else
+            emit scriptRemoved(script);
+        } else {
             ++it;
+        }
     }
 }
 

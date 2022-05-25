@@ -1,9 +1,14 @@
 #pragma once
 
+#include "core/scriptmanager.h"
+
 #include <QAction>
 #include <QObject>
 
+#include <variant>
 #include <vector>
+
+class QShortcut;
 
 namespace Gui {
 
@@ -31,18 +36,22 @@ public:
 private:
     void initialize();
 
-    struct Command
+    struct Action
     {
         QAction *action;
         QKeySequence defaultShortcut;
     };
+    using Script = Core::ScriptManager::Script;
+    using Command = std::variant<Action, Script>;
     std::vector<Command> m_commands;
+    QHash<QString, QShortcut *> m_scriptShortcuts;
 
-    QString id(const Command &) const;
-    QString description(const Command &) const;
-    QKeySequence shortcut(const Command &) const;
-    void setShortcut(const Command &, const QKeySequence &);
-    void resetShortcut(const Command &);
+    QString id(const Command &command) const;
+    QString description(const Command &command) const;
+    QKeySequence shortcut(const Command &command) const;
+    QKeySequence defaultShortcut(const Command &command) const;
+    void setShortcut(const Command &command, const QKeySequence &keySequence);
+    void resetShortcut(const Command &command, bool updateSettings = true);
 };
 
 } // namespace Gui
