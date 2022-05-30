@@ -43,14 +43,14 @@ void ScriptItem::appendData(QQmlListProperty<QObject> *list, QObject *obj)
     }
 }
 
-QObject *ScriptItem::atData(QQmlListProperty<QObject> *list, Core::TypeSize index)
+QObject *ScriptItem::atData(QQmlListProperty<QObject> *list, qsizetype index)
 {
     if (auto that = qobject_cast<ScriptItem *>(list->object))
         return that->m_data.at(index);
     return nullptr;
 }
 
-TypeSize ScriptItem::countData(QQmlListProperty<QObject> *list)
+qsizetype ScriptItem::countData(QQmlListProperty<QObject> *list)
 {
     if (auto that = qobject_cast<ScriptItem *>(list->object))
         return static_cast<int>(that->m_data.size());

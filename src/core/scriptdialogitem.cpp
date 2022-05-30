@@ -218,14 +218,14 @@ void ScriptDialogItem::appendChild(QQmlListProperty<QObject> *list, QObject *obj
     }
 }
 
-QObject *ScriptDialogItem::atChild(QQmlListProperty<QObject> *list, Core::TypeSize index)
+QObject *ScriptDialogItem::atChild(QQmlListProperty<QObject> *list, qsizetype index)
 {
     if (auto that = qobject_cast<ScriptDialogItem *>(list->object))
         return that->m_children.at(index);
     return nullptr;
 }
 
-TypeSize ScriptDialogItem::countChildren(QQmlListProperty<QObject> *list)
+qsizetype ScriptDialogItem::countChildren(QQmlListProperty<QObject> *list)
 {
     if (auto that = qobject_cast<ScriptDialogItem *>(list->object))
         return static_cast<int>(that->m_children.size());

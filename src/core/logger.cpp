@@ -51,11 +51,7 @@ int HistoryModel::columnCount(const QModelIndex &parent) const
 static QString variantToString(const QVariant &variant)
 {
     QString text = variant.toString();
-#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
-    if (static_cast<QMetaType::Type>(variant.type()) == QMetaType::QString) {
-#else
     if (static_cast<QMetaType::Type>(variant.typeId()) == QMetaType::QString) {
-#endif
         text.replace('\\', R"(\\)");
         text.replace('\n', R"(\n)");
         text.replace('\t', R"(\t)");
@@ -195,11 +191,7 @@ void HistoryModel::addData(LogData &&data, bool merge)
     for (size_t i = 0; i < data.params.size(); ++i) {
         const auto &param = data.params[i];
         auto &lastParam = lastData.params[i];
-#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
-        switch (static_cast<QMetaType::Type>(param.value.type())) {
-#else
         switch (static_cast<QMetaType::Type>(param.value.typeId())) {
-#endif
         case QMetaType::Int:
             lastParam.value = lastParam.value.toInt() + param.value.toInt();
             break;

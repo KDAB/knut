@@ -191,11 +191,7 @@ bool Settings::setValue(QString path, const QVariant &value)
         path.prepend('/');
 
     auto jsonPath = nlohmann::json::json_pointer(path.toStdString());
-#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
-    switch (static_cast<QMetaType::Type>(value.type())) {
-#else
     switch (static_cast<QMetaType::Type>(value.typeId())) {
-#endif
     case QMetaType::Bool:
         m_settings[jsonPath] = value.toBool();
         m_projectSettings[jsonPath] = value.toBool();

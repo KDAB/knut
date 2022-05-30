@@ -111,11 +111,7 @@ void writeAssetsToQrc(const QVector<Asset> &assets, QIODevice *device, const QSt
 //=============================================================================
 static void writePropery(QXmlStreamWriter &w, const QString &id, const QString &name, const QVariant &value)
 {
-#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
-    switch (static_cast<QMetaType::Type>(value.type())) {
-#else
     switch (static_cast<QMetaType::Type>(value.typeId())) {
-#endif
     case QMetaType::Bool:
         w.writeStartElement("property");
         w.writeAttribute("name", name);

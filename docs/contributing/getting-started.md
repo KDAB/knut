@@ -22,7 +22,7 @@ The code layout is like this:
 To compile Knut, you need:
 
 - a C++20 compiler (recent compilers should work)
-- Qt 5.15
+- Qt 6.2 at least
 - `clang-format` in the path (needed by KSyntaxHighlighting)
 
 All 3rd-party are downloaded at configure time using cmake `FetchContent`.
@@ -37,7 +37,7 @@ FAILED: _deps/ksyntaxhighlighting-build/data/index.katesyntax C:/dev/knut/build-
 cmd.exe /C "cd /D C:\dev\knut\build-knut-Desktop_Qt_5_15_2_MSVC2019_64bit-Debug\_deps\ksyntaxhighlighting-build\data && C:\dev\knut\build-knut-Desktop_Qt_5_15_2_MSVC2019_64bit-Debug\bin\katehighlightingindexer.exe C:/dev/knut/build-knut-Desktop_Qt_5_15_2_MSVC2019_64bit-Debug/_deps/ksyntaxhighlighting-build/data/index.katesyntax C:/dev/knut/build-knut-Desktop_Qt_5_15_2_MSVC2019_64bit-Debug/_deps/ksyntaxhighlighting-src/data/schema/language.xsd C:/dev/knut/build-knut-Desktop_Qt_5_15_2_MSVC2019_64bit-Debug/_deps/ksyntaxhighlighting-build/data/syntax-data.qrc"
 ```
 
-The way to fix that is to open a console with Qt and Visual Studio setup, go to the Qt Creator build directory, and do a first compilation in command line with `ninja`.
+The way to fix that is to open a console with Qt and Visual Studio setup, go to the Qt Creator build directory, and do a first compilation in command line with `ninja`. Or setup the Qt environment and run Qt Creator from there.
 
 ## Contribution
 

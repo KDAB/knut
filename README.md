@@ -2,7 +2,7 @@
 
 To compile Knut, you need:
 - a C++20 compiler (recent compilers should work)
-- Qt 5.15
+- Qt 6.2 at least
 
 All 3rd-party are downloaded at configure time using CMake `FetchContent`.
 
@@ -17,6 +17,7 @@ cmd.exe /C "cd /D C:\dev\knut\build-knut-Desktop_Qt_5_15_2_MSVC2019_64bit-Debug\
 ```
 
 The way to fix that is to open a console with Qt and Visual Studio setup, go to the Qt Creator build directory, and do a first compilation in command line with `ninja`.
+Or setup the Qt environment before running Qt Creator.
 
 ## Contribution
 
