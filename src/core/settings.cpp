@@ -82,7 +82,7 @@ void Settings::loadUserSettings()
     auto userSettings = loadSettings(userFilePath());
     if (userSettings) {
         m_userSettings = userSettings.value();
-        mergeSettings(m_userSettings);
+        m_settings.merge_patch(m_userSettings);
         emit settingsLoaded();
     }
 }
@@ -93,7 +93,7 @@ void Settings::loadProjectSettings(const QString &rootDir)
     auto projectSettings = loadSettings(projectFilePath());
     if (projectSettings) {
         m_projectSettings = projectSettings.value();
-        mergeSettings(m_projectSettings);
+        m_settings.merge_patch(m_projectSettings);
         emit settingsLoaded();
     }
 }
@@ -265,28 +265,6 @@ void Settings::saveSettings()
 bool Settings::isUser() const
 {
     return m_projectPath.isEmpty();
-}
-
-void Settings::mergeSettings(const nlohmann::json &settings)
-{
-    const auto scriptPathsPointer = nlohmann::json::json_pointer(ScriptPaths);
-    const auto jsonPathsPointer = nlohmann::json::json_pointer(JsonPaths);
-
-    QStringList scriptPaths, jsonPaths;
-    if (m_settings.contains(scriptPathsPointer))
-        scriptPaths = m_settings.at(scriptPathsPointer).get<QStringList>();
-    if (m_settings.contains(jsonPathsPointer))
-        jsonPaths = m_settings.at(jsonPathsPointer).get<QStringList>();
-
-    m_settings.merge_patch(settings);
-
-    if (settings.contains(scriptPathsPointer))
-        scriptPaths.append(settings.at(scriptPathsPointer).get<QStringList>());
-    if (settings.contains(jsonPathsPointer))
-        jsonPaths.append(settings.at(jsonPathsPointer).get<QStringList>());
-
-    m_settings[scriptPathsPointer] = scriptPaths;
-    m_settings[jsonPathsPointer] = jsonPaths;
 }
 
 void Settings::addScriptPath(const QString &path)

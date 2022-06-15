@@ -74,8 +74,12 @@ public:
         if (!path.starts_with('/'))
             path = '/' + path;
         try {
-            m_settings[nlohmann::json::json_pointer(path)] = value;
-            m_projectSettings[nlohmann::json::json_pointer(path)] = value;
+            const auto pointer = nlohmann::json::json_pointer(path);
+            m_settings[pointer] = value;
+            if (isUser())
+                m_userSettings[pointer] = value;
+            else
+                m_projectSettings[pointer] = value;
             emit settingsChanged(QString::fromStdString(path));
         } catch (...) {
             spdlog::error("Settings::setValue {} - error saving", path);
@@ -111,7 +115,6 @@ private:
     void updatePaths(const QString &path, const std::string &json_path, bool add);
     void saveSettings();
     bool isUser() const;
-    void mergeSettings(const nlohmann::json &settings);
 
 private:
     inline static Settings *m_instance = nullptr;

@@ -2,8 +2,8 @@
 
 #include "json_utils.h"
 
+#include <map>
 #include <optional>
-#include <unordered_map>
 #include <vector>
 
 namespace Core {
@@ -15,7 +15,7 @@ struct ToggleSectionSettings
 {
     QString tag;
     QString debug;
-    std::unordered_map<std::string, std::string> return_values;
+    std::map<std::string, std::string> return_values;
 };
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ToggleSectionSettings, tag, debug, return_values);

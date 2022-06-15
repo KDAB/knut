@@ -32,6 +32,10 @@ private:
     void removeJsonPath();
     void updateJsonPaths();
 
+    void addReturnValue();
+    void removeReturnValue();
+    void changeToggleSectionSetting();
+
     void changePage();
 
 private:
