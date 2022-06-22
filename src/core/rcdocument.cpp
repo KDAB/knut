@@ -34,6 +34,10 @@ namespace Core {
  * This read-only property holds the list of assets in the RC file.
  */
 /*!
+ * \qmlproperty array<Asset> RcDocument::actions
+ * This read-only property holds the list of actions in the RC file.
+ */
+/*!
  * \qmlproperty array<ToolBar> RcDocument::toolbars
  * This read-only property holds the list of toolbars in the RC file.
  */
@@ -42,7 +46,7 @@ namespace Core {
  * This read-only property holds the list of menus in the RC file.
  */
 /*!
- * \qmlproperty array<String> RcDocument::strings
+ * \qmlproperty array<string> RcDocument::strings
  * This read-only property holds the list of strings in the RC file.
  */
 /*!
@@ -84,6 +88,76 @@ QVector<RcCore::Asset> RcDocument::assets() const
         return m_cacheAssets;
     }
     return {};
+}
+
+QVector<RcCore::Action> RcDocument::actions() const
+{
+    if (m_data.isValid) {
+        if (m_cacheActions.isEmpty())
+            const_cast<RcDocument *>(this)->convertActions();
+        return m_cacheActions;
+    }
+    return {};
+}
+
+/*!
+ * \qmlmethod ToolBar RcDocument::action(string id)
+ * Returns the action for the given `id`.
+ */
+RcCore::Action RcDocument::action(const QString &id) const
+{
+    LOG("RcDocument::action", id);
+
+    // Make sure the action vector is populated by calling actions
+    if (m_data.isValid && !actions().isEmpty()) {
+        auto it = std::ranges::find_if(m_cacheActions, [id](const auto &data) {
+            return data.id == id;
+        });
+        if (it == m_cacheActions.cend())
+            return {};
+        return *it;
+    }
+    return {};
+}
+
+/*!
+ * \qmlmethod array<Action> RcDocument::actionsFromMenu(string menuId)
+ * Returns all actions used in the menu `menuId`.
+ */
+QVector<RcCore::Action> RcDocument::actionsFromMenu(const QString &menuId) const
+{
+    LOG("RcDocument::actionsFromMenu", menuId);
+
+    if (!m_data.isValid)
+        return {};
+
+    QVector<RcCore::Action> actions;
+    if (auto menu = m_data.menu(menuId)) {
+        const auto actionIds = menu->actionIds();
+        for (const auto &id : actionIds)
+            actions.push_back(action(id));
+    }
+    return actions;
+}
+
+/*!
+ * \qmlmethod array<Action> RcDocument::actionsFromToolbar(string toolBarId)
+ * Returns all actions used in the toolbar `toolBarId`.
+ */
+QVector<RcCore::Action> RcDocument::actionsFromToolbar(const QString &toolBarId) const
+{
+    LOG("RcDocument::actionsFromMenu", toolBarId);
+
+    if (!m_data.isValid)
+        return {};
+
+    QVector<RcCore::Action> actions;
+    if (auto toolbar = m_data.toolBar(toolBarId)) {
+        const auto actionIds = toolbar->actionIds();
+        for (const auto &id : actionIds)
+            actions.push_back(action(id));
+    }
+    return actions;
 }
 
 QVector<RcCore::ToolBar> RcDocument::toolBars() const
@@ -147,8 +221,8 @@ RcCore::Menu RcDocument::menu(const QString &id) const
     LOG("RcDocument::menu", id);
 
     if (m_data.isValid) {
-        if (auto tb = m_data.menu(id))
-            return *tb;
+        if (auto menu = m_data.menu(id))
+            return *menu;
     }
     return {};
 }
@@ -283,11 +357,10 @@ void RcDocument::convertAssets(int flags)
     }
 }
 
-// clang-format off
 /*!
- * \qmlmethod array<Action> RcDocument::convertActions(array<string> menus, array<string> accelerators, array<string> toolBars, int flags)
+ * \qmlmethod void RcDocument::convertActions(int flags)
  * \todo
- * Returns a list of actions fomr the given `menus`' ids, `accelerators`' ids and `toolBars`' ids.
+ * Convert all actions using the `flags`.
  *
  * The `flags` are used to fill the iconPath of the action:
  *
@@ -296,17 +369,15 @@ void RcDocument::convertAssets(int flags)
  * - `RcDocument.ConvertToPng`: convert BMPs to PNGs, needed if we want to also change the transparency
  * - `RcDocument.AllFlags`: combination of all above
  */
-// clang-format on
-QVector<RcCore::Action> RcDocument::convertActions(const QStringList &menus, const QStringList &accelerators,
-                                                   const QStringList &toolBars, int flags)
+void RcDocument::convertActions(int flags)
 {
-    LOG("RcDocument::convertActions", menus, accelerators, toolBars, flags);
+    LOG("RcDocument::convertActions", flags);
 
     SET_DEFAULT_VALUE(RcAssetFlags, static_cast<ConversionFlags>(flags));
-    if (m_data.isValid)
-        return RcCore::convertActions(m_data, menus, accelerators, toolBars,
-                                      static_cast<RcCore::Asset::ConversionFlags>(flags));
-    return {};
+    if (m_data.isValid) {
+        m_cacheActions = RcCore::convertActions(m_data, static_cast<RcCore::Asset::ConversionFlags>(flags));
+        emit fileNameChanged();
+    }
 }
 
 /*!
@@ -412,3 +483,5 @@ bool RcDocument::doLoad(const QString &fileName)
 }
 
 } // namespace Core
+
+#include "moc_rcdocument.cpp"

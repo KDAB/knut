@@ -67,12 +67,16 @@ struct ToolBar
     Q_PROPERTY(QString id MEMBER id)
     Q_PROPERTY(QVector<RcCore::ToolBarItem> children MEMBER children)
     Q_PROPERTY(QSize iconSize MEMBER iconSize)
+    Q_PROPERTY(QStringList actionIds READ actionIds)
 public:
     QString id;
     QSize iconSize;
     QVector<ToolBarItem> children;
     // Internal data
     int line = -1;
+
+    Q_INVOKABLE bool contains(const QString &id) const;
+    QStringList actionIds() const;
 };
 
 struct Widget
@@ -138,13 +142,15 @@ struct Menu
     Q_GADGET
     Q_PROPERTY(QString id MEMBER id)
     Q_PROPERTY(QVector<RcCore::MenuItem> children MEMBER children)
+    Q_PROPERTY(QStringList actionIds READ actionIds)
 public:
     QString id;
     QVector<MenuItem> children;
     // Internal data
     int line = -1;
 
-    Q_INVOKABLE bool contains(const QString &id);
+    Q_INVOKABLE bool contains(const QString &id) const;
+    QStringList actionIds() const;
 };
 
 struct Shortcut

@@ -923,15 +923,16 @@ static void createActionForToolBar(const Data &data, QVector<Action> &actions, Q
             actionIdMap[action.id] = index;
         }
         if (iconIndex < assets.size()) {
-            actions[index].iconPath = assets.value(iconIndex).fileName;
-            actions[index].iconId = assets.value(iconIndex).id;
+            if (actions[index].iconId.isEmpty()) {
+                actions[index].iconId = assets.value(iconIndex).id;
+                actions[index].iconPath = assets.value(iconIndex).fileName;
+            }
         }
         ++iconIndex;
     }
 }
 
-QVector<Action> convertActions(const Data &data, const QStringList &menus, const QStringList &accelerators,
-                               const QStringList &toolBars, Asset::ConversionFlags flags)
+QVector<Action> convertActions(const Data &data, Asset::ConversionFlags flags)
 {
     QVector<Action> actions;
     // Map the id of an action, already created, to the index in the vector
@@ -939,20 +940,14 @@ QVector<Action> convertActions(const Data &data, const QStringList &menus, const
     // Also note that the same action could be used multiple times in a menu or a toolbar
     QHash<QString, int> actionIdMap;
 
-    for (const auto &id : menus) {
-        if (const Menu *menu = data.menu(id)) {
-            for (const auto &child : menu->children)
-                createActionForMenu(data, actions, actionIdMap, child);
-        }
+    for (const auto &menu : data.menus) {
+        for (const auto &child : menu.children)
+            createActionForMenu(data, actions, actionIdMap, child);
     }
-    for (const auto &id : accelerators) {
-        if (const Data::AcceleratorTable *table = data.acceleratorTable(id))
-            createActionForAccelerator(data, actions, actionIdMap, *table);
-    }
-    for (const auto &id : toolBars) {
-        if (const ToolBar *toolBar = data.toolBar(id))
-            createActionForToolBar(data, actions, actionIdMap, *toolBar, flags);
-    }
+    for (const auto &table : data.acceleratorTables)
+        createActionForAccelerator(data, actions, actionIdMap, table);
+    for (const auto &toolBar : data.toolBars)
+        createActionForToolBar(data, actions, actionIdMap, toolBar, flags);
 
     return actions;
 }

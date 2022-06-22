@@ -65,9 +65,8 @@ TestCase {
     }
 
     function test_actions() {
-        var actions = document.convertActions(["IDR_MAINFRAME"], ["IDR_MAINFRAME"], ["IDR_MAINFRAME"])
-
-        compare(actions.length, 30)
+        var actions = document.actionsFromMenu("IDR_MAINFRAME")
+        compare(actions.length, 28)
 
         var actionFileNew = actions[0]
         compare(actionFileNew.id, "ID_FILE_NEW");
@@ -88,11 +87,10 @@ TestCase {
         Message.log(actionEditPaste.iconPath)
         verify(actionEditPaste.iconPath.endsWith("res/Toolbar_5.png"));
 
-        var actionPrevPane = actions[29]
-        compare(actionPrevPane.id, "ID_PREV_PANE");
-        compare(actionPrevPane.toolTip, "Previous Pane");
-        compare(actionPrevPane.statusTip, "Switch back to the previous window pane");
-        compare(actionPrevPane.shortcuts.length, 1);
-        compare(actionPrevPane.shortcuts[0].event, "Shift+F6");
+        var actionPrevPane = actions[25]
+        compare(actionPrevPane.id, "ID_APP_ABOUT");
+        compare(actionPrevPane.toolTip, "About");
+        compare(actionPrevPane.statusTip, "Display program information, version number and copyright");
+        compare(actionPrevPane.shortcuts.length, 0);
     }
 }

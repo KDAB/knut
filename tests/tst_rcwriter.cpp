@@ -114,9 +114,9 @@ private slots:
         Data data = parse(Test::testDataPath() + "/rcfiles/2048Game/2048Game.rc");
 
         // MainFrame menu and shortcuts and toolbar
-        auto result = convertActions(data, {"IDR_MAINFRAME"}, {"IDR_MAINFRAME"}, {"IDR_MAINFRAME"});
+        auto result = convertActions(data);
 
-        QCOMPARE(result.size(), 30);
+        QCOMPARE(result.size(), 51);
         auto action = result.first();
         QCOMPARE(action.id, "ID_FILE_NEW");
         QCOMPARE(action.title, "&New");
@@ -135,7 +135,7 @@ private slots:
         QCOMPARE(action.shortcuts.last().event, "Shift+Ins");
         QVERIFY(action.iconPath.endsWith("res/Toolbar_5.png"));
 
-        action = result.last();
+        action = result.at(40);
         QCOMPARE(action.id, "ID_PREV_PANE");
         QCOMPARE(action.toolTip, "Previous Pane");
         QCOMPARE(action.statusTip, "Switch back to the previous window pane");

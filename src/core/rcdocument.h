@@ -12,6 +12,7 @@ class RcDocument : public Document
     Q_OBJECT
     Q_PROPERTY(bool valid READ isValid NOTIFY fileNameChanged)
     Q_PROPERTY(QVector<RcCore::Asset> assets READ assets NOTIFY fileNameChanged)
+    Q_PROPERTY(QVector<RcCore::Action> actions READ actions NOTIFY fileNameChanged)
     Q_PROPERTY(QVector<RcCore::ToolBar> toolBars READ toolBars NOTIFY fileNameChanged)
     Q_PROPERTY(QVector<RcCore::Menu> menus READ menus NOTIFY fileNameChanged)
     Q_PROPERTY(QList<RcCore::String> strings READ strings NOTIFY fileNameChanged)
@@ -48,6 +49,10 @@ public:
     bool isValid() const;
 
     QVector<RcCore::Asset> assets() const;
+    QVector<RcCore::Action> actions() const;
+    Q_INVOKABLE RcCore::Action action(const QString &id) const;
+    Q_INVOKABLE QVector<RcCore::Action> actionsFromMenu(const QString &menuId) const;
+    Q_INVOKABLE QVector<RcCore::Action> actionsFromToolbar(const QString &toolBarId) const;
 
     QVector<RcCore::ToolBar> toolBars() const;
     Q_INVOKABLE RcCore::ToolBar toolBar(const QString &id) const;
@@ -72,9 +77,7 @@ public:
 
 public slots:
     void convertAssets(int flags = DEFAULT_VALUE(ConversionFlag, RcAssetFlags));
-    QVector<RcCore::Action> convertActions(const QStringList &menus, const QStringList &accelerators,
-                                           const QStringList &toolBars,
-                                           int flags = DEFAULT_VALUE(ConversionFlags, RcAssetFlags));
+    void convertActions(int flags = DEFAULT_VALUE(ConversionFlags, RcAssetFlags));
     bool writeAssetsToImage(int flags = DEFAULT_VALUE(ConversionFlags, RcAssetColors));
     bool writeAssetsToQrc(const QString &fileName);
     bool writeDialogToUi(const RcCore::Widget &dialog, const QString &fileName);
@@ -87,7 +90,7 @@ protected:
 private:
     RcCore::Data m_data;
     QVector<RcCore::Asset> m_cacheAssets;
-    bool m_valid = false;
+    QVector<RcCore::Action> m_cacheActions;
 };
 
 NLOHMANN_JSON_SERIALIZE_ENUM(RcDocument::ConversionFlag,

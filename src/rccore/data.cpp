@@ -59,6 +59,10 @@ namespace RcCore {
  * \qmlproperty size ToolBar::iconSize
  * This property holds the size of the icon associated to the toolbar.
  */
+/*!
+ * \qmlproperty array<string> ToolBar::actionIds
+ * This property holds all action ids used in the toolbar.
+ */
 
 /*!
  * \qmltype Widget
@@ -136,8 +140,12 @@ namespace RcCore {
  * This property holds the id of the menu.
  */
 /*!
- * \qmlproperty array<MenuItem Menu::children
+ * \qmlproperty array<MenuItem> Menu::children
  * This property holds the list of menu items inside the menu.
+ */
+/*!
+ * \qmlproperty array<string> Menu::actionIds
+ * This property holds all action ids used in the menu.
  */
 
 /*!
@@ -281,13 +289,52 @@ static bool containActionId(const QString &id, const MenuItem &menuItem)
  * \qmlmethod bool Menu::contains(string id)
  * Returns true if the menu contains the given `id`
  */
-bool Menu::contains(const QString &id)
+bool Menu::contains(const QString &id) const
 {
-    for (const auto &child : std::as_const(children)) {
+    for (const auto &child : children) {
         if (containActionId(id, child))
             return true;
     }
     return false;
+}
+
+static void fillActionIds(QStringList &result, const MenuItem &menuItem)
+{
+    if (menuItem.isAction())
+        result.push_back(menuItem.id);
+    for (const auto &child : menuItem.children)
+        fillActionIds(result, child);
+}
+
+QStringList Menu::actionIds() const
+{
+    QStringList result;
+    for (const auto &child : children)
+        fillActionIds(result, child);
+    return result;
+}
+
+/*!
+ * \qmlmethod bool ToolBar::contains(string id)
+ * Returns true if the toolbar contains the given `id`
+ */
+bool ToolBar::contains(const QString &id) const
+{
+    for (const auto &child : children) {
+        if (child.id == id)
+            return true;
+    }
+    return false;
+}
+
+QStringList ToolBar::actionIds() const
+{
+    QStringList result;
+    for (const auto &child : children) {
+        if (!child.isSeparator())
+            result.push_back(child.id);
+    }
+    return result;
 }
 
 } // namespace RcCore
