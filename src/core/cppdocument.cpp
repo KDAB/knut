@@ -532,6 +532,30 @@ int CppDocument::selectBlockEnd(int count)
     return blockEndPos;
 }
 
+/*!
+ * \qmlmethod int CppDocument::selectBlockUp()
+ * Selects the text of the block the cursor is in, and returns the new cursor position.
+ * A block is definied by {} or () or [].
+ * Does it `count` times.
+ */
+int CppDocument::selectBlockUp(int count)
+{
+    LOG_AND_MERGE("CppDocument::selectBlockUp", count);
+
+    QTextCursor cursor = textEdit()->textCursor();
+    while (count != 0) {
+        cursor.setPosition(moveBlock(cursor.position(), QTextCursor::NextCharacter));
+        --count;
+    }
+    const int blockEndPos = cursor.position();
+    const int blockStartPos = moveBlock(cursor.position(), QTextCursor::PreviousCharacter);
+    cursor.setPosition(blockStartPos, QTextCursor::MoveAnchor);
+    cursor.setPosition(blockEndPos, QTextCursor::KeepAnchor);
+
+    textEdit()->setTextCursor(cursor);
+    return blockEndPos;
+}
+
 /**
  * \brief Internal method to move to the start or end of a block
  * \param startPos current cursor position

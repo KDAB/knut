@@ -137,6 +137,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionGotoBlockStart, &QAction::triggered, this, &MainWindow::gotoBlockStart);
     connect(ui->actionSelectToBlockEnd, &QAction::triggered, this, &MainWindow::selectBlockEnd);
     connect(ui->actionSelectToBlockStart, &QAction::triggered, this, &MainWindow::selectBlockStart);
+    connect(ui->actionSelectBlockUp, &QAction::triggered, this, &MainWindow::selectBlockUp);
     connect(ui->actionTransformSymbol, &QAction::triggered, this, &MainWindow::transformSymbol);
     connect(ui->actionDeleteMethod, &QAction::triggered, this, &MainWindow::deleteMethod);
 
@@ -242,6 +243,12 @@ void MainWindow::selectBlockEnd()
 {
     if (auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->currentDocument()))
         cppDocument->selectBlockEnd();
+}
+
+void MainWindow::selectBlockUp()
+{
+    if (auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->currentDocument()))
+        cppDocument->selectBlockUp();
 }
 
 void MainWindow::commentSelection()
@@ -526,6 +533,7 @@ void MainWindow::updateActions()
     ui->actionGotoBlockStart->setEnabled(cppEnabled);
     ui->actionSelectToBlockEnd->setEnabled(cppEnabled);
     ui->actionSelectToBlockStart->setEnabled(cppEnabled);
+    ui->actionSelectBlockUp->setEnabled(cppEnabled);
     ui->actionDeleteMethod->setEnabled(cppEnabled);
 
     const bool rcEnabled = qobject_cast<Core::RcDocument *>(document);

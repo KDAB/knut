@@ -69,6 +69,7 @@ private:
     void gotoBlockEnd();
     void selectBlockStart();
     void selectBlockEnd();
+    void selectBlockUp();
     void commentSelection();
     void toggleSection();
     void transformSymbol();

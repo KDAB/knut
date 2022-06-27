@@ -39,6 +39,7 @@ public slots:
 
     int selectBlockStart(int count = 1);
     int selectBlockEnd(int count = 1);
+    int selectBlockUp(int count = 1);
 
     void toggleSection();
 

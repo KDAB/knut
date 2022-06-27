@@ -91,6 +91,7 @@
     <addaction name="actionSelectToBlockStart"/>
     <addaction name="actionSelectToBlockEnd"/>
     <addaction name="separator"/>
+    <addaction name="actionSelectBlockUp"/>
     <addaction name="actionTransformSymbol"/>
     <addaction name="actionDeleteMethod"/>
    </widget>
@@ -448,6 +449,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Tab</string>
+   </property>
+  </action>
+  <action name="actionSelectBlockUp">
+   <property name="text">
+    <string>Select Block Up</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+U</string>
    </property>
   </action>
  </widget>
