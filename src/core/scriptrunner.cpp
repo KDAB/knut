@@ -77,6 +77,14 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qmlRegisterSingletonType<UserDialog>("Script", 1, 0, "UserDialog", [](QQmlEngine *, QJSEngine *) {
         return new UserDialog();
     });
+    qmlRegisterSingletonType<Project>("Script", 1, 0, "Project", [](QQmlEngine *engine, QJSEngine *) {
+        engine->setObjectOwnership(Project::instance(), QQmlEngine::CppOwnership);
+        return Project::instance();
+    });
+    qmlRegisterSingletonType<Settings>("Script", 1, 0, "Settings", [](QQmlEngine *engine, QJSEngine *) {
+        engine->setObjectOwnership(Settings::instance(), QQmlEngine::CppOwnership);
+        return Settings::instance();
+    });
 
     qmlRegisterUncreatableType<Document>("Script", 1, 0, "Document", "Abstract class");
     qmlRegisterType<ScriptDialogItem>("Script", 1, 0, "ScriptDialog");
@@ -180,9 +188,6 @@ QQmlEngine *ScriptRunner::getEngine(const QString &fileName)
     engine->setProperty("scriptPath", fi.absolutePath());
     engine->setProperty("scriptWindow", false);
     engine->addImportPath("qrc:/qml");
-
-    engine->rootContext()->setContextProperty("Settings", Settings::instance());
-    engine->rootContext()->setContextProperty("Project", Project::instance());
 
     auto logWarnings = [this](const QList<QQmlError> &warnings) {
         for (const auto &warning : warnings) {

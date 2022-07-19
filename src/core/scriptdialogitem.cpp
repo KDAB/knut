@@ -48,7 +48,7 @@ namespace Core {
  *     property int number2: data.doubleSpinBox
  *     property bool check: data.checkBox
  *     property bool check2: data.radioButton
- *     onClicked: {
+ *     onClicked: (name) => {
  *         if (name == "pushButton" || name == "toolButton")
  *             console.log(name)
  *     }
