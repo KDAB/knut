@@ -153,10 +153,14 @@ private slots:
     void throwError()
     {
         json j = json::parse(R"({"string":1,"stringList":[]})");
-        QVERIFY_EXCEPTION_THROWN(j.get<SmallStruct>(), nlohmann::detail::type_error);
-
         json j2 = json::parse(R"({"string":"test","stringList":"wrong"})");
+#if QT_VERSION < QT_VERSION_CHECK(6, 3, 0)
+        QVERIFY_EXCEPTION_THROWN(j.get<SmallStruct>(), nlohmann::detail::type_error);
         QVERIFY_EXCEPTION_THROWN(j2.get<SmallStruct>(), nlohmann::detail::type_error);
+#else
+        QVERIFY_THROWS_EXCEPTION(nlohmann::detail::type_error, j.get<SmallStruct>());
+        QVERIFY_THROWS_EXCEPTION(nlohmann::detail::type_error, j2.get<SmallStruct>());
+#endif
     }
 };
 

@@ -225,7 +225,7 @@ const T *findById(const QVector<T> &collection, const QString &id)
     });
     if (it == collection.cend())
         return nullptr;
-    return it;
+    return &*it;
 }
 
 const Asset *Data::asset(const QString &id) const
