@@ -1,5 +1,12 @@
 #include "cppfunctionsymbol.h"
 
+#include "cpplanguagedata.h"
+#include "lspdocument.h"
+
+#include <QRegularExpression>
+
+#include <spdlog/spdlog.h>
+
 namespace Core {
 
 /*!
@@ -46,47 +53,163 @@ namespace Core {
  * Returns the name of this argument.
  */
 
+Argument Argument::fromHover(const QString &parameter)
+{
+    static auto identifierRegexp = QRegularExpression(R"([a-zA-Z_][a-zA-Z0-9_]*)");
+
+    auto words = parameter.split(" ");
+
+    // In C++, parameter names are optional, therefore we need to figure out if the parameter even has a name.
+    auto withoutKeywords = words;
+    withoutKeywords.removeIf([](const auto &word) {
+        return Cpp::keywords.contains(word);
+    });
+    const auto hasName = withoutKeywords.size() >= 2 && identifierRegexp.match(words.last()).hasMatch()
+        && !Cpp::primitiveTypes.contains(words.last());
+
+    Argument argument;
+    if (hasName) {
+        argument.name = words.last();
+
+        words.pop_back();
+    }
+
+    argument.type = words.join(" ");
+
+    return argument;
+}
+
 CppFunctionSymbol::CppFunctionSymbol(QObject *parent, const QString &name, const QString &description, Kind kind,
                                      TextRange range, TextRange selectionRange)
     : Symbol(parent, name, description, kind, range, selectionRange)
     , m_returnType {}
     , m_arguments {}
 {
-    QString desc = description;
+}
+
+QString CppFunctionSymbol::returnTypeFromDescription() const
+{
+    auto desc = m_description;
     // TODO: Add logic to handle type-qualifiers.
     // For now, discard type-qualifier, if found any.
     if (desc.startsWith("static "))
         desc.remove(0, 7);
     desc.chop((desc.length() - desc.lastIndexOf(')') - 1));
 
-    m_returnType = desc.left(desc.indexOf('(')).trimmed();
-    int argStart = desc.indexOf('(') + 1;
-    QString args = desc.mid(argStart, desc.length() - argStart - 1);
-
-    QStringList argsList = args.split(',', Qt::SkipEmptyParts);
-
-    for (const auto &arg : qAsConst(argsList)) {
-        m_arguments.push_back(Argument {.type = arg.trimmed(), .name = ""});
-    }
+    return desc.left(desc.indexOf('(')).trimmed();
 }
+
+std::optional<QString> CppFunctionSymbol::returnTypeFromLSP() const
+{
+    if (auto lspdocument = document()) {
+        auto hover = lspdocument->hover(selectionRange().start);
+
+        auto lines = hover.split("\n");
+        while (!lines.isEmpty()) {
+            auto line = lines.front();
+            lines.pop_front();
+
+            if (line.startsWith("→ ")) {
+                line.remove(0, 2);
+
+                return line;
+            }
+        }
+
+        return "";
+    }
+
+    return {};
+}
+
+QVector<Argument> CppFunctionSymbol::argumentsFromDescription() const
+{
+    int argStart = m_description.indexOf('(') + 1;
+    QString args = m_description.mid(argStart, m_description.lastIndexOf(')') - argStart);
+
+    const QStringList argsList = args.split(',', Qt::SkipEmptyParts);
+
+    QVector<Argument> arguments;
+    arguments.reserve(argsList.size());
+    for (const auto &arg : qAsConst(argsList)) {
+        arguments.push_back(Argument {.type = arg.trimmed(), .name = ""});
+    }
+
+    return arguments;
+}
+
+std::optional<QVector<Argument>> CppFunctionSymbol::argumentsFromLSP() const
+{
+    if (auto lspdocument = document()) {
+        auto hover = lspdocument->hover(selectionRange().start);
+
+        spdlog::debug("CppFunctionSymbol::argumentsFromLSP: Hover string:\n{}", hover.toStdString());
+
+        auto lines = hover.split("\n");
+        while (!lines.isEmpty() && !lines.first().contains("Parameters:")) {
+            lines.pop_front();
+        }
+        if (!lines.isEmpty()) {
+            // We found a Parameters listing
+            lines.pop_front(); // Remove the 'Parameters:' text
+
+            QVector<Core::Argument> arguments;
+            while (!lines.isEmpty() && lines.first().startsWith("- ")) {
+                auto parameter = lines.first();
+                lines.pop_front();
+
+                // remove the "- "
+                parameter.remove(0, 2);
+
+                arguments.emplaceBack(Argument::fromHover(parameter));
+            }
+
+            return arguments;
+        }
+
+        // No arguments found
+        return QVector<Core::Argument>();
+    } else {
+        spdlog::warn("Symbol '{}' doesn't have an associated document!", name().toStdString());
+    }
+
+    return {};
+}
+
 QString CppFunctionSymbol::returnType() const
 {
-    return m_returnType;
+    if (!m_returnType.has_value()) {
+        m_returnType = returnTypeFromLSP();
+    }
+
+    if (!m_returnType.has_value()) {
+        m_returnType = std::make_optional(returnTypeFromDescription());
+    }
+
+    return m_returnType.value();
 }
 const QVector<Argument> &CppFunctionSymbol::arguments() const
 {
-    return m_arguments;
-}
+    if (!m_arguments.has_value()) {
+        m_arguments = argumentsFromLSP();
+    }
 
-bool operator==(const Argument &left, const Argument &right)
-{
-    return ((left.type == right.type) && (left.name == right.name));
+    if (!m_arguments.has_value()) {
+        m_arguments = std::make_optional(argumentsFromDescription());
+    }
+
+    return m_arguments.value();
 }
 
 bool operator==(const CppFunctionSymbol &left, const CppFunctionSymbol &right)
 {
     return left.Symbol::operator==(right) && left.returnType() == right.returnType()
         && left.arguments() == right.arguments();
+}
+
+bool operator==(const Argument &left, const Argument &right)
+{
+    return ((left.type == right.type) && (left.name == right.name));
 }
 
 } // namespace Core

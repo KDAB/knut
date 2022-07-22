@@ -8,6 +8,7 @@
 
 namespace Core {
 
+class LspDocument;
 class ClassSymbol;
 class CppFunctionSymbol;
 
@@ -61,6 +62,8 @@ protected:
     TextRange m_range;
     TextRange m_selectionRange;
 
+    LspDocument *document() const;
+
 public:
     static Symbol *makeSymbol(QObject *parent, const Lsp::DocumentSymbol &lspSymbol, TextRange range,
                               TextRange selectionRange, QString context = "");
@@ -79,6 +82,8 @@ public:
     Kind kind() const;
     Core::TextRange range() const;
     Core::TextRange selectionRange() const;
+
+    Q_INVOKABLE void select();
 
     bool operator==(const Symbol &) const;
 };

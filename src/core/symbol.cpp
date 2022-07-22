@@ -110,6 +110,11 @@ Symbol *Symbol::makeSymbol(QObject *parent, const Lsp::DocumentSymbol &lspSymbol
     return makeSymbol(parent, name, description, kind, range, selectionRange);
 }
 
+LspDocument *Symbol::document() const
+{
+    return qobject_cast<LspDocument *>(parent());
+}
+
 /*!
  * \qmlmethod bool Symbol::isFunction()
  *
@@ -176,6 +181,13 @@ Core::TextRange Symbol::range() const
 Core::TextRange Symbol::selectionRange() const
 {
     return m_selectionRange;
+}
+
+void Symbol::select()
+{
+    if (auto lspDocument = document()) {
+        lspDocument->selectRange(selectionRange());
+    }
 }
 
 bool Symbol::operator==(const Symbol &other) const

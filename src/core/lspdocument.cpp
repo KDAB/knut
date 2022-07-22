@@ -201,6 +201,50 @@ void LspDocument::transformSymbol(const QString &symbolName, const QString &json
 }
 
 /*!
+ * \qmlmethod string LspDocument::hover()
+ *
+ * Returns information about the symbol at the current cursor position.
+ * The result of this call is a plain string that may be formatted in Markdown.
+ */
+QString LspDocument::hover() const
+{
+    return hover(textEdit()->textCursor().position());
+}
+
+QString LspDocument::hover(int position) const
+{
+    LOG("LspDocument::hover");
+
+    if (!checkClient())
+        return "";
+
+    Lsp::HoverParams params;
+    params.textDocument.uri = toUri();
+    params.position = fromPos(position);
+
+    auto result = client()->hover(std::move(params));
+    if (!result) {
+        return "";
+    }
+
+    if (!std::holds_alternative<Lsp::Hover>(*result)) {
+        spdlog::warn("LSP server returned no result for Hover");
+        return "";
+    }
+
+    auto hover = std::get<Lsp::Hover>(*result);
+
+    Lsp::MarkupContent markupContent;
+    if (const auto *content = std::get_if<Lsp::MarkupContent>(&hover.contents)) {
+        return QString::fromStdString(content->value);
+    } else {
+        spdlog::warn("LSP returned deprecated MarkedString type which is unsupported by Knut\n - Consider updating "
+                     "your LSP server");
+        return "";
+    }
+}
+
+/*!
  * \qmlmethod LspDocument::followSymbol()
  * Follow the symbol under the cursor.
  *
@@ -414,6 +458,18 @@ int LspDocument::toPos(const Lsp::Position &pos) const
         return cursor.position();
     }
     return 0;
+}
+
+Lsp::Position LspDocument::fromPos(int pos) const
+{
+    Lsp::Position position;
+
+    auto cursor = textEdit()->textCursor();
+    cursor.setPosition(pos, QTextCursor::MoveAnchor);
+
+    position.line = cursor.blockNumber();
+    position.character = cursor.positionInBlock();
+    return position;
 }
 
 TextRange LspDocument::toRange(const Lsp::Range &range) const

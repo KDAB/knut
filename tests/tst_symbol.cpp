@@ -10,6 +10,13 @@
 #include <QTest>
 #include <QThread>
 
+namespace Core {
+char *toString(const Argument &argument)
+{
+    return QTest::toString(QString("Type: '%1' Name: '%2'").arg(argument.type).arg(argument.name));
+}
+}
+
 class TestSymbol : public QObject
 {
     Q_OBJECT
@@ -27,7 +34,7 @@ class TestSymbol : public QObject
 private slots:
     void initTestCase() { Q_INIT_RESOURCE(core); }
 
-    void toFunction_data()
+    void toFunctionWithoutLSP_data()
     {
         QTest::addColumn<Core::Symbol *>("symbol");
         QTest::addColumn<FunctionData>("functionData");
@@ -108,7 +115,11 @@ private slots:
         QTest::newRow("test-case-method-one-arg-qhash-fail") << symbol7 << functionData7;
     }
 
-    void toFunction()
+    // This test case uses the fallback heuristic that doesn't use
+    // any additional LSP calls.
+    // This is forced by not setting the parent of the test cases
+    // to an LSPDocument.
+    void toFunctionWithoutLSP()
     {
         QFETCH(Core::Symbol *, symbol);
         QFETCH(FunctionData, functionData);
@@ -125,6 +136,110 @@ private slots:
         QEXPECT_FAIL("test-case-method-one-arg-qhash-fail", "This case is planned to be implemented later.", Continue);
         QCOMPARE(cppFunction->arguments(), functionData.arguments);
         QCOMPARE(cppFunction->range(), functionData.range);
+    }
+
+    void toFunctionWithLSP_data()
+    {
+        QTest::addColumn<QString>("fileName");
+        QTest::addColumn<QString>("symbolName");
+        QTest::addColumn<FunctionData>("functionData");
+
+        QString header = "myobject.h";
+        QString source = "myobject.cpp";
+        QString main = "main.cpp";
+        {
+            auto functionData =
+                FunctionData {.name = "MyObject::MyObject",
+                              .returnType = "", // Constructors don't really return anything
+                              .arguments = {Core::Argument {.type = "const std::string &", .name = "message"}},
+                              .range = {}};
+            QTest::newRow("constructor - header") << header << "MyObject::MyObject" << functionData;
+            QTest::newRow("constructor - source") << source << "MyObject::MyObject" << functionData;
+        }
+
+        {
+            auto functionData = FunctionData {.name = "MyObject::~MyObject",
+                                              .returnType = "", // destructors don't return anything
+                                              .arguments = {},
+                                              .range = {}};
+            QTest::newRow("destructor - header") << header << "MyObject::~MyObject" << functionData;
+            QTest::newRow("destructor - source") << source << "MyObject::~MyObject" << functionData;
+        }
+
+        {
+            auto functionData =
+                FunctionData {.name = "MyObject::sayMessage", .returnType = "void", .arguments = {}, .range = {}};
+            QTest::newRow("member function - header") << header << "MyObject::sayMessage" << functionData;
+            QTest::newRow("member function - source") << source << "MyObject::sayMessage" << functionData;
+        }
+
+        {
+            auto functionData = FunctionData {.name = "main",
+                                              .returnType = "int",
+                                              .arguments = {Core::Argument {.type = "int", .name = "argc"},
+                                                            Core::Argument {.type = "char **", .name = "argv"}},
+                                              .range = {}};
+            QTest::newRow("free function") << main << "main" << functionData;
+        }
+
+        {
+            auto functionData = FunctionData {
+                .name = "myFreeFunction",
+                .returnType = "int",
+                .arguments = {Core::Argument {.type = "unsigned int", .name = ""},
+                              Core::Argument {.type = "unsigned int", .name = ""},
+                              Core::Argument {.type = "long long", .name = ""},
+                              Core::Argument {.type = "const std::string", .name = ""},
+                              Core::Argument {.type = "const std::string &", .name = ""},
+                              Core::Argument {.type = "long long (*)(unsigned int, const std::string &)", .name = ""}},
+                .range = {}};
+            QTest::newRow("free function with unnamed parameters") << main << "myFreeFunction" << functionData;
+        }
+
+        {
+            auto functionData = FunctionData {
+                .name = "myOtherFreeFunction",
+                .returnType = "int",
+                .arguments = {Core::Argument {.type = "unsigned int", .name = "a"},
+                              Core::Argument {.type = "unsigned int", .name = "b"},
+                              Core::Argument {.type = "long long", .name = "c"},
+                              Core::Argument {.type = "const std::string", .name = "d"},
+                              Core::Argument {.type = "const std::string &", .name = "e_123"},
+                              Core::Argument {.type = "long long (*)(unsigned int, const std::string &)", .name = "f"}},
+                .range = {}};
+            QTest::newRow("free function with complicated named parameters")
+                << main << "myOtherFreeFunction" << functionData;
+        }
+    }
+
+    void toFunctionWithLSP()
+    {
+        QFETCH(QString, fileName);
+        QFETCH(QString, symbolName);
+        QFETCH(FunctionData, functionData);
+
+        Core::KnutCore core;
+        Core::Project::instance()->setRoot(Test::testDataPath() + "/projects/cpp-project");
+
+        auto lspDocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->open(fileName));
+        QVERIFY(lspDocument);
+
+        auto symbol = lspDocument->findSymbol(symbolName);
+        QVERIFY(symbol);
+        QVERIFY(symbol->isFunction());
+
+        auto fun = symbol->toFunction();
+        QVERIFY(fun);
+
+        QCOMPARE(fun->name(), functionData.name);
+        QCOMPARE(fun->returnType(), functionData.returnType);
+
+#ifdef OBSOLETE_CLANGD
+        QEXPECT_FAIL("constructor - header", "clangd only provides parameter info for clangd 14+", Continue);
+        QEXPECT_FAIL("constructor - source", "clangd only provides parameter info for clangd 14+", Continue);
+#endif
+        QCOMPARE(fun->arguments(), functionData.arguments);
+        // do not compare the range here, subject to change in the file, not much sense to testing it.
     }
 
     void toClass()

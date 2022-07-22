@@ -223,6 +223,21 @@ Client::declaration(DeclarationParams &&params, std::function<void(DeclarationRe
     return sendRequest(m_backend, request, asyncCallback);
 }
 
+std::optional<HoverRequest::Result> Client::hover(HoverParams &&params,
+                                                  std::function<void(HoverRequest::Result)> asyncCallback /* = {} */)
+{
+    if (!canSendHover()) {
+        spdlog::error("{} not supported by LSP server", HoverName);
+        return {};
+    }
+
+    HoverRequest request;
+    request.id = m_nextRequestId++;
+    request.params = std::move(params);
+
+    return sendRequest(m_backend, request, asyncCallback);
+}
+
 std::string Client::toUri(const QString &path)
 {
     QFileInfo fi(path);
@@ -315,27 +330,16 @@ bool Client::canSendDocumentChanges(TextDocumentSyncKind kind) const
 
 bool Client::canSendDocumentSymbol() const
 {
-    Q_ASSERT(m_state == Initialized);
-    // TODO handle dynamic capabilities
-    if (auto documentSymbolProvider = m_serverCapabilities.documentSymbolProvider) {
-        if (std::holds_alternative<DocumentSymbolOptions>(documentSymbolProvider.value())
-            || std::get<bool>(documentSymbolProvider.value())) {
-            return true;
-        }
-    }
-    return false;
+    return canSend<DocumentSymbolOptions>(&Lsp::ServerCapabilities::documentSymbolProvider);
 }
 
 bool Client::canSendDeclaration() const
 {
-    Q_ASSERT(m_state == Initialized);
-    // TODO handle dynamic capabilities
-    if (auto declarationProvider = m_serverCapabilities.declarationProvider) {
-        if (std::holds_alternative<DeclarationOptions>(declarationProvider.value())
-            || std::get<bool>(declarationProvider.value())) {
-            return true;
-        }
-    }
-    return false;
+    return canSend<DeclarationOptions>(&Lsp::ServerCapabilities::declarationProvider);
+}
+
+bool Client::canSendHover() const
+{
+    return canSend<HoverOptions>(&Lsp::ServerCapabilities::hoverProvider);
 }
 } // namespace Lsp

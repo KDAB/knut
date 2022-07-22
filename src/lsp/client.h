@@ -78,6 +78,9 @@ public:
     std::optional<DeclarationRequest::Result>
     declaration(DeclarationParams &&params, std::function<void(DeclarationRequest::Result)> asyncCallback = {});
 
+    std::optional<HoverRequest::Result> hover(HoverParams &&params,
+                                              std::function<void(HoverRequest::Result)> asyncCallback = {});
+
     State state() const { return m_state; }
 
     static std::string toUri(const QString &path);
@@ -94,6 +97,20 @@ private:
     bool canSendOpenCloseChanges() const;
     bool canSendDocumentSymbol() const;
     bool canSendDeclaration() const;
+    bool canSendHover() const;
+
+    template <typename Options, typename Variant>
+    bool canSend(Variant Lsp::ServerCapabilities::*pProvider) const
+    {
+        Q_ASSERT(m_state == Initialized);
+        // TODO handle dynamic capabilities
+        if (auto provider = m_serverCapabilities.*pProvider) {
+            if (std::holds_alternative<Options>(provider.value()) || std::get<bool>(provider.value())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 private:
     mutable int m_nextRequestId = 1;

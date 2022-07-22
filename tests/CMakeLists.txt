@@ -7,7 +7,7 @@ else()
         OUTPUT_STRIP_TRAILING_WHITESPACE
     )
     string(REGEX MATCH "[0-9]+\\.[0-9]+\\.[0-9]+" CLANGD_VERSION ${CLANGD_VERSION_TEXT})
-    if (${CLANGD_VERSION} VERSION_LESS  "13.0.0")
+    if (${CLANGD_VERSION} VERSION_LESS  "14.0.0")
         add_definitions(-DOBSOLETE_CLANGD=true)
     endif()
 endif()

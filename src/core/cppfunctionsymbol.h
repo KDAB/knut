@@ -18,6 +18,8 @@ struct Argument
 public:
     QString type;
     QString name;
+
+    static Argument fromHover(const QString &parameter);
 };
 bool operator==(const Argument &left, const Argument &right);
 
@@ -36,8 +38,17 @@ protected:
     CppFunctionSymbol(QObject *parent, const QString &name, const QString &description, Kind kind, TextRange range,
                       TextRange selectionRange);
 
-    QString m_returnType;
-    QVector<Argument> m_arguments;
+    mutable std::optional<QString> m_returnType;
+    mutable std::optional<QVector<Argument>> m_arguments;
+
+    // fallback heuristic, if `Hover` LSP call fails
+    QString returnTypeFromDescription() const;
+    QVector<Argument> argumentsFromDescription() const;
+
+    std::optional<QString> returnTypeFromLSP() const;
+    std::optional<QVector<Argument>> argumentsFromLSP() const;
+
+    Argument splitNameAndType(const QString &parameter) const;
 
 public:
     QString returnType() const;

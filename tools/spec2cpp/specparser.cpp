@@ -194,7 +194,7 @@ QString SpecParser::decodeType(QString param)
         return QString("std::vector<%1>").arg(decodeType(param));
     }
 
-    if (param.startsWith("void") | param.startsWith("none") | param.startsWith("null"))
+    if (param.startsWith("void") || param.startsWith("none") || param.startsWith("null"))
         return "std::nullptr_t";
     if (param == "number")
         return "int";

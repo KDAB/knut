@@ -2,10 +2,33 @@
 
 #include "myobject.h"
 
-int main(void) {
+int main(int argc, char *argv[]) {
     MyObject object("Hello World!");
 
     object.sayMessage();
 
     return 0;
+}
+
+// Test functions with/without named parameters
+using namespace std;
+int myFreeFunction(
+        unsigned,
+        unsigned int,
+        long long,
+        const string,
+        const std::string&,
+        long long (*)(unsigned, const std::string&)) {
+    return 42;
+}
+
+int myOtherFreeFunction(
+        unsigned a,
+        unsigned int b,
+        long long c,
+        const string d,
+        const std::string& e_123,
+        long long (*f)(unsigned, const std::string&)
+        ) {
+    return 42;
 }

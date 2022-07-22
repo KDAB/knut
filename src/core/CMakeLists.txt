@@ -3,6 +3,8 @@ project(knut-core LANGUAGES CXX)
 set(PROJECT_SOURCES
     classsymbol.h
     classsymbol.cpp
+    cpplanguagedata.h
+    cpplanguagedata.cpp
     cppdocument.h
     cppdocument.cpp
     cppdocument_p.h
