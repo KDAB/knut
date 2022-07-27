@@ -12,13 +12,13 @@ class TestLspDocument : public QObject
 {
     Q_OBJECT
 
-    void verifySymbol(Core::LspDocument *document, const Core::Symbol &symbol, const QString &name,
+    void verifySymbol(Core::LspDocument *document, const Core::Symbol *symbol, const QString &name,
                       Core::Symbol::Kind kind, const QString &selectionText)
     {
-        QVERIFY(!symbol.isNull());
-        QCOMPARE(symbol.name, name);
-        QCOMPARE(symbol.kind, kind);
-        document->selectRange(symbol.selectionRange);
+        QVERIFY(symbol != nullptr);
+        QCOMPARE(symbol->name(), name);
+        QCOMPARE(symbol->kind(), kind);
+        document->selectRange(symbol->selectionRange());
         QCOMPARE(document->selectedText(), selectionText);
     }
 
@@ -50,7 +50,7 @@ private slots:
 
         auto constructor = cppSymbols.first();
         verifySymbol(cppDocument, constructor, "MyObject::MyObject", Core::Symbol::Kind::Constructor, "MyObject");
-        cppDocument->selectRange(constructor.range);
+        cppDocument->selectRange(constructor->range());
         QCOMPARE(cppDocument->selectedText(),
                  QString(
                      R"(MyObject::MyObject(const std::string& message)
@@ -59,7 +59,7 @@ private slots:
 
         auto function = cppSymbols.last();
         verifySymbol(cppDocument, function, "MyObject::sayMessage", Core::Symbol::Kind::Method, "sayMessage");
-        cppDocument->selectRange(function.range);
+        cppDocument->selectRange(function->range());
         QCOMPARE(cppDocument->selectedText(),
                  QString(
                      R"(void MyObject::sayMessage(const std::string& test) {
@@ -97,19 +97,19 @@ private slots:
         verifySymbol(headerDocument, symbol, "MyObject", Core::Symbol::Kind::Class, "MyObject");
 
         symbol = headerDocument->findSymbol("m_message", Core::TextDocument::FindWholeWords);
-        QVERIFY(symbol.isNull());
+        QVERIFY(symbol == nullptr);
 
         symbol = headerDocument->findSymbol("m_message");
         verifySymbol(headerDocument, symbol, "MyObject::m_message", Core::Symbol::Kind::Field, "m_message");
 
         symbol = headerDocument->findSymbol("saymessage", Core::TextDocument::FindCaseSensitively);
-        QVERIFY(symbol.isNull());
+        QVERIFY(symbol == nullptr);
 
         symbol = headerDocument->findSymbol("saymessage");
         verifySymbol(headerDocument, symbol, "MyObject::sayMessage", Core::Symbol::Kind::Method, "sayMessage");
 
         symbol = headerDocument->findSymbol("m.message");
-        QVERIFY(symbol.isNull());
+        QVERIFY(symbol == nullptr);
 
         symbol = headerDocument->findSymbol("m.message", Core::TextDocument::FindRegexp);
         verifySymbol(headerDocument, symbol, "MyObject::m_message", Core::Symbol::Kind::Field, "m_message");
@@ -223,7 +223,7 @@ private slots:
 
             auto cppFile = qobject_cast<Core::LspDocument *>(Core::Project::instance()->get(file.fileName()));
 
-            const auto before = cppFile->findSymbol("Section::bar").range;
+            const auto before = cppFile->findSymbol("Section::bar")->range();
             QCOMPARE(before.start, 326);
             QCOMPARE(before.end, 386);
 
@@ -231,7 +231,7 @@ private slots:
             // state in Knut. Therefore the next language server call will fail.
             cppFile->gotoStartOfDocument();
             cppFile->insert("\n");
-            const auto after = cppFile->findSymbol("Section::bar").range;
+            const auto after = cppFile->findSymbol("Section::bar")->range();
             QCOMPARE(after.start, 327);
             QCOMPARE(after.end, 387);
         }

@@ -1,6 +1,7 @@
 #include "cppdocument.h"
 #include "cppdocument_p.h"
 
+#include "cppfunctionsymbol.h"
 #include "logger.h"
 #include "project.h"
 #include "settings.h"
@@ -276,27 +277,28 @@ bool CppDocument::insertCodeInMethod(const QString &methodName, QString code, Po
     LOG("CppDocument::insertCodeInMethod", methodName, code, insertAt);
 
     auto symbol = findSymbol(methodName);
-    if (symbol.isNull()) {
+    if (!symbol) {
         spdlog::warn("CppDocument::insertCodeInMethod: No symbol found for {}.", methodName.toStdString());
         return false;
     }
 
-    if ((symbol.kind != Symbol::Function) && (symbol.kind != Symbol::Method) && (symbol.kind != Symbol::Constructor)) {
-        spdlog::warn("CppDocument::insertCodeInMethod: {} is not a function or a method.", symbol.name.toStdString());
+    if (!symbol->isFunction()) {
+        spdlog::warn("CppDocument::insertCodeInMethod: {} is not a function or a method.",
+                     symbol->name().toStdString());
         return false;
     }
 
     QTextCursor cursor = textEdit()->textCursor();
-    cursor.setPosition(symbol.range.end);
+    cursor.setPosition(symbol->range().end);
     cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor);
     if (cursor.selectedText() != "}") {
-        spdlog::warn("CppDocument::insertCodeInMethod: {} is not a function definition.", symbol.name.toStdString());
+        spdlog::warn("CppDocument::insertCodeInMethod: {} is not a function definition.", symbol->name().toStdString());
         return false;
     }
 
     cursor.beginEditBlock();
     // Goto the end and move back one character
-    cursor.setPosition(symbol.range.end);
+    cursor.setPosition(symbol->range().end);
     cursor.movePosition(QTextCursor::PreviousCharacter);
 
     const QString strTab = tab();
@@ -659,25 +661,24 @@ void CppDocument::toggleSection()
     } else {
         // Check that we are in a function
         auto isFunction = [](const Symbol &symbol) {
-            return symbol.kind == Symbol::Method || symbol.kind == Symbol::Function
-                || symbol.kind == Symbol::Constructor;
+            return symbol.isFunction();
         };
         auto symbol = currentSymbol(isFunction);
-        if (symbol.isNull())
+        if (!symbol)
             return;
 
         auto cursorPos = cursor.position();
 
         cursor.beginEditBlock();
         // Start from the end
-        cursor.setPosition(symbol.range.end);
+        cursor.setPosition(symbol->range().end);
         cursor.movePosition(QTextCursor::StartOfLine);
         cursor.movePosition(QTextCursor::Up, QTextCursor::KeepAnchor);
 
         if (cursor.selectedText().startsWith(endifString)) {
             // The function is already commented out, remove the comments
             int start = textEdit()->document()->find(elseString, cursor, QTextDocument::FindBackward).selectionStart();
-            if (start > symbol.range.start)
+            if (start > symbol->range().start)
                 cursor.setPosition(start, QTextCursor::KeepAnchor);
             cursor.removeSelectedText();
             cursor.setPosition(moveBlock(cursor.position(), QTextCursor::PreviousCharacter));
@@ -688,13 +689,13 @@ void CppDocument::toggleSection()
             cursorPos -= ifdefString.length() + 1;
         } else {
             // Comment out the function with #if/#def, make sure to return something if needed
-            cursor.setPosition(symbol.range.end);
+            cursor.setPosition(symbol->range().end);
             cursor.movePosition(QTextCursor::PreviousCharacter);
 
             QString text = elseString + newLine;
             if (!sectionSettings.debug.isEmpty())
-                text += tab() + sectionSettings.debug.arg(symbol.name) + ";\n";
-            const QString returnType = symbol.toFunction().returnType;
+                text += tab() + sectionSettings.debug.arg(symbol->name()) + ";\n";
+            const QString returnType = symbol->toFunction()->returnType();
             auto it = sectionSettings.return_values.find(returnType.toStdString());
             if (it != sectionSettings.return_values.end())
                 text += tab() + QString("return %1;\n").arg(QString::fromStdString(it->second));
@@ -783,13 +784,12 @@ bool CppDocument::removeInclude(const QString &include)
 void CppDocument::deleteMethodLocal(const QString &methodName, const QString &signature)
 {
     auto doesNotMatchMethod = [&methodName, &signature](const auto &symbol) {
-        const auto isFunction = symbol.kind == Symbol::Kind::Function || symbol.kind == Symbol::Kind::Constructor
-            || symbol.kind == Symbol::Kind::Method;
+        const auto isFunction = symbol->isFunction();
 
         if (signature.isEmpty())
-            return !isFunction || symbol.name != methodName;
+            return !isFunction || symbol->name() != methodName;
         else
-            return !isFunction || symbol.name != methodName || symbol.description != signature;
+            return !isFunction || symbol->name() != methodName || symbol->description() != signature;
     };
 
     auto symbolList = symbols();
@@ -801,13 +801,13 @@ void CppDocument::deleteMethodLocal(const QString &methodName, const QString &si
     // That way removing a function won't change the position of the other functions.
     // This assumes the ranges don't overlap.
     std::sort(symbolList.begin(), symbolList.end(), [](const auto &symbol1, const auto &symbol2) {
-        return symbol1.range.start > symbol2.range.start;
+        return symbol1->range().start > symbol2->range().start;
     });
 
     for (const auto &symbol : symbolList) {
-        spdlog::trace("CppDocument::deleteMethodLocal: Removing symbol '{}'", symbol.name.toStdString());
+        spdlog::trace("CppDocument::deleteMethodLocal: Removing symbol '{}'", symbol->name().toStdString());
 
-        deleteSymbol(symbol);
+        deleteSymbol(*symbol);
     }
 }
 
@@ -876,17 +876,16 @@ void CppDocument::deleteMethod()
     LOG("CppDocument::deleteMethod");
 
     auto isFunction = [](const auto &symbol) {
-        return symbol.kind == Symbol::Kind::Function || symbol.kind == Symbol::Kind::Method
-            || symbol.kind == Symbol::Kind::Constructor;
+        return symbol.isFunction();
     };
 
     auto symbol = currentSymbol(isFunction);
 
-    if (symbol.isNull()) {
+    if (!symbol) {
         spdlog::error(
             "CppDocument::deleteMethod: Cursor is not currently within a function definition or declaration!");
     } else {
-        deleteMethod(symbol.name, symbol.description);
+        deleteMethod(symbol->name(), symbol->description());
     }
 }
 

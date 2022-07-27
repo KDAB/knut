@@ -1,14 +1,14 @@
 project(knut-core LANGUAGES CXX)
 
 set(PROJECT_SOURCES
-    cppclass.h
-    cppclass.cpp
+    classsymbol.h
+    classsymbol.cpp
     cppdocument.h
     cppdocument.cpp
     cppdocument_p.h
     cppdocument_p.cpp
-    cppfunction.h
-    cppfunction.cpp
+    cppfunctionsymbol.h
+    cppfunctionsymbol.cpp
     dir.h
     dir.cpp
     document.h

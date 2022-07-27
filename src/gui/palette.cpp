@@ -176,13 +176,13 @@ public:
         case Qt::DisplayRole:
         case Qt::ToolTipRole:
             if (index.column() == 0 && role == Qt::DisplayRole) {
-                return m_symbols.at(index.row()).name;
+                return m_symbols.at(index.row())->name();
             } else if (index.column() == 1) {
-                return m_symbols.at(index.row()).description;
+                return m_symbols.at(index.row())->description();
             }
             break;
         case Qt::UserRole:
-            return m_symbols.at(index.row()).name;
+            return m_symbols.at(index.row())->name();
         }
         return {};
     }
@@ -198,7 +198,7 @@ public:
     }
 
 private:
-    QVector<Core::Symbol> m_symbols;
+    QVector<Core::Symbol *> m_symbols;
 };
 
 //=============================================================================

@@ -1,6 +1,7 @@
 #include "symbol.h"
 
-#include "cppclass.h"
+#include "classsymbol.h"
+#include "cppfunctionsymbol.h"
 #include "logger.h"
 
 #include <core/lspdocument.h>
@@ -73,82 +74,114 @@ namespace Core {
  * contained by the `range`.
  */
 
-/*!
- * \qmlproperty bool Symbol::isNull
- * This property returns `true` if the symbol is null.
- */
-
-bool Symbol::isNull() const
+Symbol::Symbol(QObject *parent, const QString &name, const QString &description, Kind kind, TextRange range,
+               TextRange selectionRange)
+    : QObject(parent)
+    , m_name {name}
+    , m_description {description}
+    , m_kind {kind}
+    , m_range {range}
+    , m_selectionRange {selectionRange}
 {
-    return name.isEmpty();
+}
+
+Symbol *Symbol::makeSymbol(QObject *parent, const QString &name, const QString &description, Kind kind, TextRange range,
+                           TextRange selectionRange)
+{
+    if (kind == Method || kind == Function || kind == Constructor) {
+        return new CppFunctionSymbol(parent, name, description, kind, range, selectionRange);
+    }
+    if (kind == Class || kind == Struct) {
+        return new ClassSymbol(parent, name, description, kind, range, selectionRange);
+    }
+    return new Symbol(parent, name, description, kind, range, selectionRange);
+}
+
+Symbol *Symbol::makeSymbol(QObject *parent, const Lsp::DocumentSymbol &lspSymbol, TextRange range,
+                           TextRange selectionRange, QString context /* = ""*/)
+{
+    auto description = QString::fromStdString(lspSymbol.detail.value_or(""));
+    auto kind = static_cast<Symbol::Kind>(lspSymbol.kind);
+    auto name = QString::fromStdString(lspSymbol.name);
+
+    if (!context.isEmpty())
+        name = context + "::" + name;
+
+    return makeSymbol(parent, name, description, kind, range, selectionRange);
 }
 
 /*!
- * \qmlmethod CppClass Symbol::toClass()
- * Returns a structure representing the class for the current symbol.
- * The method checks if the `kind` of the symbol for `Symbol::Class` or `Symbol::Struct`. If so then it finds all the
- * members of the class from the list of symbols in current document, adds them in `CppClass` structure, and returns it.
- * If not, then it returns an empty structure.
- * \todo
+ * \qmlmethod bool Symbol::isFunction()
+ *
+ * Returns whether this Symbol refers to a class or struct.
  */
-CppClass Symbol::toClass()
+bool Symbol::isClass() const
+{
+    return qobject_cast<const ClassSymbol *>(this);
+}
+
+ClassSymbol *Symbol::toClass()
 {
     LOG("Symbol::toClass");
 
-    if (kind == Class || kind == Struct) {
-        QVector<Symbol> members;
-        if (auto lspDocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->currentDocument())) {
-            for (auto &symbol : lspDocument->symbols()) {
-                if (range.contains(symbol.range) && name != symbol.name)
-                    members.append(symbol);
-            }
-        }
+    auto clazz = qobject_cast<ClassSymbol *>(this);
 
-        return CppClass {.name = name, .members = std::move(members)};
-    } else {
-        spdlog::warn("Symbol::toClass - {} should be a `Class`.", name.toStdString());
+    if (!clazz)
+        spdlog::warn("Symbol::toClass - {} should be a `Class`.", m_name.toStdString());
 
-        return CppClass();
-    }
+    return clazz;
 }
 
 /*!
- * \qmlmethod CppFunction Symbol::toFunction()
- * Returns a `CppFunction` structure for current `Symbol::Symbol`.
- * The method checks if the `kind` of the symbol for `Symbol::Method` or `Symbol::Function`. If so then it extracts
- * information from `Symbol::description`, fills it in `CppFunction` structure, and returns it. If not, then it returns
- * an empty structure.
- * \todo
+ * \qmlmethod bool Symbol::isFunction()
+ *
+ * Returns whether this Symbol refers to a function.
+ * This includes constructors and methods
  */
-CppFunction Symbol::toFunction()
+bool Symbol::isFunction() const
 {
-    LOG("Symbol::toFunction");
+    return qobject_cast<const CppFunctionSymbol *>(this);
+}
 
-    if (kind == Method || kind == Function || kind == Constructor) {
-        QString desc = this->description;
-        // TODO: Add logic to handle type-qualifiers.
-        // For now, discard type-qualifier, if found any.
-        if (desc.startsWith("static "))
-            desc.remove(0, 7);
-        desc.chop((desc.length() - desc.lastIndexOf(')') - 1));
+CppFunctionSymbol *Symbol::toFunction()
+{
+    auto function = qobject_cast<CppFunctionSymbol *>(this);
 
-        QString returnType = desc.left(desc.indexOf('(')).trimmed();
-        int argStart = desc.indexOf('(') + 1;
-        QString args = desc.mid(argStart, desc.length() - argStart - 1);
+    if (!function)
+        spdlog::warn("Symbol::toFunction - {} should be either a method or a function.", m_name.toStdString());
 
-        QStringList argsList = args.split(',', Qt::SkipEmptyParts);
+    return function;
+}
 
-        QVector<Argument> arguments;
-        for (const auto &arg : qAsConst(argsList)) {
-            arguments.push_back(Argument {.type = arg.trimmed(), .name = ""});
-        }
+QString Symbol::name() const
+{
+    return m_name;
+}
 
-        return CppFunction {name, returnType, arguments, range};
-    } else {
-        spdlog::warn("Symbol::toFunction - {} should be either a method or a function.", name.toStdString());
+QString Symbol::description() const
+{
+    return m_description;
+}
 
-        return CppFunction();
-    }
+Symbol::Kind Symbol::kind() const
+{
+    return m_kind;
+}
+
+Core::TextRange Symbol::range() const
+{
+    return m_range;
+}
+
+Core::TextRange Symbol::selectionRange() const
+{
+    return m_selectionRange;
+}
+
+bool Symbol::operator==(const Symbol &other) const
+{
+    return m_name == other.m_name && m_description == other.m_description && m_kind == other.m_kind
+        && m_range == other.m_range && m_selectionRange == other.m_selectionRange;
 }
 
 } // namespace Core

@@ -15,7 +15,7 @@ public:
 
     void clear();
 
-    const QVector<Core::Symbol> &symbols();
+    const QVector<Core::Symbol *> &symbols();
 
 private:
     enum Flags {
@@ -23,7 +23,7 @@ private:
     };
 
     LspDocument *const m_document;
-    QVector<Core::Symbol> m_symbols;
+    QVector<Core::Symbol *> m_symbols;
     int m_flags = 0;
 };
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "cppfunction.h"
 #include "textrange.h"
 
 #include "lsp/types.h"
@@ -9,17 +8,17 @@
 
 namespace Core {
 
-struct CppClass;
+class ClassSymbol;
+class CppFunctionSymbol;
 
-struct Symbol
+class Symbol : public QObject
 {
-    Q_GADGET
-    Q_PROPERTY(QString name MEMBER name);
-    Q_PROPERTY(QString description MEMBER description);
-    Q_PROPERTY(Kind kind MEMBER kind);
-    Q_PROPERTY(Core::TextRange range MEMBER range);
-    Q_PROPERTY(Core::TextRange selectionRange MEMBER selectionRange);
-    Q_PROPERTY(bool isNull READ isNull CONSTANT)
+    Q_OBJECT
+    Q_PROPERTY(QString name READ name CONSTANT);
+    Q_PROPERTY(QString description READ description CONSTANT);
+    Q_PROPERTY(Kind kind READ kind CONSTANT);
+    Q_PROPERTY(Core::TextRange range READ range CONSTANT);
+    Q_PROPERTY(Core::TextRange selectionRange READ selectionRange CONSTANT);
 
 public:
     enum Kind {
@@ -52,21 +51,39 @@ public:
     };
     Q_ENUM(Kind)
 
-    Q_INVOKABLE Core::CppClass toClass();
-    Q_INVOKABLE Core::CppFunction toFunction();
+protected:
+    Symbol(QObject *parent, const QString &name, const QString &description, Kind kind, TextRange range,
+           TextRange selectionRange);
 
-    QString name;
-    QString description;
-    Kind kind;
-    TextRange range;
-    TextRange selectionRange;
+    QString m_name;
+    QString m_description;
+    Kind m_kind;
+    TextRange m_range;
+    TextRange m_selectionRange;
 
-    bool isNull() const;
+public:
+    static Symbol *makeSymbol(QObject *parent, const Lsp::DocumentSymbol &lspSymbol, TextRange range,
+                              TextRange selectionRange, QString context = "");
 
-    bool operator==(const Symbol &) const = default;
+    static Symbol *makeSymbol(QObject *parent, const QString &name, const QString &description, Kind kind,
+                              TextRange range, TextRange selectionRange);
+
+    Q_INVOKABLE bool isClass() const;
+    Core::ClassSymbol *toClass();
+
+    Q_INVOKABLE bool isFunction() const;
+    Core::CppFunctionSymbol *toFunction();
+
+    QString name() const;
+    QString description() const;
+    Kind kind() const;
+    Core::TextRange range() const;
+    Core::TextRange selectionRange() const;
+
+    bool operator==(const Symbol &) const;
 };
 
 } // namespace Core
 
 Q_DECLARE_METATYPE(Core::Symbol)
-Q_DECLARE_METATYPE(QVector<Core::Symbol>)
+Q_DECLARE_METATYPE(QVector<Core::Symbol *>)

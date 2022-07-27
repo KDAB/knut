@@ -26,13 +26,13 @@ public:
 
     void setLspClient(Lsp::Client *client);
 
-    Q_INVOKABLE Core::Symbol findSymbol(const QString &name, int options = NoFindFlags) const;
-    Q_INVOKABLE QVector<Core::Symbol> symbols() const;
+    Q_INVOKABLE Core::Symbol *findSymbol(const QString &name, int options = NoFindFlags) const;
+    Q_INVOKABLE QVector<Core::Symbol *> symbols() const;
     Q_INVOKABLE void transformSymbol(const QString &symbolName, const QString &jsonFileName);
 
     bool hasLspClient() const;
 
-    Symbol currentSymbol(std::function<bool(const Symbol &)> filterFunc) const;
+    Symbol *currentSymbol(std::function<bool(const Symbol &)> filterFunc) const;
     void deleteSymbol(const Symbol &symbol);
 
 public slots:

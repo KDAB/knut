@@ -17,7 +17,7 @@ void LspCache::clear()
     m_flags = 0;
 }
 
-const QVector<Symbol> &LspCache::symbols()
+const QVector<Symbol *> &LspCache::symbols()
 {
     if (m_flags & HasSymbols)
         return m_symbols;
@@ -44,18 +44,15 @@ const QVector<Symbol> &LspCache::symbols()
     const std::function<void(const std::vector<Lsp::DocumentSymbol> &, QString)> fillSymbols =
         [this, &fillSymbols](const std::vector<Lsp::DocumentSymbol> &lspSymbols, QString context) {
             for (const auto &lspSymbol : lspSymbols) {
-                const QString description = lspSymbol.detail ? QString::fromStdString(lspSymbol.detail.value()) : "";
-                QString name = QString::fromStdString(lspSymbol.name);
-                if (!context.isEmpty())
-                    name = context + "::" + name;
-                m_symbols.push_back(Symbol {name, description, static_cast<Core::Symbol::Kind>(lspSymbol.kind),
-                                            m_document->toRange(lspSymbol.range),
-                                            m_document->toRange(lspSymbol.selectionRange)});
+                auto symbol = Symbol::makeSymbol(m_document, lspSymbol, m_document->toRange(lspSymbol.range),
+                                                 m_document->toRange(lspSymbol.selectionRange), context);
+                m_symbols.push_back(symbol);
+
                 if (lspSymbol.children) {
                     if (lspSymbol.kind == Lsp::SymbolKind::String) // case for BEGIN_MESSAGE_MAP
                         fillSymbols(lspSymbol.children.value(), context);
                     else
-                        fillSymbols(lspSymbol.children.value(), name);
+                        fillSymbols(lspSymbol.children.value(), symbol->name());
                 }
             }
         };

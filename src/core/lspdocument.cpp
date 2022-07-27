@@ -56,15 +56,18 @@ bool LspDocument::hasLspClient() const
 /**
  * Returns the symbol the cursor is in, or an empty symbol otherwise
  * The function is used to filter out the symbol
+ *
+ * Note that the returned \c Symbol pointer is only valid until the document
+ * it originates from is deconstructed.
  */
-Symbol LspDocument::currentSymbol(std::function<bool(const Symbol &)> filterFunc) const
+Symbol *LspDocument::currentSymbol(std::function<bool(const Symbol &)> filterFunc) const
 {
     const int pos = textEdit()->textCursor().position();
 
     auto symbolList = symbols();
     std::ranges::reverse(symbolList);
     for (auto symbol : symbolList) {
-        if (symbol.range.contains(pos) && (!filterFunc || filterFunc(symbol)))
+        if (symbol->range().contains(pos) && (!filterFunc || filterFunc(*symbol)))
             return symbol;
     }
     return {};
@@ -76,7 +79,7 @@ Symbol LspDocument::currentSymbol(std::function<bool(const Symbol &)> filterFunc
  */
 void LspDocument::deleteSymbol(const Symbol &symbol)
 {
-    auto range = symbol.range;
+    auto range = symbol.range();
 
     // Include any leading whitespace (excluding newlines).
     auto leading = Core::TextRange {range.start, range.start + 1};
@@ -114,8 +117,11 @@ void LspDocument::deleteSymbol(const Symbol &symbol)
 /*!
  * \qmlmethod vector<Symbol> LspDocument::symbols()
  * Returns the list of symbols in the current document.
+ *
+ * Note that the returned \c Symbol pointers are only valid until the document they
+ * originate from is deconstructed.
  */
-QVector<Core::Symbol> LspDocument::symbols() const
+QVector<Core::Symbol *> LspDocument::symbols() const
 {
     LOG("LspDocument::symbols");
     if (!checkClient())
@@ -294,10 +300,8 @@ Document *LspDocument::switchDeclarationDefinition()
     auto symbolList = symbols();
 
     auto currentFunction = std::find_if(symbolList.begin(), symbolList.end(), [&cursor](const auto &symbol) {
-        auto isInRange = symbol.range.start <= cursor.position() && cursor.position() <= symbol.range.end;
-        auto isFunction = symbol.kind == Symbol::Kind::Function || symbol.kind == Symbol::Kind::Constructor
-            || symbol.kind == Symbol::Kind::Method;
-        return isInRange && isFunction;
+        auto isInRange = symbol->range().start <= cursor.position() && cursor.position() <= symbol->range().end;
+        return isInRange && symbol->isFunction();
     });
 
     if (currentFunction == symbolList.end()) {
@@ -305,7 +309,7 @@ Document *LspDocument::switchDeclarationDefinition()
         return nullptr;
     }
 
-    LOG_RETURN("document", followSymbol(currentFunction->selectionRange.start));
+    LOG_RETURN("document", followSymbol((*currentFunction)->selectionRange().start));
 }
 
 /*!
@@ -323,9 +327,9 @@ void LspDocument::selectSymbol(const QString &name, int options)
     LOG("LspDocument::selectSymbol", LOG_ARG("text", name), options);
     if (!checkClient())
         return;
-    auto symbol = findSymbol(name, options);
-    if (!symbol.isNull())
-        selectRange(symbol.selectionRange);
+
+    if (auto symbol = findSymbol(name, options))
+        selectRange(symbol->selectionRange());
 }
 
 /*!
@@ -335,8 +339,11 @@ void LspDocument::selectSymbol(const QString &name, int options)
  * - `TextDocument.FindCaseSensitively`: match case
  * - `TextDocument.FindWholeWords`: match only fully qualified symbol
  * - `TextDocument.FindRegexp`: use a regexp
+ *
+ * Note that the returned \c Symbol pointer is only valid until the document it originates
+ * from is deconstructed.
  */
-Symbol LspDocument::findSymbol(const QString &name, int options) const
+Symbol *LspDocument::findSymbol(const QString &name, int options) const
 {
     LOG("LspDocument::findSymbol", LOG_ARG("text", name), options);
     if (!checkClient())
@@ -344,20 +351,21 @@ Symbol LspDocument::findSymbol(const QString &name, int options) const
 
     const auto &symbols = m_cache->symbols();
     const auto regexp = (options & FindRegexp) ? createRegularExpression(name, options) : QRegularExpression {};
-    auto byName = [name, options, regexp](const Symbol &symbol) {
+    auto byName = [name, options, regexp](Symbol *symbol) {
         if (options & FindWholeWords)
-            return symbol.name.compare(name, (options & FindCaseSensitively) ? Qt::CaseSensitive : Qt::CaseInsensitive)
+            return symbol->name().compare(name,
+                                          (options & FindCaseSensitively) ? Qt::CaseSensitive : Qt::CaseInsensitive)
                 == 0;
         else if (options & FindRegexp)
-            return regexp.match(symbol.name).hasMatch();
+            return regexp.match(symbol->name()).hasMatch();
         else
-            return symbol.name.contains(name,
-                                        (options & FindCaseSensitively) ? Qt::CaseSensitive : Qt::CaseInsensitive);
+            return symbol->name().contains(name,
+                                           (options & FindCaseSensitively) ? Qt::CaseSensitive : Qt::CaseInsensitive);
     };
     auto it = std::ranges::find_if(symbols, byName);
     if (it != symbols.end())
         return *it;
-    return {};
+    return nullptr;
 }
 
 void LspDocument::didOpen()
