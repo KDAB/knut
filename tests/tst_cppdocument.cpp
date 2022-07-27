@@ -4,6 +4,7 @@
 
 #include "common/test_utils.h"
 
+#include <QPlainTextEdit>
 #include <QTest>
 #include <QThread>
 
@@ -92,12 +93,12 @@ private slots:
         // When cursor position is at the end of block
         document->setPosition(419);
         QCOMPARE(document->gotoBlockStart(), 53);
-        QCOMPARE(document->gotoBlockEnd(), 419);
+        QCOMPARE(document->gotoBlockEnd(), 495);
 
         // When cursor position is in between blocks
         document->setPosition(57);
         QCOMPARE(document->gotoBlockStart(), 53);
-        QCOMPARE(document->gotoBlockEnd(), 419);
+        QCOMPARE(document->gotoBlockEnd(), 495);
 
         document->setPosition(70);
         QCOMPARE(document->gotoBlockStart(), 64);
@@ -210,6 +211,27 @@ private slots:
             cppFile->save();
             QVERIFY(file.compare());
         }
+    }
+
+    // Regression test:
+    // Putting the cursor before the last character made `moveBlock` run into an infinite loop.
+    void selectBlockUpAtEndOfFile()
+    {
+        Core::KnutCore core;
+        Core::Project::instance()->setRoot(Test::testDataPath() + "/tst_cppdocument/blockStartEnd");
+
+        auto document = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open("source.cpp"));
+        auto textEdit = document->textEdit();
+
+        auto cursor = textEdit->textCursor();
+        auto lastCharacterPos = textEdit->document()->characterCount() - 1;
+
+        // Placing the cursor right at the end was caught, but placing it one character before that wasn't.
+        cursor.setPosition(lastCharacterPos - 1);
+        textEdit->setTextCursor(cursor);
+
+        document->selectBlockUp();
+        QCOMPARE(document->selectBlockUp(), lastCharacterPos - 1);
     }
 };
 

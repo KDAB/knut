@@ -589,7 +589,12 @@ int CppDocument::moveBlock(int startPos, QTextCursor::MoveOperation direction)
     // Iterate to find the other side of the block
     int counter = 0;
     pos += inc;
-    while (pos != lastPos) {
+
+    auto hitLastChar = [direction, lastPos](int pos) {
+        return direction == QTextCursor::NextCharacter ? pos >= lastPos : pos <= lastPos;
+    };
+
+    while (!hitLastChar(pos)) {
         currentChar = doc->characterAt(pos);
 
         if (incCounterChar.contains(currentChar)) {

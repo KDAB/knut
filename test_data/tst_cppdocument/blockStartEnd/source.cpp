@@ -20,4 +20,5 @@ bool Dir::setCurrentPath(const QString &path)
     return false;
 }
 
+// This closing paranthesis is deliberately the last character in the file.
 }
