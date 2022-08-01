@@ -9,8 +9,8 @@
 #include "lsp/types.h"
 
 #include "project.h"
-#include "textlocation.h"
 #include "symbol.h"
+#include "textlocation.h"
 
 #include "scriptmanager.h"
 
@@ -383,15 +383,16 @@ Document *LspDocument::followSymbol(int pos)
 
     auto locations = std::vector<Lsp::Location>();
 
-    if (std::holds_alternative<Lsp::Location>(*result)) {
-        auto location = std::get<Lsp::Location>(*result);
-        locations.push_back(location);
-
-    } else if (std::holds_alternative<std::vector<Lsp::Location>>(*result)) {
-        locations = std::move(std::get<std::vector<Lsp::Location>>(*result));
-
-    } else if (std::holds_alternative<std::vector<Lsp::LocationLink>>(*result)) {
-        auto locationLinks = std::get<std::vector<Lsp::LocationLink>>(*result);
+    if (std::holds_alternative<Lsp::Declaration>(*result)) {
+        auto &declaration = std::get<Lsp::Declaration>(*result);
+        if (std::holds_alternative<Lsp::Location>(declaration)) {
+            auto location = std::get<Lsp::Location>(declaration);
+            locations.push_back(location);
+        } else if (std::holds_alternative<std::vector<Lsp::Location>>(declaration)) {
+            locations = std::move(std::get<std::vector<Lsp::Location>>(declaration));
+        }
+    } else if (std::holds_alternative<std::vector<Lsp::DeclarationLink>>(*result)) {
+        auto locationLinks = std::get<std::vector<Lsp::DeclarationLink>>(*result);
         for (const auto &link : locationLinks)
             locations.push_back({link.targetUri, link.targetSelectionRange});
     }
@@ -613,10 +614,12 @@ void LspDocument::changeContent(int position, int charsRemoved, int charsAdded)
         document.uri = toUri();
 
         std::vector<Lsp::TextDocumentContentChangeEvent> events;
-        Lsp::TextDocumentContentChangeEvent event;
 
+        // Set text
+        Lsp::TextDocumentContentChangeEventFull event {};
         event.text = text().toStdString();
-        events.emplace_back(std::move(event));
+
+        events.push_back(std::move(event));
 
         Lsp::DidChangeTextDocumentParams params;
         params.textDocument = document;

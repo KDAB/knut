@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>specification-3-16.md</file>
+        <file>specification-3-17.json</file>
     </qresource>
 </RCC>

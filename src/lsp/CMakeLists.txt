@@ -18,6 +18,10 @@ set(PROJECT_SOURCES
     types_json.cpp
 )
 
+if (MSVC)
+    add_compile_options(/bigobj)
+endif ()
+
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
 target_link_libraries(${PROJECT_NAME}
     nlohmann_json::nlohmann_json

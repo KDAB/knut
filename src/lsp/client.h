@@ -68,18 +68,19 @@ public:
      * has arrive. Otherwise, the request is synchronous, and the result is returned. An empty optional means there was
      * an error.
      */
-    std::optional<DocumentSymbolRequest::Result>
+    std::optional<TextDocumentDocumentSymbolRequest::Result>
     documentSymbol(DocumentSymbolParams &&params,
-                   std::function<void(DocumentSymbolRequest::Result)> asyncCallback = {});
+                   std::function<void(TextDocumentDocumentSymbolRequest::Result)> asyncCallback = {});
 
-    std::optional<DeclarationRequest::Result>
-    declaration(DeclarationParams &&params, std::function<void(DeclarationRequest::Result)> asyncCallback = {});
+    std::optional<TextDocumentDeclarationRequest::Result>
+    declaration(DeclarationParams &&params,
+                std::function<void(TextDocumentDeclarationRequest::Result)> asyncCallback = {});
 
-    std::optional<HoverRequest::Result> hover(HoverParams &&params,
-                                              std::function<void(HoverRequest::Result)> asyncCallback = {});
+    std::optional<TextDocumentHoverRequest::Result>
+    hover(HoverParams &&params, std::function<void(TextDocumentHoverRequest::Result)> asyncCallback = {});
 
-    std::optional<ReferencesRequest::Result>
-    references(ReferenceParams &&params, std::function<void(ReferencesRequest::Result)> asyncCallback = {});
+    std::optional<TextDocumentReferencesRequest::Result>
+    references(ReferenceParams &&params, std::function<void(TextDocumentReferencesRequest::Result)> asyncCallback = {});
 
     State state() const { return m_state; }
 

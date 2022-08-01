@@ -5,6 +5,8 @@
 
 #include <vector>
 
+#include <nlohmann/json.hpp>
+
 class SpecParser
 {
     enum State {
@@ -66,6 +68,40 @@ private:
     Data::Enumeration m_enumeration;
     Data::Type m_type;
     std::vector<Data::Interface> m_interfaces;
+};
+
+class MetaModelSpecParser
+{
+public:
+    MetaData parse(const QString &fileName);
+
+private:
+    void readSpecialInterface(const MetaData::InterfacePtr &interface);
+
+    MetaData::TypePtr readType(const nlohmann::json &object);
+    QString readComment(const nlohmann::json &object);
+    MetaData::TypePtr readProperty(const nlohmann::json &object);
+
+    void parseRequest(const nlohmann::json &object);
+    void parseNotification(const nlohmann::json &object);
+    void parseStructure(const nlohmann::json &object);
+    void parseEnumeration(const nlohmann::json &object);
+    void parseTypeAlias(const nlohmann::json &object);
+    bool parseLiteral(const nlohmann::json &object, const QString &name);
+
+    void parseRequests(const nlohmann::json &json);
+    void parseNotifications(const nlohmann::json &json);
+    void parseStructures(const nlohmann::json &json);
+    void parseEnumerations(const nlohmann::json &json);
+    void parseTypeAliases(const nlohmann::json &json);
+
+    void handleMixins();
+
+private:
+    MetaData m_data;
+    QList<MetaData::TypePtr> m_typeStack;
+
+    QStringList m_path;
 };
 
 #endif // SPECPARSER_H

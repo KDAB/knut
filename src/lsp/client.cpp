@@ -81,7 +81,7 @@ bool Client::initialize(const QString &rootPath)
 
     // Workspace capabilities
     {
-        ClientCapabilities::WorkspaceType workspaceCapabilities;
+        WorkspaceClientCapabilities workspaceCapabilities;
         workspaceCapabilities.workspaceFolders = true;
         request.params.capabilities.workspace = workspaceCapabilities;
     }
@@ -148,7 +148,7 @@ void Client::openProject(const QString &rootPath)
     if (!fi.exists() || !canSendWorkspaceFoldersChanges())
         return;
 
-    DidChangeWorkspaceFoldersNotification notification;
+    WorkspaceDidChangeWorkspaceFoldersNotification notification;
     notification.params.event.added.push_back({Utils::toDocumentUri(rootPath), fi.baseName().toStdString()});
     m_backend->sendNotification(notification);
 }
@@ -160,7 +160,7 @@ void Client::closeProject(const QString &rootPath)
     if (!fi.exists() || !canSendWorkspaceFoldersChanges())
         return;
 
-    DidChangeWorkspaceFoldersNotification notification;
+    WorkspaceDidChangeWorkspaceFoldersNotification notification;
     notification.params.event.removed.push_back({Utils::toDocumentUri(rootPath), fi.baseName().toStdString()});
     m_backend->sendNotification(notification);
 }
@@ -170,7 +170,7 @@ void Client::didOpen(DidOpenTextDocumentParams &&params)
     if (!canSendOpenCloseChanges())
         return;
 
-    DidOpenNotification notification;
+    TextDocumentDidOpenNotification notification;
     notification.params = std::move(params);
     m_backend->sendNotification(notification);
 }
@@ -180,7 +180,7 @@ void Client::didClose(DidCloseTextDocumentParams &&params)
     if (!canSendOpenCloseChanges())
         return;
 
-    DidCloseNotification notification;
+    TextDocumentDidCloseNotification notification;
     notification.params = std::move(params);
     m_backend->sendNotification(notification);
 }
@@ -190,36 +190,40 @@ void Client::didChange(DidChangeTextDocumentParams &&params)
     if (!canSendOpenCloseChanges())
         return;
 
-    DidChangeNotification notification;
+    TextDocumentDidChangeNotification notification;
     notification.params = std::move(params);
     m_backend->sendNotification(notification);
 }
 
-std::optional<DocumentSymbolRequest::Result>
-Client::documentSymbol(DocumentSymbolParams &&params, std::function<void(DocumentSymbolRequest::Result)> asyncCallback)
+std::optional<TextDocumentDocumentSymbolRequest::Result>
+Client::documentSymbol(DocumentSymbolParams &&params,
+                       std::function<void(TextDocumentDocumentSymbolRequest::Result)> asyncCallback)
 {
-    return sendGenericRequest<DocumentSymbolRequest>(&Client::canSendDocumentSymbol, DocumentSymbolName,
-                                                     std::move(params), asyncCallback);
+    return sendGenericRequest<TextDocumentDocumentSymbolRequest>(
+        &Client::canSendDocumentSymbol, TextDocumentDocumentSymbolName, std::move(params), asyncCallback);
 }
 
-std::optional<DeclarationRequest::Result>
-Client::declaration(DeclarationParams &&params, std::function<void(DeclarationRequest::Result)> asyncCallback /* = {}*/)
+std::optional<TextDocumentDeclarationRequest::Result>
+Client::declaration(DeclarationParams &&params,
+                    std::function<void(TextDocumentDeclarationRequest::Result)> asyncCallback /* = {}*/)
 {
-    return sendGenericRequest<DeclarationRequest>(&Client::canSendDeclaration, DeclarationName, std::move(params),
-                                                  asyncCallback);
+    return sendGenericRequest<TextDocumentDeclarationRequest>(&Client::canSendDeclaration, TextDocumentDeclarationName,
+                                                              std::move(params), asyncCallback);
 }
 
-std::optional<HoverRequest::Result> Client::hover(HoverParams &&params,
-                                                  std::function<void(HoverRequest::Result)> asyncCallback /* = {} */)
+std::optional<TextDocumentHoverRequest::Result>
+Client::hover(HoverParams &&params, std::function<void(TextDocumentHoverRequest::Result)> asyncCallback /* = {} */)
 {
-    return sendGenericRequest<HoverRequest>(&Client::canSendHover, HoverName, std::move(params), asyncCallback);
+    return sendGenericRequest<TextDocumentHoverRequest>(&Client::canSendHover, TextDocumentHoverName, std::move(params),
+                                                        asyncCallback);
 }
 
-std::optional<ReferencesRequest::Result>
-Client::references(ReferenceParams &&params, std::function<void(ReferencesRequest::Result)> asyncCallback /* = {} */)
+std::optional<TextDocumentReferencesRequest::Result>
+Client::references(ReferenceParams &&params,
+                   std::function<void(TextDocumentReferencesRequest::Result)> asyncCallback /* = {} */)
 {
-    return sendGenericRequest<ReferencesRequest>(&Client::canSendReferences, ReferencesName, std::move(params),
-                                                 asyncCallback);
+    return sendGenericRequest<TextDocumentReferencesRequest>(&Client::canSendReferences, TextDocumentReferencesName,
+                                                             std::move(params), asyncCallback);
 }
 
 std::string Client::toUri(const QString &path)

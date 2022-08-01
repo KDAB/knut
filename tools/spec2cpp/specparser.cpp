@@ -660,3 +660,544 @@ void SpecParser::readInterfaceProperties(const QString &line)
         return;
     }
 }
+
+// MetaModel parsing
+MetaData MetaModelSpecParser::parse(const QString &fileName)
+{
+    QFile file(fileName);
+    if (!file.open(QFile::ReadOnly | QFile::Text))
+        return {};
+
+    QTextStream in(&file);
+
+    nlohmann::json json;
+    try {
+        json = nlohmann::json::parse(in.readAll().toStdString());
+    } catch (nlohmann::json::exception &exception) {
+        Q_UNUSED(exception);
+        return {};
+    }
+
+    // Default types
+    {
+        auto type = std::make_shared<MetaData::Type>("DocumentUri");
+        type->value = "std::string";
+        m_data.types.push_back(std::move(type));
+    }
+
+    // Read data
+    parseRequests(json.at("requests"));
+    parseNotifications(json.at("notifications"));
+    parseEnumerations(json.at("enumerations"));
+    parseStructures(json.at("structures"));
+    parseTypeAliases(json.at("typeAliases"));
+
+    // Handle mixins
+    handleMixins();
+
+    return m_data;
+}
+
+void MetaModelSpecParser::readSpecialInterface(const MetaData::InterfacePtr &interface)
+{
+    const auto findItem = [&interface](const auto &name) {
+        return std::ranges::find_if(interface->items, [&name](const auto &item) {
+            return item->name.startsWith(name);
+        });
+    };
+
+    if (interface->name == "WorkspaceEdit") {
+        static const std::vector<QString> propertyToType = {"changes", "changeAnnotations"};
+        for (const auto &propertyName : propertyToType) {
+            auto it = findItem(propertyName);
+            if (it == interface->items.end())
+                continue;
+
+            MetaData::TypePtr child = *it;
+
+            const auto childPropertyType = child->value;
+            const auto childName = QString("%1%2Type").arg(child->name[0].toUpper(), child->name.mid(1).remove('?'));
+
+            // Update property value
+            child->value = childName;
+
+            // Add a new child type
+            child = interface->items.emplace_back(std::make_shared<MetaData::Interface>(childName));
+
+            // Add a property to said child type
+            child = child->items.emplace_back(std::make_shared<MetaData::Type>("propertyMap"));
+            child->value = childPropertyType;
+        }
+    } else if (interface->name == "FormattingOptions") {
+        const auto &property = interface->items.emplace_back(std::make_shared<MetaData::Type>("propertyMap"));
+        property->kind = MetaData::TypeKind::Map;
+        property->value = "std::map<std::string, std::variant<bool, int, std::string>>";
+    } else if (interface->name == "NotebookDocumentSyncOptions") {
+        // Remove one NotebookSelectorType
+        auto it = findItem("NotebookSelectorType");
+        if (it != interface->items.end())
+            interface->items.erase(it);
+
+        // Get the next one and fix that one up
+        it = findItem("NotebookSelectorType");
+        if (it != interface->items.end()) {
+            for (auto &property : (*it)->items) {
+                if (!property->name.endsWith('?'))
+                    property->name.append('?');
+            }
+        }
+
+        it = findItem("notebookSelector");
+        if (it != interface->items.end())
+            (*it)->value = "std::vector<NotebookSelectorType>";
+
+    } else if (interface->name.startsWith("TextDocumentContentChangeEvent_")) {
+        if (interface->items.size() >= 3)
+            interface->name = "TextDocumentContentChangeEventPartial";
+        else
+            interface->name = "TextDocumentContentChangeEventFull";
+    } else if (interface->name.startsWith("MarkedString_")) {
+        // There should only be 1
+        interface->name = "MarkedStringFull";
+    }
+}
+
+MetaData::TypePtr MetaModelSpecParser::readType(const nlohmann::json &object)
+{
+    if (object.is_null())
+        return nullptr;
+
+    const auto addDependency = [this](const auto &name) {
+        // Add dependencies until an interface adds it.
+        for (auto it = m_typeStack.begin(); it != m_typeStack.end(); ++it) {
+            auto type = *it;
+            if (type->name != name)
+                type->dependencies.append(name);
+
+            if (type->is_interface())
+                break;
+        }
+    };
+
+    const auto typesToString = [](const auto &items) {
+        QStringList stringList;
+        for (const auto &item : items) {
+            stringList.append(item->value);
+        }
+        return stringList.join(", ");
+    };
+
+    auto type = std::make_shared<MetaData::Type>();
+
+    const auto kind = object["kind"].get<std::string>();
+    if (kind == "base") {
+        type->kind = MetaData::TypeKind::Base;
+
+        const auto name = object["name"].get<std::string>();
+        if (name == "void" || name == "null" || name == "none")
+            type->value = QString("std::nullptr_t");
+        else if (name == "number" || name == "integer")
+            type->value = QString("int");
+        else if (name == "uinteger")
+            type->value = QString("unsigned int");
+        else if (name == "decimal")
+            type->value = QString("float");
+        else if (name == "boolean")
+            type->value = QString("bool");
+        else if (name == "string")
+            type->value = QString("std::string");
+        else if (name == "any" || name == "T" || name == "unknown" || name == "LSPObject" || name == "LSPAny")
+            type->value = QString("nlohmann::json");
+        else
+            type->value = QString::fromStdString(name);
+    } else if (kind == "reference") {
+        type->kind = MetaData::TypeKind::Reference;
+
+        const auto name = object["name"].get<std::string>();
+        if (name == "any" || name == "T" || name == "unknown" || name == "LSPObject" || name == "LSPAny")
+            type->value = QString("nlohmann::json");
+        else {
+            const auto outName = QString::fromStdString(name);
+            addDependency(outName);
+
+            type->value = outName;
+        }
+    } else if (kind == "array") {
+        type->kind = MetaData::TypeKind::Array;
+
+        type->items.push_back(readType(object["element"]));
+
+        type->value = QString("std::vector<%1>").arg(typesToString(type->items));
+    } else if (kind == "map") {
+        type->kind = MetaData::TypeKind::Map;
+
+        type->items.push_back(readType(object["key"]));
+        type->items.push_back(readType(object["value"]));
+
+        type->value = QString("std::map<%1>").arg(typesToString(type->items));
+    } else if (kind == "or") {
+        type->kind = MetaData::TypeKind::Or;
+        for (const auto &item : object["items"]) {
+            type->items.push_back(readType(item));
+        }
+        type->value = QString("std::variant<%1>").arg(typesToString(type->items));
+    } else if (kind == "and") {
+        type->kind = MetaData::TypeKind::And;
+        for (const auto &item : object["items"]) {
+            type->items.push_back(readType(item));
+        }
+
+        // How should these be handled? Spec mentions nothing.
+        type->value = typesToString(decltype(type->items) {type->items.front()});
+    } else if (kind == "tuple") {
+        type->kind = MetaData::TypeKind::Tuple;
+        for (const auto &item : object["items"]) {
+            type->items.push_back(readType(item));
+        }
+        type->value = QString("std::tuple<%1>").arg(typesToString(type->items));
+    } else if (kind == "literal") {
+        type->kind = MetaData::TypeKind::Literal;
+
+        QString name = m_path.back();
+
+        const auto &parent = m_typeStack.back();
+        if (parent->is_interface())
+            name = QString("%1%2Type").arg(name[0].toUpper(), name.mid(1));
+        else {
+            static QMap<QString, uint32_t> uniqueLiteralMap;
+            name.append(QString("_%1").arg(++uniqueLiteralMap[name]));
+        }
+
+        // If parseLiteral return true its a dependency
+        if (parseLiteral(object["value"], name)) {
+            // The name might have changed, update it
+            name = m_data.interfaces.back()->name;
+            addDependency(name);
+        }
+
+        type->value = name;
+    } else if (kind == "stringLiteral") {
+        type->kind = MetaData::TypeKind::StringLiteral;
+        type->value = QString::fromStdString(object["value"].get<std::string>());
+    } else if (kind == "integerLiteral") {
+        type->kind = MetaData::TypeKind::IntegerLiteral;
+        // Not used at the moment
+    } else if (kind == "booleanLiteral") {
+        type->kind = MetaData::TypeKind::BooleanLiteral;
+        // Not used at the moment
+    } else
+        Q_UNREACHABLE();
+
+    return type;
+}
+
+QString MetaModelSpecParser::readComment(const nlohmann::json &object)
+{
+    auto documentation = QString::fromStdString(object.get<std::string>());
+    if (documentation.contains('\n'))
+        documentation = QString("/*\n%1\n*/\n").arg(documentation);
+    else if (documentation.endsWith("*/"))
+        documentation = QString("/* %1\n").arg(documentation);
+    else
+        documentation = QString("// %1\n").arg(documentation);
+
+    return documentation;
+}
+
+MetaData::TypePtr MetaModelSpecParser::readProperty(const nlohmann::json &object)
+{
+    auto name = QString::fromStdString(object["name"].get<std::string>());
+
+    // Add to path
+    m_path.push_back(name);
+
+    // Create property
+    auto property = readType(object["type"]);
+    property->name = name;
+
+    // Check for comments/documentation
+    if (object.contains("documentation"))
+        property->documentation = readComment(object["documentation"]);
+
+    // Is it optional?
+    if (object.contains("optional"))
+        property->name.append('?');
+
+    // Remove name from path
+    m_path.pop_back();
+
+    // Check if the property is a string literal
+    if (!property->items.empty()) {
+        bool stringLiterals = std::ranges::all_of(property->items, [](const auto &item) {
+            return item->kind == MetaData::TypeKind::StringLiteral;
+        });
+
+        if (stringLiterals) {
+            QString name = property->name;
+            name.remove('?');
+
+            // Split list of stringLiterals to separate properties
+            for (const auto &item : property->items) {
+                item->name = QString("%1_%2").arg(name, item->value);
+            }
+
+            property->kind = MetaData::TypeKind::StringLiteral;
+            property->value = "std::string";
+        }
+    }
+
+    return property;
+}
+
+void MetaModelSpecParser::parseRequest(const nlohmann::json &object)
+{
+    auto &request = m_data.requests.emplace_back();
+    request.name = QString::fromStdString(object["method"].get<std::string>());
+    if (object.contains("result"))
+        request.result = readType(object["result"]);
+
+    if (object.contains("params"))
+        request.params = readType(object["params"]);
+
+    if (object.contains("partialResult"))
+        request.partialResult = readType(object["partialResult"]);
+}
+
+void MetaModelSpecParser::parseNotification(const nlohmann::json &object)
+{
+    auto &notification = m_data.notifications.emplace_back();
+    notification.name = QString::fromStdString(object["method"].get<std::string>());
+    if (object.contains("params"))
+        notification.params = readType(object["params"]);
+}
+
+void MetaModelSpecParser::parseStructure(const nlohmann::json &object)
+{
+    auto &interface = m_data.interfaces.emplace_back(new MetaData::Interface);
+    interface->name = QString::fromStdString(object["name"].get<std::string>());
+
+    // Add type to stack
+    m_typeStack.push_back(interface);
+
+    // Add name to path
+    m_path.push_back(interface->name);
+
+    if (object.contains("properties")) {
+        for (const auto &entry : object["properties"]) {
+            interface->items.push_back(readProperty(entry));
+        }
+    }
+
+    if (object.contains("extends")) {
+        for (const auto &item : object["extends"]) {
+            interface->extends.push_back(readType(item));
+        }
+    }
+
+    if (object.contains("mixins")) {
+        for (const auto &item : object["mixins"]) {
+            interface->mixins.push_back(readType(item));
+        }
+    }
+
+    // Check if interface requires some changes
+    readSpecialInterface(interface);
+
+    // Remove name from path
+    m_path.pop_back();
+
+    // Remove interface from stack
+    m_typeStack.pop_back();
+
+    // Partition items by type (keep order)
+    std::stable_partition(interface->items.begin(), interface->items.end(), [](const auto &value) {
+        return value->is_interface();
+    });
+}
+
+void MetaModelSpecParser::parseEnumeration(const nlohmann::json &object)
+{
+    MetaData::Enumeration enumeration;
+    if (object.contains("type")) {
+        auto type = readType(object["type"]);
+        if (type->value == "std::string")
+            enumeration.type = MetaData::Enumeration::String;
+        else if (type->value == "int")
+            enumeration.type = MetaData::Enumeration::Integer;
+        else if (type->value == "unsigned int")
+            enumeration.type = MetaData::Enumeration::UInteger;
+        else {
+            // Ignore enums without a defined type.
+            return;
+        }
+    }
+
+    enumeration.name = QString::fromStdString(object["name"].get<std::string>());
+    if (object.contains("documentation"))
+        enumeration.documentation = readComment(object["documentation"]);
+
+    if (object.contains("values")) {
+        for (const auto &entry : object["values"]) {
+            auto &value = enumeration.values.emplace_back();
+
+            value.name = QString::fromStdString(entry["name"].get<std::string>());
+            if (entry.contains("documentation"))
+                value.documentation = readComment(entry["documentation"]);
+
+            const auto &entryValue = entry["value"];
+            switch (enumeration.type) {
+            case MetaData::Enumeration::String:
+                value.value = QString::fromStdString(entryValue.get<std::string>());
+                break;
+
+            case MetaData::Enumeration::Integer:
+                value.value = QString::number(entryValue.get<int>());
+                break;
+
+            case MetaData::Enumeration::UInteger:
+                value.value = QString::number(entryValue.get<unsigned int>());
+                break;
+
+            case MetaData::Enumeration::Invalid:
+                Q_UNREACHABLE();
+            }
+        }
+    }
+
+    m_data.enumerations.push_back(std::move(enumeration));
+}
+
+void MetaModelSpecParser::parseTypeAlias(const nlohmann::json &object)
+{
+    auto &type = m_data.types.emplace_back(new MetaData::Type);
+    type->name = QString::fromStdString(object["name"].get<std::string>());
+
+    // Add type to stack
+    m_typeStack.push_back(type);
+
+    // Add name to path
+    m_path.push_back(type->name);
+
+    // Check for comments/documentation
+    if (object.contains("documentation"))
+        type->documentation = readComment(object["documentation"]);
+
+    // Parse type and steal the data
+    auto data = readType(object["type"]);
+    type->kind = data->kind;
+    type->value = std::move(data->value);
+    type->items = std::move(data->items);
+
+    // Remove name from path
+    m_path.pop_back();
+
+    // Remove type from stack
+    m_typeStack.pop_back();
+}
+
+bool MetaModelSpecParser::parseLiteral(const nlohmann::json &object, const QString &name)
+{
+    auto interface = std::make_shared<MetaData::Interface>();
+    interface->name = name;
+
+    // Add type to stack
+    m_typeStack.push_back(interface);
+
+    // Add name to path
+    m_path.push_back(interface->name);
+
+    if (object.contains("properties")) {
+        for (const auto &entry : object["properties"]) {
+            interface->items.push_back(readProperty(entry));
+        }
+    }
+
+    // Check if interface requires some changes
+    readSpecialInterface(interface);
+
+    // Remove name from path
+    m_path.pop_back();
+
+    // Remove type from stack
+    m_typeStack.pop_back();
+
+    // Partition items by type (keep order)
+    std::stable_partition(interface->items.begin(), interface->items.end(), [](const auto &value) {
+        return value->is_interface();
+    });
+
+    // Add to parent (if any)
+    const auto &parent = m_typeStack.back();
+    if (parent->is_interface()) {
+        parent->items.push_back(interface);
+        return false;
+    }
+
+    m_data.interfaces.push_back(interface);
+    return true;
+}
+
+void MetaModelSpecParser::parseRequests(const nlohmann::json &json)
+{
+    for (const auto &obj : json) {
+        parseRequest(obj);
+    }
+}
+
+void MetaModelSpecParser::parseNotifications(const nlohmann::json &json)
+{
+    for (const auto &obj : json) {
+        parseNotification(obj);
+    }
+}
+
+void MetaModelSpecParser::parseStructures(const nlohmann::json &json)
+{
+    for (const auto &obj : json) {
+        parseStructure(obj);
+    }
+}
+
+void MetaModelSpecParser::parseEnumerations(const nlohmann::json &json)
+{
+    for (const auto &obj : json) {
+        parseEnumeration(obj);
+    }
+}
+
+void MetaModelSpecParser::parseTypeAliases(const nlohmann::json &json)
+{
+    for (const auto &obj : json) {
+        parseTypeAlias(obj);
+    }
+}
+
+void MetaModelSpecParser::handleMixins()
+{
+    const auto findType = [](auto &types, const auto &name) -> MetaData::TypePtr {
+        auto it = std::ranges::find_if(types, [&name](const auto &value) {
+            return value->name == name;
+        });
+        if (it != types.end())
+            return *it;
+
+        return nullptr;
+    };
+
+    for (const auto &interface : m_data.interfaces) {
+        for (const auto &mixin : interface->mixins) {
+            auto type = findType(m_data.interfaces, mixin->value);
+            if (!type)
+                type = findType(m_data.types, mixin->value);
+
+            if (type) {
+                const auto &items = type->items;
+                interface->items.insert(interface->items.end(), items.begin(), items.end());
+
+                interface->dependencies.append(type->dependencies);
+            }
+        }
+
+        interface->dependencies.removeDuplicates();
+    }
+}

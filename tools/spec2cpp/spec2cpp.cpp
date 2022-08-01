@@ -87,12 +87,13 @@ int main(int argc, char *argv[])
     Q_UNUSED(argc);
     Q_UNUSED(argv);
 
-    SpecParser parser;
-    Data data = parser.parse(":/specification-3-16.md");
+    MetaModelSpecParser parser;
+
+    auto data = parser.parse(":/specification-3-17.json");
     // printSpecification(data);
     // printDependencies(data);
 
-    SpecWriter writer(data);
+    MetaSpecWriter writer(data);
     writer.saveNotifications();
     writer.saveRequests();
     writer.saveCode();

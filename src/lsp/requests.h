@@ -8,26 +8,64 @@
 
 namespace Lsp {
 
-inline constexpr char InitializeName[] = "initialize";
-struct InitializeRequest : public RequestMessage<InitializeName, InitializeParams, InitializeResult, InitializeError>
+inline constexpr char TextDocumentImplementationName[] = "textDocument/implementation";
+struct TextDocumentImplementationRequest
+    : public RequestMessage<TextDocumentImplementationName, ImplementationParams,
+                            std::variant<Definition, std::vector<DefinitionLink>, std::nullptr_t>, std::nullptr_t>
 {
 };
 
-inline constexpr char ShutdownName[] = "shutdown";
-struct ShutdownRequest : public RequestMessage<ShutdownName, std::nullptr_t, std::nullptr_t, std::nullptr_t>
+inline constexpr char TextDocumentTypeDefinitionName[] = "textDocument/typeDefinition";
+struct TextDocumentTypeDefinitionRequest
+    : public RequestMessage<TextDocumentTypeDefinitionName, TypeDefinitionParams,
+                            std::variant<Definition, std::vector<DefinitionLink>, std::nullptr_t>, std::nullptr_t>
 {
 };
 
-inline constexpr char ShowMessageRequestName[] = "window/showMessageRequest";
-struct ShowMessageRequestRequest
-    : public RequestMessage<ShowMessageRequestName, ShowMessageRequestParams,
-                            std::variant<MessageActionItem, std::nullptr_t>, std::nullptr_t>
+inline constexpr char WorkspaceWorkspaceFoldersName[] = "workspace/workspaceFolders";
+struct WorkspaceWorkspaceFoldersRequest
+    : public RequestMessage<WorkspaceWorkspaceFoldersName, std::nullptr_t,
+                            std::variant<std::vector<WorkspaceFolder>, std::nullptr_t>, std::nullptr_t>
 {
 };
 
-inline constexpr char ShowDocumentName[] = "window/showDocument";
-struct ShowDocumentRequest
-    : public RequestMessage<ShowDocumentName, ShowDocumentParams, ShowDocumentResult, std::nullptr_t>
+inline constexpr char WorkspaceConfigurationName[] = "workspace/configuration";
+struct WorkspaceConfigurationRequest : public RequestMessage<WorkspaceConfigurationName, ConfigurationParams,
+                                                             std::vector<nlohmann::json>, std::nullptr_t>
+{
+};
+
+inline constexpr char TextDocumentDocumentColorName[] = "textDocument/documentColor";
+struct TextDocumentDocumentColorRequest : public RequestMessage<TextDocumentDocumentColorName, DocumentColorParams,
+                                                                std::vector<ColorInformation>, std::nullptr_t>
+{
+};
+
+inline constexpr char TextDocumentColorPresentationName[] = "textDocument/colorPresentation";
+struct TextDocumentColorPresentationRequest
+    : public RequestMessage<TextDocumentColorPresentationName, ColorPresentationParams, std::vector<ColorPresentation>,
+                            std::nullptr_t>
+{
+};
+
+inline constexpr char TextDocumentFoldingRangeName[] = "textDocument/foldingRange";
+struct TextDocumentFoldingRangeRequest
+    : public RequestMessage<TextDocumentFoldingRangeName, FoldingRangeParams,
+                            std::variant<std::vector<FoldingRange>, std::nullptr_t>, std::nullptr_t>
+{
+};
+
+inline constexpr char TextDocumentDeclarationName[] = "textDocument/declaration";
+struct TextDocumentDeclarationRequest
+    : public RequestMessage<TextDocumentDeclarationName, DeclarationParams,
+                            std::variant<Declaration, std::vector<DeclarationLink>, std::nullptr_t>, std::nullptr_t>
+{
+};
+
+inline constexpr char TextDocumentSelectionRangeName[] = "textDocument/selectionRange";
+struct TextDocumentSelectionRangeRequest
+    : public RequestMessage<TextDocumentSelectionRangeName, SelectionRangeParams,
+                            std::variant<std::vector<SelectionRange>, std::nullptr_t>, std::nullptr_t>
 {
 };
 
@@ -37,252 +75,9 @@ struct WorkDoneProgressCreateRequest
 {
 };
 
-inline constexpr char RegisterCapabilityName[] = "client/registerCapability";
-struct RegisterCapabilityRequest
-    : public RequestMessage<RegisterCapabilityName, RegistrationParams, std::nullptr_t, std::nullptr_t>
-{
-};
-
-inline constexpr char UnregisterCapabilityName[] = "client/unregisterCapability";
-struct UnregisterCapabilityRequest
-    : public RequestMessage<UnregisterCapabilityName, UnregistrationParams, std::nullptr_t, std::nullptr_t>
-{
-};
-
-inline constexpr char WorkspaceFoldersName[] = "workspace/workspaceFolders";
-struct WorkspaceFoldersRequest
-    : public RequestMessage<WorkspaceFoldersName, std::nullptr_t,
-                            std::variant<std::vector<WorkspaceFolder>, std::nullptr_t>, std::nullptr_t>
-{
-};
-
-inline constexpr char ConfigurationName[] = "workspace/configuration";
-struct ConfigurationRequest
-    : public RequestMessage<ConfigurationName, ConfigurationParams, std::vector<nlohmann::json>, std::nullptr_t>
-{
-};
-
-inline constexpr char SymbolName[] = "workspace/symbol";
-struct SymbolRequest
-    : public RequestMessage<SymbolName, WorkspaceSymbolParams,
-                            std::variant<std::vector<SymbolInformation>, std::nullptr_t>, std::nullptr_t>
-{
-};
-
-inline constexpr char ApplyEditName[] = "workspace/applyEdit";
-struct ApplyEditRequest
-    : public RequestMessage<ApplyEditName, ApplyWorkspaceEditParams, ApplyWorkspaceEditResponse, std::nullptr_t>
-{
-};
-
-inline constexpr char WillCreateFilesName[] = "workspace/willCreateFiles";
-struct WillCreateFilesRequest : public RequestMessage<WillCreateFilesName, CreateFilesParams,
-                                                      std::variant<WorkspaceEdit, std::nullptr_t>, std::nullptr_t>
-{
-};
-
-inline constexpr char WillRenameFilesName[] = "workspace/willRenameFiles";
-struct WillRenameFilesRequest : public RequestMessage<WillRenameFilesName, RenameFilesParams,
-                                                      std::variant<WorkspaceEdit, std::nullptr_t>, std::nullptr_t>
-{
-};
-
-inline constexpr char WillDeleteFilesName[] = "workspace/willDeleteFiles";
-struct WillDeleteFilesRequest : public RequestMessage<WillDeleteFilesName, DeleteFilesParams,
-                                                      std::variant<WorkspaceEdit, std::nullptr_t>, std::nullptr_t>
-{
-};
-
-inline constexpr char WillSaveWaitUntilName[] = "textDocument/willSaveWaitUntil";
-struct WillSaveWaitUntilRequest
-    : public RequestMessage<WillSaveWaitUntilName, WillSaveTextDocumentParams,
-                            std::variant<std::vector<TextEdit>, std::nullptr_t>, std::nullptr_t>
-{
-};
-
-inline constexpr char CompletionName[] = "textDocument/completion";
-struct CompletionRequest
-    : public RequestMessage<CompletionName, CompletionParams,
-                            std::variant<std::vector<CompletionItem>, CompletionList, std::nullptr_t>, std::nullptr_t>
-{
-};
-
-inline constexpr char CompletionItemResolveName[] = "completionItem/resolve";
-struct CompletionItemResolveRequest
-    : public RequestMessage<CompletionItemResolveName, CompletionItem, CompletionItem, std::nullptr_t>
-{
-};
-
-inline constexpr char HoverName[] = "textDocument/hover";
-struct HoverRequest : public RequestMessage<HoverName, HoverParams, std::variant<Hover, std::nullptr_t>, std::nullptr_t>
-{
-};
-
-inline constexpr char SignatureHelpName[] = "textDocument/signatureHelp";
-struct SignatureHelpRequest : public RequestMessage<SignatureHelpName, SignatureHelpParams,
-                                                    std::variant<SignatureHelp, std::nullptr_t>, std::nullptr_t>
-{
-};
-
-inline constexpr char DeclarationName[] = "textDocument/declaration";
-struct DeclarationRequest
-    : public RequestMessage<DeclarationName, DeclarationParams,
-                            std::variant<Location, std::vector<Location>, std::vector<LocationLink>, std::nullptr_t>,
-                            std::nullptr_t>
-{
-};
-
-inline constexpr char DefinitionName[] = "textDocument/definition";
-struct DefinitionRequest
-    : public RequestMessage<DefinitionName, DefinitionParams,
-                            std::variant<Location, std::vector<Location>, std::vector<LocationLink>, std::nullptr_t>,
-                            std::nullptr_t>
-{
-};
-
-inline constexpr char TypeDefinitionName[] = "textDocument/typeDefinition";
-struct TypeDefinitionRequest
-    : public RequestMessage<TypeDefinitionName, TypeDefinitionParams,
-                            std::variant<Location, std::vector<Location>, std::vector<LocationLink>, std::nullptr_t>,
-                            std::nullptr_t>
-{
-};
-
-inline constexpr char ImplementationName[] = "textDocument/implementation";
-struct ImplementationRequest
-    : public RequestMessage<ImplementationName, ImplementationParams,
-                            std::variant<Location, std::vector<Location>, std::vector<LocationLink>, std::nullptr_t>,
-                            std::nullptr_t>
-{
-};
-
-inline constexpr char ReferencesName[] = "textDocument/references";
-struct ReferencesRequest : public RequestMessage<ReferencesName, ReferenceParams,
-                                                 std::variant<std::vector<Location>, std::nullptr_t>, std::nullptr_t>
-{
-};
-
-inline constexpr char DocumentHighlightName[] = "textDocument/documentHighlight";
-struct DocumentHighlightRequest
-    : public RequestMessage<DocumentHighlightName, DocumentHighlightParams,
-                            std::variant<std::vector<DocumentHighlight>, std::nullptr_t>, std::nullptr_t>
-{
-};
-
-inline constexpr char DocumentSymbolName[] = "textDocument/documentSymbol";
-struct DocumentSymbolRequest
-    : public RequestMessage<DocumentSymbolName, DocumentSymbolParams,
-                            std::variant<std::vector<DocumentSymbol>, std::vector<SymbolInformation>, std::nullptr_t>,
-                            std::nullptr_t>
-{
-};
-
-inline constexpr char CodeActionName[] = "textDocument/codeAction";
-struct CodeActionRequest
-    : public RequestMessage<CodeActionName, CodeActionParams,
-                            std::variant<std::vector<std::variant<Command, CodeAction>>, std::nullptr_t>,
-                            std::nullptr_t>
-{
-};
-
-inline constexpr char CodeActionResolveName[] = "codeAction/resolve";
-struct CodeActionResolveRequest : public RequestMessage<CodeActionResolveName, CodeAction, CodeAction, std::nullptr_t>
-{
-};
-
-inline constexpr char CodeLensName[] = "textDocument/codeLens";
-struct CodeLensRequest : public RequestMessage<CodeLensName, CodeLensParams,
-                                               std::variant<std::vector<CodeLens>, std::nullptr_t>, std::nullptr_t>
-{
-};
-
-inline constexpr char CodeLensResolveName[] = "codeLens/resolve";
-struct CodeLensResolveRequest : public RequestMessage<CodeLensResolveName, CodeLens, CodeLens, std::nullptr_t>
-{
-};
-
-inline constexpr char CodeLensRefreshName[] = "workspace/codeLens/refresh";
-struct CodeLensRefreshRequest
-    : public RequestMessage<CodeLensRefreshName, std::nullptr_t, std::nullptr_t, std::nullptr_t>
-{
-};
-
-inline constexpr char DocumentLinkName[] = "textDocument/documentLink";
-struct DocumentLinkRequest
-    : public RequestMessage<DocumentLinkName, DocumentLinkParams,
-                            std::variant<std::vector<DocumentLink>, std::nullptr_t>, std::nullptr_t>
-{
-};
-
-inline constexpr char DocumentLinkResolveName[] = "documentLink/resolve";
-struct DocumentLinkResolveRequest
-    : public RequestMessage<DocumentLinkResolveName, DocumentLink, DocumentLink, std::nullptr_t>
-{
-};
-
-inline constexpr char DocumentColorName[] = "textDocument/documentColor";
-struct DocumentColorRequest
-    : public RequestMessage<DocumentColorName, DocumentColorParams, std::vector<ColorInformation>, std::nullptr_t>
-{
-};
-
-inline constexpr char ColorPresentationName[] = "textDocument/colorPresentation";
-struct ColorPresentationRequest : public RequestMessage<ColorPresentationName, ColorPresentationParams,
-                                                        std::vector<ColorPresentation>, std::nullptr_t>
-{
-};
-
-inline constexpr char FormattingName[] = "textDocument/formatting";
-struct FormattingRequest : public RequestMessage<FormattingName, DocumentFormattingParams,
-                                                 std::variant<std::vector<TextEdit>, std::nullptr_t>, std::nullptr_t>
-{
-};
-
-inline constexpr char RangeFormattingName[] = "textDocument/rangeFormatting";
-struct RangeFormattingRequest
-    : public RequestMessage<RangeFormattingName, DocumentRangeFormattingParams,
-                            std::variant<std::vector<TextEdit>, std::nullptr_t>, std::nullptr_t>
-{
-};
-
-inline constexpr char OnTypeFormattingName[] = "textDocument/onTypeFormatting";
-struct OnTypeFormattingRequest
-    : public RequestMessage<OnTypeFormattingName, DocumentOnTypeFormattingParams,
-                            std::variant<std::vector<TextEdit>, std::nullptr_t>, std::nullptr_t>
-{
-};
-
-inline constexpr char RenameName[] = "textDocument/rename";
-struct RenameRequest
-    : public RequestMessage<RenameName, RenameParams, std::variant<WorkspaceEdit, std::nullptr_t>, std::nullptr_t>
-{
-};
-
-inline constexpr char PrepareRenameName[] = "textDocument/prepareRename";
-struct PrepareRenameRequest
-    : public RequestMessage<PrepareRenameName, PrepareRenameParams,
-                            std::variant<Range, RenamePlaceHolder, RenameDefaultBehavior, std::nullptr_t>,
-                            std::nullptr_t>
-{
-};
-
-inline constexpr char FoldingRangeName[] = "textDocument/foldingRange";
-struct FoldingRangeRequest
-    : public RequestMessage<FoldingRangeName, FoldingRangeParams,
-                            std::variant<std::vector<FoldingRange>, std::nullptr_t>, std::nullptr_t>
-{
-};
-
-inline constexpr char SelectionRangeName[] = "textDocument/selectionRange";
-struct SelectionRangeRequest
-    : public RequestMessage<SelectionRangeName, SelectionRangeParams,
-                            std::variant<std::vector<SelectionRange>, std::nullptr_t>, std::nullptr_t>
-{
-};
-
-inline constexpr char PrepareCallHierarchyName[] = "textDocument/prepareCallHierarchy";
-struct PrepareCallHierarchyRequest
-    : public RequestMessage<PrepareCallHierarchyName, CallHierarchyPrepareParams,
+inline constexpr char TextDocumentPrepareCallHierarchyName[] = "textDocument/prepareCallHierarchy";
+struct TextDocumentPrepareCallHierarchyRequest
+    : public RequestMessage<TextDocumentPrepareCallHierarchyName, CallHierarchyPrepareParams,
                             std::variant<std::vector<CallHierarchyItem>, std::nullptr_t>, std::nullptr_t>
 {
 };
@@ -301,41 +96,338 @@ struct CallHierarchyOutgoingCallsRequest
 {
 };
 
-inline constexpr char SemanticTokensFullName[] = "textDocument/semanticTokens/full";
-struct SemanticTokensFullRequest : public RequestMessage<SemanticTokensFullName, SemanticTokensParams,
-                                                         std::variant<SemanticTokens, std::nullptr_t>, std::nullptr_t>
+inline constexpr char TextDocumentSemanticTokensFullName[] = "textDocument/semanticTokens/full";
+struct TextDocumentSemanticTokensFullRequest
+    : public RequestMessage<TextDocumentSemanticTokensFullName, SemanticTokensParams,
+                            std::variant<SemanticTokens, std::nullptr_t>, std::nullptr_t>
 {
 };
 
-inline constexpr char SemanticTokensFullDeltaName[] = "textDocument/semanticTokens/full/delta";
-struct SemanticTokensFullDeltaRequest
-    : public RequestMessage<SemanticTokensFullDeltaName, SemanticTokensDeltaParams,
+inline constexpr char TextDocumentSemanticTokensFullDeltaName[] = "textDocument/semanticTokens/full/delta";
+struct TextDocumentSemanticTokensFullDeltaRequest
+    : public RequestMessage<TextDocumentSemanticTokensFullDeltaName, SemanticTokensDeltaParams,
                             std::variant<SemanticTokens, SemanticTokensDelta, std::nullptr_t>, std::nullptr_t>
 {
 };
 
-inline constexpr char SemanticTokensRangeName[] = "textDocument/semanticTokens/range";
-struct SemanticTokensRangeRequest : public RequestMessage<SemanticTokensRangeName, SemanticTokensRangeParams,
-                                                          std::variant<SemanticTokens, std::nullptr_t>, std::nullptr_t>
+inline constexpr char TextDocumentSemanticTokensRangeName[] = "textDocument/semanticTokens/range";
+struct TextDocumentSemanticTokensRangeRequest
+    : public RequestMessage<TextDocumentSemanticTokensRangeName, SemanticTokensRangeParams,
+                            std::variant<SemanticTokens, std::nullptr_t>, std::nullptr_t>
 {
 };
 
-inline constexpr char SemanticTokensRefreshName[] = "workspace/semanticTokens/refresh";
-struct SemanticTokensRefreshRequest
-    : public RequestMessage<SemanticTokensRefreshName, std::nullptr_t, std::nullptr_t, std::nullptr_t>
+inline constexpr char WorkspaceSemanticTokensRefreshName[] = "workspace/semanticTokens/refresh";
+struct WorkspaceSemanticTokensRefreshRequest
+    : public RequestMessage<WorkspaceSemanticTokensRefreshName, std::nullptr_t, std::nullptr_t, std::nullptr_t>
 {
 };
 
-inline constexpr char LinkedEditingRangeName[] = "textDocument/linkedEditingRange";
-struct LinkedEditingRangeRequest
-    : public RequestMessage<LinkedEditingRangeName, LinkedEditingRangeParams,
+inline constexpr char ShowDocumentName[] = "window/showDocument";
+struct ShowDocumentRequest
+    : public RequestMessage<ShowDocumentName, ShowDocumentParams, ShowDocumentResult, std::nullptr_t>
+{
+};
+
+inline constexpr char TextDocumentLinkedEditingRangeName[] = "textDocument/linkedEditingRange";
+struct TextDocumentLinkedEditingRangeRequest
+    : public RequestMessage<TextDocumentLinkedEditingRangeName, LinkedEditingRangeParams,
                             std::variant<LinkedEditingRanges, std::nullptr_t>, std::nullptr_t>
 {
 };
 
-inline constexpr char MonikerName[] = "textDocument/moniker";
-struct MonikerRequest : public RequestMessage<MonikerName, MonikerParams,
-                                              std::variant<std::vector<Moniker>, std::nullptr_t>, std::nullptr_t>
+inline constexpr char WorkspaceWillCreateFilesName[] = "workspace/willCreateFiles";
+struct WorkspaceWillCreateFilesRequest
+    : public RequestMessage<WorkspaceWillCreateFilesName, CreateFilesParams,
+                            std::variant<WorkspaceEdit, std::nullptr_t>, std::nullptr_t>
 {
 };
+
+inline constexpr char WorkspaceWillRenameFilesName[] = "workspace/willRenameFiles";
+struct WorkspaceWillRenameFilesRequest
+    : public RequestMessage<WorkspaceWillRenameFilesName, RenameFilesParams,
+                            std::variant<WorkspaceEdit, std::nullptr_t>, std::nullptr_t>
+{
+};
+
+inline constexpr char WorkspaceWillDeleteFilesName[] = "workspace/willDeleteFiles";
+struct WorkspaceWillDeleteFilesRequest
+    : public RequestMessage<WorkspaceWillDeleteFilesName, DeleteFilesParams,
+                            std::variant<WorkspaceEdit, std::nullptr_t>, std::nullptr_t>
+{
+};
+
+inline constexpr char TextDocumentMonikerName[] = "textDocument/moniker";
+struct TextDocumentMonikerRequest
+    : public RequestMessage<TextDocumentMonikerName, MonikerParams, std::variant<std::vector<Moniker>, std::nullptr_t>,
+                            std::nullptr_t>
+{
+};
+
+inline constexpr char TextDocumentPrepareTypeHierarchyName[] = "textDocument/prepareTypeHierarchy";
+struct TextDocumentPrepareTypeHierarchyRequest
+    : public RequestMessage<TextDocumentPrepareTypeHierarchyName, TypeHierarchyPrepareParams,
+                            std::variant<std::vector<TypeHierarchyItem>, std::nullptr_t>, std::nullptr_t>
+{
+};
+
+inline constexpr char TypeHierarchySupertypesName[] = "typeHierarchy/supertypes";
+struct TypeHierarchySupertypesRequest
+    : public RequestMessage<TypeHierarchySupertypesName, TypeHierarchySupertypesParams,
+                            std::variant<std::vector<TypeHierarchyItem>, std::nullptr_t>, std::nullptr_t>
+{
+};
+
+inline constexpr char TypeHierarchySubtypesName[] = "typeHierarchy/subtypes";
+struct TypeHierarchySubtypesRequest
+    : public RequestMessage<TypeHierarchySubtypesName, TypeHierarchySubtypesParams,
+                            std::variant<std::vector<TypeHierarchyItem>, std::nullptr_t>, std::nullptr_t>
+{
+};
+
+inline constexpr char TextDocumentInlineValueName[] = "textDocument/inlineValue";
+struct TextDocumentInlineValueRequest
+    : public RequestMessage<TextDocumentInlineValueName, InlineValueParams,
+                            std::variant<std::vector<InlineValue>, std::nullptr_t>, std::nullptr_t>
+{
+};
+
+inline constexpr char WorkspaceInlineValueRefreshName[] = "workspace/inlineValue/refresh";
+struct WorkspaceInlineValueRefreshRequest
+    : public RequestMessage<WorkspaceInlineValueRefreshName, std::nullptr_t, std::nullptr_t, std::nullptr_t>
+{
+};
+
+inline constexpr char TextDocumentInlayHintName[] = "textDocument/inlayHint";
+struct TextDocumentInlayHintRequest
+    : public RequestMessage<TextDocumentInlayHintName, InlayHintParams,
+                            std::variant<std::vector<InlayHint>, std::nullptr_t>, std::nullptr_t>
+{
+};
+
+inline constexpr char InlayHintResolveName[] = "inlayHint/resolve";
+struct InlayHintResolveRequest : public RequestMessage<InlayHintResolveName, InlayHint, InlayHint, std::nullptr_t>
+{
+};
+
+inline constexpr char WorkspaceInlayHintRefreshName[] = "workspace/inlayHint/refresh";
+struct WorkspaceInlayHintRefreshRequest
+    : public RequestMessage<WorkspaceInlayHintRefreshName, std::nullptr_t, std::nullptr_t, std::nullptr_t>
+{
+};
+
+inline constexpr char TextDocumentDiagnosticName[] = "textDocument/diagnostic";
+struct TextDocumentDiagnosticRequest : public RequestMessage<TextDocumentDiagnosticName, DocumentDiagnosticParams,
+                                                             DocumentDiagnosticReport, std::nullptr_t>
+{
+};
+
+inline constexpr char WorkspaceDiagnosticName[] = "workspace/diagnostic";
+struct WorkspaceDiagnosticRequest : public RequestMessage<WorkspaceDiagnosticName, WorkspaceDiagnosticParams,
+                                                          WorkspaceDiagnosticReport, std::nullptr_t>
+{
+};
+
+inline constexpr char WorkspaceDiagnosticRefreshName[] = "workspace/diagnostic/refresh";
+struct WorkspaceDiagnosticRefreshRequest
+    : public RequestMessage<WorkspaceDiagnosticRefreshName, std::nullptr_t, std::nullptr_t, std::nullptr_t>
+{
+};
+
+inline constexpr char RegisterCapabilityName[] = "client/registerCapability";
+struct RegisterCapabilityRequest
+    : public RequestMessage<RegisterCapabilityName, RegistrationParams, std::nullptr_t, std::nullptr_t>
+{
+};
+
+inline constexpr char UnregisterCapabilityName[] = "client/unregisterCapability";
+struct UnregisterCapabilityRequest
+    : public RequestMessage<UnregisterCapabilityName, UnregistrationParams, std::nullptr_t, std::nullptr_t>
+{
+};
+
+inline constexpr char InitializeName[] = "initialize";
+struct InitializeRequest : public RequestMessage<InitializeName, InitializeParams, InitializeResult, std::nullptr_t>
+{
+};
+
+inline constexpr char ShutdownName[] = "shutdown";
+struct ShutdownRequest : public RequestMessage<ShutdownName, std::nullptr_t, std::nullptr_t, std::nullptr_t>
+{
+};
+
+inline constexpr char ShowMessageRequestName[] = "window/showMessageRequest";
+struct ShowMessageRequestRequest
+    : public RequestMessage<ShowMessageRequestName, ShowMessageRequestParams,
+                            std::variant<MessageActionItem, std::nullptr_t>, std::nullptr_t>
+{
+};
+
+inline constexpr char TextDocumentWillSaveWaitUntilName[] = "textDocument/willSaveWaitUntil";
+struct TextDocumentWillSaveWaitUntilRequest
+    : public RequestMessage<TextDocumentWillSaveWaitUntilName, WillSaveTextDocumentParams,
+                            std::variant<std::vector<TextEdit>, std::nullptr_t>, std::nullptr_t>
+{
+};
+
+inline constexpr char TextDocumentCompletionName[] = "textDocument/completion";
+struct TextDocumentCompletionRequest
+    : public RequestMessage<TextDocumentCompletionName, CompletionParams,
+                            std::variant<std::vector<CompletionItem>, CompletionList, std::nullptr_t>, std::nullptr_t>
+{
+};
+
+inline constexpr char CompletionItemResolveName[] = "completionItem/resolve";
+struct CompletionItemResolveRequest
+    : public RequestMessage<CompletionItemResolveName, CompletionItem, CompletionItem, std::nullptr_t>
+{
+};
+
+inline constexpr char TextDocumentHoverName[] = "textDocument/hover";
+struct TextDocumentHoverRequest
+    : public RequestMessage<TextDocumentHoverName, HoverParams, std::variant<Hover, std::nullptr_t>, std::nullptr_t>
+{
+};
+
+inline constexpr char TextDocumentSignatureHelpName[] = "textDocument/signatureHelp";
+struct TextDocumentSignatureHelpRequest
+    : public RequestMessage<TextDocumentSignatureHelpName, SignatureHelpParams,
+                            std::variant<SignatureHelp, std::nullptr_t>, std::nullptr_t>
+{
+};
+
+inline constexpr char TextDocumentDefinitionName[] = "textDocument/definition";
+struct TextDocumentDefinitionRequest
+    : public RequestMessage<TextDocumentDefinitionName, DefinitionParams,
+                            std::variant<Definition, std::vector<DefinitionLink>, std::nullptr_t>, std::nullptr_t>
+{
+};
+
+inline constexpr char TextDocumentReferencesName[] = "textDocument/references";
+struct TextDocumentReferencesRequest
+    : public RequestMessage<TextDocumentReferencesName, ReferenceParams,
+                            std::variant<std::vector<Location>, std::nullptr_t>, std::nullptr_t>
+{
+};
+
+inline constexpr char TextDocumentDocumentHighlightName[] = "textDocument/documentHighlight";
+struct TextDocumentDocumentHighlightRequest
+    : public RequestMessage<TextDocumentDocumentHighlightName, DocumentHighlightParams,
+                            std::variant<std::vector<DocumentHighlight>, std::nullptr_t>, std::nullptr_t>
+{
+};
+
+inline constexpr char TextDocumentDocumentSymbolName[] = "textDocument/documentSymbol";
+struct TextDocumentDocumentSymbolRequest
+    : public RequestMessage<TextDocumentDocumentSymbolName, DocumentSymbolParams,
+                            std::variant<std::vector<SymbolInformation>, std::vector<DocumentSymbol>, std::nullptr_t>,
+                            std::nullptr_t>
+{
+};
+
+inline constexpr char TextDocumentCodeActionName[] = "textDocument/codeAction";
+struct TextDocumentCodeActionRequest
+    : public RequestMessage<TextDocumentCodeActionName, CodeActionParams,
+                            std::variant<std::vector<std::variant<Command, CodeAction>>, std::nullptr_t>,
+                            std::nullptr_t>
+{
+};
+
+inline constexpr char CodeActionResolveName[] = "codeAction/resolve";
+struct CodeActionResolveRequest : public RequestMessage<CodeActionResolveName, CodeAction, CodeAction, std::nullptr_t>
+{
+};
+
+inline constexpr char WorkspaceSymbolName[] = "workspace/symbol";
+struct WorkspaceSymbolRequest
+    : public RequestMessage<WorkspaceSymbolName, WorkspaceSymbolParams,
+                            std::variant<std::vector<SymbolInformation>, std::vector<WorkspaceSymbol>, std::nullptr_t>,
+                            std::nullptr_t>
+{
+};
+
+inline constexpr char WorkspaceSymbolResolveName[] = "workspaceSymbol/resolve";
+struct WorkspaceSymbolResolveRequest
+    : public RequestMessage<WorkspaceSymbolResolveName, WorkspaceSymbol, WorkspaceSymbol, std::nullptr_t>
+{
+};
+
+inline constexpr char TextDocumentCodeLensName[] = "textDocument/codeLens";
+struct TextDocumentCodeLensRequest
+    : public RequestMessage<TextDocumentCodeLensName, CodeLensParams,
+                            std::variant<std::vector<CodeLens>, std::nullptr_t>, std::nullptr_t>
+{
+};
+
+inline constexpr char CodeLensResolveName[] = "codeLens/resolve";
+struct CodeLensResolveRequest : public RequestMessage<CodeLensResolveName, CodeLens, CodeLens, std::nullptr_t>
+{
+};
+
+inline constexpr char WorkspaceCodeLensRefreshName[] = "workspace/codeLens/refresh";
+struct WorkspaceCodeLensRefreshRequest
+    : public RequestMessage<WorkspaceCodeLensRefreshName, std::nullptr_t, std::nullptr_t, std::nullptr_t>
+{
+};
+
+inline constexpr char TextDocumentDocumentLinkName[] = "textDocument/documentLink";
+struct TextDocumentDocumentLinkRequest
+    : public RequestMessage<TextDocumentDocumentLinkName, DocumentLinkParams,
+                            std::variant<std::vector<DocumentLink>, std::nullptr_t>, std::nullptr_t>
+{
+};
+
+inline constexpr char DocumentLinkResolveName[] = "documentLink/resolve";
+struct DocumentLinkResolveRequest
+    : public RequestMessage<DocumentLinkResolveName, DocumentLink, DocumentLink, std::nullptr_t>
+{
+};
+
+inline constexpr char TextDocumentFormattingName[] = "textDocument/formatting";
+struct TextDocumentFormattingRequest
+    : public RequestMessage<TextDocumentFormattingName, DocumentFormattingParams,
+                            std::variant<std::vector<TextEdit>, std::nullptr_t>, std::nullptr_t>
+{
+};
+
+inline constexpr char TextDocumentRangeFormattingName[] = "textDocument/rangeFormatting";
+struct TextDocumentRangeFormattingRequest
+    : public RequestMessage<TextDocumentRangeFormattingName, DocumentRangeFormattingParams,
+                            std::variant<std::vector<TextEdit>, std::nullptr_t>, std::nullptr_t>
+{
+};
+
+inline constexpr char TextDocumentOnTypeFormattingName[] = "textDocument/onTypeFormatting";
+struct TextDocumentOnTypeFormattingRequest
+    : public RequestMessage<TextDocumentOnTypeFormattingName, DocumentOnTypeFormattingParams,
+                            std::variant<std::vector<TextEdit>, std::nullptr_t>, std::nullptr_t>
+{
+};
+
+inline constexpr char TextDocumentRenameName[] = "textDocument/rename";
+struct TextDocumentRenameRequest : public RequestMessage<TextDocumentRenameName, RenameParams,
+                                                         std::variant<WorkspaceEdit, std::nullptr_t>, std::nullptr_t>
+{
+};
+
+inline constexpr char TextDocumentPrepareRenameName[] = "textDocument/prepareRename";
+struct TextDocumentPrepareRenameRequest
+    : public RequestMessage<TextDocumentPrepareRenameName, PrepareRenameParams,
+                            std::variant<PrepareRenameResult, std::nullptr_t>, std::nullptr_t>
+{
+};
+
+inline constexpr char WorkspaceExecuteCommandName[] = "workspace/executeCommand";
+struct WorkspaceExecuteCommandRequest
+    : public RequestMessage<WorkspaceExecuteCommandName, ExecuteCommandParams,
+                            std::variant<nlohmann::json, std::nullptr_t>, std::nullptr_t>
+{
+};
+
+inline constexpr char WorkspaceApplyEditName[] = "workspace/applyEdit";
+struct WorkspaceApplyEditRequest
+    : public RequestMessage<WorkspaceApplyEditName, ApplyWorkspaceEditParams, ApplyWorkspaceEditResult, std::nullptr_t>
+{
+};
+
 }

@@ -8,13 +8,54 @@
 
 namespace Lsp {
 
-inline constexpr char CancelRequestName[] = "$/cancelRequest";
-struct CancelRequestNotification : public NotificationMessage<CancelRequestName, CancelParams>
+inline constexpr char WorkspaceDidChangeWorkspaceFoldersName[] = "workspace/didChangeWorkspaceFolders";
+struct WorkspaceDidChangeWorkspaceFoldersNotification
+    : public NotificationMessage<WorkspaceDidChangeWorkspaceFoldersName, DidChangeWorkspaceFoldersParams>
 {
 };
 
-inline constexpr char ProgressName[] = "$/progress";
-struct ProgressNotification : public NotificationMessage<ProgressName, ProgressParams>
+inline constexpr char WorkDoneProgressCancelName[] = "window/workDoneProgress/cancel";
+struct WorkDoneProgressCancelNotification
+    : public NotificationMessage<WorkDoneProgressCancelName, WorkDoneProgressCancelParams>
+{
+};
+
+inline constexpr char WorkspaceDidCreateFilesName[] = "workspace/didCreateFiles";
+struct WorkspaceDidCreateFilesNotification : public NotificationMessage<WorkspaceDidCreateFilesName, CreateFilesParams>
+{
+};
+
+inline constexpr char WorkspaceDidRenameFilesName[] = "workspace/didRenameFiles";
+struct WorkspaceDidRenameFilesNotification : public NotificationMessage<WorkspaceDidRenameFilesName, RenameFilesParams>
+{
+};
+
+inline constexpr char WorkspaceDidDeleteFilesName[] = "workspace/didDeleteFiles";
+struct WorkspaceDidDeleteFilesNotification : public NotificationMessage<WorkspaceDidDeleteFilesName, DeleteFilesParams>
+{
+};
+
+inline constexpr char NotebookDocumentDidOpenName[] = "notebookDocument/didOpen";
+struct NotebookDocumentDidOpenNotification
+    : public NotificationMessage<NotebookDocumentDidOpenName, DidOpenNotebookDocumentParams>
+{
+};
+
+inline constexpr char NotebookDocumentDidChangeName[] = "notebookDocument/didChange";
+struct NotebookDocumentDidChangeNotification
+    : public NotificationMessage<NotebookDocumentDidChangeName, DidChangeNotebookDocumentParams>
+{
+};
+
+inline constexpr char NotebookDocumentDidSaveName[] = "notebookDocument/didSave";
+struct NotebookDocumentDidSaveNotification
+    : public NotificationMessage<NotebookDocumentDidSaveName, DidSaveNotebookDocumentParams>
+{
+};
+
+inline constexpr char NotebookDocumentDidCloseName[] = "notebookDocument/didClose";
+struct NotebookDocumentDidCloseNotification
+    : public NotificationMessage<NotebookDocumentDidCloseName, DidCloseNotebookDocumentParams>
 {
 };
 
@@ -28,13 +69,9 @@ struct ExitNotification : public NotificationMessage<ExitName, std::nullptr_t>
 {
 };
 
-inline constexpr char LogTraceName[] = "$/logTrace";
-struct LogTraceNotification : public NotificationMessage<LogTraceName, LogTraceParams>
-{
-};
-
-inline constexpr char SetTraceName[] = "$/setTrace";
-struct SetTraceNotification : public NotificationMessage<SetTraceName, SetTraceParams>
+inline constexpr char WorkspaceDidChangeConfigurationName[] = "workspace/didChangeConfiguration";
+struct WorkspaceDidChangeConfigurationNotification
+    : public NotificationMessage<WorkspaceDidChangeConfigurationName, DidChangeConfigurationParams>
 {
 };
 
@@ -48,77 +85,69 @@ struct LogMessageNotification : public NotificationMessage<LogMessageName, LogMe
 {
 };
 
-inline constexpr char WorkDoneProgressCancelName[] = "window/workDoneProgress/cancel";
-struct WorkDoneProgressCancelNotification
-    : public NotificationMessage<WorkDoneProgressCancelName, WorkDoneProgressCancelParams>
-{
-};
-
 inline constexpr char TelemetryEventName[] = "telemetry/event";
 struct TelemetryEventNotification : public NotificationMessage<TelemetryEventName, nlohmann::json>
 {
 };
 
-inline constexpr char DidChangeWorkspaceFoldersName[] = "workspace/didChangeWorkspaceFolders";
-struct DidChangeWorkspaceFoldersNotification
-    : public NotificationMessage<DidChangeWorkspaceFoldersName, DidChangeWorkspaceFoldersParams>
+inline constexpr char TextDocumentDidOpenName[] = "textDocument/didOpen";
+struct TextDocumentDidOpenNotification : public NotificationMessage<TextDocumentDidOpenName, DidOpenTextDocumentParams>
 {
 };
 
-inline constexpr char DidChangeConfigurationName[] = "workspace/didChangeConfiguration";
-struct DidChangeConfigurationNotification
-    : public NotificationMessage<DidChangeConfigurationName, DidChangeConfigurationParams>
+inline constexpr char TextDocumentDidChangeName[] = "textDocument/didChange";
+struct TextDocumentDidChangeNotification
+    : public NotificationMessage<TextDocumentDidChangeName, DidChangeTextDocumentParams>
 {
 };
 
-inline constexpr char DidChangeWatchedFilesName[] = "workspace/didChangeWatchedFiles";
-struct DidChangeWatchedFilesNotification
-    : public NotificationMessage<DidChangeWatchedFilesName, DidChangeWatchedFilesParams>
+inline constexpr char TextDocumentDidCloseName[] = "textDocument/didClose";
+struct TextDocumentDidCloseNotification
+    : public NotificationMessage<TextDocumentDidCloseName, DidCloseTextDocumentParams>
 {
 };
 
-inline constexpr char DidCreateFilesName[] = "workspace/didCreateFiles";
-struct DidCreateFilesNotification : public NotificationMessage<DidCreateFilesName, CreateFilesParams>
+inline constexpr char TextDocumentDidSaveName[] = "textDocument/didSave";
+struct TextDocumentDidSaveNotification : public NotificationMessage<TextDocumentDidSaveName, DidSaveTextDocumentParams>
 {
 };
 
-inline constexpr char DidRenameFilesName[] = "workspace/didRenameFiles";
-struct DidRenameFilesNotification : public NotificationMessage<DidRenameFilesName, RenameFilesParams>
+inline constexpr char TextDocumentWillSaveName[] = "textDocument/willSave";
+struct TextDocumentWillSaveNotification
+    : public NotificationMessage<TextDocumentWillSaveName, WillSaveTextDocumentParams>
 {
 };
 
-inline constexpr char DidDeleteFilesName[] = "workspace/didDeleteFiles";
-struct DidDeleteFilesNotification : public NotificationMessage<DidDeleteFilesName, DeleteFilesParams>
+inline constexpr char WorkspaceDidChangeWatchedFilesName[] = "workspace/didChangeWatchedFiles";
+struct WorkspaceDidChangeWatchedFilesNotification
+    : public NotificationMessage<WorkspaceDidChangeWatchedFilesName, DidChangeWatchedFilesParams>
 {
 };
 
-inline constexpr char DidOpenName[] = "textDocument/didOpen";
-struct DidOpenNotification : public NotificationMessage<DidOpenName, DidOpenTextDocumentParams>
+inline constexpr char TextDocumentPublishDiagnosticsName[] = "textDocument/publishDiagnostics";
+struct TextDocumentPublishDiagnosticsNotification
+    : public NotificationMessage<TextDocumentPublishDiagnosticsName, PublishDiagnosticsParams>
 {
 };
 
-inline constexpr char DidChangeName[] = "textDocument/didChange";
-struct DidChangeNotification : public NotificationMessage<DidChangeName, DidChangeTextDocumentParams>
+inline constexpr char SetTraceName[] = "$/setTrace";
+struct SetTraceNotification : public NotificationMessage<SetTraceName, SetTraceParams>
 {
 };
 
-inline constexpr char WillSaveName[] = "textDocument/willSave";
-struct WillSaveNotification : public NotificationMessage<WillSaveName, WillSaveTextDocumentParams>
+inline constexpr char LogTraceName[] = "$/logTrace";
+struct LogTraceNotification : public NotificationMessage<LogTraceName, LogTraceParams>
 {
 };
 
-inline constexpr char DidSaveName[] = "textDocument/didSave";
-struct DidSaveNotification : public NotificationMessage<DidSaveName, DidSaveTextDocumentParams>
+inline constexpr char CancelRequestName[] = "$/cancelRequest";
+struct CancelRequestNotification : public NotificationMessage<CancelRequestName, CancelParams>
 {
 };
 
-inline constexpr char DidCloseName[] = "textDocument/didClose";
-struct DidCloseNotification : public NotificationMessage<DidCloseName, DidCloseTextDocumentParams>
+inline constexpr char ProgressName[] = "$/progress";
+struct ProgressNotification : public NotificationMessage<ProgressName, ProgressParams>
 {
 };
 
-inline constexpr char PublishDiagnosticsName[] = "textDocument/publishDiagnostics";
-struct PublishDiagnosticsNotification : public NotificationMessage<PublishDiagnosticsName, PublishDiagnosticsParams>
-{
-};
 }

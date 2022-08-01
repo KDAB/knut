@@ -3,6 +3,7 @@
 #include <QString>
 #include <QStringList>
 
+#include <memory>
 #include <vector>
 
 struct Data
@@ -62,4 +63,100 @@ struct Data
     std::vector<Enumeration> enumerations;
     std::vector<Type> types;
     std::vector<Interface> interfaces;
+};
+
+struct MetaData
+{
+    struct Type;
+    struct Interface;
+
+    using TypePtr = std::shared_ptr<Type>;
+    using InterfacePtr = std::shared_ptr<Interface>;
+
+    enum class TypeKind {
+        Base,
+        Reference,
+        Array,
+        Map,
+        And,
+        Or,
+        Tuple,
+        Literal,
+        StringLiteral,
+        IntegerLiteral,
+        BooleanLiteral
+    };
+
+    struct Common
+    {
+        QString name;
+        QString documentation;
+        QString since;
+
+        explicit Common(QString _name = QStringLiteral(""))
+            : name(_name)
+        {
+        }
+
+        bool is_deprecated() const { return documentation.contains("@deprecated"); }
+    };
+
+    struct Type : public Common
+    {
+        QStringList dependencies;
+        QString value = "std::nullptr_t";
+
+        TypeKind kind = TypeKind::Base;
+        std::vector<TypePtr> items;
+
+        using Common::Common;
+
+        virtual ~Type() = default;
+        virtual bool is_interface() const { return false; }
+    };
+
+    struct Notification : public Common
+    {
+        TypePtr params;
+    };
+
+    struct Request : public Common
+    {
+        TypePtr params;
+        TypePtr result;
+        TypePtr partialResult;
+        QString error = "std::nullptr_t";
+    };
+
+    struct Enumeration : public Common
+    {
+        enum Type { Invalid, String, Integer, UInteger };
+
+        struct Value : public Common
+        {
+            QString value;
+        };
+
+        std::vector<Value> values;
+        Type type = Type::Invalid;
+        bool supportsCustomValues = false;
+    };
+
+    struct Interface : public Type
+    {
+        // Use Type::items for properties
+
+        std::vector<TypePtr> extends;
+        std::vector<TypePtr> mixins;
+
+        using Type::Type;
+
+        bool is_interface() const override { return true; }
+    };
+
+    std::vector<Notification> notifications;
+    std::vector<Request> requests;
+    std::vector<Enumeration> enumerations;
+    std::vector<TypePtr> types;
+    std::vector<InterfacePtr> interfaces;
 };
