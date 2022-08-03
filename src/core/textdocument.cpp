@@ -1071,7 +1071,32 @@ bool TextDocument::findRegexp(const QString &regexp, int options)
 {
     LOG("TextDocument::findRegexp", regexp, options);
     auto regularExpression = createRegularExpression(regexp, options | TextDocument::FindRegexp);
-    return m_document->find(regularExpression, static_cast<QTextDocument::FindFlags>(options));
+
+    auto cursor = m_document->textCursor();
+    auto text = m_document->toPlainText();
+
+    QRegularExpressionMatch match;
+    if (options & TextDocument::FindBackward) {
+        int pos;
+        if (cursor.hasSelection())
+            pos = cursor.selectionStart();
+        else
+            pos = qMax(0, cursor.position() - 1);
+
+        // Find last match
+        Q_UNUSED(text.sliced(0, pos).lastIndexOf(regularExpression, &match))
+    } else {
+        match = regularExpression.match(text, cursor.position());
+    }
+
+    if (!match.hasMatch())
+        return false;
+
+    cursor.setPosition(match.capturedStart(), QTextCursor::MoveAnchor);
+    cursor.setPosition(match.capturedEnd(), QTextCursor::KeepAnchor);
+
+    m_document->setTextCursor(cursor);
+    return true;
 }
 
 /*!
@@ -1106,15 +1131,14 @@ bool TextDocument::replaceOne(const QString &before, const QString &after, int o
     const bool preserveCase = options & PreserveCase;
 
     auto regexp = createRegularExpression(before, options);
-
-    if (m_document->find(regexp, static_cast<QTextDocument::FindFlags>(options))) {
+    if (find(before, options)) {
         cursor.beginEditBlock();
         auto found = m_document->textCursor();
         cursor.setPosition(found.selectionStart());
         cursor.setPosition(found.selectionEnd(), QTextCursor::KeepAnchor);
         QString afterText = after;
         if (usesRegExp) {
-            QRegularExpressionMatch match = regexp.match(found.selectedText());
+            QRegularExpressionMatch match = regexp.match(selectedText());
             afterText = expandRegExpReplacement(after, match.capturedTexts());
         } else if (preserveCase) {
             afterText = matchCaseReplacement(cursor.selectedText(), after);
@@ -1162,14 +1186,13 @@ int TextDocument::replaceAll(const QString &before, const QString &after, int op
     cursor.beginEditBlock();
 
     auto regexp = createRegularExpression(before, options);
-
-    while (m_document->find(regexp, static_cast<QTextDocument::FindFlags>(options))) {
+    while (find(before, options)) {
         auto found = m_document->textCursor();
         cursor.setPosition(found.selectionStart());
         cursor.setPosition(found.selectionEnd(), QTextCursor::KeepAnchor);
         QString afterText = after;
         if (usesRegExp) {
-            QRegularExpressionMatch match = regexp.match(found.selectedText());
+            QRegularExpressionMatch match = regexp.match(selectedText());
             afterText = expandRegExpReplacement(after, match.capturedTexts());
         } else if (preserveCase) {
             afterText = matchCaseReplacement(cursor.selectedText(), after);

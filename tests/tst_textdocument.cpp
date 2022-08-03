@@ -307,6 +307,55 @@ private slots:
             QVERIFY(file.compare());
         }
     }
+
+    void findReplaceRegexForwards()
+    {
+        Test::FileTester file(Test::testDataPath() + "/tst_textdocument/findRegex/findregex.txt");
+        {
+            Core::TextDocument document;
+            document.load(file.fileName());
+
+            QString lorem_quisque("(Lorem.+)\n(Quisque.+)");
+            QString quisque_lorem("\\2\n\\1");
+
+            QVERIFY(document.replaceOne(lorem_quisque, quisque_lorem, Core::TextDocument::FindRegexp));
+            QCOMPARE(document.replaceAllRegexp(lorem_quisque, quisque_lorem), 3);
+
+            document.gotoLine(8);
+            QVERIFY(document.findRegexp("Qui"));
+            QCOMPARE(document.line(), 13);
+            QCOMPARE(document.selectedText(), "Qui");
+            QCOMPARE(document.currentWord(), "Quisque");
+            QVERIFY(!document.findRegexp("\bQui\b"));
+
+            document.save();
+            QVERIFY(file.compare());
+        }
+    }
+
+    void findReplaceRegexBackwards()
+    {
+        Test::FileTester file(Test::testDataPath() + "/tst_textdocument/findRegex/findregex.txt");
+        {
+            Core::TextDocument document;
+            document.load(file.fileName());
+
+            QString lorem_quisque("(Lorem.+)\n(Quisque.+)");
+            QString quisque_lorem("\\2\n\\1");
+
+            QCOMPARE(document.replaceAllRegexp(lorem_quisque, quisque_lorem, Core::TextDocument::FindBackward), 4);
+
+            document.gotoLine(8);
+            QVERIFY(document.findRegexp("Qui", Core::TextDocument::FindBackward));
+            QCOMPARE(document.line(), 7);
+            QCOMPARE(document.selectedText(), "Qui");
+            QCOMPARE(document.currentWord(), "Quisque");
+            QVERIFY(!document.findRegexp("\bQui\b"));
+
+            document.save();
+            QVERIFY(file.compare());
+        }
+    }
 };
 
 QTEST_MAIN(TestTextDocument)

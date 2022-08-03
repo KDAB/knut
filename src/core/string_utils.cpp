@@ -206,9 +206,18 @@ QString expandRegExpReplacement(const QString &replaceText, const QStringList &c
 
 QRegularExpression createRegularExpression(const QString &txt, int flags)
 {
-    return QRegularExpression((flags & TextDocument::FindRegexp) ? txt : QRegularExpression::escape(txt),
-                              (flags & TextDocument::PreserveCase) ? QRegularExpression::NoPatternOption
-                                                                   : QRegularExpression::CaseInsensitiveOption);
+    // Also add PreserveCase when FindCaseSensitively is used
+    flags |= (flags & TextDocument::FindCaseSensitively) ? TextDocument::PreserveCase : TextDocument::NoFindFlags;
+
+    QRegularExpression::PatternOptions options = flags & TextDocument::PreserveCase
+        ? QRegularExpression::NoPatternOption
+        : QRegularExpression::CaseInsensitiveOption;
+
+    // If we have a newline, use the /m option
+    if (txt.contains('\n'))
+        options |= QRegularExpression::MultilineOption;
+
+    return QRegularExpression((flags & TextDocument::FindRegexp) ? txt : QRegularExpression::escape(txt), options);
 }
 
 } // namespace Migration
