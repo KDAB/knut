@@ -2,10 +2,14 @@
 
 #include "myobject.h"
 
+int freeFunction(unsigned, long long);
+
 int main(int argc, char *argv[]) {
     MyObject object("Hello World!");
 
     object.sayMessage();
+
+    freeFunction(1, 2);
 
     return 0;
 }

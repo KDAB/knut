@@ -15,5 +15,6 @@ void MyObject::sayMessage() {
 }
 
 void MyObject::sayMessage(const std::string& test) {
+    m_enum = MyEnum::C;
     std::cout << test << std::endl;
 }

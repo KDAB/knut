@@ -85,6 +85,15 @@ CppFunctionSymbol::CppFunctionSymbol(QObject *parent, const QString &name, const
     , m_returnType {}
     , m_arguments {}
 {
+    if (m_description.isEmpty()) {
+        const auto args = arguments();
+        QStringList argumentTypes;
+        std::transform(args.cbegin(), args.cend(), std::back_inserter(argumentTypes), [](const auto &arg) {
+            return arg.type;
+        });
+
+        m_description = QString("%1 (%2)").arg(returnType()).arg(argumentTypes.join(", "));
+    }
 }
 
 QString CppFunctionSymbol::returnTypeFromDescription() const

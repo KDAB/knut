@@ -201,6 +201,36 @@ void LspDocument::transformSymbol(const QString &symbolName, const QString &json
 }
 
 /*!
+ * \qmlmethod Symbol LspDocument::symbolUnderCursor()
+ * Returns the symbol that's at the current cursor position.
+ *
+ * This function may return symbols that are not returned by the `symbols()` or `currentSymbol()` function,
+ * as these only return high-level symbols, like classes and functions, but not symbols within functions.
+ * `symbolUnderCursor()` can however return these Symbols.
+ */
+const Core::Symbol *LspDocument::symbolUnderCursor() const
+{
+    const auto containsCursor = [this](const Core::Symbol *symbol) {
+        return symbol->selectionRange().contains(textEdit()->textCursor().position());
+    };
+
+    const auto symbols = this->symbols();
+    const auto symbolIter = std::find_if(symbols.constBegin(), symbols.constEnd(), containsCursor);
+    if (symbolIter != symbols.constEnd()) {
+        return *symbolIter;
+    }
+
+    auto hover = hoverWithRange(textEdit()->textCursor().position());
+    if (hover.second) {
+        return m_cache->inferSymbol(hover.first, hover.second.value());
+    } else {
+        spdlog::warn("LspDocument::symbolUnderCursor: Cannot infer Symbol - Language Server did not return a range!");
+    }
+
+    return nullptr;
+}
+
+/*!
  * \qmlmethod string LspDocument::hover()
  *
  * Returns information about the symbol at the current cursor position.
@@ -213,10 +243,15 @@ QString LspDocument::hover() const
 
 QString LspDocument::hover(int position) const
 {
+    return hoverWithRange(position).first;
+}
+
+std::pair<QString, std::optional<TextRange>> LspDocument::hoverWithRange(int position) const
+{
     LOG("LspDocument::hover");
 
     if (!checkClient())
-        return "";
+        return {"", {}};
 
     Lsp::HoverParams params;
     params.textDocument.uri = toUri();
@@ -224,23 +259,27 @@ QString LspDocument::hover(int position) const
 
     auto result = client()->hover(std::move(params));
     if (!result) {
-        return "";
+        return {"", {}};
     }
 
     if (!std::holds_alternative<Lsp::Hover>(*result)) {
         spdlog::warn("LSP server returned no result for Hover");
-        return "";
+        return {"", {}};
     }
 
     auto hover = std::get<Lsp::Hover>(*result);
+    std::optional<TextRange> range;
+    if (hover.range) {
+        range = toRange(hover.range.value());
+    }
 
     Lsp::MarkupContent markupContent;
     if (const auto *content = std::get_if<Lsp::MarkupContent>(&hover.contents)) {
-        return QString::fromStdString(content->value);
+        return {QString::fromStdString(content->value), range};
     } else {
         spdlog::warn("LSP returned deprecated MarkedString type which is unsupported by Knut\n - Consider updating "
                      "your LSP server");
-        return "";
+        return {"", {}};
     }
 }
 

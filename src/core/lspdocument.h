@@ -30,6 +30,7 @@ public:
     Q_INVOKABLE QVector<Core::Symbol *> symbols() const;
     Q_INVOKABLE void transformSymbol(const QString &symbolName, const QString &jsonFileName);
     Q_INVOKABLE QString hover() const;
+    Q_INVOKABLE const Core::Symbol *symbolUnderCursor() const;
 
     bool hasLspClient() const;
 
@@ -37,6 +38,8 @@ public:
     void deleteSymbol(const Symbol &symbol);
 
     QString hover(int position) const;
+
+    int toPos(const Lsp::Position &pos) const;
 
 public slots:
     Document *followSymbol();
@@ -51,11 +54,12 @@ protected:
 
     Lsp::Client *client() const;
     std::string toUri() const;
-    int toPos(const Lsp::Position &pos) const;
     Lsp::Position fromPos(int pos) const;
     TextRange toRange(const Lsp::Range &range) const;
 
     int revision() const;
+
+    std::pair<QString, std::optional<TextRange>> hoverWithRange(int position) const;
 
 private:
     bool checkClient() const;

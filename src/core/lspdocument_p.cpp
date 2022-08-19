@@ -1,8 +1,11 @@
 #include "lspdocument_p.h"
 #include "lspdocument.h"
 
+#include "cppfunctionsymbol.h"
 #include "lsp/client.h"
 #include "lsp/types.h"
+
+#include <spdlog/spdlog.h>
 
 namespace Core {
 
@@ -59,6 +62,111 @@ const QVector<Symbol *> &LspCache::symbols()
     fillSymbols(lspSymbols, "");
     m_flags |= HasSymbols;
     return m_symbols;
+}
+
+const Core::Symbol *LspCache::inferVariable(const QStringList &lines, TextRange range, Symbol::Kind kind)
+{
+    static QString typePrefix("Type: ");
+    auto words = lines.first().split(' ');
+
+    if (words.size() < 2) {
+        return nullptr;
+    }
+    // Remove the `param` or `variable` prefix
+    words.removeFirst();
+    auto name = words.join(' ');
+
+    QString type;
+    for (auto line : lines) {
+        if (line.startsWith(typePrefix)) {
+            type = line.remove(0, typePrefix.size());
+        }
+    }
+
+    return Symbol::makeSymbol(m_document, name, type, kind, range, range);
+}
+
+const Core::Symbol *LspCache::inferMethod(const QStringList &lines, TextRange range, Symbol::Kind kind)
+{
+    auto words = lines.first().split(' ');
+
+    if (words.size() < 2) {
+        return nullptr;
+    }
+
+    words.removeFirst();
+    auto name = words.join(' ');
+
+    return Symbol::makeSymbol(m_document, name, "" /* fill description later */, kind, range, range);
+}
+
+const Core::Symbol *LspCache::inferGenericSymbol(QStringList lines, TextRange range)
+{
+    static const std::unordered_map<QString, Symbol::Kind> nameToSymbol {{"namespace", Symbol::Namespace},
+                                                                         {"enumerator", Symbol::Enum},
+                                                                         {"class", Symbol::Class},
+                                                                         {"struct", Symbol::Struct}};
+    auto words = lines.first().split(' ');
+
+    if (words.size() < 2) {
+        return nullptr;
+    }
+
+    auto kindIter = nameToSymbol.find(words.first());
+    if (kindIter == nameToSymbol.cend()) {
+        return nullptr;
+    }
+    auto kind = kindIter->second;
+    words.removeFirst();
+    auto name = words.join(' ');
+
+    lines.removeFirst();
+    while (!lines.isEmpty() && lines.first().isEmpty()) {
+        lines.removeFirst();
+    }
+    auto description = lines.join('\n');
+
+    return Symbol::makeSymbol(m_document, name, description, kind, range, range);
+}
+
+const Core::Symbol *LspCache::inferSymbol(const QString &hoverText, TextRange range)
+{
+    spdlog::debug("Trying to infer Symbol from Hover text:\n{}", hoverText.toStdString());
+
+    auto cached = std::find_if(m_inferredSymbols.cbegin(), m_inferredSymbols.cend(), [&range](const auto symbol) {
+        return symbol->range() == range;
+    });
+    if (cached != m_inferredSymbols.cend()) {
+        return *cached;
+    }
+
+    auto lines = hoverText.split('\n');
+    if (lines.isEmpty()) {
+        return nullptr;
+    }
+
+    auto words = lines.first().split(' ');
+    if (words.size() < 2) {
+        return nullptr;
+    }
+
+    const Symbol *result;
+    auto kind = words.first();
+    if (kind == "param" || kind == "variable") {
+        result = inferVariable(lines, range, Symbol::Variable);
+    } else if (kind == "field") {
+        result = inferVariable(lines, range, Symbol::Field);
+    } else if (kind == "instance-method") {
+        result = inferMethod(lines, range, Symbol::Method);
+    } else if (kind == "function") {
+        result = inferMethod(lines, range, Symbol::Function);
+    } else {
+        result = inferGenericSymbol(std::move(lines), range);
+    }
+
+    m_inferredSymbols.emplace_back(result);
+
+    return result;
 }
 
 } // namespace Core

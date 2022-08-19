@@ -256,12 +256,12 @@ private slots:
         QVERIFY(symbolClass);
 
         QCOMPARE(symbolClass->name(), "MyObject");
-        QCOMPARE(symbolClass->members().size(), 5);
+        QCOMPARE(symbolClass->members().size(), 10);
         QCOMPARE(symbolClass->members().first()->name(), "MyObject::MyObject");
         QCOMPARE(symbolClass->members().first()->kind(), Core::Symbol::Constructor);
         QCOMPARE(symbolClass->members().at(2)->name(), "MyObject::sayMessage");
         QCOMPARE(symbolClass->members().at(2)->kind(), Core::Symbol::Method);
-        QCOMPARE(symbolClass->members().last()->name(), "MyObject::m_message");
+        QCOMPARE(symbolClass->members().last()->name(), "MyObject::m_enum");
         QCOMPARE(symbolClass->members().last()->kind(), Core::Symbol::Field);
     }
 };
