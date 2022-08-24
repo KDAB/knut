@@ -9,6 +9,8 @@
 #include "lsp/types.h"
 
 #include "project.h"
+#include "textlocation.h"
+#include "symbol.h"
 
 #include "scriptmanager.h"
 
@@ -308,6 +310,33 @@ std::pair<QString, std::optional<TextRange>> LspDocument::hoverWithRange(
     }
 
     return {"", {}};
+}
+
+QVector<Core::TextLocation> LspDocument::references(int position) const
+{
+    LOG("LspDocument::references");
+
+    if (!checkClient()) {
+        return {};
+    }
+
+    Lsp::ReferenceParams params;
+    params.textDocument.uri = toUri();
+    params.position = fromPos(position);
+
+    QVector<Core::TextLocation> textLocations;
+    if (auto result = client()->references(std::move(params))) {
+        const auto &value = result.value();
+        if (const auto *locations = std::get_if<std::vector<Lsp::Location>>(&value)) {
+            return TextLocation::fromLsp(*locations);
+        } else {
+            spdlog::warn("LspDocument::references: Language server returned unsupported references type!");
+        }
+    } else {
+        spdlog::warn("LspDocument::references: LSP call to references returned nothing!");
+    }
+
+    return textLocations;
 }
 
 /*!

@@ -198,44 +198,28 @@ void Client::didChange(DidChangeTextDocumentParams &&params)
 std::optional<DocumentSymbolRequest::Result>
 Client::documentSymbol(DocumentSymbolParams &&params, std::function<void(DocumentSymbolRequest::Result)> asyncCallback)
 {
-    if (!canSendDocumentSymbol()) {
-        spdlog::error("{} not supported by LSP server", DocumentSymbolName);
-        return {};
-    }
-
-    DocumentSymbolRequest request;
-    request.id = m_nextRequestId++;
-    request.params = std::move(params);
-    return sendRequest(m_backend, request, asyncCallback);
+    return sendGenericRequest<DocumentSymbolRequest>(&Client::canSendDocumentSymbol, DocumentSymbolName,
+                                                     std::move(params), asyncCallback);
 }
 
 std::optional<DeclarationRequest::Result>
 Client::declaration(DeclarationParams &&params, std::function<void(DeclarationRequest::Result)> asyncCallback /* = {}*/)
 {
-    if (!canSendDeclaration()) {
-        spdlog::error("{} not supported by LSP server", DeclarationName);
-        return {};
-    }
-
-    DeclarationRequest request;
-    request.id = m_nextRequestId++;
-    request.params = std::move(params);
-    return sendRequest(m_backend, request, asyncCallback);
+    return sendGenericRequest<DeclarationRequest>(&Client::canSendDeclaration, DeclarationName, std::move(params),
+                                                  asyncCallback);
 }
 
 std::optional<HoverRequest::Result> Client::hover(HoverParams &&params,
                                                   std::function<void(HoverRequest::Result)> asyncCallback /* = {} */)
 {
-    if (!canSendHover()) {
-        spdlog::error("{} not supported by LSP server", HoverName);
-        return {};
-    }
+    return sendGenericRequest<HoverRequest>(&Client::canSendHover, HoverName, std::move(params), asyncCallback);
+}
 
-    HoverRequest request;
-    request.id = m_nextRequestId++;
-    request.params = std::move(params);
-
-    return sendRequest(m_backend, request, asyncCallback);
+std::optional<ReferencesRequest::Result>
+Client::references(ReferenceParams &&params, std::function<void(ReferencesRequest::Result)> asyncCallback /* = {} */)
+{
+    return sendGenericRequest<ReferencesRequest>(&Client::canSendReferences, ReferencesName, std::move(params),
+                                                 asyncCallback);
 }
 
 std::string Client::toUri(const QString &path)
@@ -342,4 +326,10 @@ bool Client::canSendHover() const
 {
     return canSend<HoverOptions>(&Lsp::ServerCapabilities::hoverProvider);
 }
+
+bool Client::canSendReferences() const
+{
+    return canSend<ReferenceOptions>(&Lsp::ServerCapabilities::referencesProvider);
+}
+
 } // namespace Lsp

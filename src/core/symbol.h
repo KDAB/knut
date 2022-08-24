@@ -1,5 +1,6 @@
 #pragma once
 
+#include "textlocation.h"
 #include "textrange.h"
 
 #include "lsp/types.h"
@@ -20,6 +21,7 @@ class Symbol : public QObject
     Q_PROPERTY(Kind kind READ kind CONSTANT);
     Q_PROPERTY(Core::TextRange range READ range CONSTANT);
     Q_PROPERTY(Core::TextRange selectionRange READ selectionRange CONSTANT);
+    Q_PROPERTY(QVector<Core::TextLocation> references READ references CONSTANT);
 
 public:
     enum Kind {
@@ -82,6 +84,8 @@ public:
     Kind kind() const;
     Core::TextRange range() const;
     Core::TextRange selectionRange() const;
+
+    QVector<Core::TextLocation> references() const;
 
     Q_INVOKABLE void select();
 

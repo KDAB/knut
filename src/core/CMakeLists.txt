@@ -62,6 +62,8 @@ set(PROJECT_SOURCES
     textdocument.h
     textdocument.cpp
     textdocument_p.h
+    textlocation.h
+    textlocation.cpp
     textrange.h
     textrange.cpp
     uidocument.h

@@ -31,6 +31,7 @@ public:
     Q_INVOKABLE void transformSymbol(const QString &symbolName, const QString &jsonFileName);
     Q_INVOKABLE QString hover() const;
     Q_INVOKABLE const Core::Symbol *symbolUnderCursor() const;
+    Q_INVOKABLE QVector<Core::TextLocation> references(int position) const;
 
     bool hasLspClient() const;
 
@@ -40,6 +41,7 @@ public:
     QString hover(int position, std::function<void(const QString &)> asyncCallback = {}) const;
 
     int toPos(const Lsp::Position &pos) const;
+    TextRange toRange(const Lsp::Range &range) const;
 
 public slots:
     Document *followSymbol();
@@ -55,7 +57,6 @@ protected:
     Lsp::Client *client() const;
     std::string toUri() const;
     Lsp::Position fromPos(int pos) const;
-    TextRange toRange(const Lsp::Range &range) const;
 
     int revision() const;
 

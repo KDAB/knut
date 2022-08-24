@@ -183,6 +183,21 @@ Core::TextRange Symbol::selectionRange() const
     return m_selectionRange;
 }
 
+QVector<Core::TextLocation> Symbol::references() const
+{
+    LOG("Symbol::references");
+
+    if (const auto lspdocument = document()) {
+        auto references = lspdocument->references(selectionRange().start);
+        references.erase(std::remove_if(references.begin(), references.end(), [this](const auto &reference) {
+            return reference.range == this->selectionRange();
+        }));
+        return references;
+    }
+
+    return {};
+}
+
 void Symbol::select()
 {
     if (auto lspDocument = document()) {

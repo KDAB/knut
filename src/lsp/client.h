@@ -5,6 +5,8 @@
 
 #include <QObject>
 
+#include <spdlog/spdlog.h>
+
 #include <string>
 
 namespace Lsp {
@@ -61,7 +63,7 @@ public:
     bool canSendDocumentChanges(TextDocumentSyncKind kind) const;
 
     /**
-     * Sends the documentSymbol requests, and returns the list of symbols
+     * ##### LSP requests #####
      * If asyncCallback is not null, the request will be sent asynchronously and the callback called once the respone
      * has arrive. Otherwise, the request is synchronous, and the result is returned. An empty optional means there was
      * an error.
@@ -69,17 +71,15 @@ public:
     std::optional<DocumentSymbolRequest::Result>
     documentSymbol(DocumentSymbolParams &&params,
                    std::function<void(DocumentSymbolRequest::Result)> asyncCallback = {});
-    /**
-     * Sends the declaration request and returns the list of locations.
-     * If asyncCallback is not null, the request will be sent asynchronously and the callback called once the respone
-     * has arrive. Otherwise, the request is synchronous, and the result is returned. An empty optional means there was
-     * an error.
-     */
+
     std::optional<DeclarationRequest::Result>
     declaration(DeclarationParams &&params, std::function<void(DeclarationRequest::Result)> asyncCallback = {});
 
     std::optional<HoverRequest::Result> hover(HoverParams &&params,
                                               std::function<void(HoverRequest::Result)> asyncCallback = {});
+
+    std::optional<ReferencesRequest::Result>
+    references(ReferenceParams &&params, std::function<void(ReferencesRequest::Result)> asyncCallback = {});
 
     State state() const { return m_state; }
 
@@ -98,6 +98,24 @@ private:
     bool canSendDocumentSymbol() const;
     bool canSendDeclaration() const;
     bool canSendHover() const;
+    bool canSendReferences() const;
+
+    template <typename Request, typename Params>
+    std::optional<typename Request::Result>
+    sendGenericRequest(bool (Client::*canSend)() const, const char *name, Params &&params,
+                       std::function<void(typename Request::Result)> asyncCallback)
+    {
+        if (!(this->*canSend)()) {
+            spdlog::error("{} not supported by LSP server", name);
+            return {};
+        }
+
+        Request request;
+        request.id = m_nextRequestId++;
+        request.params = std::move(params);
+
+        return sendRequest(m_backend, request, asyncCallback);
+    }
 
     template <typename Options, typename Variant>
     bool canSend(Variant Lsp::ServerCapabilities::*pProvider) const

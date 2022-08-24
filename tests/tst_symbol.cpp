@@ -11,10 +11,12 @@
 #include <QThread>
 
 namespace Core {
+
 char *toString(const Argument &argument)
 {
     return QTest::toString(QString("Type: '%1' Name: '%2'").arg(argument.type).arg(argument.name));
 }
+
 }
 
 class TestSymbol : public QObject
@@ -263,6 +265,51 @@ private slots:
         QCOMPARE(symbolClass->members().at(2)->kind(), Core::Symbol::Method);
         QCOMPARE(symbolClass->members().last()->name(), "MyObject::m_enum");
         QCOMPARE(symbolClass->members().last()->kind(), Core::Symbol::Field);
+    }
+
+    void references()
+    {
+        Core::KnutCore core;
+        Core::Project::instance()->setRoot(Test::testDataPath() + "/projects/cpp-project");
+
+        auto lspDocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->open("myobject.h"));
+        QVERIFY(lspDocument);
+
+        Core::Symbol *symbol = lspDocument->findSymbol("MyObject");
+        QVERIFY(symbol);
+        QCOMPARE(symbol->kind(), Core::Symbol::Class);
+
+        const auto isSymbolRange = [&symbol](const auto &loc) {
+            return loc.range == symbol->selectionRange();
+        };
+
+        const auto references = symbol->references();
+        QCOMPARE(references.size(), 9);
+        QVERIFY2(std::find_if(references.cbegin(), references.cend(), isSymbolRange) == references.cend(),
+                 "Ensure the symbol range itself is not part of the result.");
+        QCOMPARE(qobject_cast<Core::LspDocument *>(Core::Project::instance()->currentDocument()), lspDocument);
+
+        for (const auto &reference : references) {
+            QVERIFY(reference.document);
+        }
+
+        QCOMPARE(std::count_if(references.cbegin(), references.cend(),
+                               [](const auto &location) {
+                                   return location.document->fileName().endsWith("main.cpp");
+                               }),
+                 1);
+
+        QCOMPARE(std::count_if(references.cbegin(), references.cend(),
+                               [](const auto &location) {
+                                   return location.document->fileName().endsWith("myobject.h");
+                               }),
+                 2);
+
+        QCOMPARE(std::count_if(references.cbegin(), references.cend(),
+                               [](const auto &location) {
+                                   return location.document->fileName().endsWith("myobject.cpp");
+                               }),
+                 6);
     }
 };
 
