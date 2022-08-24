@@ -2,7 +2,9 @@
 #include "core/lspdocument.h"
 #include "core/project.h"
 
+#include <QAction>
 #include <QPlainTextEdit>
+#include <QSignalSpy>
 #include <QTest>
 #include <qtestcase.h>
 
@@ -398,6 +400,27 @@ private slots:
             QCOMPARE(after.start, 327);
             QCOMPARE(after.end, 387);
         }
+    }
+
+    void asyncHover()
+    {
+        Core::KnutCore core;
+        auto project = Core::Project::instance();
+        project->setRoot(Test::testDataPath() + "/projects/cpp-project");
+
+        auto lspdocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->get("myobject.h"));
+
+        auto symbol = lspdocument->findSymbol("MyObject");
+        QVERIFY(symbol);
+
+        QAction signalled;
+
+        lspdocument->hover(symbol->selectionRange().start + 1, [&signalled](const auto &) {
+            signalled.trigger();
+        });
+
+        QSignalSpy spy(&signalled, &QAction::triggered);
+        QVERIFY(spy.wait());
     }
 };
 

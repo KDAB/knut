@@ -37,7 +37,7 @@ public:
     Symbol *currentSymbol(std::function<bool(const Symbol &)> filterFunc) const;
     void deleteSymbol(const Symbol &symbol);
 
-    QString hover(int position) const;
+    QString hover(int position, std::function<void(const QString &)> asyncCallback = {}) const;
 
     int toPos(const Lsp::Position &pos) const;
 
@@ -59,7 +59,9 @@ protected:
 
     int revision() const;
 
-    std::pair<QString, std::optional<TextRange>> hoverWithRange(int position) const;
+    std::pair<QString, std::optional<TextRange>>
+    hoverWithRange(int position,
+                   std::function<void(const QString &, std::optional<TextRange>)> asyncCallback = {}) const;
 
 private:
     bool checkClient() const;

@@ -241,12 +241,21 @@ QString LspDocument::hover() const
     return hover(textEdit()->textCursor().position());
 }
 
-QString LspDocument::hover(int position) const
+QString LspDocument::hover(int position, std::function<void(const QString &)> asyncCallback /*  = {} */) const
 {
-    return hoverWithRange(position).first;
+    if (asyncCallback) {
+        return hoverWithRange(position,
+                              [asyncCallback = move(asyncCallback)](const auto &hoverText, auto) {
+                                  asyncCallback(hoverText);
+                              })
+            .first;
+    } else {
+        return hoverWithRange(position).first;
+    }
 }
 
-std::pair<QString, std::optional<TextRange>> LspDocument::hoverWithRange(int position) const
+std::pair<QString, std::optional<TextRange>> LspDocument::hoverWithRange(
+    int position, std::function<void(const QString &, std::optional<TextRange>)> asyncCallback /*  = {} */) const
 {
     LOG("LspDocument::hover");
 
@@ -257,30 +266,49 @@ std::pair<QString, std::optional<TextRange>> LspDocument::hoverWithRange(int pos
     params.textDocument.uri = toUri();
     params.position = fromPos(position);
 
-    auto result = client()->hover(std::move(params));
-    if (!result) {
-        return {"", {}};
-    }
+    QPointer<const LspDocument> safeThis(this);
 
-    if (!std::holds_alternative<Lsp::Hover>(*result)) {
-        spdlog::warn("LSP server returned no result for Hover");
-        return {"", {}};
-    }
+    auto convertResult = [safeThis](const auto &result) -> std::pair<QString, std::optional<TextRange>> {
+        if (!std::holds_alternative<Lsp::Hover>(result)) {
+            return {"", {}};
+        }
 
-    auto hover = std::get<Lsp::Hover>(*result);
-    std::optional<TextRange> range;
-    if (hover.range) {
-        range = toRange(hover.range.value());
-    }
+        auto hover = std::get<Lsp::Hover>(result);
 
-    Lsp::MarkupContent markupContent;
-    if (const auto *content = std::get_if<Lsp::MarkupContent>(&hover.contents)) {
-        return {QString::fromStdString(content->value), range};
+        std::optional<TextRange> range;
+        if (hover.range && !safeThis.isNull()) {
+            range = safeThis->toRange(hover.range.value());
+        }
+
+        Lsp::MarkupContent markupContent;
+        if (const auto *content = std::get_if<Lsp::MarkupContent>(&hover.contents)) {
+            return {QString::fromStdString(content->value), range};
+        } else {
+            spdlog::warn("LSP returned deprecated MarkedString type which is unsupported by Knut\n - Consider updating "
+                         "your LSP server");
+            return {"", {}};
+        }
+    };
+
+    if (asyncCallback) {
+        client()->hover(std::move(params), [convertResult, asyncCallback = move(asyncCallback)](const auto result) {
+            auto hoverText = convertResult(result);
+            asyncCallback(hoverText.first, hoverText.second);
+        });
     } else {
-        spdlog::warn("LSP returned deprecated MarkedString type which is unsupported by Knut\n - Consider updating "
-                     "your LSP server");
-        return {"", {}};
+        auto result = client()->hover(std::move(params));
+        if (result) {
+            // We can't have this in "convertResult", as that would spam the log due to Hover being called when
+            // a Tooltip is requested.
+            // See: TextView::eventFilter.
+            if (!std::holds_alternative<Lsp::Hover>(result.value())) {
+                spdlog::debug("LSP server returned no result for Hover");
+            }
+            return convertResult(result.value());
+        }
     }
+
+    return {"", {}};
 }
 
 /*!

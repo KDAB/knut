@@ -2,6 +2,8 @@
 
 #include "guisettings.h"
 
+#include "core/logger.h"
+#include "core/lspdocument.h"
 #include "core/mark.h"
 #include "core/textdocument.h"
 
@@ -10,6 +12,7 @@
 #include <QPlainTextEdit>
 #include <QRubberBand>
 #include <QTextDocument>
+#include <QToolTip>
 #include <QVBoxLayout>
 
 namespace Gui {
@@ -109,6 +112,29 @@ bool TextView::eventFilter(QObject *obj, QEvent *event)
     Q_UNUSED(obj)
     if (event->type() == QEvent::Paint)
         updateMarkRect();
+    if (event->type() == QEvent::ToolTip) {
+        if (const auto *lspdocument = qobject_cast<Core::LspDocument *>(m_document)) {
+            if (const auto *helpEvent = dynamic_cast<QHelpEvent *>(event)) {
+                auto cursor = lspdocument->textEdit()->cursorForPosition(helpEvent->pos());
+
+                // Make the textEdit a guarded pointer, as it might have been destroyed once the hover
+                // callback returns.
+                QPointer<QPlainTextEdit> textEdit(lspdocument->textEdit());
+                QPoint position(helpEvent->globalPos());
+
+                // Hover spams the log if it doesn't find anything.
+                // In our case, that's not a problem, so just disable the log.
+                Core::LoggerDisabler ld;
+
+                lspdocument->hover(cursor.position(), [textEdit, position](const auto &hoverText) {
+                    if (!textEdit.isNull() && textEdit->isVisible()) {
+                        QToolTip::showText(position, hoverText, textEdit);
+                    }
+                });
+                return true;
+            }
+        }
+    }
     return false;
 }
 

@@ -21,7 +21,7 @@ template <typename Request>
 std::optional<typename Request::Result> sendRequest(ClientBackend *backend, Request request,
                                                     std::function<void(typename Request::Result)> callback)
 {
-    auto checkResponse = [&](typename Request::Response response) {
+    auto checkResponse = [request](typename Request::Response response) {
         if (!response.isValid() || response.error) {
             spdlog::warn("Response error for request {} - {}", request.method,
                          response.error ? response.error->message : "");
@@ -31,7 +31,7 @@ std::optional<typename Request::Result> sendRequest(ClientBackend *backend, Requ
     };
 
     if (callback) {
-        auto requestCallBack = [&](typename Request::Response response) {
+        auto requestCallBack = [checkResponse, callback = move(callback)](typename Request::Response response) {
             if (checkResponse(response))
                 callback(response.result.value());
         };
