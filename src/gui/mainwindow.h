@@ -8,11 +8,6 @@ class QMenu;
 class QFileSystemModel;
 class QTreeView;
 
-namespace Core {
-class TextDocument;
-class RcDocument;
-}
-
 namespace Gui {
 
 class Palette;

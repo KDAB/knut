@@ -6,7 +6,6 @@
 #include <functional>
 #include <vector>
 
-class QAction;
 class QFileSystemWatcher;
 
 namespace Core {
