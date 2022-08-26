@@ -68,6 +68,10 @@
             "configurePreset": "debug"
         },
         {
+            "name": "unity",
+            "configurePreset": "unity"
+        },	
+        {
             "name": "asan",
             "configurePreset": "asan"
         },
