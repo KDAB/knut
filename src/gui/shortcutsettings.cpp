@@ -216,10 +216,7 @@ ShortcutSettings::ShortcutSettings(QWidget *parent)
     connect(ui->recordButton, &QPushButton::clicked, this, &ShortcutSettings::recordShortcut);
 }
 
-ShortcutSettings::~ShortcutSettings()
-{
-    delete ui;
-}
+ShortcutSettings::~ShortcutSettings() = default;
 
 void ShortcutSettings::updateCurrentItem()
 {

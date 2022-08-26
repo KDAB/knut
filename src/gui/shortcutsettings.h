@@ -24,7 +24,7 @@ private:
     void resetSelected();
     void recordShortcut();
 
-    Ui::ShortcutSettings *ui;
+    std::unique_ptr<Ui::ShortcutSettings> ui;
     ShortcutModel *const m_shortcutModel;
 };
 

@@ -30,7 +30,7 @@ private:
     void replaceAll();
     void replace(bool onlyOne);
 
-    Ui::FindWidget *ui;
+    std::unique_ptr<Ui::FindWidget> ui;
     QAction *m_matchCase = nullptr;
     QAction *m_matchWord = nullptr;
     QAction *m_matchRegexp = nullptr;

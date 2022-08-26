@@ -47,10 +47,7 @@ FindWidget::FindWidget(QWidget *parent)
     connect(ui->replaceAllbutton, &QToolButton::pressed, this, &FindWidget::replaceAll);
 }
 
-FindWidget::~FindWidget()
-{
-    delete ui;
-}
+FindWidget::~FindWidget() = default;
 
 int FindWidget::findFlags() const
 {
