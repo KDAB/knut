@@ -3,8 +3,6 @@
 #include "guisettings.h"
 #include "mainwindow.h"
 
-#include "core/scriptmanager.h"
-
 #include <QShortcut>
 #include <QTimer>
 

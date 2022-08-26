@@ -2,8 +2,6 @@
 
 #include "scriptrunner.h"
 
-#include <spdlog/spdlog.h>
-
 #include <QHash>
 
 namespace Core {

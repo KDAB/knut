@@ -8,7 +8,6 @@
 #include <QHeaderView>
 #include <QMdiArea>
 #include <QMessageBox>
-#include <QSplitter>
 #include <QTableView>
 #include <QUiLoader>
 

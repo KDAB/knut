@@ -9,7 +9,6 @@
 #include "lsp/types.h"
 
 #include "project.h"
-#include "symbol.h"
 
 #include "scriptmanager.h"
 

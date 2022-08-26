@@ -13,7 +13,6 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QQmlContext>
-#include <QQmlPropertyMap>
 #include <QRadioButton>
 #include <QSpinBox>
 #include <QToolButton>

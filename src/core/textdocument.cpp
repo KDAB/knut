@@ -12,7 +12,6 @@
 #include <QRegularExpression>
 #include <QSignalBlocker>
 #include <QTextBlock>
-#include <QTextDocument>
 #include <QTextStream>
 #include <private/qwidgettextcontrol_p.h>
 

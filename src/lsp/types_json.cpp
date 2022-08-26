@@ -1,7 +1,5 @@
 #include "types_json.h"
 
-#include "types.h"
-
 namespace Lsp {
 
 void to_json(nlohmann::json &j, const FormattingOptions &value)
