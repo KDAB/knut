@@ -36,3 +36,8 @@ int myOtherFreeFunction(
         ) {
     return 42;
 }
+
+int freeFunction(unsigned, long long)
+{
+        return 5;
+}

@@ -275,6 +275,7 @@ private slots:
         auto lspDocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->open("myobject.h"));
         QVERIFY(lspDocument);
 
+        spdlog::warn("Finding symbol");
         Core::Symbol *symbol = lspDocument->findSymbol("MyObject");
         QVERIFY(symbol);
         QCOMPARE(symbol->kind(), Core::Symbol::Class);
@@ -283,16 +284,19 @@ private slots:
             return loc.range == symbol->selectionRange();
         };
 
+        spdlog::warn("Finding references");
         const auto references = symbol->references();
         QCOMPARE(references.size(), 9);
         QVERIFY2(std::find_if(references.cbegin(), references.cend(), isSymbolRange) == references.cend(),
                  "Ensure the symbol range itself is not part of the result.");
         QCOMPARE(qobject_cast<Core::LspDocument *>(Core::Project::instance()->currentDocument()), lspDocument);
 
+        spdlog::warn("Verifying document existence");
         for (const auto &reference : references) {
             QVERIFY(reference.document);
         }
 
+        spdlog::warn("Counting documents");
         QCOMPARE(std::count_if(references.cbegin(), references.cend(),
                                [](const auto &location) {
                                    return location.document->fileName().endsWith("main.cpp");

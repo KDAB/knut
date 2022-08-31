@@ -92,7 +92,8 @@
         {
             "name": "test",
             "description": "Runs the QTestLib based tests",
-            "configurePreset": "debug"
+            "configurePreset": "debug",
+            "output": { "outputOnFailure": true }
         },
         {
             "name": "test-asan",

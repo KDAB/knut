@@ -84,6 +84,36 @@ if(USE_SYNTAX_HIGHLIGHTING)
     add_definitions(-DUSE_SYNTAX_HIGHLIGHTING)
 endif()
 
+# test_data
+###########################################################
+# Important for tests - generates the appropriate compile_commands.json for the test_data.
+# Needs to be done before the setting "-Werror".
+add_subdirectory(test_data)
+
+# compile_commands.json
+###########################################################
+# Ensure we have the appropriate compile_commands.json files availabe.
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+add_custom_target(symlink-compile-commands ALL
+    DEPENDS
+        ${CMAKE_CURRENT_LIST_DIR}/compile_commands.json
+        ${CMAKE_CURRENT_LIST_DIR}/test_data/projects/cpp-project/compile_commands.json
+    )
+
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_LIST_DIR}/compile_commands.json
+    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_BINARY_DIR}/compile_commands.json compile_commands.json
+    WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+    )
+
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_LIST_DIR}/test_data/projects/cpp-project/compile_commands.json
+    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_BINARY_DIR}/compile_commands.json compile_commands.json
+    WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/test_data/projects/cpp-project
+    )
+
 # Post-initialization
 ###########################################################
 # Need to be done *after* compiling 3rd parties
@@ -100,6 +130,7 @@ enable_testing()
 add_subdirectory(scripts)
 add_subdirectory(src)
 add_subdirectory(tools)
+
 add_subdirectory(tests)
 
 file(GLOB DOCS_FILES README.md mkdocs.yml docs/*.md docs/contributing/*.md docs/getting-started/*.md)

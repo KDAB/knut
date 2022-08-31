@@ -189,9 +189,11 @@ QVector<Core::TextLocation> Symbol::references() const
 
     if (const auto lspdocument = document()) {
         auto references = lspdocument->references(selectionRange().start);
-        references.erase(std::remove_if(references.begin(), references.end(), [this](const auto &reference) {
-            return reference.range == this->selectionRange();
-        }));
+        references.erase(std::remove_if(references.begin(), references.end(),
+                                        [this](const auto &reference) {
+                                            return reference.range == this->selectionRange();
+                                        }),
+                         references.end());
         return references;
     }
 

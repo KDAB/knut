@@ -72,7 +72,7 @@ bool Client::initialize(const QString &rootPath)
     if (!m_backend->start())
         return false;
 
-    spdlog::debug("LSP server started");
+    spdlog::debug("LSP server started in: {}", rootPath.toStdString());
 
     InitializeRequest request;
     request.id = m_nextRequestId++;
