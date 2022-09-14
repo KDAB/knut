@@ -16,14 +16,14 @@ int main(int argc, char *argv[]) {
 
 // Test functions with/without named parameters
 using namespace std;
-int myFreeFunction(
+string myFreeFunction(
         unsigned,
         unsigned int,
         long long,
         const string,
         const std::string&,
         long long (*)(unsigned, const std::string&)) {
-    return 42;
+    return "hello";
 }
 
 int myOtherFreeFunction(

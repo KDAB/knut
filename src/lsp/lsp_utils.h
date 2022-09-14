@@ -2,6 +2,7 @@
 
 #include "types.h"
 
+#include <QString>
 #include <QUrl>
 
 namespace Lsp {
@@ -11,6 +12,8 @@ namespace Utils {
     {
         return QUrl::fromLocalFile(localFile).toString().toStdString();
     }
+
+    QString removeTypeAliasInformation(const QString &typeInfo);
 
 }
 }

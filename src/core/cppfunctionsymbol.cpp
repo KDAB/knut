@@ -1,6 +1,7 @@
 #include "cppfunctionsymbol.h"
 
 #include "cpplanguagedata.h"
+#include "lsp/lsp_utils.h"
 #include "lspdocument.h"
 
 #include <QRegularExpression>
@@ -57,7 +58,7 @@ Argument Argument::fromHover(const QString &parameter)
 {
     static auto identifierRegexp = QRegularExpression(R"([a-zA-Z_][a-zA-Z0-9_]*)");
 
-    auto words = parameter.split(" ");
+    auto words = Lsp::Utils::removeTypeAliasInformation(parameter).split(" ");
 
     // In C++, parameter names are optional, therefore we need to figure out if the parameter even has a name.
     auto withoutKeywords = words;
@@ -121,7 +122,7 @@ std::optional<QString> CppFunctionSymbol::returnTypeFromLSP() const
             if (line.startsWith("→ ")) {
                 line.remove(0, 2);
 
-                return line;
+                return Lsp::Utils::removeTypeAliasInformation(line);
             }
         }
 

@@ -3,6 +3,7 @@
 
 #include "cppfunctionsymbol.h"
 #include "lsp/client.h"
+#include "lsp/lsp_utils.h"
 #include "lsp/types.h"
 
 #include <spdlog/spdlog.h>
@@ -80,6 +81,7 @@ const Core::Symbol *LspCache::inferVariable(const QStringList &lines, TextRange 
     for (auto line : lines) {
         if (line.startsWith(typePrefix)) {
             type = line.remove(0, typePrefix.size());
+            type = Lsp::Utils::removeTypeAliasInformation(type);
         }
     }
 

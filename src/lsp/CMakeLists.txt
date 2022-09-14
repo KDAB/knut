@@ -7,6 +7,7 @@ set(PROJECT_SOURCES
     clientbackend.cpp
     json.h
     lsp_utils.h
+    lsp_utils.cpp
     notificationmessage.h
     notificationmessage_json.h
     notifications.h

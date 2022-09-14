@@ -187,7 +187,7 @@ private slots:
         {
             auto functionData = FunctionData {
                 .name = "myFreeFunction",
-                .returnType = "int",
+                .returnType = "std::string",
                 .arguments = {Core::Argument {.type = "unsigned int", .name = ""},
                               Core::Argument {.type = "unsigned int", .name = ""},
                               Core::Argument {.type = "long long", .name = ""},
