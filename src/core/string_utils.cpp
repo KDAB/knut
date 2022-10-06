@@ -154,7 +154,7 @@ QString matchCaseReplacement(const QString &originalText, const QString &replace
         + originalText.right(suffixLen);
 }
 
-// THis function is copied from Qt creator.
+// This function is copied from Qt creator.
 QString expandRegExpReplacement(const QString &replaceText, const QStringList &capturedTexts)
 {
     // handles \1 \\ \& \t \n $1 $$ $&

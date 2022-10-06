@@ -138,6 +138,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionSelectToBlockEnd, &QAction::triggered, this, &MainWindow::selectBlockEnd);
     connect(ui->actionSelectToBlockStart, &QAction::triggered, this, &MainWindow::selectBlockStart);
     connect(ui->actionSelectBlockUp, &QAction::triggered, this, &MainWindow::selectBlockUp);
+    connect(ui->actionTransform, &QAction::triggered, this, &MainWindow::transform);
     connect(ui->actionTransformSymbol, &QAction::triggered, this, &MainWindow::transformSymbol);
     connect(ui->actionDeleteMethod, &QAction::triggered, this, &MainWindow::deleteMethod);
 
@@ -261,6 +262,15 @@ void MainWindow::toggleSection()
 {
     if (auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->currentDocument()))
         cppDocument->toggleSection();
+}
+
+void MainWindow::transform()
+{
+    if (qobject_cast<Core::LspDocument *>(Core::Project::instance()->currentDocument())) {
+        auto *scriptManager = Core::ScriptManager::instance();
+
+        scriptManager->runScript(":/scripts/qml/transform.qml");
+    }
 }
 
 void MainWindow::transformSymbol()
@@ -523,6 +533,7 @@ void MainWindow::updateActions()
     const bool lspEnabled = lspDocument && lspDocument->hasLspClient();
     ui->actionFollowSymbol->setEnabled(lspEnabled);
     ui->actionSwitchDeclDef->setEnabled(lspEnabled);
+    ui->actionTransform->setEnabled(lspEnabled);
     ui->actionTransformSymbol->setEnabled(lspEnabled);
 
     const bool cppEnabled = lspDocument && qobject_cast<Core::CppDocument *>(document);

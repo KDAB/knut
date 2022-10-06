@@ -1171,7 +1171,15 @@ bool TextDocument::replaceOne(const QString &before, const QString &after, int o
  *
  * Returns the number of changes done in the document.
  */
-int TextDocument::replaceAll(const QString &before, const QString &after, int options)
+int TextDocument::replaceAll(const QString &before, const QString &after, int options /* = NoFindFlags */)
+{
+    return replaceAll(before, after, options, [](auto, auto) {
+        return true;
+    });
+}
+
+int TextDocument::replaceAll(const QString &before, const QString &after, int options,
+                             std::function<bool(QRegularExpressionMatch, QTextCursor)> regexFilter)
 {
     LOG("TextDocument::replaceAll", LOG_ARG("text", before), after, options);
 
@@ -1193,7 +1201,12 @@ int TextDocument::replaceAll(const QString &before, const QString &after, int op
         QString afterText = after;
         if (usesRegExp) {
             QRegularExpressionMatch match = regexp.match(selectedText());
-            afterText = expandRegExpReplacement(after, match.capturedTexts());
+            if (regexFilter(match, cursor)) {
+                afterText = expandRegExpReplacement(after, match.capturedTexts());
+            } else {
+                // Result filtered, so do not replace.
+                afterText = match.captured();
+            }
         } else if (preserveCase) {
             afterText = matchCaseReplacement(cursor.selectedText(), after);
         }
@@ -1213,10 +1226,18 @@ int TextDocument::replaceAll(const QString &before, const QString &after, int op
  *
  * Returns the number of changes done in the document.
  */
-int TextDocument::replaceAllRegexp(const QString &regexp, const QString &after, int options)
+int TextDocument::replaceAllRegexp(const QString &regexp, const QString &after, int options /* = NoFindFlags */)
+{
+    return replaceAllRegexp(regexp, after, options, [](auto, auto) {
+        return true;
+    });
+}
+
+int TextDocument::replaceAllRegexp(const QString &regexp, const QString &after, int options,
+                                   std::function<bool(QRegularExpressionMatch, QTextCursor)> regexFilter)
 {
     LOG("TextDocument::replaceAllRegexp", regexp, after, options);
-    return replaceAll(regexp, after, options | FindRegexp);
+    return replaceAll(regexp, after, options | FindRegexp, regexFilter);
 }
 
 static int columnAt(const QString &text, int position, int tabSize)

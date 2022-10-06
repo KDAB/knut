@@ -90,6 +90,8 @@ public:
     Q_INVOKABLE void select();
 
     bool operator==(const Symbol &) const;
+
+    friend class LspDocument;
 };
 
 } // namespace Core

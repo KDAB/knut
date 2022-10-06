@@ -8,6 +8,8 @@
         <file alias="dot-to-arrow.json">../../scripts/dot-to-arrow.json</file>
     </qresource>
     <qresource prefix="/scripts/qml/">
+        <file alias="transform.qml">../../scripts/transform.qml</file>
+        <file alias="transform.ui">../../scripts/transform.ui</file>
         <file alias="transform-symbol.qml">../../scripts/transform-symbol.qml</file>
         <file alias="transform-symbol.ui">../../scripts/transform-symbol.ui</file>
     </qresource>

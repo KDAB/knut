@@ -4,6 +4,7 @@
 #include "textrange.h"
 
 #include <QPointer>
+#include <QRegularExpressionMatch>
 #include <QTextCursor>
 #include <QTextDocument>
 
@@ -176,6 +177,11 @@ protected:
     friend Mark;
     void convertPosition(int pos, int *line, int *column) const;
     int position(QTextCursor::MoveOperation operation, int pos) const;
+
+    int replaceAll(const QString &before, const QString &after, int options,
+                   std::function<bool(QRegularExpressionMatch, QTextCursor)> regexFilter);
+    int replaceAllRegexp(const QString &regexp, const QString &after, int options,
+                         std::function<bool(QRegularExpressionMatch, QTextCursor)> regexFilter);
 
 private:
     void doIndent(int tabCount);

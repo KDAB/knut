@@ -2,6 +2,7 @@
 #include "core/lspdocument.h"
 #include "core/project.h"
 
+#include <QPlainTextEdit>
 #include <QTest>
 #include <qtestcase.h>
 
@@ -14,7 +15,7 @@ class TestJsonTransforms : public QObject
 private slots:
     void initTestCase() { Q_INIT_RESOURCE(core); }
 
-    void regexPatterns()
+    void LspDocument_transform()
     {
         CHECK_CLANGD_VERSION;
 
@@ -26,8 +27,33 @@ private slots:
 
             auto cppDocument = qobject_cast<Core::LspDocument *>(project->open(tester.fileName()));
 
-            cppDocument->transformSymbol("object",
-                                         Test::testDataPath() + "/tst_jsontransforms/regexPattern/dot-to-arrow.json");
+            std::unordered_map<QString, QString> context {{"name", "object"}};
+            cppDocument->transform(Test::testDataPath() + "/tst_jsontransforms/regexPattern/dot-to-arrow.json",
+                                   context);
+            cppDocument->save();
+
+            QVERIFY(tester.compare());
+        }
+    }
+
+    void LspDocument_transformSymbol()
+    {
+        Test::FileTester tester(Test::testDataPath() + "/tst_jsontransforms/transformSymbol/main.cpp");
+
+        {
+            Core::KnutCore core;
+            auto project = Core::Project::instance();
+            project->setRoot(Test::testDataPath() + "/tst_jsontransforms/transformSymbol");
+
+            auto cppDocument = qobject_cast<Core::LspDocument *>(project->open(tester.fileName()));
+            auto cursor = cppDocument->textEdit()->textCursor();
+            cursor.setPosition(cppDocument->toPos(Lsp::Position {.line = 7, .character = 17}));
+            cppDocument->textEdit()->setTextCursor(cursor);
+
+            auto symbol = cppDocument->symbolUnderCursor();
+            cppDocument->transformSymbol(
+                symbol, Test::testDataPath() + "/tst_jsontransforms/transformSymbol/dot-to-arrow.json");
+
             cppDocument->save();
 
             QVERIFY(tester.compare());

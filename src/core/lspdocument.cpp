@@ -15,6 +15,7 @@
 #include "scriptmanager.h"
 
 #include <QFile>
+#include <QMap>
 #include <QPlainTextEdit>
 #include <QTextBlock>
 #include <QTextDocument>
@@ -144,37 +145,72 @@ struct Transforms
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Transforms, patterns);
 
 void LspDocument::regexpTransform(const RegexpTransform &transform,
-                                  const std::unordered_map<QString, QString> &regexpContext)
+                                  const std::unordered_map<QString, QString> &regexpContext,
+                                  std::function<bool(QRegularExpressionMatch, QTextCursor)> regexFilter)
 {
     auto from = transform.from;
     auto to = transform.to;
 
     for (const auto &contextPair : regexpContext) {
-        auto key = QString("${%1}").arg(QRegularExpression::escape(contextPair.first));
-        auto value = QRegularExpression::escape(contextPair.second);
+        auto key = QString("${%1}").arg(contextPair.first);
+        auto value = contextPair.second;
         from.replace(key, value);
         to.replace(key, value);
     }
 
+    QRegularExpression checkRegex("\\${(?<key>[a-zA-Z0-9_]+)}");
+    auto match = checkRegex.match(from);
+    auto key = match.captured("key");
+    if (match.hasMatch() && !key.isNull()) {
+        spdlog::warn("LspDocument::regexpTransform - Skipping Regex - Missing argument ${} to regex:\n{}",
+                     QString("{%1}").arg(key).toStdString(), from.toStdString());
+        return;
+    }
+
+    spdlog::trace("Running Regex conversion:\nFrom: {}\nTo: {}", from.toStdString(), to.toStdString());
     // Use the FindBackward flag, so that nested Regexp Transforms will
     // replace the "inner" item first.
-    replaceAllRegexp(from, to, TextDocument::FindBackward | TextDocument::PreserveCase);
+    replaceAllRegexp(from, to, TextDocument::FindBackward | TextDocument::PreserveCase, regexFilter);
 }
 
 /*!
- * \qmlmethod LspDocument::transformSymbol(const QString &symbolName, const QString &jsonFileName)
+ * \qmlmethod LspDocument::transform(const QString &jsonFileName, object context)
  *
- * Runs a list of transformations defined in a JSON file on the given `symbolName`.
+ * Runs a list of transformations defined in a JSON file.
  * The JSON file is loaded from the path specified in `jsonFileName`.
- * \todo
+ *
+ * A context object can be provided.
+ * Any key in this object is used to provide additional context information to the transformation.
+ * e.g. `{ symbol: "myobject" }` would replace all occurences of `${symbol}` in the json tranformation with `myobject`.
  */
-void LspDocument::transformSymbol(const QString &symbolName, const QString &jsonFileName)
+void LspDocument::transform(const QString &jsonFileName, QVariantMap context /*  = {} */)
 {
-    LOG("LspDocument::transformSymbol", LOG_ARG("text", symbolName), jsonFileName);
+    erase_if(context, [](const std::pair<const QString &, QVariant &> keyvalue) {
+        auto erase = !keyvalue.second.canConvert<QString>();
+        if (erase) {
+            spdlog::warn("LspDocument::transform: Removing non-string argument for key: {}",
+                         keyvalue.first.toStdString());
+        }
+        return erase;
+    });
+
+    std::unordered_map<QString, QString> stdContext;
+    QMapIterator<QString, QVariant> it(context);
+    while (it.hasNext()) {
+        auto item = it.next();
+        stdContext[item.key()] = item.value().toString();
+    }
+
+    return transform(jsonFileName, stdContext);
+}
+
+void LspDocument::transform(const QString &jsonFileName, const std::unordered_map<QString, QString> &context)
+{
+    LOG("LspDocument::transform", jsonFileName);
 
     QFile file(jsonFileName);
     if (!file.open(QFile::ReadOnly | QFile::Text)) {
-        spdlog::error("LspDocument::transformSymbol - Could not open JSON file: '{}'", jsonFileName.toStdString());
+        spdlog::error("LspDocument::transform - Could not open JSON file: '{}'", jsonFileName.toStdString());
         return;
     }
     QTextStream in(&file);
@@ -183,20 +219,106 @@ void LspDocument::transformSymbol(const QString &symbolName, const QString &json
     try {
         transformJson = nlohmann::json::parse(in.readAll().toStdString());
     } catch (nlohmann::json::exception &exception) {
-        spdlog::error("LspDocument::transformSymbol - JSON parsing failed: {}", exception.what());
+        spdlog::error("LspDocument::transform - JSON parsing failed: {}", exception.what());
         return;
     }
 
     try {
         auto transforms = transformJson.get<Transforms>();
 
-        std::unordered_map<QString, QString> regexpContext;
-        regexpContext["symbol"] = symbolName;
         for (const auto &pattern : transforms.patterns) {
-            regexpTransform(pattern, regexpContext);
+            regexpTransform(pattern, context);
         }
     } catch (nlohmann::json::exception &exception) {
-        spdlog::error("LspDocument::transformSymbol - Not a valid Transform JSON: {}", exception.what());
+        spdlog::error("LspDocument::transform - Not a valid Transform JSON: {}", exception.what());
+        return;
+    }
+}
+
+bool LspDocument::checkSymbolPosition(const Symbol *symbol, QRegularExpressionMatch match, QTextCursor cursor) const
+{
+    auto start = match.capturedStart("symbol");
+    auto end = match.capturedEnd("symbol");
+    // this means there was no "${symbol}" in the original search.
+    // So just proceed as normal
+    if (start == -1 || end == -1) {
+        return true;
+    }
+    // the capture group is relative to the match, so we must add the match start.
+    start += cursor.anchor();
+    end += cursor.anchor();
+
+    auto result =
+        symbol->document() == this && start == symbol->selectionRange().start && end == symbol->selectionRange().end;
+    spdlog::trace("LspDocument::checkSymbolPosition - Symbol position doesn't match RegexMatch.");
+    return result;
+}
+
+bool LspDocument::checkReferencePosition(const QVector<Core::TextLocation> &references, QRegularExpressionMatch match,
+                                         QTextCursor cursor) const
+{
+    auto start = match.capturedStart("reference");
+    auto end = match.capturedEnd("reference");
+    // this means there was no "${reference}" in the original search.
+    // So just proceed as normal
+    if (start == -1 || end == -1) {
+        return true;
+    }
+    // the capture group is relative to the match, so we must add the match start.
+    start += cursor.anchor();
+    end += cursor.anchor();
+
+    for (const auto &reference : references) {
+        if (reference.document == this && start == reference.range.start && end == reference.range.end) {
+            return true;
+        }
+    }
+    spdlog::trace("LspDocument::transformSymbol - Found no references at the RegexMatch.");
+    return false;
+}
+
+void LspDocument::transformSymbol(const Symbol *symbol, const QString &jsonFileName)
+{
+    if (!symbol) {
+        spdlog::debug("LspDocument::transformSymbol - symbol is nullptr");
+        return;
+    }
+    LOG("LspDocument::transform", jsonFileName);
+
+    QFile file(jsonFileName);
+    if (!file.open(QFile::ReadOnly | QFile::Text)) {
+        spdlog::error("LspDocument::transform - Could not open JSON file: '{}'", jsonFileName.toStdString());
+        return;
+    }
+    QTextStream in(&file);
+
+    nlohmann::json transformJson;
+    try {
+        transformJson = nlohmann::json::parse(in.readAll().toStdString());
+    } catch (nlohmann::json::exception &exception) {
+        spdlog::error("LspDocument::transform - JSON parsing failed: {}", exception.what());
+        return;
+    }
+
+    std::unordered_map<QString, QString> context;
+    context["reference"] = QString("(?<reference>%1)").arg(symbol->name());
+    context["symbol"] = QString("(?<symbol>%1)").arg(symbol->name());
+    context["name"] = symbol->name();
+
+    try {
+        auto transforms = transformJson.get<Transforms>();
+
+        const auto references = symbol->references();
+
+        for (const auto &pattern : transforms.patterns) {
+            regexpTransform(pattern, context,
+                            [this, symbol, &references](QRegularExpressionMatch match, QTextCursor cursor) {
+                                return checkSymbolPosition(symbol, match, cursor)
+                                    && checkReferencePosition(references, match, cursor);
+                            });
+        }
+    } catch (nlohmann::json::exception &exception) {
+        spdlog::error("LspDocument::transform - Not a valid Transform JSON: {}", exception.what());
         return;
     }
 }
@@ -246,7 +368,7 @@ QString LspDocument::hover(int position, std::function<void(const QString &)> as
 {
     if (asyncCallback) {
         return hoverWithRange(position,
-                              [asyncCallback = move(asyncCallback)](const auto &hoverText, auto) {
+                              [asyncCallback = std::move(asyncCallback)](const auto &hoverText, auto) {
                                   asyncCallback(hoverText);
                               })
             .first;
@@ -292,10 +414,11 @@ std::pair<QString, std::optional<TextRange>> LspDocument::hoverWithRange(
     };
 
     if (asyncCallback) {
-        client()->hover(std::move(params), [convertResult, asyncCallback = move(asyncCallback)](const auto result) {
-            auto hoverText = convertResult(result);
-            asyncCallback(hoverText.first, hoverText.second);
-        });
+        client()->hover(std::move(params),
+                        [convertResult, asyncCallback = std::move(asyncCallback)](const auto result) {
+                            auto hoverText = convertResult(result);
+                            asyncCallback(hoverText.first, hoverText.second);
+                        });
     } else {
         auto result = client()->hover(std::move(params));
         if (result) {
