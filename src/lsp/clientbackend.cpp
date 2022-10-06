@@ -187,9 +187,18 @@ nlohmann::json ClientBackend::Message::getNextMessage()
         QBuffer buf;
         buf.setData(m_data);
         if (buf.open(QIODevice::ReadOnly)) {
-            auto message = json::parse(buf.read(m_length).constData());
-            m_length = 0;
-            m_data = m_data.mid(buf.pos());
+            json message;
+            try {
+                message = json::parse(buf.read(m_length).constData());
+
+                m_length = 0;
+                m_data = m_data.mid(buf.pos());
+            } catch (...) {
+                // If we have parsing errors then the message
+                // is not fully received, return an empty message
+                // and wait for the next time this function runs.
+                message = {};
+            }
             return message;
         }
     }
