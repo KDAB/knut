@@ -77,7 +77,7 @@
    </widget>
    <widget class="QMenu" name="menuC">
     <property name="title">
-     <string>C++</string>
+     <string>&amp;C++</string>
     </property>
     <addaction name="actionSwitchHeaderSource"/>
     <addaction name="actionFollowSymbol"/>
@@ -95,6 +95,7 @@
     <addaction name="actionTransform"/>
     <addaction name="actionTransformSymbol"/>
     <addaction name="actionDeleteMethod"/>
+    <addaction name="actionTreeSitterInspector"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -466,6 +467,14 @@
    </property>
    <property name="toolTip">
     <string>Requires the LSP to be able to find a Symbol under the cursor position.</string>
+   </property>
+  </action>
+  <action name="actionTreeSitterInspector">
+   <property name="text">
+    <string>TreeSitter Inspector</string>
+   </property>
+   <property name="toolTip">
+    <string>Inspect AST and prototype transformations</string>
    </property>
   </action>
  </widget>

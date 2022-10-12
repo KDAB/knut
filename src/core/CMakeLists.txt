@@ -88,6 +88,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     Qt${QT_VERSION_MAJOR}::WidgetsPrivate
     Qt${QT_VERSION_MAJOR}::UiTools
     knut-lsp
+    knut-treesitter
     knut-rccore
 )
 target_include_directories(${PROJECT_NAME}

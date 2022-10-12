@@ -30,6 +30,14 @@ set(PROJECT_SOURCES
     optionsdialog.h
     optionsdialog.cpp
     optionsdialog.ui
+    transformpreviewdialog.h
+    transformpreviewdialog.cpp
+    transformpreviewdialog.ui
+    treesitterinspector.h
+    treesitterinspector.cpp
+    treesitterinspector.ui
+    treesittertreemodel.h
+    treesittertreemodel.cpp
     palette.h
     palette.cpp
     palette.ui

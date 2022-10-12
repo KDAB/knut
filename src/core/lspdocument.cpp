@@ -43,6 +43,7 @@ LspDocument::LspDocument(Type type, QObject *parent)
     , m_cache(std::make_unique<LspCache>(this))
 {
     connect(textEdit()->document(), &QTextDocument::contentsChange, this, &LspDocument::changeContent);
+    connect(textEdit()->document(), &QTextDocument::blockCountChanged, this, &LspDocument::changeBlockCount);
 }
 
 void LspDocument::setLspClient(Lsp::Client *client)
@@ -711,12 +712,29 @@ bool LspDocument::checkClient() const
     return true;
 }
 
+void LspDocument::changeBlockCount(int newBlockCount)
+{
+    spdlog::warn("new block count: {}", newBlockCount);
+}
+
 void LspDocument::changeContent(int position, int charsRemoved, int charsAdded)
 {
     Q_UNUSED(position)
     Q_UNUSED(charsRemoved)
     Q_UNUSED(charsAdded)
     m_cache->clear();
+
+    // TODO: Keep copy of previous string around, so we can find the oldEndPosition.
+    // const auto document = textEdit()->document();
+    // const auto startblock = document->findBlock(position);
+    // spdlog::warn("start point: {}, {}", startblock.blockNumber(), position - startblock.position());
+
+    // const auto newEndPosition = position + charsAdded;
+    // const auto newEndBlock = document->findBlock(newEndPosition);
+    // spdlog::warn("new end point: {}, {}", newEndBlock.blockNumber(), newEndPosition - newEndBlock.position());
+
+    // const auto plain = document->toPlainText();
+    // spdlog::warn("added: {}", plain.sliced(position, charsAdded).toStdString());
 
     if (!checkClient()) {
         return;

@@ -1,0 +1,2 @@
+add_subdirectory(treesitter)
+add_subdirectory(treesittercpp)

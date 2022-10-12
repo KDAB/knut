@@ -71,6 +71,7 @@ private:
     bool checkClient() const;
     Document *followSymbol(int pos);
     void changeContent(int position, int charsRemoved, int charsAdded);
+    void changeBlockCount(int newBlockCount);
 
     // JSON Transformations
     void regexpTransform(

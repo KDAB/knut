@@ -17,6 +17,7 @@ install(TARGETS ${PROJECT_NAME})
 
 add_subdirectory(core)
 add_subdirectory(lsp)
+add_subdirectory(treesitter)
 add_subdirectory(rccore)
 add_subdirectory(rcui)
 add_subdirectory(gui)

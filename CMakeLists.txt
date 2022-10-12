@@ -84,6 +84,8 @@ if(USE_SYNTAX_HIGHLIGHTING)
     add_definitions(-DUSE_SYNTAX_HIGHLIGHTING)
 endif()
 
+add_subdirectory(src/third_party)
+
 # test_data
 ###########################################################
 # Important for tests - generates the appropriate compile_commands.json for the test_data.

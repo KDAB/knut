@@ -59,3 +59,5 @@ add_knut_test(tst_lspdocument tst_lspdocument.cpp knut-core)
 add_knut_test(tst_jsontransforms tst_jsontransforms.cpp knut-core)
 
 add_knut_test(tst_symbol tst_symbol.cpp knut-core)
+
+add_knut_test(tst_treesitter tst_treesitter.cpp knut-core knut-treesitter)

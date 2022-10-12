@@ -18,6 +18,7 @@
 #include "shortcutmanager.h"
 #include "shortcutsettings.h"
 #include "textview.h"
+#include "treesitterinspector.h"
 #include "uiview.h"
 
 #include "core/cppdocument.h"
@@ -63,6 +64,7 @@ MainWindow::MainWindow(QWidget *parent)
     , m_scriptPanel(new ScriptPanel(this))
     , m_documentPalette(new DocumentPalette(this))
     , m_shortcutManager(new ShortcutManager(this))
+    , m_treeSitterInspector(new TreeSitterInspector(this))
 {
     // Initialize the settings before anything
     GuiSettings::instance();
@@ -140,6 +142,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionSelectBlockUp, &QAction::triggered, this, &MainWindow::selectBlockUp);
     connect(ui->actionTransform, &QAction::triggered, this, &MainWindow::transform);
     connect(ui->actionTransformSymbol, &QAction::triggered, this, &MainWindow::transformSymbol);
+    connect(ui->actionTreeSitterInspector, &QAction::triggered, this, &MainWindow::inspectTreeSitter);
     connect(ui->actionDeleteMethod, &QAction::triggered, this, &MainWindow::deleteMethod);
 
     // Rc
@@ -280,6 +283,11 @@ void MainWindow::transformSymbol()
 
         scriptManager->runScript(":/scripts/qml/transform-symbol.qml");
     }
+}
+
+void MainWindow::inspectTreeSitter()
+{
+    m_treeSitterInspector->show();
 }
 
 void MainWindow::deleteMethod()

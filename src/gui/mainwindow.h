@@ -15,6 +15,7 @@ class HistoryPanel;
 class ScriptPanel;
 class DocumentPalette;
 class ShortcutManager;
+class TreeSitterInspector;
 
 namespace Ui {
     class MainWindow;
@@ -69,6 +70,7 @@ private:
     void toggleSection();
     void transform();
     void transformSymbol();
+    void inspectTreeSitter();
     void deleteMethod();
 
     // Rc
@@ -98,6 +100,7 @@ private:
     ScriptPanel *const m_scriptPanel = nullptr;
     DocumentPalette *const m_documentPalette = nullptr;
     ShortcutManager *const m_shortcutManager = nullptr;
+    TreeSitterInspector *const m_treeSitterInspector = nullptr;
 };
 
 } // namespace Gui

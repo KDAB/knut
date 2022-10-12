@@ -6,6 +6,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QString>
+#include <QTest>
 
 #include <spdlog/spdlog.h>
 
@@ -166,3 +167,44 @@ constexpr inline bool obsoleteClangd()
         else if constexpr (Test::obsoleteClangd())                                                                     \
             QSKIP("clangd version is too old to run the test");                                                        \
     } while (false)
+
+// Qt6 prior to 6.3 uses QVERIFY_EXCEPTION_THROWN, which doesn't support expressions that include commas
+// so let's define the Qt6.3 version here, if it doesn't already exist:
+#ifndef QVERIFY_THROWS_EXCEPTION
+
+// QTest::qCaught also doesn't exist in Qt version prior to 6.3, so modify the macro to use QTest::qFail instead.
+#define QVERIFY_THROWS_EXCEPTION(exceptiontype, ...)                                                                   \
+    do {                                                                                                               \
+        QT_TRY                                                                                                         \
+        {                                                                                                              \
+            QT_TRY                                                                                                     \
+            {                                                                                                          \
+                __VA_ARGS__;                                                                                           \
+                QTest::qFail("Expected exception of type " #exceptiontype " to be thrown"                              \
+                             " but no exception caught",                                                               \
+                             __FILE__, __LINE__);                                                                      \
+                return;                                                                                                \
+            }                                                                                                          \
+            QT_CATCH(const exceptiontype &)                                                                            \
+            { /* success */                                                                                            \
+            }                                                                                                          \
+        }                                                                                                              \
+        QT_CATCH(const std::exception &e)                                                                              \
+        {                                                                                                              \
+            QByteArray msg = QByteArray()                                                                              \
+                + "Expected exception of type " #exceptiontype " to be thrown"                                         \
+                  " but std::exception caught with message: "                                                          \
+                + e.what();                                                                                            \
+            QTest::qFail(msg.constData(), __FILE__, __LINE__);                                                         \
+            return;                                                                                                    \
+        }                                                                                                              \
+        QT_CATCH(...)                                                                                                  \
+        {                                                                                                              \
+            QTest::qFail("Expected exception of type " #exceptiontype " to be thrown"                                  \
+                         " but unknown exception caught",                                                              \
+                         __FILE__, __LINE__);                                                                          \
+            QT_RETHROW;                                                                                                \
+        }                                                                                                              \
+    } while (false)
+
+#endif
