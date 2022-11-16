@@ -10,6 +10,7 @@
 
 namespace treesitter {
 class Transformation;
+class Predicates;
 }
 
 namespace Core {
@@ -53,6 +54,8 @@ private:
     void previewTransformation();
     void runTransformation();
     void prepareTransformation(std::function<void(treesitter::Transformation &transformation)> runFunction);
+
+    std::unique_ptr<treesitter::Predicates> makePredicates();
 
     QString preCheckTransformation() const;
 

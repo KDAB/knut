@@ -1,15 +1,17 @@
 #include "transformation.h"
 
+#include "predicates.h"
 #include "tree.h"
 
 #include <QObject>
 
 namespace treesitter {
 
-Transformation::Transformation(const QString &source, Parser &&parser, Query &&query, QString transformationTarget)
+Transformation::Transformation(const QString &source, Parser &&parser, const std::shared_ptr<Query> &query,
+                               QString transformationTarget)
     : m_source(source)
     , m_parser(std::move(parser))
-    , m_query(std::move(query))
+    , m_query(query)
     , m_to(transformationTarget)
 {
 }
@@ -21,35 +23,40 @@ QString Transformation::run()
     m_replacements = 0;
 
     QueryCursor cursor;
-    std::optional<QueryMatch> match;
-
+    bool shouldContinue;
     do {
         const auto tree = m_parser.parseString(resultText);
         if (!tree.has_value()) {
             throw Error {.description = "Unknown parser error!"};
         }
-        cursor.execute(m_query, tree->rootNode());
+        cursor.execute(m_query, tree->rootNode(), std::make_unique<Predicates>(resultText));
 
-        match = cursor.nextMatch();
-        if (match) {
-            std::unordered_map<QString, QString> context;
+        shouldContinue = runOneTransformation(cursor, resultText);
+    } while (shouldContinue);
 
-            auto captures = match->captures();
-            for (const auto &capture : captures) {
-                auto captureName = m_query.captureAt(capture.id).name;
-                context[captureName] = capture.node.textIn(resultText);
-            }
+    return resultText;
+}
 
-            const auto fromIt = std::find_if(captures.cbegin(), captures.cend(), [this](const auto &capture) {
-                return m_query.captureAt(capture.id).name == "from";
-            });
+bool Transformation::runOneTransformation(QueryCursor &cursor, QString &resultText)
+{
+    std::unordered_map<QString, QString> context;
 
-            if (fromIt == captures.cend()) {
-                throw Error {.description = QObject::tr("'@from' capture not found!")};
-            }
+    bool hasMatch = false;
+    // We want to allow multiple patterns, where not every pattern
+    // has a @from capture, but can provide additional context.
+    // Loop over them until we find a @from capture.
+    while (auto match = cursor.nextMatch()) {
+        hasMatch = true;
+        auto captures = match->captures();
+        for (const auto &capture : captures) {
+            auto captureName = m_query->captureAt(capture.id).name;
+            context[captureName] = capture.node.textIn(resultText);
+        }
 
-            const auto fromStart = fromIt->node.startPosition();
-            const auto fromEnd = fromIt->node.endPosition();
+        const auto from = match->capturesNamed("from");
+        if (!from.isEmpty()) {
+            const auto fromStart = from.first().node.startPosition();
+            const auto fromEnd = from.first().node.endPosition();
 
             QString after = m_to;
             for (const auto &[name, value] : context) {
@@ -61,10 +68,17 @@ QString Transformation::run()
                 throw Error {.description = QObject::tr("Maximum number of allowed transformations reached.\nPossibly "
                                                         "your transformation is recursive?")};
             }
+            context = std::unordered_map<QString, QString>();
+            return true;
         }
-    } while (match.has_value());
+    }
 
-    return resultText;
+    if (hasMatch && m_replacements == 0) {
+        // We found at least one match, but no @from capture and didn't make any replacements before.
+        throw Error {.description = QObject::tr("'@from' capture not found!")};
+    }
+
+    return false;
 }
 
 } // namespace treesitter

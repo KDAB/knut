@@ -15,7 +15,8 @@ public:
         QString description;
     };
 
-    Transformation(const QString &source, Parser &&parser, Query &&query, QString transformationTarget);
+    Transformation(const QString &source, Parser &&parser, const std::shared_ptr<Query> &query,
+                   QString transformationTarget);
 
     // Throws a Transformation::Error on failure
     QString run();
@@ -23,9 +24,11 @@ public:
     int replacementsMade() const { return m_replacements; }
 
 private:
+    bool runOneTransformation(QueryCursor &cursor, QString &resultText);
+
     QString m_source;
     Parser m_parser;
-    Query m_query;
+    std::shared_ptr<Query> m_query;
     QString m_to;
 
     // After reaching max_replacements, stop the transformation.

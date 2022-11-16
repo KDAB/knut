@@ -4,6 +4,7 @@
 #include "transformpreviewdialog.h"
 
 #include "treesitter/languages.h"
+#include "treesitter/predicates.h"
 #include "treesitter/transformation.h"
 
 #include <core/logger.h>
@@ -49,7 +50,8 @@ void QueryErrorHighlighter::highlightBlock(const QString &text)
         // So extend the highlight to span one full "keyword".
         //
         // Regex to find the first non-alphanumeric character.
-        static QRegularExpression regex("[^\\w]");
+        // Add '#' to highlight the entire predicate, if its a predicate error.
+        static QRegularExpression regex("[^\\w#]");
         auto to = text.indexOf(regex, textBeforeError.size());
         if (to == -1) {
             to = text.size();
@@ -130,20 +132,20 @@ void TreeSitterInspector::queryChanged()
     m_queryText = text;
 
     if (text.isEmpty()) {
-        m_treemodel.setQuery({});
+        m_treemodel.setQuery({}, makePredicates());
         ui->queryInfo->setText("");
         m_errorHighlighter->setUtf8Position(-1);
         return;
     }
 
     try {
-        treesitter::Query query(tree_sitter_cpp(), ui->query->toPlainText());
-        m_treemodel.setQuery(std::move(query));
+        auto query = std::make_shared<treesitter::Query>(tree_sitter_cpp(), ui->query->toPlainText());
+        m_treemodel.setQuery(query, makePredicates());
         m_errorHighlighter->setUtf8Position(-1);
 
         queryStateChanged();
     } catch (treesitter::Query::Error error) {
-        m_treemodel.setQuery({});
+        m_treemodel.setQuery({}, nullptr);
         ui->queryInfo->setText(highlightQueryError(error));
 
         // The error may be behind the last character, which couldn't be highlighted
@@ -164,7 +166,7 @@ void TreeSitterInspector::textChanged()
     }
     auto tree = m_parser.parseString(text);
     if (tree.has_value()) {
-        m_treemodel.setTree(std::move(tree.value()));
+        m_treemodel.setTree(std::move(tree.value()), makePredicates());
         ui->treeInspector->expandAll();
         for (int i = 0; i < 2; i++) {
             ui->treeInspector->resizeColumnToContents(i);
@@ -262,10 +264,10 @@ void TreeSitterInspector::prepareTransformation(
     }
 
     try {
-        treesitter::Query query(tree_sitter_cpp(), m_queryText);
+        auto query = std::make_shared<treesitter::Query>(tree_sitter_cpp(), m_queryText);
         treesitter::Parser parser(tree_sitter_cpp());
 
-        treesitter::Transformation transformation(m_document->text(), std::move(parser), std::move(query),
+        treesitter::Transformation transformation(m_document->text(), std::move(parser), query,
                                                   ui->target->toPlainText());
 
         runFunction(transformation);
@@ -283,6 +285,17 @@ void TreeSitterInspector::prepareTransformation(
         msgBox.setIcon(QMessageBox::Critical);
         msgBox.exec();
         return;
+    }
+}
+
+std::unique_ptr<treesitter::Predicates> TreeSitterInspector::makePredicates()
+{
+    if (m_document) {
+        // No need to always log the call to TextDocument::text
+        Core::LoggerDisabler disabler;
+        return std::make_unique<treesitter::Predicates>(m_document->text());
+    } else {
+        return nullptr;
     }
 }
 

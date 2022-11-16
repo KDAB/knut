@@ -59,9 +59,10 @@ public:
     QVariant data(const QModelIndex &index, int role) const override;
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
-    void setQuery(std::optional<treesitter::Query> query);
+    void setQuery(const std::shared_ptr<treesitter::Query> &query,
+                  std::unique_ptr<treesitter::Predicates> &&predicates);
     void setCursorPosition(int position);
-    void setTree(treesitter::Tree &&tree);
+    void setTree(treesitter::Tree &&tree, std::unique_ptr<treesitter::Predicates> &&predicates);
     void clear();
 
     std::optional<treesitter::Node> tsNode(const QModelIndex &index) const;
@@ -74,14 +75,14 @@ public:
 private:
     void positionChanged(int position);
     void capturesChanged(std::unordered_map<treesitter::Node, QString> oldCaptures);
-    void executeQuery();
+    void executeQuery(std::unique_ptr<treesitter::Predicates> &&predicates);
 
     int m_cursorPosition;
     std::optional<treesitter::Tree> m_tree;
 
     struct QueryData
     {
-        treesitter::Query query;
+        std::shared_ptr<treesitter::Query> query;
         std::unordered_map<treesitter::Node, QString> captures;
         int numMatches;
         int numCaptures;

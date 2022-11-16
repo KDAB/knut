@@ -15,6 +15,7 @@ struct TSQueryCursor;
 namespace treesitter {
 
 class Node;
+class Predicates;
 
 class Query
 {
@@ -93,10 +94,16 @@ public:
 
     QVector<Capture> captures() const;
 
+    // captures with quantifiers may return multiple values for the same capture.
+    QVector<Capture> capturesNamed(const QString &) const;
+
+    const std::shared_ptr<Query> query() const;
+
 private:
-    QueryMatch(const TSQueryMatch &match);
+    QueryMatch(const TSQueryMatch &match, const std::shared_ptr<Query> query);
 
     TSQueryMatch m_match;
+    std::shared_ptr<Query> m_query;
 
     friend class QueryCursor;
 };
@@ -117,11 +124,21 @@ public:
 
     void swap(QueryCursor &other) noexcept;
 
-    void execute(const Query &query, const Node &node);
+    void execute(const std::shared_ptr<Query> &query, const Node &node, std::unique_ptr<Predicates> &&predicates);
 
     std::optional<QueryMatch> nextMatch();
 
+    // Get all remaining matches.
+    // This will consume the cursor and nextMatch()
+    // will no longer return new matches.
+    QVector<QueryMatch> allRemainingMatches();
+
 private:
+    // The query must be kept alive for as long as the cursor is alive.
+    // Otherwise, no new matches can be returned and the Predicates can't be executed.
+    std::shared_ptr<Query> m_query;
+
+    std::unique_ptr<Predicates> m_predicates;
     TSQueryCursor *m_cursor;
 };
 

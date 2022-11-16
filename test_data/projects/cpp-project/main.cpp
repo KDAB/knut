@@ -9,7 +9,7 @@ int main(int argc, char *argv[]) {
 
     object.sayMessage();
 
-    freeFunction(1, 2);
+    freeFunction(1, 1);
 
     return 0;
 }

@@ -3,6 +3,7 @@ project(knut-treesitter LANGUAGES CXX)
 set(PROJECT_SOURCES
     node.cpp
     parser.cpp
+    predicates.cpp
     query.cpp
     transformation.cpp
     tree.cpp

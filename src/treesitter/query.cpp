@@ -1,6 +1,7 @@
 #include "query.h"
 
 #include "node.h"
+#include "predicates.h"
 
 #include <tree_sitter/api.h>
 
@@ -24,6 +25,23 @@ Query::Query(TSLanguage *language, const QString &query)
             .utf8_offset = error_offset,
             .description = description,
         };
+    }
+
+    const auto patterns = this->patterns();
+    for (const auto &pattern : patterns) {
+        for (const auto &predicate : pattern.predicates) {
+            auto error = Predicates::checkPredicate(predicate);
+            if (error.has_value()) {
+                auto predicateString = QString("#%1").arg(predicate.name).toUtf8();
+                auto offset = m_utf8_text.indexOf(predicateString);
+                offset = offset >= 0 ? offset : 0;
+
+                throw Error {
+                    .utf8_offset = static_cast<uint32_t>(offset),
+                    .description = *error,
+                };
+            }
+        }
     }
 }
 
@@ -90,6 +108,8 @@ QVector<Query::Pattern> Query::patterns() const
 {
     QVector<Query::Pattern> result;
 
+    ts_query_capture_quantifier_for_id(m_query, 0, 0);
+
     auto count = ts_query_pattern_count(m_query);
     result.reserve(count);
     for (uint32_t patternIndex = 0; patternIndex < count; ++patternIndex) {
@@ -121,8 +141,9 @@ Query::Capture Query::captureAt(uint32_t index) const
 }
 
 // ------------------------ QueryMatch --------------------
-QueryMatch::QueryMatch(const TSQueryMatch &match)
+QueryMatch::QueryMatch(const TSQueryMatch &match, const std::shared_ptr<Query> query)
     : m_match(match)
+    , m_query(query)
 {
 }
 
@@ -134,6 +155,21 @@ uint32_t QueryMatch::id() const
 uint32_t QueryMatch::patternIndex() const
 {
     return m_match.pattern_index;
+}
+
+const std::shared_ptr<Query> QueryMatch::query() const
+{
+    return m_query;
+}
+
+QVector<QueryMatch::Capture> QueryMatch::capturesNamed(const QString &name) const
+{
+    auto captures = this->captures();
+    QVector<Capture> result;
+    std::copy_if(captures.cbegin(), captures.cend(), std::back_inserter(result), [this, &name](const auto &capture) {
+        return m_query->captureAt(capture.id).name == name;
+    });
+    return result;
 }
 
 QVector<QueryMatch::Capture> QueryMatch::captures() const
@@ -182,18 +218,37 @@ void QueryCursor::swap(QueryCursor &other) noexcept
     std::swap(m_cursor, other.m_cursor);
 }
 
-void QueryCursor::execute(const Query &query, const Node &node)
+void QueryCursor::execute(const std::shared_ptr<Query> &query, const Node &node,
+                          std::unique_ptr<Predicates> &&predicates)
 {
-    ts_query_cursor_exec(m_cursor, query.m_query, node.m_node);
+    m_predicates = std::move(predicates);
+    if (m_predicates) {
+        m_predicates->setRootNode(node);
+    }
+    m_query = std::move(query);
+    ts_query_cursor_exec(m_cursor, m_query->m_query, node.m_node);
 }
 
 std::optional<QueryMatch> QueryCursor::nextMatch()
 {
     TSQueryMatch match;
-    if (ts_query_cursor_next_match(m_cursor, &match)) {
-        return QueryMatch(match);
+
+    while (ts_query_cursor_next_match(m_cursor, &match)) {
+        QueryMatch result(match, m_query);
+        if (!m_predicates || m_predicates->filterMatch(result)) {
+            return result;
+        }
     }
     return {};
+}
+
+QVector<QueryMatch> QueryCursor::allRemainingMatches()
+{
+    QVector<QueryMatch> matches;
+    for (auto match = nextMatch(); match.has_value(); match = nextMatch()) {
+        matches.emplace_back(match.value());
+    }
+    return matches;
 }
 
 }

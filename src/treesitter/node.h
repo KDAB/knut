@@ -15,6 +15,9 @@ public:
     Node(const Node &) = default;
     Node(Node &&) = default;
 
+    Node &operator=(Node &&) = default;
+    Node &operator=(const Node &) = default;
+
     QString type() const;
     const char *rawType() const;
 

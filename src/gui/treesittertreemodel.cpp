@@ -239,12 +239,12 @@ Qt::ItemFlags TreeSitterTreeModel::flags(const QModelIndex &index) const
     return QAbstractItemModel::flags(index);
 }
 
-void TreeSitterTreeModel::setTree(treesitter::Tree &&tree)
+void TreeSitterTreeModel::setTree(treesitter::Tree &&tree, std::unique_ptr<treesitter::Predicates> &&predicates)
 {
     beginResetModel();
     m_tree = std::move(tree);
     m_rootNode = std::make_unique<TreeNode>(m_tree->rootNode(), nullptr);
-    executeQuery();
+    executeQuery(std::move(predicates));
     endResetModel();
 }
 
@@ -257,7 +257,7 @@ void TreeSitterTreeModel::clear()
     endResetModel();
 }
 
-void TreeSitterTreeModel::executeQuery()
+void TreeSitterTreeModel::executeQuery(std::unique_ptr<treesitter::Predicates> &&predicates)
 {
     treesitter::QueryCursor cursor;
 
@@ -266,14 +266,14 @@ void TreeSitterTreeModel::executeQuery()
         m_query->numCaptures = 0;
         m_query->numMatches = 0;
 
-        cursor.execute(m_query->query, m_rootNode->tsNode());
+        cursor.execute(m_query->query, m_rootNode->tsNode(), std::move(predicates));
 
         while (const auto match = cursor.nextMatch()) {
             m_query->numMatches++;
 
             for (const auto &capture : match->captures()) {
                 m_query->numCaptures++;
-                m_query->captures[capture.node] += " @" + m_query->query.captureAt(capture.id).name;
+                m_query->captures[capture.node] += " @" + m_query->query->captureAt(capture.id).name;
             }
         }
     }
@@ -293,21 +293,20 @@ void TreeSitterTreeModel::capturesChanged(std::unordered_map<treesitter::Node, Q
     }
 }
 
-void TreeSitterTreeModel::setQuery(std::optional<treesitter::Query> query)
+void TreeSitterTreeModel::setQuery(const std::shared_ptr<treesitter::Query> &query,
+                                   std::unique_ptr<treesitter::Predicates> &&predicates)
 {
     std::unordered_map<treesitter::Node, QString> oldCaptures =
         m_query.has_value() ? std::move(m_query->captures) : decltype(m_query->captures)();
 
-    if (query.has_value()) {
-        m_query = QueryData {.query = (std::move(query.value())),
-                             .captures = decltype(m_query->captures)(),
-                             .numMatches = 0,
-                             .numCaptures = 0};
+    if (query != nullptr) {
+        m_query =
+            QueryData {.query = query, .captures = decltype(m_query->captures)(), .numMatches = 0, .numCaptures = 0};
     } else {
         m_query = {};
     }
 
-    executeQuery();
+    executeQuery(std::move(predicates));
     capturesChanged(oldCaptures);
 }
 
@@ -350,7 +349,7 @@ bool TreeSitterTreeModel::hasQuery() const
 int TreeSitterTreeModel::patternCount() const
 {
     if (m_query.has_value()) {
-        return m_query->query.patterns().size();
+        return m_query->query->patterns().size();
     }
 
     return 0;
