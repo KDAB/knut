@@ -388,7 +388,7 @@ static void readStringTable(Lexer &lexer, Data &data)
     lexer.next(); // END
 }
 
-static Data::Accelerator readAccelerator(Lexer &lexer)
+static Data::Accelerator readAccelerator(Lexer &lexer, Data &data)
 {
     Data::Accelerator accelerator;
     accelerator.line = lexer.line();
@@ -398,7 +398,7 @@ static Data::Accelerator readAccelerator(Lexer &lexer)
     else
         event = lexer.next()->toString();
     lexer.skipComma();
-    accelerator.id = lexer.next()->toString();
+    accelerator.id = toId(lexer.next(), data);
 
     bool isAscii = true;
     Qt::KeyboardModifiers modifiers;
@@ -446,7 +446,7 @@ static void readAccelerators(Lexer &lexer, Data &data, const QString &id)
     lexer.skipToBegin();
 
     while (lexer.peek()->type != Token::Keyword)
-        table.accelerators.push_back(readAccelerator(lexer));
+        table.accelerators.push_back(readAccelerator(lexer, data));
     lexer.next(); // END
 
     data.acceleratorTables.push_back(table);
