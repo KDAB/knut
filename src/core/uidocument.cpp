@@ -66,16 +66,12 @@ void UiDocument::preview()
 
 bool UiDocument::doSave(const QString &fileName)
 {
-    pugi::xml_node decl = m_document.prepend_child(pugi::node_declaration);
-    decl.append_attribute("version") = "1.0";
-    decl.append_attribute("encoding") = "UTF-8";
-
     return m_document.save_file(fileName.toLatin1().constData(), "    ");
 }
 
 bool UiDocument::doLoad(const QString &fileName)
 {
-    pugi::xml_parse_result result = m_document.load_file(fileName.toLatin1().constData());
+    pugi::xml_parse_result result = m_document.load_file(fileName.toLatin1().constData(), pugi::parse_declaration);
 
     if (!result) {
         spdlog::critical("{}({}): {}", fileName.toStdString(), result.offset, result.description());
