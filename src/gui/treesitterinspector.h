@@ -45,12 +45,12 @@ public:
     ~TreeSitterInspector();
 
 private:
-    void currentDocumentChanged();
+    void changeCurrentDocument();
     void setDocument(Core::LspDocument *document);
-    void textChanged();
-    void cursorChanged();
-    void queryChanged();
-    void queryStateChanged();
+    void changeText();
+    void changeCursor();
+    void changeQuery();
+    void changeQueryState();
     void previewTransformation();
     void runTransformation();
     void prepareTransformation(std::function<void(treesitter::Transformation &transformation)> runFunction);
@@ -59,7 +59,7 @@ private:
 
     QString preCheckTransformation() const;
 
-    void treeSelectionChanged(const QModelIndex &current, const QModelIndex &previous);
+    void changeTreeSelection(const QModelIndex &current, const QModelIndex &previous);
 
     QString highlightQueryError(const treesitter::Query::Error &error) const;
 

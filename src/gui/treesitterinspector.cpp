@@ -82,16 +82,16 @@ TreeSitterInspector::TreeSitterInspector(QWidget *parent)
     m_errorHighlighter = new QueryErrorHighlighter(ui->query->document());
 
     connect(Core::Project::instance(), &Core::Project::currentDocumentChanged, this,
-            &TreeSitterInspector::currentDocumentChanged);
+            &TreeSitterInspector::changeCurrentDocument);
 
     ui->treeInspector->setModel(&m_treemodel);
 
     connect(ui->treeInspector->selectionModel(), &QItemSelectionModel::currentChanged, this,
-            &TreeSitterInspector::treeSelectionChanged);
+            &TreeSitterInspector::changeTreeSelection);
 
-    connect(ui->query, &QPlainTextEdit::textChanged, this, &TreeSitterInspector::queryChanged);
+    connect(ui->query, &QPlainTextEdit::textChanged, this, &TreeSitterInspector::changeQuery);
 
-    currentDocumentChanged();
+    changeCurrentDocument();
 
     connect(ui->previewButton, &QPushButton::clicked, this, &TreeSitterInspector::previewTransformation);
     connect(ui->runButton, &QPushButton::clicked, this, &TreeSitterInspector::runTransformation);
@@ -102,7 +102,7 @@ TreeSitterInspector::~TreeSitterInspector()
     delete ui;
 }
 
-void TreeSitterInspector::queryStateChanged()
+void TreeSitterInspector::changeQueryState()
 {
     if (m_treemodel.hasQuery()) {
         int patternCount = m_treemodel.patternCount();
@@ -116,12 +116,12 @@ void TreeSitterInspector::queryStateChanged()
     }
 }
 
-void TreeSitterInspector::currentDocumentChanged()
+void TreeSitterInspector::changeCurrentDocument()
 {
     setDocument(qobject_cast<Core::LspDocument *>(Core::Project::instance()->currentDocument()));
 }
 
-void TreeSitterInspector::queryChanged()
+void TreeSitterInspector::changeQuery()
 {
     const auto text = ui->query->toPlainText();
     // rehighlight causes another textChanged signal to be emitted.
@@ -143,7 +143,7 @@ void TreeSitterInspector::queryChanged()
         m_treemodel.setQuery(query, makePredicates());
         m_errorHighlighter->setUtf8Position(-1);
 
-        queryStateChanged();
+        changeQueryState();
     } catch (treesitter::Query::Error error) {
         m_treemodel.setQuery({}, nullptr);
         ui->queryInfo->setText(highlightQueryError(error));
@@ -157,7 +157,7 @@ void TreeSitterInspector::queryChanged()
     }
 }
 
-void TreeSitterInspector::textChanged()
+void TreeSitterInspector::changeText()
 {
     QString text;
     {
@@ -171,13 +171,13 @@ void TreeSitterInspector::textChanged()
         for (int i = 0; i < 2; i++) {
             ui->treeInspector->resizeColumnToContents(i);
         }
-        queryStateChanged();
+        changeQueryState();
     } else {
         m_treemodel.clear();
     }
 }
 
-void TreeSitterInspector::cursorChanged()
+void TreeSitterInspector::changeCursor()
 {
     int position;
     {
@@ -195,11 +195,11 @@ void TreeSitterInspector::setDocument(Core::LspDocument *document)
 
     m_document = document;
     if (m_document) {
-        connect(m_document, &Core::LspDocument::textChanged, this, &TreeSitterInspector::textChanged);
-        connect(m_document, &Core::LspDocument::positionChanged, this, &TreeSitterInspector::cursorChanged);
+        connect(m_document, &Core::LspDocument::textChanged, this, &TreeSitterInspector::changeText);
+        connect(m_document, &Core::LspDocument::positionChanged, this, &TreeSitterInspector::changeCursor);
 
-        cursorChanged();
-        textChanged();
+        changeCursor();
+        changeText();
     } else {
         m_treemodel.clear();
     }
@@ -299,7 +299,7 @@ std::unique_ptr<treesitter::Predicates> TreeSitterInspector::makePredicates()
     }
 }
 
-void TreeSitterInspector::treeSelectionChanged(const QModelIndex &current, const QModelIndex &previous)
+void TreeSitterInspector::changeTreeSelection(const QModelIndex &current, const QModelIndex &previous)
 {
     Q_UNUSED(previous);
 
