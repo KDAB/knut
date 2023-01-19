@@ -190,7 +190,7 @@ void TreeSitterInspector::cursorChanged()
 void TreeSitterInspector::setDocument(Core::LspDocument *document)
 {
     if (m_document) {
-        disconnect(m_document);
+        m_document->disconnect(this);
     }
 
     m_document = document;
