@@ -3,6 +3,7 @@
 
 #include "logger.h"
 #include "mark.h"
+#include "rangemark.h"
 #include "settings.h"
 #include "string_utils.h"
 
@@ -1035,6 +1036,52 @@ void TextDocument::selectToMark(Mark *mark)
     QTextCursor cursor = m_document->textCursor();
     cursor.setPosition(mark->position(), QTextCursor::KeepAnchor);
     m_document->setTextCursor(cursor);
+}
+
+/**
+ * \qmlmethod RangeMark TextDocument::createRangeMark(int start, int end)
+ *
+ * Create a range mark from `start` to `end`.
+ * \sa RangeMark
+ */
+Core::RangeMark *TextDocument::createRangeMark(int start, int end)
+{
+    LOG("TextDocument::createRangeMark", LOG_ARG("start", start), LOG_ARG("end", end));
+    LOG_RETURN("rangeMark", new Core::RangeMark(this, start, end));
+}
+
+/**
+ * \qmlmethod RangeMark TextDocument::createRangeMark()
+ *
+ * Create a range mark from the current selection.
+ *
+ * Note: if there is no selection, the range mark will span an empty range!
+ * \sa RangeMark
+ */
+Core::RangeMark *TextDocument::createRangeMark()
+{
+    auto cursor = m_document->textCursor();
+    int start = cursor.selectionStart();
+    int end = cursor.selectionEnd();
+
+    if (start == end)
+        spdlog::warn("TextDocument::createRangeMark: Creating a range mark with an empty range.");
+
+    return createRangeMark(start, end);
+}
+
+void TextDocument::selectRangeMark(Core::RangeMark *mark)
+{
+    if (!mark)
+        return;
+    LOG("TextDocument::selectRangeMark", LOG_ARG("mark", mark));
+
+    if (mark->m_editor != this) {
+        spdlog::error("Can't use a range mark from another editor.");
+        return;
+    }
+
+    mark->select();
 }
 
 /*!

@@ -15,6 +15,7 @@ class QPlainTextEdit;
 namespace Core {
 
 class Mark;
+class RangeMark;
 
 class TextDocument : public Document
 {
@@ -148,6 +149,11 @@ public slots:
     Core::Mark *createMark(int pos = -1);
     void gotoMark(Core::Mark *mark);
     void selectToMark(Core::Mark *mark);
+
+    // RangeMark
+    Core::RangeMark *createRangeMark(int from, int to);
+    Core::RangeMark *createRangeMark();
+    void selectRangeMark(Core::RangeMark *mark);
 
     // Find
     bool find(const QString &text, int options = NoFindFlags);

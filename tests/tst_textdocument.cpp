@@ -1,4 +1,6 @@
 #include "core/knutcore.h"
+#include "core/mark.h"
+#include "core/rangemark.h"
 #include "core/textdocument.h"
 #include "core/utils.h"
 
@@ -243,6 +245,51 @@ private slots:
         document.gotoEndOfDocument();
         document.gotoMark(mark);
         QCOMPARE(document.line(), 2);
+    }
+
+    void rangeMark()
+    {
+        Core::TextDocument document;
+        document.load(Test::testDataPath() + "/tst_textdocument/loremipsum_lf_utf8.txt");
+
+        document.gotoLine(2);
+        document.selectEndOfLine();
+        auto mark = document.createRangeMark();
+        QCOMPARE(mark->text(), "Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
+
+        document.gotoStartOfLine();
+        document.selectEndOfWord();
+        document.deleteSelection();
+        QCOMPARE(mark->text(), " ipsum dolor sit amet, consectetur adipiscing elit.");
+        document.selectRangeMark(mark);
+        QCOMPARE(document.selectedText(), " ipsum dolor sit amet, consectetur adipiscing elit.");
+
+        // Delete everything in the range mark.
+        document.deleteSelection();
+        // The range mark should still be valid, but span an empty range.
+        QVERIFY(mark->isValid());
+        QVERIFY(mark->text().isEmpty());
+    }
+
+    void updateMark()
+    {
+        int mark = 10;
+
+        Core::Mark::updateMark(mark, 12, 25, 30);
+        // The mark doesn't change if something is edited after it.
+        QVERIFY(mark == 10);
+
+        Core::Mark::updateMark(mark, 10, 0, 2);
+        // The mark is updated if something is inserted right before it.
+        QVERIFY(mark == 12);
+
+        Core::Mark::updateMark(mark, 10, 2, 0);
+        // The mark is updated if something is removed right before it.
+        QVERIFY(mark == 10);
+
+        Core::Mark::updateMark(mark, 10, 2, 3);
+        // The mark moves to the "from" position, if it is replaced with something else.
+        QVERIFY(mark == 10);
     }
 
     void indent()

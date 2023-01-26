@@ -41,6 +41,8 @@ set(PROJECT_SOURCES
     qdirvaluetype.cpp
     qfileinfovaluetype.h
     qfileinfovaluetype.cpp
+    rangemark.h
+    rangemark.cpp
     rcdocument.h
     rcdocument.cpp
     scriptdialogitem.h

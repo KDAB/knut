@@ -102,16 +102,21 @@ bool Mark::checkEditor() const
     return true;
 }
 
-void Mark::update(int from, int charsRemoved, int charsAdded)
+void Mark::updateMark(int &mark, int from, int charsRemoved, int charsAdded)
 {
-    if (m_pos <= from)
+    if (mark < from)
         return;
 
     // Overlap the position
-    if (m_pos <= from + charsRemoved)
-        m_pos = from;
+    if (mark < from + charsRemoved)
+        mark = from;
     else
-        m_pos += charsAdded - charsRemoved;
+        mark += charsAdded - charsRemoved;
+}
+
+void Mark::update(int from, int charsRemoved, int charsAdded)
+{
+    Mark::updateMark(m_pos, from, charsRemoved, charsAdded);
 }
 
 } // namespace Core

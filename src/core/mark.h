@@ -27,6 +27,9 @@ public:
 
     Q_INVOKABLE QString toString() const;
 
+    // Extracted into a static function, so it can be reused by RangeMark
+    static void updateMark(int &mark, int from, int charsRemoved, int charsAdded);
+
 public slots:
     void restore();
 
@@ -38,7 +41,6 @@ private:
     friend TextDocument;
     QPointer<TextDocument> m_editor;
     int m_pos = -1;
-    QString m_fileName;
 };
 
 } // namespace Core
