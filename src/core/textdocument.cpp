@@ -692,7 +692,7 @@ void TextDocument::selectNextChar(int count)
  */
 void TextDocument::selectPreviousWord(int count)
 {
-    LOG_AND_MERGE("TextDocument::selectPreviousWord {}", count);
+    LOG_AND_MERGE("TextDocument::selectPreviousWord", count);
     movePosition(QTextCursor::PreviousWord, QTextCursor::KeepAnchor, count);
 }
 
@@ -1390,7 +1390,7 @@ void TextDocument::indent(int count)
  */
 void TextDocument::removeIndent(int count)
 {
-    LOG_AND_MERGE("TextDocument::removeIndent{}", count);
+    LOG_AND_MERGE("TextDocument::removeIndent", count);
     while (count != 0) {
         doIndent(-1);
         --count;
