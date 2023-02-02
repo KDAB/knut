@@ -1,4 +1,5 @@
 #include "rangemark.h"
+#include "rangemark_p.h"
 
 #include "mark.h"
 #include "textdocument.h"
@@ -9,7 +10,40 @@
 
 namespace Core {
 
-RangeMark::RangeMark(TextDocument *editor, int start, int end)
+/*!
+ * \qmltype RangeMark
+ * \brief Keeps track of a range within a text document.
+ * \instantiates Core::RangeMark
+ * \inqmlmodule Script
+ * \since 4.0
+ * \sa TextDocument
+ *
+ * The RangeMark object helps you track a logical range within a file.
+ * It's `start` and `end` properties will change as text is deleted or inserted before or even within the range.
+ *
+ * A mark is always created by a [TextDocument](textdocument.md).
+ */
+
+/*!
+ * \qmlproperty bool RangeMark::start
+ * \qmlproperty bool RangeMark::end
+ * \qmlproperty bool RangeMark::length
+ *
+ * These read-only properties holds the start, end and length of the range. They will be updated
+ * as the text of the TextDocument changes.
+ */
+
+/*!
+ * \qmlproperty bool RangeMark::isValid
+ * This read-only property indicates if the RangeMark is valid.
+ */
+
+/*!
+ * \qmlproperty bool RangeMark::text
+ * This read-only property returns the text covered by the range.
+ */
+
+RangeMarkPrivate::RangeMarkPrivate(TextDocument *editor, int start, int end)
     : m_editor(editor)
     , m_start(start)
     , m_end(end)
@@ -20,57 +54,10 @@ RangeMark::RangeMark(TextDocument *editor, int start, int end)
     Q_ASSERT(isValid());
 
     auto document = editor->textEdit()->document();
-    connect(document, &QTextDocument::contentsChange, this, &RangeMark::update);
+    connect(document, &QTextDocument::contentsChange, this, &RangeMarkPrivate::update);
 }
 
-bool RangeMark::isValid() const
-{
-    return checkEditor() && m_start >= 0 && m_end >= 0;
-}
-
-int RangeMark::start() const
-{
-    return m_start;
-}
-
-int RangeMark::end() const
-{
-    return m_end;
-}
-
-int RangeMark::length() const
-{
-    return m_end - m_start;
-}
-
-QString RangeMark::text() const
-{
-    // <= here instead of < because m_end is exclusive
-    if (isValid() && m_end <= m_editor->text().size())
-        return m_editor->text().sliced(m_start, m_end - m_start);
-    return {};
-}
-
-QString RangeMark::toString() const
-{
-    return QString("[%1, %2)").arg(m_start).arg(m_end);
-}
-
-void RangeMark::select()
-{
-    if (isValid())
-        m_editor->selectRegion(m_start, m_end);
-}
-
-void RangeMark::ensureInvariant()
-{
-    if (m_start > m_end) {
-        spdlog::warn("RangeMark::ensureInvariant: invariant violated: m_start > m_end ({} > {})", m_start, m_end);
-        std::swap(m_start, m_end);
-    }
-}
-
-bool RangeMark::checkEditor() const
+bool RangeMarkPrivate::checkEditor() const
 {
     if (!m_editor) {
         spdlog::error("RangeMark::checkEditor - document does not exist anymore");
@@ -79,11 +66,73 @@ bool RangeMark::checkEditor() const
     return true;
 }
 
-void RangeMark::update(int from, int charsRemoved, int charsAdded)
+void RangeMarkPrivate::ensureInvariant()
+{
+    if (m_start > m_end) {
+        spdlog::warn("RangeMark::ensureInvariant: invariant violated: m_start > m_end ({} > {})", m_start, m_end);
+        std::swap(m_start, m_end);
+    }
+}
+
+void RangeMarkPrivate::update(int from, int charsRemoved, int charsAdded)
 {
     Mark::updateMark(m_start, from, charsRemoved, charsAdded);
     Mark::updateMark(m_end, from, charsRemoved, charsAdded);
     ensureInvariant();
+}
+
+bool RangeMarkPrivate::isValid() const
+{
+    return checkEditor() && m_start >= 0 && m_end >= 0;
+}
+
+RangeMark::RangeMark(TextDocument *editor, int start, int end)
+    : d(new RangeMarkPrivate(editor, start, end))
+{
+}
+
+bool RangeMark::isValid() const
+{
+    return d && d->isValid();
+}
+
+int RangeMark::start() const
+{
+    return d ? d->m_start : -1;
+}
+
+int RangeMark::end() const
+{
+    return d ? d->m_end : -1;
+}
+
+int RangeMark::length() const
+{
+    return end() - start();
+}
+
+TextDocument *RangeMark::document() const
+{
+    return d ? d->m_editor : nullptr;
+}
+
+QString RangeMark::text() const
+{
+    // <= here instead of < because m_end is exclusive
+    if (isValid() && end() <= document()->text().size())
+        return document()->text().sliced(start(), end() - start());
+    return {};
+}
+
+QString RangeMark::toString() const
+{
+    return QString("[%1, %2)").arg(start()).arg(end());
+}
+
+void RangeMark::select() const
+{
+    if (isValid())
+        document()->selectRegion(start(), end());
 }
 
 }

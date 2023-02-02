@@ -238,6 +238,10 @@ private slots:
 
         document.gotoLine(2);
         auto mark = document.createMark();
+        QVERIFY(mark.isValid());
+        QCOMPARE(mark.line(), 2);
+        QCOMPARE(mark.column(), 1);
+
         document.gotoNextLine();
         document.selectToMark(mark);
         QCOMPARE(document.selectedText(), "Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n");
@@ -255,20 +259,20 @@ private slots:
         document.gotoLine(2);
         document.selectEndOfLine();
         auto mark = document.createRangeMark();
-        QCOMPARE(mark->text(), "Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
+        QCOMPARE(mark.text(), "Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
 
         document.gotoStartOfLine();
         document.selectEndOfWord();
         document.deleteSelection();
-        QCOMPARE(mark->text(), " ipsum dolor sit amet, consectetur adipiscing elit.");
+        QCOMPARE(mark.text(), " ipsum dolor sit amet, consectetur adipiscing elit.");
         document.selectRangeMark(mark);
         QCOMPARE(document.selectedText(), " ipsum dolor sit amet, consectetur adipiscing elit.");
 
         // Delete everything in the range mark.
         document.deleteSelection();
         // The range mark should still be valid, but span an empty range.
-        QVERIFY(mark->isValid());
-        QVERIFY(mark->text().isEmpty());
+        QVERIFY(mark.isValid());
+        QVERIFY(mark.text().isEmpty());
     }
 
     void updateMark()

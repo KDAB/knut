@@ -1,12 +1,12 @@
 #pragma once
 
+#include "core/mark.h"
 #include <QWidget>
 
 class QRubberBand;
 
 namespace Core {
 class TextDocument;
-class Mark;
 }
 namespace Gui {
 
@@ -29,7 +29,7 @@ private:
     void updateMarkRect();
 
     Core::TextDocument *m_document;
-    Core::Mark *m_mark = nullptr;
+    std::optional<Core::Mark> m_mark = {};
     QRubberBand *m_markRect = nullptr;
 };
 

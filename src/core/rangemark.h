@@ -2,21 +2,31 @@
 
 #include <QObject>
 
-#include "textdocument.h"
+#include <memory>
 
 namespace Core {
 
-class RangeMark : public QObject
+class TextDocument;
+
+// RangeMark is shared_ptr to a RangeMarkPrivate.
+// This way we can ensure that a RangeMark is easy to copy and move
+// around, whilst still ensuring the QObject that listens to the
+// changes of the TextDocument is correctly deleted both from QML and C++.
+class RangeMark
 {
-    Q_OBJECT
+    Q_GADGET
 
     Q_PROPERTY(int start READ start FINAL)
     Q_PROPERTY(int end READ end FINAL)
+    Q_PROPERTY(int length READ length FINAL)
     Q_PROPERTY(bool isValid READ isValid FINAL)
+    Q_PROPERTY(QString text READ text FINAL)
 
 public:
+    // Default constructor is required for Q_DECLARE_METATYPE
+    RangeMark() = default;
+
     explicit RangeMark(TextDocument *editor, int start, int end);
-    virtual ~RangeMark() = default;
 
     bool isValid() const;
 
@@ -24,30 +34,18 @@ public:
     int end() const;
     int length() const;
 
-    Q_INVOKABLE QString text() const;
+    QString text() const;
     Q_INVOKABLE QString toString() const;
 
-public slots:
-    void select();
+    TextDocument *document() const;
+
+    Q_INVOKABLE void select() const;
 
 private:
-    bool checkEditor() const;
-    void update(int from, int charsRemoved, int charsAdded);
-
-    void ensureInvariant();
-
-    QPointer<TextDocument> m_editor;
-
-    // We need to uphold the invariant
-    // that m_start <= m_end
-    //
-    // Encoding with m_start + m_length would remove this requirement,
-    // however, it would make update() more complicated.
-    int m_start;
-    // Note: m_end is exclusive
-    int m_end;
+    std::shared_ptr<class RangeMarkPrivate> d = nullptr;
 
     friend TextDocument;
 };
 
 } // namespace Core
+Q_DECLARE_METATYPE(Core::RangeMark)

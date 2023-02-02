@@ -992,30 +992,28 @@ void TextDocument::deleteNextCharacter(int count)
  * current position.
  * \sa Mark
  */
-Mark *TextDocument::createMark(int pos)
+Mark TextDocument::createMark(int pos)
 {
     LOG("TextDocument::createMark", LOG_ARG("pos", pos));
-    if (pos == -1)
+    if (pos < 0)
         pos = position();
-    LOG_RETURN("mark", new Mark(this, pos));
+    LOG_RETURN("mark", Mark(this, pos));
 }
 
 /*!
  * \qmlmethod TextDocument::gotoMark(Mark mark)
  * Go to the given `mark`.
  */
-void TextDocument::gotoMark(Mark *mark)
+void TextDocument::gotoMark(const Mark &mark)
 {
-    if (!mark)
-        return;
     LOG("TextDocument::gotoMark", LOG_ARG("mark", mark));
-    if (mark->m_editor != this) {
+    if (mark.document() != this) {
         spdlog::error("Can't use a mark from another editor.");
         return;
     }
 
     QTextCursor cursor = m_document->textCursor();
-    cursor.setPosition(mark->position());
+    cursor.setPosition(mark.position());
     m_document->setTextCursor(cursor);
 }
 
@@ -1023,18 +1021,16 @@ void TextDocument::gotoMark(Mark *mark)
  * \qmlmethod TextDocument::selectToMark(Mark mark)
  * Select the text from the cursor position to the `mark`.
  */
-void TextDocument::selectToMark(Mark *mark)
+void TextDocument::selectToMark(const Mark &mark)
 {
-    if (!mark)
-        return;
     LOG("TextDocument::selectToMark", LOG_ARG("mark", mark));
-    if (mark->m_editor != this) {
+    if (mark.document() != this) {
         spdlog::error("Can't use a mark from another editor.");
         return;
     }
 
     QTextCursor cursor = m_document->textCursor();
-    cursor.setPosition(mark->position(), QTextCursor::KeepAnchor);
+    cursor.setPosition(mark.position(), QTextCursor::KeepAnchor);
     m_document->setTextCursor(cursor);
 }
 
@@ -1044,10 +1040,10 @@ void TextDocument::selectToMark(Mark *mark)
  * Create a range mark from `start` to `end`.
  * \sa RangeMark
  */
-Core::RangeMark *TextDocument::createRangeMark(int start, int end)
+Core::RangeMark TextDocument::createRangeMark(int start, int end)
 {
     LOG("TextDocument::createRangeMark", LOG_ARG("start", start), LOG_ARG("end", end));
-    LOG_RETURN("rangeMark", new Core::RangeMark(this, start, end));
+    LOG_RETURN("rangeMark", Core::RangeMark(this, start, end));
 }
 
 /**
@@ -1058,7 +1054,7 @@ Core::RangeMark *TextDocument::createRangeMark(int start, int end)
  * Note: if there is no selection, the range mark will span an empty range!
  * \sa RangeMark
  */
-Core::RangeMark *TextDocument::createRangeMark()
+Core::RangeMark TextDocument::createRangeMark()
 {
     auto cursor = m_document->textCursor();
     int start = cursor.selectionStart();
@@ -1070,18 +1066,16 @@ Core::RangeMark *TextDocument::createRangeMark()
     return createRangeMark(start, end);
 }
 
-void TextDocument::selectRangeMark(Core::RangeMark *mark)
+void TextDocument::selectRangeMark(const Core::RangeMark &mark)
 {
-    if (!mark)
-        return;
     LOG("TextDocument::selectRangeMark", LOG_ARG("mark", mark));
 
-    if (mark->m_editor != this) {
+    if (mark.document() != this) {
         spdlog::error("Can't use a range mark from another editor.");
         return;
     }
 
-    mark->select();
+    mark.select();
 }
 
 /*!

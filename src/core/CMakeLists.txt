@@ -30,6 +30,7 @@ set(PROJECT_SOURCES
     lspdocument.cpp
     lspdocument_p.h
     lspdocument_p.cpp
+    mark_p.h
     mark.h
     mark.cpp
     message.h
@@ -41,6 +42,7 @@ set(PROJECT_SOURCES
     qdirvaluetype.cpp
     qfileinfovaluetype.h
     qfileinfovaluetype.cpp
+    rangemark_p.h
     rangemark.h
     rangemark.cpp
     rcdocument.h

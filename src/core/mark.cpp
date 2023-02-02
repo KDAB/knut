@@ -1,4 +1,5 @@
 #include "mark.h"
+#include "mark_p.h"
 
 #include "logger.h"
 #include "textdocument.h"
@@ -37,44 +38,79 @@ namespace Core {
  * This read-only property indicates if the mark is valid.
  */
 
-Mark::Mark(TextDocument *editor, int pos)
-    : QObject(editor)
-    , m_editor(editor)
-    , m_pos(pos)
+bool MarkPrivate::checkEditor() const
 {
-    Q_ASSERT(editor);
-    auto document = editor->textEdit()->document();
-    connect(document, &QTextDocument::contentsChange, this, &Mark::update);
+    if (!m_editor) {
+        spdlog::error("Mark::checkEditor - document does not exist anymore");
+        return false;
+    }
+    return true;
 }
 
-bool Mark::isValid() const
+bool MarkPrivate::isValid() const
 {
-    return m_editor;
+    return m_editor && m_pos >= 0;
 }
 
-int Mark::position() const
-{
-    return m_pos;
-}
-
-int Mark::line() const
+int MarkPrivate::line() const
 {
     if (!checkEditor())
-        return 0;
+        return -1;
 
     int line, column;
     m_editor->convertPosition(m_pos, &line, &column);
     return line;
 }
 
-int Mark::column() const
+int MarkPrivate::column() const
 {
     if (!checkEditor())
-        return 0;
+        return -1;
 
     int line, column;
     m_editor->convertPosition(m_pos, &line, &column);
     return column;
+}
+
+void MarkPrivate::update(int from, int charsRemoved, int charsAdded)
+{
+    Mark::updateMark(m_pos, from, charsRemoved, charsAdded);
+}
+
+MarkPrivate::MarkPrivate(TextDocument *editor, int pos)
+    : QObject(nullptr) // Important to have nullptr here, MarkPrivate is managed by shared_ptrs in Mark, MarkPrivate can
+                       // deal with the editor being deleted.
+    , m_editor(editor)
+    , m_pos(pos)
+{
+    Q_ASSERT(editor);
+    auto document = editor->textEdit()->document();
+    connect(document, &QTextDocument::contentsChange, this, &MarkPrivate::update);
+}
+
+Mark::Mark(TextDocument *editor, int pos)
+    : d(std::make_shared<MarkPrivate>(editor, pos))
+{
+}
+
+bool Mark::isValid() const
+{
+    return d && d->isValid();
+}
+
+int Mark::position() const
+{
+    return d ? d->m_pos : -1;
+}
+
+int Mark::line() const
+{
+    return d ? d->line() : -1;
+}
+
+int Mark::column() const
+{
+    return d ? d->column() : -1;
 }
 
 QString Mark::toString() const
@@ -82,24 +118,21 @@ QString Mark::toString() const
     return QStringLiteral("{%1}").arg(position());
 }
 
+TextDocument *Mark::document() const
+{
+    return d ? d->m_editor : nullptr;
+}
+
 /*!
  * \qmlmethod Mark::restore()
  * Returns the cursor position in the editor to the position saved by this object.
  */
-void Mark::restore()
+void Mark::restore() const
 {
     LOG("Mark::restore");
-    if (checkEditor())
-        m_editor->gotoMark(this);
-}
-
-bool Mark::checkEditor() const
-{
-    if (!m_editor) {
-        spdlog::error("Mark::checkEditor - document does not exist anymore");
-        return false;
+    if (isValid()) {
+        document()->gotoMark(*this);
     }
-    return true;
 }
 
 void Mark::updateMark(int &mark, int from, int charsRemoved, int charsAdded)
@@ -112,11 +145,6 @@ void Mark::updateMark(int &mark, int from, int charsRemoved, int charsAdded)
         mark = from;
     else
         mark += charsAdded - charsRemoved;
-}
-
-void Mark::update(int from, int charsRemoved, int charsAdded)
-{
-    Mark::updateMark(m_pos, from, charsRemoved, charsAdded);
 }
 
 } // namespace Core

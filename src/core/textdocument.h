@@ -1,6 +1,7 @@
 #pragma once
 
 #include "document.h"
+#include "mark.h"
 #include "textrange.h"
 
 #include <QPointer>
@@ -14,7 +15,6 @@ class QPlainTextEdit;
 
 namespace Core {
 
-class Mark;
 class RangeMark;
 
 class TextDocument : public Document
@@ -146,14 +146,14 @@ public slots:
     void deleteRange(const Core::TextRange &range);
 
     // Mark
-    Core::Mark *createMark(int pos = -1);
-    void gotoMark(Core::Mark *mark);
-    void selectToMark(Core::Mark *mark);
+    Core::Mark createMark(int pos = -1);
+    void gotoMark(const Core::Mark &mark);
+    void selectToMark(const Core::Mark &mark);
 
     // RangeMark
-    Core::RangeMark *createRangeMark(int from, int to);
-    Core::RangeMark *createRangeMark();
-    void selectRangeMark(Core::RangeMark *mark);
+    Core::RangeMark createRangeMark(int from, int to);
+    Core::RangeMark createRangeMark();
+    void selectRangeMark(const Core::RangeMark &mark);
 
     // Find
     bool find(const QString &text, int options = NoFindFlags);
@@ -180,7 +180,7 @@ protected:
     bool doSave(const QString &fileName) override;
     bool doLoad(const QString &fileName) override;
 
-    friend Mark;
+    friend MarkPrivate;
     void convertPosition(int pos, int *line, int *column) const;
     int position(QTextCursor::MoveOperation operation, int pos) const;
 

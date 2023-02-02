@@ -77,8 +77,7 @@ void TextView::toggleMark()
 
     const bool newMark = !m_mark || m_mark->position() != m_document->position();
 
-    delete m_mark;
-    m_mark = nullptr;
+    m_mark.reset();
     delete m_markRect;
     m_markRect = nullptr;
 
@@ -93,18 +92,22 @@ void TextView::toggleMark()
 void TextView::gotoMark()
 {
     Q_ASSERT(m_document);
-    m_document->gotoMark(m_mark);
+    if (m_mark.has_value()) {
+        m_document->gotoMark(m_mark.value());
+    }
 }
 
 void TextView::selectToMark()
 {
     Q_ASSERT(m_document);
-    m_document->selectToMark(m_mark);
+    if (m_mark.has_value()) {
+        m_document->selectToMark(m_mark.value());
+    }
 }
 
 bool TextView::hasMark() const
 {
-    return m_mark != nullptr;
+    return m_mark.has_value();
 }
 
 bool TextView::eventFilter(QObject *obj, QEvent *event)
