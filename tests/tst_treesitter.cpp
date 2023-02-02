@@ -305,7 +305,7 @@ private slots:
 
         auto secondMatch = cursor.nextMatch();
         QVERIFY(secondMatch.has_value());
-        auto secondCaptures = firstMatch->capturesNamed("name");
+        auto secondCaptures = secondMatch->capturesNamed("name");
         QCOMPARE(secondCaptures.size(), 1);
         QCOMPARE(secondCaptures.first().node.textIn(source), "myOtherFreeFunction");
 

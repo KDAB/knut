@@ -43,6 +43,8 @@ set(PROJECT_SOURCES
     qfileinfovaluetype.h
     qfileinfovaluetype.cpp
     rangemark_p.h
+    querymatch.h
+    querymatch.cpp
     rangemark.h
     rangemark.cpp
     rcdocument.h

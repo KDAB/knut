@@ -135,4 +135,9 @@ void RangeMark::select() const
         document()->selectRegion(start(), end());
 }
 
+bool RangeMark::operator==(const RangeMark &other) const
+{
+    return d == other.d || (document() == other.document() && start() == other.start() && end() == other.end());
+}
+
 }

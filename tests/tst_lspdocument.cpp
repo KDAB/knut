@@ -1,6 +1,7 @@
 #include "core/knutcore.h"
 #include "core/lspdocument.h"
 #include "core/project.h"
+#include "core/querymatch.h"
 
 #include <QAction>
 #include <QPlainTextEdit>
@@ -421,6 +422,64 @@ private slots:
 
         QSignalSpy spy(&signalled, &QAction::triggered);
         QVERIFY(spy.wait());
+    }
+
+    void query()
+    {
+        Core::KnutCore core;
+        auto project = Core::Project::instance();
+        project->setRoot(Test::testDataPath() + "/projects/cpp-project");
+
+        auto lspdocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->get("main.cpp"));
+
+        Test::LogCounter counter;
+        auto matches = lspdocument->query(R"EOF(
+                (function_definition
+                  type: (_) @return-type
+                  declarator: (function_declarator
+                    declarator: (identifier) @name (eq? @name "main")
+                    parameters: (parameter_list
+                      . ((parameter_declaration) @param ","?)*)))
+                      )EOF");
+
+        QCOMPARE(counter.count(), 0);
+
+        QCOMPARE(matches.size(), 1);
+        auto match = matches[0];
+        auto captures = match.captures();
+        QCOMPARE(captures.size(), 4);
+        QCOMPARE(match.getAll("name").size(), 1);
+        QCOMPARE(match.getAll("return-type").size(), 1);
+        QCOMPARE(match.getAll("param").size(), 2);
+
+        QCOMPARE(match.getAll("return-type").at(0).text(), "int");
+        QCOMPARE(match.getAll("param").at(0).text(), "int argc");
+        QCOMPARE(match.getAll("param").at(1).text(), "char *argv[]");
+    }
+
+    void failedQuery()
+    {
+        Core::KnutCore core;
+        auto project = Core::Project::instance();
+        project->setRoot(Test::testDataPath() + "/projects/cpp-project");
+
+        auto lspdocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->get("main.cpp"));
+
+        Test::LogCounter counter;
+
+        auto matches = lspdocument->query(R"EOF(
+            (function_definition
+              declarator: (function_declarator
+                declarator: (identifier) @name (eq? @name "non_existent_function")))
+        )EOF");
+        QVERIFY(matches.isEmpty());
+        // Query is correct, but returns no result, so should produce no log output.
+        QCOMPARE(counter.count(), 0);
+
+        matches = lspdocument->query("invalid query");
+        QVERIFY(matches.isEmpty());
+        // Invalid query, so should produce log output.
+        QCOMPARE(counter.count(), 1);
     }
 };
 

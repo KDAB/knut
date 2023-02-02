@@ -9,6 +9,7 @@
 #include "mark.h"
 #include "message.h"
 #include "project.h"
+#include "rangemark.h"
 #include "rcdocument.h"
 #include "scriptdialogitem.h"
 #include "scriptitem.h"
@@ -91,6 +92,7 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qmlRegisterType<ScriptItem>("Script", 1, 0, "Script");
     qmlRegisterType<TextDocument>("Script", 1, 0, "TextDocument");
     qmlRegisterUncreatableType<Mark>("Script", 1, 0, "Mark", "Only created by TextDocument");
+    qmlRegisterUncreatableType<RangeMark>("Script", 1, 0, "RangeMark", "Only created by TextDocument");
     qmlRegisterType<UiDocument>("Script", 1, 0, "UiDocument");
     qmlRegisterUncreatableType<UiWidget>("Script", 1, 0, "UiWidget", "Only created by UiDocument");
     qmlRegisterType<CppDocument>("Script", 1, 0, "CppDocument");

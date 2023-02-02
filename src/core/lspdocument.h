@@ -1,5 +1,6 @@
 #pragma once
 
+#include "querymatch.h"
 #include "symbol.h"
 #include "textdocument.h"
 
@@ -16,6 +17,7 @@ namespace Core {
 
 class LspCache;
 struct RegexpTransform;
+class QueryMatch;
 
 class LspDocument : public TextDocument
 {
@@ -35,6 +37,8 @@ public:
     void transform(const QString &jsonFileName, const std::unordered_map<QString, QString> &context);
     Q_INVOKABLE void transform(const QString &jsonFileName, QVariantMap context = {});
     Q_INVOKABLE void transformSymbol(const Symbol *symbol, const QString &jsonFileName);
+
+    Q_INVOKABLE QVector<Core::QueryMatch> query(const QString &query);
 
     bool hasLspClient() const;
 

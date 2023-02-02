@@ -9,12 +9,21 @@
 #include "lsp/types.h"
 
 #include "project.h"
+#include "querymatch.h"
+#include "rangemark.h"
 #include "symbol.h"
 #include "textlocation.h"
 
 #include "scriptmanager.h"
 
+#include <treesitter/languages.h>
+#include <treesitter/parser.h>
+#include <treesitter/predicates.h>
+#include <treesitter/query.h>
+#include <treesitter/tree.h>
+
 #include <QFile>
+#include <QJSEngine>
 #include <QMap>
 #include <QPlainTextEdit>
 #include <QTextBlock>
@@ -24,6 +33,7 @@
 #include <spdlog/spdlog.h>
 
 #include <algorithm>
+#include <memory>
 
 namespace Core {
 
@@ -695,6 +705,40 @@ Lsp::Position LspDocument::fromPos(int pos) const
 TextRange LspDocument::toRange(const Lsp::Range &range) const
 {
     return {toPos(range.start), toPos(range.end)};
+}
+
+QVector<QueryMatch> LspDocument::query(const QString &query)
+{
+    LOG("LspDocument::query", LOG_ARG("query", query));
+
+    std::shared_ptr<treesitter::Query> tsQuery;
+    try {
+        tsQuery = std::make_shared<treesitter::Query>(tree_sitter_cpp(), query);
+    } catch (treesitter::Query::Error error) {
+        spdlog::error("LspDocument::query: Failed to parse query `{}` error: {} at: ", query.toStdString(),
+                      error.description.toStdString(), error.utf8_offset);
+        return {};
+    }
+
+    auto parser = treesitter::Parser(tree_sitter_cpp());
+    auto tree = parser.parseString(text());
+
+    if (!tree) {
+        spdlog::error("LspDocument::query: Failed to parse document `{}`", fileName().toStdString());
+        return {};
+    }
+
+    treesitter::QueryCursor cursor;
+    cursor.execute(tsQuery, tree->rootNode(), std::make_unique<treesitter::Predicates>(text()));
+    auto matches = cursor.allRemainingMatches();
+
+    QVector<QueryMatch> result;
+    std::transform(matches.cbegin(), matches.cend(), std::back_inserter(result),
+                   [this](const treesitter::QueryMatch &match) {
+                       return QueryMatch(*this, match);
+                   });
+
+    return result;
 }
 
 int LspDocument::revision() const

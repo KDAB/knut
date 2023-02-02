@@ -94,7 +94,7 @@ public:
 
     QVector<Capture> captures() const;
 
-    // captures with quantifiers may return multiple values for the same capture.
+    // Captures with quantifiers may return multiple values for the same capture.
     QVector<Capture> capturesNamed(const QString &) const;
 
     const std::shared_ptr<Query> query() const;
@@ -102,7 +102,10 @@ public:
 private:
     QueryMatch(const TSQueryMatch &match, const std::shared_ptr<Query> query);
 
-    TSQueryMatch m_match;
+    uint32_t m_id;
+    uint16_t m_pattern_index;
+    QVector<Capture> m_captures;
+
     std::shared_ptr<Query> m_query;
 
     friend class QueryCursor;

@@ -36,10 +36,7 @@ Query::Query(TSLanguage *language, const QString &query)
                 auto offset = m_utf8_text.indexOf(predicateString);
                 offset = offset >= 0 ? offset : 0;
 
-                throw Error {
-                    .utf8_offset = static_cast<uint32_t>(offset),
-                    .description = *error,
-                };
+                throw Error {.utf8_offset = static_cast<uint32_t>(offset), .description = error.value()};
             }
         }
     }
@@ -142,19 +139,32 @@ Query::Capture Query::captureAt(uint32_t index) const
 
 // ------------------------ QueryMatch --------------------
 QueryMatch::QueryMatch(const TSQueryMatch &match, const std::shared_ptr<Query> query)
-    : m_match(match)
+    : m_id(match.id)
+    , m_pattern_index(match.pattern_index)
     , m_query(query)
 {
+    // It seems advancing the query cursor may delete the captures of the last match.
+    // Therefore copy the captures into a member of the QueryMatch, so we actually own them.
+    m_captures.reserve(match.capture_count);
+
+    for (uint16_t i = 0; i < match.capture_count; ++i) {
+        auto &ts_capture = match.captures[i];
+        Capture capture {
+            .id = ts_capture.index,
+            .node = Node(ts_capture.node),
+        };
+        m_captures.emplace_back(std::move(capture));
+    }
 }
 
 uint32_t QueryMatch::id() const
 {
-    return m_match.id;
+    return m_id;
 }
 
 uint32_t QueryMatch::patternIndex() const
 {
-    return m_match.pattern_index;
+    return m_pattern_index;
 }
 
 const std::shared_ptr<Query> QueryMatch::query() const
@@ -174,18 +184,8 @@ QVector<QueryMatch::Capture> QueryMatch::capturesNamed(const QString &name) cons
 
 QVector<QueryMatch::Capture> QueryMatch::captures() const
 {
+    return m_captures;
     QVector<Capture> result;
-    result.reserve(m_match.capture_count);
-
-    for (uint16_t i = 0; i < m_match.capture_count; ++i) {
-        auto &ts_capture = m_match.captures[i];
-        Capture capture {
-            .id = ts_capture.index,
-            .node = Node(ts_capture.node),
-        };
-        result.emplace_back(std::move(capture));
-    }
-    return result;
 }
 
 // ----------------------- QueryCursor --------------------

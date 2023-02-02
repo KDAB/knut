@@ -41,6 +41,8 @@ public:
 
     Q_INVOKABLE void select() const;
 
+    bool operator==(const RangeMark &other) const;
+
 private:
     std::shared_ptr<class RangeMarkPrivate> d = nullptr;
 
