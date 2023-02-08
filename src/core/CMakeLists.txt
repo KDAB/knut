@@ -86,6 +86,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     nlohmann_json::nlohmann_json
     spdlog::spdlog
     pugixml::pugixml
+    kdalgorithms
     Qt${QT_VERSION_MAJOR}::Core
     Qt${QT_VERSION_MAJOR}::Qml
     Qt${QT_VERSION_MAJOR}::QmlPrivate

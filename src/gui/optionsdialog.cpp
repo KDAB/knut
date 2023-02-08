@@ -132,7 +132,7 @@ void OptionsDialog::removeScriptPath()
 void OptionsDialog::updateScriptPaths()
 {
     QStringList scriptPaths = Core::ScriptManager::instance()->directories();
-    std::sort(scriptPaths.begin(), scriptPaths.end());
+    std::ranges::sort(scriptPaths);
     ui->scriptPathList->clear();
     ui->scriptPathList->addItems(scriptPaths);
 }
@@ -156,7 +156,7 @@ void OptionsDialog::removeJsonPath()
 void OptionsDialog::updateJsonPaths()
 {
     QStringList jsonPaths = Core::Settings::instance()->value<QStringList>(Core::Settings::JsonPaths);
-    std::sort(jsonPaths.begin(), jsonPaths.end());
+    std::ranges::sort(jsonPaths);
     ui->jsonPathList->clear();
     for (const auto &path : jsonPaths) {
         if (path.startsWith(":/")) {

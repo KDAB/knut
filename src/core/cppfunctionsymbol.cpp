@@ -6,6 +6,7 @@
 
 #include <QRegularExpression>
 
+#include <kdalgorithms.h>
 #include <spdlog/spdlog.h>
 
 namespace Core {
@@ -88,10 +89,10 @@ CppFunctionSymbol::CppFunctionSymbol(QObject *parent, const QString &name, const
 {
     if (m_description.isEmpty()) {
         const auto args = arguments();
-        QStringList argumentTypes;
-        std::transform(args.cbegin(), args.cend(), std::back_inserter(argumentTypes), [](const auto &arg) {
+        auto toType = [](const Argument &arg) {
             return arg.type;
-        });
+        };
+        QStringList argumentTypes = kdalgorithms::transformed<QStringList>(args, toType);
 
         m_description = QString("%1 (%2)").arg(returnType()).arg(argumentTypes.join(", "));
     }

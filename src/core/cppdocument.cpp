@@ -17,6 +17,7 @@
 #include <QTextDocument>
 #include <QVariantMap>
 
+#include <kdalgorithms.h>
 #include <spdlog/spdlog.h>
 
 #include <algorithm>
@@ -215,15 +216,13 @@ QString CppDocument::correspondingHeaderSource() const
 
     // Search in the whole project, and find the possible files
     QStringList fullPathNames = Project::instance()->allFilesWithExtensions(suffixes, Project::FullPath);
-    auto checkIfPathNeedToBeRemoved = [&](const auto &path) {
-        for (const auto &fileName : candidates) {
-            if (path.endsWith(fileName, Qt::CaseInsensitive))
-                return false;
-        }
-        return true;
+    auto notCandidate = [&candidates](const QString &path) {
+        auto notInPath = [&path](const QString &candidate) {
+            return !path.endsWith(candidate, Qt::CaseInsensitive);
+        };
+        return kdalgorithms::all_of(candidates, notInPath);
     };
-    fullPathNames.erase(std::remove_if(fullPathNames.begin(), fullPathNames.end(), checkIfPathNeedToBeRemoved),
-                        fullPathNames.end());
+    kdalgorithms::erase_if(fullPathNames, notCandidate);
 
     // Find the file having the most common path with fileName
     QString bestFileName;
@@ -793,16 +792,17 @@ void CppDocument::deleteMethodLocal(const QString &methodName, const QString &si
     };
 
     auto symbolList = symbols();
-    symbolList.erase(std::remove_if(symbolList.begin(), symbolList.end(), doesNotMatchMethod), symbolList.end());
+    kdalgorithms::erase_if(symbolList, doesNotMatchMethod);
     if (symbolList.empty())
         return;
 
     // Sort the symbols so that we remove them end-to-start
     // That way removing a function won't change the position of the other functions.
     // This assumes the ranges don't overlap.
-    std::sort(symbolList.begin(), symbolList.end(), [](const auto &symbol1, const auto &symbol2) {
+    auto byRange = [](const auto &symbol1, const auto &symbol2) {
         return symbol1->range().start > symbol2->range().start;
-    });
+    };
+    std::ranges::sort(symbolList, byRange);
 
     for (const auto &symbol : symbolList) {
         spdlog::trace("CppDocument::deleteMethodLocal: Removing symbol '{}'", symbol->name().toStdString());

@@ -16,6 +16,7 @@
 #include <QFileInfo>
 #include <QMetaEnum>
 
+#include <kdalgorithms.h>
 #include <spdlog/spdlog.h>
 
 #include <algorithm>
@@ -123,7 +124,7 @@ QStringList Project::allFiles(PathType type) const
         if (fi.isFile())
             result.push_back(type == FullPath ? fi.absoluteFilePath() : dir.relativeFilePath(fi.absoluteFilePath()));
     }
-    std::sort(result.begin(), result.end());
+    std::ranges::sort(result);
     return result;
 }
 
@@ -151,7 +152,7 @@ QStringList Project::allFilesWithExtension(const QString &extension, PathType ty
         if (fi.isFile() && fi.suffix() == extension)
             result.push_back(type == FullPath ? fi.absoluteFilePath() : dir.relativeFilePath(fi.absoluteFilePath()));
     }
-    std::sort(result.begin(), result.end());
+    std::ranges::sort(result);
     return result;
 }
 
@@ -179,7 +180,7 @@ QStringList Project::allFilesWithExtensions(const QStringList &extensions, PathT
         if (fi.isFile() && extensions.contains(fi.suffix(), Qt::CaseInsensitive))
             result.push_back(type == FullPath ? fi.absoluteFilePath() : dir.relativeFilePath(fi.absoluteFilePath()));
     }
-    std::sort(result.begin(), result.end());
+    std::ranges::sort(result);
     return result;
 }
 
@@ -216,10 +217,10 @@ Lsp::Client *Project::getClient(Document::Type type)
     if (cit != m_lspClients.end())
         return cit->second;
 
-    auto sit = std::find_if(lspServers.cbegin(), lspServers.cend(), [type](const LspServer &server) {
+    auto sit = kdalgorithms::find_if(lspServers, [type](const LspServer &server) {
         return server.type == type;
     });
-    if (sit == lspServers.cend())
+    if (!sit)
         return nullptr;
     QString language(QMetaEnum::fromType<Document::Type>().key(static_cast<int>(type)));
     auto client = new Lsp::Client(language.toLower().toStdString(), sit->program, sit->arguments, this);
@@ -243,7 +244,7 @@ Document *Project::getDocument(QString fileName, bool moveToBack)
     else
         fileName = fi.absoluteFilePath();
 
-    auto findIt = std::find_if(m_documents.begin(), m_documents.end(), [fileName](auto document) {
+    auto findIt = std::ranges::find_if(m_documents, [fileName](auto document) {
         return document->fileName() == fileName;
     });
 

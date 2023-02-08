@@ -30,6 +30,7 @@
 #include <QTextDocument>
 #include <QTextStream>
 
+#include <kdalgorithms.h>
 #include <spdlog/spdlog.h>
 
 #include <algorithm>
@@ -349,8 +350,8 @@ const Core::Symbol *LspDocument::symbolUnderCursor() const
     };
 
     const auto symbols = this->symbols();
-    const auto symbolIter = std::find_if(symbols.constBegin(), symbols.constEnd(), containsCursor);
-    if (symbolIter != symbols.constEnd()) {
+    const auto symbolIter = kdalgorithms::find_if(symbols, containsCursor);
+    if (symbolIter) {
         return *symbolIter;
     }
 
@@ -573,12 +574,12 @@ Document *LspDocument::switchDeclarationDefinition()
     auto cursor = textEdit()->textCursor();
     auto symbolList = symbols();
 
-    auto currentFunction = std::find_if(symbolList.begin(), symbolList.end(), [&cursor](const auto &symbol) {
+    auto currentFunction = kdalgorithms::find_if(symbolList, [&cursor](const auto &symbol) {
         auto isInRange = symbol->range().start <= cursor.position() && cursor.position() <= symbol->range().end;
         return isInRange && symbol->isFunction();
     });
 
-    if (currentFunction == symbolList.end()) {
+    if (!currentFunction) {
         spdlog::info("LspDocument::switchDeclarationDefinition: Cursor is currently not within a function!");
         return nullptr;
     }
@@ -732,13 +733,9 @@ QVector<QueryMatch> LspDocument::query(const QString &query)
     cursor.execute(tsQuery, tree->rootNode(), std::make_unique<treesitter::Predicates>(text()));
     auto matches = cursor.allRemainingMatches();
 
-    QVector<QueryMatch> result;
-    std::transform(matches.cbegin(), matches.cend(), std::back_inserter(result),
-                   [this](const treesitter::QueryMatch &match) {
-                       return QueryMatch(*this, match);
-                   });
-
-    return result;
+    return kdalgorithms::transformed<QVector<QueryMatch>>(matches, [this](const treesitter::QueryMatch &match) {
+        return QueryMatch(*this, match);
+    });
 }
 
 int LspDocument::revision() const

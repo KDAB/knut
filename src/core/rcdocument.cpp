@@ -9,9 +9,8 @@
 #include <QUiLoader>
 #include <QWidget>
 
+#include <kdalgorithms.h>
 #include <spdlog/spdlog.h>
-
-#include <algorithm>
 
 namespace Core {
 
@@ -110,12 +109,12 @@ RcCore::Action RcDocument::action(const QString &id) const
 
     // Make sure the action vector is populated by calling actions
     if (m_data.isValid && !actions().isEmpty()) {
-        auto it = std::ranges::find_if(m_cacheActions, [id](const auto &data) {
+        auto result = kdalgorithms::find_if(m_cacheActions, [id](const auto &data) {
             return data.id == id;
         });
-        if (it == m_cacheActions.cend())
+        if (!result)
             return {};
-        return *it;
+        return *result;
     }
     return {};
 }

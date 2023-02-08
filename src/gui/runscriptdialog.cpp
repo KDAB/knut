@@ -8,7 +8,7 @@
 #include <QFileDialog>
 #include <QPushButton>
 
-#include <algorithm>
+#include <kdalgorithms.h>
 
 namespace Gui {
 
@@ -46,12 +46,12 @@ void RunScriptDialog::accept()
     QFileInfo fi(scriptName);
     if (!fi.exists()) {
         const auto &list = Core::ScriptManager::instance()->scriptList();
-        auto it = std::find_if(list.cbegin(), list.cend(), [&scriptName](const auto &item) {
+        auto result = kdalgorithms::find_if(list, [&scriptName](const auto &item) {
             return item.name == scriptName;
         });
-        if (it == list.cend())
+        if (!result)
             return;
-        scriptName = it->fileName;
+        scriptName = result->fileName;
     }
 
     Core::ScriptManager::instance()->runScript(scriptName);

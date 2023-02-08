@@ -6,6 +6,7 @@
 #include "lsp/lsp_utils.h"
 #include "lsp/types.h"
 
+#include <kdalgorithms.h>
 #include <spdlog/spdlog.h>
 
 namespace Core {
@@ -135,10 +136,10 @@ const Core::Symbol *LspCache::inferSymbol(const QString &hoverText, TextRange ra
 {
     spdlog::debug("Trying to infer Symbol from Hover text:\n{}", hoverText.toStdString());
 
-    auto cached = std::find_if(m_inferredSymbols.cbegin(), m_inferredSymbols.cend(), [&range](const auto symbol) {
+    auto cached = kdalgorithms::find_if(m_inferredSymbols, [&range](const auto symbol) {
         return symbol->range() == range;
     });
-    if (cached != m_inferredSymbols.cend()) {
+    if (cached) {
         return *cached;
     }
 

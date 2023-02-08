@@ -86,9 +86,10 @@ public:
             if (fi.isFile())
                 m_files.push_back({fi.fileName(), fi.absoluteFilePath()});
         }
-        std::sort(m_files.begin(), m_files.end(), [](const auto &fi1, const auto &fi2) {
+        auto byFileName = [](const auto &fi1, const auto &fi2) {
             return fi1.fileName < fi2.fileName;
-        });
+        };
+        std::ranges::sort(m_files, byFileName);
 
         endResetModel();
     }

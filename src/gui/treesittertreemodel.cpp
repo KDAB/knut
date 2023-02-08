@@ -81,7 +81,7 @@ int TreeSitterTreeModel::TreeNode::row() const
         const auto &children = m_parent->children();
         const auto it = std::find(children.cbegin(), children.cend(), this);
 
-        return it - children.cbegin();
+        return std::distance(children.cbegin(), it);
     }
     return 0;
 }

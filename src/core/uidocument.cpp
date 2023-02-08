@@ -6,9 +6,8 @@
 #include <QUiLoader>
 #include <QWidget>
 
+#include <kdalgorithms.h>
 #include <spdlog/spdlog.h>
-
-#include <algorithm>
 
 namespace Core {
 
@@ -38,12 +37,12 @@ UiWidget *UiDocument::findWidget(const QString &name) const
 {
     LOG("UiDocument::findWidget", name);
 
-    auto it = std::find_if(m_widgets.cbegin(), m_widgets.cend(), [name](UiWidget *widget) {
+    auto result = kdalgorithms::find_if(m_widgets, [name](UiWidget *widget) {
         return widget->name() == name;
     });
-    if (it == m_widgets.cend())
+    if (!result)
         return nullptr;
-    return *it;
+    return *result;
 }
 
 /*!

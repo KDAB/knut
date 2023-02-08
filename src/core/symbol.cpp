@@ -7,6 +7,7 @@
 #include <core/lspdocument.h>
 #include <core/project.h>
 
+#include <kdalgorithms.h>
 #include <spdlog/spdlog.h>
 
 namespace Core {
@@ -189,11 +190,9 @@ QVector<Core::TextLocation> Symbol::references() const
 
     if (const auto lspdocument = document()) {
         auto references = lspdocument->references(selectionRange().start);
-        references.erase(std::remove_if(references.begin(), references.end(),
-                                        [this](const auto &reference) {
-                                            return reference.range == this->selectionRange();
-                                        }),
-                         references.end());
+        kdalgorithms::erase_if(references, [this](const auto &reference) {
+            return reference.range == this->selectionRange();
+        });
         return references;
     }
 
