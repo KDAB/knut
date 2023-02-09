@@ -23,6 +23,7 @@ Predicates::Filters Predicates::filters()
     REGISTER_FILTER(match);
     REGISTER_FILTER(in_message_map);
 #undef REGISTER_FILTER
+
     return filters;
 }
 

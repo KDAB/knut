@@ -342,6 +342,28 @@ private slots:
         auto matches = cursor.allRemainingMatches();
         QCOMPARE(matches.size(), 2);
     }
+
+    // Comments are actually not documented on the tree-sitter.github.io website.
+    // They can be used with ";"
+    void comments()
+    {
+        auto source = readTestFile("/tst_treesitter/main.cpp");
+        treesitter::Parser parser(tree_sitter_cpp());
+        auto tree = parser.parseString(source);
+        QVERIFY(tree.has_value());
+
+        auto query = std::make_shared<treesitter::Query>(tree_sitter_cpp(), R"EOF(
+        (call_expression
+            ; some comment
+            )
+        )EOF");
+
+        treesitter::QueryCursor cursor;
+        cursor.execute(query, tree->rootNode(), std::make_unique<treesitter::Predicates>(source));
+
+        auto matches = cursor.allRemainingMatches();
+        QCOMPARE(matches.size(), 2);
+    }
 };
 
 QTEST_MAIN(TestTreeSitter)

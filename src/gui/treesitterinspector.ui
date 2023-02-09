@@ -81,6 +81,9 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="tabStopDistance">
+      <double>13.333299999999999</double>
+     </property>
     </widget>
    </item>
    <item row="3" column="2">

@@ -34,6 +34,9 @@ public:
     int end() const;
     int length() const;
 
+    bool contains(int position) const;
+    bool contains(const RangeMark &other) const;
+
     QString text() const;
     Q_INVOKABLE QString toString() const;
 

@@ -738,6 +738,68 @@ QVector<QueryMatch> LspDocument::query(const QString &query)
     });
 }
 
+/*!
+ * \qmlmethod LspDocument::findMessageMap(className = "")
+ *
+ * Extract information contained in the MFC MESSAGE_MAP.
+ * The \a className parameter can be used to ensure the result matches to a specific class.
+ * Returns a \c MessageMap object.
+ */
+MessageMap LspDocument::findMessageMap(const QString &className /* = ""*/)
+{
+    auto checkClassName = className.isEmpty() ? "" : QString("(#eq? @class \"%1\")").arg(className);
+
+    // clang-format off
+    auto queryString = QString(R"EOF(
+        (translation_unit
+        ; Assumption: the MESSAGE_MAP is always top-level
+
+            ; Group to make sure the nodes are actually siblings
+            (
+
+                ; Search for BEGIN_MESSAGE_MAP
+                (expression_statement
+                    (call_expression
+                        function: (identifier) @begin_ident
+                        (#eq? @begin_ident "BEGIN_MESSAGE_MAP")
+                        arguments: (argument_list
+                             (identifier) @class
+                             %1 ; If a class name is given, check if the captured class name matches
+                             (identifier) @superclass)) @begin)
+
+                ; Followed by one or more entries
+                [
+                (expression_statement
+                    (call_expression
+                        function: (identifier) @message-name
+                        arguments: (argument_list
+                            ((_) @parameter ("," (_) @parameter)*)?)
+                ))@message
+                (_)
+                ]*
+
+                ; Ending with END_MESSAGE_MAP
+                (expression_statement
+                    (call_expression
+                        function: (identifier) @end_ident
+                        (#eq? @end_ident "END_MESSAGE_MAP")) @end)
+            )
+
+        )
+    )EOF").arg(checkClassName);
+    // clang-format on
+
+    auto result = query(queryString);
+    if (result.isEmpty()) {
+        spdlog::warn("LspDocument::findMessageMap: No message map found in `{}`", fileName().toStdString());
+        return {};
+    }
+
+    const auto &match = result.first();
+
+    return MessageMap(match);
+}
+
 int LspDocument::revision() const
 {
     return m_revision;

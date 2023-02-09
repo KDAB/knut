@@ -35,6 +35,8 @@ set(PROJECT_SOURCES
     mark.cpp
     message.h
     message.cpp
+    message_map.h
+    message_map.cpp
     project.h
     project.cpp
     project_p.h

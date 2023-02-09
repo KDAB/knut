@@ -111,6 +111,16 @@ int RangeMark::length() const
     return end() - start();
 }
 
+bool RangeMark::contains(int pos) const
+{
+    return isValid() && pos >= start() && pos < end();
+}
+
+bool RangeMark::contains(const RangeMark &other) const
+{
+    return other.isValid() && other.document() == document() && start() <= other.start() && other.end() <= end();
+}
+
 TextDocument *RangeMark::document() const
 {
     return d ? d->m_editor : nullptr;

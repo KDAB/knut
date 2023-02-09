@@ -16,8 +16,6 @@ QString QueryCapture::toString() const
 
 QueryMatch::QueryMatch(TextDocument &document, const treesitter::QueryMatch &match)
 {
-    Q_UNUSED(document);
-
     const auto captures = match.captures();
     for (const auto &capture : captures) {
         auto name = match.query()->captureAt(capture.id).name;

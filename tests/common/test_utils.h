@@ -72,6 +72,7 @@ public:
     {
         m_file = fileName;
         m_original.append(".original");
+        QVERIFY(QFile::exists(m_original));
         QFile::copy(m_original, m_file);
     }
     ~FileTester() { QFile::remove(m_file); }
