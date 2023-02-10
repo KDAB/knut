@@ -76,7 +76,6 @@ CMakeLists.txt.user.*
 .vs/*
 imgui.ini
 
-.vscode/*
 build*/
 site/
 
