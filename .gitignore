@@ -86,3 +86,8 @@ compile_commands.json
 cpp_messages.log
 cpp_server.log
 docs/assets/*.svg
+
+cmake/include/
+cmake/lib/
+cmake/mkspecs/
+cmake/share/
