@@ -31,6 +31,7 @@ static QHash<QString, Keywords> KeywordMap = {
     {"TEXTINCLUDE", Keywords::TEXTINCLUDE},
     {"TOOLBAR", Keywords::TOOLBAR},
     {"VERSIONINFO", Keywords::VERSIONINFO},
+    {"RT_RIBBON_XML", Keywords::RT_RIBBON_XML},
     {"PRELOAD", Keywords::IGNORE_16BITS},
     {"LOADONCALL", Keywords::IGNORE_16BITS},
     {"FIXED", Keywords::IGNORE_16BITS},

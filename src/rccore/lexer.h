@@ -42,6 +42,7 @@ enum class Keywords {
     TEXTINCLUDE,
     TOOLBAR,
     VERSIONINFO,
+    RT_RIBBON_XML,
 
     // Other
     BEGIN,

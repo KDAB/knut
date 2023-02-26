@@ -41,6 +41,7 @@
       <item>TEXTINCLUDE</item>
       <item>TOOLBAR</item>
       <item>VERSIONINFO</item>
+      <item>RT_RIBBON_XML</item>
       <item>PRELOAD</item>
       <item>LOADONCALL</item>
       <item>FIXED</item>

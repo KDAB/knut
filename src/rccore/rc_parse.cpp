@@ -808,6 +808,7 @@ static void readResource(Lexer &lexer, Data &data, const std::optional<Token> &t
     case Keywords::HTML:
     case Keywords::MESSAGETABLE:
     case Keywords::REGISTRY:
+    case Keywords::RT_RIBBON_XML:
         spdlog::info("{}({}): parser unused token {}", lexer.fileName().toStdString(), lexer.line(),
                      token->prettyPrint().toStdString());
         lexer.skipLine();

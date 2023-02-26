@@ -128,6 +128,14 @@ private slots:
         Data data = parse(Test::testDataPath() + "/rcfiles/cryEdit/CryEdit.rc");
         QCOMPARE(data.isValid, true);
     }
+
+    void testRibbon()
+    {
+        Test::LogSilencer ls;
+        Data data = parse(Test::testDataPath() + "/rcfiles/ribbonexample/RibbonExample.rc");
+        QCOMPARE(data.isValid, true);
+        QVERIFY(data.strings.contains("IDP_OLE_INIT_FAILED"));
+    }
 };
 
 QTEST_APPLESS_MAIN(TestRcParser)

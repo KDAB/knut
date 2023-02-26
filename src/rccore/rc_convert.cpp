@@ -663,9 +663,11 @@ static Widget convertControl(const Data &data, const QString &dialogId, Data::Co
         return convertLabel(data, control, useIdForPixmap);
     if (control.className == "MfcPropertyGrid")
         return convertTreeWidget(data, control);
+    if (control.className == "MfcButton")
+        return convertButton(data, control);
 
-    spdlog::critical("{}({}): unknown CONTROL {} / {}", data.fileName.toStdString(), control.line,
-                     control.id.toStdString(), control.className.toStdString());
+    spdlog::warn("{}({}): unknown CONTROL {} / {}", data.fileName.toStdString(), control.line, control.id.toStdString(),
+                 control.className.toStdString());
 
     Widget widget;
     widget.className = "QWidget";
