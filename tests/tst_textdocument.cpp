@@ -377,7 +377,7 @@ private slots:
             QCOMPARE(document.line(), 13);
             QCOMPARE(document.selectedText(), "Qui");
             QCOMPARE(document.currentWord(), "Quisque");
-            QVERIFY(!document.findRegexp("\bQui\b"));
+            QVERIFY(!document.findRegexp("\\bQui\\b"));
 
             document.save();
             QVERIFY(file.compare());
@@ -401,7 +401,7 @@ private slots:
             QCOMPARE(document.line(), 7);
             QCOMPARE(document.selectedText(), "Qui");
             QCOMPARE(document.currentWord(), "Quisque");
-            QVERIFY(!document.findRegexp("\bQui\b"));
+            QVERIFY(!document.findRegexp("\\bQui\\b"));
 
             document.save();
             QVERIFY(file.compare());
