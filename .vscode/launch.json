@@ -10,7 +10,7 @@
             "request":"launch",
             // Resolved by CMake Tools:
             "program": "${command:cmake.launchTargetPath}",
-            "visualizerFile": "${workspaceFolder}/.vscode/qt6.natvis",
+            "visualizerFile": "${workspaceFolder}/qt6.natvis",
             "sourceFileMap": {
                 "C:/work/build/qt5_workdir/w/s": "${QTDIR}../Src",
                 "Q:/qt5_workdir/w/s": "${QTDIR}../Src",
