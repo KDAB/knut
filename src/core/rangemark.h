@@ -42,7 +42,12 @@ public:
 
     TextDocument *document() const;
 
+    // Text manipulation
     Q_INVOKABLE void select() const;
+    Q_INVOKABLE void replace(const QString &text) const;
+
+    // Interaction with other ranges
+    Q_INVOKABLE RangeMark join(const RangeMark &other) const;
 
     bool operator==(const RangeMark &other) const;
 

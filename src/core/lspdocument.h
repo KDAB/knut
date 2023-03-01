@@ -1,6 +1,5 @@
 #pragma once
 
-#include "message_map.h"
 #include "querymatch.h"
 #include "symbol.h"
 #include "textdocument.h"
@@ -25,7 +24,7 @@ class LspDocument : public TextDocument
     Q_OBJECT
 
 public:
-    ~LspDocument();
+    virtual ~LspDocument();
 
     void setLspClient(Lsp::Client *client);
 
@@ -40,8 +39,6 @@ public:
     Q_INVOKABLE void transformSymbol(const Symbol *symbol, const QString &jsonFileName);
 
     Q_INVOKABLE QVector<Core::QueryMatch> query(const QString &query);
-
-    Q_INVOKABLE Core::MessageMap findMessageMap(const QString &className = "");
 
     bool hasLspClient() const;
 

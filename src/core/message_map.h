@@ -36,7 +36,7 @@ struct MessageMap
     Q_PROPERTY(bool isValid READ isValid FINAL)
 
 private:
-    friend class LspDocument;
+    friend class CppDocument;
     MessageMap(const class QueryMatch &match);
 
 public:

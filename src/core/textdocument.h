@@ -54,7 +54,7 @@ public:
     Q_DECLARE_FLAGS(FindFlags, FindFlag)
 
     explicit TextDocument(QObject *parent = nullptr);
-    ~TextDocument();
+    virtual ~TextDocument();
 
     bool eventFilter(QObject *watched, QEvent *event) override;
 
@@ -162,6 +162,8 @@ public slots:
     // Replace
     bool replaceOne(const QString &before, const QString &after, int options = NoFindFlags);
     int replaceAll(const QString &before, const QString &after, int options = NoFindFlags);
+    int replaceAllRegexpInRange(const QString &before, const QString &after, const RangeMark &range,
+                                int options = NoFindFlags);
     int replaceAllRegexp(const QString &regexp, const QString &after, int options = NoFindFlags);
 
     // Indentation

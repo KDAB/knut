@@ -8,6 +8,8 @@
 #include <QTest>
 #include <QThread>
 
+#include <kdalgorithms.h>
+
 class TestCppDocument : public QObject
 {
     Q_OBJECT
@@ -232,6 +234,87 @@ private slots:
 
         document->selectBlockUp();
         QCOMPARE(document->selectBlockUp(), lastCharacterPos - 1);
+    }
+
+private:
+    void messageMapForNonExistingClass(Core::CppDocument *cppdocument)
+    {
+
+        auto messageMap = cppdocument->mfcExtractMessageMap("NonExistentClass");
+        QVERIFY(!messageMap.isValid());
+        QVERIFY(messageMap.entries.isEmpty());
+        QVERIFY(messageMap.className.isEmpty());
+        QVERIFY(!messageMap.range.isValid());
+    }
+
+    void existingMessageMap(Core::CppDocument *cppdocument)
+    {
+        auto messageMap = cppdocument->mfcExtractMessageMap("CTutorialDlg");
+
+        const QVector<std::pair<QString, QStringList>> expectedEntries = {
+            {"ON_WM_PAINT", {}},
+            {"ON_WM_HSCROLL", {}},
+            {"ON_WM_VSCROLL", {}},
+            {"ON_WM_TIMER", {}},
+            {"ON_WM_LBUTTONDOWN", {}},
+            {"ON_WM_MOUSEMOVE", {}},
+            {"ON_WM_RBUTTONDOWN", {}},
+            {"ON_BN_CLICKED", {"ID_BTN_ADD", "OnBnClickedBtnAdd"}},
+            {"ON_BN_CLICKED", {"IDC_TIMER_CONTROL_SLIDERS", "OnBnClickedTimerControlSliders"}}};
+
+        QVERIFY(messageMap.isValid());
+        QCOMPARE(messageMap.className, QString("CTutorialDlg"));
+        QCOMPARE(messageMap.superClass, QString("CDialog"));
+        QCOMPARE(messageMap.entries.size(), expectedEntries.size());
+
+        for (int i = 0; i < expectedEntries.size(); ++i) {
+            const auto &expectedEntry = expectedEntries[i];
+            const auto &actualEntry = messageMap.entries[i];
+
+            auto toString = [](const Core::RangeMark &range) {
+                return range.text();
+            };
+            QCOMPARE(actualEntry.name, expectedEntry.first);
+            QCOMPARE(kdalgorithms::transformed(actualEntry.parameters, toString), expectedEntry.second);
+        }
+    }
+
+private slots:
+    void mfcExtractMessageMap()
+    {
+        Core::KnutCore core;
+        auto project = Core::Project::instance();
+        project->setRoot(Test::testDataPath() + "/projects/mfc-tutorial");
+
+        auto cppdocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->get("TutorialDlg.cpp"));
+
+        messageMapForNonExistingClass(cppdocument);
+
+        existingMessageMap(cppdocument);
+    }
+
+    void deleteMessageMap()
+    {
+        Test::FileTester file(Test::testDataPath() + "/tst_cppdocument/message_map/TutorialDlg.cpp");
+        {
+            Core::KnutCore core;
+            auto project = Core::Project::instance();
+            project->setRoot(Test::testDataPath() + "/cpp-project");
+
+            auto cppdocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->get(file.fileName()));
+            QVERIFY(cppdocument);
+
+            auto messageMap = cppdocument->mfcExtractMessageMap("CTutorialDlg");
+
+            QVERIFY(messageMap.isValid());
+            messageMap.range.select();
+            cppdocument->deleteSelection();
+
+            QVERIFY(!cppdocument->mfcExtractMessageMap("CTutorialDlg").isValid());
+            cppdocument->save();
+
+            file.compare();
+        }
     }
 };
 

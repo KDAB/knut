@@ -407,6 +407,30 @@ private slots:
             QVERIFY(file.compare());
         }
     }
+
+    void findReplaceRegexInRange()
+    {
+        Test::FileTester file(Test::testDataPath() + "/tst_textdocument/findReplaceRegexInRange/loremipsum.txt");
+        {
+            Core::TextDocument document;
+            document.load(file.fileName());
+
+            document.gotoLine(4);
+            document.gotoStartOfLine();
+            document.selectNextLine();
+            document.selectNextLine();
+
+            auto range = document.createRangeMark();
+
+            // remove the selection
+            document.gotoLine(1);
+            QCOMPARE(document.selectedText(), "");
+
+            QCOMPARE(document.replaceAllRegexpInRange("Lorem", "Mauris", range), 1);
+            document.save();
+            QVERIFY(file.compare());
+        }
+    }
 };
 
 QTEST_MAIN(TestTextDocument)

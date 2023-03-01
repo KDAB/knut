@@ -3,6 +3,7 @@
 #include "rangemark.h"
 #include "textdocument.h"
 
+#include <kdalgorithms.h>
 #include <treesitter/query.h>
 
 #include <QJSEngine>
@@ -52,6 +53,16 @@ RangeMark QueryMatch::get(const QString &name) const
     }
 
     return RangeMark();
+}
+
+RangeMark QueryMatch::getAllJoined(const QString &name) const
+{
+    auto ranges = getAll(name);
+
+    if (ranges.isEmpty())
+        return RangeMark();
+
+    return kdalgorithms::accumulate(ranges, &RangeMark::join, ranges.at(0));
 }
 
 QString QueryMatch::toString() const

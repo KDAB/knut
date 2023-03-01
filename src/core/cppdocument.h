@@ -1,6 +1,7 @@
 #pragma once
 
 #include "lspdocument.h"
+#include "message_map.h"
 
 #include <memory>
 
@@ -15,7 +16,7 @@ class CppDocument : public LspDocument
 
 public:
     explicit CppDocument(QObject *parent = nullptr);
-    ~CppDocument();
+    virtual ~CppDocument();
 
     enum Position { StartOfMethod, EndOfMethod };
     Q_ENUM(Position)
@@ -33,6 +34,7 @@ public slots:
     void commentSelection();
 
     QVariantMap mfcExtractDDX(const QString &className);
+    Core::MessageMap mfcExtractMessageMap(const QString &className = "");
 
     int gotoBlockStart(int count = 1);
     int gotoBlockEnd(int count = 1);

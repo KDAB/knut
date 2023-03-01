@@ -145,6 +145,19 @@ void RangeMark::select() const
         document()->selectRegion(start(), end());
 }
 
+void RangeMark::replace(const QString &text) const
+{
+    if (isValid())
+        document()->replace(start(), end(), text);
+}
+
+RangeMark RangeMark::join(const RangeMark &other) const
+{
+    if (!isValid() || !other.isValid() || document() != other.document())
+        return {};
+    return RangeMark(document(), std::min(start(), other.start()), std::max(end(), other.end()));
+}
+
 bool RangeMark::operator==(const RangeMark &other) const
 {
     return d == other.d || (document() == other.document() && start() == other.start() && end() == other.end());

@@ -39,8 +39,12 @@ public:
     QueryMatch(TextDocument &document, const treesitter::QueryMatch &match);
 
     const QVector<QueryCapture> &captures() const;
+
+    // Access to captures
     Q_INVOKABLE RangeMark get(const QString &name) const;
     Q_INVOKABLE QVector<RangeMark> getAll(const QString &name) const;
+    Q_INVOKABLE RangeMark getAllJoined(const QString &name) const;
+
     Q_INVOKABLE QString toString() const;
 
 private:

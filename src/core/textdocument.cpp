@@ -1246,7 +1246,7 @@ int TextDocument::replaceAll(const QString &before, const QString &after, int op
                 afterText = expandRegExpReplacement(after, match.capturedTexts());
             } else {
                 // Result filtered, so do not replace.
-                afterText = match.captured();
+                continue;
             }
         } else if (preserveCase) {
             afterText = matchCaseReplacement(cursor.selectedText(), after);
@@ -1271,6 +1271,25 @@ int TextDocument::replaceAllRegexp(const QString &regexp, const QString &after, 
 {
     return replaceAllRegexp(regexp, after, options, [](auto, auto) {
         return true;
+    });
+}
+
+int TextDocument::replaceAllRegexpInRange(const QString &before, const QString &after, const RangeMark &range,
+                                          int options /* = NoFindFlags*/)
+{
+    if (!range.isValid()) {
+        spdlog::warn("TextDocument::replaceAllRegexpInRange: Invalid range!");
+        return 0;
+    }
+    if (range.document() != this) {
+        spdlog::warn("TextDocument::replaceAllRegexpInRange: Range is not from this document!");
+        return 0;
+    }
+
+    return replaceAllRegexp(before, after, options, [&range](auto, auto cursor) {
+        return range.start() <= cursor.selectionStart()
+            && cursor.selectionEnd()
+            <= range.end(); // Use <= here, as the selection may be equal to the range, both values are exclusive.
     });
 }
 

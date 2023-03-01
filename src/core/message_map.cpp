@@ -1,7 +1,10 @@
 #include "message_map.h"
 
 #include "querymatch.h"
+#include "textdocument.h"
+
 #include <kdalgorithms.h>
+#include <spdlog/spdlog.h>
 
 namespace Core {
 
@@ -48,7 +51,11 @@ QString MessageMapEntry::toString() const
 
 MessageMapEntry fromMessage(const QueryMatch &match, const RangeMark &range)
 {
-    auto name = kdalgorithms::find_if(match.getAll("message-name"), [&range](const auto &name) {
+    // IMPORTANT: This needs to be put into an l-value,
+    // otherwise find_if will create a dangling reference!
+    // See https://github.com/KDAB/KDAlgorithms/issues/50
+    auto messageNames = match.getAll("message-name");
+    auto name = kdalgorithms::find_if(messageNames, [&range](const auto &name) {
         return range.contains(name);
     });
 
