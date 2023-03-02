@@ -90,3 +90,5 @@ cmake/include/
 cmake/lib/
 cmake/mkspecs/
 cmake/share/
+
+.vscode/settings.json
