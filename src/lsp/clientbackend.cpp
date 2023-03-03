@@ -88,7 +88,7 @@ bool ClientBackend::start()
 
 void ClientBackend::readError()
 {
-    m_serverLogger->info(m_process->readAllStandardError());
+    m_serverLogger->info(m_process->readAllStandardError().toStdString());
 }
 
 void ClientBackend::readOutput()

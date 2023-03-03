@@ -27,13 +27,14 @@ set(CMAKE_AUTORCC ON)
 find_package(Qt6 COMPONENTS Widgets Qml Quick Test UiTools REQUIRED)
 
 # spdlog
-###########################################################
+# ##########################################################
 FetchContent_Declare(spdlog
     GIT_REPOSITORY https://github.com/gabime/spdlog.git
-    GIT_TAG        v1.9.2
+    GIT_TAG v1.11.0
 )
 # See https://github.com/gabime/spdlog/issues/1190
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(SPDLOG_USE_STD_FORMAT OFF)
 FetchContent_MakeAvailable(spdlog)
 
 # nlohmann/json
