@@ -53,11 +53,11 @@ FetchContent_Declare(pugixml
 )
 FetchContent_MakeAvailable(pugixml)
 
-#KDAlgorithms
-###########################################################
+# KDAlgorithms
+# ##########################################################
 FetchContent_Declare(kdalgorithms
     GIT_REPOSITORY https://github.com/KDAB/KDAlgorithms
-    GIT_TAG        45501fa595dfda00d6af44bfadbf4520cc4e07c1
+    GIT_TAG f063ca710aff2c87b20770d654c049bd65234a64
 )
 FetchContent_MakeAvailable(kdalgorithms)
 
