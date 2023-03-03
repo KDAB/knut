@@ -45,11 +45,11 @@ FetchContent_Declare(json
 set(JSON_ImplicitConversions OFF)
 FetchContent_MakeAvailable(json)
 
-#pugixml
-###########################################################
+# pugixml
+# ##########################################################
 FetchContent_Declare(pugixml
     GIT_REPOSITORY https://github.com/zeux/pugixml.git
-    GIT_TAG        v1.11.4
+    GIT_TAG v1.13
 )
 FetchContent_MakeAvailable(pugixml)
 
