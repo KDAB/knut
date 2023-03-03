@@ -6,8 +6,8 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 #[=======================================================================[.rst:
-KDETemplateGenerator
---------------------
+KDEPackageAppTemplates
+----------------------
 
 Packages KApptemplate/KDevelop compatible application templates
 
@@ -23,11 +23,11 @@ This module provides the following function:
   kde_package_app_templates(TEMPLATES <template> [<template> [...]]
                             INSTALL_DIR <directory>)
 
-INSTALL_DIR is the directory to install the template package to.
-In most cases you will want to use the variable KDE_INSTALL_KTEMPLATESDIR
+``INSTALL_DIR`` is the directory to install the template package to.
+In most cases you will want to use the variable ``KDE_INSTALL_KAPPTEMPLATESDIR``
 from :kde-module:`KDEInstallDirs`.
 
-TEMPLATES lists subdirectories containing template files;
+``TEMPLATES`` lists subdirectories containing template files;
 each ``<template>`` directory will be packaged into a file named
 ``<template>.tar.bz2`` and installed to the appropriate location.
 
@@ -36,7 +36,7 @@ an application project by itself, with names (file names or text inside)
 the text files replaced by the following placeholders when needed:
 
 ``%{PROJECTDIRNAME}``
-    name of generated project base folder ex: %{APPNAMELC} for KAppTemplate
+    name of generated project base folder ex: ``%{APPNAMELC}`` for KAppTemplate
 ``%{APPNAME}``
     project name as entered by user ex: MyKApp
 ``%{APPNAMELC}``
@@ -59,7 +59,7 @@ the text files replaced by the following placeholders when needed:
 Deprecated:
 
 ``%{dest}``
-   path of generated project base folder, used in .kdevtemplate with the ShowFilesAfterGeneration entry
+   path of generated project base folder, used in .kdevtemplate with the ``ShowFilesAfterGeneration`` entry
    KDevelop >= 5.1.1 supports relative paths with that entry, making this placeholder obsolete
 
 Multiple templates can be passed at once.
@@ -111,7 +111,7 @@ function(kde_package_app_templates)
         # also enlist directories as deps to catch file removals
         file(GLOB_RECURSE _subdirs_entries LIST_DIRECTORIES true CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${_templateName}/*")
 
-        add_custom_target(${_baseName} ALL DEPENDS ${_template})
+        add_custom_target(${_baseName}_kapptemplate ALL DEPENDS ${_template})
 
         if(GNU_TAR_FOUND)
             # Honour SOURCE_DATE_EPOCH if set
@@ -133,7 +133,7 @@ function(kde_package_app_templates)
                    --numeric-owner --owner=0 --group=0
                    --mtime="@${TIMESTAMP}"
                    --pax-option=exthdr.name=%d/PaxHeaders/%f,delete=atime,delete=ctime
-                    -c -j -v -f ${_template} .
+                    -c -j -f ${_template} .
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${_templateName}
                 DEPENDS ${_subdirs_entries}
             )

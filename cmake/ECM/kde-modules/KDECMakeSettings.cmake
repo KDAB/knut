@@ -14,7 +14,7 @@ KDECMakeSettings
 Changes various CMake settings to what the KDE community views as more
 sensible defaults.
 
-It is recommended to include this module with the NO_POLICY_SCOPE flag,
+It is recommended to include this module with the ``NO_POLICY_SCOPE`` flag,
 otherwise you may get spurious warnings with some versions of CMake.
 
 It is split into three parts, which can be independently disabled if desired.
@@ -24,25 +24,26 @@ Runtime Paths
 
 The default runtime path (used on Unix systems to search for
 dynamically-linked libraries) is set to include the location that libraries
-will be installed to (as set in LIB_INSTALL_DIR or, if the former is not set,
-KDE_INSTALL_LIBDIR), and also the linker search path.
+will be installed to (as set in ``LIB_INSTALL_DIR`` or, if the former is not set,
+``KDE_INSTALL_LIBDIR``), and also the linker search path.
 
-Note that ``LIB_INSTALL_DIR`` or alternatively ``KDE_INSTALL_LIBDIR`` needs
-to be set before including this module.
-Typically, this is done by including the :kde-module:`KDEInstallDirs` module.
+.. note::
+  ``LIB_INSTALL_DIR`` or alternatively ``KDE_INSTALL_LIBDIR`` needs
+  to be set before including this module.
+  Typically, this is done by including the :kde-module:`KDEInstallDirs` module.
 
-This section can be disabled by setting ``KDE_SKIP_RPATH_SETTINGS`` to TRUE
+This section can be disabled by setting ``KDE_SKIP_RPATH_SETTINGS`` to ``TRUE``
 before including this module.
 
 
 Testing
 ~~~~~~~
 
-Testing is enabled by default, and an option (BUILD_TESTING) is provided for
+Testing is enabled by default, and an option ``BUILD_TESTING`` is provided for
 users to control this. See the CTest module documentation in the CMake manual
 for more details.
 
-This section can be disabled by setting ``KDE_SKIP_TEST_SETTINGS`` to TRUE
+This section can be disabled by setting ``KDE_SKIP_TEST_SETTINGS`` to ``TRUE``
 before including this module.
 
 
@@ -52,18 +53,18 @@ Build Settings
 Various CMake build defaults are altered, such as searching source and build
 directories for includes first, enabling automoc by default.
 
-When find_package(ECM 5.38) or higher is called, this also selects
+When ``find_package(ECM 5.38)`` or higher is called, this also selects
 a layout for the build dir that helps running executables without installing:
 all executables are built into a toplevel "bin" dir, making it possible to find
 helper binaries, and to find uninstalled plugins (provided that you use
-kcoreaddons_add_plugin or set LIBRARY_OUTPUT_DIRECTORY as documented on
+``kcoreaddons_add_plugin()`` or set ``LIBRARY_OUTPUT_DIRECTORY`` as documented on
 https://community.kde.org/Guidelines_and_HOWTOs/Making_apps_run_uninstalled).
 
-This section can be disabled by setting ``KDE_SKIP_BUILD_SETTINGS`` to TRUE
+This section can be disabled by setting ``KDE_SKIP_BUILD_SETTINGS`` to ``TRUE``
 before including this module.
 
-This section also provides an "uninstall" target that can be individually
-disabled by setting ``KDE_SKIP_UNINSTALL_TARGET`` to TRUE before including
+This section also provides an ``uninstall`` target that can be individually
+disabled by setting ``KDE_SKIP_UNINSTALL_TARGET`` to ``TRUE`` before including
 this module.
 
 By default on OS X, X11 and XCB related detections are disabled. However if
@@ -75,7 +76,7 @@ This message can be turned off by setting ``APPLE_SUPPRESS_X11_WARNING`` to ``ON
 
 Since pre-1.0.0.
 
-``ENABLE_CLAZY`` option is added (OFF by default) when clang is being used.
+``ENABLE_CLAZY`` option is added (``OFF`` by default) when clang is being used.
 Turning this option on will force clang to load the clazy plugins for richer
 warnings on Qt-related code.
 
@@ -84,28 +85,31 @@ See https://commits.kde.org/clazy?path=README.md
 
 Since 5.17.0
 
-- Uninstall target functionality since 1.7.0.
+- ``uninstall`` target functionality since 1.7.0
 - ``APPLE_FORCE_X11`` option since 5.14.0 (detecting X11 was previously the default behavior)
 - ``APPLE_SUPPRESS_X11_WARNING`` option since 5.14.0
-- CMAKE_AUTORCC enabled by default when supported by cmake (>= 3.0) since 5.62.0
+- ``CMAKE_AUTORCC`` enabled by default when supported by CMake (>= 3.0) since 5.62.0
 
-Translations
-~~~~~~~~~~~~
+Translations (deprecated)
+~~~~~~~~~~~~~~~~~~~~~~~~~
 A fetch-translations target will be set up that will download translations
 for projects using l10n.kde.org.
 
 ``KDE_L10N_BRANCH`` will be responsible for choosing which l10n branch to use
 for the translations.
 
-``KDE_L10N_AUTO_TRANSLATIONS`` (OFF by default) will indicate whether translations
+``KDE_L10N_AUTO_TRANSLATIONS`` (``OFF`` by default) will indicate whether translations
 should be downloaded when building the project.
 
 Since 5.34.0
 
-``KDE_L10N_SYNC_TRANSLATIONS`` (OFF by default) will download the translations at configuration
+``KDE_L10N_SYNC_TRANSLATIONS`` (``OFF`` by default) will download the translations at configuration
 time instead of build time.
 
 Since 5.50.0
+
+All ``KDE_L10N_*`` options have been deprecated since 5.102.0, as translations
+are meanwhile present inside the source code repositories.
 #]=======================================================================]
 
 ################# RPATH handling ##################################
@@ -301,14 +305,18 @@ function(_repository_name reponame dir)
         OUTPUT_VARIABLE upstream_ref
         RESULT_VARIABLE exitCode
         WORKING_DIRECTORY "${dir}")
-    string(REGEX REPLACE "refs/remotes/([^/]+)/.*" "\\1" gitorigin "${upstream_ref}")
     if(exitCode EQUAL 0)
+        string(REGEX REPLACE "refs/remotes/([^/]+)/.*" "\\1" gitorigin "${upstream_ref}")
         message(DEBUG "Git upstream inferred as ${gitorigin}, upstream ref was ${upstream_ref}")
-        execute_process(COMMAND git remote get-url --all "${gitorigin}"
-            OUTPUT_VARIABLE giturl
-            RESULT_VARIABLE exitCode
-            WORKING_DIRECTORY "${dir}")
+    else()
+        set(gitorigin "origin")
+        message(DEBUG "Assuming origin as the git remote as we are in detached mode")
     endif()
+
+    execute_process(COMMAND git remote get-url --all "${gitorigin}"
+        OUTPUT_VARIABLE giturl
+        RESULT_VARIABLE exitCode
+        WORKING_DIRECTORY "${dir}")
 
     if(exitCode EQUAL 0)
         message(DEBUG "Git URL inferred as ${giturl}")

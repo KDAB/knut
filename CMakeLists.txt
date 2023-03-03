@@ -61,10 +61,10 @@ FetchContent_Declare(kdalgorithms
 )
 FetchContent_MakeAvailable(kdalgorithms)
 
-#ECM
-###########################################################
+# ECM
+# ##########################################################
 # Couldn't find a way to initialize it with FetchContent :(
-find_package(ECM 5.91.0 REQUIRED NO_MODULE)
+find_package(ECM 5.103.0 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 include(ECMEnableSanitizers)
 if (ECM_ENABLE_SANITIZERS)
@@ -81,8 +81,8 @@ endif()
 option(USE_SYNTAX_HIGHLIGHTING "Enable syntax highlighting in IDE" ON)
 if(USE_SYNTAX_HIGHLIGHTING)
     FetchContent_Declare(KSyntaxHighlighting
-        GIT_REPOSITORY https://github.com/narnaud/syntax-highlighting.git
-        GIT_TAG        b8dce05d42aa7a8b8baea4f708d5278961a693fd
+        GIT_REPOSITORY https://github.com/KDE/syntax-highlighting.git
+        GIT_TAG v5.103.0
     )
     # Don't build tests and examples
     set(KSYNTAXHIGHLIGHTING_USE_GUI OFF)

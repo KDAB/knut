@@ -35,7 +35,7 @@ as the name field as well as the library to link to.
 ``DEPS`` is the list of libraries required by this library. Libraries that are
 not exposed to applications should be marked with ``PRIVATE``. The default
 is ``PUBLIC``, but note that according to the
-`Guide to pkg-config <https://people.freedesktop.org/~dbn/pkg-config-guide.html>`
+`Guide to pkg-config <https://people.freedesktop.org/~dbn/pkg-config-guide.html>`_
 marking dependencies as private is usually preferred. The ``PUBLIC`` and
 ``PRIVATE`` keywords are supported since 5.89.0.
 
@@ -47,7 +47,7 @@ also ``INSTALL``.
 ``INCLUDE_INSTALL_DIR`` specifies where the includes will be installed. If
 it's not specified, it will default to ``INSTALL_INCLUDEDIR``,
 ``CMAKE_INSTALL_INCLUDEDIR`` or just "include/" in case they are specified,
-with the BASE_NAME postfixed.
+with the ``BASE_NAME`` postfixed.
 
 ``LIB_INSTALL_DIR`` specifies where the library is being installed. If it's
 not specified, it will default to ``LIB_INSTALL_DIR``,
@@ -65,14 +65,16 @@ package. Defaults to "https://www.kde.org/". Since 5.89.0.
 
 ``INSTALL`` will cause the module to be installed to the ``pkgconfig``
 subdirectory of ``LIB_INSTALL_DIR``, unless the ``ECM_PKGCONFIG_INSTALL_DIR``
-cache variable is set to something different. Note that the first call to
-ecm_generate_pkgconfig_file with the ``INSTALL`` argument will cause
-``ECM_PKGCONFIG_INSTALL_DIR`` to be set to the cache, and will be used in any
-subsequent calls.
+cache variable is set to something different.
+
+.. note::
+  The first call to ``ecm_generate_pkgconfig_file()`` with the ``INSTALL``
+  argument will cause ``ECM_PKGCONFIG_INSTALL_DIR`` to be set to the cache,
+  and will be used in any subsequent calls.
 
 To properly use this macro a version needs to be set. To retrieve it,
 ``ECM_PKGCONFIG_INSTALL_DIR`` uses ``PROJECT_VERSION``. To set it, use the
-project() command or the ecm_setup_version() macro
+``project()`` command or the ``ecm_setup_version()`` macro
 
 Example usage:
 

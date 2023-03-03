@@ -16,11 +16,12 @@ Set useful compile and link flags for C++ (and C) code.
 
 Enables many more warnings than the default, and sets stricter modes
 for some compiler features.  By default, exceptions are disabled;
-kde_target_enable_exceptions() can be used to re-enable them for a
+``kde_target_enable_exceptions()`` can be used to re-enable them for a
 specific target.
 
-NB: it is recommended to include this module with the NO_POLICY_SCOPE
-flag, otherwise you may get spurious warnings with some versions of CMake.
+.. note::
+  It is recommended to include this module with the ``NO_POLICY_SCOPE``
+  flag, otherwise you may get spurious warnings with some versions of CMake.
 
 Since 5.85 newer settings are controlled by a variable
 ``KDE_COMPILERSETTINGS_LEVEL``, taking an ECM version as value. That
@@ -88,6 +89,8 @@ The following C++ compiler flags are set:
   before including this module (default is ``FALSE`` for
   ``KDE_COMPILERSETTINGS_LEVEL`` >= 5.85, ``TRUE`` otherwise).
 
+- ``-Werror=undef`` (GNU and Clang compilers, since 5.96.0)
+
 - Qt related preprocessor definitions (since 5.85.0):
 
   - ``-DQT_NO_CAST_TO_ASCII``
@@ -141,15 +144,15 @@ Variables
 Inclusion of this module defines the following variables:
 
 ``ENABLE_BSYMBOLICFUNCTIONS``
-    indicates whether we make use of -Bsymbolic-functions for linking.
+    indicates whether we make use of ``-Bsymbolic-functions`` for linking.
     It ensures libraries bind global function references locally rather than
     at runtime.
     This option only has an effect on ELF-based systems.
 
     The option is disabled by default except when using
-    KDEFrameworkCompilerSettings.cmake where it's enabled. Projects can enable
-    it by calling set(ENABLE_BSYMBOLICFUNCTIONS ON) or passing -DENABLE
-    BSYMBOLICFUNCTIONS=ON when configuring the build directory.
+    :kde-module:`KDEFrameworkCompilerSettings` where it's enabled. Projects can enable
+    it by calling ``set(ENABLE_BSYMBOLICFUNCTIONS ON)`` or passing
+    ``-DENABLE BSYMBOLICFUNCTIONS=ON`` when configuring the build directory.
 
     Since 5.85
 
@@ -538,8 +541,11 @@ if ((CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND NOT APPLE) OR
     set(CMAKE_MODULE_LINKER_FLAGS "-Wl,--fatal-warnings ${CMAKE_MODULE_LINKER_FLAGS}")
 
     # Do not allow undefined symbols, even in non-symbolic shared libraries
-    set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-undefined ${CMAKE_SHARED_LINKER_FLAGS}")
-    set(CMAKE_MODULE_LINKER_FLAGS "-Wl,--no-undefined ${CMAKE_MODULE_LINKER_FLAGS}")
+    # On OpenBSD we must disable this to allow the stuff to properly compile without explicit libc specification
+    if (NOT CMAKE_SYSTEM_NAME MATCHES "OpenBSD")
+        set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-undefined ${CMAKE_SHARED_LINKER_FLAGS}")
+        set(CMAKE_MODULE_LINKER_FLAGS "-Wl,--no-undefined ${CMAKE_MODULE_LINKER_FLAGS}")
+    endif()
 endif()
 
 set(_KDE_GCC_COMMON_WARNING_FLAGS "-Wall -Wextra -Wcast-align -Wchar-subscripts -Wformat-security -Wno-long-long -Wpointer-arith -Wundef")
@@ -558,6 +564,9 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${_KDE_GCC_COMMON_WARNING_FLAGS} -Wnon-virtual-dtor -Woverloaded-virtual")
     # Make some warnings errors
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror=return-type -Werror=init-self")
+    if (KDE_INTERNAL_COMPILERSETTINGS_LEVEL VERSION_GREATER_EQUAL 5.96.0)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror=undef")
+    endif()
 endif()
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR
     (CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 3.5))
