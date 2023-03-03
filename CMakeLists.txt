@@ -38,10 +38,10 @@ set(SPDLOG_USE_STD_FORMAT OFF)
 FetchContent_MakeAvailable(spdlog)
 
 # nlohmann/json
-###########################################################
+# ##########################################################
 FetchContent_Declare(json
     GIT_REPOSITORY https://github.com/nlohmann/json
-    GIT_TAG        v3.10.5
+    GIT_TAG v3.11.2
 )
 set(JSON_ImplicitConversions OFF)
 FetchContent_MakeAvailable(json)
