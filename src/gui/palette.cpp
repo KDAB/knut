@@ -318,7 +318,7 @@ Palette::Palette(QMainWindow *parent)
         addSymbolSelector();
         addActionSelector();
     };
-    QTimer::singleShot(0, init);
+    QTimer::singleShot(0, this, init);
 }
 
 Palette::~Palette() = default;

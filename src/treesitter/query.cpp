@@ -185,7 +185,6 @@ QVector<QueryMatch::Capture> QueryMatch::capturesNamed(const QString &name) cons
 QVector<QueryMatch::Capture> QueryMatch::captures() const
 {
     return m_captures;
-    QVector<Capture> result;
 }
 
 // ----------------------- QueryCursor --------------------

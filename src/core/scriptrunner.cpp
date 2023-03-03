@@ -31,6 +31,7 @@
 
 #include <QtQml/private/qqmlengine_p.h>
 
+#include <kdalgorithms.h>
 #include <spdlog/spdlog.h>
 
 namespace Core {
@@ -295,18 +296,10 @@ QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine)
 void ScriptRunner::filterErrors(const QQmlComponent &component)
 {
     auto errors = component.errors();
-    auto it = errors.begin();
-    while (it != errors.end()) {
-        if (it->line() < 0) {
-            it = errors.erase(it);
-        } else {
-            QFileInfo fi(it->url().toLocalFile());
-            if (!fi.isFile())
-                it = errors.erase(it);
-            else
-                ++it;
-        }
-    }
+    auto isValidErrorOnLocalFile = [](const QQmlError &error) {
+        return error.line() >= 0 && QFileInfo(error.url().toLocalFile()).isFile();
+    };
+    kdalgorithms::filter(errors, isValidErrorOnLocalFile);
     m_errors = errors;
 }
 

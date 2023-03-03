@@ -162,7 +162,8 @@ void SpecParser::addDependency(const QStringList &names)
  */
 QString SpecParser::extractMethod(const QString &line)
 {
-    auto split = line.split(QRegularExpression(R"([`'])"), Qt::SkipEmptyParts);
+    static QRegularExpression separator(R"([`'])");
+    auto split = line.split(separator, Qt::SkipEmptyParts);
     Q_ASSERT_X(split.size() >= 2, "method extractions", line.toLatin1());
     return split.at(1);
 }
@@ -429,7 +430,8 @@ void SpecParser::readEnum(const QString &line)
         if (valueLine.endsWith(';') || valueLine.endsWith(',') || closeEnum) {
             if (valueLine.startsWith(" export const"))
                 first = 2;
-            auto words = valueLine.split(QRegularExpression("[ :=;,]"), Qt::SkipEmptyParts);
+            static QRegularExpression separator("[ :=;,]");
+            auto words = valueLine.split(separator, Qt::SkipEmptyParts);
             m_enumeration.values.push_back({words.at(first), comment(), words.last()});
             m_enumeration.isString = words.last().startsWith('\'');
             valueLine.clear();
@@ -525,7 +527,8 @@ void SpecParser::readInterface(const QString &line)
 
     // ENsure we read multiple lines if needed
     if (interfaceLine.endsWith('{')) {
-        auto words = interfaceLine.split(QRegularExpression("[ ,]"), Qt::SkipEmptyParts);
+        static QRegularExpression separator("[ ,]");
+        auto words = interfaceLine.split(separator, Qt::SkipEmptyParts);
         Q_ASSERT(words.count() >= 3);
 
         m_interfaces.back().name = words.at(2).simplified().remove("<T>");

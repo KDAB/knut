@@ -41,9 +41,9 @@ public:
     const QVector<QueryCapture> &captures() const;
 
     // Access to captures
-    Q_INVOKABLE RangeMark get(const QString &name) const;
-    Q_INVOKABLE QVector<RangeMark> getAll(const QString &name) const;
-    Q_INVOKABLE RangeMark getAllJoined(const QString &name) const;
+    Q_INVOKABLE Core::RangeMark get(const QString &name) const;
+    Q_INVOKABLE QVector<Core::RangeMark> getAll(const QString &name) const;
+    Q_INVOKABLE Core::RangeMark getAllJoined(const QString &name) const;
 
     Q_INVOKABLE QString toString() const;
 

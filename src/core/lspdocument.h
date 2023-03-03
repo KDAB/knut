@@ -36,7 +36,7 @@ public:
 
     void transform(const QString &jsonFileName, const std::unordered_map<QString, QString> &context);
     Q_INVOKABLE void transform(const QString &jsonFileName, QVariantMap context = {});
-    Q_INVOKABLE void transformSymbol(const Symbol *symbol, const QString &jsonFileName);
+    Q_INVOKABLE void transformSymbol(const Core::Symbol *symbol, const QString &jsonFileName);
 
     Q_INVOKABLE QVector<Core::QueryMatch> query(const QString &query);
 
@@ -51,8 +51,8 @@ public:
     TextRange toRange(const Lsp::Range &range) const;
 
 public slots:
-    Document *followSymbol();
-    Document *switchDeclarationDefinition();
+    Core::Document *followSymbol();
+    Core::Document *switchDeclarationDefinition();
     void selectSymbol(const QString &name, int options = NoFindFlags);
 
 protected:

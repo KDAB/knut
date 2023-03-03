@@ -238,7 +238,6 @@ static Widget convertPushButton(const Data &data, Data::Control &control)
     widget.className = "QPushButton";
     widget.properties[Text] = control.text;
 
-    auto styles = control.styles;
     if (control.styles.removeOne(BSAUTO3STATE) || control.styles.removeOne(BS3STATE)
         || control.styles.removeOne(BSCHECKBOX) || control.styles.removeOne(BSRADIOBUTTON)
         || control.styles.removeOne(BSAUTOCHECKBOX) || control.styles.removeOne(BSAUTORADIOBUTTON))

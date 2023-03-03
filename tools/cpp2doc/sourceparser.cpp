@@ -104,7 +104,7 @@ Data::PropertyBlock SourceParser::parseProperty(QTextStream &stream, QString lin
     Data::PropertyBlock currentProperty;
     line = line.mid(13);
     currentProperty.name = line;
-    QRegularExpression regexp(R"(^([\w<>]+) (\w+)::(\w+)$)");
+    static QRegularExpression regexp(R"(^([\w<>]+) (\w+)::(\w+)$)");
     auto match = regexp.match(line);
     currentProperty.type = match.captured(1);
     currentProperty.qmlType = match.captured(2);
@@ -131,7 +131,7 @@ static auto parseMethodDefinition(const QString &line)
         QString qmlType;
     } result;
 
-    QRegularExpression regexp(R"(^(?:([\w<>]+) )?(\w+)::(\w+)\((.*)\)$)");
+    static QRegularExpression regexp(R"(^(?:([\w<>]+) )?(\w+)::(\w+)\((.*)\)$)");
     auto match = regexp.match(line);
     result.method.returnType = match.captured(1);
     result.qmlType = match.captured(2);

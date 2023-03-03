@@ -44,8 +44,8 @@ public:
 
     bool isValid() const;
 
-    Q_INVOKABLE MessageMapEntry get(const QString &name) const;
-    Q_INVOKABLE QVector<MessageMapEntry> getAll(const QString &name) const;
+    Q_INVOKABLE Core::MessageMapEntry get(const QString &name) const;
+    Q_INVOKABLE QVector<Core::MessageMapEntry> getAll(const QString &name) const;
 
     Q_INVOKABLE QString toString() const;
 

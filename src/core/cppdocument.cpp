@@ -42,7 +42,7 @@ CppDocument::CppDocument(QObject *parent)
     : LspDocument(Type::Cpp, parent)
     , m_cache(std::make_unique<CppCache>(this))
 {
-    connect(textEdit()->document(), &QTextDocument::contentsChange, [this]() {
+    connect(textEdit()->document(), &QTextDocument::contentsChange, this, [this]() {
         m_cache->clear();
     });
 }
@@ -410,8 +410,8 @@ QVariantMap CppDocument::mfcExtractDDX(const QString &className)
     // TODO: Use semantic information coming from LSP instead of regexp to find the method
 
     const QString source = text();
-    const QRegularExpression searchFunctionExpression(QString(R"*(void\s*%1\s*::DoDataExchange\s*\()*").arg(className),
-                                                      QRegularExpression::MultilineOption);
+    static const QRegularExpression searchFunctionExpression(
+        QString(R"*(void\s*%1\s*::DoDataExchange\s*\()*").arg(className), QRegularExpression::MultilineOption);
     QRegularExpressionMatch match = searchFunctionExpression.match(source);
 
     if (match.hasMatch()) {

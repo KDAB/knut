@@ -170,7 +170,7 @@ void LspDocument::regexpTransform(const RegexpTransform &transform,
         to.replace(key, value);
     }
 
-    QRegularExpression checkRegex("\\${(?<key>[a-zA-Z0-9_]+)}");
+    static QRegularExpression checkRegex("\\${(?<key>[a-zA-Z0-9_]+)}");
     auto match = checkRegex.match(from);
     auto key = match.captured("key");
     if (match.hasMatch() && !key.isNull()) {

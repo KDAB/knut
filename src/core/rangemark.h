@@ -47,7 +47,7 @@ public:
     Q_INVOKABLE void replace(const QString &text) const;
 
     // Interaction with other ranges
-    Q_INVOKABLE RangeMark join(const RangeMark &other) const;
+    Q_INVOKABLE Core::RangeMark join(const Core::RangeMark &other) const;
 
     bool operator==(const RangeMark &other) const;
 

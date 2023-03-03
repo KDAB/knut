@@ -115,7 +115,7 @@ struct Token
         Keyword, // See enum Keywords
         Word, // All the rest
     };
-    Type type;
+    Type type = Word;
     std::variant<std::monostate, QString, int, Keywords> data;
 
     QString toString() const;

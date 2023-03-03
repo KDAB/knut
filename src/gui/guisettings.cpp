@@ -139,7 +139,7 @@ void GuiSettings::removeAllShortcuts()
     QSettings settings;
     settings.beginGroup(ShortcutsKey);
     const auto &keys = settings.childKeys();
-    for (auto key : keys)
+    for (const auto &key : keys)
         settings.remove(key);
 }
 
@@ -163,7 +163,7 @@ GuiSettings::ShortcutList GuiSettings::shortcuts() const
     QSettings settings;
     settings.beginGroup(ShortcutsKey);
     const auto &keys = settings.childKeys();
-    for (auto key : keys)
+    for (const auto &key : keys)
         shortcuts[key] = settings.value(key).toString();
     return shortcuts;
 }

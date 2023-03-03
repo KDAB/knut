@@ -250,7 +250,7 @@ Document *Project::getDocument(QString fileName, bool moveToBack)
 
     Document *doc = nullptr;
 
-    if (findIt != m_documents.cend()) {
+    if (findIt != m_documents.end()) {
         doc = *findIt;
         if (moveToBack)
             std::rotate(findIt, findIt + 1, m_documents.end());

@@ -14,7 +14,7 @@ namespace Core {
 
 char *toString(const Argument &argument)
 {
-    return QTest::toString(QString("Type: '%1' Name: '%2'").arg(argument.type).arg(argument.name));
+    return QTest::toString(QString("Type: '%1' Name: '%2'").arg(argument.type, argument.name));
 }
 
 }

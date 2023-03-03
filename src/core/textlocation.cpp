@@ -7,7 +7,7 @@ namespace Core {
 
 QString TextLocation::toString() const
 {
-    return QString("{'%1', %2}").arg(document->fileName()).arg(range.toString());
+    return QString("{'%1', %2}").arg(document->fileName(), range.toString());
 }
 
 QVector<TextLocation> TextLocation::fromLsp(const std::vector<Lsp::Location> &locations)

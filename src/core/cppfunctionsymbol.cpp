@@ -94,7 +94,7 @@ CppFunctionSymbol::CppFunctionSymbol(QObject *parent, const QString &name, const
         };
         QStringList argumentTypes = kdalgorithms::transformed<QStringList>(args, toType);
 
-        m_description = QString("%1 (%2)").arg(returnType()).arg(argumentTypes.join(", "));
+        m_description = QString("%1 (%2)").arg(returnType(), argumentTypes.join(", "));
     }
 }
 

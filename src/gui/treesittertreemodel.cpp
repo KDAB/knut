@@ -55,7 +55,7 @@ QVariant TreeSitterTreeModel::TreeNode::data(int column) const
         if (fieldName.isEmpty()) {
             return m_node.type();
         } else {
-            return QString("%1: %2").arg(fieldName).arg(m_node.type());
+            return QString("%1: %2").arg(fieldName, m_node.type());
         }
     case 1:
         return QString("[%1:%2] - [%3:%4]")

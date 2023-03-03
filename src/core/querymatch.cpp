@@ -12,7 +12,7 @@ namespace Core {
 
 QString QueryCapture::toString() const
 {
-    return QString("QueryCapture{'%1', %2}").arg(name).arg(range.toString());
+    return QString("QueryCapture{'%1', %2}").arg(name, range.toString());
 }
 
 QueryMatch::QueryMatch(TextDocument &document, const treesitter::QueryMatch &match)

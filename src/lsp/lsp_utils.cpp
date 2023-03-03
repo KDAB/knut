@@ -20,7 +20,7 @@ namespace Utils {
                 }
             }
             qsizetype end = index;
-            result.erase(result.begin() + start, result.begin() + end);
+            result.erase(result.cbegin() + start, result.cbegin() + end);
         }
         return result.trimmed();
     }
