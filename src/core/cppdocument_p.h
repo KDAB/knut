@@ -20,12 +20,10 @@ struct ToggleSectionSettings
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ToggleSectionSettings, tag, debug, return_values);
 
-class CppCache
+class IncludeHelper
 {
 public:
-    explicit CppCache(CppDocument *document);
-
-    void clear();
+    explicit IncludeHelper(CppDocument *document);
 
     struct IncludePosition
     {
@@ -68,7 +66,7 @@ private:
         QString prefix;
         int scope = 0;
     };
-    using IncludeGroups = std::vector<CppCache::IncludeGroup>;
+    using IncludeGroups = std::vector<IncludeHelper::IncludeGroup>;
 
     /**
      * Returns an Include struct based on the name, the name should be '<foo.h>' or '"foo.h"'
@@ -82,17 +80,18 @@ private:
     /**
      * Find the best position for inserting an include
      */
-    IncludeGroups::const_iterator findBestIncludeGroup(const Include &include);
+    IncludeGroups::const_iterator findBestIncludeGroup(const Include &include) const;
+    /**
+     * Find best line for include if there are no includes
+     */
+    IncludePosition findBestFirstIncludeLine() const;
+
     /**
      * Compute all includes and include groups in the file
      */
     void computeIncludes();
 
-    enum Flags {
-        HasIncludes = 0x01,
-    };
     CppDocument *const m_document;
-    int m_flags = 0;
     Includes m_includes;
     IncludeGroups m_includeGroups;
 };

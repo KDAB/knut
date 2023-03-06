@@ -1,0 +1,9 @@
+// Some comments
+
+#pragma once
+
+#include <bar.h>
+
+class Foo {
+
+};

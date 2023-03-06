@@ -1,0 +1,12 @@
+// Some comments
+
+#ifndef GUARD_H
+#define GUARD_H
+
+#include <bar.h>
+
+class Foo {
+
+};
+
+#endif

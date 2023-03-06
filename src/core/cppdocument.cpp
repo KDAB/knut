@@ -40,11 +40,7 @@ namespace Core {
 
 CppDocument::CppDocument(QObject *parent)
     : LspDocument(Type::Cpp, parent)
-    , m_cache(std::make_unique<CppCache>(this))
 {
-    connect(textEdit()->document(), &QTextDocument::contentsChange, this, [this]() {
-        m_cache->clear();
-    });
 }
 
 CppDocument::~CppDocument() = default;
@@ -794,7 +790,8 @@ bool CppDocument::insertInclude(const QString &include, bool newGroup)
 {
     LOG("CppDocument::insertInclude", LOG_ARG("text", include), newGroup);
 
-    auto includePos = m_cache->includePositionForInsertion(include, newGroup);
+    IncludeHelper includeHelper(this);
+    auto includePos = includeHelper.includePositionForInsertion(include, newGroup);
     if (!includePos) {
         spdlog::error(R"(CppDocument::insertInclude - the include '{}' is malformed, should be '<foo.h>' or '"foo.h"')",
                       include.toStdString());
@@ -821,7 +818,8 @@ bool CppDocument::removeInclude(const QString &include)
 {
     LOG("CppDocument::removeInclude", LOG_ARG("text", include));
 
-    auto line = m_cache->includePositionForRemoval(include);
+    IncludeHelper includeHelper(this);
+    auto line = includeHelper.includePositionForRemoval(include);
     if (!line) {
         spdlog::error(R"(CppDocument::removeInclude - the include '{}' is malformed, should be '<foo.h>' or '"foo.h"')",
                       include.toStdString());

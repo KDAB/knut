@@ -1,0 +1,10 @@
+// Some comments
+
+#ifndef GUARD_H
+#define GUARD_H
+
+class Foo {
+
+};
+
+#endif

@@ -1,0 +1,7 @@
+// Some comments
+
+#pragma once
+
+class Foo {
+
+};

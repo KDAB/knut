@@ -7,8 +7,6 @@
 
 namespace Core {
 
-class CppCache;
-
 class CppDocument : public LspDocument
 {
     Q_OBJECT
@@ -56,8 +54,7 @@ private:
 
     int moveBlock(int startPos, QTextCursor::MoveOperation direction);
 
-    friend CppCache;
-    std::unique_ptr<CppCache> m_cache;
+    friend class IncludeHelper;
 };
 
 } // namespace Core

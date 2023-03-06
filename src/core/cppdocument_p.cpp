@@ -11,21 +11,15 @@
 
 namespace Core {
 
-bool CppCache::Include::operator==(const Include &other) const
+bool IncludeHelper::Include::operator==(const Include &other) const
 {
     return name == other.name && scope == other.scope;
 }
 
-CppCache::CppCache(CppDocument *document)
+IncludeHelper::IncludeHelper(CppDocument *document)
     : m_document(document)
 {
-}
-
-void CppCache::clear()
-{
-    m_includeGroups.clear();
-    m_includes.clear();
-    m_flags = 0;
+    computeIncludes();
 }
 
 static QStringView getCommonPrefix(QString const &s1, QString const &s2)
@@ -35,7 +29,8 @@ static QStringView getCommonPrefix(QString const &s1, QString const &s2)
     return common;
 }
 
-std::optional<CppCache::IncludePosition> CppCache::includePositionForInsertion(const QString &text, bool addNewGroup)
+std::optional<IncludeHelper::IncludePosition> IncludeHelper::includePositionForInsertion(const QString &text,
+                                                                                         bool addNewGroup)
 {
     // Not a well formed include => error
     auto include = includeForText(text);
@@ -45,7 +40,7 @@ std::optional<CppCache::IncludePosition> CppCache::includePositionForInsertion(c
     // If there are no includes, return the first line
     computeIncludes();
     if (m_includes.empty())
-        return IncludePosition {0, false};
+        return findBestFirstIncludeLine();
 
     if (findInclude(include) != m_includes.end())
         return IncludePosition {};
@@ -56,7 +51,7 @@ std::optional<CppCache::IncludePosition> CppCache::includePositionForInsertion(c
     return IncludePosition {it->lastLine + 1, false};
 }
 
-std::optional<int> CppCache::includePositionForRemoval(const QString &text)
+std::optional<int> IncludeHelper::includePositionForRemoval(const QString &text)
 {
     // Not a well formed include => error
     auto include = includeForText(text);
@@ -70,20 +65,20 @@ std::optional<int> CppCache::includePositionForRemoval(const QString &text)
     return it->line;
 }
 
-CppCache::Include CppCache::includeForText(const QString &text) const
+IncludeHelper::Include IncludeHelper::includeForText(const QString &text) const
 {
     if ((!text.startsWith('<') || !text.endsWith('>')) && (!text.startsWith('"') || !text.endsWith('"')))
         return {};
-    return {text.mid(1, text.length() - 2), text.startsWith('"') ? CppCache::Include::Local : CppCache::Include::Global,
-            -1};
+    return {text.mid(1, text.length() - 2),
+            text.startsWith('"') ? IncludeHelper::Include::Local : IncludeHelper::Include::Global, -1};
 }
 
-CppCache::Includes::const_iterator CppCache::findInclude(const Include &include) const
+IncludeHelper::Includes::const_iterator IncludeHelper::findInclude(const Include &include) const
 {
     return std::ranges::find(m_includes, include);
 }
 
-CppCache::IncludeGroups::const_iterator CppCache::findBestIncludeGroup(const Include &include)
+IncludeHelper::IncludeGroups::const_iterator IncludeHelper::findBestIncludeGroup(const Include &include) const
 {
     auto itEnd = m_includeGroups.cend();
     int commonLength = 0;
@@ -100,44 +95,79 @@ CppCache::IncludeGroups::const_iterator CppCache::findBestIncludeGroup(const Inc
     return bestIt;
 }
 
-void CppCache::computeIncludes()
+IncludeHelper::IncludePosition IncludeHelper::findBestFirstIncludeLine() const
 {
-    if (m_flags & HasIncludes)
-        return;
+    if (!m_document->isHeader())
+        return IncludePosition {1, false};
 
-    static auto regexp = QRegularExpression(R"(^#include\s+(<\S+>|"\S+"))");
-    auto document = m_document->textEdit()->document();
-    QTextCursor cursor(document);
+    // Find `#pragma once`
+    const auto pragmaQuery = QString(R"EOF(
+        (translation_unit
+            (preproc_call
+                argument: (_) @value (#match? "once" @value)
+            )
+        )
+    )EOF");
+
+    auto result = m_document->query(pragmaQuery);
+    if (result.isEmpty()) {
+        // Find `#ifndef / #define`
+        const auto guardsQuery = QString(R"EOF(
+            (translation_unit
+                (preproc_ifdef
+                    "#ifndef"
+                    name: (_) @name
+                    (preproc_def
+                        name: (_) @value (#eq? @name @value)
+                    )
+                )
+            )
+        )EOF");
+        result = m_document->query(guardsQuery);
+        if (result.isEmpty())
+            return IncludePosition {1, false};
+    }
+
+    const auto &match = result.first();
+    auto codeStart = match.get("value");
+
+    int line;
+    int col;
+    m_document->convertPosition(codeStart.end(), &line, &col);
+
+    return IncludePosition {line + 1, true};
+}
+
+void IncludeHelper::computeIncludes()
+{
+    const auto includeQuery = QString(R"EOF(
+        (preproc_include
+            path: (_) @path
+        )
+    )EOF");
+
+    auto results = m_document->query(includeQuery);
 
     // Extract all includes
-    int line = 1;
-    bool newGroup = true;
+    int lastLine = -1;
 
-    while (!cursor.isNull()) {
-        cursor.select(QTextCursor::SelectionType::LineUnderCursor);
-        const QString &text = cursor.selectedText().simplified();
-        if (text.startsWith("#include")) {
-            auto match = regexp.match(text);
-            if (match.hasMatch()) {
-                auto include = includeForText(match.captured(1));
-                include.line = line;
-                m_includes.push_back(include);
-                if (newGroup) {
-                    IncludeGroup group;
-                    group.first = static_cast<int>(m_includes.size() - 1);
-                    m_includeGroups.push_back(group);
-                    newGroup = false;
-                }
-                m_includeGroups.back().last = static_cast<int>(m_includes.size() - 1);
-                m_includeGroups.back().lastLine = line;
-            }
-        } else {
-            newGroup = true;
+    for (const auto &match : results) {
+        auto includePath = match.get("path");
+        int line; // 1-based
+        int col;
+        m_document->convertPosition(includePath.end(), &line, &col);
+
+        auto include = includeForText(includePath.text());
+        include.line = line;
+        m_includes.push_back(include);
+        if (line != lastLine + 1 || m_includeGroups.empty()) {
+            IncludeGroup group;
+            group.first = static_cast<int>(m_includes.size() - 1);
+            m_includeGroups.push_back(group);
         }
-
-        if (!cursor.movePosition(QTextCursor::Down))
-            break;
-        ++line;
+        m_includeGroups.back().last = static_cast<int>(m_includes.size() - 1);
+        m_includeGroups.back().lastLine = line;
+        lastLine = line;
     }
 
     // Find common denominator in groups
@@ -152,8 +182,6 @@ void CppCache::computeIncludes()
     for (auto &group : m_includeGroups)
         processGroup(group);
 
-    m_flags |= HasIncludes;
     return;
 }
-
 }
