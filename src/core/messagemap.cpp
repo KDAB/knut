@@ -1,4 +1,4 @@
-#include "message_map.h"
+#include "messagemap.h"
 
 #include "querymatch.h"
 #include "textdocument.h"

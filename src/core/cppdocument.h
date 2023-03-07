@@ -1,7 +1,7 @@
 #pragma once
 
 #include "lspdocument.h"
-#include "message_map.h"
+#include "messagemap.h"
 
 #include <memory>
 
