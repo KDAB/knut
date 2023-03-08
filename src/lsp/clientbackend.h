@@ -42,7 +42,7 @@ public:
     {
         m_callbacks[request.id] = [this](nlohmann::json &&j) {
             m_response = std::move(j);
-            emit responseEmitted({});
+            emit responseEmitted(QPrivateSignal {});
         };
 
         std::visit(
