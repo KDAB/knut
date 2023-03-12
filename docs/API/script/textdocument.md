@@ -33,6 +33,8 @@ Inherited properties: [Document properties](../script/document.md#properties)
 |-|-|
 ||**[copy](#copy)**()|
 |[Mark](../script/mark.md) |**[createMark](#createMark)**(int pos = -1)|
+|[RangeMark](../script/rangemark.md) |**[createRangeMark](#createRangeMark)**()|
+|[RangeMark](../script/rangemark.md) |**[createRangeMark](#createRangeMark)**(int start, int end)|
 ||**[cut](#cut)**()|
 ||**[deleteEndOfLine](#deleteEndOfLine)**()|
 ||**[deleteEndOfWord](#deleteEndOfWord)**()|
@@ -70,9 +72,10 @@ Inherited properties: [Document properties](../script/document.md#properties)
 ||**[removeIndent](#removeIndent)**(int count)|
 ||**[replace](#replace)**(int length, string text)|
 ||**[replace](#replace)**([TextRange](../script/textrange.md) range, string text)|
-||**[replace](#replace)**(int length, string text)|
+||**[replace](#replace)**(int from, int to, string text)|
 |bool |**[replaceAll](#replaceAll)**(string before, string after, int options = TextDocument.NoFindFlags)|
 |bool |**[replaceAllRegexp](#replaceAllRegexp)**(string regexp, string after, int options = TextDocument.NoFindFlags)|
+|bool |**[replaceAllRegexpInRange](#replaceAllRegexpInRange)**(string regexp, string after, [RangeMark](../script/rangemark.md) range, int options = TextDocument.NoFindFlags)|
 |bool |**[replaceOne](#replaceOne)**(string before, string after, int options = TextDocument.NoFindFlags)|
 ||**[selectAll](#selectAll)**()|
 ||**[selectEndOfLine](#selectEndOfLine)**()|
@@ -148,8 +151,18 @@ Copies the selected text.
 
 #### <a name="createMark"></a>[Mark](../script/mark.md) **createMark**(int pos = -1)
 
-Create a mark at the given position `pos`. If `pos` is -1, it will create a mark at the
+Creates a mark at the given position `pos`. If `pos` is -1, it will create a mark at the
 current position.
+
+#### <a name="createRangeMark"></a>[RangeMark](../script/rangemark.md) **createRangeMark**()
+
+Creates a range mark from the current selection.
+
+Note: if there is no selection, the range mark will span an empty range!
+
+#### <a name="createRangeMark"></a>[RangeMark](../script/rangemark.md) **createRangeMark**(int start, int end)
+
+Creates a range mark from `start` to `end`.
 
 #### <a name="cut"></a>**cut**()
 
@@ -234,7 +247,7 @@ Goes to the given `line` and `column` in the editor. Lines and columns are 1-bas
 
 #### <a name="gotoMark"></a>**gotoMark**([Mark](../script/mark.md) mark)
 
-Go to the given `mark`.
+Goes to the given `mark`.
 
 #### <a name="gotoNextChar"></a>**gotoNextChar**(int count = 1)
 
@@ -306,19 +319,19 @@ Indents the current line `count` times. If there's a selection, indent all lines
 
 #### <a name="replace"></a>**replace**(int length, string text)
 
-Replaces the text from `from` to `to` with the string `text`.
+Replaces `length` characters from the current position with the string `text`.
 
 #### <a name="replace"></a>**replace**([TextRange](../script/textrange.md) range, string text)
 
 Replaces the text in the range `range` with the string `text`.
 
-#### <a name="replace"></a>**replace**(int length, string text)
+#### <a name="replace"></a>**replace**(int from, int to, string text)
 
-Replaces `length` characters from the current position with the string `text`.
+Replaces the text from `from` to `to` with the string `text`.
 
 #### <a name="replaceAll"></a>bool **replaceAll**(string before, string after, int options = TextDocument.NoFindFlags)
 
-Replace all occurences of the string `before` with `after`. Options could be a combination of:
+Replaces all occurences of the string `before` with `after`. Options could be a combination of:
 
 - `TextDocument.FindCaseSensitively`: match case
 - `TextDocument.FindWholeWords`: match only complete words
@@ -338,7 +351,15 @@ Returns the number of changes done in the document.
 
 #### <a name="replaceAllRegexp"></a>bool **replaceAllRegexp**(string regexp, string after, int options = TextDocument.NoFindFlags)
 
-Replace all occurences of the matches for the `regexp` with `after`. See the options from `replaceAll`.
+Replaces all occurences of the matches for the `regexp` with `after`. See the options from `replaceAll`.
+
+The captures coming from the regexp can be used in the replacement text, using `\1`..`\n` or `$1`..`$n`.
+
+Returns the number of changes done in the document.
+
+#### <a name="replaceAllRegexpInRange"></a>bool **replaceAllRegexpInRange**(string regexp, string after, [RangeMark](../script/rangemark.md) range, int options = TextDocument.NoFindFlags)
+
+Replaces all occurences of the matches for the `regexp` with `after` in the given `range`. See the options from `replaceAll`.
 
 The captures coming from the regexp can be used in the replacement text, using `\1`..`\n` or `$1`..`$n`.
 
@@ -346,7 +367,7 @@ Returns the number of changes done in the document.
 
 #### <a name="replaceOne"></a>bool **replaceOne**(string before, string after, int options = TextDocument.NoFindFlags)
 
-Replace one occurence of the string `before` with `after`. Options could be a combination of:
+Replaces one occurence of the string `before` with `after`. Options could be a combination of:
 
 - `TextDocument.FindCaseSensitively`: match case
 - `TextDocument.FindWholeWords`: match only complete words
@@ -422,7 +443,7 @@ Selects the text from the current position to `pos`.
 
 #### <a name="selectToMark"></a>**selectToMark**([Mark](../script/mark.md) mark)
 
-Select the text from the cursor position to the `mark`.
+Selects the text from the cursor position to the `mark`.
 
 #### <a name="undo"></a>**undo**(int count)
 

@@ -38,30 +38,39 @@ nav:
         - Unit tests: contributing/unit-tests.md
     - Script API:
         - Script Module:
-             - Argument: API/script/argument.md
-             - CppClass: API/script/cppclass.md
-             - CppDocument: API/script/cppdocument.md
-             - CppFunction: API/script/cppfunction.md
-             - Dir: API/script/dir.md
-             - Document: API/script/document.md
-             - File: API/script/file.md
-             - FileInfo: API/script/fileinfo.md
-             - LspDocument: API/script/lspdocument.md
-             - Mark: API/script/mark.md
-             - Message: API/script/message.md
-             - Project: API/script/project.md
-             - QDirValueType: API/script/qdirvaluetype.md
-             - QFileInfoValueType: API/script/qfileinfovaluetype.md
-             - Script: API/script/script.md
-             - ScriptDialog: API/script/scriptdialog.md
-             - Settings: API/script/settings.md
-             - Symbol: API/script/symbol.md
-             - TextDocument: API/script/textdocument.md
-             - TextRange: API/script/textrange.md
-             - UiDocument: API/script/uidocument.md
-             - UiWidget: API/script/uiwidget.md
-             - UserDialog: API/script/userdialog.md
-             - Utils: API/script/utils.md
+            - Document:
+                - CppDocument: API/script/cppdocument.md
+                - Document: API/script/document.md
+                - LspDocument: API/script/lspdocument.md
+                - TextDocument: API/script/textdocument.md
+                - UiDocument: API/script/uidocument.md
+            - Misc.:
+                - Dir: API/script/dir.md
+                - File: API/script/file.md
+                - FileInfo: API/script/fileinfo.md
+                - Message: API/script/message.md
+                - Project: API/script/project.md
+                - QDirValueType: API/script/qdirvaluetype.md
+                - QFileInfoValueType: API/script/qfileinfovaluetype.md
+                - Script: API/script/script.md
+                - ScriptDialog: API/script/scriptdialog.md
+                - Settings: API/script/settings.md
+                - UserDialog: API/script/userdialog.md
+                - Utils: API/script/utils.md
+            - Types:
+                - Argument: API/script/argument.md
+                - CppClass: API/script/cppclass.md
+                - CppFunction: API/script/cppfunction.md
+                - Mark: API/script/mark.md
+                - MessageMap: API/script/messagemap.md
+                - MessageMapEntry: API/script/messagemapentry.md
+                - QueryCapture: API/script/querycapture.md
+                - QueryMatch: API/script/querymatch.md
+                - RangeMark: API/script/rangemark.md
+                - Symbol: API/script/symbol.md
+                - TextLocation: API/script/textlocation.md
+                - TextRange: API/script/textrange.md
+                - UiWidget: API/script/uiwidget.md
         - Script.Rc Module:
              - Action: API/script.rc/action.md
              - Asset: API/script.rc/asset.md

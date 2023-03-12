@@ -17,8 +17,8 @@ class QueryCapture
 {
     Q_GADGET
 
-    Q_PROPERTY(QString name MEMBER name)
-    Q_PROPERTY(Core::RangeMark range MEMBER range)
+    Q_PROPERTY(QString name MEMBER name CONSTANT)
+    Q_PROPERTY(Core::RangeMark range MEMBER range CONSTANT)
 
 public:
     Q_INVOKABLE QString toString() const;

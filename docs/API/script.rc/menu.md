@@ -14,7 +14,8 @@ import Script.Rc 1.0
 
 | | Name |
 |-|-|
-|array<[MenuItem](../script.rc/menuitem.md)|**[children](#children)**|
+|array<string>|**[actionIds](#actionIds)**|
+|array<[MenuItem](../script.rc/menuitem.md)>|**[children](#children)**|
 |string|**[id](#id)**|
 
 ## Methods
@@ -25,7 +26,11 @@ import Script.Rc 1.0
 
 ## Property Documentation
 
-#### <a name="children"></a>array<[MenuItem](../script.rc/menuitem.md) **children**
+#### <a name="actionIds"></a>array<string> **actionIds**
+
+This property holds all action ids used in the menu.
+
+#### <a name="children"></a>array<[MenuItem](../script.rc/menuitem.md)> **children**
 
 This property holds the list of menu items inside the menu.
 

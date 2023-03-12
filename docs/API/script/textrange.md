@@ -1,6 +1,6 @@
 # TextRange
 
-Define a range of text in a text document [More...](#detailed-description)
+Defines a range of text in a text document [More...](#detailed-description)
 
 ```qml
 import Script 1.0
@@ -21,8 +21,8 @@ import Script 1.0
 
 #### <a name="end"></a>int **end**
 
-End position of the range.
+This read-only property defines the end position of the range.
 
 #### <a name="start"></a>int **start**
 
-Start position of the range.
+This read-only property defines the start position of the range.

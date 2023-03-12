@@ -10,10 +10,13 @@ namespace Core {
 
 /*!
  * \qmltype MessageMapEntry
- * \brief Refers to a single entry within the \c MessageMap
+ * \brief Refers to a single entry within the `MessageMap`
  * \instantiates Core::MessageMap
+ * \inqmlmodule Script
+ * \since 4.0
+ * \sa MessageMap
  *
- * A MessageMapEntry is a single entry within the \c MessageMap.
+ * A MessageMapEntry is a single entry within the `MessageMap`.
  * It contains the name of the message as well as the list of parameters.
  */
 
@@ -28,7 +31,7 @@ namespace Core {
  */
 /*!
  * \qmlproperty list<RangeMark> MessageMapEntry::parameters
- * A list of \c RangeMark instances referring to each parameter of the entry.
+ * A list of `RangeMark` instances referring to each parameter of the entry.
  */
 /*!
  * \qmlproperty bool MessageMapEntry::isValid
@@ -61,6 +64,8 @@ MessageMapEntry fromMessage(const QueryMatch &match, const RangeMark &range)
  * \qmltype MessageMap
  * \brief Keeps track of a message map within a text document.
  * \instantiates Core::MessageMap
+ * \inqmlmodule Script
+ * \since 4.0
  *
  * The MessageMap object represents the data contained in the MFC MessageMap.
  */
@@ -109,7 +114,7 @@ bool MessageMap::isValid() const
 /*!
  * \qmlmethod MessageMapEntry MessageMap::get(string name)
  *
- * Gets the first entry with the given \a name.
+ * Gets the first entry with the given `name`.
  * If no entry could be found, isValid will be false on the resulting MessageMapEntry.
  */
 MessageMapEntry MessageMap::get(const QString &name) const
@@ -126,7 +131,7 @@ MessageMapEntry MessageMap::get(const QString &name) const
 /*!
  * \qmlmethod list<MessageMapEntry> MessageMap::getAll(string name)
  *
- * Gets all entries with the given \a name.
+ * Gets all entries with the given `name`.
  */
 QVector<MessageMapEntry> MessageMap::getAll(const QString &name) const
 {

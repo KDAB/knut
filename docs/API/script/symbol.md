@@ -15,7 +15,6 @@ import Script 1.0
 | | Name |
 |-|-|
 |string|**[description](#description)**|
-|bool|**[isNull](#isNull)**|
 |Kind|**[kind](#kind)**|
 |string|**[name](#name)**|
 |[TextRange](../script/textrange.md)|**[range](#range)**|
@@ -25,18 +24,14 @@ import Script 1.0
 
 | | Name |
 |-|-|
-|[CppClass](../script/cppclass.md) |**[toClass](#toClass)**()|
-|[CppFunction](../script/cppfunction.md) |**[toFunction](#toFunction)**()|
+|bool |**[isFunction](#isFunction)**()|
+|bool |**[isFunction](#isFunction)**()|
 
 ## Property Documentation
 
 #### <a name="description"></a>string **description**
 
 Return more detail for this symbol, e.g the signature of a function.
-
-#### <a name="isNull"></a>bool **isNull**
-
-This property returns `true` if the symbol is null.
 
 #### <a name="kind"></a>Kind **kind**
 
@@ -86,24 +81,11 @@ contained by the `range`.
 
 ## Method Documentation
 
-#### <a name="toClass"></a>[CppClass](../script/cppclass.md) **toClass**()
+#### <a name="isFunction"></a>bool **isFunction**()
 
+Returns whether this Symbol refers to a class or struct.
 
-!!! Warning "Experimental API"
-    The API here is still experimental, and may change in follow-up release. Use it at your own risk.
+#### <a name="isFunction"></a>bool **isFunction**()
 
-Returns a structure representing the class for the current symbol.
-The method checks if the `kind` of the symbol for `Symbol::Class` or `Symbol::Struct`. If so then it finds all the
-members of the class from the list of symbols in current document, adds them in `CppClass` structure, and returns it.
-If not, then it returns an empty structure.
-
-#### <a name="toFunction"></a>[CppFunction](../script/cppfunction.md) **toFunction**()
-
-
-!!! Warning "Experimental API"
-    The API here is still experimental, and may change in follow-up release. Use it at your own risk.
-
-Returns a `CppFunction` structure for current `Symbol::Symbol`.
-The method checks if the `kind` of the symbol for `Symbol::Method` or `Symbol::Function`. If so then it extracts
-information from `Symbol::description`, fills it in `CppFunction` structure, and returns it. If not, then it returns
-an empty structure.
+Returns whether this Symbol refers to a function.
+This includes constructors and methods

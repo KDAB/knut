@@ -7,8 +7,8 @@ namespace Core {
 struct TextRange
 {
     Q_GADGET
-    Q_PROPERTY(int start MEMBER start)
-    Q_PROPERTY(int end MEMBER end)
+    Q_PROPERTY(int start MEMBER start CONSTANT)
+    Q_PROPERTY(int end MEMBER end CONSTANT)
 
 public:
     int start;

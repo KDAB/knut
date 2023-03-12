@@ -21,7 +21,7 @@ namespace Core {
  * The RangeMark object helps you track a logical range within a file.
  * It's `start` and `end` properties will change as text is deleted or inserted before or even within the range.
  *
- * A mark is always created by a [TextDocument](textdocument.md).
+ * A RangeMark is always created by a [TextDocument](textdocument.md).
  */
 
 /*!
@@ -139,18 +139,32 @@ QString RangeMark::toString() const
     return QString("[%1, %2)").arg(start()).arg(end());
 }
 
+/*!
+ * \qmlmethod RangeMark::select()
+ * Selects the text defined by this range in the source document.
+ */
 void RangeMark::select() const
 {
     if (isValid())
         document()->selectRegion(start(), end());
 }
 
+/*!
+ * \qmlmethod RangeMark::replace(string text)
+ * Replaces the text defined by this range with the `text` string in the source document.
+ */
 void RangeMark::replace(const QString &text) const
 {
     if (isValid())
         document()->replace(start(), end(), text);
 }
 
+/*!
+ * \qmlmethod RangeMark RangeMark::join(RangeMark other)
+ * Joins the two `RangeMark` and creates a new one.
+ *
+ * The new `RangeMark` is spaning from the minimum of the start to the maximum of the end.
+ */
 RangeMark RangeMark::join(const RangeMark &other) const
 {
     if (!isValid() || !other.isValid() || document() != other.document())

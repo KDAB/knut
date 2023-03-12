@@ -4,18 +4,18 @@ namespace Core {
 
 /*!
  * \qmltype TextRange
- * \brief Define a range of text in a text document
+ * \brief Defines a range of text in a text document
  * \inqmlmodule Script
  * \since 4.0
  * \sa TextDocument
  */
 /*!
  * \qmlproperty int TextRange::start
- * Start position of the range.
+ * This read-only property defines the start position of the range.
  */
 /*!
  * \qmlproperty int TextRange::end
- * End position of the range.
+ * This read-only property defines the end position of the range.
  */
 
 bool TextRange::contains(int pos) const

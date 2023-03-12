@@ -71,7 +71,7 @@ bool LspDocument::hasLspClient() const
  * Returns the symbol the cursor is in, or an empty symbol otherwise
  * The function is used to filter out the symbol
  *
- * Note that the returned \c Symbol pointer is only valid until the document
+ * Note that the returned `Symbol` pointer is only valid until the document
  * it originates from is deconstructed.
  */
 Symbol *LspDocument::currentSymbol(std::function<bool(const Symbol &)> filterFunc) const
@@ -129,10 +129,10 @@ void LspDocument::deleteSymbol(const Symbol &symbol)
 }
 
 /*!
- * \qmlmethod vector<Symbol> LspDocument::symbols()
+ * \qmlmethod array<Symbol> LspDocument::symbols()
  * Returns the list of symbols in the current document.
  *
- * Note that the returned \c Symbol pointers are only valid until the document they
+ * Note that the returned `Symbol` pointers are only valid until the document they
  * originate from is deconstructed.
  */
 QVector<Core::Symbol *> LspDocument::symbols() const
@@ -447,6 +447,10 @@ std::pair<QString, std::optional<TextRange>> LspDocument::hoverWithRange(
     return {"", {}};
 }
 
+/*!
+ * \qmlmethod array<TextLocation> LspDocument::references()
+ * Returns the list of references at the given position.
+ */
 QVector<Core::TextLocation> LspDocument::references(int position) const
 {
     LOG("LspDocument::references");
@@ -476,12 +480,11 @@ QVector<Core::TextLocation> LspDocument::references(int position) const
 
 /*!
  * \qmlmethod LspDocument::followSymbol()
- * Follow the symbol under the cursor.
+ * Follows the symbol under the cursor.
  *
  * - Go to the declaration, if the symbol under cursor is a use
  * - Go to the declaration, if the symbol under cursor is a function definition
  * - Go to the definition, if the symbol under cursor is a function declaration
- * \todo
  */
 Document *LspDocument::followSymbol()
 {
@@ -562,7 +565,7 @@ Document *LspDocument::followSymbol(int pos)
 
 /*!
  * \qmlmethod LspDocument::switchDeclarationDefinition()
- * Switch between the function declaration or definition.
+ * Switches between the function declaration or definition.
  * \todo
  */
 Document *LspDocument::switchDeclarationDefinition()
@@ -589,7 +592,7 @@ Document *LspDocument::switchDeclarationDefinition()
 
 /*!
  * \qmlmethod LspDocument::selectSymbol(string name, int options = TextDocument.NoFindFlags)
- * Select a symbol based on its `name`, using different find `options`.
+ * Selects a symbol based on its `name`, using different find `options`.
  *
  * - `TextDocument.FindCaseSensitively`: match case
  * - `TextDocument.FindWholeWords`: match only fully qualified symbol
@@ -609,13 +612,13 @@ void LspDocument::selectSymbol(const QString &name, int options)
 
 /*!
  * \qmlmethod Symbol LspDocument::findSymbol(string name, int options = TextDocument.NoFindFlags)
- * Find a symbol based on its `name`, using different find `options`.
+ * Finds a symbol based on its `name`, using different find `options`.
  *
  * - `TextDocument.FindCaseSensitively`: match case
  * - `TextDocument.FindWholeWords`: match only fully qualified symbol
  * - `TextDocument.FindRegexp`: use a regexp
  *
- * Note that the returned \c Symbol pointer is only valid until the document it originates
+ * Note that the returned `Symbol` pointer is only valid until the document it originates
  * from is deconstructed.
  */
 Symbol *LspDocument::findSymbol(const QString &name, int options) const
@@ -707,6 +710,15 @@ TextRange LspDocument::toRange(const Lsp::Range &range) const
 {
     return {toPos(range.start), toPos(range.end)};
 }
+
+/*!
+ * \qmlmethod array<QueryMatch> LspDocument::query(string query)
+ * Runs the `query` passed in parameter and returns the list of matches.
+ *
+ * The query is using the [TreeSitter](https://tree-sitter.github.io/tree-sitter/) query, you can find more information
+ * on this page: [Pattern Matching with
+ * Queries](https://tree-sitter.github.io/tree-sitter/using-parsers#pattern-matching-with-queries).
+ */
 
 QVector<QueryMatch> LspDocument::query(const QString &query)
 {

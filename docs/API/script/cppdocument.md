@@ -25,15 +25,20 @@ Inherited properties: [LspDocument properties](../script/lspdocument.md#properti
 |-|-|
 ||**[commentSelection](#commentSelection)**()|
 |string |**[correspondingHeaderSource](#correspondingHeaderSource)**()|
+|void |**[deleteMethod](#deleteMethod)**(string methodName, string signature)|
+|void |**[deleteMethod](#deleteMethod)**(string methodName)|
+|void |**[deleteMethod](#deleteMethod)**()|
 |int |**[gotoBlockEnd](#gotoBlockEnd)**(int count)|
 |int |**[gotoBlockStart](#gotoBlockStart)**(int count)|
 ||**[insertCodeInMethod](#insertCodeInMethod)**(string methodName, string code, Position insertAt)|
 ||**[insertForwardDeclaration](#insertForwardDeclaration)**(string fwddecl)|
 ||**[insertInclude](#insertInclude)**(string include, bool newGroup = false)|
+||**[mfcExtractMessageMap](#mfcExtractMessageMap)**(className = "")|
 |[CppDocument](../script/cppdocument.md) |**[openHeaderSource](#openHeaderSource)**()|
 ||**[removeInclude](#removeInclude)**(string include)|
 |int |**[selectBlockEnd](#selectBlockEnd)**()|
 |int |**[selectBlockStart](#selectBlockStart)**()|
+|int |**[selectBlockUp](#selectBlockUp)**()|
 ||**[toggleSection](#toggleSection)**()|
 
 Inherited methods: [LspDocument methods](../script/lspdocument.md#methods)
@@ -61,6 +66,44 @@ Comments the selected lines (or current line if there's no selection) in current
 #### <a name="correspondingHeaderSource"></a>string **correspondingHeaderSource**()
 
 Returns the corresponding source or header file path.
+
+#### <a name="deleteMethod"></a>void **deleteMethod**(string methodName, string signature)
+
+Delete the method or function with the specified `methodName` and optional `signature`.
+The method definition/declaration will be deleted from the current file,
+as well as the corresponding header/source file.
+References to the method will not be deleted.
+
+The `methodName` must be fully qualified, i.e. "<Namespaces>::<Class>::<Method>".
+
+The `signature` must be in the form: "<return type> (<first parameter type>, <second parameter type>, <...>)".
+i.e. for a function with the following declaration:
+
+``` cpp
+void myFunction(const QString& a, int b);
+```
+
+The `signature` would be:
+
+```
+void (const QString&, int)
+```
+
+If an empty string is provided as the `signature`, all overloads of the function are deleted as well.
+
+#### <a name="deleteMethod"></a>void **deleteMethod**(string methodName)
+
+Deletes a method of the specified `methodName`, without matching a specific `signature`.
+Therefore, all overloads of the function will be deleted.
+
+Also see: CppDocument::deleteMethod(string methodName, string signature)
+
+#### <a name="deleteMethod"></a>void **deleteMethod**()
+
+Deletes the method/function at the current cursor position.
+Overloads of the function will not be deleted!
+
+Also see: CppDocument::deleteMethod(const QString& methodName, const QString& signature)
 
 #### <a name="gotoBlockEnd"></a>int **gotoBlockEnd**(int count)
 
@@ -107,6 +150,12 @@ in the file.
 
 If `newGroup` is true, it will insert the include at the end, with a new line separating the other includes.
 
+#### <a name="mfcExtractMessageMap"></a>**mfcExtractMessageMap**(className = "")
+
+Extracts information contained in the MFC MESSAGE_MAP.
+The `className` parameter can be used to ensure the result matches to a specific class.
+Returns a `MessageMap` object.
+
 #### <a name="openHeaderSource"></a>[CppDocument](../script/cppdocument.md) **openHeaderSource**()
 
 Opens the corresponding source or header files, the current document is the new file.
@@ -127,6 +176,12 @@ Does it `count` times.
 #### <a name="selectBlockStart"></a>int **selectBlockStart**()
 
 Selects the text from current cursor position to the start of the block, and returns the new cursor position.
+A block is definied by {} or () or [].
+Does it `count` times.
+
+#### <a name="selectBlockUp"></a>int **selectBlockUp**()
+
+Selects the text of the block the cursor is in, and returns the new cursor position.
 A block is definied by {} or () or [].
 Does it `count` times.
 

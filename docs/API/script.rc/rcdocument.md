@@ -15,12 +15,13 @@ import Script.Rc 1.0
 | | Name |
 |-|-|
 |array<string>|**[acceleratorIds](#acceleratorIds)**|
+|array<[Asset](../script.rc/asset.md)>|**[actions](#actions)**|
 |array<[Asset](../script.rc/asset.md)>|**[assets](#assets)**|
 |array<string>|**[dialogIds](#dialogIds)**|
 |array<string>|**[menuIds](#menuIds)**|
 |array<[Menu](../script.rc/menu.md)>|**[menus](#menus)**|
 |array<string>|**[stringIds](#stringIds)**|
-|array<[String](../script.rc/string.md)>|**[strings](#strings)**|
+|array<string>|**[strings](#strings)**|
 |array<string>|**[toolbarIds](#toolbarIds)**|
 |array<[ToolBar](../script.rc/toolbar.md)>|**[toolbars](#toolbars)**|
 |bool|**[valid](#valid)**|
@@ -29,7 +30,10 @@ import Script.Rc 1.0
 
 | | Name |
 |-|-|
-|array<[Action](../script.rc/action.md)> |**[convertActions](#convertActions)**(array<string> menus, array<string> accelerators, array<string> toolBars, int flags)|
+|[ToolBar](../script.rc/toolbar.md) |**[action](#action)**(string id)|
+|array<[Action](../script.rc/action.md)> |**[actionsFromMenu](#actionsFromMenu)**(string menuId)|
+|array<[Action](../script.rc/action.md)> |**[actionsFromToolbar](#actionsFromToolbar)**(string toolBarId)|
+|void |**[convertActions](#convertActions)**(int flags)|
 ||**[convertAssets](#convertAssets)**(int flags)|
 |[Widget](../script.rc/widget.md) |**[dialog](#dialog)**(string id, int flags, real scaleX, real scaleY)|
 |[Menu](../script.rc/menu.md) |**[menu](#menu)**(string id)|
@@ -45,6 +49,10 @@ import Script.Rc 1.0
 #### <a name="acceleratorIds"></a>array<string> **acceleratorIds**
 
 This read-only property holds the list of accelerator's ids in the RC file.
+
+#### <a name="actions"></a>array<[Asset](../script.rc/asset.md)> **actions**
+
+This read-only property holds the list of actions in the RC file.
 
 #### <a name="assets"></a>array<[Asset](../script.rc/asset.md)> **assets**
 
@@ -66,7 +74,7 @@ This read-only property holds the list of menus in the RC file.
 
 This read-only property holds the list of string's ids in the RC file.
 
-#### <a name="strings"></a>array<[String](../script.rc/string.md)> **strings**
+#### <a name="strings"></a>array<string> **strings**
 
 This read-only property holds the list of strings in the RC file.
 
@@ -86,13 +94,25 @@ Note that the RC file may be valid, and our parser needs to be updated.
 
 ## Method Documentation
 
-#### <a name="convertActions"></a>array<[Action](../script.rc/action.md)> **convertActions**(array<string> menus, array<string> accelerators, array<string> toolBars, int flags)
+#### <a name="action"></a>[ToolBar](../script.rc/toolbar.md) **action**(string id)
+
+Returns the action for the given `id`.
+
+#### <a name="actionsFromMenu"></a>array<[Action](../script.rc/action.md)> **actionsFromMenu**(string menuId)
+
+Returns all actions used in the menu `menuId`.
+
+#### <a name="actionsFromToolbar"></a>array<[Action](../script.rc/action.md)> **actionsFromToolbar**(string toolBarId)
+
+Returns all actions used in the toolbar `toolBarId`.
+
+#### <a name="convertActions"></a>void **convertActions**(int flags)
 
 
 !!! Warning "Experimental API"
     The API here is still experimental, and may change in follow-up release. Use it at your own risk.
 
-Returns a list of actions fomr the given `menus`' ids, `accelerators`' ids and `toolBars`' ids.
+Convert all actions using the `flags`.
 
 The `flags` are used to fill the iconPath of the action:
 

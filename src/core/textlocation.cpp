@@ -5,6 +5,26 @@
 
 namespace Core {
 
+/*!
+ * \qmltype TextLocation
+ * \brief Defines a range of text in a file.
+ * \instantiates Core::TextLocation
+ * \inqmlmodule Script
+ * \since 4.0
+ * \sa LspDocument
+ *
+ * A mark is always created by a [LspDocument](lspdocument.md).
+ */
+
+/*!
+ * \qmlproperty LspDocument TextLocation::document
+ * This read-only property contains the source document for this text location.
+ */
+/*!
+ * \qmlproperty TextRange TextLocation::range
+ * This read-only property contains the range of text in the document.
+ */
+
 QString TextLocation::toString() const
 {
     return QString("{'%1', %2}").arg(document->fileName(), range.toString());

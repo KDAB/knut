@@ -12,8 +12,8 @@ class LspDocument;
 struct TextLocation
 {
     Q_GADGET
-    Q_PROPERTY(Core::LspDocument *document MEMBER document)
-    Q_PROPERTY(Core::TextRange range MEMBER range)
+    Q_PROPERTY(Core::LspDocument *document MEMBER document CONSTANT)
+    Q_PROPERTY(Core::TextRange range MEMBER range CONSTANT)
 
 public:
     LspDocument *document;

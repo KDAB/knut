@@ -19,8 +19,6 @@ import Script 1.0
 | | Name |
 |-|-|
 |vector<[Argument](../script/argument.md)>|**[arguments](#arguments)**|
-|bool|**[isNull](#isNull)**|
-|string|**[name](#name)**|
 |[TextRange](../script/textrange.md)|**[range](#range)**|
 |string|**[returnType](#returnType)**|
 
@@ -29,14 +27,6 @@ import Script 1.0
 #### <a name="arguments"></a>vector<[Argument](../script/argument.md)> **arguments**
 
 Returns the list of arguments being passed to this function.
-
-#### <a name="isNull"></a>bool **isNull**
-
-This property returns `true` if the function is null.
-
-#### <a name="name"></a>string **name**
-
-Returns the fully qualified name of this function.
 
 #### <a name="range"></a>[TextRange](../script/textrange.md) **range**
 

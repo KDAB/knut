@@ -10,10 +10,47 @@
 
 namespace Core {
 
+/*!
+ * \qmltype QueryCapture
+ * \brief Defines a capture made by a query.
+ * \instantiates Core::QueryCapture
+ * \inqmlmodule Script
+ * \since 4.0
+ * \sa QueryMatch
+ */
+
+/*!
+ * \qmlproperty string QueryCapture::name
+ * Name of the capture inside the query.
+ */
+/*!
+ * \qmlproperty RangeMark QueryCapture::range
+ * This read-only property contains the range of the capture in the document.
+ */
+
 QString QueryCapture::toString() const
 {
     return QString("QueryCapture{'%1', %2}").arg(name, range.toString());
 }
+
+/*!
+ * \qmltype QueryMatch
+ * \brief Contains all matches for a query.
+ * \instantiates Core::QueryMatch
+ * \inqmlmodule Script
+ * \since 4.0
+ * \sa LspDocument::query
+ *
+ * The QueryMatch object allows you to get access to all the captures made by the query.
+ * The query is using the [TreeSitter](https://tree-sitter.github.io/tree-sitter/) query, you can find more information
+ * on this page: [Pattern Matching with
+ * Queries](https://tree-sitter.github.io/tree-sitter/using-parsers#pattern-matching-with-queries).
+ */
+
+/*!
+ * \qmlproperty array<QueryCapture> QueryMatch::captures
+ * List of all the captures in the current document.
+ */
 
 QueryMatch::QueryMatch(TextDocument &document, const treesitter::QueryMatch &match)
 {
@@ -93,6 +130,10 @@ Q_INVOKABLE Core::RangeMark QueryMatch::getInRange(const QString &name, const Co
     return {};
 }
 
+/*!
+ * \qmlmethod RangeMark QueryMatch::getAllJoined(string name)
+ * Returns a smallest range that contains all captures for the given `name`.
+ */
 RangeMark QueryMatch::getAllJoined(const QString &name) const
 {
     auto ranges = getAll(name);
