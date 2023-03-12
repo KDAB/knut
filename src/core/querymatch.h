@@ -42,7 +42,9 @@ public:
 
     // Access to captures
     Q_INVOKABLE Core::RangeMark get(const QString &name) const;
+    Q_INVOKABLE Core::RangeMark getInRange(const QString &name, const Core::RangeMark &range) const;
     Q_INVOKABLE QVector<Core::RangeMark> getAll(const QString &name) const;
+    Q_INVOKABLE QVector<Core::RangeMark> getAllInRange(const QString &name, const Core::RangeMark &range) const;
     Q_INVOKABLE Core::RangeMark getAllJoined(const QString &name) const;
 
     Q_INVOKABLE QString toString() const;

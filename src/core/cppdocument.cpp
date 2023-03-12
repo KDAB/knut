@@ -393,7 +393,7 @@ bool CppDocument::insertForwardDeclaration(const QString &fwddecl)
 
 /*!
  * \qmlmethod map<string, string> CppDocument::mfcExtractDDX()
- * Extract the DDX information from a MFC class.
+ * Extracts the DDX information from a MFC class.
  *
  * The DDX information gives the mapping between the ID and the member variables in the class.
  */
@@ -444,7 +444,7 @@ QVariantMap CppDocument::mfcExtractDDX(const QString &className)
 /*!
  * \qmlmethod CppDocument::mfcExtractMessageMap(className = "")
  *
- * Extract information contained in the MFC MESSAGE_MAP.
+ * Extracts information contained in the MFC MESSAGE_MAP.
  * The \a className parameter can be used to ensure the result matches to a specific class.
  * Returns a \c MessageMap object.
  */

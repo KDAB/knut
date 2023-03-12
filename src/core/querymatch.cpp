@@ -33,6 +33,10 @@ const QVector<QueryCapture> &QueryMatch::captures() const
     return m_captures;
 }
 
+/*!
+ * \qmlmethod RangeMark QueryMatch::getAll(string name)
+ * Returns all matches for the query with the given `name`
+ */
 QVector<RangeMark> QueryMatch::getAll(const QString &name) const
 {
     QVector<RangeMark> result;
@@ -45,6 +49,25 @@ QVector<RangeMark> QueryMatch::getAll(const QString &name) const
     return result;
 }
 
+/*!
+ * \qmlmethod RangeMark QueryMatch::getAllInRange(string name, RangeMark range)
+ * Returns all matches for the query with the given `name` in the given `range`.
+ */
+Q_INVOKABLE QVector<Core::RangeMark> QueryMatch::getAllInRange(const QString &name, const Core::RangeMark &range) const
+{
+    auto captureMatch = [&name, &range](const QueryCapture &capture) {
+        return capture.name == name && range.contains(capture.range);
+    };
+    auto toRange = [](const QueryCapture &capture) {
+        return capture.range;
+    };
+    return kdalgorithms::filtered_transformed(m_captures, toRange, captureMatch);
+}
+
+/*!
+ * \qmlmethod RangeMark QueryMatch::get(string name)
+ * Returns the first match for the query with the given `name`.
+ */
 RangeMark QueryMatch::get(const QString &name) const
 {
     for (const auto &capture : m_captures) {
@@ -53,6 +76,21 @@ RangeMark QueryMatch::get(const QString &name) const
     }
 
     return RangeMark();
+}
+
+/*!
+ * \qmlmethod RangeMark QueryMatch::getInRange(string name, RangeMark range)
+ * Returns the first match for the query with the given `name` in the given `range`
+ */
+Q_INVOKABLE Core::RangeMark QueryMatch::getInRange(const QString &name, const Core::RangeMark &range) const
+{
+    auto captureMatch = [&name, &range](const QueryCapture &capture) {
+        return capture.name == name && range.contains(capture.range);
+    };
+    auto result = kdalgorithms::find_if(m_captures, captureMatch);
+    if (result)
+        return result->range;
+    return {};
 }
 
 RangeMark QueryMatch::getAllJoined(const QString &name) const
