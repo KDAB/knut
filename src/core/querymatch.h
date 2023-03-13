@@ -47,6 +47,20 @@ public:
     Q_INVOKABLE QVector<Core::RangeMark> getAllInRange(const QString &name, const Core::RangeMark &range) const;
     Q_INVOKABLE Core::RangeMark getAllJoined(const QString &name) const;
 
+    // Sub-query in capture
+    // This API is exposed publicly here, instead of on RangeMark, as we could in future
+    // add the treesitter nodes to the `QueryCapture` without changing public API.
+    // This would allow us to do sub-querying without having to re-parse & filter the document.
+    // Howevever, then we would have to update the nodes, should the text in the document change,
+    // which will be difficult to do inside Q_GADGET.
+    //
+    // It also results in a quite nice JS API:
+    // ```
+    // let [function] = document.query(...);
+    // let matches = function.queryIn("body", ...);
+    // ```
+    Q_INVOKABLE QVector<Core::QueryMatch> queryIn(const QString &capture, const QString &query) const;
+
     Q_INVOKABLE QString toString() const;
 
 private:

@@ -48,4 +48,9 @@ std::optional<Tree> Parser::parseString(const QString &text, const Tree *old_tre
     return tree ? Tree(tree) : std::optional<Tree> {};
 }
 
+const TSLanguage *Parser::language() const
+{
+    return ts_parser_language(m_parser);
+}
+
 }

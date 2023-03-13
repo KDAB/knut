@@ -447,6 +447,36 @@ std::pair<QString, std::optional<TextRange>> LspDocument::hoverWithRange(
     return {"", {}};
 }
 
+std::optional<treesitter::Tree> &LspDocument::syntaxTree()
+{
+    if (!m_tree) {
+        m_tree = parser().parseString(text());
+        if (!m_tree) {
+            spdlog::warn("LspDocument::syntaxTree: Failed to parse document {}!", fileName().toStdString());
+        }
+    }
+    return m_tree;
+}
+
+const std::optional<treesitter::Tree> &LspDocument::syntaxTree() const
+{
+    // m_tree is mutable, so it's okay to call the non-const version.
+    return const_cast<LspDocument *>(this)->syntaxTree();
+}
+
+treesitter::Parser &LspDocument::parser() const
+{
+    if (!m_parser) {
+        // TODO: Make language configurable
+        m_parser = treesitter::Parser(tree_sitter_cpp());
+    }
+
+    // Regarding const-ness:
+    // The TreeSitter parser can't change anything about the documents contents.
+    // Therefore it is okay to be returned by non-const reference, even in a const function.
+    return const_cast<treesitter::Parser &>(*m_parser);
+}
+
 /*!
  * \qmlmethod array<TextLocation> LspDocument::references()
  * Returns the list of references at the given position.
@@ -711,6 +741,19 @@ TextRange LspDocument::toRange(const Lsp::Range &range) const
     return {toPos(range.start), toPos(range.end)};
 }
 
+std::shared_ptr<treesitter::Query> LspDocument::constructQuery(const QString &query) const
+{
+    std::shared_ptr<treesitter::Query> tsQuery;
+    try {
+        tsQuery = std::make_shared<treesitter::Query>(parser().language(), query);
+    } catch (treesitter::Query::Error error) {
+        spdlog::error("LspDocument::constructQuery: Failed to parse query `{}` error: {} at: {}", query.toStdString(),
+                      error.description.toStdString(), error.utf8_offset);
+        return {};
+    }
+    return tsQuery;
+}
+
 /*!
  * \qmlmethod array<QueryMatch> LspDocument::query(string query)
  * Runs the `query` passed in parameter and returns the list of matches.
@@ -719,25 +762,14 @@ TextRange LspDocument::toRange(const Lsp::Range &range) const
  * on this page: [Pattern Matching with
  * Queries](https://tree-sitter.github.io/tree-sitter/using-parsers#pattern-matching-with-queries).
  */
-
 QVector<QueryMatch> LspDocument::query(const QString &query)
 {
     LOG("LspDocument::query", LOG_ARG("query", query));
 
-    std::shared_ptr<treesitter::Query> tsQuery;
-    try {
-        tsQuery = std::make_shared<treesitter::Query>(tree_sitter_cpp(), query);
-    } catch (treesitter::Query::Error error) {
-        spdlog::error("LspDocument::query: Failed to parse query `{}` error: {} at: ", query.toStdString(),
-                      error.description.toStdString(), error.utf8_offset);
-        return {};
-    }
+    const auto &tree = syntaxTree();
+    auto tsQuery = constructQuery(query);
 
-    auto parser = treesitter::Parser(tree_sitter_cpp());
-    auto tree = parser.parseString(text());
-
-    if (!tree) {
-        spdlog::error("LspDocument::query: Failed to parse document `{}`", fileName().toStdString());
+    if (!tree || !tsQuery) {
         return {};
     }
 
@@ -748,6 +780,95 @@ QVector<QueryMatch> LspDocument::query(const QString &query)
     return kdalgorithms::transformed<QVector<QueryMatch>>(matches, [this](const treesitter::QueryMatch &match) {
         return QueryMatch(*this, match);
     });
+}
+
+// `nodesInRange` returns only the outermost nodes that fit entirely in the given range.
+// The subsequent children of these outermost nodes are *not* returned, even though
+// they are also technically in the range!
+// This is used by queryInRange to find on which nodes to run the query on.
+QVector<treesitter::Node> LspDocument::nodesInRange(const RangeMark &range) const
+{
+    enum RangeComparison { Overlaps, Contains, Disjoint };
+
+    const auto &tree = syntaxTree();
+
+    if (!tree) {
+        return {};
+    }
+
+    QVector<treesitter::Node> nodesToVisit;
+    QVector<treesitter::Node> nodesInRange;
+    nodesToVisit.emplace_back(tree->rootNode());
+
+    auto compareToRange = [&range](const treesitter::Node &node) {
+        if (range.contains(node.startPosition()) && range.contains(node.endPosition() - 1))
+            return RangeComparison::Contains;
+        else if (static_cast<int>(node.startPosition()) <= range.end()
+                 && static_cast<int>(node.endPosition()) >= range.start())
+            return RangeComparison::Overlaps;
+        return RangeComparison::Disjoint;
+    };
+
+    // Note: This could be improved performance-wise using the first_child_for_byte
+    // functions on either TSNode, or TSTreeCursor.
+    // However, these functions aren't currently wrapped and would make the search a bit more complex.
+    while (!nodesToVisit.isEmpty()) {
+        auto node = nodesToVisit.takeLast();
+        switch (compareToRange(node)) {
+        case RangeComparison::Contains:
+            nodesInRange.emplace_back(node);
+            break;
+        case RangeComparison::Overlaps:
+            nodesToVisit.append(node.children());
+            break;
+        default:
+            break;
+        }
+    }
+
+    return nodesInRange;
+}
+
+/**
+ * \qmlmethod array<QueryMatch> LspDocument::queryInRange(range, query)
+ * \param range The RangeMark to search in
+ * \param query The query to search for
+ *
+ * Searches for the given query, but only in the provided range.
+ *
+ * \sa LspDocument::query
+ */
+QVector<QueryMatch> LspDocument::queryInRange(const Core::RangeMark &range, const QString &query)
+{
+    LOG("LspDocument::queryInRange", LOG_ARG("range", range), LOG_ARG("query", query));
+
+    if (!range.isValid()) {
+        spdlog::warn("LspDocument::queryInRange: Range is not valid");
+        return {};
+    }
+
+    auto nodes = nodesInRange(range);
+
+    if (nodes.isEmpty()) {
+        spdlog::warn("LspDocument::queryInRange: No nodes in range");
+        return {};
+    }
+    spdlog::debug("LspDocument::queryInRange: Found {} nodes in range", nodes.size());
+
+    auto tsQuery = constructQuery(query);
+    if (!tsQuery)
+        return {};
+
+    treesitter::QueryCursor cursor;
+    QVector<QueryMatch> matches;
+    for (const treesitter::Node &node : nodes) {
+        cursor.execute(tsQuery, node, std::make_unique<treesitter::Predicates>(text()));
+        matches.append(kdalgorithms::transformed<QVector<QueryMatch>>(cursor.allRemainingMatches(),
+                                                                      [this](const treesitter::QueryMatch &match) {
+                                                                          return QueryMatch(*this, match);
+                                                                      }));
+    }
+    return matches;
 }
 
 int LspDocument::revision() const
@@ -770,7 +891,7 @@ void LspDocument::changeBlockCount(int newBlockCount)
     spdlog::warn("new block count: {}", newBlockCount);
 }
 
-void LspDocument::changeContent(int position, int charsRemoved, int charsAdded)
+void LspDocument::changeContentLsp(int position, int charsRemoved, int charsAdded)
 {
     Q_UNUSED(position)
     Q_UNUSED(charsRemoved)
@@ -823,6 +944,27 @@ void LspDocument::changeContent(int position, int charsRemoved, int charsAdded)
     } else {
         spdlog::error("LSP server does not support Document changes!");
     }
+}
+
+void LspDocument::changeContentTreeSitter(int position, int charsRemoved, int charsAdded)
+{
+    Q_UNUSED(position)
+    Q_UNUSED(charsRemoved)
+    Q_UNUSED(charsAdded)
+
+    // TODO: If we keep the old string around, we could implement incremental parsing here.
+    // If TreeSitter parsing ever becomes a performance bottleneck, this would be where to fix it.
+    if (m_tree) {
+        // Note: This invalidates all existing treesitter::Node instances of this tree!
+        // Only use treesitter nodes as long as you're certain the document isn't edited!
+        m_tree = {};
+    }
+}
+
+void LspDocument::changeContent(int position, int charsRemoved, int charsAdded)
+{
+    changeContentLsp(position, charsRemoved, charsAdded);
+    changeContentTreeSitter(position, charsRemoved, charsAdded);
 }
 
 } // namespace Core

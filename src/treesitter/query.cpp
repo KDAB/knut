@@ -9,7 +9,7 @@
 
 namespace treesitter {
 
-Query::Query(TSLanguage *language, const QString &query)
+Query::Query(const TSLanguage *language, const QString &query)
     : m_query(nullptr)
 {
     m_utf8_text = query.toUtf8();

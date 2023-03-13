@@ -483,6 +483,29 @@ private slots:
         // Invalid query, so should produce log output.
         QCOMPARE(counter.count(), 1);
     }
+
+    void queryInRange()
+    {
+        Core::KnutCore core;
+        auto project = Core::Project::instance();
+        project->setRoot(Test::testDataPath() + "/projects/cpp-project");
+
+        auto lspdocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->get("main.cpp"));
+
+        // Selection should include two function definitions "myFreeFunction" and "myOtherFreeFunction"
+        lspdocument->gotoLine(18);
+        lspdocument->selectNextLine(20);
+        lspdocument->selectEndOfLine();
+        spdlog::debug("{}", lspdocument->selectedText().toStdString());
+
+        auto range = lspdocument->createRangeMark();
+
+        auto matches = lspdocument->queryInRange(range, R"EOF(
+                (function_definition)
+                      )EOF");
+
+        QCOMPARE(matches.size(), 2);
+    }
 };
 
 QTEST_MAIN(TestLspDocument)

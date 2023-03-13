@@ -4,6 +4,9 @@
 #include "symbol.h"
 #include "textdocument.h"
 
+#include <treesitter/parser.h>
+#include <treesitter/tree.h>
+
 #include <functional>
 #include <memory>
 
@@ -11,6 +14,10 @@ namespace Lsp {
 class Client;
 struct Position;
 struct Range;
+}
+
+namespace treesitter {
+class Query;
 }
 
 namespace Core {
@@ -39,6 +46,7 @@ public:
     Q_INVOKABLE void transformSymbol(const Core::Symbol *symbol, const QString &jsonFileName);
 
     Q_INVOKABLE QVector<Core::QueryMatch> query(const QString &query);
+    Q_INVOKABLE QVector<Core::QueryMatch> queryInRange(const Core::RangeMark &range, const QString &query);
 
     bool hasLspClient() const;
 
@@ -71,10 +79,21 @@ protected:
     hoverWithRange(int position,
                    std::function<void(const QString &, std::optional<TextRange>)> asyncCallback = {}) const;
 
+    std::optional<treesitter::Tree> &syntaxTree();
+    const std::optional<treesitter::Tree> &syntaxTree() const;
+
 private:
+    std::shared_ptr<treesitter::Query> constructQuery(const QString &query) const;
+
+    treesitter::Parser &parser() const;
+
+    QVector<treesitter::Node> nodesInRange(const RangeMark &range) const;
+
     bool checkClient() const;
     Document *followSymbol(int pos);
     void changeContent(int position, int charsRemoved, int charsAdded);
+    void changeContentLsp(int position, int charsRemoved, int charsAdded);
+    void changeContentTreeSitter(int position, int charsRemoved, int charsAdded);
     void changeBlockCount(int newBlockCount);
 
     // JSON Transformations
@@ -89,11 +108,16 @@ private:
     bool checkReferencePosition(const QVector<Core::TextLocation> &references, QRegularExpressionMatch match,
                                 QTextCursor cursor) const;
 
+    // Language Server
     friend LspCache;
     QPointer<Lsp::Client> m_lspClient;
     std::unique_ptr<LspCache> m_cache;
 
     int m_revision = 0;
+
+    // TreeSitter
+    mutable std::optional<treesitter::Parser> m_parser;
+    mutable std::optional<treesitter::Tree> m_tree;
 };
 
 } // namespace Core

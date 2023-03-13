@@ -26,6 +26,8 @@ public:
 
     std::optional<Tree> parseString(const QString &text, const Tree *old_tree = nullptr);
 
+    const TSLanguage *language() const;
+
 private:
     TSParser *m_parser;
 };

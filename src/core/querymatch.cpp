@@ -1,9 +1,11 @@
 #include "querymatch.h"
 
+#include "lspdocument.h"
 #include "rangemark.h"
 #include "textdocument.h"
 
 #include <kdalgorithms.h>
+#include <spdlog/spdlog.h>
 #include <treesitter/query.h>
 
 #include <QJSEngine>
@@ -142,6 +144,35 @@ RangeMark QueryMatch::getAllJoined(const QString &name) const
         return RangeMark();
 
     return kdalgorithms::accumulate(ranges, &RangeMark::join, ranges.at(0));
+}
+
+/**
+ * \qmlmethod array<QueryMatch> QueryMatch::queryIn(capture, query)
+ * \param capture The name of the capture to query in
+ * \param query The treesitter query to run
+ *
+ * Executes the treesitter `query` on all nodes that were captured under the `capture` name.
+ *
+ * This is useful if you want to query for nodes that might be nested arbitrarily deeply within a larger construct.
+ * E.g. searching for all "return" statements within a function, no matter how deep they are nested.
+ *
+ * \sa LspDocument::query
+ */
+QVector<QueryMatch> QueryMatch::queryIn(const QString &capture, const QString &query) const
+{
+    QVector<QueryMatch> result;
+
+    auto ranges = getAll(capture);
+    for (const auto &range : ranges) {
+        auto document = qobject_cast<LspDocument *>(range.document());
+        if (document) {
+            result.append(document->queryInRange(range, query));
+        } else {
+            spdlog::warn("QueryMatch::queryIn: RangeMark is not backed by LspDocument!");
+        }
+    }
+
+    return result;
 }
 
 QString QueryMatch::toString() const

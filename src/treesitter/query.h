@@ -45,7 +45,7 @@ public:
     };
 
     // throws a Query::Error if the query is ill-formed.
-    Query(TSLanguage *language, const QString &query);
+    Query(const TSLanguage *language, const QString &query);
 
     Query(const Query &) = delete;
     Query(Query &&) noexcept;
