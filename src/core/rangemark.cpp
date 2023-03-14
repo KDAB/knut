@@ -160,6 +160,16 @@ void RangeMark::replace(const QString &text) const
 }
 
 /*!
+ * \qmlmethod RangeMark::remove()
+ * Deletes the text defined by this range in the source document.
+ */
+void RangeMark::remove() const
+{
+    if (isValid())
+        document()->deleteRegion(start(), end());
+}
+
+/*!
  * \qmlmethod RangeMark RangeMark::join(RangeMark other)
  * Joins the two `RangeMark` and creates a new one.
  *
