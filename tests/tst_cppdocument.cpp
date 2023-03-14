@@ -191,6 +191,22 @@ private:
     }
 
 private slots:
+    void addMember()
+    {
+        Core::KnutCore core;
+        Core::Project::instance()->setRoot(Test::testDataPath() + "/tst_cppdocument/addMember");
+
+        Test::FileTester sourceFile(Test::testDataPath() + "/tst_cppdocument/addMember/addmember.cpp");
+        {
+            auto cppFile = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(sourceFile.fileName()));
+            cppFile->addMember("QString foo", "Student", Core::CppDocument::AccessSpecifier::Public);
+            cppFile->addMember("int bar", "Student", Core::CppDocument::AccessSpecifier::Protected);
+
+            cppFile->save();
+            QVERIFY(sourceFile.compare());
+        }
+    }
+
     void insertRemoveInclude()
     {
         Core::KnutCore core;

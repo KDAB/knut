@@ -19,6 +19,13 @@ public:
     enum Position { StartOfMethod, EndOfMethod };
     Q_ENUM(Position)
 
+    enum AccessSpecifier { Public, Protected, Private };
+    Q_ENUM(AccessSpecifier)
+
+    const QHash<AccessSpecifier, QString> accessSpecifierMap = {{AccessSpecifier::Public, "public"},
+                                                                {AccessSpecifier::Private, "private"},
+                                                                {AccessSpecifier::Protected, "protected"}};
+
     bool isHeader() const;
 
     Q_INVOKABLE QString correspondingHeaderSource() const;
@@ -43,6 +50,7 @@ public slots:
 
     void toggleSection();
 
+    bool addMember(const QString &memberInfo, const QString &className, Core::CppDocument::AccessSpecifier specifier);
     bool insertInclude(const QString &include, bool newGroup = false);
     bool removeInclude(const QString &include);
     void deleteMethod();
@@ -50,9 +58,14 @@ public slots:
     void deleteMethod(const QString &methodName);
 
 private:
+    RangeMark findClassBody(const QString &className);
+
     void deleteMethodLocal(const QString &methodName, const QString &signature = "");
 
     int moveBlock(int startPos, QTextCursor::MoveOperation direction);
+
+    bool addSpecifierSection(const QString &memberInfoText, const QString &className,
+                             Core::CppDocument::AccessSpecifier specifier);
 
     friend class IncludeHelper;
 };

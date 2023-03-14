@@ -804,6 +804,21 @@ void TextDocument::insertAtLine(const QString &text, int line)
 }
 
 /*!
+ * \qmlmethod TextDocument::insertAtPosition(string text, int pos)
+ * Inserts the string `text` at `pos`.
+ */
+void TextDocument::insertAtPosition(const QString &text, int pos)
+{
+    LOG("TextDocument::insertAtPosition", text, pos);
+    QTextCursor cursor = m_document->textCursor();
+    cursor.setPosition(pos);
+    cursor.beginEditBlock();
+    cursor.movePosition(QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
+    cursor.insertText(text);
+    cursor.endEditBlock();
+}
+
+/*!
  * \qmlmethod TextDocument::replace(int length, string text)
  * Replaces `length` characters from the current position with the string `text`.
  */
@@ -1428,6 +1443,17 @@ void TextDocument::setLineEnding(LineEnding newLineEnding)
     setHasChanged(true);
     m_lineEnding = newLineEnding;
     emit lineEndingChanged();
+}
+
+QString TextDocument::indentationAtPosition(int pos)
+{
+    LOG("TextDocument::indentationAtPosition", pos);
+    auto cursor = m_document->textCursor();
+    cursor.setPosition(pos);
+    cursor.movePosition(QTextCursor::StartOfLine);
+    QString line = cursor.block().text();
+    static QRegularExpression nonSpaces("\\S");
+    return line.left(line.indexOf(nonSpaces));
 }
 
 } // namespace Core

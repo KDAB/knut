@@ -1,0 +1,10 @@
+class Student {
+
+public:
+  int count;
+  
+private:
+  QString name;
+  int rollNo;
+
+};

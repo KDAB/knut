@@ -1,0 +1,14 @@
+class Student {
+
+public:
+  int count;
+  QString foo;
+  
+private:
+  QString name;
+  int rollNo;
+
+protected:
+  int bar;
+
+};

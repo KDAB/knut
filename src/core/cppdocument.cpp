@@ -808,6 +808,113 @@ bool CppDocument::insertInclude(const QString &include, bool newGroup)
     return true;
 }
 
+RangeMark CppDocument::findClassBody(const QString &className)
+{
+    LOG("CppDocument::findClassBody", LOG_ARG("className", className));
+
+    // clang-format off
+    const auto classDefinitionQuery = QString(R"EOF(
+        (class_specifier
+            name:(_) @className (#eq? @className "%1")
+            body: (_) @classBody
+        )
+    )EOF").arg(className);
+    // clang-format on
+
+    auto result = query(classDefinitionQuery);
+
+    if (!result.isEmpty()) {
+
+        const auto &match = result.first();
+        auto classMatch = match.get("classBody");
+
+        return createRangeMark(classMatch.start(), classMatch.end());
+    }
+    return createRangeMark();
+}
+
+/*!
+ * \qmlmethod CppDocument::addMember(string member, string className, AccessSpecifier)
+ * \since 1.1
+ * Adds a new member in a specific class under the specefic access specifier.
+ *
+ * If the class does not exist, log error can't find the class, but if the
+ * specifier is valid but does not exist in the class, we will add that specifier in the end of the
+ * class and add the member under it.
+ * The specifier can take these values:
+ *
+ * - `CppDocument.Public`
+ * - `CppDocument.Protected`
+ * - `CppDocument.Private`
+ */
+bool CppDocument::addMember(const QString &member, const QString &className, AccessSpecifier specifier)
+{
+    LOG("CppDocument::addMember", member, className, specifier);
+
+    QString memberText = member + ";";
+
+    // clang-format off
+    const auto queryString = QString(R"EOF(
+        (field_declaration_list
+            (access_specifier "%1") @access
+            . [(declaration) (comment) (field_declaration)]* @field
+        )
+    )EOF").arg(accessSpecifierMap.value(specifier));
+    // clang-format on
+
+    const auto range = findClassBody(className);
+    if (!range.isValid()) {
+        spdlog::error(R"(CppDocument::addMember - Can't find class '{}')", className.toStdString());
+        return false;
+    }
+
+    auto result = queryInRange(range, queryString);
+    if (!result.isEmpty()) {
+        const auto &match = result.last();
+        const auto fields = match.getAll("field");
+        const auto pos = fields.last();
+        const auto indent = indentationAtPosition(pos.end());
+
+        insertAtPosition("\n" + indent + memberText, pos.end());
+    } else {
+        const bool check = addSpecifierSection(memberText, className, specifier);
+        if (!check) {
+            spdlog::error(R"(CppDocument::addMember - Can't find class '{}')", className.toStdString());
+        }
+    }
+
+    return true;
+}
+
+bool CppDocument::addSpecifierSection(const QString &memberText, const QString &className, AccessSpecifier specifier)
+{
+
+    // clang-format off
+    const auto queryString = QString(R"EOF(
+        (field_declaration_list
+            (_)@pos
+        )
+    )EOF");
+    // clang-format on
+
+    const auto range = findClassBody(className);
+    const auto result = queryInRange(range, queryString);
+
+    if (!result.isEmpty()) {
+        const auto &match = result.last();
+        const auto pos = match.get("pos");
+        const auto indent = indentationAtPosition(pos.end());
+
+        const QString newSpecifier = QString("\n\n%1:").arg(accessSpecifierMap.value(specifier));
+
+        insertAtPosition(newSpecifier + "\n" + indent + memberText, pos.end());
+    } else {
+        // The class specifier is invalid
+        return false;
+    }
+    return true;
+}
+
 /*!
  * \qmlmethod CppDocument::removeInclude(string include)
  * Remove `include` from the file. If the include is not in the file, do nothing (and returns true).

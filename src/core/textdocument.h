@@ -129,6 +129,7 @@ public slots:
     void remove(int length);
     void insert(const QString &text);
     void insertAtLine(const QString &text, int line = -1);
+    void insertAtPosition(const QString &text, int pos);
     void replace(int length, const QString &text);
     void replace(int from, int to, const QString &text);
     void replace(const Core::TextRange &range, const QString &text);
@@ -169,6 +170,7 @@ public slots:
     // Indentation
     void indent(int count = 1);
     void removeIndent(int count = 1);
+    QString indentationAtPosition(int pos);
 
 signals:
     void positionChanged();
