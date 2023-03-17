@@ -27,9 +27,8 @@ namespace Core {
 /*!
  * \qmltype CppDocument
  * \brief Document object for a C++ file (source or header)
- * \instantiates Core::CppDocument
  * \inqmlmodule Script
- * \since 4.0
+ * \since 1.0
  * \inherits LspDocument
  */
 
@@ -443,6 +442,7 @@ QVariantMap CppDocument::mfcExtractDDX(const QString &className)
 
 /*!
  * \qmlmethod CppDocument::mfcExtractMessageMap(className = "")
+ * \since 1.1
  *
  * Extracts information contained in the MFC MESSAGE_MAP.
  * The `className` parameter can be used to ensure the result matches to a specific class.
@@ -593,6 +593,7 @@ int CppDocument::selectBlockEnd(int count)
 
 /*!
  * \qmlmethod int CppDocument::selectBlockUp()
+ * \since 1.1
  * Selects the text of the block the cursor is in, and returns the new cursor position.
  * A block is definied by {} or () or [].
  * Does it `count` times.
@@ -980,6 +981,7 @@ void CppDocument::deleteMethodLocal(const QString &methodName, const QString &si
 
 /*!
  * \qmlmethod void CppDocument::deleteMethod(string methodName, string signature)
+ * \since 1.1
  *
  * Delete the method or function with the specified `methodName` and optional `signature`.
  * The method definition/declaration will be deleted from the current file,
@@ -1017,6 +1019,7 @@ void CppDocument::deleteMethod(const QString &methodName, const QString &signatu
 
 /*!
  * \qmlmethod void CppDocument::deleteMethod(string methodName)
+ * \since 1.1
  *
  * Deletes a method of the specified `methodName`, without matching a specific `signature`.
  * Therefore, all overloads of the function will be deleted.
@@ -1032,6 +1035,7 @@ void CppDocument::deleteMethod(const QString &methodName)
 
 /*!
  * \qmlmethod void CppDocument::deleteMethod()
+ * \since 1.1
  *
  * Deletes the method/function at the current cursor position.
  * Overloads of the function will not be deleted!

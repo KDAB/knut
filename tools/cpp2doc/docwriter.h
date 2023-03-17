@@ -12,6 +12,7 @@ public:
     void saveDocumentation();
 
 private:
+    void writeToc();
     void writeTypeFile(const Data::TypeBlock &type);
     std::vector<Data::PropertyBlock> propertyForType(const Data::TypeBlock &type) const;
     std::vector<Data::MethodBlock> methodForType(const Data::TypeBlock &type) const;

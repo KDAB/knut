@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 include(FetchContent)
 
-project(knut VERSION 1.0 LANGUAGES CXX)
+project(knut VERSION 1.1 LANGUAGES CXX)
 
 # Project initialization
 ###########################################################

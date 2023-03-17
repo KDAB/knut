@@ -15,9 +15,8 @@ namespace Core {
 /*!
  * \qmltype Symbol
  * \brief Represent a symbol in the current file
- * \instantiates Core::Symbol
  * \inqmlmodule Script
- * \since 4.0
+ * \since 1.0
  */
 
 /*!
@@ -75,6 +74,12 @@ namespace Core {
  * contained by the `range`.
  */
 
+/*!
+ * \qmlproperty array<TextLocation> Symbol::references
+ * \since 1.1
+ * List of all references of this symbol in the current project.
+ */
+
 Symbol::Symbol(QObject *parent, const QString &name, const QString &description, Kind kind, TextRange range,
                TextRange selectionRange)
     : QObject(parent)
@@ -117,7 +122,8 @@ LspDocument *Symbol::document() const
 }
 
 /*!
- * \qmlmethod bool Symbol::isFunction()
+ * \qmlmethod bool Symbol::isClass()
+ * \since 1.1
  *
  * Returns whether this Symbol refers to a class or struct.
  */
@@ -140,6 +146,7 @@ ClassSymbol *Symbol::toClass()
 
 /*!
  * \qmlmethod bool Symbol::isFunction()
+ * \since 1.1
  *
  * Returns whether this Symbol refers to a function.
  * This includes constructors and methods
@@ -199,6 +206,12 @@ QVector<Core::TextLocation> Symbol::references() const
     return {};
 }
 
+/*!
+ * \qmlmethod bool Symbol::select()
+ * \since 1.1
+ *
+ * Selects the current symbol.
+ */
 void Symbol::select()
 {
     if (auto lspDocument = document()) {

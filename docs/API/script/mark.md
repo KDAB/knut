@@ -7,13 +7,14 @@ import Script 1.0
 ```
 
 <table>
-<tr><td>Since:</td><td>Knut 4.0</td></tr>
+<tr><td>Since:</td><td>Knut 1.0</td></tr>
 </table>
 
 ## Properties
 
 | | Name |
 |-|-|
+|[TextDocument](../script/textdocument.md)|**[document](#document)**|
 |bool|**[isValid](#isValid)**|
 |bool|**[line](#line)**|
 
@@ -31,6 +32,13 @@ Its `line` and `column` properties will change as text are deleted or inserted b
 A mark is always created by a [TextDocument](textdocument.md).
 
 ## Property Documentation
+
+#### <a name="document"></a>[TextDocument](../script/textdocument.md) **document**
+
+!!! note ""
+    Since: Knut 1.1
+
+This read-only property returns the document the mark is coming from.
 
 #### <a name="isValid"></a>bool **isValid**
 

@@ -6,7 +6,7 @@ namespace Core {
  * \qmltype TextRange
  * \brief Defines a range of text in a text document
  * \inqmlmodule Script
- * \since 4.0
+ * \since 1.0
  * \sa TextDocument
  */
 /*!

@@ -86,9 +86,7 @@ Data::TypeBlock SourceParser::parseType(QTextStream &stream, QString line)
             break;
         line = cleanupCommentLine(line);
 
-        if (line.startsWith("\\instantiates"))
-            continue;
-        else if (line.startsWith("\\inqmlmodule"))
+        if (line.startsWith("\\inqmlmodule"))
             currentType.qmlModule = line.mid(13);
         else if (line.startsWith("\\inherits"))
             currentType.inherits = line.mid(10);

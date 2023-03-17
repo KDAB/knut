@@ -12,36 +12,10 @@
 namespace Core {
 
 /*!
- * \qmltype CppFunction
- * \brief Represents a function or a method in the current file
- * \instantiates Core::CppFunction
- * \inqmlmodule Script
- * \since 4.0
- * \todo
- */
-
-/*!
- * \qmlproperty string CppFunction::returnType
- * Returns the return type of this function.
- */
-
-/*!
- * \qmlproperty vector<Argument> CppFunction::arguments
- * Returns the list of arguments being passed to this function.
- */
-
-/*!
- * \qmlproperty TextRange CppFunction::range
- * The range enclosing this function, not including leading/trailing
- * whitespace but everything else like comments.
- */
-
-/*!
  * \qmltype Argument
  * \brief Represents an argument to be passed to the function
- * \instantiates Core::Argument
  * \inqmlmodule Script
- * \since 4.0
+ * \since 1.0
  * \todo
  */
 
@@ -49,7 +23,6 @@ namespace Core {
  * \qmlproperty string Argument::type
  * Returns the type of this argument.
  */
-
 /*!
  * \qmlproperty string Argument::name
  * Returns the name of this argument.
@@ -80,6 +53,28 @@ Argument Argument::fromHover(const QString &parameter)
 
     return argument;
 }
+
+/*!
+ * \qmltype CppFunctionSymbol
+ * \brief Represents a function or a method in the current file
+ * \inqmlmodule Script
+ * \since 1.0
+ * \todo
+ */
+
+/*!
+ * \qmlproperty string CppFunctionSymbol::returnType
+ * Returns the return type of this function.
+ */
+/*!
+ * \qmlproperty vector<Argument> CppFunctionSymbol::arguments
+ * Returns the list of arguments being passed to this function.
+ */
+/*!
+ * \qmlproperty TextRange CppFunctionSymbol::range
+ * The range enclosing this function, not including leading/trailing
+ * whitespace but everything else like comments.
+ */
 
 CppFunctionSymbol::CppFunctionSymbol(QObject *parent, const QString &name, const QString &description, Kind kind,
                                      TextRange range, TextRange selectionRange)

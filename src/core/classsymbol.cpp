@@ -7,12 +7,15 @@
 namespace Core {
 
 /*!
- * \qmltype CppClass
+ * \qmltype ClassSymbol
  * \brief Represents a class in the current file
- * \instantiates Core::CppClass
  * \inqmlmodule Script
- * \since 4.0
+ * \since 1.0
  * \todo
+ */
+/*!
+ * \qmlproperty vector<Symbol> ClassSymbol::members
+ * Returns the list of members (both data and functions) of this class.
  */
 
 ClassSymbol::ClassSymbol(QObject *parent, const QString &name, const QString &description, Kind kind, TextRange range,
@@ -43,11 +46,6 @@ const QVector<Symbol *> &ClassSymbol::members() const
     }
     return *m_members;
 }
-
-/*!
- * \qmlproperty vector<Symbol> CppClass::members
- * Returns the list of members (both data and functions) of this class.
- */
 
 bool operator==(const ClassSymbol &left, const ClassSymbol &right)
 {

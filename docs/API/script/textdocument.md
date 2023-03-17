@@ -7,7 +7,7 @@ import Script 1.0
 ```
 
 <table>
-<tr><td>Since:</td><td>Knut 4.0</td></tr>
+<tr><td>Since:</td><td>Knut 1.0</td></tr>
 <tr><td>Inherits:</td><td><a href="Document.html">Document</a></td></tr>
 </table>
 
@@ -71,8 +71,8 @@ Inherited properties: [Document properties](../script/document.md#properties)
 ||**[remove](#remove)**(int length)|
 ||**[removeIndent](#removeIndent)**(int count)|
 ||**[replace](#replace)**(int length, string text)|
-||**[replace](#replace)**([TextRange](../script/textrange.md) range, string text)|
 ||**[replace](#replace)**(int from, int to, string text)|
+||**[replace](#replace)**([TextRange](../script/textrange.md) range, string text)|
 |bool |**[replaceAll](#replaceAll)**(string before, string after, int options = TextDocument.NoFindFlags)|
 |bool |**[replaceAllRegexp](#replaceAllRegexp)**(string regexp, string after, int options = TextDocument.NoFindFlags)|
 |bool |**[replaceAllRegexpInRange](#replaceAllRegexpInRange)**(string regexp, string after, [RangeMark](../script/rangemark.md) range, int options = TextDocument.NoFindFlags)|
@@ -87,6 +87,7 @@ Inherited properties: [Document properties](../script/document.md#properties)
 ||**[selectPreviousLine](#selectPreviousLine)**(int count = 1)|
 ||**[selectPreviousWord](#selectPreviousWord)**(int count = 1)|
 ||**[selectRange](#selectRange)**([TextRange](../script/textrange.md) range)|
+||**[selectRangeMark](#selectRangeMark)**([RangeMark](../script/rangemark.md) mark)|
 ||**[selectRegion](#selectRegion)**(int from, int to)|
 ||**[selectStartOfLine](#selectStartOfLine)**(int count = 1)|
 ||**[selectStartOfWord](#selectStartOfWord)**()|
@@ -156,11 +157,17 @@ current position.
 
 #### <a name="createRangeMark"></a>[RangeMark](../script/rangemark.md) **createRangeMark**()
 
+!!! note ""
+    Since: Knut 1.1
+
 Creates a range mark from the current selection.
 
 Note: if there is no selection, the range mark will span an empty range!
 
 #### <a name="createRangeMark"></a>[RangeMark](../script/rangemark.md) **createRangeMark**(int start, int end)
+
+!!! note ""
+    Since: Knut 1.1
 
 Creates a range mark from `start` to `end`.
 
@@ -321,13 +328,13 @@ Indents the current line `count` times. If there's a selection, indent all lines
 
 Replaces `length` characters from the current position with the string `text`.
 
-#### <a name="replace"></a>**replace**([TextRange](../script/textrange.md) range, string text)
-
-Replaces the text in the range `range` with the string `text`.
-
 #### <a name="replace"></a>**replace**(int from, int to, string text)
 
 Replaces the text from `from` to `to` with the string `text`.
+
+#### <a name="replace"></a>**replace**([TextRange](../script/textrange.md) range, string text)
+
+Replaces the text in the range `range` with the string `text`.
 
 #### <a name="replaceAll"></a>bool **replaceAll**(string before, string after, int options = TextDocument.NoFindFlags)
 
@@ -358,6 +365,9 @@ The captures coming from the regexp can be used in the replacement text, using `
 Returns the number of changes done in the document.
 
 #### <a name="replaceAllRegexpInRange"></a>bool **replaceAllRegexpInRange**(string regexp, string after, [RangeMark](../script/rangemark.md) range, int options = TextDocument.NoFindFlags)
+
+!!! note ""
+    Since: Knut 1.1
 
 Replaces all occurences of the matches for the `regexp` with `after` in the given `range`. See the options from `replaceAll`.
 
@@ -424,6 +434,14 @@ Selects the previous word, repeat the operation `count` times.
 #### <a name="selectRange"></a>**selectRange**([TextRange](../script/textrange.md) range)
 
 Selects the range passed in parameter.
+
+#### <a name="selectRangeMark"></a>**selectRangeMark**([RangeMark](../script/rangemark.md) mark)
+
+!!! note ""
+    Since: Knut 1.1
+
+Selects the text defined by the range make `mark`.
+
 
 #### <a name="selectRegion"></a>**selectRegion**(int from, int to)
 

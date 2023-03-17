@@ -13,9 +13,8 @@ namespace Core {
 /*!
  * \qmltype RangeMark
  * \brief Keeps track of a range within a text document.
- * \instantiates Core::RangeMark
  * \inqmlmodule Script
- * \since 4.0
+ * \since 1.1
  * \sa TextDocument
  *
  * The RangeMark object helps you track a logical range within a file.

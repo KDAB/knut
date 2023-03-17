@@ -7,7 +7,7 @@ import Script.Rc 1.0
 ```
 
 <table>
-<tr><td>Since:</td><td>Knut 4.0</td></tr>
+<tr><td>Since:</td><td>Knut 1.0</td></tr>
 </table>
 
 ## Properties
@@ -27,6 +27,9 @@ import Script.Rc 1.0
 ## Property Documentation
 
 #### <a name="actionIds"></a>array<string> **actionIds**
+
+!!! note ""
+    Since: Knut 1.1
 
 This property holds all action ids used in the menu.
 

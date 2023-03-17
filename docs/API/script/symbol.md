@@ -7,7 +7,7 @@ import Script 1.0
 ```
 
 <table>
-<tr><td>Since:</td><td>Knut 4.0</td></tr>
+<tr><td>Since:</td><td>Knut 1.0</td></tr>
 </table>
 
 ## Properties
@@ -18,14 +18,16 @@ import Script 1.0
 |Kind|**[kind](#kind)**|
 |string|**[name](#name)**|
 |[TextRange](../script/textrange.md)|**[range](#range)**|
+|array<[TextLocation](../script/textlocation.md)>|**[references](#references)**|
 |[TextRange](../script/textrange.md)|**[selectionRange](#selectionRange)**|
 
 ## Methods
 
 | | Name |
 |-|-|
+|bool |**[isClass](#isClass)**()|
 |bool |**[isFunction](#isFunction)**()|
-|bool |**[isFunction](#isFunction)**()|
+|bool |**[select](#select)**()|
 
 ## Property Documentation
 
@@ -74,6 +76,13 @@ The range enclosing this symbol not including leading/trailing whitespace but ev
 information is typically used to determine if the clients cursor is inside the symbol to reveal in the symbol in the
 UI.
 
+#### <a name="references"></a>array<[TextLocation](../script/textlocation.md)> **references**
+
+!!! note ""
+    Since: Knut 1.1
+
+List of all references of this symbol in the current project.
+
 #### <a name="selectionRange"></a>[TextRange](../script/textrange.md) **selectionRange**
 
 The range that should be selected and revealed when this symbol is being picked, e.g. the name of a function. Must be
@@ -81,11 +90,24 @@ contained by the `range`.
 
 ## Method Documentation
 
-#### <a name="isFunction"></a>bool **isFunction**()
+#### <a name="isClass"></a>bool **isClass**()
+
+!!! note ""
+    Since: Knut 1.1
 
 Returns whether this Symbol refers to a class or struct.
 
 #### <a name="isFunction"></a>bool **isFunction**()
 
+!!! note ""
+    Since: Knut 1.1
+
 Returns whether this Symbol refers to a function.
 This includes constructors and methods
+
+#### <a name="select"></a>bool **select**()
+
+!!! note ""
+    Since: Knut 1.1
+
+Selects the current symbol.

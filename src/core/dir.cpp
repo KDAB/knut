@@ -9,9 +9,8 @@ namespace Core {
 /*!
  * \qmltype Dir
  * \brief Singleton with methods to handle directories.
- * \instantiates Core::Dir
  * \inqmlmodule Script
- * \since 4.0
+ * \since 1.0
  *
  * The `Dir` singleton implements most of the static methods from `QDir`, check [QDir](https://doc.qt.io/qt-5/qdir.html)
  * documentation.

@@ -12,7 +12,7 @@ namespace Core {
  * \qmltype TestUtil
  * \brief Provides utility methods useful for testing.
  * \inqmlmodule Script.Test
- * \since 4.0
+ * \since 1.0
  *
  * This class is mainly used by the [TestCase](testcase.md) object, to extract some information on the script.
  *

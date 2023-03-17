@@ -7,7 +7,7 @@ import Script 1.0
 ```
 
 <table>
-<tr><td>Since:</td><td>Knut 4.0</td></tr>
+<tr><td>Since:</td><td>Knut 1.0</td></tr>
 <tr><td>Inherits:</td><td><a href="LspDocument.html">LspDocument</a></td></tr>
 </table>
 
@@ -83,6 +83,9 @@ Also see: CppDocument::deleteMethod(string methodName, string signature)
 
 #### <a name="deleteMethod"></a>void **deleteMethod**(string methodName, string signature)
 
+!!! note ""
+    Since: Knut 1.1
+
 Delete the method or function with the specified `methodName` and optional `signature`.
 The method definition/declaration will be deleted from the current file,
 as well as the corresponding header/source file.
@@ -104,6 +107,26 @@ void (const QString&, int)
 ```
 
 If an empty string is provided as the `signature`, all overloads of the function are deleted as well.
+
+#### <a name="deleteMethod"></a>void **deleteMethod**(string methodName)
+
+!!! note ""
+    Since: Knut 1.1
+
+Deletes a method of the specified `methodName`, without matching a specific `signature`.
+Therefore, all overloads of the function will be deleted.
+
+Also see: CppDocument::deleteMethod(string methodName, string signature)
+
+#### <a name="deleteMethod"></a>void **deleteMethod**()
+
+!!! note ""
+    Since: Knut 1.1
+
+Deletes the method/function at the current cursor position.
+Overloads of the function will not be deleted!
+
+Also see: CppDocument::deleteMethod(const QString& methodName, const QString& signature)
 
 #### <a name="gotoBlockEnd"></a>int **gotoBlockEnd**(int count)
 
@@ -152,6 +175,9 @@ If `newGroup` is true, it will insert the include at the end, with a new line se
 
 #### <a name="mfcExtractMessageMap"></a>**mfcExtractMessageMap**(className = "")
 
+!!! note ""
+    Since: Knut 1.1
+
 Extracts information contained in the MFC MESSAGE_MAP.
 The `className` parameter can be used to ensure the result matches to a specific class.
 Returns a `MessageMap` object.
@@ -180,6 +206,9 @@ A block is definied by {} or () or [].
 Does it `count` times.
 
 #### <a name="selectBlockUp"></a>int **selectBlockUp**()
+
+!!! note ""
+    Since: Knut 1.1
 
 Selects the text of the block the cursor is in, and returns the new cursor position.
 A block is definied by {} or () or [].

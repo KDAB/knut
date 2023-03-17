@@ -9,9 +9,8 @@ namespace Core {
 /*!
  * \qmltype Message
  * \brief Singleton with methods to display different messages to the user.
- * \instantiates Core::Message
  * \inqmlmodule Script
- * \since 4.0
+ * \since 1.0
  *
  * The `message` property in QML can be used to display different messages to the user, via logs.
  *

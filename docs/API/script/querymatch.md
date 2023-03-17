@@ -7,7 +7,7 @@ import Script 1.0
 ```
 
 <table>
-<tr><td>Since:</td><td>Knut 4.0</td></tr>
+<tr><td>Since:</td><td>Knut 1.1</td></tr>
 </table>
 
 ## Properties
@@ -25,6 +25,7 @@ import Script 1.0
 |[RangeMark](../script/rangemark.md) |**[getAllInRange](#getAllInRange)**(string name, [RangeMark](../script/rangemark.md) range)|
 |[RangeMark](../script/rangemark.md) |**[getAllJoined](#getAllJoined)**(string name)|
 |[RangeMark](../script/rangemark.md) |**[getInRange](#getInRange)**(string name, [RangeMark](../script/rangemark.md) range)|
+|array<[QueryMatch](../script/querymatch.md)> |**[queryIn](#queryIn)**(capture, query)|
 
 ## Detailed Description
 
@@ -60,3 +61,10 @@ Returns a smallest range that contains all captures for the given `name`.
 #### <a name="getInRange"></a>[RangeMark](../script/rangemark.md) **getInRange**(string name, [RangeMark](../script/rangemark.md) range)
 
 Returns the first match for the query with the given `name` in the given `range`
+
+#### <a name="queryIn"></a>array<[QueryMatch](../script/querymatch.md)> **queryIn**(capture, query)
+
+Executes the treesitter `query` on all nodes that were captured under the `capture` name.
+
+This is useful if you want to query for nodes that might be nested arbitrarily deeply within a larger construct.
+E.g. searching for all "return" statements within a function, no matter how deep they are nested.

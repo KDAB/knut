@@ -41,9 +41,8 @@ namespace Core {
 /*!
  * \qmltype LspDocument
  * \brief Base document object for document using LSP.
- * \instantiates Core::LspDocument
  * \inqmlmodule Script
- * \since 4.0
+ * \since 1.0
  * \inherits TextDocument
  */
 
@@ -187,6 +186,7 @@ void LspDocument::regexpTransform(const RegexpTransform &transform,
 
 /*!
  * \qmlmethod LspDocument::transform(const QString &jsonFileName, object context)
+ * \since 1.1
  *
  * Runs a list of transformations defined in a JSON file.
  * The JSON file is loaded from the path specified in `jsonFileName`.
@@ -289,6 +289,12 @@ bool LspDocument::checkReferencePosition(const QVector<Core::TextLocation> &refe
     return false;
 }
 
+/*!
+ * \qmlmethod LspDocument::transformSymbol(const QString &symbolName, const QString &jsonFileName)
+ *
+ * Runs a list of transformations defined in a JSON file on the given `symbolName`.
+ * The JSON file is loaded from the path specified in `jsonFileName`.
+ */
 void LspDocument::transformSymbol(const Symbol *symbol, const QString &jsonFileName)
 {
     if (!symbol) {
@@ -337,6 +343,7 @@ void LspDocument::transformSymbol(const Symbol *symbol, const QString &jsonFileN
 
 /*!
  * \qmlmethod Symbol LspDocument::symbolUnderCursor()
+ * \since 1.1
  * Returns the symbol that's at the current cursor position.
  *
  * This function may return symbols that are not returned by the `symbols()` or `currentSymbol()` function,
@@ -367,6 +374,7 @@ const Core::Symbol *LspDocument::symbolUnderCursor() const
 
 /*!
  * \qmlmethod string LspDocument::hover()
+ * \since 1.1
  *
  * Returns information about the symbol at the current cursor position.
  * The result of this call is a plain string that may be formatted in Markdown.
@@ -479,6 +487,7 @@ treesitter::Parser &LspDocument::parser() const
 
 /*!
  * \qmlmethod array<TextLocation> LspDocument::references()
+ * \since 1.1
  * Returns the list of references at the given position.
  */
 QVector<Core::TextLocation> LspDocument::references(int position) const
@@ -756,6 +765,7 @@ std::shared_ptr<treesitter::Query> LspDocument::constructQuery(const QString &qu
 
 /*!
  * \qmlmethod array<QueryMatch> LspDocument::query(string query)
+ * \since 1.1
  * Runs the `query` passed in parameter and returns the list of matches.
  *
  * The query is using the [TreeSitter](https://tree-sitter.github.io/tree-sitter/) query, you can find more information
@@ -830,11 +840,10 @@ QVector<treesitter::Node> LspDocument::nodesInRange(const RangeMark &range) cons
 }
 
 /**
- * \qmlmethod array<QueryMatch> LspDocument::queryInRange(range, query)
- * \param range The RangeMark to search in
- * \param query The query to search for
+ * \qmlmethod array<QueryMatch> LspDocument::queryInRange(RangeMark range, string query)
+ * \since 1.1
  *
- * Searches for the given query, but only in the provided range.
+ * Searches for the given `query`, but only in the provided `range`.
  *
  * \sa LspDocument::query
  */

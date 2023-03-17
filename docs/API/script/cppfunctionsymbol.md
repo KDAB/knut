@@ -1,4 +1,4 @@
-# CppFunction
+# CppFunctionSymbol
 
 !!! Warning "Experimental API"
     The API here is still experimental, and may change in follow-up release. Use it at your own risk.
@@ -11,7 +11,7 @@ import Script 1.0
 ```
 
 <table>
-<tr><td>Since:</td><td>Knut 4.0</td></tr>
+<tr><td>Since:</td><td>Knut 1.0</td></tr>
 </table>
 
 ## Properties

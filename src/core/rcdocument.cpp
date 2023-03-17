@@ -17,9 +17,8 @@ namespace Core {
 /*!
  * \qmltype RcDocument
  * \brief Provides access to the content of a RC file (MFC resource file).
- * \instantiates Core::RcDocument
  * \inqmlmodule Script.Rc
- * \since 4.0
+ * \since 1.0
  */
 
 /*!
@@ -34,6 +33,7 @@ namespace Core {
  */
 /*!
  * \qmlproperty array<Asset> RcDocument::actions
+ * \since 1.1
  * This read-only property holds the list of actions in the RC file.
  */
 /*!
@@ -101,6 +101,7 @@ QVector<RcCore::Action> RcDocument::actions() const
 
 /*!
  * \qmlmethod ToolBar RcDocument::action(string id)
+ * \since 1.1
  * Returns the action for the given `id`.
  */
 RcCore::Action RcDocument::action(const QString &id) const
@@ -121,6 +122,7 @@ RcCore::Action RcDocument::action(const QString &id) const
 
 /*!
  * \qmlmethod array<Action> RcDocument::actionsFromMenu(string menuId)
+ * \since 1.1
  * Returns all actions used in the menu `menuId`.
  */
 QVector<RcCore::Action> RcDocument::actionsFromMenu(const QString &menuId) const
@@ -141,6 +143,7 @@ QVector<RcCore::Action> RcDocument::actionsFromMenu(const QString &menuId) const
 
 /*!
  * \qmlmethod array<Action> RcDocument::actionsFromToolbar(string toolBarId)
+ * \since 1.1
  * Returns all actions used in the toolbar `toolBarId`.
  */
 QVector<RcCore::Action> RcDocument::actionsFromToolbar(const QString &toolBarId) const

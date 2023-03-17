@@ -8,9 +8,8 @@ namespace Core {
 /*!
  * \qmltype TextLocation
  * \brief Defines a range of text in a file.
- * \instantiates Core::TextLocation
  * \inqmlmodule Script
- * \since 4.0
+ * \since 1.1
  * \sa LspDocument
  *
  * A mark is always created by a [LspDocument](lspdocument.md).

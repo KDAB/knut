@@ -7,7 +7,7 @@ import Script.Rc 1.0
 ```
 
 <table>
-<tr><td>Since:</td><td>Knut 4.0</td></tr>
+<tr><td>Since:</td><td>Knut 1.0</td></tr>
 </table>
 
 ## Properties
@@ -51,6 +51,9 @@ import Script.Rc 1.0
 This read-only property holds the list of accelerator's ids in the RC file.
 
 #### <a name="actions"></a>array<[Asset](../script.rc/asset.md)> **actions**
+
+!!! note ""
+    Since: Knut 1.1
 
 This read-only property holds the list of actions in the RC file.
 
@@ -96,13 +99,22 @@ Note that the RC file may be valid, and our parser needs to be updated.
 
 #### <a name="action"></a>[ToolBar](../script.rc/toolbar.md) **action**(string id)
 
+!!! note ""
+    Since: Knut 1.1
+
 Returns the action for the given `id`.
 
 #### <a name="actionsFromMenu"></a>array<[Action](../script.rc/action.md)> **actionsFromMenu**(string menuId)
 
+!!! note ""
+    Since: Knut 1.1
+
 Returns all actions used in the menu `menuId`.
 
 #### <a name="actionsFromToolbar"></a>array<[Action](../script.rc/action.md)> **actionsFromToolbar**(string toolBarId)
+
+!!! note ""
+    Since: Knut 1.1
 
 Returns all actions used in the toolbar `toolBarId`.
 

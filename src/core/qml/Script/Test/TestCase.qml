@@ -2,11 +2,11 @@ import QtQuick 2.12
 import Script 1.0
 import Script.Test 1.0
 
-/*!  
+/*!
  * \qmltype TestCase
  * \brief Provides a way to create unit tests as script.
  * \inqmlmodule Script.Test
- * \since 4.0
+ * \since 1.0
  * Run unit tests as a script, and returns the number of failed tests.
  */
 

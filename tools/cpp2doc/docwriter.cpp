@@ -14,6 +14,13 @@ DocWriter::DocWriter(Data data)
 
 void DocWriter::saveDocumentation()
 {
+    // Ensure API directory exists
+    QDir apiDir(QString(KNUT_DOC_PATH "/API"));
+    if (!apiDir.exists()) {
+        apiDir.cdUp();
+        apiDir.mkdir("API");
+    }
+
     // Fill the map between type and filename
     for (const auto &type : m_data.types) {
         const QString fileName = QString("../%1/%2.md").arg(type.qmlModule.toLower(), type.name.toLower());
@@ -32,6 +39,11 @@ void DocWriter::saveDocumentation()
     for (const auto &type : m_data.types)
         writeTypeFile(type);
 
+    writeToc();
+}
+
+void DocWriter::writeToc()
+{
     QString nav("    - Script API:\n");
     auto keys = m_navMap.keys();
     std::sort(keys.begin(), keys.end());
@@ -39,7 +51,26 @@ void DocWriter::saveDocumentation()
         nav += QString("        - %1 Module:\n").arg(module);
         nav += m_navMap.value(module).join("\n") + "\n";
     }
-    qDebug().noquote() << nav;
+
+    QFile file(KNUT_MKDOCS_PATH);
+    QString config;
+    if (file.open(QIODevice::ReadOnly)) {
+        QTextStream stream(&file);
+        config = stream.readAll();
+        file.close();
+    }
+    if (config.isEmpty())
+        return;
+
+    QString newConfig = config;
+    int startPos = newConfig.indexOf("# -->");
+    int endPos = newConfig.indexOf("# <--");
+    newConfig.remove(startPos, endPos - startPos);
+    newConfig.insert(startPos, "# -->\n" + nav);
+
+    if (config != newConfig && file.open(QIODevice::WriteOnly)) {
+        file.write(newConfig.toLatin1());
+    }
 }
 
 static const char Experimental[] = R"(
@@ -61,6 +92,12 @@ import %3 1.0
 ```
 )";
 
+// %1 property/method since
+static const char Since[] = R"(
+!!! note ""
+    Since: Knut %1
+)";
+
 // %1 type since
 static const char SinceTypeFile[] = R"(
 <table>
@@ -80,7 +117,7 @@ static const char SinceInheritTypeFile[] = R"(
 void DocWriter::writeTypeFile(const Data::TypeBlock &type)
 {
     m_navMap[type.qmlModule].push_back(
-        QString("             - %1: API/%2/%3.md").arg(type.name, type.qmlModule.toLower(), type.name.toLower()));
+        QString("            - %1: API/%2/%3.md").arg(type.name, type.qmlModule.toLower(), type.name.toLower()));
     const QString &fileName = QString(KNUT_DOC_PATH "/API/%1/%2.md").arg(type.qmlModule.toLower(), type.name.toLower());
     QFile file(fileName);
 
@@ -159,7 +196,7 @@ void DocWriter::writeTypeFile(const Data::TypeBlock &type)
             if (prop.isExperimental)
                 stream << Experimental;
             if (!prop.since.isEmpty())
-                stream << QString(SinceTypeFile).arg(prop.since);
+                stream << QString(Since).arg(prop.since);
             if (!prop.description.isEmpty())
                 stream << "\n" << prop.description;
         }
@@ -175,7 +212,7 @@ void DocWriter::writeTypeFile(const Data::TypeBlock &type)
             if (method.isExperimental)
                 stream << Experimental;
             if (!method.since.isEmpty())
-                stream << QString(SinceTypeFile).arg(method.since);
+                stream << QString(Since).arg(method.since);
             if (!method.description.isEmpty())
                 stream << "\n" << method.description;
         }

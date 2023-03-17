@@ -7,7 +7,7 @@ namespace RcCore {
  * \qmltype Asset
  * \brief Description of a RC file asset.
  * \inqmlmodule Script.Rc
- * \since 4.0
+ * \since 1.0
  * \sa RcFile
  */
 /*!
@@ -28,7 +28,7 @@ namespace RcCore {
  * \qmltype ToolBarItem
  * \brief Description of a RC file toolbar item.
  * \inqmlmodule Script.Rc
- * \since 4.0
+ * \since 1.0
  * \sa RcFile
  */
 /*!
@@ -44,7 +44,7 @@ namespace RcCore {
  * \qmltype ToolBar
  * \brief Description of a RC file toolbar.
  * \inqmlmodule Script.Rc
- * \since 4.0
+ * \since 1.0
  * \sa RcFile
  */
 /*!
@@ -61,6 +61,7 @@ namespace RcCore {
  */
 /*!
  * \qmlproperty array<string> ToolBar::actionIds
+ * \since 1.1
  * This property holds all action ids used in the toolbar.
  */
 
@@ -68,7 +69,7 @@ namespace RcCore {
  * \qmltype Widget
  * \brief Description of a RC file widget.
  * \inqmlmodule Script.Rc
- * \since 4.0
+ * \since 1.0
  * \sa RcFile
  */
 /*!
@@ -100,7 +101,7 @@ namespace RcCore {
  * \qmltype MenuItem
  * \brief Description of a RC file menu item.
  * \inqmlmodule Script.Rc
- * \since 4.0
+ * \since 1.0
  * \sa RcFile
  */
 /*!
@@ -132,7 +133,7 @@ namespace RcCore {
  * \qmltype Menu
  * \brief Description of a RC file menu.
  * \inqmlmodule Script.Rc
- * \since 4.0
+ * \since 1.0
  * \sa RcFile
  */
 /*!
@@ -145,6 +146,7 @@ namespace RcCore {
  */
 /*!
  * \qmlproperty array<string> Menu::actionIds
+ * \since 1.1
  * This property holds all action ids used in the menu.
  */
 
@@ -152,7 +154,7 @@ namespace RcCore {
  * \qmltype Shortcut
  * \brief Description of a RC file shortcut.
  * \inqmlmodule Script.Rc
- * \since 4.0
+ * \since 1.0
  * \sa RcFile
  */
 /*!
@@ -168,7 +170,7 @@ namespace RcCore {
  * \qmltype Action
  * \brief Description of a RC file action.
  * \inqmlmodule Script.Rc
- * \since 4.0
+ * \since 1.0
  * \sa RcFile
  */
 /*!
@@ -200,7 +202,7 @@ namespace RcCore {
  * \qmltype String
  * \brief Description of a RC file string.
  * \inqmlmodule Script.Rc
- * \since 4.0
+ * \since 1.0
  * \sa RcFile
  */
 /*!
@@ -316,6 +318,7 @@ QStringList Menu::actionIds() const
 
 /*!
  * \qmlmethod bool ToolBar::contains(string id)
+ * \since 1.1
  * Returns true if the toolbar contains the given `id`
  */
 bool ToolBar::contains(const QString &id) const

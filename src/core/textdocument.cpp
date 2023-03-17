@@ -23,9 +23,8 @@ namespace Core {
 /*!
  * \qmltype TextDocument
  * \brief Document object for text files.
- * \instantiates Core::TextDocument
  * \inqmlmodule Script
- * \since 4.0
+ * \since 1.0
  * \inherits Document
  */
 /*!
@@ -1051,6 +1050,7 @@ void TextDocument::selectToMark(const Mark &mark)
 
 /**
  * \qmlmethod RangeMark TextDocument::createRangeMark(int start, int end)
+ * \since 1.1
  *
  * Creates a range mark from `start` to `end`.
  * \sa RangeMark
@@ -1063,6 +1063,7 @@ Core::RangeMark TextDocument::createRangeMark(int start, int end)
 
 /**
  * \qmlmethod RangeMark TextDocument::createRangeMark()
+ * \since 1.1
  *
  * Creates a range mark from the current selection.
  *
@@ -1081,6 +1082,14 @@ Core::RangeMark TextDocument::createRangeMark()
     return createRangeMark(start, end);
 }
 
+/**
+ * \qmlmethod TextDocument::selectRangeMark(RangeMark mark)
+ * \since 1.1
+ *
+ * Selects the text defined by the range make `mark`.
+ *
+ * \sa RangeMark
+ */
 void TextDocument::selectRangeMark(const Core::RangeMark &mark)
 {
     LOG("TextDocument::selectRangeMark", LOG_ARG("mark", mark));
@@ -1292,6 +1301,7 @@ int TextDocument::replaceAllRegexp(const QString &regexp, const QString &after, 
 // clang-format off
 /*!
  * \qmlmethod bool TextDocument::replaceAllRegexpInRange(string regexp, string after, RangeMark range, int options = TextDocument.NoFindFlags)
+ * \since 1.1
  * Replaces all occurences of the matches for the `regexp` with `after` in the given `range`. See the options from `replaceAll`.
  *
  * The captures coming from the regexp can be used in the replacement text, using `\1`..`\n` or `$1`..`$n`.

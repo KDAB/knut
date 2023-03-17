@@ -5,10 +5,9 @@ namespace Core {
 /*!
  * \qmltype QFileInfoValueType
  * \brief Wrapper around the `QFileInfo` class.
- * \instantiates Core::QFileInfoValueType
  * \inqmlmodule Script
  * \sa FileInfo
- * \since 4.0
+ * \since 1.0
  *
  * The `QFileInfoValueType` is a wrapper around the `QFileInfo` C++ class, check
  * [QFileInfo](https://doc.qt.io/qt-5/qfileinfo.html) documentation. It can only be created using

@@ -7,7 +7,7 @@ import Script 1.0
 ```
 
 <table>
-<tr><td>Since:</td><td>Knut 4.0</td></tr>
+<tr><td>Since:</td><td>Knut 1.0</td></tr>
 <tr><td>Inherits:</td><td><a href="TextDocument.html">TextDocument</a></td></tr>
 </table>
 
@@ -24,12 +24,14 @@ Inherited properties: [TextDocument properties](../script/textdocument.md#proper
 ||**[followSymbol](#followSymbol)**()|
 |string |**[hover](#hover)**()|
 |array<[QueryMatch](../script/querymatch.md)> |**[query](#query)**(string query)|
+|array<[QueryMatch](../script/querymatch.md)> |**[queryInRange](#queryInRange)**([RangeMark](../script/rangemark.md) range, string query)|
 |array<[TextLocation](../script/textlocation.md)> |**[references](#references)**()|
 ||**[selectSymbol](#selectSymbol)**(string name, int options = TextDocument.NoFindFlags)|
 ||**[switchDeclarationDefinition](#switchDeclarationDefinition)**()|
 |[Symbol](../script/symbol.md) |**[symbolUnderCursor](#symbolUnderCursor)**()|
 |array<[Symbol](../script/symbol.md)> |**[symbols](#symbols)**()|
 ||**[transform](#transform)**(const QString &jsonFileName, object context)|
+||**[transformSymbol](#transformSymbol)**(const QString &symbolName, const QString &jsonFileName)|
 
 Inherited methods: [TextDocument methods](../script/textdocument.md#methods)
 
@@ -56,10 +58,16 @@ Follows the symbol under the cursor.
 
 #### <a name="hover"></a>string **hover**()
 
+!!! note ""
+    Since: Knut 1.1
+
 Returns information about the symbol at the current cursor position.
 The result of this call is a plain string that may be formatted in Markdown.
 
 #### <a name="query"></a>array<[QueryMatch](../script/querymatch.md)> **query**(string query)
+
+!!! note ""
+    Since: Knut 1.1
 
 Runs the `query` passed in parameter and returns the list of matches.
 
@@ -67,7 +75,18 @@ The query is using the [TreeSitter](https://tree-sitter.github.io/tree-sitter/) 
 on this page: [Pattern Matching with
 Queries](https://tree-sitter.github.io/tree-sitter/using-parsers#pattern-matching-with-queries).
 
+#### <a name="queryInRange"></a>array<[QueryMatch](../script/querymatch.md)> **queryInRange**([RangeMark](../script/rangemark.md) range, string query)
+
+!!! note ""
+    Since: Knut 1.1
+
+Searches for the given `query`, but only in the provided `range`.
+
+
 #### <a name="references"></a>array<[TextLocation](../script/textlocation.md)> **references**()
+
+!!! note ""
+    Since: Knut 1.1
 
 Returns the list of references at the given position.
 
@@ -91,6 +110,9 @@ Switches between the function declaration or definition.
 
 #### <a name="symbolUnderCursor"></a>[Symbol](../script/symbol.md) **symbolUnderCursor**()
 
+!!! note ""
+    Since: Knut 1.1
+
 Returns the symbol that's at the current cursor position.
 
 This function may return symbols that are not returned by the `symbols()` or `currentSymbol()` function,
@@ -106,9 +128,17 @@ originate from is deconstructed.
 
 #### <a name="transform"></a>**transform**(const QString &jsonFileName, object context)
 
+!!! note ""
+    Since: Knut 1.1
+
 Runs a list of transformations defined in a JSON file.
 The JSON file is loaded from the path specified in `jsonFileName`.
 
 A context object can be provided.
 Any key in this object is used to provide additional context information to the transformation.
 e.g. `{ symbol: "myobject" }` would replace all occurences of `${symbol}` in the json tranformation with `myobject`.
+
+#### <a name="transformSymbol"></a>**transformSymbol**(const QString &symbolName, const QString &jsonFileName)
+
+Runs a list of transformations defined in a JSON file on the given `symbolName`.
+The JSON file is loaded from the path specified in `jsonFileName`.

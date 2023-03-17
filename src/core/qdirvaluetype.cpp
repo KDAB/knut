@@ -5,10 +5,9 @@ namespace Core {
 /*!
  * \qmltype QDirValueType
  * \brief Wrapper around the `QDir` class.
- * \instantiates Core::QDirValueType
  * \inqmlmodule Script
  * \sa Dir
- * \since 4.0
+ * \since 1.0
  *
  * The `QDirValueType` is a wrapper around the `QDir` C++ class, check [QDir](https://doc.qt.io/qt-5/qdir.html)
  * documentation. It can only be created using [Dir](dir.md) singleton.

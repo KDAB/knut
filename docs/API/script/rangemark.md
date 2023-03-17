@@ -7,7 +7,7 @@ import Script 1.0
 ```
 
 <table>
-<tr><td>Since:</td><td>Knut 4.0</td></tr>
+<tr><td>Since:</td><td>Knut 1.1</td></tr>
 </table>
 
 ## Properties
@@ -23,6 +23,7 @@ import Script 1.0
 | | Name |
 |-|-|
 |[RangeMark](../script/rangemark.md) |**[join](#join)**([RangeMark](../script/rangemark.md) other)|
+||**[remove](#remove)**()|
 ||**[replace](#replace)**(string text)|
 ||**[select](#select)**()|
 
@@ -55,6 +56,10 @@ This read-only property returns the text covered by the range.
 Joins the two `RangeMark` and creates a new one.
 
 The new `RangeMark` is spaning from the minimum of the start to the maximum of the end.
+
+#### <a name="remove"></a>**remove**()
+
+Deletes the text defined by this range in the source document.
 
 #### <a name="replace"></a>**replace**(string text)
 

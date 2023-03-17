@@ -17,9 +17,8 @@ namespace Core {
 /*!
  * \qmltype Utils
  * \brief Singleton with utility methods.
- * \instantiates Core::Utils
  * \inqmlmodule Script
- * \since 4.0
+ * \since 1.0
  *
  * The `Utils` singleton implements some utility methods useful for scripts.
  */

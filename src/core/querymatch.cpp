@@ -15,9 +15,8 @@ namespace Core {
 /*!
  * \qmltype QueryCapture
  * \brief Defines a capture made by a query.
- * \instantiates Core::QueryCapture
  * \inqmlmodule Script
- * \since 4.0
+ * \since 1.1
  * \sa QueryMatch
  */
 
@@ -38,9 +37,8 @@ QString QueryCapture::toString() const
 /*!
  * \qmltype QueryMatch
  * \brief Contains all matches for a query.
- * \instantiates Core::QueryMatch
  * \inqmlmodule Script
- * \since 4.0
+ * \since 1.1
  * \sa LspDocument::query
  *
  * The QueryMatch object allows you to get access to all the captures made by the query.
@@ -155,7 +153,6 @@ RangeMark QueryMatch::getAllJoined(const QString &name) const
  *
  * This is useful if you want to query for nodes that might be nested arbitrarily deeply within a larger construct.
  * E.g. searching for all "return" statements within a function, no matter how deep they are nested.
- *
  * \sa LspDocument::query
  */
 QVector<QueryMatch> QueryMatch::queryIn(const QString &capture, const QString &query) const

@@ -12,9 +12,8 @@ namespace Core {
 /*!
  * \qmltype UserDialog
  * \brief Singleton with methods to display common dialog to the user.
- * \instantiates Core::UserDialog
  * \inqmlmodule Script
- * \since 4.0
+ * \since 1.0
  *
  * The `UserDialog` singleton provides methods to display common dialog that could be used in
  * scripts. If the user cancel the dialog, it will return a null value you can test directly:

@@ -14,9 +14,8 @@ namespace Core {
 /*!
  * \qmltype Mark
  * \brief Keeps track of a position in a text document.
- * \instantiates Core::Mark
  * \inqmlmodule Script
- * \since 4.0
+ * \since 1.0
  * \sa TextDocument
  *
  * The Mark object helps you track a logical possition in a file.
@@ -36,6 +35,11 @@ namespace Core {
 /*!
  * \qmlproperty bool Mark::isValid
  * This read-only property indicates if the mark is valid.
+ */
+/*!
+ * \qmlproperty TextDocument Mark::document
+ * \since 1.1
+ * This read-only property returns the document the mark is coming from.
  */
 
 bool MarkPrivate::checkEditor() const

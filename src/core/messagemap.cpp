@@ -11,9 +11,8 @@ namespace Core {
 /*!
  * \qmltype MessageMapEntry
  * \brief Refers to a single entry within the `MessageMap`
- * \instantiates Core::MessageMap
  * \inqmlmodule Script
- * \since 4.0
+ * \since 1.1
  * \sa MessageMap
  *
  * A MessageMapEntry is a single entry within the `MessageMap`.
@@ -63,9 +62,8 @@ MessageMapEntry fromMessage(const QueryMatch &match, const RangeMark &range)
 /*!
  * \qmltype MessageMap
  * \brief Keeps track of a message map within a text document.
- * \instantiates Core::MessageMap
  * \inqmlmodule Script
- * \since 4.0
+ * \since 1.1
  *
  * The MessageMap object represents the data contained in the MFC MessageMap.
  */

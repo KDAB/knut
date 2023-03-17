@@ -1,3 +1,5 @@
+mkdocs.yml text eol=lf
+docs/API/**/*.md text eol=lf
 test_data/tst_textdocument/loremipsum_lf_utf8.txt text eol=lf
 test_data/tst_textdocument/loremipsum_crlf_ansi.txt text eol=crlf
 test_data/tst_textdocument/loremipsum_crlf_utf8.txt text eol=crlf
