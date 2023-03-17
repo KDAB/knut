@@ -96,8 +96,9 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qmlRegisterUncreatableType<UiWidget>("Script", 1, 0, "UiWidget", "Only created by UiDocument");
     qmlRegisterType<CppDocument>("Script", 1, 0, "CppDocument");
     qmlRegisterUncreatableType<Core::Symbol>("Script", 1, 0, "Symbol", "Only created by LspDocument");
+    qmlRegisterType<RcDocument>("Script", 1, 0, "RcDocument");
 
-    // Script.Rc
+    // RcCore
     qRegisterMetaType<RcCore::Asset>();
     qRegisterMetaType<QVector<RcCore::Asset>>();
     qRegisterMetaType<RcCore::ToolBarItem>();
@@ -114,8 +115,6 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qRegisterMetaType<QVector<RcCore::Shortcut>>();
     qRegisterMetaType<RcCore::Action>();
     qRegisterMetaType<QVector<RcCore::Action>>();
-
-    qmlRegisterType<RcDocument>("Script.Rc", 1, 0, "RcDocument");
 
     // Script.Test
     qmlRegisterSingletonType<TestUtil>("Script.Test", 1, 0, "TestUtil", [](QQmlEngine *, QJSEngine *) {
@@ -209,7 +208,6 @@ QVariant ScriptRunner::runJavascript(const QString &fileName, QQmlEngine *engine
 {
     const QString text = QStringLiteral("import QtQml 2.12\n"
                                         "import Script 1.0\n"
-                                        "import Script.Rc 1.0\n"
                                         "import \"%1\" as MyScript\n"
                                         "QtObject { property var result: MyScript.main() }")
                              .arg(QUrl::fromLocalFile(fileName).toString());

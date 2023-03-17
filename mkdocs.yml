@@ -54,6 +54,17 @@ nav:
                 - QueryCapture: API/script/querycapture.md
                 - QueryMatch: API/script/querymatch.md
                 - Symbol: API/script/symbol.md
+            - RcDocument:
+                - RcDocument: API/script/rcdocument.md
+                - Action: API/script/action.md
+                - Asset: API/script/asset.md
+                - Menu: API/script/menu.md
+                - MenuItem: API/script/menuitem.md
+                - Shortcut: API/script/shortcut.md
+                - String: API/script/string.md
+                - ToolBar: API/script/toolbar.md
+                - ToolBarItem: API/script/toolbaritem.md
+                - Widget: API/script/widget.md
             - TextDocument:
                 - TextDocument: API/script/textdocument.md
                 - Mark: API/script/mark.md
@@ -76,18 +87,6 @@ nav:
                 - Utils: API/script/utils.md
                 - QDirValueType: API/script/qdirvaluetype.md
                 - QFileInfoValueType: API/script/qfileinfovaluetype.md
-        - Script.Rc Module:
-            - RcDocument:
-                - RcDocument: API/script.rc/rcdocument.md
-                - Action: API/script.rc/action.md
-                - Asset: API/script.rc/asset.md
-                - Menu: API/script.rc/menu.md
-                - MenuItem: API/script.rc/menuitem.md
-                - Shortcut: API/script.rc/shortcut.md
-                - String: API/script.rc/string.md
-                - ToolBar: API/script.rc/toolbar.md
-                - ToolBarItem: API/script.rc/toolbaritem.md
-                - Widget: API/script.rc/widget.md
         - Script.Test Module:
             - TestCase: API/script.test/testcase.md
             - TestUtil: API/script.test/testutil.md
