@@ -10,6 +10,7 @@ namespace Core {
  * \qmltype ClassSymbol
  * \brief Represents a class in the current file
  * \inqmlmodule Script
+ * \ingroup LspDocument
  * \since 1.0
  * \todo
  */

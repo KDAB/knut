@@ -6,6 +6,7 @@ namespace Core {
  * \qmltype Script
  * \brief Script object for writing non visual scripts.
  * \inqmlmodule Script
+ * \ingroup Items
  * \since 1.0
  *
  * The `Script` is the base class for all creatable items in QML. It is needed as a `QtObject`

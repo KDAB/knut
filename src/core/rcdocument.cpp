@@ -18,6 +18,7 @@ namespace Core {
  * \qmltype RcDocument
  * \brief Provides access to the content of a RC file (MFC resource file).
  * \inqmlmodule Script.Rc
+ * \ingroup RcDocument/@first
  * \since 1.0
  */
 

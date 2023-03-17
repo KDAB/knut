@@ -24,6 +24,7 @@ namespace Core {
  * \qmltype TextDocument
  * \brief Document object for text files.
  * \inqmlmodule Script
+ * \ingroup TextDocument/@first
  * \since 1.0
  * \inherits Document
  */

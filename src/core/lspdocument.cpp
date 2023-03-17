@@ -42,6 +42,7 @@ namespace Core {
  * \qmltype LspDocument
  * \brief Base document object for document using LSP.
  * \inqmlmodule Script
+ * \ingroup LspDocument/@first
  * \since 1.0
  * \inherits TextDocument
  */

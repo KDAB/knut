@@ -23,5 +23,4 @@ private:
 private:
     Data m_data;
     QHash<QString, QString> m_typeFileMap;
-    QHash<QString, QStringList> m_navMap;
 };

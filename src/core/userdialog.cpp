@@ -13,6 +13,7 @@ namespace Core {
  * \qmltype UserDialog
  * \brief Singleton with methods to display common dialog to the user.
  * \inqmlmodule Script
+ * \ingroup Utilities
  * \since 1.0
  *
  * The `UserDialog` singleton provides methods to display common dialog that could be used in

@@ -16,6 +16,7 @@ namespace Core {
  * \qmltype QueryCapture
  * \brief Defines a capture made by a query.
  * \inqmlmodule Script
+ * \ingroup LspDocument
  * \since 1.1
  * \sa QueryMatch
  */
@@ -38,6 +39,7 @@ QString QueryCapture::toString() const
  * \qmltype QueryMatch
  * \brief Contains all matches for a query.
  * \inqmlmodule Script
+ * \ingroup LspDocument
  * \since 1.1
  * \sa LspDocument::query
  *

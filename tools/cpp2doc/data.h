@@ -7,12 +7,20 @@
 
 struct Data
 {
+    enum PositionInGroup {
+        FirstInGroup = 1,
+        InTheMiddle,
+        LastInGroup,
+    };
+
     struct Block
     {
         QString brief;
         QString description;
         QString since;
         QStringList seeAlso;
+        QString group;
+        PositionInGroup positionInGroup = InTheMiddle;
         bool isExperimental = false;
     };
 

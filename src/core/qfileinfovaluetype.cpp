@@ -6,6 +6,7 @@ namespace Core {
  * \qmltype QFileInfoValueType
  * \brief Wrapper around the `QFileInfo` class.
  * \inqmlmodule Script
+ * \ingroup Utilities/@last
  * \sa FileInfo
  * \since 1.0
  *

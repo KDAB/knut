@@ -211,7 +211,17 @@ void SourceParser::parseBlock(const QString &line, Data::Block &block)
         block.seeAlso.push_back(line.mid(4));
     else if (line.startsWith("\\todo"))
         block.isExperimental = true;
-    else if (line.startsWith("\\"))
+    else if (line.startsWith("\\ingroup")) {
+        auto strings = line.mid(9).split('/');
+        if (strings.size() > 0)
+            block.group = strings.first();
+        if (strings.size() > 1) {
+            if (strings.at(1) == "@first")
+                block.positionInGroup = Data::FirstInGroup;
+            else if (strings.at(1) == "@last")
+                block.positionInGroup = Data::LastInGroup;
+        }
+    } else if (line.startsWith("\\"))
         return; // Tag not handled
     else if (line.isEmpty() && block.description.isEmpty())
         return;

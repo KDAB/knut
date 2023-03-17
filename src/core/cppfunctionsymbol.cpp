@@ -15,6 +15,7 @@ namespace Core {
  * \qmltype Argument
  * \brief Represents an argument to be passed to the function
  * \inqmlmodule Script
+ * \ingroup LspDocument
  * \since 1.0
  * \todo
  */
@@ -58,6 +59,7 @@ Argument Argument::fromHover(const QString &parameter)
  * \qmltype CppFunctionSymbol
  * \brief Represents a function or a method in the current file
  * \inqmlmodule Script
+ * \ingroup LspDocument
  * \since 1.0
  * \todo
  */

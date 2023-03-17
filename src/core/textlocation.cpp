@@ -9,6 +9,7 @@ namespace Core {
  * \qmltype TextLocation
  * \brief Defines a range of text in a file.
  * \inqmlmodule Script
+ * \ingroup TextDocument
  * \since 1.1
  * \sa LspDocument
  *

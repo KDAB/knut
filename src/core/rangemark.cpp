@@ -14,6 +14,7 @@ namespace Core {
  * \qmltype RangeMark
  * \brief Keeps track of a range within a text document.
  * \inqmlmodule Script
+ * \ingroup TextDocument
  * \since 1.1
  * \sa TextDocument
  *

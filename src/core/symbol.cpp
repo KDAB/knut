@@ -16,6 +16,7 @@ namespace Core {
  * \qmltype Symbol
  * \brief Represent a symbol in the current file
  * \inqmlmodule Script
+ * \ingroup LspDocument
  * \since 1.0
  */
 

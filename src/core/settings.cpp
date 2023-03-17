@@ -42,6 +42,7 @@ static const char SettingsName[] = "knut.json";
  * \qmltype Settings
  * \brief Singleton for accessing and editing persistent settings.
  * \inqmlmodule Script
+ * \ingroup Utilities
  * \since 1.0
  *
  * The settings are stored in a json file, and could be:

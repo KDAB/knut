@@ -18,6 +18,7 @@ namespace Core {
  * \qmltype Utils
  * \brief Singleton with utility methods.
  * \inqmlmodule Script
+ * \ingroup Utilities
  * \since 1.0
  *
  * The `Utils` singleton implements some utility methods useful for scripts.

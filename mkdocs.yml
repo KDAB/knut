@@ -40,47 +40,54 @@ nav:
 # -->
     - Script API:
         - Script Module:
-            - Argument: API/script/argument.md
-            - ClassSymbol: API/script/classsymbol.md
-            - CppDocument: API/script/cppdocument.md
-            - CppFunctionSymbol: API/script/cppfunctionsymbol.md
-            - Dir: API/script/dir.md
             - Document: API/script/document.md
-            - File: API/script/file.md
-            - FileInfo: API/script/fileinfo.md
-            - LspDocument: API/script/lspdocument.md
-            - Mark: API/script/mark.md
-            - Message: API/script/message.md
-            - MessageMap: API/script/messagemap.md
-            - MessageMapEntry: API/script/messagemapentry.md
             - Project: API/script/project.md
-            - QDirValueType: API/script/qdirvaluetype.md
-            - QFileInfoValueType: API/script/qfileinfovaluetype.md
-            - QueryCapture: API/script/querycapture.md
-            - QueryMatch: API/script/querymatch.md
-            - RangeMark: API/script/rangemark.md
-            - Script: API/script/script.md
-            - ScriptDialog: API/script/scriptdialog.md
-            - Settings: API/script/settings.md
-            - Symbol: API/script/symbol.md
-            - TextDocument: API/script/textdocument.md
-            - TextLocation: API/script/textlocation.md
-            - TextRange: API/script/textrange.md
-            - UiDocument: API/script/uidocument.md
-            - UiWidget: API/script/uiwidget.md
-            - UserDialog: API/script/userdialog.md
-            - Utils: API/script/utils.md
+            - CppDocument:
+                - CppDocument: API/script/cppdocument.md
+                - MessageMap: API/script/messagemap.md
+                - MessageMapEntry: API/script/messagemapentry.md
+            - LspDocument:
+                - LspDocument: API/script/lspdocument.md
+                - Argument: API/script/argument.md
+                - ClassSymbol: API/script/classsymbol.md
+                - CppFunctionSymbol: API/script/cppfunctionsymbol.md
+                - QueryCapture: API/script/querycapture.md
+                - QueryMatch: API/script/querymatch.md
+                - Symbol: API/script/symbol.md
+            - TextDocument:
+                - TextDocument: API/script/textdocument.md
+                - Mark: API/script/mark.md
+                - RangeMark: API/script/rangemark.md
+                - TextLocation: API/script/textlocation.md
+                - TextRange: API/script/textrange.md
+            - UiDocument:
+                - UiDocument: API/script/uidocument.md
+                - UiWidget: API/script/uiwidget.md
+            - Items:
+                - Script: API/script/script.md
+                - ScriptDialog: API/script/scriptdialog.md
+            - Utilities:
+                - Dir: API/script/dir.md
+                - File: API/script/file.md
+                - FileInfo: API/script/fileinfo.md
+                - Message: API/script/message.md
+                - Settings: API/script/settings.md
+                - UserDialog: API/script/userdialog.md
+                - Utils: API/script/utils.md
+                - QDirValueType: API/script/qdirvaluetype.md
+                - QFileInfoValueType: API/script/qfileinfovaluetype.md
         - Script.Rc Module:
-            - Action: API/script.rc/action.md
-            - Asset: API/script.rc/asset.md
-            - Menu: API/script.rc/menu.md
-            - MenuItem: API/script.rc/menuitem.md
-            - RcDocument: API/script.rc/rcdocument.md
-            - Shortcut: API/script.rc/shortcut.md
-            - String: API/script.rc/string.md
-            - ToolBar: API/script.rc/toolbar.md
-            - ToolBarItem: API/script.rc/toolbaritem.md
-            - Widget: API/script.rc/widget.md
+            - RcDocument:
+                - RcDocument: API/script.rc/rcdocument.md
+                - Action: API/script.rc/action.md
+                - Asset: API/script.rc/asset.md
+                - Menu: API/script.rc/menu.md
+                - MenuItem: API/script.rc/menuitem.md
+                - Shortcut: API/script.rc/shortcut.md
+                - String: API/script.rc/string.md
+                - ToolBar: API/script.rc/toolbar.md
+                - ToolBarItem: API/script.rc/toolbaritem.md
+                - Widget: API/script.rc/widget.md
         - Script.Test Module:
             - TestCase: API/script.test/testcase.md
             - TestUtil: API/script.test/testutil.md

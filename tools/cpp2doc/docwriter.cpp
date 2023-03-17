@@ -5,7 +5,7 @@
 #include <QFile>
 #include <QTextStream>
 
-#include "algorithm"
+#include <algorithm>
 
 DocWriter::DocWriter(Data data)
     : m_data(data)
@@ -33,9 +33,25 @@ void DocWriter::saveDocumentation()
         }
     }
 
-    std::sort(m_data.types.begin(), m_data.types.end(), [](const auto &t1, const auto &t2) {
+    auto byModuleAndGroupAndName = [](const Data::TypeBlock &t1, const Data::TypeBlock &t2) {
+        if (t1.qmlModule != t2.qmlModule)
+            return t1.qmlModule < t2.qmlModule;
+        if (t1.group != t2.group) {
+            if (t1.group.isEmpty())
+                return true;
+            if (t2.group.isEmpty())
+                return false;
+            const bool t1Doc = t1.group.endsWith("Document");
+            const bool t2Doc = t2.group.endsWith("Document");
+            if (t1Doc == t2Doc)
+                return t1.group < t2.group;
+            return t1Doc;
+        }
+        if (t1.positionInGroup != t2.positionInGroup)
+            return t1.positionInGroup < t2.positionInGroup;
         return t1.name < t2.name;
-    });
+    };
+    std::ranges::sort(m_data.types, byModuleAndGroupAndName);
     for (const auto &type : m_data.types)
         writeTypeFile(type);
 
@@ -45,11 +61,22 @@ void DocWriter::saveDocumentation()
 void DocWriter::writeToc()
 {
     QString nav("    - Script API:\n");
-    auto keys = m_navMap.keys();
-    std::sort(keys.begin(), keys.end());
-    for (const auto &module : keys) {
-        nav += QString("        - %1 Module:\n").arg(module);
-        nav += m_navMap.value(module).join("\n") + "\n";
+    QString currentModule;
+    QString currentGroup;
+    QString ident = QString(3 * 4, ' ');
+    for (const auto &type : m_data.types) {
+        if (type.qmlModule != currentModule) {
+            currentModule = type.qmlModule;
+            nav += QString("        - %1 Module:\n").arg(currentModule);
+            currentGroup.clear();
+            ident = QString(3 * 4, ' ');
+        }
+        if (type.group != currentGroup && !type.group.isEmpty()) {
+            currentGroup = type.group;
+            nav += QString("            - %1:\n").arg(currentGroup);
+            ident = QString(4 * 4, ' ');
+        }
+        nav += QString("%4- %1: API/%2/%3.md\n").arg(type.name, type.qmlModule.toLower(), type.name.toLower(), ident);
     }
 
     QFile file(KNUT_MKDOCS_PATH);
@@ -116,8 +143,6 @@ static const char SinceInheritTypeFile[] = R"(
 
 void DocWriter::writeTypeFile(const Data::TypeBlock &type)
 {
-    m_navMap[type.qmlModule].push_back(
-        QString("            - %1: API/%2/%3.md").arg(type.name, type.qmlModule.toLower(), type.name.toLower()));
     const QString &fileName = QString(KNUT_DOC_PATH "/API/%1/%2.md").arg(type.qmlModule.toLower(), type.name.toLower());
     QFile file(fileName);
 
