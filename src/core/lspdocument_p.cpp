@@ -1,7 +1,7 @@
 #include "lspdocument_p.h"
 #include "lspdocument.h"
 
-#include "cppfunctionsymbol.h"
+#include "functionsymbol.h"
 #include "lsp/client.h"
 #include "lsp/lsp_utils.h"
 #include "lsp/types.h"

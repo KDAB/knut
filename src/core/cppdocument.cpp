@@ -1,7 +1,7 @@
 #include "cppdocument.h"
 #include "cppdocument_p.h"
 
-#include "cppfunctionsymbol.h"
+#include "functionsymbol.h"
 #include "logger.h"
 #include "project.h"
 #include "settings.h"

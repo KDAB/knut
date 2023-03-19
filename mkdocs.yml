@@ -48,9 +48,9 @@ nav:
                 - MessageMapEntry: API/script/messagemapentry.md
             - LspDocument:
                 - LspDocument: API/script/lspdocument.md
-                - Argument: API/script/argument.md
                 - ClassSymbol: API/script/classsymbol.md
-                - CppFunctionSymbol: API/script/cppfunctionsymbol.md
+                - FunctionArgument: API/script/functionargument.md
+                - FunctionSymbol: API/script/functionsymbol.md
                 - QueryCapture: API/script/querycapture.md
                 - QueryMatch: API/script/querymatch.md
                 - Symbol: API/script/symbol.md

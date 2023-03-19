@@ -2,10 +2,10 @@
 
 #include "classsymbol.h"
 #include "cppdocument.h"
-#include "cppfunctionsymbol.h"
 #include "dir.h"
 #include "file.h"
 #include "fileinfo.h"
+#include "functionsymbol.h"
 #include "mark.h"
 #include "message.h"
 #include "project.h"
@@ -52,9 +52,9 @@ ScriptRunner::ScriptRunner(QObject *parent)
     : QObject(parent)
 {
     // Script objects registrations
-    qRegisterMetaType<Argument>();
+    qRegisterMetaType<FunctionArgument>();
     qRegisterMetaType<ClassSymbol>();
-    qRegisterMetaType<CppFunctionSymbol>();
+    qRegisterMetaType<FunctionSymbol>();
     qRegisterMetaType<QDirValueType>();
     qRegisterMetaType<QFileInfoValueType>();
     qRegisterMetaType<Symbol>();
@@ -122,9 +122,9 @@ ScriptRunner::ScriptRunner(QObject *parent)
     });
 
     // Properties
-    addProperties<Argument>(m_properties);
+    addProperties<FunctionArgument>(m_properties);
     addProperties<ClassSymbol>(m_properties);
-    addProperties<CppFunctionSymbol>(m_properties);
+    addProperties<FunctionSymbol>(m_properties);
     addProperties<QDirValueType>(m_properties);
     addProperties<QFileInfoValueType>(m_properties);
     addProperties<Symbol>(m_properties);

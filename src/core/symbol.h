@@ -11,7 +11,7 @@ namespace Core {
 
 class LspDocument;
 class ClassSymbol;
-class CppFunctionSymbol;
+class FunctionSymbol;
 
 class Symbol : public QObject
 {
@@ -77,7 +77,7 @@ public:
     Core::ClassSymbol *toClass();
 
     Q_INVOKABLE bool isFunction() const;
-    Core::CppFunctionSymbol *toFunction();
+    Core::FunctionSymbol *toFunction();
 
     QString name() const;
     QString description() const;

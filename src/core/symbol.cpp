@@ -1,7 +1,7 @@
 #include "symbol.h"
 
 #include "classsymbol.h"
-#include "cppfunctionsymbol.h"
+#include "functionsymbol.h"
 #include "logger.h"
 
 #include <core/lspdocument.h>
@@ -96,7 +96,7 @@ Symbol *Symbol::makeSymbol(QObject *parent, const QString &name, const QString &
                            TextRange selectionRange)
 {
     if (kind == Method || kind == Function || kind == Constructor) {
-        return new CppFunctionSymbol(parent, name, description, kind, range, selectionRange);
+        return new FunctionSymbol(parent, name, description, kind, range, selectionRange);
     }
     if (kind == Class || kind == Struct) {
         return new ClassSymbol(parent, name, description, kind, range, selectionRange);
@@ -154,12 +154,12 @@ ClassSymbol *Symbol::toClass()
  */
 bool Symbol::isFunction() const
 {
-    return qobject_cast<const CppFunctionSymbol *>(this);
+    return qobject_cast<const FunctionSymbol *>(this);
 }
 
-CppFunctionSymbol *Symbol::toFunction()
+FunctionSymbol *Symbol::toFunction()
 {
-    auto function = qobject_cast<CppFunctionSymbol *>(this);
+    auto function = qobject_cast<FunctionSymbol *>(this);
 
     if (!function)
         spdlog::warn("Symbol::toFunction - {} should be either a method or a function.", m_name.toStdString());

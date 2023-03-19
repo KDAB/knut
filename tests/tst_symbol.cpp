@@ -1,5 +1,5 @@
 #include "core/classsymbol.h"
-#include "core/cppfunctionsymbol.h"
+#include "core/functionsymbol.h"
 #include "core/knutcore.h"
 #include "core/lspdocument.h"
 #include "core/project.h"
@@ -12,7 +12,7 @@
 
 namespace Core {
 
-char *toString(const Argument &argument)
+char *toString(const FunctionArgument &argument)
 {
     return QTest::toString(QString("Type: '%1' Name: '%2'").arg(argument.type, argument.name));
 }
@@ -27,7 +27,7 @@ class TestSymbol : public QObject
     {
         QString name;
         QString returnType;
-        QVector<Core::Argument> arguments;
+        QVector<Core::FunctionArgument> arguments;
         Core::TextRange range;
 
         bool isNull() { return name.isEmpty(); }
@@ -49,7 +49,7 @@ private slots:
         auto functionData1 =
             FunctionData {.name = "isHeaderSuffix",
                           .returnType = "bool",
-                          .arguments = QVector<Core::Argument> {{.type = "const QString &", .name = ""}},
+                          .arguments = QVector<Core::FunctionArgument> {{.type = "const QString &", .name = ""}},
                           .range = Core::TextRange {.start = 0, .end = 1}};
         QTest::newRow("test-case-method-one-arg") << symbol1 << functionData1;
 
@@ -61,8 +61,8 @@ private slots:
         auto functionData2 =
             FunctionData {.name = "candidateFileNames",
                           .returnType = "QStringList",
-                          .arguments = QVector<Core::Argument> {{.type = "const QString &", .name = ""},
-                                                                {.type = "const QStringList &", .name = ""}},
+                          .arguments = QVector<Core::FunctionArgument> {{.type = "const QString &", .name = ""},
+                                                                        {.type = "const QStringList &", .name = ""}},
                           .range = Core::TextRange {.start = 2, .end = 3}};
         QTest::newRow("test-case-method-two-args") << symbol2 << functionData2;
 
@@ -73,7 +73,7 @@ private slots:
         auto functionData3 = FunctionData {
             .name = "CppDocument::correspondingHeaderSource",
             .returnType = "QString",
-            .arguments = QVector<Core::Argument> {{.type = "int", .name = ""}, {.type = "bool", .name = ""}},
+            .arguments = QVector<Core::FunctionArgument> {{.type = "int", .name = ""}, {.type = "bool", .name = ""}},
             .range = Core::TextRange {.start = 4, .end = 5}};
         QTest::newRow("test-case-function-two-args-const") << symbol3 << functionData3;
 
@@ -81,11 +81,12 @@ private slots:
         auto symbol4 = Core::Symbol::makeSymbol(this, "Foo::Run", "static const int &(World &, PrioQ *) volatile",
                                                 Core::Symbol::Kind::Function, Core::TextRange {.start = 6, .end = 7},
                                                 Core::TextRange {.start = 16, .end = 17});
-        auto functionData4 = FunctionData {
-            .name = "Foo::Run",
-            .returnType = "const int &",
-            .arguments = QVector<Core::Argument> {{.type = "World &", .name = ""}, {.type = "PrioQ *", .name = ""}},
-            .range = Core::TextRange {.start = 6, .end = 7}};
+        auto functionData4 =
+            FunctionData {.name = "Foo::Run",
+                          .returnType = "const int &",
+                          .arguments = QVector<Core::FunctionArgument> {{.type = "World &", .name = ""},
+                                                                        {.type = "PrioQ *", .name = ""}},
+                          .range = Core::TextRange {.start = 6, .end = 7}};
         QTest::newRow("test-case-function-two-args-volatile") << symbol4 << functionData4;
 
         // test #5
@@ -94,7 +95,7 @@ private slots:
                                                 Core::TextRange {.start = 18, .end = 19});
         auto functionData5 = FunctionData {.name = "CppDocument::openHeaderSource",
                                            .returnType = "CppDocument *",
-                                           .arguments = QVector<Core::Argument>(),
+                                           .arguments = QVector<Core::FunctionArgument>(),
                                            .range = Core::TextRange {.start = 8, .end = 9}};
         QTest::newRow("test-case-method-no-args") << symbol5 << functionData5;
 
@@ -112,7 +113,7 @@ private slots:
         auto functionData7 = FunctionData {
             .name = "Foo::bar",
             .returnType = "void",
-            .arguments = QVector<Core::Argument> {{.type = "const QHash<QString, QString> &", .name = ""}},
+            .arguments = QVector<Core::FunctionArgument> {{.type = "const QHash<QString, QString> &", .name = ""}},
             .range = Core::TextRange {.start = 3, .end = 4}};
         QTest::newRow("test-case-method-one-arg-qhash-fail") << symbol7 << functionData7;
     }
@@ -153,7 +154,7 @@ private slots:
             auto functionData =
                 FunctionData {.name = "MyObject::MyObject",
                               .returnType = "", // Constructors don't really return anything
-                              .arguments = {Core::Argument {.type = "const std::string &", .name = "message"}},
+                              .arguments = {Core::FunctionArgument {.type = "const std::string &", .name = "message"}},
                               .range = {}};
             QTest::newRow("constructor - header") << header << "MyObject::MyObject" << functionData;
             QTest::newRow("constructor - source") << source << "MyObject::MyObject" << functionData;
@@ -178,8 +179,8 @@ private slots:
         {
             auto functionData = FunctionData {.name = "main",
                                               .returnType = "int",
-                                              .arguments = {Core::Argument {.type = "int", .name = "argc"},
-                                                            Core::Argument {.type = "char **", .name = "argv"}},
+                                              .arguments = {Core::FunctionArgument {.type = "int", .name = "argc"},
+                                                            Core::FunctionArgument {.type = "char **", .name = "argv"}},
                                               .range = {}};
             QTest::newRow("free function") << main << "main" << functionData;
         }
@@ -188,12 +189,13 @@ private slots:
             auto functionData = FunctionData {
                 .name = "myFreeFunction",
                 .returnType = "std::string",
-                .arguments = {Core::Argument {.type = "unsigned int", .name = ""},
-                              Core::Argument {.type = "unsigned int", .name = ""},
-                              Core::Argument {.type = "long long", .name = ""},
-                              Core::Argument {.type = "const std::string", .name = ""},
-                              Core::Argument {.type = "const std::string &", .name = ""},
-                              Core::Argument {.type = "long long (*)(unsigned int, const std::string &)", .name = ""}},
+                .arguments = {Core::FunctionArgument {.type = "unsigned int", .name = ""},
+                              Core::FunctionArgument {.type = "unsigned int", .name = ""},
+                              Core::FunctionArgument {.type = "long long", .name = ""},
+                              Core::FunctionArgument {.type = "const std::string", .name = ""},
+                              Core::FunctionArgument {.type = "const std::string &", .name = ""},
+                              Core::FunctionArgument {.type = "long long (*)(unsigned int, const std::string &)",
+                                                      .name = ""}},
                 .range = {}};
             QTest::newRow("free function with unnamed parameters") << main << "myFreeFunction" << functionData;
         }
@@ -202,12 +204,13 @@ private slots:
             auto functionData = FunctionData {
                 .name = "myOtherFreeFunction",
                 .returnType = "int",
-                .arguments = {Core::Argument {.type = "unsigned int", .name = "a"},
-                              Core::Argument {.type = "unsigned int", .name = "b"},
-                              Core::Argument {.type = "long long", .name = "c"},
-                              Core::Argument {.type = "const std::string", .name = "d"},
-                              Core::Argument {.type = "const std::string &", .name = "e_123"},
-                              Core::Argument {.type = "long long (*)(unsigned int, const std::string &)", .name = "f"}},
+                .arguments = {Core::FunctionArgument {.type = "unsigned int", .name = "a"},
+                              Core::FunctionArgument {.type = "unsigned int", .name = "b"},
+                              Core::FunctionArgument {.type = "long long", .name = "c"},
+                              Core::FunctionArgument {.type = "const std::string", .name = "d"},
+                              Core::FunctionArgument {.type = "const std::string &", .name = "e_123"},
+                              Core::FunctionArgument {.type = "long long (*)(unsigned int, const std::string &)",
+                                                      .name = "f"}},
                 .range = {}};
             QTest::newRow("free function with complicated named parameters")
                 << main << "myOtherFreeFunction" << functionData;

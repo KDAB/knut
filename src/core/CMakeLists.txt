@@ -9,8 +9,8 @@ set(PROJECT_SOURCES
     cppdocument.cpp
     cppdocument_p.h
     cppdocument_p.cpp
-    cppfunctionsymbol.h
-    cppfunctionsymbol.cpp
+    functionsymbol.h
+    functionsymbol.cpp
     dir.h
     dir.cpp
     document.h

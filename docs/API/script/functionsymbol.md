@@ -1,4 +1,4 @@
-# CppFunctionSymbol
+# FunctionSymbol
 
 !!! Warning "Experimental API"
     The API here is still experimental, and may change in follow-up release. Use it at your own risk.
@@ -18,13 +18,13 @@ import Script 1.0
 
 | | Name |
 |-|-|
-|vector<[Argument](../script/argument.md)>|**[arguments](#arguments)**|
+|vector<[FunctionArgument](../script/functionargument.md)>|**[arguments](#arguments)**|
 |[TextRange](../script/textrange.md)|**[range](#range)**|
 |string|**[returnType](#returnType)**|
 
 ## Property Documentation
 
-#### <a name="arguments"></a>vector<[Argument](../script/argument.md)> **arguments**
+#### <a name="arguments"></a>vector<[FunctionArgument](../script/functionargument.md)> **arguments**
 
 Returns the list of arguments being passed to this function.
 

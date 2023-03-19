@@ -1,4 +1,4 @@
-# Argument
+# FunctionArgument
 
 !!! Warning "Experimental API"
     The API here is still experimental, and may change in follow-up release. Use it at your own risk.
