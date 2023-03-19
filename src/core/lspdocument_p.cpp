@@ -2,15 +2,20 @@
 #include "lspdocument.h"
 
 #include "functionsymbol.h"
+
 #include "lsp/client.h"
 #include "lsp/lsp_utils.h"
 #include "lsp/types.h"
+#include "treesitter/languages.h"
 
 #include <kdalgorithms.h>
 #include <spdlog/spdlog.h>
 
 namespace Core {
 
+///////////////////////////////////////////////////////////////////////////////
+// LspCache
+///////////////////////////////////////////////////////////////////////////////
 LspCache::LspCache(LspDocument *document)
     : m_document(document)
 {
@@ -170,6 +175,103 @@ const Core::Symbol *LspCache::inferSymbol(const QString &hoverText, TextRange ra
     m_inferredSymbols.emplace_back(result);
 
     return result;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// TreeSitterHelper
+///////////////////////////////////////////////////////////////////////////////
+TreeSitterHelper::TreeSitterHelper(LspDocument *document)
+    : m_document(document)
+{
+}
+
+void TreeSitterHelper::clear()
+{
+    m_tree = {};
+}
+
+treesitter::Parser &TreeSitterHelper::parser()
+{
+    if (!m_parser) {
+        // TODO: Make language configurable
+        m_parser = treesitter::Parser(tree_sitter_cpp());
+    }
+
+    // Regarding const-ness:
+    // The TreeSitter parser can't change anything about the documents contents.
+    // Therefore it is okay to be returned by non-const reference, even in a const function.
+    return const_cast<treesitter::Parser &>(*m_parser);
+}
+
+std::optional<treesitter::Tree> &TreeSitterHelper::syntaxTree()
+{
+    if (!m_tree) {
+        m_tree = parser().parseString(m_document->text());
+        if (!m_tree) {
+            spdlog::warn("LspDocument::syntaxTree: Failed to parse document {}!", m_document->fileName().toStdString());
+        }
+    }
+    return m_tree;
+}
+
+std::shared_ptr<treesitter::Query> TreeSitterHelper::constructQuery(const QString &query)
+{
+    std::shared_ptr<treesitter::Query> tsQuery;
+    try {
+        tsQuery = std::make_shared<treesitter::Query>(parser().language(), query);
+    } catch (treesitter::Query::Error error) {
+        spdlog::error("LspDocument::constructQuery: Failed to parse query `{}` error: {} at: {}", query.toStdString(),
+                      error.description.toStdString(), error.utf8_offset);
+        return {};
+    }
+    return tsQuery;
+}
+
+// `nodesInRange` returns only the outermost nodes that fit entirely in the given range.
+// The subsequent children of these outermost nodes are *not* returned, even though
+// they are also technically in the range!
+// This is used by queryInRange to find on which nodes to run the query on.
+QVector<treesitter::Node> TreeSitterHelper::nodesInRange(const RangeMark &range)
+{
+    enum RangeComparison { Overlaps, Contains, Disjoint };
+
+    const auto &tree = syntaxTree();
+
+    if (!tree) {
+        return {};
+    }
+
+    QVector<treesitter::Node> nodesToVisit;
+    QVector<treesitter::Node> nodesInRange;
+    nodesToVisit.emplace_back(tree->rootNode());
+
+    auto compareToRange = [&range](const treesitter::Node &node) {
+        if (range.contains(node.startPosition()) && range.contains(node.endPosition() - 1))
+            return RangeComparison::Contains;
+        else if (static_cast<int>(node.startPosition()) <= range.end()
+                 && static_cast<int>(node.endPosition()) >= range.start())
+            return RangeComparison::Overlaps;
+        return RangeComparison::Disjoint;
+    };
+
+    // Note: This could be improved performance-wise using the first_child_for_byte
+    // functions on either TSNode, or TSTreeCursor.
+    // However, these functions aren't currently wrapped and would make the search a bit more complex.
+    while (!nodesToVisit.isEmpty()) {
+        auto node = nodesToVisit.takeLast();
+        switch (compareToRange(node)) {
+        case RangeComparison::Contains:
+            nodesInRange.emplace_back(node);
+            break;
+        case RangeComparison::Overlaps:
+            nodesToVisit.append(node.children());
+            break;
+        default:
+            break;
+        }
+    }
+
+    return nodesInRange;
 }
 
 } // namespace Core
