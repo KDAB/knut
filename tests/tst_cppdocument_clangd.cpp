@@ -5,7 +5,6 @@
 #include "common/test_utils.h"
 
 #include <QTest>
-#include <QThread>
 
 class TestCppDocumentClangd : public QObject
 {
