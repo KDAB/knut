@@ -1,0 +1,7 @@
+#include "addmethoddef.h"
+
+Student::Student(const std::string& message)
+    : m_message(message)
+{}
+
+int Student::foo(const std::string& s) {}

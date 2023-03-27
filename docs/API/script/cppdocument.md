@@ -24,6 +24,8 @@ Inherited properties: [LspDocument properties](../script/lspdocument.md#properti
 | | Name |
 |-|-|
 ||**[addMember](#addMember)**(string member, string className, AccessSpecifier)|
+||**[addMethodDeclaration](#addMethodDeclaration)**(string member, string className, AccessSpecifier)|
+||**[addMethodDefintion](#addMethodDefintion)**(string method, string className)|
 ||**[commentSelection](#commentSelection)**()|
 |string |**[correspondingHeaderSource](#correspondingHeaderSource)**()|
 |void |**[deleteMethod](#deleteMethod)**(string methodName, string signature)|
@@ -68,6 +70,29 @@ The specifier can take these values:
 - `CppDocument.Protected`
 - `CppDocument.Private`
 
+#### <a name="addMethodDeclaration"></a>**addMethodDeclaration**(string member, string className, AccessSpecifier)
+
+!!! note ""
+    Since: Knut 1.1
+
+Declares a new method in a specific class under the specefic access specifier.
+
+If the class does not exist, log error can't find the class, but if the
+specifier is valid but does not exist in the class, we will add that specifier in the end of the
+class and declare the method under it.
+The specifier can take these values:
+
+- `CppDocument.Public`
+- `CppDocument.Protected`
+- `CppDocument.Private`
+
+#### <a name="addMethodDefintion"></a>**addMethodDefintion**(string method, string className)
+
+!!! note ""
+    Since: Knut 1.1
+
+Defines a new method `method` for class `className` in the current file.
+
 #### <a name="commentSelection"></a>**commentSelection**()
 
 Comments the selected lines (or current line if there's no selection) in current document.
@@ -105,7 +130,7 @@ void myFunction(const QString& a, int b);
 
 The `signature` would be:
 
-```
+``` cpp
 void (const QString&, int)
 ```
 

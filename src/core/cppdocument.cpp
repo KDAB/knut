@@ -832,7 +832,43 @@ RangeMark CppDocument::findClassBody(const QString &className)
 
         return createRangeMark(classMatch.start(), classMatch.end());
     }
-    return createRangeMark();
+    return {};
+}
+
+CppDocument::MemberOrMethodAdditionResult
+CppDocument::addMemberOrMethod(const QString &memberInfo, const QString &className, AccessSpecifier specifier)
+{
+
+    QString memberText = memberInfo + ";";
+    // clang-format off
+    const auto queryString = QString(R"EOF(
+        (field_declaration_list
+            (access_specifier "%1") @access
+            . [(declaration) (comment) (field_declaration)]* @field
+        )
+    )EOF").arg(accessSpecifierMap.value(specifier));
+    // clang-format on
+
+    const auto range = findClassBody(className);
+    if (!range.isValid()) {
+        return MemberOrMethodAdditionResult::ClassNotFound;
+    }
+
+    auto result = queryInRange(range, queryString);
+    if (!result.isEmpty()) {
+        const auto &match = result.last();
+        const auto fields = match.getAll("field");
+        const auto pos = fields.last();
+        const auto indent = indentationAtPosition(pos.end());
+        insertAtPosition("\n" + indent + memberText, pos.end());
+    } else {
+        const bool check = addSpecifierSection(memberText, className, specifier);
+        if (!check) {
+            return MemberOrMethodAdditionResult::ClassNotFound;
+        }
+    }
+
+    return MemberOrMethodAdditionResult::Success;
 }
 
 /*!
@@ -853,38 +889,77 @@ bool CppDocument::addMember(const QString &member, const QString &className, Acc
 {
     LOG("CppDocument::addMember", member, className, specifier);
 
-    QString memberText = member + ";";
-
-    // clang-format off
-    const auto queryString = QString(R"EOF(
-        (field_declaration_list
-            (access_specifier "%1") @access
-            . [(declaration) (comment) (field_declaration)]* @field
-        )
-    )EOF").arg(accessSpecifierMap.value(specifier));
-    // clang-format on
-
-    const auto range = findClassBody(className);
-    if (!range.isValid()) {
-        spdlog::error(R"(CppDocument::addMember - Can't find class '{}')", className.toStdString());
-        return false;
+    auto result = addMemberOrMethod(member, className, specifier);
+    if (result == MemberOrMethodAdditionResult::ClassNotFound) {
+        spdlog::error(R"(CppDocument::addMember- Can't find class '{}')", className.toStdString());
     }
 
-    auto result = queryInRange(range, queryString);
-    if (!result.isEmpty()) {
-        const auto &match = result.last();
-        const auto fields = match.getAll("field");
-        const auto pos = fields.last();
-        const auto indent = indentationAtPosition(pos.end());
+    return true;
+}
 
-        insertAtPosition("\n" + indent + memberText, pos.end());
-    } else {
-        const bool check = addSpecifierSection(memberText, className, specifier);
-        if (!check) {
-            spdlog::error(R"(CppDocument::addMember - Can't find class '{}')", className.toStdString());
-        }
+/*!
+ * \qmlmethod CppDocument::addMethodDeclaration(string member, string className, AccessSpecifier)
+ * \since 1.1
+ * Declares a new method in a specific class under the specefic access specifier.
+ *
+ * If the class does not exist, log error can't find the class, but if the
+ * specifier is valid but does not exist in the class, we will add that specifier in the end of the
+ * class and declare the method under it.
+ * The specifier can take these values:
+ *
+ * - `CppDocument.Public`
+ * - `CppDocument.Protected`
+ * - `CppDocument.Private`
+ */
+bool CppDocument::addMethodDeclaration(const QString &method, const QString &className, AccessSpecifier specifier)
+{
+    LOG("CppDocument::addMethodDeclaration", method, className, specifier);
+
+    auto result = addMemberOrMethod(method, className, specifier);
+    if (result == MemberOrMethodAdditionResult::ClassNotFound) {
+        spdlog::error(R"(CppDocument::addMethodDeclaration - Can't find class '{}')", className.toStdString());
     }
 
+    return true;
+}
+
+/*!
+ * \qmlmethod CppDocument::addMethodDefintion(string method, string className)
+ * \since 1.1
+ * Defines a new method `method` for class `className` in the current file.
+ */
+
+bool CppDocument::addMethodDefinition(const QString &method, const QString &className)
+{
+    LOG("CppDocument::addMethodDefinition", method, className);
+
+    // Extract the return type and method name
+    int openParenIdx = method.indexOf('(');
+    int spaceIdx = method.lastIndexOf(' ', openParenIdx);
+
+    QString returnType = method.left(spaceIdx);
+    QString methodName = method.mid(spaceIdx + 1, openParenIdx - spaceIdx - 1);
+
+    // Construct the method definition
+    QString methodDef = QString("%1 %2::%3").arg(returnType, className, methodName);
+    methodDef += method.mid(openParenIdx) + " {}";
+
+    QString indent = "\n\n";
+
+    auto lastBracePos = textEdit()->toPlainText().lastIndexOf('}');
+
+    QTextCursor cursor = textEdit()->textCursor();
+    cursor.beginEditBlock();
+
+    cursor.setPosition(lastBracePos + 1);
+    cursor.movePosition(QTextCursor::EndOfBlock);
+
+    // Add the method definition
+    cursor.insertText(indent + methodDef);
+    auto methodStartPos = textEdit()->toPlainText().lastIndexOf('{');
+    cursor.setPosition(methodStartPos + 1); // move to position after opening brace
+
+    textEdit()->setTextCursor(cursor);
     return true;
 }
 
@@ -899,8 +974,8 @@ bool CppDocument::addSpecifierSection(const QString &memberText, const QString &
     )EOF");
     // clang-format on
 
-    const auto range = findClassBody(className);
-    const auto result = queryInRange(range, queryString);
+    auto range = findClassBody(className);
+    auto result = queryInRange(range, queryString);
 
     if (!result.isEmpty()) {
         const auto &match = result.last();
@@ -1000,7 +1075,7 @@ void CppDocument::deleteMethodLocal(const QString &methodName, const QString &si
  *
  * The `signature` would be:
  *
- * ```
+ * ``` cpp
  * void (const QString&, int)
  * ```
  *

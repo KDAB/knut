@@ -163,6 +163,58 @@ private slots:
         cppDocument->save();
     }
 
+private slots:
+    void addMember()
+    {
+        Core::KnutCore core;
+        Core::Project::instance()->setRoot(Test::testDataPath() + "/tst_cppdocument/addMember");
+
+        Test::FileTester sourceFile(Test::testDataPath() + "/tst_cppdocument/addMember/addmember.cpp");
+        {
+            auto cppFile = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(sourceFile.fileName()));
+            cppFile->addMember("QString foo", "Student", Core::CppDocument::AccessSpecifier::Public);
+            cppFile->addMember("int bar", "Student", Core::CppDocument::AccessSpecifier::Protected);
+
+            cppFile->save();
+            QVERIFY(sourceFile.compare());
+        }
+    }
+
+    void addMethodDeclaration()
+    {
+        Core::KnutCore core;
+        Core::Project::instance()->setRoot(Test::testDataPath() + "/tst_cppdocument/addMethodDeclaration");
+
+        Test::FileTester sourceFile(Test::testDataPath() + "/tst_cppdocument/addMethodDeclaration/addmethoddecl.cpp");
+        {
+            auto cppFile = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(sourceFile.fileName()));
+            cppFile->addMethodDeclaration("bool func(QString s, int a)", "Student",
+                                          Core::CppDocument::AccessSpecifier::Public);
+            cppFile->addMethodDeclaration("bool foo(QString s, int a)", "Student",
+                                          Core::CppDocument::AccessSpecifier::Protected);
+
+            cppFile->save();
+            QVERIFY(sourceFile.compare());
+        }
+    }
+
+    void addMethodDefinition()
+    {
+        Core::KnutCore core;
+
+        Test::FileTester sourceFile(Test::testDataPath() + "/tst_cppdocument/addMethodDefinition/addmethoddef.cpp");
+        {
+            Core::Project::instance()->setRoot(Test::testDataPath() + "/tst_cppdocument/addMethodDefinition");
+            auto source = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open("addmethoddef.cpp"));
+
+            bool check = source->addMethodDefinition("bool func(std::string s, int a)", "Student");
+            QCOMPARE(check, true);
+
+            source->save();
+            QVERIFY(sourceFile.compare());
+        }
+    }
+
     // Regression test:
     // Putting the cursor before the last character made `moveBlock` run into an infinite loop.
     void selectBlockUpAtEndOfFile()

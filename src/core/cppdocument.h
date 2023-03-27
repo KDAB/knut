@@ -51,6 +51,9 @@ public slots:
     void toggleSection();
 
     bool addMember(const QString &memberInfo, const QString &className, Core::CppDocument::AccessSpecifier specifier);
+    bool addMethodDeclaration(const QString &method, const QString &className,
+                              Core::CppDocument::AccessSpecifier specifier);
+    bool addMethodDefinition(const QString &method, const QString &className);
     bool insertInclude(const QString &include, bool newGroup = false);
     bool removeInclude(const QString &include);
     void deleteMethod();
@@ -58,6 +61,9 @@ public slots:
     void deleteMethod(const QString &methodName);
 
 private:
+    enum class MemberOrMethodAdditionResult { Success, ClassNotFound };
+    MemberOrMethodAdditionResult addMemberOrMethod(const QString &memberInfo, const QString &className,
+                                                   Core::CppDocument::AccessSpecifier specifier);
     RangeMark findClassBody(const QString &className);
 
     void deleteMethodLocal(const QString &methodName, const QString &signature = "");

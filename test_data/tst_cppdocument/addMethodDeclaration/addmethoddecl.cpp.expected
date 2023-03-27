@@ -1,0 +1,14 @@
+class Student {
+
+public:
+  int count;
+  bool func(QString s, int a);
+  
+private:
+  QString name;
+  int rollNo;
+
+protected:
+  bool foo(QString s, int a);
+
+};
