@@ -81,27 +81,28 @@ namespace Core {
  * List of all references of this symbol in the current project.
  */
 
-Symbol::Symbol(QObject *parent, const QString &name, const QString &description, Kind kind, TextRange range,
-               TextRange selectionRange)
+Symbol::Symbol(QObject *parent, const QString &name, const QString &description, const QString &importLocation,
+               Kind kind, TextRange range, TextRange selectionRange)
     : QObject(parent)
     , m_name {name}
     , m_description {description}
+    , m_importLocation {importLocation}
     , m_kind {kind}
     , m_range {range}
     , m_selectionRange {selectionRange}
 {
 }
 
-Symbol *Symbol::makeSymbol(QObject *parent, const QString &name, const QString &description, Kind kind, TextRange range,
-                           TextRange selectionRange)
+Symbol *Symbol::makeSymbol(QObject *parent, const QString &name, const QString &description,
+                           const QString &importLocation, Kind kind, TextRange range, TextRange selectionRange)
 {
     if (kind == Method || kind == Function || kind == Constructor) {
-        return new FunctionSymbol(parent, name, description, kind, range, selectionRange);
+        return new FunctionSymbol(parent, name, description, importLocation, kind, range, selectionRange);
     }
     if (kind == Class || kind == Struct) {
-        return new ClassSymbol(parent, name, description, kind, range, selectionRange);
+        return new ClassSymbol(parent, name, description, importLocation, kind, range, selectionRange);
     }
-    return new Symbol(parent, name, description, kind, range, selectionRange);
+    return new Symbol(parent, name, description, importLocation, kind, range, selectionRange);
 }
 
 Symbol *Symbol::makeSymbol(QObject *parent, const Lsp::DocumentSymbol &lspSymbol, TextRange range,
@@ -114,7 +115,8 @@ Symbol *Symbol::makeSymbol(QObject *parent, const Lsp::DocumentSymbol &lspSymbol
     if (!context.isEmpty())
         name = context + "::" + name;
 
-    return makeSymbol(parent, name, description, kind, range, selectionRange);
+    return makeSymbol(parent, name, description, "" /*TODO: Check description for import location*/, kind, range,
+                      selectionRange);
 }
 
 LspDocument *Symbol::document() const
@@ -175,6 +177,11 @@ QString Symbol::name() const
 QString Symbol::description() const
 {
     return m_description;
+}
+
+QString Symbol::importLocation() const
+{
+    return m_importLocation;
 }
 
 Symbol::Kind Symbol::kind() const

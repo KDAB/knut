@@ -36,8 +36,8 @@ protected:
     // necessary so the constructor can be accessed from the Symbol class.
     friend class Symbol;
 
-    FunctionSymbol(QObject *parent, const QString &name, const QString &description, Kind kind, TextRange range,
-                   TextRange selectionRange);
+    FunctionSymbol(QObject *parent, const QString &name, const QString &description, const QString &importLocation,
+                   Kind kind, TextRange range, TextRange selectionRange);
 
     mutable std::optional<QString> m_returnType;
     mutable std::optional<QVector<FunctionArgument>> m_arguments;

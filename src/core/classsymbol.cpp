@@ -19,9 +19,9 @@ namespace Core {
  * Returns the list of members (both data and functions) of this class.
  */
 
-ClassSymbol::ClassSymbol(QObject *parent, const QString &name, const QString &description, Kind kind, TextRange range,
-                         TextRange selectionRange)
-    : Symbol(parent, name, description, kind, range, selectionRange)
+ClassSymbol::ClassSymbol(QObject *parent, const QString &name, const QString &description,
+                         const QString &importLocation, Kind kind, TextRange range, TextRange selectionRange)
+    : Symbol(parent, name, description, importLocation, kind, range, selectionRange)
     , m_members()
 {
 }

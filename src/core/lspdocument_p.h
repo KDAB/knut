@@ -33,8 +33,9 @@ private:
         HasSymbols = 0x01,
     };
 
-    const Core::Symbol *inferVariable(const QStringList &lines, TextRange range, Symbol::Kind kind);
-    const Core::Symbol *inferMethod(const QStringList &lines, TextRange range, Symbol::Kind kind);
+    QString inferImportLocation(QStringList &lines);
+    const Core::Symbol *inferVariable(QStringList lines, TextRange range, Symbol::Kind kind);
+    const Core::Symbol *inferMethod(QStringList lines, TextRange range, Symbol::Kind kind);
     const Core::Symbol *inferGenericSymbol(QStringList lines, TextRange range);
 
     LspDocument *const m_document;

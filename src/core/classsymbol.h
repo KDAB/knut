@@ -17,8 +17,8 @@ class ClassSymbol : public Symbol
 
 protected:
     friend class Symbol;
-    ClassSymbol(QObject *parent, const QString &name, const QString &description, Kind kind, TextRange range,
-                TextRange selectionRange);
+    ClassSymbol(QObject *parent, const QString &name, const QString &description, const QString &importLocation,
+                Kind kind, TextRange range, TextRange selectionRange);
 
     // mutable for lazy initialization
     mutable std::optional<QVector<Symbol *>> m_members;

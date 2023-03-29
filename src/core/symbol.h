@@ -22,6 +22,7 @@ class Symbol : public QObject
     Q_PROPERTY(Core::TextRange range READ range CONSTANT);
     Q_PROPERTY(Core::TextRange selectionRange READ selectionRange CONSTANT);
     Q_PROPERTY(QVector<Core::TextLocation> references READ references CONSTANT);
+    Q_PROPERTY(QString importLocation READ importLocation CONSTANT);
 
 public:
     enum Kind {
@@ -55,11 +56,12 @@ public:
     Q_ENUM(Kind)
 
 protected:
-    Symbol(QObject *parent, const QString &name, const QString &description, Kind kind, TextRange range,
-           TextRange selectionRange);
+    Symbol(QObject *parent, const QString &name, const QString &description, const QString &importLocation, Kind kind,
+           TextRange range, TextRange selectionRange);
 
     QString m_name;
     QString m_description;
+    QString m_importLocation;
     Kind m_kind;
     TextRange m_range;
     TextRange m_selectionRange;
@@ -70,8 +72,8 @@ public:
     static Symbol *makeSymbol(QObject *parent, const Lsp::DocumentSymbol &lspSymbol, TextRange range,
                               TextRange selectionRange, QString context = "");
 
-    static Symbol *makeSymbol(QObject *parent, const QString &name, const QString &description, Kind kind,
-                              TextRange range, TextRange selectionRange);
+    static Symbol *makeSymbol(QObject *parent, const QString &name, const QString &description,
+                              const QString &importLocation, Kind kind, TextRange range, TextRange selectionRange);
 
     Q_INVOKABLE bool isClass() const;
     Core::ClassSymbol *toClass();
@@ -81,6 +83,7 @@ public:
 
     QString name() const;
     QString description() const;
+    QString importLocation() const;
     Kind kind() const;
     Core::TextRange range() const;
     Core::TextRange selectionRange() const;

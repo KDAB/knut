@@ -42,7 +42,7 @@ private slots:
         QTest::addColumn<FunctionData>("functionData");
 
         // test #1
-        auto symbol1 = Core::Symbol::makeSymbol(this, "isHeaderSuffix", "static bool (const QString &)",
+        auto symbol1 = Core::Symbol::makeSymbol(this, "isHeaderSuffix", "static bool (const QString &)", "",
                                                 Core::Symbol::Kind::Method, Core::TextRange {.start = 0, .end = 1},
                                                 Core::TextRange {.start = 10, .end = 11});
 
@@ -55,7 +55,7 @@ private slots:
 
         // test #2
         auto symbol2 = Core::Symbol::makeSymbol(this, "candidateFileNames",
-                                                "static QStringList (const QString &, const QStringList &)",
+                                                "static QStringList (const QString &, const QStringList &)", "",
                                                 Core::Symbol::Kind::Method, Core::TextRange {.start = 2, .end = 3},
                                                 Core::TextRange {.start = 12, .end = 13});
         auto functionData2 =
@@ -67,9 +67,10 @@ private slots:
         QTest::newRow("test-case-method-two-args") << symbol2 << functionData2;
 
         // test #3
-        auto symbol3 = Core::Symbol::makeSymbol(
-            this, "CppDocument::correspondingHeaderSource", "QString (int, bool) const", Core::Symbol::Kind::Function,
-            Core::TextRange {.start = 4, .end = 5}, Core::TextRange {.start = 14, .end = 15});
+        auto symbol3 =
+            Core::Symbol::makeSymbol(this, "CppDocument::correspondingHeaderSource", "QString (int, bool) const", "",
+                                     Core::Symbol::Kind::Function, Core::TextRange {.start = 4, .end = 5},
+                                     Core::TextRange {.start = 14, .end = 15});
         auto functionData3 = FunctionData {
             .name = "CppDocument::correspondingHeaderSource",
             .returnType = "QString",
@@ -78,7 +79,7 @@ private slots:
         QTest::newRow("test-case-function-two-args-const") << symbol3 << functionData3;
 
         // test #4
-        auto symbol4 = Core::Symbol::makeSymbol(this, "Foo::Run", "static const int &(World &, PrioQ *) volatile",
+        auto symbol4 = Core::Symbol::makeSymbol(this, "Foo::Run", "static const int &(World &, PrioQ *) volatile", "",
                                                 Core::Symbol::Kind::Function, Core::TextRange {.start = 6, .end = 7},
                                                 Core::TextRange {.start = 16, .end = 17});
         auto functionData4 =
@@ -90,7 +91,7 @@ private slots:
         QTest::newRow("test-case-function-two-args-volatile") << symbol4 << functionData4;
 
         // test #5
-        auto symbol5 = Core::Symbol::makeSymbol(this, "CppDocument::openHeaderSource", "CppDocument *()",
+        auto symbol5 = Core::Symbol::makeSymbol(this, "CppDocument::openHeaderSource", "CppDocument *()", "",
                                                 Core::Symbol::Kind::Method, Core::TextRange {.start = 8, .end = 9},
                                                 Core::TextRange {.start = 18, .end = 19});
         auto functionData5 = FunctionData {.name = "CppDocument::openHeaderSource",
@@ -101,13 +102,13 @@ private slots:
 
         // test #6
         auto symbol6 =
-            Core::Symbol::makeSymbol(this, "EnumMember", "EnumMember = 0x01,", Core::Symbol::Kind::EnumMember,
+            Core::Symbol::makeSymbol(this, "EnumMember", "EnumMember = 0x01,", "", Core::Symbol::Kind::EnumMember,
                                      Core::TextRange {.start = 1, .end = 2}, Core::TextRange {.start = 11, .end = 12});
         auto functionData6 = FunctionData();
         QTest::newRow("test-case-non-method-or-function") << symbol6 << functionData6;
 
         // test #7
-        auto symbol7 = Core::Symbol::makeSymbol(this, "Foo::bar", "void (const QHash<QString, QString> &)",
+        auto symbol7 = Core::Symbol::makeSymbol(this, "Foo::bar", "void (const QHash<QString, QString> &)", "",
                                                 Core::Symbol::Kind::Method, Core::TextRange {.start = 3, .end = 4},
                                                 Core::TextRange {.start = 13, .end = 14});
         auto functionData7 = FunctionData {
@@ -237,13 +238,22 @@ private slots:
         QVERIFY(fun);
 
         QCOMPARE(fun->name(), functionData.name);
-        QCOMPARE(fun->returnType(), functionData.returnType);
+        // Some version of clang adds the "std::", some don't...
+        QCOMPARE(fun->returnType().remove("std::"), functionData.returnType.remove("std::"));
 
 #ifdef OBSOLETE_CLANGD
         QEXPECT_FAIL("constructor - header", "clangd only provides parameter info for clangd 14+", Continue);
         QEXPECT_FAIL("constructor - source", "clangd only provides parameter info for clangd 14+", Continue);
 #endif
-        QCOMPARE(fun->arguments(), functionData.arguments);
+
+        // Some version of clang adds the "std::", some don't...
+        auto removeStd = [](Core::FunctionArgument &arg) {
+            arg.type.remove("std::");
+        };
+        auto args = fun->arguments();
+        std::for_each(args.begin(), args.end(), removeStd);
+        std::for_each(functionData.arguments.begin(), functionData.arguments.end(), removeStd);
+        QCOMPARE(args, functionData.arguments);
         // do not compare the range here, subject to change in the file, not much sense to testing it.
     }
 

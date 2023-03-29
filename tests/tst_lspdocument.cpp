@@ -101,44 +101,44 @@ private slots:
         QTest::addColumn<Lsp::Position>("position");
 
         {
-            auto symbol = Core::Symbol::makeSymbol(this, "main", "int (int, char **)", Core::Symbol::Kind::Function,
+            auto symbol = Core::Symbol::makeSymbol(this, "main", "int (int, char **)", "", Core::Symbol::Kind::Function,
                                                    Core::TextRange {.start = 0, .end = 1},
                                                    Core::TextRange {.start = 10, .end = 11});
             QTest::newRow("main") << "main.cpp" << symbol << Lsp::Position {.line = 6, .character = 6};
         }
 
         {
-            auto symbol = Core::Symbol::makeSymbol(this, "argc", "int", Core::Symbol::Kind::Variable,
+            auto symbol = Core::Symbol::makeSymbol(this, "argc", "int", "", Core::Symbol::Kind::Variable,
                                                    Core::TextRange {.start = 0, .end = 1},
                                                    Core::TextRange {.start = 10, .end = 11});
             QTest::newRow("main - argc") << "main.cpp" << symbol << Lsp::Position {.line = 6, .character = 16};
         }
 
         {
-            auto symbol = Core::Symbol::makeSymbol(this, "argv", "char **", Core::Symbol::Kind::Variable,
+            auto symbol = Core::Symbol::makeSymbol(this, "argv", "char **", "", Core::Symbol::Kind::Variable,
                                                    Core::TextRange {.start = 0, .end = 1},
                                                    Core::TextRange {.start = 10, .end = 11});
             QTest::newRow("main - argc") << "main.cpp" << symbol << Lsp::Position {.line = 6, .character = 27};
         }
 
         {
-            auto symbol = Core::Symbol::makeSymbol(this, "object", "class MyObject", Core::Symbol::Kind::Variable,
-                                                   Core::TextRange {.start = 0, .end = 1},
+            auto symbol = Core::Symbol::makeSymbol(this, "object", "class MyObject", "\"myobject.h\"",
+                                                   Core::Symbol::Kind::Variable, Core::TextRange {.start = 0, .end = 1},
                                                    Core::TextRange {.start = 10, .end = 11});
             QTest::newRow("main - object variable")
                 << "main.cpp" << symbol << Lsp::Position {.line = 7, .character = 16};
         }
 
         {
-            auto symbol = Core::Symbol::makeSymbol(this, "sayMessage", "void ()", Core::Symbol::Kind::Method,
-                                                   Core::TextRange {.start = 0, .end = 1},
+            auto symbol = Core::Symbol::makeSymbol(this, "sayMessage", "void ()", "\"myobject.h\"",
+                                                   Core::Symbol::Kind::Method, Core::TextRange {.start = 0, .end = 1},
                                                    Core::TextRange {.start = 10, .end = 11});
             QTest::newRow("main - object.sayMessage()")
                 << "main.cpp" << symbol << Lsp::Position {.line = 9, .character = 14};
         }
 
         {
-            auto symbol = Core::Symbol::makeSymbol(this, "freeFunction", "int (unsigned int, long long)",
+            auto symbol = Core::Symbol::makeSymbol(this, "freeFunction", "int (unsigned int, long long)", "",
                                                    Core::Symbol::Kind::Function, Core::TextRange {.start = 0, .end = 1},
                                                    Core::TextRange {.start = 10, .end = 11});
             QTest::newRow("freeFunction - declaration")
@@ -146,7 +146,7 @@ private slots:
         }
 
         {
-            auto symbol = Core::Symbol::makeSymbol(this, "freeFunction", "int (unsigned int, long long)",
+            auto symbol = Core::Symbol::makeSymbol(this, "freeFunction", "int (unsigned int, long long)", "",
                                                    Core::Symbol::Kind::Function, Core::TextRange {.start = 0, .end = 1},
                                                    Core::TextRange {.start = 10, .end = 11});
             QTest::newRow("main - freeFunction call")
@@ -154,23 +154,23 @@ private slots:
         }
 
         {
-            auto symbol = Core::Symbol::makeSymbol(this, "cout", "std::ostream", Core::Symbol::Kind::Variable,
-                                                   Core::TextRange {.start = 0, .end = 1},
+            auto symbol = Core::Symbol::makeSymbol(this, "cout", "std::ostream", "<iostream>",
+                                                   Core::Symbol::Kind::Variable, Core::TextRange {.start = 0, .end = 1},
                                                    Core::TextRange {.start = 10, .end = 11});
             QTest::newRow("MyObject::sayMessage - cout")
                 << "myobject.cpp" << symbol << Lsp::Position {.line = 13, .character = 10};
         }
 
         {
-            auto symbol = Core::Symbol::makeSymbol(this, "std", "namespace std {\n}", Core::Symbol::Kind::Namespace,
-                                                   Core::TextRange {.start = 0, .end = 1},
-                                                   Core::TextRange {.start = 10, .end = 11});
+            auto symbol = Core::Symbol::makeSymbol(
+                this, "std", "namespace std {\n}", "<iostream>", Core::Symbol::Kind::Namespace,
+                Core::TextRange {.start = 0, .end = 1}, Core::TextRange {.start = 10, .end = 11});
             QTest::newRow("MyObject::sayMessage - cout")
                 << "myobject.cpp" << symbol << Lsp::Position {.line = 13, .character = 7};
         }
 
         {
-            auto symbol = Core::Symbol::makeSymbol(this, "MyObject::m_message", "std::string",
+            auto symbol = Core::Symbol::makeSymbol(this, "MyObject::m_message", "std::string", "\"myobject.h\"",
                                                    Core::Symbol::Kind::Field, Core::TextRange {.start = 0, .end = 1},
                                                    Core::TextRange {.start = 10, .end = 11});
             QTest::newRow("MyObject::m_message")
@@ -178,8 +178,8 @@ private slots:
         }
 
         {
-            auto symbol = Core::Symbol::makeSymbol(this, "m_enum", "enum MyObject::MyEnum", Core::Symbol::Kind::Field,
-                                                   Core::TextRange {.start = 0, .end = 1},
+            auto symbol = Core::Symbol::makeSymbol(this, "m_enum", "enum MyObject::MyEnum", "\"myobject.h\"",
+                                                   Core::Symbol::Kind::Field, Core::TextRange {.start = 0, .end = 1},
                                                    Core::TextRange {.start = 10, .end = 11});
             QTest::newRow("MyObject::sayMessage - m_enum")
                 << "myobject.cpp" << symbol << Lsp::Position {.line = 17, .character = 7};
@@ -188,15 +188,15 @@ private slots:
         {
             auto symbol = Core::Symbol::makeSymbol(
                 this, "C", "Type: enum MyObject::MyEnum\nValue = 3\n\n// In MyObject::MyEnum\npublic: C = A | B",
-                Core::Symbol::Kind::Enum, Core::TextRange {.start = 0, .end = 1},
+                "\"myobject.h\"", Core::Symbol::Kind::Enum, Core::TextRange {.start = 0, .end = 1},
                 Core::TextRange {.start = 10, .end = 11});
             QTest::newRow("MyObject::sayMessage - MyEnum::C")
                 << "myobject.cpp" << symbol << Lsp::Position {.line = 17, .character = 22};
         }
 
         {
-            auto symbol = Core::Symbol::makeSymbol(this, "MyObject", "class MyObject {}", Core::Symbol::Kind::Class,
-                                                   Core::TextRange {.start = 0, .end = 1},
+            auto symbol = Core::Symbol::makeSymbol(this, "MyObject", "class MyObject {}", "\"myobject.h\"",
+                                                   Core::Symbol::Kind::Class, Core::TextRange {.start = 0, .end = 1},
                                                    Core::TextRange {.start = 10, .end = 11});
             QTest::newRow("main -  class MyObject")
                 << "main.cpp" << symbol << Lsp::Position {.line = 7, .character = 7};
@@ -221,9 +221,14 @@ private slots:
 
         auto actual = document->symbolUnderCursor();
         QVERIFY(actual);
-        QCOMPARE(symbol->name(), actual->name());
-        QCOMPARE(symbol->description(), actual->description());
-        QCOMPARE(symbol->kind(), actual->kind());
+        QCOMPARE(actual->name(), symbol->name());
+        // Some version of clang gives the full type "enum MyObject::MyEnum", other not "MyEnum"
+        QVERIFY(symbol->description().contains(actual->description()));
+        QCOMPARE(actual->kind(), symbol->kind());
+        // clangd 17 provides an import location, if it exists, check that it's correct!
+        if (!actual->importLocation().isEmpty()) {
+            QCOMPARE(actual->importLocation(), symbol->importLocation());
+        }
 
         // Don't compare the actual to the symbols range. That might be too brittle when the test file changes.
         // Just check that the cursor is actually in the symbol range.
@@ -496,7 +501,6 @@ private slots:
         lspdocument->gotoLine(18);
         lspdocument->selectNextLine(20);
         lspdocument->selectEndOfLine();
-        spdlog::debug("{}", lspdocument->selectedText().toStdString());
 
         auto range = lspdocument->createRangeMark();
 

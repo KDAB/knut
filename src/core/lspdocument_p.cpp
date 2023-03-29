@@ -71,7 +71,7 @@ const QVector<Symbol *> &LspCache::symbols()
     return m_symbols;
 }
 
-const Core::Symbol *LspCache::inferVariable(const QStringList &lines, TextRange range, Symbol::Kind kind)
+const Core::Symbol *LspCache::inferVariable(QStringList lines, TextRange range, Symbol::Kind kind)
 {
     static QString typePrefix("Type: ");
     auto words = lines.first().split(' ');
@@ -91,10 +91,25 @@ const Core::Symbol *LspCache::inferVariable(const QStringList &lines, TextRange 
         }
     }
 
-    return Symbol::makeSymbol(m_document, name, type, kind, range, range);
+    auto importLocation = inferImportLocation(lines);
+
+    return Symbol::makeSymbol(m_document, name, type, importLocation, kind, range, range);
 }
 
-const Core::Symbol *LspCache::inferMethod(const QStringList &lines, TextRange range, Symbol::Kind kind)
+QString LspCache::inferImportLocation(QStringList &lines)
+{
+    auto line = kdalgorithms::mutable_find_if(lines, [](const QString &line) {
+        return line.startsWith("provided by ");
+    });
+    if (line.has_result()) {
+        QString importLocation = line->remove(0, 12);
+        lines.removeOne(*line);
+        return importLocation;
+    }
+    return "";
+}
+
+const Core::Symbol *LspCache::inferMethod(QStringList lines, TextRange range, Symbol::Kind kind)
 {
     auto words = lines.first().split(' ');
 
@@ -105,7 +120,9 @@ const Core::Symbol *LspCache::inferMethod(const QStringList &lines, TextRange ra
     words.removeFirst();
     auto name = words.join(' ');
 
-    return Symbol::makeSymbol(m_document, name, "" /* fill description later */, kind, range, range);
+    auto importLocation = inferImportLocation(lines);
+
+    return Symbol::makeSymbol(m_document, name, "" /* fill description later */, importLocation, kind, range, range);
 }
 
 const Core::Symbol *LspCache::inferGenericSymbol(QStringList lines, TextRange range)
@@ -129,12 +146,14 @@ const Core::Symbol *LspCache::inferGenericSymbol(QStringList lines, TextRange ra
     auto name = words.join(' ');
 
     lines.removeFirst();
+    auto importLocation = inferImportLocation(lines);
+
     while (!lines.isEmpty() && lines.first().isEmpty()) {
         lines.removeFirst();
     }
     auto description = lines.join('\n');
 
-    return Symbol::makeSymbol(m_document, name, description, kind, range, range);
+    return Symbol::makeSymbol(m_document, name, description, importLocation, kind, range, range);
 }
 
 const Core::Symbol *LspCache::inferSymbol(const QString &hoverText, TextRange range)

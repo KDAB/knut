@@ -82,9 +82,9 @@ FunctionArgument FunctionArgument::fromHover(const QString &parameter, Document:
  * whitespace but everything else like comments.
  */
 
-FunctionSymbol::FunctionSymbol(QObject *parent, const QString &name, const QString &description, Kind kind,
-                               TextRange range, TextRange selectionRange)
-    : Symbol(parent, name, description, kind, range, selectionRange)
+FunctionSymbol::FunctionSymbol(QObject *parent, const QString &name, const QString &description,
+                               const QString &importLocation, Kind kind, TextRange range, TextRange selectionRange)
+    : Symbol(parent, name, description, importLocation, kind, range, selectionRange)
     , m_returnType {}
     , m_arguments {}
 {
