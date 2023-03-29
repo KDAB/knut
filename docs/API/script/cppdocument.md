@@ -23,11 +23,12 @@ Inherited properties: [LspDocument properties](../script/lspdocument.md#properti
 
 | | Name |
 |-|-|
+||**[addMember](#addMember)**(string member, string className, AccessSpecifier)|
 ||**[commentSelection](#commentSelection)**()|
 |string |**[correspondingHeaderSource](#correspondingHeaderSource)**()|
-|void |**[deleteMethod](#deleteMethod)**()|
-|void |**[deleteMethod](#deleteMethod)**(string methodName)|
 |void |**[deleteMethod](#deleteMethod)**(string methodName, string signature)|
+|void |**[deleteMethod](#deleteMethod)**(string methodName)|
+|void |**[deleteMethod](#deleteMethod)**()|
 |int |**[gotoBlockEnd](#gotoBlockEnd)**(int count)|
 |int |**[gotoBlockStart](#gotoBlockStart)**(int count)|
 ||**[insertCodeInMethod](#insertCodeInMethod)**(string methodName, string code, Position insertAt)|
@@ -51,6 +52,22 @@ Return true if the current document is a header.
 
 ## Method Documentation
 
+#### <a name="addMember"></a>**addMember**(string member, string className, AccessSpecifier)
+
+!!! note ""
+    Since: Knut 1.1
+
+Adds a new member in a specific class under the specefic access specifier.
+
+If the class does not exist, log error can't find the class, but if the
+specifier is valid but does not exist in the class, we will add that specifier in the end of the
+class and add the member under it.
+The specifier can take these values:
+
+- `CppDocument.Public`
+- `CppDocument.Protected`
+- `CppDocument.Private`
+
 #### <a name="commentSelection"></a>**commentSelection**()
 
 Comments the selected lines (or current line if there's no selection) in current document.
@@ -66,20 +83,6 @@ Comments the selected lines (or current line if there's no selection) in current
 #### <a name="correspondingHeaderSource"></a>string **correspondingHeaderSource**()
 
 Returns the corresponding source or header file path.
-
-#### <a name="deleteMethod"></a>void **deleteMethod**()
-
-Deletes the method/function at the current cursor position.
-Overloads of the function will not be deleted!
-
-Also see: CppDocument::deleteMethod(const QString& methodName, const QString& signature)
-
-#### <a name="deleteMethod"></a>void **deleteMethod**(string methodName)
-
-Deletes a method of the specified `methodName`, without matching a specific `signature`.
-Therefore, all overloads of the function will be deleted.
-
-Also see: CppDocument::deleteMethod(string methodName, string signature)
 
 #### <a name="deleteMethod"></a>void **deleteMethod**(string methodName, string signature)
 

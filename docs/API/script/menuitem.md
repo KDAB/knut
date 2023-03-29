@@ -3,7 +3,7 @@
 Description of a RC file menu item. [More...](#detailed-description)
 
 ```qml
-import Script.Rc 1.0
+import Script 1.0
 ```
 
 <table>
@@ -14,7 +14,7 @@ import Script.Rc 1.0
 
 | | Name |
 |-|-|
-|array<[MenuItem](../script.rc/menuitem.md)>|**[children](#children)**|
+|array<[MenuItem](../script/menuitem.md)>|**[children](#children)**|
 |string|**[id](#id)**|
 |bool|**[isAction](#isAction)**|
 |bool|**[isSeparator](#isSeparator)**|
@@ -23,7 +23,7 @@ import Script.Rc 1.0
 
 ## Property Documentation
 
-#### <a name="children"></a>array<[MenuItem](../script.rc/menuitem.md)> **children**
+#### <a name="children"></a>array<[MenuItem](../script/menuitem.md)> **children**
 
 This property holds the children of the menu item, in case this one is another level of menu.
 

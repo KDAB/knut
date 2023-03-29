@@ -145,4 +145,4 @@ add_subdirectory(tools)
 add_subdirectory(tests)
 
 file(GLOB DOCS_FILES README.md mkdocs.yml docs/*.md docs/contributing/*.md docs/getting-started/*.md)
-#add_custom_target(docs ALL cpp2doc SOURCES ${DOCS_FILES})
+add_custom_target(docs ALL cpp2doc SOURCES ${DOCS_FILES})

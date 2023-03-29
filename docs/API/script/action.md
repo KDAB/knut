@@ -3,7 +3,7 @@
 Description of a RC file action. [More...](#detailed-description)
 
 ```qml
-import Script.Rc 1.0
+import Script 1.0
 ```
 
 <table>
@@ -17,7 +17,7 @@ import Script.Rc 1.0
 |bool|**[checked](#checked)**|
 |string|**[iconPath](#iconPath)**|
 |string|**[id](#id)**|
-|array<[Shortcut](../script.rc/shortcut.md)>|**[shortcuts](#shortcuts)**|
+|array<[Shortcut](../script/shortcut.md)>|**[shortcuts](#shortcuts)**|
 |string|**[statusTip](#statusTip)**|
 |string|**[toolTip](#toolTip)**|
 
@@ -35,7 +35,7 @@ This property holds the fileName for the icon of the action.
 
 This property holds the id of the action.
 
-#### <a name="shortcuts"></a>array<[Shortcut](../script.rc/shortcut.md)> **shortcuts**
+#### <a name="shortcuts"></a>array<[Shortcut](../script/shortcut.md)> **shortcuts**
 
 This property holds all the shortcuts associated with the action.
 

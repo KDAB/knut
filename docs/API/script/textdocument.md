@@ -33,8 +33,8 @@ Inherited properties: [Document properties](../script/document.md#properties)
 |-|-|
 ||**[copy](#copy)**()|
 |[Mark](../script/mark.md) |**[createMark](#createMark)**(int pos = -1)|
-|[RangeMark](../script/rangemark.md) |**[createRangeMark](#createRangeMark)**()|
 |[RangeMark](../script/rangemark.md) |**[createRangeMark](#createRangeMark)**(int start, int end)|
+|[RangeMark](../script/rangemark.md) |**[createRangeMark](#createRangeMark)**()|
 ||**[cut](#cut)**()|
 ||**[deleteEndOfLine](#deleteEndOfLine)**()|
 ||**[deleteEndOfWord](#deleteEndOfWord)**()|
@@ -66,13 +66,14 @@ Inherited properties: [Document properties](../script/document.md#properties)
 ||**[indent](#indent)**(int count)|
 ||**[insert](#insert)**(string text)|
 ||**[insertAtLine](#insertAtLine)**(string text, int line = -1)|
+||**[insertAtPosition](#insertAtPosition)**(string text, int pos)|
 ||**[paste](#paste)**()|
 ||**[redo](#redo)**(int count)|
 ||**[remove](#remove)**(int length)|
 ||**[removeIndent](#removeIndent)**(int count)|
+||**[replace](#replace)**([TextRange](../script/textrange.md) range, string text)|
 ||**[replace](#replace)**(int length, string text)|
 ||**[replace](#replace)**(int from, int to, string text)|
-||**[replace](#replace)**([TextRange](../script/textrange.md) range, string text)|
 |bool |**[replaceAll](#replaceAll)**(string before, string after, int options = TextDocument.NoFindFlags)|
 |bool |**[replaceAllRegexp](#replaceAllRegexp)**(string regexp, string after, int options = TextDocument.NoFindFlags)|
 |bool |**[replaceAllRegexpInRange](#replaceAllRegexpInRange)**(string regexp, string after, [RangeMark](../script/rangemark.md) range, int options = TextDocument.NoFindFlags)|
@@ -155,6 +156,13 @@ Copies the selected text.
 Creates a mark at the given position `pos`. If `pos` is -1, it will create a mark at the
 current position.
 
+#### <a name="createRangeMark"></a>[RangeMark](../script/rangemark.md) **createRangeMark**(int start, int end)
+
+!!! note ""
+    Since: Knut 1.1
+
+Creates a range mark from `start` to `end`.
+
 #### <a name="createRangeMark"></a>[RangeMark](../script/rangemark.md) **createRangeMark**()
 
 !!! note ""
@@ -163,13 +171,6 @@ current position.
 Creates a range mark from the current selection.
 
 Note: if there is no selection, the range mark will span an empty range!
-
-#### <a name="createRangeMark"></a>[RangeMark](../script/rangemark.md) **createRangeMark**(int start, int end)
-
-!!! note ""
-    Since: Knut 1.1
-
-Creates a range mark from `start` to `end`.
 
 #### <a name="cut"></a>**cut**()
 
@@ -308,6 +309,10 @@ Inserts the string `text` at the current position. If some text is selected it w
 
 Inserts the string `text` at `line`. If `line` is -1, insert the text at the current position. `line` is 1-based.
 
+#### <a name="insertAtPosition"></a>**insertAtPosition**(string text, int pos)
+
+Inserts the string `text` at `pos`.
+
 #### <a name="paste"></a>**paste**()
 
 Pastes text in the clipboard.
@@ -324,6 +329,10 @@ Remove `length` character from the current position.
 
 Indents the current line `count` times. If there's a selection, indent all lines in the selection.
 
+#### <a name="replace"></a>**replace**([TextRange](../script/textrange.md) range, string text)
+
+Replaces the text in the range `range` with the string `text`.
+
 #### <a name="replace"></a>**replace**(int length, string text)
 
 Replaces `length` characters from the current position with the string `text`.
@@ -331,10 +340,6 @@ Replaces `length` characters from the current position with the string `text`.
 #### <a name="replace"></a>**replace**(int from, int to, string text)
 
 Replaces the text from `from` to `to` with the string `text`.
-
-#### <a name="replace"></a>**replace**([TextRange](../script/textrange.md) range, string text)
-
-Replaces the text in the range `range` with the string `text`.
 
 #### <a name="replaceAll"></a>bool **replaceAll**(string before, string after, int options = TextDocument.NoFindFlags)
 

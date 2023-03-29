@@ -3,7 +3,7 @@
 Description of a RC file toolbar. [More...](#detailed-description)
 
 ```qml
-import Script.Rc 1.0
+import Script 1.0
 ```
 
 <table>
@@ -15,7 +15,7 @@ import Script.Rc 1.0
 | | Name |
 |-|-|
 |array<string>|**[actionIds](#actionIds)**|
-|array<[ToolBarItem](../script.rc/toolbaritem.md)>|**[children](#children)**|
+|array<[ToolBarItem](../script/toolbaritem.md)>|**[children](#children)**|
 |size|**[iconSize](#iconSize)**|
 |string|**[id](#id)**|
 
@@ -34,7 +34,7 @@ import Script.Rc 1.0
 
 This property holds all action ids used in the toolbar.
 
-#### <a name="children"></a>array<[ToolBarItem](../script.rc/toolbaritem.md)> **children**
+#### <a name="children"></a>array<[ToolBarItem](../script/toolbaritem.md)> **children**
 
 This property holds the list of toolbar items inside in the toolbar.
 
