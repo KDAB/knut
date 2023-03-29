@@ -18,6 +18,7 @@ import Script 1.0
 |array<[Asset](../script/asset.md)>|**[actions](#actions)**|
 |array<[Asset](../script/asset.md)>|**[assets](#assets)**|
 |array<string>|**[dialogIds](#dialogIds)**|
+|string|**[language](#language)**|
 |array<string>|**[menuIds](#menuIds)**|
 |array<[Menu](../script/menu.md)>|**[menus](#menus)**|
 |array<string>|**[stringIds](#stringIds)**|
@@ -37,6 +38,7 @@ import Script 1.0
 ||**[convertAssets](#convertAssets)**(int flags)|
 |[Widget](../script/widget.md) |**[dialog](#dialog)**(string id, int flags, real scaleX, real scaleY)|
 |[Menu](../script/menu.md) |**[menu](#menu)**(string id)|
+|bool |**[mergeAllLanguages](#mergeAllLanguages)**(string newLanguage = "default")|
 |bool |**[previewDialog](#previewDialog)**([Widget](../script/widget.md) dialog)|
 |string |**[text](#text)**(string id)|
 |[ToolBar](../script/toolbar.md) |**[toolBar](#toolBar)**(string id)|
@@ -64,6 +66,11 @@ This read-only property holds the list of assets in the RC file.
 #### <a name="dialogIds"></a>array<string> **dialogIds**
 
 This read-only property holds the list of dialog's ids in the RC file.
+
+#### <a name="language"></a>string **language**
+
+This property holds the current language used for the data in the RC file. All other properties or method will work
+on the data for this specific language.
 
 #### <a name="menuIds"></a>array<string> **menuIds**
 
@@ -159,6 +166,10 @@ Flags could be:
 #### <a name="menu"></a>[Menu](../script/menu.md) **menu**(string id)
 
 Returns the menu for the given `id`.
+
+#### <a name="mergeAllLanguages"></a>bool **mergeAllLanguages**(string newLanguage = "default")
+
+Merges all languages data into one.
 
 #### <a name="previewDialog"></a>bool **previewDialog**([Widget](../script/widget.md) dialog)
 

@@ -8,6 +8,7 @@ set(PROJECT_SOURCES
     rcfile.h
     rc_convert.cpp
     rc_parse.cpp
+    rc_utility.cpp
     rc_write.cpp
     stream.h
     stream.cpp
@@ -16,6 +17,7 @@ set(PROJECT_SOURCES
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
 target_link_libraries(${PROJECT_NAME}
     spdlog::spdlog
+    kdalgorithms
     Qt${QT_VERSION_MAJOR}::Core
     Qt${QT_VERSION_MAJOR}::Gui
 )

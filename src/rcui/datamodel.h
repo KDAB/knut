@@ -4,7 +4,7 @@
 #include <QStringList>
 
 namespace RcCore {
-struct Data;
+struct RcFile;
 }
 
 namespace RcUi {
@@ -17,10 +17,11 @@ public:
     enum Roles {
         TypeRole = Qt::UserRole,
         IndexRole,
+        EmptyRole,
     };
 
 public:
-    explicit DataModel(const RcCore::Data &data, QObject *parent = nullptr);
+    explicit DataModel(const RcCore::RcFile &rcFile, QString language, QObject *parent = nullptr);
 
     QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
     QModelIndex parent(const QModelIndex &child) const override;
@@ -30,8 +31,11 @@ public:
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
+    void setLanguage(const QString &language);
+
 private:
-    const RcCore::Data &m_data;
+    const RcCore::RcFile &m_rcFile;
+    QString m_language;
 };
 
 } // namespace RcUi

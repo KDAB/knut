@@ -3,7 +3,7 @@
 #include "document.h"
 #include "settings.h"
 
-#include "rccore/data.h"
+#include "rccore/rcfile.h"
 
 namespace Core {
 
@@ -21,6 +21,7 @@ class RcDocument : public Document
     Q_PROPERTY(QStringList acceleratorIds READ acceleratorIds NOTIFY fileNameChanged)
     Q_PROPERTY(QStringList toolbarIds READ toolbarIds NOTIFY fileNameChanged)
     Q_PROPERTY(QStringList stringIds READ stringIds NOTIFY fileNameChanged)
+    Q_PROPERTY(QString language READ language WRITE setLanguage NOTIFY languageChanged)
 
 public:
     enum ConversionFlag {
@@ -73,7 +74,10 @@ public:
     QList<RcCore::String> strings() const;
     Q_INVOKABLE QString string(const QString &id) const;
 
-    const RcCore::Data &data() const;
+    QString language() const;
+    void setLanguage(const QString &language);
+
+    const RcCore::RcFile &file() const;
 
 public slots:
     void convertAssets(int flags = DEFAULT_VALUE(ConversionFlag, RcAssetFlags));
@@ -82,13 +86,20 @@ public slots:
     bool writeAssetsToQrc(const QString &fileName);
     bool writeDialogToUi(const RcCore::Widget &dialog, const QString &fileName);
     void previewDialog(const RcCore::Widget &dialog) const;
+    void mergeAllLanguages(const QString &language = "default");
+
+signals:
+    void languageChanged();
 
 protected:
     bool doSave(const QString &fileName) override;
     bool doLoad(const QString &fileName) override;
 
 private:
-    RcCore::Data m_data;
+    const RcCore::Data &data() const;
+
+    RcCore::RcFile m_rcFile;
+    QString m_language;
     QVector<RcCore::Asset> m_cacheAssets;
     QVector<RcCore::Action> m_cacheActions;
 };

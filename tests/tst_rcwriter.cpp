@@ -18,7 +18,8 @@ private slots:
     void testQrc()
     {
         Test::LogSilencer ls;
-        Data data = parse(Test::testDataPath() + "/rcfiles/2048Game/2048Game.rc");
+        RcFile rcFile = parse(Test::testDataPath() + "/rcfiles/2048Game/2048Game.rc");
+        auto data = rcFile.data.value("LANG_ENGLISH;SUBLANG_ENGLISH_US");
 
         // Defaut settings test
         {
@@ -54,15 +55,17 @@ private slots:
     void testConvertDialog()
     {
         Test::LogSilencer ls;
-        Data data = parse(Test::testDataPath() + "/rcfiles/2048Game/2048Game.rc");
-        auto result = convertDialog(data, data.dialogs.value(1), RcCore::Widget::AllFlags);
+        RcFile rcFile = parse(Test::testDataPath() + "/rcfiles/2048Game/2048Game.rc");
+        auto usData = rcFile.data.value("LANG_ENGLISH;SUBLANG_ENGLISH_US");
+        auto result = convertDialog(usData, usData.dialogs.first(), RcCore::Widget::AllFlags);
 
         QCOMPARE(result.id, "IDD_ABOUTBOX");
         QCOMPARE(result.geometry, QRect(0, 0, 255, 103));
         QCOMPARE(result.className, "QDialog");
         QCOMPARE(result.properties["windowTitle"].toString(), "About 2048Game");
 
-        result = convertDialog(data, data.dialogs.first(), RcCore::Widget::AllFlags);
+        auto ukData = rcFile.data.value("LANG_UKRAINIAN;SUBLANG_DEFAULT");
+        result = convertDialog(ukData, ukData.dialogs.first(), RcCore::Widget::AllFlags);
         QCOMPARE(result.children.size(), 6);
         auto item = result.children.at(2);
         QCOMPARE(item.className, "QPushButton");
@@ -77,7 +80,8 @@ private slots:
     void testWriteDialog()
     {
         Test::LogSilencer ls;
-        Data data = parse(Test::testDataPath() + "/rcfiles/cryEdit/CryEdit.rc");
+        RcFile rcFile = parse(Test::testDataPath() + "/rcfiles/cryEdit/CryEdit.rc");
+        auto data = rcFile.data.value("LANG_ENGLISH;SUBLANG_ENGLISH_US");
 
         QUiLoader loader;
         QSet<QString> dialogIds = {
@@ -111,7 +115,8 @@ private slots:
     void testConvertAction()
     {
         Test::LogSilencer ls;
-        Data data = parse(Test::testDataPath() + "/rcfiles/2048Game/2048Game.rc");
+        RcFile rcFile = parse(Test::testDataPath() + "/rcfiles/2048Game/2048Game.rc");
+        auto data = rcFile.data.value("LANG_ENGLISH;SUBLANG_ENGLISH_US");
 
         // MainFrame menu and shortcuts and toolbar
         auto result = convertActions(data);

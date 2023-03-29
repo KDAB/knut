@@ -1,6 +1,6 @@
 #pragma once
 
-#include "rccore/data.h"
+#include "rccore/rcfile.h"
 
 #include <QAbstractListModel>
 
@@ -16,7 +16,7 @@ public:
     };
 
 public:
-    explicit IncludeModel(const RcCore::Data &data, QObject *parent = nullptr);
+    explicit IncludeModel(const RcCore::RcFile &rcFile, QObject *parent = nullptr);
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;

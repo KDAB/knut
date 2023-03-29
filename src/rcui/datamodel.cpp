@@ -1,6 +1,6 @@
 #include "datamodel.h"
 
-#include "rccore/data.h"
+#include "rccore/rcfile.h"
 #include "rcviewer_global.h"
 
 using namespace RcCore;
@@ -13,10 +13,12 @@ const char *DataTypeStr[] = {
 
 namespace RcUi {
 
-DataModel::DataModel(const Data &data, QObject *parent)
+DataModel::DataModel(const RcCore::RcFile &rcFile, QString language, QObject *parent)
     : QAbstractItemModel(parent)
-    , m_data(data)
+    , m_rcFile(rcFile)
+    , m_language(std::move(language))
 {
+    Q_ASSERT(m_rcFile.data.contains(m_language));
 }
 
 QModelIndex DataModel::index(int row, int column, const QModelIndex &parent) const
@@ -41,22 +43,23 @@ QModelIndex DataModel::parent(const QModelIndex &child) const
 
 int DataModel::rowCount(const QModelIndex &parent) const
 {
-    if (!m_data.isValid)
+    if (!m_rcFile.isValid)
         return 0;
     if (!parent.isValid())
         return static_cast<int>(std::size(DataTypeStr));
 
-    int data = static_cast<int>(parent.internalId());
-    if (data == NoData) {
+    const int dataType = static_cast<int>(parent.internalId());
+    if (dataType == NoData) {
+        const auto &data = m_rcFile.data.value(m_language);
         switch (parent.row()) {
         case DialogData:
-            return m_data.dialogs.size();
+            return data.dialogs.size();
         case MenuData:
-            return m_data.menus.size();
+            return data.menus.size();
         case ToolBarData:
-            return m_data.toolBars.size();
+            return data.toolBars.size();
         case AcceleratorData:
-            return m_data.acceleratorTables.size();
+            return data.acceleratorTables.size();
         case AssetData:
         case IconData:
         case StringData:
@@ -70,7 +73,7 @@ int DataModel::rowCount(const QModelIndex &parent) const
 int DataModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    if (!m_data.isValid)
+    if (!m_rcFile.isValid)
         return 0;
     return 1;
 }
@@ -79,35 +82,36 @@ QVariant DataModel::data(const QModelIndex &index, int role) const
 {
     Q_ASSERT(checkIndex(index, CheckIndexOption::IndexIsValid));
 
+    const int dataType = static_cast<int>(index.internalId());
+    const auto &data = m_rcFile.data.value(m_language);
+
     if (role == Qt::DisplayRole) {
-        int data = static_cast<int>(index.internalId());
-        if (data == NoData)
+        if (dataType == NoData)
             return QLatin1String(DataTypeStr[index.row()]);
 
-        switch (data) {
+        switch (dataType) {
         case DialogData:
-            return m_data.dialogs.value(index.row()).id;
+            return data.dialogs.value(index.row()).id;
         case MenuData:
-            return m_data.menus.value(index.row()).id;
+            return data.menus.value(index.row()).id;
         case ToolBarData:
-            return m_data.toolBars.value(index.row()).id;
+            return data.toolBars.value(index.row()).id;
         case AcceleratorData:
-            return m_data.acceleratorTables.value(index.row()).id;
+            return data.acceleratorTables.value(index.row()).id;
         }
         return {};
     }
 
     if (role == LineRole) {
-        const int data = static_cast<int>(index.internalId());
-        switch (data) {
+        switch (dataType) {
         case DialogData:
-            return m_data.dialogs.value(index.row()).line;
+            return data.dialogs.value(index.row()).line;
         case MenuData:
-            return m_data.menus.value(index.row()).line;
+            return data.menus.value(index.row()).line;
         case ToolBarData:
-            return m_data.toolBars.value(index.row()).line;
+            return data.toolBars.value(index.row()).line;
         case AcceleratorData:
-            return m_data.acceleratorTables.value(index.row()).line;
+            return data.acceleratorTables.value(index.row()).line;
         case AssetData:
         case IconData:
         case StringData:
@@ -118,20 +122,48 @@ QVariant DataModel::data(const QModelIndex &index, int role) const
         return -1;
     }
 
+    if (role == EmptyRole && dataType == NoData) {
+        switch (index.row()) {
+        case DialogData:
+            return data.dialogs.isEmpty();
+        case MenuData:
+            return data.menus.isEmpty();
+        case ToolBarData:
+            return data.toolBars.isEmpty();
+        case AcceleratorData:
+            return data.acceleratorTables.isEmpty();
+        case AssetData:
+            return data.assets.isEmpty();
+        case IconData:
+            return data.icons.isEmpty();
+        case StringData:
+            return data.strings.isEmpty();
+        case IncludeData:
+            return m_rcFile.includes.isEmpty();
+        case NoData:
+            break;
+        }
+    }
+
     if (role == TypeRole) {
-        const int data = static_cast<int>(index.internalId());
-        if (data == NoData)
+        if (dataType == NoData)
             return index.row();
         return index.parent().row();
     }
 
     if (role == IndexRole) {
-        const int data = static_cast<int>(index.internalId());
-        if (data == NoData)
+        if (dataType == NoData)
             return -1;
         return index.row();
     }
     return {};
+}
+
+void DataModel::setLanguage(const QString &language)
+{
+    beginResetModel();
+    m_language = language;
+    endResetModel();
 }
 
 } // namespace RcUi

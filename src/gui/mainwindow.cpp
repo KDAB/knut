@@ -650,8 +650,10 @@ static QWidget *widgetForDocument(Core::Document *document)
         return textView;
     }
     case Core::Document::Type::Rc: {
+        auto rcDocument = qobject_cast<Core::RcDocument *>(document);
         auto rcview = new RcUi::RcFileView();
-        rcview->setRcFile(qobject_cast<Core::RcDocument *>(document)->data());
+        rcview->setRcFile(rcDocument->file());
+        QObject::connect(rcview, &RcUi::RcFileView::languageChanged, rcDocument, &Core::RcDocument::setLanguage);
         GuiSettings::setupDocumentTextEdit(rcview->textEdit(), document->fileName());
         return rcview;
     }

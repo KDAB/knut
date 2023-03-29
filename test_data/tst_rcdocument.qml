@@ -7,6 +7,7 @@ TestCase {
 
     property var document: RcDocument {
         fileName: Dir.currentScriptPath + "/rcfiles/2048Game/2048Game.rc"
+        Component.onCompleted: mergeAllLanguages()
     }
 
     function test_assets() {

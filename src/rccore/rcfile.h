@@ -8,8 +8,25 @@ class QIODevice;
 
 namespace RcCore {
 
+struct RcFile
+{
+    QString fileName;
+    QString content;
+    bool isValid = false;
+
+    // Global data
+    QVector<Data::Include> includes;
+    QHash<int, QString> resourceMap;
+
+    // Data by languages
+    QHash<QString, Data> data;
+};
+
 // Parse method
-Data parse(const QString &fileName);
+RcFile parse(const QString &fileName);
+
+// Utility methods
+void mergeAllLanguages(RcFile &rcFile, const QString &newLanguage = "default");
 
 // Conversion methods
 QVector<Asset> convertAssets(const Data &data, Asset::ConversionFlags flags = Asset::AllFlags);

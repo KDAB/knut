@@ -8,9 +8,9 @@ using namespace RcCore;
 
 namespace RcUi {
 
-IncludeModel::IncludeModel(const Data &data, QObject *parent)
+IncludeModel::IncludeModel(const RcCore::RcFile &rcFile, QObject *parent)
     : QAbstractListModel(parent)
-    , m_includes(data.includes)
+    , m_includes(rcFile.includes)
 {
 }
 

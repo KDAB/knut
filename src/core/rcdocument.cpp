@@ -69,6 +69,11 @@ namespace Core {
  * \qmlproperty array<string> RcDocument::stringIds
  * This read-only property holds the list of string's ids in the RC file.
  */
+/*!
+ * \qmlproperty string RcDocument::language
+ * This property holds the current language used for the data in the RC file. All other properties or method will work
+ * on the data for this specific language.
+ */
 
 RcDocument::RcDocument(QObject *parent)
     : Document(Type::Rc, parent)
@@ -77,14 +82,14 @@ RcDocument::RcDocument(QObject *parent)
 
 bool RcDocument::isValid() const
 {
-    return m_data.isValid;
+    return m_rcFile.isValid;
 }
 
 QVector<RcCore::Asset> RcDocument::assets() const
 {
-    if (m_data.isValid) {
+    if (m_rcFile.isValid) {
         if (m_cacheAssets.isEmpty())
-            return m_data.assets;
+            return data().assets;
         return m_cacheAssets;
     }
     return {};
@@ -92,7 +97,7 @@ QVector<RcCore::Asset> RcDocument::assets() const
 
 QVector<RcCore::Action> RcDocument::actions() const
 {
-    if (m_data.isValid) {
+    if (m_rcFile.isValid) {
         if (m_cacheActions.isEmpty())
             const_cast<RcDocument *>(this)->convertActions();
         return m_cacheActions;
@@ -110,7 +115,7 @@ RcCore::Action RcDocument::action(const QString &id) const
     LOG("RcDocument::action", id);
 
     // Make sure the action vector is populated by calling actions
-    if (m_data.isValid && !actions().isEmpty()) {
+    if (m_rcFile.isValid && !actions().isEmpty()) {
         auto result = kdalgorithms::find_if(m_cacheActions, [id](const auto &data) {
             return data.id == id;
         });
@@ -130,11 +135,11 @@ QVector<RcCore::Action> RcDocument::actionsFromMenu(const QString &menuId) const
 {
     LOG("RcDocument::actionsFromMenu", menuId);
 
-    if (!m_data.isValid)
+    if (!m_rcFile.isValid)
         return {};
 
     QVector<RcCore::Action> actions;
-    if (auto menu = m_data.menu(menuId)) {
+    if (auto menu = data().menu(menuId)) {
         const auto actionIds = menu->actionIds();
         for (const auto &id : actionIds)
             actions.push_back(action(id));
@@ -151,11 +156,11 @@ QVector<RcCore::Action> RcDocument::actionsFromToolbar(const QString &toolBarId)
 {
     LOG("RcDocument::actionsFromMenu", toolBarId);
 
-    if (!m_data.isValid)
+    if (!m_rcFile.isValid)
         return {};
 
     QVector<RcCore::Action> actions;
-    if (auto toolbar = m_data.toolBar(toolBarId)) {
+    if (auto toolbar = data().toolBar(toolBarId)) {
         const auto actionIds = toolbar->actionIds();
         for (const auto &id : actionIds)
             actions.push_back(action(id));
@@ -165,8 +170,8 @@ QVector<RcCore::Action> RcDocument::actionsFromToolbar(const QString &toolBarId)
 
 QVector<RcCore::ToolBar> RcDocument::toolBars() const
 {
-    if (m_data.isValid)
-        return m_data.toolBars;
+    if (m_rcFile.isValid)
+        return data().toolBars;
     return {};
 }
 
@@ -178,8 +183,8 @@ RcCore::ToolBar RcDocument::toolBar(const QString &id) const
 {
     LOG("RcDocument::toolBar", id);
 
-    if (m_data.isValid) {
-        if (auto tb = m_data.toolBar(id))
+    if (m_rcFile.isValid) {
+        if (auto tb = data().toolBar(id))
             return *tb;
     }
     return {};
@@ -207,9 +212,9 @@ RcCore::Widget RcDocument::dialog(const QString &id, int flags, double scaleX, d
     SET_DEFAULT_VALUE(RcDialogFlags, static_cast<ConversionFlags>(flags));
     SET_DEFAULT_VALUE(RcDialogScaleX, scaleX);
     SET_DEFAULT_VALUE(RcDialogScaleY, scaleY);
-    if (m_data.isValid) {
-        if (auto dialog = m_data.dialog(id))
-            return RcCore::convertDialog(m_data, *dialog, static_cast<RcCore::Widget::ConversionFlags>(flags), scaleX,
+    if (m_rcFile.isValid) {
+        if (auto dialog = data().dialog(id))
+            return RcCore::convertDialog(data(), *dialog, static_cast<RcCore::Widget::ConversionFlags>(flags), scaleX,
                                          scaleY);
     }
     return {};
@@ -223,8 +228,8 @@ RcCore::Menu RcDocument::menu(const QString &id) const
 {
     LOG("RcDocument::menu", id);
 
-    if (m_data.isValid) {
-        if (auto menu = m_data.menu(id))
+    if (m_rcFile.isValid) {
+        if (auto menu = data().menu(id))
             return *menu;
     }
     return {};
@@ -233,8 +238,8 @@ RcCore::Menu RcDocument::menu(const QString &id) const
 QStringList RcDocument::dialogIds() const
 {
     LOG("RcDocument::dialogIds");
-    if (m_data.isValid) {
-        const auto &dialogs = m_data.dialogs;
+    if (m_rcFile.isValid) {
+        const auto &dialogs = data().dialogs;
         QStringList result;
         result.reserve(dialogs.size());
         std::transform(std::cbegin(dialogs), std::cend(dialogs), std::back_inserter(result), [](const auto &dialog) {
@@ -249,8 +254,8 @@ QStringList RcDocument::dialogIds() const
 QStringList RcDocument::menuIds() const
 {
     LOG("RcDocument::menuIds");
-    if (m_data.isValid) {
-        const auto &menus = m_data.menus;
+    if (m_rcFile.isValid) {
+        const auto &menus = data().menus;
         QStringList result;
         result.reserve(menus.size());
         std::transform(std::cbegin(menus), std::cend(menus), std::back_inserter(result), [](const auto &menu) {
@@ -265,8 +270,8 @@ QStringList RcDocument::menuIds() const
 QStringList RcDocument::acceleratorIds() const
 {
     LOG("RcDocument::acceleratorIds");
-    if (m_data.isValid) {
-        const auto &accelerators = m_data.acceleratorTables;
+    if (m_rcFile.isValid) {
+        const auto &accelerators = data().acceleratorTables;
         QStringList result;
         result.reserve(accelerators.size());
         std::transform(std::cbegin(accelerators), std::cend(accelerators), std::back_inserter(result),
@@ -282,8 +287,8 @@ QStringList RcDocument::acceleratorIds() const
 QStringList RcDocument::toolbarIds() const
 {
     LOG("RcDocument::toolbarIds");
-    if (m_data.isValid) {
-        const auto &toolbars = m_data.toolBars;
+    if (m_rcFile.isValid) {
+        const auto &toolbars = data().toolBars;
         QStringList result;
         result.reserve(toolbars.size());
         std::transform(std::cbegin(toolbars), std::cend(toolbars), std::back_inserter(result), [](const auto &toolbar) {
@@ -298,15 +303,15 @@ QStringList RcDocument::toolbarIds() const
 QStringList RcDocument::stringIds() const
 {
     LOG("RcDocument::stringIds");
-    if (m_data.isValid)
-        return m_data.strings.keys();
+    if (m_rcFile.isValid)
+        return data().strings.keys();
     return {};
 }
 
 QList<RcCore::String> RcDocument::strings() const
 {
-    if (m_data.isValid) {
-        const auto &strings = m_data.strings;
+    if (m_rcFile.isValid) {
+        const auto &strings = data().strings;
         return strings.values();
     }
     return {};
@@ -320,20 +325,49 @@ QString RcDocument::string(const QString &id) const
 {
     LOG("RcDocument::string", id);
 
-    if (m_data.isValid)
-        return m_data.strings.value(id).text;
+    if (m_rcFile.isValid)
+        return data().strings.value(id).text;
     return {};
 }
 
 const RcCore::Data &RcDocument::data() const
 {
-    return m_data;
+    Q_ASSERT(m_rcFile.data.contains(m_language));
+    return const_cast<RcCore::RcFile *>(&m_rcFile)->data[m_language];
+}
+
+QString RcDocument::language() const
+{
+    return m_language;
+}
+
+void RcDocument::setLanguage(const QString &language)
+{
+    LOG("Document::setLanguage", language);
+
+    if (!m_rcFile.data.contains(language)) {
+        spdlog::warn("RcDocument::setLanguage: language {} does not exist in the rc file.", language.toStdString());
+        return;
+    }
+
+    if (m_language == language)
+        return;
+
+    m_language = language;
+    m_cacheAssets.clear();
+    m_cacheActions.clear();
+    emit languageChanged();
+}
+
+const RcCore::RcFile &RcDocument::file() const
+{
+    return m_rcFile;
 }
 
 QVector<RcCore::Menu> RcDocument::menus() const
 {
-    if (m_data.isValid)
-        return m_data.menus;
+    if (m_rcFile.isValid)
+        return data().menus;
     return {};
 }
 
@@ -354,8 +388,8 @@ void RcDocument::convertAssets(int flags)
     LOG("RcDocument::convertAssets", flags);
 
     SET_DEFAULT_VALUE(RcAssetFlags, static_cast<ConversionFlags>(flags));
-    if (m_data.isValid) {
-        m_cacheAssets = RcCore::convertAssets(m_data, static_cast<RcCore::Asset::ConversionFlags>(flags));
+    if (m_rcFile.isValid) {
+        m_cacheAssets = RcCore::convertAssets(data(), static_cast<RcCore::Asset::ConversionFlags>(flags));
         emit fileNameChanged();
     }
 }
@@ -377,8 +411,8 @@ void RcDocument::convertActions(int flags)
     LOG("RcDocument::convertActions", flags);
 
     SET_DEFAULT_VALUE(RcAssetFlags, static_cast<ConversionFlags>(flags));
-    if (m_data.isValid) {
-        m_cacheActions = RcCore::convertActions(m_data, static_cast<RcCore::Asset::ConversionFlags>(flags));
+    if (m_rcFile.isValid) {
+        m_cacheActions = RcCore::convertActions(data(), static_cast<RcCore::Asset::ConversionFlags>(flags));
         emit fileNameChanged();
     }
 }
@@ -472,6 +506,16 @@ void RcDocument::previewDialog(const RcCore::Widget &dialog) const
     }
 }
 
+/*!
+ * \qmlmethod bool RcDocument::mergeAllLanguages(string newLanguage = "default")
+ * Merges all languages data into one.
+ */
+void RcDocument::mergeAllLanguages(const QString &newLanguage)
+{
+    RcCore::mergeAllLanguages(m_rcFile, newLanguage);
+    setLanguage(newLanguage);
+}
+
 bool RcDocument::doSave(const QString &fileName)
 {
     Q_UNUSED(fileName);
@@ -481,7 +525,8 @@ bool RcDocument::doSave(const QString &fileName)
 
 bool RcDocument::doLoad(const QString &fileName)
 {
-    m_data = RcCore::parse(fileName);
+    m_rcFile = RcCore::parse(fileName);
+    m_language = m_rcFile.data.begin().key();
     return true;
 }
 

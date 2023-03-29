@@ -10,63 +10,72 @@ class TestRcParser : public QObject
 {
     Q_OBJECT
 
+    static inline QString en_US = "LANG_ENGLISH;SUBLANG_ENGLISH_US";
+    static inline QString fr_FR = "LANG_FRENCH;SUBLANG_FRENCH";
+
 private slots:
     void testDialog()
     {
         Test::LogSilencer ls;
-        Data data = parse(Test::testDataPath() + "/rcfiles/dialog/dialog.rc");
+        RcFile rcFile = parse(Test::testDataPath() + "/rcfiles/dialog/dialog.rc");
 
-        QCOMPARE(data.isValid, true);
+        QCOMPARE(rcFile.isValid, true);
 
         // Includes - afxres includes are discarded
-        QCOMPARE(data.includes.size(), 7);
-        QCOMPARE(data.includes.first().fileName, QString(Test::testDataPath() + "/rcfiles/dialog/resource.h"));
-        QCOMPARE(data.resourceMap.value(100), "IDD_ABOUTBOX");
-        QCOMPARE(data.resourceMap.value(102), "IDD_DIALOG_DIALOG");
+        QCOMPARE(rcFile.includes.size(), 7);
+        QCOMPARE(rcFile.includes.first().fileName, QString(Test::testDataPath() + "/rcfiles/dialog/resource.h"));
+        QCOMPARE(rcFile.resourceMap.value(100), "IDD_ABOUTBOX");
+        QCOMPARE(rcFile.resourceMap.value(102), "IDD_DIALOG_DIALOG");
 
-        QCOMPARE(data.icons.size(), 1);
-        QCOMPARE(data.icons.value(0).fileName, Test::testDataPath() + "/rcfiles/dialog/res/dialog.ico");
+        // Check languages
+        QCOMPARE(rcFile.data.size(), 2);
+        const QStringList langValues {en_US, fr_FR};
+        auto langs = rcFile.data.keys();
+        std::ranges::sort(langs);
+        QCOMPARE(langs, langValues);
 
-        QCOMPARE(data.strings.size(), 1);
-        QCOMPARE(data.strings.value(QLatin1String("IDS_ABOUTBOX")).text, "&About dialog...");
+        auto usData = rcFile.data.value(en_US);
+        QCOMPARE(usData.icons.size(), 0);
+        QCOMPARE(usData.strings.size(), 1);
+        QCOMPARE(usData.strings.value(QLatin1String("IDS_ABOUTBOX")).text, "&About dialog...");
 
-        QCOMPARE(data.dialogData.size(), 1);
-        const auto &inits = data.dialogData.first().values.value("IDC_COMBO1");
+        QCOMPARE(usData.dialogData.size(), 1);
+        const auto &inits = usData.dialogData.first().values.value("IDC_COMBO1");
         QCOMPARE(inits.size(), 2);
         QCOMPARE(inits.at(0), "Test");
         QCOMPARE(inits.at(1), "Hello World");
+
+        auto frData = rcFile.data.value(fr_FR);
+        QCOMPARE(frData.icons.value(0).fileName, Test::testDataPath() + "/rcfiles/dialog/res/dialog.ico");
     }
 
     void testAccelerator()
     {
         Test::LogSilencer ls;
-        Data data = parse(Test::testDataPath() + "/rcfiles/accelerators/Accelerators.rc");
+        RcFile rcFile = parse(Test::testDataPath() + "/rcfiles/accelerators/Accelerators.rc");
 
-        QCOMPARE(data.isValid, true);
+        QCOMPARE(rcFile.isValid, true);
+        auto data = rcFile.data.value(en_US);
+
         QCOMPARE(data.acceleratorTables.size(), 1);
         QCOMPARE(data.acceleratorTables.first().accelerators.size(), 14);
-        QCOMPARE(data.acceleratorTables.first().accelerators.at(0).shortcut, "Ctrl+C");
-        QCOMPARE(data.acceleratorTables.first().accelerators.at(1).shortcut, "Shift+K");
-        QCOMPARE(data.acceleratorTables.first().accelerators.at(2).shortcut, "Alt+K");
-        QCOMPARE(data.acceleratorTables.first().accelerators.at(3).shortcut, "B");
-        QCOMPARE(data.acceleratorTables.first().accelerators.at(4).shortcut, "Shift+B");
-        QCOMPARE(data.acceleratorTables.first().accelerators.at(5).shortcut, "G");
-        QCOMPARE(data.acceleratorTables.first().accelerators.at(6).shortcut, "Shift+G");
-        QCOMPARE(data.acceleratorTables.first().accelerators.at(7).shortcut, "F1");
-        QCOMPARE(data.acceleratorTables.first().accelerators.at(8).shortcut, "Ctrl+F1");
-        QCOMPARE(data.acceleratorTables.first().accelerators.at(9).shortcut, "Shift+F1");
-        QCOMPARE(data.acceleratorTables.first().accelerators.at(10).shortcut, "Alt+F1");
-        QCOMPARE(data.acceleratorTables.first().accelerators.at(11).shortcut, "Alt+Shift+F2");
-        QCOMPARE(data.acceleratorTables.first().accelerators.at(12).shortcut, "Ctrl+Shift+F2");
-        QCOMPARE(data.acceleratorTables.first().accelerators.at(13).shortcut, "Ctrl+Alt+F2");
+
+        QStringList shortcuts = {
+            "Ctrl+C",        "Shift+K",     "Alt+K",   "B",        "Shift+B", "G",
+            "Shift+G",       "F1",          "Ctrl+F1", "Shift+F1", "Alt+F1",  "Alt+Shift+F2",
+            "Ctrl+Shift+F2", "Ctrl+Alt+F2",
+        };
+        for (int i = 0; i < shortcuts.size(); ++i)
+            QCOMPARE(data.acceleratorTables.first().accelerators.at(i).shortcut, shortcuts.at(i));
     }
 
     void testLuaDebugger()
     {
         Test::LogSilencer ls;
-        Data data = parse(Test::testDataPath() + "/rcfiles/luaDebugger/LuaDebugger.rc");
+        RcFile rcFile = parse(Test::testDataPath() + "/rcfiles/luaDebugger/LuaDebugger.rc");
 
-        QCOMPARE(data.isValid, true);
+        QCOMPARE(rcFile.isValid, true);
+        auto data = rcFile.data.value("LANG_GERMAN;SUBLANG_GERMAN");
 
         // Menu
         QCOMPARE(data.menus.size(), 1);
@@ -118,22 +127,24 @@ private slots:
     void test2048Game()
     {
         Test::LogSilencer ls;
-        Data data = parse(Test::testDataPath() + "/rcfiles/2048Game/2048Game.rc");
-        QCOMPARE(data.isValid, true);
+        RcFile rcFile = parse(Test::testDataPath() + "/rcfiles/2048Game/2048Game.rc");
+        QCOMPARE(rcFile.isValid, true);
     }
 
     void testCryEdit()
     {
         Test::LogSilencer ls;
-        Data data = parse(Test::testDataPath() + "/rcfiles/cryEdit/CryEdit.rc");
-        QCOMPARE(data.isValid, true);
+        RcFile rcFile = parse(Test::testDataPath() + "/rcfiles/cryEdit/CryEdit.rc");
+        QCOMPARE(rcFile.isValid, true);
     }
 
     void testRibbon()
     {
         Test::LogSilencer ls;
-        Data data = parse(Test::testDataPath() + "/rcfiles/ribbonexample/RibbonExample.rc");
-        QCOMPARE(data.isValid, true);
+        RcFile rcFile = parse(Test::testDataPath() + "/rcfiles/ribbonexample/RibbonExample.rc");
+        QCOMPARE(rcFile.isValid, true);
+
+        auto data = rcFile.data.value(en_US);
         QVERIFY(data.strings.contains("IDP_OLE_INIT_FAILED"));
     }
 };

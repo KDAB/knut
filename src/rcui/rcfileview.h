@@ -11,6 +11,7 @@ class QPlainTextEdit;
 
 namespace RcCore {
 struct Data;
+struct RcFile;
 }
 
 namespace RcUi {
@@ -27,9 +28,12 @@ public:
     explicit RcFileView(QWidget *parent = nullptr);
     ~RcFileView();
 
-    void setRcFile(const RcCore::Data &data);
+    void setRcFile(const RcCore::RcFile &data);
 
     QPlainTextEdit *textEdit() const;
+
+signals:
+    void languageChanged(const QString &language);
 
 private:
     void changeDataItem(const QModelIndex &current);
@@ -48,7 +52,7 @@ private:
 
 private:
     std::unique_ptr<Ui::RcFileView> ui;
-    const RcCore::Data *m_data;
+    const RcCore::RcFile *m_rcFile;
     QSortFilterProxyModel *const m_dataProxyModel;
     QSortFilterProxyModel *const m_contentProxyModel;
     QAbstractItemModel *m_contentModel = nullptr;

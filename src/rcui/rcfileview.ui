@@ -60,6 +60,9 @@
        <number>0</number>
       </property>
       <item>
+       <widget class="QComboBox" name="languageCombo"/>
+      </item>
+      <item>
        <widget class="QTreeView" name="dataView">
         <property name="headerHidden">
          <bool>true</bool>

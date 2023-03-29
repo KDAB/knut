@@ -11,7 +11,6 @@
 #include "stringmodel.h"
 #include "toolbarmodel.h"
 
-#include "rccore/data.h"
 #include "rccore/rcfile.h"
 
 #include <QBuffer>
@@ -24,10 +23,22 @@
 
 namespace RcUi {
 
+class DataProxy : public QSortFilterProxyModel
+{
+public:
+    using QSortFilterProxyModel::QSortFilterProxyModel;
+
+protected:
+    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override
+    {
+        return !sourceModel()->index(source_row, 0, source_parent).data(DataModel::EmptyRole).toBool();
+    }
+};
+
 RcFileView::RcFileView(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::RcFileView)
-    , m_dataProxyModel(new QSortFilterProxyModel(this))
+    , m_dataProxyModel(new DataProxy(this))
     , m_contentProxyModel(new QSortFilterProxyModel(this))
 {
     ui->setupUi(this);
@@ -70,22 +81,32 @@ RcFileView::RcFileView(QWidget *parent)
     QShortcut *findPrevious = new QShortcut(QKeySequence(QKeySequence::FindPrevious), this);
     findPrevious->setContext(Qt::WidgetWithChildrenShortcut);
     connect(findPrevious, &QShortcut::activated, this, &RcFileView::slotSearchPrevious);
+
+    connect(ui->languageCombo, &QComboBox::currentTextChanged, this, &RcFileView::languageChanged);
 }
 
 RcFileView::~RcFileView() = default;
 
-void RcFileView::setRcFile(const RcCore::Data &data)
+void RcFileView::setRcFile(const RcCore::RcFile &rcFile)
 {
-    m_data = &data;
-    auto model = new DataModel(data, this);
+    m_rcFile = &rcFile;
+
+    auto languageList = m_rcFile->data.keys();
+    std::ranges::sort(languageList);
+    ui->languageCombo->clear();
+    ui->languageCombo->addItems(languageList);
+
+    auto model = new DataModel(rcFile, ui->languageCombo->currentText(), this);
     m_dataProxyModel->setSourceModel(model);
     ui->dataView->sortByColumn(0, Qt::AscendingOrder);
 
     delete m_contentModel;
     m_contentModel = nullptr;
 
-    auto content = data.content;
+    auto content = rcFile.content;
     ui->textEdit->setPlainText(content.replace("\t", "    "));
+
+    connect(ui->languageCombo, &QComboBox::currentTextChanged, model, &DataModel::setLanguage);
 }
 
 QPlainTextEdit *RcFileView::textEdit() const
@@ -115,6 +136,7 @@ void RcFileView::changeContentItem(const QModelIndex &current)
 
 void RcFileView::setData(int type, int index)
 {
+    m_contentProxyModel->setSourceModel(nullptr);
     delete m_contentModel;
     m_contentModel = nullptr;
     ui->propertyView->setVisible(false);
@@ -135,7 +157,7 @@ void RcFileView::setData(int type, int index)
         m_contentModel = new StringModel(data(), this);
         break;
     case IncludeData:
-        m_contentModel = new IncludeModel(data(), this);
+        m_contentModel = new IncludeModel(*m_rcFile, this);
         break;
     case AcceleratorData:
         if (index != -1)
@@ -263,8 +285,8 @@ void RcFileView::slotSearchPrevious()
 
 const RcCore::Data &RcFileView::data() const
 {
-    Q_ASSERT(m_data);
-    return *m_data;
+    Q_ASSERT(m_rcFile);
+    return const_cast<RcCore::RcFile *>(m_rcFile)->data[ui->languageCombo->currentText()];
 }
 
 } // namespace RcUi

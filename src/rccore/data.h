@@ -200,7 +200,7 @@ public:
 bool operator==(const String &left, const String &right);
 
 //=============================================================================
-// Data describing a full file
+// Structure describing RC data for a given language
 //=============================================================================
 struct Data
 {
@@ -252,11 +252,9 @@ struct Data
     };
 
     QString fileName;
-    QString content;
-    bool isValid = false;
+    QString language;
 
     // Resources
-    QVector<Include> includes;
     QVector<Asset> icons;
     QVector<Asset> assets;
     QHash<QString, String> strings;
@@ -265,8 +263,6 @@ struct Data
     QVector<ToolBar> toolBars;
     QVector<DialogData> dialogData;
     QVector<Dialog> dialogs;
-
-    QHash<int, QString> resourceMap;
 
     // Accessors
     const Asset *asset(const QString &id) const;
