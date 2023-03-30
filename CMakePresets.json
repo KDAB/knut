@@ -55,37 +55,12 @@
     ],
     "buildPresets": [
         {
-            "name": "debug",
-            "configurePreset": "debug"
-        },
-        {
-            "name": "asan",
-            "configurePreset": "asan"
-        },
-        {
-            "name": "release",
-            "configurePreset": "release"
-        },
-        {
             "name": "clazy",
             "configurePreset": "clazy",
             "environment": {
                 "CLAZY_CHECKS" : "level0,level1,no-qproperty-without-notify,no-non-pod-global-static",
                 "CCACHE_DISABLE" : "ON"
             }
-        }
-    ],
-    "testPresets": [
-        {
-            "name": "test",
-            "description": "Runs the QTestLib based tests",
-            "configurePreset": "debug",
-            "output": { "outputOnFailure": true }
-        },
-        {
-            "name": "test-asan",
-            "description": "Runs the QTestLib based tests (asan support)",
-            "configurePreset": "asan"
         }
     ]
 }
