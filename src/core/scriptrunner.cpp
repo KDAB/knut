@@ -192,8 +192,12 @@ QQmlEngine *ScriptRunner::getEngine(const QString &fileName)
 
     auto logWarnings = [this](const QList<QQmlError> &warnings) {
         for (const auto &warning : warnings) {
-            spdlog::warn("{}({}): {}", warning.url().toLocalFile().toStdString(), warning.line(),
-                         warning.description().toStdString());
+            if (warning.description().contains("error", Qt::CaseInsensitive))
+                spdlog::error("{}({}): {}", warning.url().toLocalFile().toStdString(), warning.line(),
+                              warning.description().toStdString());
+            else
+                spdlog::warn("{}({}): {}", warning.url().toLocalFile().toStdString(), warning.line(),
+                             warning.description().toStdString());
             m_hasError = true;
         }
     };
@@ -280,7 +284,7 @@ QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine)
                 return result;
             }
 
-            return QVariant(0);
+            return {};
         }
     }
 

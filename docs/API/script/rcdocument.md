@@ -19,6 +19,7 @@ import Script 1.0
 |array<[Asset](../script/asset.md)>|**[assets](#assets)**|
 |array<string>|**[dialogIds](#dialogIds)**|
 |string|**[language](#language)**|
+|array<string>|**[languages](#languages)**|
 |array<string>|**[menuIds](#menuIds)**|
 |array<[Menu](../script/menu.md)>|**[menus](#menus)**|
 |array<string>|**[stringIds](#stringIds)**|
@@ -71,6 +72,10 @@ This read-only property holds the list of dialog's ids in the RC file.
 
 This property holds the current language used for the data in the RC file. All other properties or method will work
 on the data for this specific language.
+
+#### <a name="languages"></a>array<string> **languages**
+
+This read-only property holds the list of languages available in the file.
 
 #### <a name="menuIds"></a>array<string> **menuIds**
 

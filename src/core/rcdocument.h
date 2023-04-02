@@ -11,17 +11,18 @@ class RcDocument : public Document
 {
     Q_OBJECT
     Q_PROPERTY(bool valid READ isValid NOTIFY fileNameChanged)
-    Q_PROPERTY(QVector<RcCore::Asset> assets READ assets NOTIFY fileNameChanged)
-    Q_PROPERTY(QVector<RcCore::Action> actions READ actions NOTIFY fileNameChanged)
-    Q_PROPERTY(QVector<RcCore::ToolBar> toolBars READ toolBars NOTIFY fileNameChanged)
-    Q_PROPERTY(QVector<RcCore::Menu> menus READ menus NOTIFY fileNameChanged)
-    Q_PROPERTY(QList<RcCore::String> strings READ strings NOTIFY fileNameChanged)
-    Q_PROPERTY(QStringList dialogIds READ dialogIds NOTIFY fileNameChanged)
-    Q_PROPERTY(QStringList menuIds READ menuIds NOTIFY fileNameChanged)
-    Q_PROPERTY(QStringList acceleratorIds READ acceleratorIds NOTIFY fileNameChanged)
-    Q_PROPERTY(QStringList toolbarIds READ toolbarIds NOTIFY fileNameChanged)
-    Q_PROPERTY(QStringList stringIds READ stringIds NOTIFY fileNameChanged)
+    Q_PROPERTY(QVector<RcCore::Asset> assets READ assets NOTIFY dataChanged)
+    Q_PROPERTY(QVector<RcCore::Action> actions READ actions NOTIFY dataChanged)
+    Q_PROPERTY(QVector<RcCore::ToolBar> toolBars READ toolBars NOTIFY dataChanged)
+    Q_PROPERTY(QVector<RcCore::Menu> menus READ menus NOTIFY dataChanged)
+    Q_PROPERTY(QList<RcCore::String> strings READ strings NOTIFY dataChanged)
+    Q_PROPERTY(QStringList dialogIds READ dialogIds NOTIFY dataChanged)
+    Q_PROPERTY(QStringList menuIds READ menuIds NOTIFY dataChanged)
+    Q_PROPERTY(QStringList acceleratorIds READ acceleratorIds NOTIFY dataChanged)
+    Q_PROPERTY(QStringList toolbarIds READ toolbarIds NOTIFY dataChanged)
+    Q_PROPERTY(QStringList stringIds READ stringIds NOTIFY dataChanged)
     Q_PROPERTY(QString language READ language WRITE setLanguage NOTIFY languageChanged)
+    Q_PROPERTY(QStringList languages READ languages NOTIFY languagesChanged)
 
 public:
     enum ConversionFlag {
@@ -76,6 +77,7 @@ public:
 
     QString language() const;
     void setLanguage(const QString &language);
+    QStringList languages() const;
 
     const RcCore::RcFile &file() const;
 
@@ -90,6 +92,8 @@ public slots:
 
 signals:
     void languageChanged();
+    void languagesChanged();
+    void dataChanged();
 
 protected:
     bool doSave(const QString &fileName) override;
@@ -97,6 +101,7 @@ protected:
 
 private:
     const RcCore::Data &data() const;
+    bool isDataValid() const;
 
     RcCore::RcFile m_rcFile;
     QString m_language;

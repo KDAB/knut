@@ -178,6 +178,7 @@ void ScriptDialogItem::setUiFile(const QString &fileName)
     } else {
         spdlog::error("Can't open {}", fileName.toStdString());
     }
+    m_data->freeze();
 }
 
 void ScriptDialogItem::changeValue(const QString &key, const QVariant &value)
