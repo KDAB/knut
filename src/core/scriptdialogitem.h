@@ -8,26 +8,28 @@
 
 namespace Core {
 
+class DynamicObject;
+
 class ScriptDialogItem : public QDialog
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlPropertyMap *data READ data NOTIFY dataChanged)
+    Q_PROPERTY(QObject *data READ data CONSTANT)
     Q_PROPERTY(QQmlListProperty<QObject> childrenData READ childrenData NOTIFY childrenDataChanged FINAL)
     Q_CLASSINFO("DefaultProperty", "childrenData")
 
 public:
     explicit ScriptDialogItem(QWidget *parent = nullptr);
 
-    QQmlPropertyMap *data() const;
+    QObject *data() const;
     QQmlListProperty<QObject> childrenData();
 
 signals:
     void clicked(const QString &name);
-    void dataChanged();
     void childrenDataChanged();
 
 private:
     void setUiFile(const QString &fileName);
+    void createProperties(QWidget *dialogWidget);
     void changeValue(const QString &key, const QVariant &value);
 
     static void appendChild(QQmlListProperty<QObject> *list, QObject *obj);
@@ -36,10 +38,8 @@ private:
     static void clearChildren(QQmlListProperty<QObject> *list);
 
 private:
-    QQmlPropertyMap *m_data;
+    DynamicObject *m_data;
     std::vector<QObject *> m_children;
 };
 
 } // namespace Core
-
-Q_DECLARE_METATYPE(QQmlPropertyMap *);

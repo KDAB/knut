@@ -53,6 +53,8 @@ set(PROJECT_SOURCES
     rcdocument.cpp
     scriptdialogitem.h
     scriptdialogitem.cpp
+    scriptdialogitem_p.h
+    scriptdialogitem_p.cpp
     scriptitem.h
     scriptitem.cpp
     scriptmanager.h
@@ -90,6 +92,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     pugixml::pugixml
     kdalgorithms
     Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::CorePrivate
     Qt${QT_VERSION_MAJOR}::Qml
     Qt${QT_VERSION_MAJOR}::QmlPrivate
     Qt${QT_VERSION_MAJOR}::Quick

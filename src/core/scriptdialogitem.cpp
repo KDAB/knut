@@ -1,4 +1,5 @@
 #include "scriptdialogitem.h"
+#include "scriptdialogitem_p.h"
 
 #include "scriptrunner.h"
 
@@ -79,7 +80,7 @@ namespace Core {
 
 ScriptDialogItem::ScriptDialogItem(QWidget *parent)
     : QDialog(parent)
-    , m_data(new QQmlPropertyMap(this))
+    , m_data(new DynamicObject(this))
 {
     setAttribute(Qt::WA_DeleteOnClose);
 
@@ -87,10 +88,12 @@ ScriptDialogItem::ScriptDialogItem(QWidget *parent)
     QFileInfo fi(ScriptRunner::currentScriptPath);
     setUiFile(fi.absolutePath() + '/' + fi.baseName() + ".ui");
 
-    connect(m_data, &QQmlPropertyMap::valueChanged, this, &ScriptDialogItem::changeValue);
+    m_data->registerDataChangedCallback([this](const QString &key, const QVariant &value) {
+        changeValue(key, value);
+    });
 }
 
-QQmlPropertyMap *ScriptDialogItem::data() const
+QObject *ScriptDialogItem::data() const
 {
     return m_data;
 }
@@ -112,73 +115,75 @@ void ScriptDialogItem::setUiFile(const QString &fileName)
         layout->addWidget(internalWidget);
         setLayout(layout);
         setWindowTitle(internalWidget->windowTitle());
-
-        auto widgets = internalWidget->findChildren<QWidget *>();
-        for (auto widget : widgets) {
-            if (auto dialogButtonBox = qobject_cast<QDialogButtonBox *>(widget)) {
-                connect(dialogButtonBox, &QDialogButtonBox::accepted, this, &ScriptDialogItem::accept);
-                connect(dialogButtonBox, &QDialogButtonBox::rejected, this, &ScriptDialogItem::reject);
-            } else if (auto pushButton = qobject_cast<QPushButton *>(widget)) {
-                connect(pushButton, &QPushButton::clicked, this, [this, pushButton]() {
-                    emit clicked(pushButton->objectName());
-                });
-            } else if (auto toolButton = qobject_cast<QToolButton *>(widget)) {
-                connect(pushButton, &QToolButton::clicked, this, [this, toolButton]() {
-                    emit clicked(toolButton->objectName());
-                });
-            } else if (auto lineEdit = qobject_cast<QLineEdit *>(widget)) {
-                m_data->insert(widget->objectName(), lineEdit->text());
-                connect(lineEdit, &QLineEdit::textChanged, this, [this](const QString &text) {
-                    (*m_data)[sender()->objectName()] = text;
-                    emit dataChanged();
-                });
-            } else if (auto checkBox = qobject_cast<QCheckBox *>(widget)) {
-                m_data->insert(widget->objectName(), checkBox->isChecked());
-                connect(checkBox, &QCheckBox::toggled, this, [this](bool value) {
-                    (*m_data)[sender()->objectName()] = value;
-                    emit dataChanged();
-                });
-            } else if (auto radioButton = qobject_cast<QRadioButton *>(widget)) {
-                m_data->insert(widget->objectName(), radioButton->isChecked());
-                connect(radioButton, &QCheckBox::toggled, this, [this](bool value) {
-                    (*m_data)[sender()->objectName()] = value;
-                    emit dataChanged();
-                });
-            } else if (auto spinBox = qobject_cast<QSpinBox *>(widget)) {
-                m_data->insert(widget->objectName(), spinBox->value());
-                connect(spinBox, qOverload<int>(&QSpinBox::valueChanged), this, [this](int value) {
-                    (*m_data)[sender()->objectName()] = value;
-                    emit dataChanged();
-                });
-            } else if (auto doubleSpinBox = qobject_cast<QDoubleSpinBox *>(widget)) {
-                m_data->insert(widget->objectName(), doubleSpinBox->value());
-                connect(doubleSpinBox, qOverload<double>(&QDoubleSpinBox::valueChanged), this, [this](double value) {
-                    (*m_data)[sender()->objectName()] = value;
-                    emit dataChanged();
-                });
-            } else if (auto comboBox = qobject_cast<QComboBox *>(widget)) {
-                m_data->insert(widget->objectName(), comboBox->currentText());
-                connect(comboBox, qOverload<int>(&QComboBox::currentIndexChanged), this, [this, comboBox]() {
-                    (*m_data)[sender()->objectName()] = comboBox->currentText();
-                    emit dataChanged();
-                });
-                auto model = comboBox->model();
-                QStringList itemList;
-                for (int i = 0; i < model->rowCount(); ++i)
-                    itemList.push_back(model->data(model->index(i, 0)).toString());
-                m_data->insert(widget->objectName() + "Model", itemList);
-                if (comboBox->isEditable()) {
-                    auto completer = new QCompleter(comboBox);
-                    completer->setFilterMode(Qt::MatchContains);
-                    completer->setModel(comboBox->model());
-                    comboBox->setCompleter(completer);
-                }
-            }
-        }
+        createProperties(internalWidget);
     } else {
         spdlog::error("Can't open {}", fileName.toStdString());
     }
-    m_data->freeze();
+}
+
+void ScriptDialogItem::createProperties(QWidget *dialogWidget)
+{
+    auto widgets = dialogWidget->findChildren<QWidget *>();
+    for (auto widget : widgets) {
+        if (auto dialogButtonBox = qobject_cast<QDialogButtonBox *>(widget)) {
+            connect(dialogButtonBox, &QDialogButtonBox::accepted, this, &ScriptDialogItem::accept);
+            connect(dialogButtonBox, &QDialogButtonBox::rejected, this, &ScriptDialogItem::reject);
+        } else if (auto pushButton = qobject_cast<QPushButton *>(widget)) {
+            connect(pushButton, &QPushButton::clicked, this, [this, pushButton]() {
+                emit clicked(pushButton->objectName());
+            });
+        } else if (auto toolButton = qobject_cast<QToolButton *>(widget)) {
+            connect(pushButton, &QToolButton::clicked, this, [this, toolButton]() {
+                emit clicked(toolButton->objectName());
+            });
+        } else if (auto lineEdit = qobject_cast<QLineEdit *>(widget)) {
+            m_data->addProperty(widget->objectName().toLocal8Bit(), "QString", QMetaType::QString, lineEdit->text());
+            connect(lineEdit, &QLineEdit::textChanged, this, [this](const QString &text) {
+                m_data->setProperty(sender()->objectName().toLocal8Bit(), text);
+            });
+        } else if (auto checkBox = qobject_cast<QCheckBox *>(widget)) {
+            m_data->addProperty(widget->objectName().toLocal8Bit(), "bool", QMetaType::Bool, checkBox->isChecked());
+            connect(checkBox, &QCheckBox::toggled, this, [this](bool value) {
+                m_data->setProperty(sender()->objectName().toLocal8Bit(), value);
+            });
+        } else if (auto radioButton = qobject_cast<QRadioButton *>(widget)) {
+            m_data->addProperty(widget->objectName().toLocal8Bit(), "bool", QMetaType::Bool, radioButton->isChecked());
+            connect(radioButton, &QCheckBox::toggled, this, [this](bool value) {
+                m_data->setProperty(sender()->objectName().toLocal8Bit(), value);
+            });
+        } else if (auto spinBox = qobject_cast<QSpinBox *>(widget)) {
+            m_data->addProperty(widget->objectName().toLocal8Bit(), "int", QMetaType::Int, spinBox->value());
+            connect(spinBox, qOverload<int>(&QSpinBox::valueChanged), this, [this](int value) {
+                m_data->setProperty(sender()->objectName().toLocal8Bit(), value);
+            });
+        } else if (auto doubleSpinBox = qobject_cast<QDoubleSpinBox *>(widget)) {
+            m_data->addProperty(widget->objectName().toLocal8Bit(), "double", QMetaType::Double,
+                                doubleSpinBox->value());
+            connect(doubleSpinBox, qOverload<double>(&QDoubleSpinBox::valueChanged), this, [this](double value) {
+                m_data->setProperty(sender()->objectName().toLocal8Bit(), value);
+            });
+        } else if (auto comboBox = qobject_cast<QComboBox *>(widget)) {
+            m_data->addProperty(widget->objectName().toLocal8Bit(), "QString", QMetaType::QString,
+                                comboBox->currentText());
+            connect(comboBox, qOverload<int>(&QComboBox::currentIndexChanged), this, [this, comboBox]() {
+                m_data->setProperty(sender()->objectName().toLocal8Bit(), comboBox->currentText());
+            });
+            auto model = comboBox->model();
+            QStringList itemList;
+            for (int i = 0; i < model->rowCount(); ++i)
+                itemList.push_back(model->data(model->index(i, 0)).toString());
+            m_data->addProperty((widget->objectName() + "Model").toLocal8Bit(), "QStringList", QMetaType::QStringList,
+                                itemList);
+            if (comboBox->isEditable()) {
+                auto completer = new QCompleter(comboBox);
+                completer->setFilterMode(Qt::MatchContains);
+                completer->setModel(comboBox->model());
+                comboBox->setCompleter(completer);
+            }
+        }
+    }
+
+    m_data->ready();
 }
 
 void ScriptDialogItem::changeValue(const QString &key, const QVariant &value)
