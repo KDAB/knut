@@ -2,13 +2,18 @@
 
 namespace RcCore {
 
-void mergeAllLanguages(RcFile &rcFile, const QString &newLanguage)
+void RcFile::mergeLanguages(const QStringList languages, const QString &newLanguage)
 {
-    Data newData;
-    newData.fileName = rcFile.fileName;
-    newData.language = newLanguage;
+    if (languages.isEmpty() || (languages.count() == 1 && languages.first() == newLanguage))
+        return;
 
-    for (const auto &d : std::as_const(rcFile.data)) {
+    Data newData = data.value(newLanguage, {});
+    newData.language = newLanguage;
+    newData.fileName = fileName;
+
+    for (const auto &d : std::as_const(data)) {
+        if (!languages.contains(d.language))
+            continue;
         newData.acceleratorTables.append(d.acceleratorTables);
         newData.assets.append(d.assets);
         newData.dialogData.append(d.dialogData);
@@ -19,7 +24,9 @@ void mergeAllLanguages(RcFile &rcFile, const QString &newLanguage)
         newData.toolBars.append(d.toolBars);
     }
 
-    rcFile.data = {{newLanguage, newData}};
+    for (const auto &lang : languages)
+        data.remove(lang);
+    data[newLanguage] = newData;
 }
 
 } // namespace RcCore

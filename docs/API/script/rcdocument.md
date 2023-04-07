@@ -39,7 +39,8 @@ import Script 1.0
 ||**[convertAssets](#convertAssets)**(int flags)|
 |[Widget](../script/widget.md) |**[dialog](#dialog)**(string id, int flags, real scaleX, real scaleY)|
 |[Menu](../script/menu.md) |**[menu](#menu)**(string id)|
-|bool |**[mergeAllLanguages](#mergeAllLanguages)**(string newLanguage = "default")|
+|bool |**[mergeAllLanguages](#mergeAllLanguages)**(string newLanguage = "[default]")|
+|bool |**[mergeLanguages](#mergeLanguages)**()|
 |bool |**[previewDialog](#previewDialog)**([Widget](../script/widget.md) dialog)|
 |string |**[text](#text)**(string id)|
 |[ToolBar](../script/toolbar.md) |**[toolBar](#toolBar)**(string id)|
@@ -172,9 +173,16 @@ Flags could be:
 
 Returns the menu for the given `id`.
 
-#### <a name="mergeAllLanguages"></a>bool **mergeAllLanguages**(string newLanguage = "default")
+#### <a name="mergeAllLanguages"></a>bool **mergeAllLanguages**(string newLanguage = "[default]")
 
 Merges all languages data into one.
+
+#### <a name="mergeLanguages"></a>bool **mergeLanguages**()
+
+Merges languages based on the language map in the settings.
+
+The language map gives for each language a resulting language, and if multiple source languages have the same
+resulting language they will be merged together.
 
 #### <a name="previewDialog"></a>bool **previewDialog**([Widget](../script/widget.md) dialog)
 

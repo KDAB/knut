@@ -45,6 +45,8 @@ public:
     Q_DECLARE_FLAGS(ConversionFlags, ConversionFlag)
     Q_FLAG(ConversionFlags)
 
+    static inline const char DefaultLanguage[] = "[default]";
+
 public:
     explicit RcDocument(QObject *parent = nullptr);
 
@@ -88,7 +90,8 @@ public slots:
     bool writeAssetsToQrc(const QString &fileName);
     bool writeDialogToUi(const RcCore::Widget &dialog, const QString &fileName);
     void previewDialog(const RcCore::Widget &dialog) const;
-    void mergeAllLanguages(const QString &language = "default");
+    void mergeAllLanguages(const QString &language = DefaultLanguage);
+    void mergeLanguages();
 
 signals:
     void languageChanged();

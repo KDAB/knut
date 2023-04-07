@@ -36,6 +36,7 @@ public:
     static inline const char RcDialogScaleY[] = "/rc/dialog_scaley";
     static inline const char RcAssetFlags[] = "/rc/asset_flags";
     static inline const char RcAssetColors[] = "/rc/asset_transparent_colors";
+    static inline const char RcLanguageMap[] = "/rc/language_map";
     static inline const char ScriptPaths[] = "/script_paths";
     static inline const char JsonPaths[] = "/json_paths";
     static inline const char Tab[] = "/text_editor/tab";

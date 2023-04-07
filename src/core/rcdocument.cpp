@@ -525,18 +525,60 @@ void RcDocument::previewDialog(const RcCore::Widget &dialog) const
 }
 
 /*!
- * \qmlmethod bool RcDocument::mergeAllLanguages(string newLanguage = "default")
+ * \qmlmethod bool RcDocument::mergeAllLanguages(string newLanguage = "[default]")
  * Merges all languages data into one.
  */
 void RcDocument::mergeAllLanguages(const QString &newLanguage)
 {
     LOG("RcDocument::mergeAllLanguages", newLanguage);
 
-    RcCore::mergeAllLanguages(m_rcFile, newLanguage);
+    m_rcFile.mergeLanguages(m_rcFile.data.keys(), newLanguage);
     {
         // Even if the newLanguage is set, we want to send the signals unconditionnaly
         QSignalBlocker sb(this);
         setLanguage(newLanguage);
+    }
+    emit languagesChanged();
+    emit languageChanged();
+    emit dataChanged();
+}
+
+/*!
+ * \qmlmethod bool RcDocument::mergeLanguages()
+ * Merges languages based on the language map in the settings.
+ *
+ * The language map gives for each language a resulting language, and if multiple source languages have the same
+ * resulting language they will be merged together.
+ */
+void RcDocument::mergeLanguages()
+{
+    LOG("RcDocument::mergeLanguages");
+
+    const auto languageMap = Settings::instance()->value<std::map<std::string, std::string>>(Settings::RcLanguageMap);
+
+    // Find all the merges to do
+    std::unordered_map<QString, QStringList> merges;
+    const QStringList languageList = m_rcFile.data.keys();
+    for (const auto &lang : languageList) {
+        // Either there's LANG;SUBLANG, or just LANG in the languageMap
+        auto it = languageMap.find(lang.toStdString());
+        if (it == languageMap.end()) {
+            it = languageMap.find(lang.split(';').first().toStdString());
+        }
+        if (it != languageMap.end()) {
+            auto newLang = QString::fromStdString(it->second.empty() ? DefaultLanguage : it->second);
+            merges[newLang].append(lang);
+        }
+    }
+
+    // Do all the merges
+    for (const auto &[lang, values] : merges)
+        m_rcFile.mergeLanguages(values, lang);
+
+    {
+        // Even if the newLanguage is set, we want to send the signals unconditionnaly
+        QSignalBlocker sb(this);
+        setLanguage(languages().constFirst());
     }
     emit languagesChanged();
     emit languageChanged();
@@ -554,6 +596,7 @@ bool RcDocument::doLoad(const QString &fileName)
 {
     m_rcFile = RcCore::parse(fileName);
 
+    mergeLanguages();
     // There's always one language in a RC file
     Q_ASSERT(!m_rcFile.data.isEmpty());
     m_language = languages().constFirst();

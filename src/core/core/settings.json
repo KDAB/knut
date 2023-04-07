@@ -11,7 +11,14 @@
         "dialog_scalex": 1.5,
         "dialog_scaley": 1.65,
         "asset_flags": ["RemoveUnknown", "SplitToolBar", "ConvertToPng"],
-        "asset_transparent_colors": ["Gray", "Magenta", "BottomLeftPixel"]
+        "asset_transparent_colors": [
+            "Gray",
+            "Magenta",
+            "BottomLeftPixel"
+        ],
+        "language_map": {
+            "LANG_NEUTRAL": "[default]"
+        }
     },
     "mime_types": {
         "c": "cpp_type",

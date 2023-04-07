@@ -32,6 +32,7 @@ struct Context
     }
     void setCurrentData(const QString &language)
     {
+        rcFile.data[language].language = language;
         rcFile.data[language].fileName = rcFile.fileName;
         currentLanguage = language;
     }

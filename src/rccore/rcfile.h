@@ -20,13 +20,12 @@ struct RcFile
 
     // Data by languages
     QHash<QString, Data> data;
+
+    void mergeLanguages(const QStringList languages, const QString &newLanguage);
 };
 
 // Parse method
 RcFile parse(const QString &fileName);
-
-// Utility methods
-void mergeAllLanguages(RcFile &rcFile, const QString &newLanguage = "default");
 
 // Conversion methods
 QVector<Asset> convertAssets(const Data &data, Asset::ConversionFlags flags = Asset::AllFlags);
