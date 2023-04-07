@@ -21,6 +21,10 @@ public:
     void addSettings(QWidget *widget);
 
 private:
+    void initializeScriptPathSettings();
+    void initializeScriptBehaviorSettings();
+    void initializeRcSettings();
+
     void openUserSettings();
     void openProjectSettings();
 
@@ -32,9 +36,11 @@ private:
     void removeJsonPath();
     void updateJsonPaths();
 
-    void addReturnValue();
-    void removeReturnValue();
     void changeToggleSectionSetting();
+    void changeAssetFlagsSetting();
+    void changeAssetColorsSetting();
+    void changeDialogFlagsSetting();
+    void changeLanguageMap();
 
     void changePage();
 
