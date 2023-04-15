@@ -429,16 +429,21 @@ void TextDocument::gotoLine(int line, int column)
 {
     LOG("TextDocument::gotoLine", LOG_ARG("line", line), LOG_ARG("column", column));
 
+    gotoLineInTextEdit(m_document, line, column);
+}
+
+void gotoLineInTextEdit(QPlainTextEdit *textEdit, int line, int column)
+{
     // Internally, columns are 0-based, while 1-based on the API
     column = column - 1;
-    const int blockNumber = qMin(line, m_document->document()->blockCount()) - 1;
-    const QTextBlock &block = m_document->document()->findBlockByNumber(blockNumber);
+    const int blockNumber = qMin(line, textEdit->document()->blockCount()) - 1;
+    const QTextBlock &block = textEdit->document()->findBlockByNumber(blockNumber);
     if (block.isValid()) {
         QTextCursor cursor(block);
         if (column > 0)
             cursor.movePosition(QTextCursor::Right, QTextCursor::MoveAnchor, column);
 
-        m_document->setTextCursor(cursor);
+        textEdit->setTextCursor(cursor);
     }
 }
 
@@ -1379,14 +1384,14 @@ static int indentOneLine(QTextCursor &cursor, int tabCount, const TabSettings &s
     return text.size() - oldSize;
 }
 
-void TextDocument::doIndent(int tabCount)
+void indentTextInTextEdit(QPlainTextEdit *textEdit, int tabCount)
 {
     const auto settings = Core::Settings::instance()->value<Core::TabSettings>(Core::Settings::Tab);
 
-    QTextCursor cursor = m_document->textCursor();
+    QTextCursor cursor = textEdit->textCursor();
     const bool hasSelection = cursor.hasSelection();
-    const int lineStart = m_document->document()->findBlock(cursor.selectionStart()).blockNumber();
-    const int lineEnd = m_document->document()->findBlock(cursor.selectionEnd()).blockNumber();
+    const int lineStart = textEdit->document()->findBlock(cursor.selectionStart()).blockNumber();
+    const int lineEnd = textEdit->document()->findBlock(cursor.selectionEnd()).blockNumber();
 
     // Move the position to the beginning of the first line
     int startPosition = cursor.position();
@@ -1410,14 +1415,14 @@ void TextDocument::doIndent(int tabCount)
     } else {
         cursor.select(QTextCursor::LineUnderCursor);
         startPosition += indentOneLine(cursor, tabCount, settings);
-        const int finalLine = m_document->document()->findBlock(startPosition).blockNumber();
+        const int finalLine = textEdit->document()->findBlock(startPosition).blockNumber();
         if (finalLine != lineStart)
-            gotoLine(lineStart + 1);
+            gotoLineInTextEdit(textEdit, lineStart + 1);
         else
             cursor.setPosition(startPosition);
     }
     cursor.endEditBlock();
-    m_document->setTextCursor(cursor);
+    textEdit->setTextCursor(cursor);
 }
 
 /*!
@@ -1428,7 +1433,7 @@ void TextDocument::indent(int count)
 {
     LOG_AND_MERGE("TextDocument::indent", count);
     while (count != 0) {
-        doIndent(1);
+        indentTextInTextEdit(m_document, 1);
         --count;
     }
 }
@@ -1441,7 +1446,7 @@ void TextDocument::removeIndent(int count)
 {
     LOG_AND_MERGE("TextDocument::removeIndent", count);
     while (count != 0) {
-        doIndent(-1);
+        indentTextInTextEdit(m_document, -1);
         --count;
     }
 }

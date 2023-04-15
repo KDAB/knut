@@ -1,6 +1,8 @@
 #include "logger.h"
 
 #include "scriptrunner.h"
+#include "settings.h"
+#include "textdocument_p.h"
 
 #include <QHash>
 
@@ -108,10 +110,13 @@ void HistoryModel::clear()
 
 QString HistoryModel::createScript(int start, int end)
 {
+    const auto settings = Core::Settings::instance()->value<Core::TabSettings>(Core::Settings::Tab);
+    const auto tab = settings.insertSpaces ? QString(settings.tabSize, ' ') : QString('\t');
+
     std::tie(start, end) = std::minmax(start, end);
     Q_ASSERT(start >= 0 && start <= end && end < static_cast<int>(m_data.size()));
 
-    QString scriptText = "// Description of the script\nfunction main() {\n";
+    QString scriptText = "// Description of the script\n\nfunction main() {\n";
 
     QHash<QString, QVariant> returnVariables;
 
@@ -123,7 +128,7 @@ QString HistoryModel::createScript(int start, int end)
         // Check if we need to create the document, and change the API call as it's not a singleton
         if (data.name.contains("Document::")) {
             if (!returnVariables.contains("document"))
-                scriptText += "var document = Project.currentDocument\n";
+                scriptText += tab + "var document = Project.currentDocument\n";
             returnVariables["document"] = {};
             apiCall = "document." + apiCall.mid(apiCall.indexOf("::") + 2);
         } else {
@@ -131,9 +136,10 @@ QString HistoryModel::createScript(int start, int end)
         }
 
         // Set the return value
+        QString returnValue;
         if (!data.returnArg.isEmpty()) {
             const auto &name = data.returnArg.name;
-            scriptText += (returnVariables.contains(name) ? "" : "var ") + name + " = ";
+            returnValue = (returnVariables.contains(name) ? "" : "var ") + name + " = ";
             returnVariables[name] = data.returnArg.value;
         }
 
@@ -151,11 +157,11 @@ QString HistoryModel::createScript(int start, int end)
 
         if (isProperty) {
             if (paramStrings.isEmpty())
-                scriptText.append(apiCall + '\n');
+                scriptText += tab + returnValue + apiCall + '\n';
             else
-                scriptText.append(QString("%1 = %2\n").arg(apiCall, paramStrings.first()));
+                scriptText += tab + returnValue + QString("%1 = %2\n").arg(apiCall, paramStrings.first());
         } else {
-            scriptText.append(QString("%1(%2)\n").arg(apiCall, paramStrings.join(", ")));
+            scriptText += tab + returnValue + QString("%1(%2)\n").arg(apiCall, paramStrings.join(", "));
         }
     }
 

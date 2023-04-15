@@ -2,6 +2,8 @@
 
 #include "json_utils.h"
 
+class QPlainTextEdit;
+
 namespace Core {
 
 //! Store tab settings for text editor
@@ -12,5 +14,8 @@ struct TabSettings
 };
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(TabSettings, insertSpaces, tabSize);
+
+void indentTextInTextEdit(QPlainTextEdit *textEdit, int tabCount);
+void gotoLineInTextEdit(QPlainTextEdit *textEdit, int line, int column = 1);
 
 } // namespace Core

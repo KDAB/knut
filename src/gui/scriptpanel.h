@@ -19,6 +19,9 @@ public:
     bool hasScript() const;
     void playScript();
 
+protected:
+    void keyPressEvent(QKeyEvent *event) override;
+
 private:
     void openScript();
     void newScript();

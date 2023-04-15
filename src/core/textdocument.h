@@ -194,7 +194,6 @@ protected:
                          std::function<bool(QRegularExpressionMatch, QTextCursor)> regexFilter);
 
 private:
-    void doIndent(int tabCount);
     void detectFormat(const QByteArray &data);
 
     void movePosition(QTextCursor::MoveOperation operation, QTextCursor::MoveMode mode = QTextCursor::MoveAnchor,

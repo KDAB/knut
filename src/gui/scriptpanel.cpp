@@ -4,6 +4,7 @@
 
 #include "core/logger.h"
 #include "core/scriptmanager.h"
+#include "core/textdocument_p.h"
 
 #include <QComboBox>
 #include <QFileDialog>
@@ -142,6 +143,19 @@ void ScriptPanel::playScript()
     } else {
         spdlog::error("Error running script - can't save to temporary file.");
     }
+}
+
+void ScriptPanel::keyPressEvent(QKeyEvent *event)
+{
+    if ((event->key() == Qt::Key_Backtab)) {
+        Core::indentTextInTextEdit(this, -1);
+        return;
+    } else if (event->key() == Qt::Key_Tab) {
+        Core::indentTextInTextEdit(this, 1);
+        return;
+    }
+
+    QPlainTextEdit::keyPressEvent(event);
 }
 
 } // namespace Gui
