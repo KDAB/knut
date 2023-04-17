@@ -3,6 +3,7 @@
 #include <QPlainTextEdit>
 
 class QLabel;
+class QToolButton;
 
 namespace Gui {
 
@@ -25,11 +26,18 @@ protected:
 private:
     void openScript();
     void newScript();
+    void newScriptDialog();
     void saveScript();
+    void editDialog();
+    void checkEditDialogButton();
+    QString createDialogFile();
+
+    void setupNewFile(const QString &scriptText, int cursorLeftMove);
 
     QWidget *const m_toolBar = nullptr;
     QLabel *m_scriptName = nullptr;
     QString m_fileName;
+    QToolButton *m_editDialogButton = nullptr;
 };
 
 } // namespace Gui

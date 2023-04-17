@@ -16,6 +16,10 @@
         <file>gui/icons/knut-32.png</file>
         <file>gui/icons/knut-64.png</file>
         <file>gui/icons/knut-256.png</file>
+        <file>gui/file-document.png</file>
+        <file>gui/application.png</file>
+        <file>gui/application-edit.png</file>
+        <file>gui/default-dialog.ui</file>
     </qresource>
     <qresource prefix="/org.kde.syntax-highlighting/syntax-addons">
         <file alias="rc.xml">gui/rc.xml</file>
