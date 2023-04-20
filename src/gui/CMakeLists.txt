@@ -1,6 +1,9 @@
 project(knut-gui LANGUAGES CXX)
 
 set(PROJECT_SOURCES
+    apiselector.h
+    apiselector.cpp
+    apiselector.ui
     documentpalette.h
     documentpalette.cpp
     fileselector.h

@@ -108,10 +108,13 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionCloseDocument, &QAction::triggered, this, &MainWindow::closeDocument);
 
     // Script
+    ui->apiExecutorWidget->hide();
     connect(ui->actionRunScript, &QAction::triggered, this, &MainWindow::runScript);
     connect(ui->actionStartRecordingScript, &QAction::triggered, m_historyPanel, &HistoryPanel::startRecording);
     connect(ui->actionStopRecordingScript, &QAction::triggered, m_historyPanel, &HistoryPanel::stopRecording);
     connect(ui->actionPlayLastScript, &QAction::triggered, m_scriptPanel, &ScriptPanel::playScript);
+    connect(ui->actionExecuteAPI, &QAction::triggered, ui->apiExecutorWidget,
+            &APIExecutorWidget::showAPIExecutorWidget);
 
     // Edit
     ui->findWidget->hide();
@@ -536,6 +539,7 @@ void MainWindow::updateActions()
     ui->actionToggleMark->setEnabled(textDocument != nullptr);
     ui->actionGotoMark->setEnabled(textDocument != nullptr && textView->hasMark());
     ui->actionSelectToMark->setEnabled(textDocument != nullptr && textView->hasMark());
+    ui->actionExecuteAPI->setEnabled(textDocument != nullptr);
 
     auto *lspDocument = qobject_cast<Core::LspDocument *>(document);
     const bool lspEnabled = lspDocument && lspDocument->hasLspClient();

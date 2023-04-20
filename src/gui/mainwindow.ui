@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1440</width>
+    <width>1463</width>
     <height>960</height>
    </rect>
   </property>
@@ -40,6 +40,9 @@
     <item>
      <widget class="Gui::FindWidget" name="findWidget" native="true"/>
     </item>
+    <item>
+     <widget class="Gui::APIExecutorWidget" name="apiExecutorWidget" native="true"/>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -47,8 +50,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1440</width>
-     <height>24</height>
+     <width>1463</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -140,6 +143,7 @@
     <addaction name="actionStartRecordingScript"/>
     <addaction name="actionStopRecordingScript"/>
     <addaction name="actionPlayLastScript"/>
+    <addaction name="actionExecuteAPI"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Script"/>
@@ -477,12 +481,26 @@
     <string>Inspect AST and prototype transformations</string>
    </property>
   </action>
+  <action name="actionExecuteAPI">
+   <property name="text">
+    <string>Execute API</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+R</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
    <class>Gui::FindWidget</class>
    <extends>QWidget</extends>
    <header>findwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Gui::APIExecutorWidget</class>
+   <extends>QWidget</extends>
+   <header>apiselector.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
