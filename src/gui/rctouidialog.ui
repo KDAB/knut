@@ -14,20 +14,17 @@
    <string>Rc to Ui Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="0">
+   <item row="2" column="1" colspan="4">
+    <widget class="QListWidget" name="idList"/>
+   </item>
+   <item row="0" column="1">
     <widget class="QLabel" name="label_2">
      <property name="text">
       <string>Output directory:</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="Gui::FileSelector" name="dirSelector" native="true"/>
-   </item>
-   <item row="1" column="0" colspan="2">
-    <widget class="QListWidget" name="idList"/>
-   </item>
-   <item row="2" column="0" colspan="2">
+   <item row="3" column="1" colspan="4">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Conversion flags</string>
@@ -40,6 +37,13 @@
         </property>
        </widget>
       </item>
+      <item row="3" column="0" colspan="2">
+       <widget class="QCheckBox" name="updateGeometry">
+        <property name="text">
+         <string>Update geometry</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="1">
        <widget class="QCheckBox" name="idForPixmap">
         <property name="text">
@@ -47,17 +51,20 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="2">
-       <widget class="QCheckBox" name="updateGeometry">
-        <property name="text">
-         <string>Update geometry</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
    </item>
-   <item row="3" column="0" colspan="2">
+   <item row="5" column="4">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1" colspan="4">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
       <string>Scale</string>
@@ -112,15 +119,18 @@
      </layout>
     </widget>
    </item>
-   <item row="4" column="1">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   <item row="1" column="1">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Language:</string>
      </property>
     </widget>
+   </item>
+   <item row="0" column="2" colspan="3">
+    <widget class="Gui::FileSelector" name="dirSelector" native="true"/>
+   </item>
+   <item row="1" column="2" colspan="3">
+    <widget class="QComboBox" name="language"/>
    </item>
   </layout>
  </widget>

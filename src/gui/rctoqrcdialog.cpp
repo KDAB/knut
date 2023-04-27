@@ -20,6 +20,14 @@ RcToQrcDialog::RcToQrcDialog(Core::RcDocument *document, QWidget *parent)
     ui->setupUi(this);
     setWindowTitle(QApplication::applicationName() + ' ' + QApplication::applicationVersion() + " - " + windowTitle());
 
+    auto m_rcFile = &(m_document->file());
+    const auto languageList = m_rcFile->data.keys();
+
+    ui->language->clear();
+    ui->language->addItems(languageList);
+    const int index = ui->language->findText(m_document->language());
+    ui->language->setCurrentIndex(index);
+
     auto assetFlags = DEFAULT_VALUE(Core::RcDocument::ConversionFlags, RcAssetFlags);
     ui->removeUnknown->setChecked(assetFlags & Core::RcDocument::RemoveUnknown);
     ui->convertPng->setChecked(assetFlags & Core::RcDocument::ConvertToPng);
@@ -38,6 +46,7 @@ RcToQrcDialog::RcToQrcDialog(Core::RcDocument *document, QWidget *parent)
 
     connect(ui->splitToolbars, &QCheckBox::toggled, this, &RcToQrcDialog::updateColorBox);
     connect(ui->convertPng, &QCheckBox::toggled, this, &RcToQrcDialog::updateColorBox);
+    connect(ui->language, &QComboBox::currentIndexChanged, this, &RcToQrcDialog::languageChanged);
 }
 
 RcToQrcDialog::~RcToQrcDialog() = default;
@@ -76,6 +85,12 @@ void RcToQrcDialog::accept()
 void RcToQrcDialog::updateColorBox()
 {
     ui->colorBox->setEnabled(ui->convertPng->isChecked() || ui->splitToolbars->isChecked());
+}
+
+void RcToQrcDialog::languageChanged()
+{
+    const QString language = ui->language->currentText();
+    m_document->setLanguage(language);
 }
 
 } // namespace Gui

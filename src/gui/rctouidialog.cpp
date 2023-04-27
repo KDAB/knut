@@ -22,6 +22,14 @@ RcToUiDialog::RcToUiDialog(Core::RcDocument *document, QWidget *parent)
 
     ui->dirSelector->setMode(FileSelector::Mode::OpenDirectory);
 
+    auto m_rcFile = &(m_document->file());
+    const auto languageList = m_rcFile->data.keys();
+
+    ui->language->clear();
+    ui->language->addItems(languageList);
+    const int index = ui->language->findText(m_document->language());
+    ui->language->setCurrentIndex(index);
+
     auto flags = DEFAULT_VALUE(Core::RcDocument::ConversionFlags, RcDialogFlags);
     ui->updateGeometry->setChecked(flags & Core::RcDocument::UpdateGeometry);
     ui->updateHierarchy->setChecked(flags & Core::RcDocument::UpdateHierarchy);
@@ -40,6 +48,7 @@ RcToUiDialog::RcToUiDialog(Core::RcDocument *document, QWidget *parent)
     connect(ui->dirSelector, &FileSelector::fileNameChanged, this, [this](const QString &fileName) {
         ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!fileName.trimmed().isEmpty());
     });
+    connect(ui->language, &QComboBox::currentIndexChanged, this, &RcToUiDialog::languageChanged);
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 }
 
@@ -77,6 +86,12 @@ void RcToUiDialog::accept()
         }
     }
     QDialog::accept();
+}
+
+void RcToUiDialog::languageChanged()
+{
+    const QString language = ui->language->currentText();
+    m_document->setLanguage(language);
 }
 
 } // namespace Gui

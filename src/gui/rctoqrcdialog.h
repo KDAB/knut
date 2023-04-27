@@ -21,6 +21,7 @@ class RcToQrcDialog : public QDialog
 public:
     explicit RcToQrcDialog(Core::RcDocument *document, QWidget *parent = nullptr);
     ~RcToQrcDialog();
+    void languageChanged();
 
 public slots:
     void accept() override;
