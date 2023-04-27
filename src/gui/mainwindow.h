@@ -32,6 +32,8 @@ public:
     QList<QAction *> menuActions() const;
     ShortcutManager *shortcutManager() const;
 
+    bool eventFilter(QObject *watched, QEvent *event) override;
+
 protected:
     void closeEvent(QCloseEvent *event) override;
     void showEvent(QShowEvent *event) override;

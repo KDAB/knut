@@ -2,28 +2,15 @@
 
 #include "core/document.h"
 
-#include <QHBoxLayout>
-#include <QLabel>
 #include <QWidget>
+
+class QLabel;
 
 namespace Gui {
 
 namespace Ui {
     class APIExecutorWidget;
 }
-
-struct ApiInfo
-{
-    QString name;
-    QVector<QPair<QString, QString>> args; // vectors of pair of type and name
-    Core::Document::Type type;
-};
-
-struct ArgumentWidget
-{
-    QLabel *label;
-    QWidget *widget;
-};
 
 class APIExecutorWidget : public QWidget
 {
@@ -33,25 +20,38 @@ public:
     explicit APIExecutorWidget(QWidget *parent = nullptr);
     ~APIExecutorWidget();
 
-    void showAPIExecutorWidget();
-
-protected:
-    void showEvent(QShowEvent *event) override;
+    void open();
 
 public slots:
     void onExecuteButtonClicked();
-    void populateArgumentList();
-    void populateApiList();
 
 private:
-    void addApi(const QString &name, const QVector<QPair<QString, QString>> &args, Core::Document::Type type);
-    void executeAPI(Core::Document *document, const QMetaMethod &api, const QList<QGenericArgument> &genericArgs);
-    QString getSignature(const QString &apiName, const QVector<QPair<QString, QString>> &args);
-    void createArgumentField(QHBoxLayout *parent, const QString &name, int typeId);
+    struct ApiInfo
+    {
+        Core::Document::Type type;
+        QByteArray name;
+        QVector<QPair<QByteArray, QByteArray>> args; // vectors of pair of name and typeName
+    };
+
+    struct ArgumentField
+    {
+        QLabel *label = nullptr;
+        QWidget *widget = nullptr;
+    };
+
+    void initializeApi();
+    void addApi(ApiInfo &&apiInfo);
+
+    void populateApiList();
+    void populateArgumentList();
+
+    void executeAPI(Core::Document *document, const QByteArray &name, const QList<QGenericArgument> &genericArgs);
+    QByteArray signatureForApi(const ApiInfo &apiInfo);
+    void createArgumentField(const QByteArray &name, const QByteArray &typeName);
 
     std::unique_ptr<Ui::APIExecutorWidget> ui;
-    QVector<ArgumentWidget *> m_argumentFields;
+    QVector<ArgumentField> m_argumentFields;
     QMap<QString, ApiInfo> m_apis;
 };
 
-}
+} // namespace Gui

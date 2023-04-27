@@ -109,15 +109,16 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Script
     ui->apiExecutorWidget->hide();
+    ui->apiExecutorWidget->installEventFilter(this);
     connect(ui->actionRunScript, &QAction::triggered, this, &MainWindow::runScript);
     connect(ui->actionStartRecordingScript, &QAction::triggered, m_historyPanel, &HistoryPanel::startRecording);
     connect(ui->actionStopRecordingScript, &QAction::triggered, m_historyPanel, &HistoryPanel::stopRecording);
     connect(ui->actionPlayLastScript, &QAction::triggered, m_scriptPanel, &ScriptPanel::playScript);
-    connect(ui->actionExecuteAPI, &QAction::triggered, ui->apiExecutorWidget,
-            &APIExecutorWidget::showAPIExecutorWidget);
+    connect(ui->actionExecuteAPI, &QAction::triggered, ui->apiExecutorWidget, &APIExecutorWidget::open);
 
     // Edit
     ui->findWidget->hide();
+    ui->findWidget->installEventFilter(this);
     connect(ui->actionSelectAll, &QAction::triggered, this, &MainWindow::selectAll);
     connect(ui->actionFind, &QAction::triggered, ui->findWidget, &FindWidget::open);
     connect(ui->actionReplace, &QAction::triggered, ui->findWidget, &FindWidget::open);
@@ -220,6 +221,18 @@ QList<QAction *> MainWindow::menuActions() const
 ShortcutManager *MainWindow::shortcutManager() const
 {
     return m_shortcutManager;
+}
+
+bool MainWindow::eventFilter(QObject *watched, QEvent *event)
+{
+
+    if (event->type() == QEvent::Show) {
+        if (qobject_cast<FindWidget *>(watched))
+            ui->apiExecutorWidget->hide();
+        else if (qobject_cast<APIExecutorWidget *>(watched))
+            ui->findWidget->hide();
+    }
+    return QMainWindow::eventFilter(watched, event);
 }
 
 void MainWindow::switchHeaderSource()
@@ -573,9 +586,10 @@ void MainWindow::updateScriptActions()
 
 void MainWindow::returnToEditor()
 {
-    if (ui->tabWidget->currentWidget()->hasFocus())
+    if (ui->tabWidget->currentWidget()->hasFocus()) {
         ui->findWidget->hide();
-    else
+        ui->apiExecutorWidget->hide();
+    } else
         ui->tabWidget->currentWidget()->setFocus(Qt::FocusReason::ShortcutFocusReason);
 }
 
