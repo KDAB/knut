@@ -1,5 +1,5 @@
-#include "apiselector.h"
-#include "ui_apiselector.h"
+#include "apiexecutorwidget.h"
+#include "ui_apiexecutorwidget.h"
 
 #include "guisettings.h"
 
