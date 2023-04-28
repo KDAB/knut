@@ -22,6 +22,8 @@ public:
 
     void open();
 
+    bool eventFilter(QObject *obj, QEvent *event);
+
 public slots:
     void onExecuteButtonClicked();
 

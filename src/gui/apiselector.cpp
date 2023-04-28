@@ -10,6 +10,7 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDoubleSpinBox>
+#include <QKeyEvent>
 #include <QLineEdit>
 #include <QSpinBox>
 
@@ -185,6 +186,7 @@ void APIExecutorWidget::createArgumentField(const QByteArray &name, const QByteA
         auto label = new QLabel(name + ':');
         ui->layout->addWidget(label);
         ui->layout->addWidget(widget);
+        widget->installEventFilter(this);
         m_argumentFields.append({label, widget});
     } else {
         Q_UNREACHABLE();
@@ -285,6 +287,16 @@ void APIExecutorWidget::open()
 
     show();
     ui->apiComboBox->setFocus(Qt::OtherFocusReason);
+}
+
+bool APIExecutorWidget::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::KeyPress) {
+        auto keyEvent = static_cast<QKeyEvent *>(event);
+        if (keyEvent->key() == Qt::Key_Enter || keyEvent->key() == Qt::Key_Return)
+            onExecuteButtonClicked();
+    }
+    return QWidget::eventFilter(obj, event);
 }
 
 } // namespace Gui
