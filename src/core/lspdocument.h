@@ -79,7 +79,6 @@ private:
     void changeContent(int position, int charsRemoved, int charsAdded);
     void changeContentLsp(int position, int charsRemoved, int charsAdded);
     void changeContentTreeSitter(int position, int charsRemoved, int charsAdded);
-    void changeBlockCount(int newBlockCount);
 
     // Language Server
     friend LspCache;

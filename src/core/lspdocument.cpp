@@ -44,7 +44,6 @@ LspDocument::LspDocument(Type type, QObject *parent)
     , m_treeSitterHelper(std::make_unique<TreeSitterHelper>(this))
 {
     connect(textEdit()->document(), &QTextDocument::contentsChange, this, &LspDocument::changeContent);
-    connect(textEdit()->document(), &QTextDocument::blockCountChanged, this, &LspDocument::changeBlockCount);
 }
 
 void LspDocument::setLspClient(Lsp::Client *client)
@@ -608,11 +607,6 @@ bool LspDocument::checkClient() const
         return false;
     }
     return true;
-}
-
-void LspDocument::changeBlockCount(int newBlockCount)
-{
-    spdlog::warn("new block count: {}", newBlockCount);
 }
 
 void LspDocument::changeContentLsp(int position, int charsRemoved, int charsAdded)
