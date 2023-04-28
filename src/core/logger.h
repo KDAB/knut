@@ -88,9 +88,13 @@ QString valueToString(const T &data)
         return QString::number(data);
     else if constexpr (std::is_same_v<std::remove_cvref_t<T>, QStringList>)
         return '{' + data.join(", ") + '}';
-    else if constexpr (std::is_enum_v<T>)
-        return QMetaEnum::fromType<T>().valueToKey(data);
-    else if constexpr (HasToString<T>)
+    else if constexpr (std::is_enum_v<T>) {
+        const auto metaEnum = QMetaEnum::fromType<T>();
+        QString className = QMetaType::fromType<T>().metaObject()->className();
+        // Remove potential namespace, we only want the class name
+        className = className.split("::").last();
+        return QString("%1.%2").arg(className, metaEnum.valueToKey(data));
+    } else if constexpr (HasToString<T>)
         return data.toString();
     else if constexpr (HasPointerToString<T>)
         return data->toString();

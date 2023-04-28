@@ -58,6 +58,10 @@ static QString variantToString(const QVariant &variant)
         text.replace('"', R"(\")");
         text.append('"');
         text.prepend('"');
+    } else if (variant.metaType().flags().testAnyFlag(QMetaType::IsEnumeration)) {
+        QString className = variant.metaType().metaObject()->className();
+        className = className.split("::").last();
+        text = className + '.' + text;
     }
     return text;
 }
