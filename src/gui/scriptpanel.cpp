@@ -1,12 +1,13 @@
 #include "scriptpanel.h"
 
-#include "guisettings.h"
-
 #include "core/logger.h"
+#include "core/project.h"
 #include "core/scriptmanager.h"
 #include "core/textdocument_p.h"
+#include "guisettings.h"
 
 #include <QComboBox>
+#include <QCoreApplication>
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -263,6 +264,51 @@ void ScriptPanel::playScript()
     }
 }
 
+QString ScriptPanel::findMethodSignature(const QObject *object, const QString &functionName)
+{
+    const QMetaObject *metaObject = object->metaObject();
+    const int methodCount = metaObject->methodCount();
+
+    for (int i = 0; i < methodCount; ++i) {
+        QMetaMethod method = metaObject->method(i);
+        QString methodName = method.methodSignature();
+
+        // Check if the method name matches
+        if (methodName.startsWith(functionName)) {
+            return methodName;
+        }
+    }
+
+    // Function not found
+    return QString();
+}
+
+void ScriptPanel::mousePressEvent(QMouseEvent *mouseEvent)
+{
+    if (Qt::LeftButton == mouseEvent->button()) {
+        // Store the initial position of the mouse press event
+        m_initialMousePos = mouseEvent->pos();
+    }
+
+    QPlainTextEdit::mousePressEvent(mouseEvent);
+}
+
+void ScriptPanel::mouseReleaseEvent(QMouseEvent *mouseEvent)
+{
+    if (Qt::LeftButton == mouseEvent->button()) {
+        QPoint finalMousePos = mouseEvent->pos();
+
+        // Create a QTextCursor and set its position according to initial and final mouse positions
+        QTextCursor textCursor = cursorForPosition(m_initialMousePos);
+        textCursor.setPosition(cursorForPosition(finalMousePos).position(), QTextCursor::KeepAnchor);
+        setTextCursor(textCursor);
+
+        m_selectedText = textCursor.selectedText();
+    }
+
+    QPlainTextEdit::mouseReleaseEvent(mouseEvent);
+}
+
 void ScriptPanel::keyPressEvent(QKeyEvent *event)
 {
     if ((event->key() == Qt::Key_Backtab)) {
@@ -271,6 +317,33 @@ void ScriptPanel::keyPressEvent(QKeyEvent *event)
     } else if (event->key() == Qt::Key_Tab) {
         Core::indentTextInTextEdit(this, 1);
         return;
+    } else if (event->key() == Qt::Key_F1) {
+        interfaceSettings = new InterfaceSettings();
+        QString documentationUrl;
+        QString fileName;
+        if (auto currentDoc = Core::Project::instance()->currentDocument()) {
+
+            QString docType = currentDoc->metaObject()->className();
+            docType.remove("Core::");
+            QString signature = findMethodSignature(currentDoc, m_selectedText);
+            if (!signature.isEmpty()) {
+                fileName = QString("%1.html").arg(docType.toLower());
+            } else {
+                // API property doesn't exist, handle other cases
+                // ...
+
+                if (m_selectedText.at(0).isUpper()) {
+                    fileName = QString("%1.html").arg(m_selectedText.toLower());
+                } else {
+                    fileName = QString("%1.html").arg(docType.toLower());
+                }
+                // ...
+            }
+
+            documentationUrl =
+                QString("%1/API/script/%2#%3").arg(interfaceSettings->getHelpPath(), fileName, m_selectedText);
+        }
+        QDesktopServices::openUrl(QUrl(documentationUrl));
     }
 
     QPlainTextEdit::keyPressEvent(event);

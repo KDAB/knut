@@ -19,8 +19,10 @@ public:
     ~InterfaceSettings();
 
     void initialize();
+    QString getHelpPath();
 
 private:
+    void browseHelpPath();
     std::unique_ptr<Ui::InterfaceSettings> ui;
 };
 

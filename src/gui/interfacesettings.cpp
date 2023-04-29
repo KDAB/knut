@@ -2,6 +2,9 @@
 #include "ui_interfacesettings.h"
 
 #include "guisettings.h"
+#include <QDesktopServices>
+#include <QDir>
+#include <QFileDialog>
 
 #ifdef USE_SYNTAX_HIGHLIGHTING
 #include <repository.h>
@@ -19,6 +22,15 @@ InterfaceSettings::InterfaceSettings(QWidget *parent)
     ui->setupUi(this);
 
     ui->styleCombo->addItems({"[Defaut]", "Fusion Light", "Fusion Dark"});
+
+    // Help Path
+    QDir dir(QCoreApplication::applicationDirPath());
+    dir.cdUp(); // Move up one directory level
+    dir.cd("site"); // Append "site" to the path
+    QString path = QUrl::fromLocalFile(dir.absolutePath()).toString();
+    ui->pathLineEdit->setText(path);
+
+    connect(ui->openHelpPath, &QPushButton::clicked, this, &InterfaceSettings::browseHelpPath);
 
 #ifdef USE_SYNTAX_HIGHLIGHTING
     KSyntaxHighlighting::Repository repository;
@@ -69,6 +81,21 @@ void InterfaceSettings::initialize()
     ui->fontCombo->setCurrentText(GuiSettings::instance()->fontFamily());
     ui->fontSizeCombo->setCurrentText(QString::number(GuiSettings::instance()->fontSize()));
     ui->wordWrapCheck->setChecked(GuiSettings::instance()->isWordWrap());
+}
+
+QString InterfaceSettings::getHelpPath()
+{
+    return ui->pathLineEdit->text();
+}
+
+void InterfaceSettings::browseHelpPath()
+{
+    QString initialPath = getHelpPath();
+    QString newPath = QFileDialog::getExistingDirectory(nullptr, tr("Select Help Path"), initialPath);
+    if (!newPath.isEmpty()) {
+        //  Update the line edit with the selected path
+        ui->pathLineEdit->setText(newPath);
+    }
 }
 
 } // namespace Gui

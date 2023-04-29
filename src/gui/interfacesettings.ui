@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>322</width>
-    <height>268</height>
+    <width>640</width>
+    <height>415</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -178,6 +178,32 @@
        <widget class="QCheckBox" name="wordWrapCheck">
         <property name="text">
          <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>Help</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Help Path:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="pathLineEdit"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="openHelpPath">
+        <property name="text">
+         <string>Open</string>
         </property>
        </widget>
       </item>

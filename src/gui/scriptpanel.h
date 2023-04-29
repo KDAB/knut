@@ -1,6 +1,8 @@
 #pragma once
 
+#include "interfacesettings.h"
 #include <QPlainTextEdit>
+#include <QPoint>
 
 class QLabel;
 class QToolButton;
@@ -22,6 +24,8 @@ public:
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
+    void mousePressEvent(QMouseEvent *mouseEvent);
+    void mouseReleaseEvent(QMouseEvent *mouseEvent);
 
 private:
     void openScript();
@@ -31,13 +35,17 @@ private:
     void editDialog();
     void checkEditDialogButton();
     QString createDialogFile();
+    QString findMethodSignature(const QObject *object, const QString &functionName);
 
     void setupNewFile(const QString &scriptText, int cursorLeftMove);
 
     QWidget *const m_toolBar = nullptr;
     QLabel *m_scriptName = nullptr;
     QString m_fileName;
+    QString m_selectedText;
+    QPoint m_initialMousePos;
     QToolButton *m_editDialogButton = nullptr;
+    InterfaceSettings *interfaceSettings = nullptr;
 };
 
 } // namespace Gui
