@@ -38,10 +38,6 @@ public:
     Q_INVOKABLE const Core::Symbol *symbolUnderCursor() const;
     Q_INVOKABLE QVector<Core::TextLocation> references(int position) const;
 
-    void transform(const QString &jsonFileName, const std::unordered_map<QString, QString> &context);
-    Q_INVOKABLE void transform(const QString &jsonFileName, QVariantMap context = {});
-    Q_INVOKABLE void transformSymbol(const Core::Symbol *symbol, const QString &jsonFileName);
-
     Q_INVOKABLE QVector<Core::QueryMatch> query(const QString &query);
     Q_INVOKABLE QVector<Core::QueryMatch> queryInRange(const Core::RangeMark &range, const QString &query);
 
@@ -84,18 +80,6 @@ private:
     void changeContentLsp(int position, int charsRemoved, int charsAdded);
     void changeContentTreeSitter(int position, int charsRemoved, int charsAdded);
     void changeBlockCount(int newBlockCount);
-
-    // JSON Transformations
-    void regexpTransform(
-        const RegexpTransform &transform, const std::unordered_map<QString, QString> &regexpContext,
-        std::function<bool(QRegularExpressionMatch, QTextCursor)> regexFilter = [](QRegularExpressionMatch,
-                                                                                   QTextCursor) {
-            return true;
-        });
-
-    bool checkSymbolPosition(const Symbol *symbol, QRegularExpressionMatch match, QTextCursor cursor) const;
-    bool checkReferencePosition(const QVector<Core::TextLocation> &references, QRegularExpressionMatch match,
-                                QTextCursor cursor) const;
 
     // Language Server
     friend LspCache;

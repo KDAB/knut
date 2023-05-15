@@ -30,8 +30,6 @@ Inherited properties: [TextDocument properties](../script/textdocument.md#proper
 ||**[switchDeclarationDefinition](#switchDeclarationDefinition)**()|
 |[Symbol](../script/symbol.md) |**[symbolUnderCursor](#symbolUnderCursor)**()|
 |array<[Symbol](../script/symbol.md)> |**[symbols](#symbols)**()|
-||**[transform](#transform)**(const QString &jsonFileName, object context)|
-||**[transformSymbol](#transformSymbol)**(const QString &symbolName, const QString &jsonFileName)|
 
 Inherited methods: [TextDocument methods](../script/textdocument.md#methods)
 
@@ -125,20 +123,3 @@ Returns the list of symbols in the current document.
 
 Note that the returned `Symbol` pointers are only valid until the document they
 originate from is deconstructed.
-
-#### <a name="transform"></a>**transform**(const QString &jsonFileName, object context)
-
-!!! note ""
-    Since: Knut 1.1
-
-Runs a list of transformations defined in a JSON file.
-The JSON file is loaded from the path specified in `jsonFileName`.
-
-A context object can be provided.
-Any key in this object is used to provide additional context information to the transformation.
-e.g. `{ symbol: "myobject" }` would replace all occurences of `${symbol}` in the json tranformation with `myobject`.
-
-#### <a name="transformSymbol"></a>**transformSymbol**(const QString &symbolName, const QString &jsonFileName)
-
-Runs a list of transformations defined in a JSON file on the given `symbolName`.
-The JSON file is loaded from the path specified in `jsonFileName`.

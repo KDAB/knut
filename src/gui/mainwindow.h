@@ -70,8 +70,6 @@ private:
     void selectBlockUp();
     void commentSelection();
     void toggleSection();
-    void transform();
-    void transformSymbol();
     void inspectTreeSitter();
     void deleteMethod();
 

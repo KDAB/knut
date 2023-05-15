@@ -51,7 +51,7 @@
      <x>0</x>
      <y>0</y>
      <width>1463</width>
-     <height>21</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -95,8 +95,6 @@
     <addaction name="actionSelectToBlockEnd"/>
     <addaction name="separator"/>
     <addaction name="actionSelectBlockUp"/>
-    <addaction name="actionTransform"/>
-    <addaction name="actionTransformSymbol"/>
     <addaction name="actionDeleteMethod"/>
     <addaction name="actionTreeSitterInspector"/>
    </widget>
@@ -418,14 +416,6 @@
     <string>Ctrl+Shift+Backspace</string>
    </property>
   </action>
-  <action name="actionTransform">
-   <property name="text">
-    <string>Run Transformation...</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+T</string>
-   </property>
-  </action>
   <action name="actionUndo">
    <property name="text">
     <string>Undo</string>
@@ -463,14 +453,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+U</string>
-   </property>
-  </action>
-  <action name="actionTransformSymbol">
-   <property name="text">
-    <string>Run Symbol Transformation...</string>
-   </property>
-   <property name="toolTip">
-    <string>Requires the LSP to be able to find a Symbol under the cursor position.</string>
    </property>
   </action>
   <action name="actionTreeSitterInspector">
