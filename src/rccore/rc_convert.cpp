@@ -203,14 +203,16 @@ static void convertStyles(const Data &data, Widget &widget, Data::Control &contr
         if (control.styles.removeOne(WSEX_CLIENTEDGE)) {
             widget.properties[FrameShape] = "QFrame::Panel";
             widget.properties[FrameShadow] = "QFrame::Sunken";
+            widget.properties["lineWidth"] = 2;
         }
         if (control.styles.removeOne(WSEX_STATICEDGE)) {
-            widget.properties[FrameShape] = "QFrame::StyledPanel";
+            widget.properties[FrameShape] = "QFrame::Panel";
             widget.properties[FrameShadow] = "QFrame::Sunken";
         }
         if (control.styles.removeOne(WSEX_DLGMODALFRAME)) {
             widget.properties[FrameShape] = "QFrame::Panel";
             widget.properties[FrameShadow] = "QFrame::Raised";
+            widget.properties["lineWidth"] = 2;
         }
         if (control.styles.removeOne(WSBORDER))
             widget.properties[FrameShape] = "QFrame::Box";
@@ -344,7 +346,7 @@ static Widget convertLabel(const Data &data, Data::Control &control, bool useIdF
         widget.properties[Alignment] = "Qt::AlignHCenter";
 
     if (control.styles.removeOne(SSSUNKEN)) {
-        widget.properties[FrameShape] = "QFrame::Box";
+        widget.properties[FrameShape] = "QFrame::Panel";
         widget.properties[FrameShadow] = "QFrame::Sunken";
     }
 
