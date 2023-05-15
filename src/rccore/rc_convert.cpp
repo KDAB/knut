@@ -90,139 +90,32 @@ QVector<Asset> convertAssets(const Data &data, Asset::ConversionFlags flags)
 // Dialog conversion
 //=============================================================================
 
-// It's not good practice to create static QString, but it makes the code way more easy to read
-// MFC Styles
-const auto BS3STATE = "BS_3STATE";
-const auto BSAUTO3STATE = "BS_AUTO3STATE";
-const auto BSAUTOCHECKBOX = "BS_AUTOCHECKBOX";
-const auto BSAUTORADIOBUTTON = "BS_AUTORADIOBUTTON";
-const auto BSCHECKBOX = "BS_CHECKBOX";
-const auto BSGROUPBOX = "BS_GROUPBOX";
-const auto BSDEFPUSHBUTTON = "BS_DEFPUSHBUTTON";
-const auto BSPUSHBUTTON = "BS_PUSHBUTTON";
-const auto BSRADIOBUTTON = "BS_RADIOBUTTON";
-const auto BSBITMAP = "BS_BITMAP";
-const auto BSICON = "BS_ICON";
-const auto BSFLAT = "BS_FLAT";
-const auto BSPUSHLIKE = "BS_PUSHLIKE";
-
-const auto CBSDROPDOWN = "CBS_DROPDOWN";
-const auto CBSDROPDOWNLIST = "CBS_DROPDOWNLIST";
-const auto CBSSIMPLE = "CBS_SIMPLE";
-
-const auto SSRIGHT = "SS_RIGHT";
-const auto SSCENTER = "SS_CENTER";
-const auto SSCENTERIMAGE = "SS_CENTERIMAGE";
-const auto SSSUNKEN = "SS_SUNKEN";
-const auto SSBLACKFRAME = "SS_BLACKFRAME";
-const auto SSREALSIZECONTROL = "SS_REALSIZECONTROL";
-const auto SSBITMAP = "SS_BITMAP";
-const auto SSICON = "SS_ICON";
-const auto SSLEFTNOWORDWRAP = "SS_LEFTNOWORDWRAP";
-const auto SSLEFT = "SS_LEFT";
-
-const auto ESMULTILINE = "ES_MULTILINE";
-const auto ESCENTER = "ES_CENTER";
-const auto ESLEFT = "ES_LEFT";
-const auto ESRIGHT = "ES_RIGHT";
-const auto ESPASSWORD = "ES_PASSWORD";
-const auto ESREADONLY = "ES_READONLY";
-
-const auto LBSNOSEL = "LBS_NOSEL";
-const auto LBSMULTIPLESEL = "LBS_MULTIPLESEL";
-const auto LBSEXTENDEDSEL = "LBS_EXTENDEDSEL";
-const auto LBSSORT = "LBS_SORT";
-const auto LBSSTANDARD = "LBS_STANDARD";
-const auto LBSDISABLENOSCROLL = "LBS_DISABLENOSCROLL";
-
-const auto SBSVERT = "SBS_VERT";
-const auto SBSHORZ = "SBS_HORZ";
-
-const auto TBS_VERT = "TBS_VERT";
-const auto TBS_HORZ = "TBS_HORZ";
-const auto TBS_NOTICKS = "TBS_NOTICKS";
-const auto TBS_BOTH = "TBS_BOTH";
-const auto TBS_LEFT = "TBS_LEFT";
-const auto TBS_RIGHT = "TBS_RIGHT";
-const auto TBS_TOP = "TBS_TOP";
-const auto TBS_BOTTOM = "TBS_BOTTOM";
-
-const auto TCS_BOTTOM = "TCS_BOTTOM";
-const auto TCS_VERTICAL = "TCS_VERTICAL";
-const auto TCS_RIGHT = "TCS_RIGHT";
-
-const auto DTS_LONGDATEFORMAT = "DTS_LONGDATEFORMAT";
-const auto DTS_SHORTDATEFORMAT = "DTS_SHORTDATEFORMAT";
-const auto DTS_SHORTDATECENTURYFORMAT = "DTS_SHORTDATECENTURYFORMAT";
-const auto DTS_TIMEFORMAT = "DTS_TIMEFORMAT";
-
-const auto WSCAPTION = "WS_CAPTION";
-const auto WSBORDER = "WS_BORDER";
-const auto WSDISABLED = "WS_DISABLED";
-const auto WSTABSTOP = "WS_TABSTOP";
-const auto WSHSCROLL = "WS_HSCROLL";
-const auto WSVSCROLL = "WS_VSCROLL";
-const auto WSEX_CLIENTEDGE = "WS_EX_CLIENTEDGE";
-const auto WSEX_STATICEDGE = "WS_EX_STATICEDGE";
-const auto WSEX_DLGMODALFRAME = "WS_EX_DLGMODALFRAME";
-
-// Qt properties
-const auto WindowTitle = "windowTitle";
-const auto Text = "text";
-const auto Checkable = "checkable";
-const auto Default = "default";
-const auto Flat = "flat";
-const auto FrameShape = "frameShape";
-const auto FrameShadow = "frameShadow";
-const auto Enabled = "enabled";
-const auto Tristate = "tristate";
-const auto Editable = "editable";
-const auto InsertPolicy = "insertPolicy";
-const auto Title = "title";
-const auto Alignment = "alignment";
-const auto ScaledContents = "scaledContents";
-const auto Pixmap = "pixmap";
-const auto WordWrap = "wordWrap";
-const auto EchoMode = "echoMode";
-const auto ReadOnly = "readOnly";
-const auto ViewMode = "viewMode";
-const auto SelectionMode = "selectionMode";
-const auto SortingEnabled = "sortingEnabled";
-const auto HorizontalScrollBarPolicy = "horizontalScrollBarPolicy";
-const auto VerticalScrollBarPolicy = "verticalScrollBarPolicy";
-const auto Orientation = "orientation";
-const auto TickPosition = "tickPosition";
-const auto InputMask = "inputMask";
-const auto TabPosition = "tabPosition";
-const auto DisplayFormat = "displayFormat";
-const auto CalendarPopup = "calendarPopup";
-
 static void convertStyles(const Data &data, Widget &widget, Data::Control &control, bool isFrame = false)
 {
     if (isFrame) {
-        if (control.styles.removeOne(WSEX_CLIENTEDGE)) {
-            widget.properties[FrameShape] = "QFrame::Panel";
-            widget.properties[FrameShadow] = "QFrame::Sunken";
+        if (control.styles.removeOne("WS_EX_CLIENTEDGE")) {
+            widget.properties["frameShape"] = "QFrame::Panel";
+            widget.properties["frameShadow"] = "QFrame::Sunken";
             widget.properties["lineWidth"] = 2;
         }
-        if (control.styles.removeOne(WSEX_STATICEDGE)) {
-            widget.properties[FrameShape] = "QFrame::Panel";
-            widget.properties[FrameShadow] = "QFrame::Sunken";
+        if (control.styles.removeOne("WS_EX_STATICEDGE")) {
+            widget.properties["frameShape"] = "QFrame::Panel";
+            widget.properties["frameShadow"] = "QFrame::Sunken";
         }
-        if (control.styles.removeOne(WSEX_DLGMODALFRAME)) {
-            widget.properties[FrameShape] = "QFrame::Panel";
-            widget.properties[FrameShadow] = "QFrame::Raised";
+        if (control.styles.removeOne("WS_EX_DLGMODALFRAME")) {
+            widget.properties["frameShape"] = "QFrame::Panel";
+            widget.properties["frameShadow"] = "QFrame::Raised";
             widget.properties["lineWidth"] = 2;
         }
-        if (control.styles.removeOne(WSBORDER))
-            widget.properties[FrameShape] = "QFrame::Box";
+        if (control.styles.removeOne("WS_BORDER"))
+            widget.properties["frameShape"] = "QFrame::Box";
     }
 
-    if (control.styles.removeOne(WSDISABLED))
-        widget.properties[Enabled] = false;
+    if (control.styles.removeOne("WS_DISABLED"))
+        widget.properties["enabled"] = false;
 
     // WS_TABSTOP is handled by Qt widgets (focus navigation)
-    control.styles.removeOne(WSTABSTOP);
+    control.styles.removeOne("WS_TABSTOP");
 
     if (!control.styles.isEmpty()) {
         spdlog::info("{}({}): {} has unused styles {}", data.fileName.toStdString(), control.line,
@@ -238,23 +131,23 @@ static Widget convertPushButton(const Data &data, Data::Control &control)
 {
     Widget widget;
     widget.className = "QPushButton";
-    widget.properties[Text] = control.text;
+    widget.properties["text"] = control.text;
 
-    if (control.styles.removeOne(BSAUTO3STATE) || control.styles.removeOne(BS3STATE)
-        || control.styles.removeOne(BSCHECKBOX) || control.styles.removeOne(BSRADIOBUTTON)
-        || control.styles.removeOne(BSAUTOCHECKBOX) || control.styles.removeOne(BSAUTORADIOBUTTON))
-        widget.properties[Checkable] = true;
+    if (control.styles.removeOne("BS_AUTO3STATE") || control.styles.removeOne("BS_3STATE")
+        || control.styles.removeOne("BS_CHECKBOX") || control.styles.removeOne("BS_RADIOBUTTON")
+        || control.styles.removeOne("BS_AUTOCHECKBOX") || control.styles.removeOne("BS_AUTORADIOBUTTON"))
+        widget.properties["checkable"] = true;
 
-    if (control.styles.removeOne(BSDEFPUSHBUTTON) || control.type == static_cast<int>(Keywords::DEFPUSHBUTTON))
-        widget.properties[Default] = true;
+    if (control.styles.removeOne("BS_DEFPUSHBUTTON") || control.type == static_cast<int>(Keywords::DEFPUSHBUTTON))
+        widget.properties["default"] = true;
 
     // The button has an image, but it's handled with the message BM_SETIMAGE, in code
     // No need to port here
-    control.styles.removeOne(BSBITMAP);
-    control.styles.removeOne(BSICON);
+    control.styles.removeOne("BS_BITMAP");
+    control.styles.removeOne("BS_ICON");
 
-    if (control.styles.removeOne(BSFLAT) || control.type == static_cast<int>(Keywords::PUSHBOX))
-        widget.properties[Flat] = true;
+    if (control.styles.removeOne("BS_FLAT") || control.type == static_cast<int>(Keywords::PUSHBOX))
+        widget.properties["flat"] = true;
 
     convertStyles(data, widget, control);
     return widget;
@@ -266,10 +159,10 @@ static Widget convertRadioButton(const Data &data, Data::Control &control)
 {
     Widget widget;
     widget.className = "QRadioButton";
-    widget.properties[Text] = control.text;
+    widget.properties["text"] = control.text;
 
-    control.styles.removeOne(BSRADIOBUTTON);
-    control.styles.removeOne(BSAUTORADIOBUTTON);
+    control.styles.removeOne("BS_RADIOBUTTON");
+    control.styles.removeOne("BS_AUTORADIOBUTTON");
     convertStyles(data, widget, control);
     return widget;
 }
@@ -282,14 +175,14 @@ static Widget convertCheckBox(const Data &data, Data::Control &control)
 {
     Widget widget;
     widget.className = "QCheckBox";
-    widget.properties[Text] = control.text;
+    widget.properties["text"] = control.text;
 
-    if (control.styles.removeOne(BSAUTO3STATE) || control.styles.removeOne(BS3STATE)
+    if (control.styles.removeOne("BS_AUTO3STATE") || control.styles.removeOne("BS_3STATE")
         || control.type == static_cast<int>(Keywords::STATE3) || control.type == static_cast<int>(Keywords::AUTO3STATE))
-        widget.properties[Tristate] = true;
+        widget.properties["tristate"] = true;
 
-    control.styles.removeOne(BSCHECKBOX);
-    control.styles.removeOne(BSAUTOCHECKBOX);
+    control.styles.removeOne("BS_CHECKBOX");
+    control.styles.removeOne("BS_AUTOCHECKBOX");
 
     convertStyles(data, widget, control);
     return widget;
@@ -301,16 +194,16 @@ static Widget convertComboBox(const Data &data, const QString &dialogId, Data::C
     Widget widget;
     widget.className = "QComboBox";
 
-    if (control.styles.removeOne(CBSSIMPLE)) {
+    if (control.styles.removeOne("CBS_SIMPLE")) {
         widget.className = "QListWidget";
     } else {
         // In MFC, the height is not the height of the combobox
-        // So we take the default height of a combobox
+        // So we take the "default" height of a combobox
         control.geometry.setHeight(22);
 
-        if (control.styles.removeOne(CBSDROPDOWN)) {
-            widget.properties[Editable] = true;
-            widget.properties[InsertPolicy] = "QComboBox::NoInsert";
+        if (control.styles.removeOne("CBS_DROPDOWN")) {
+            widget.properties["editable"] = true;
+            widget.properties["insertPolicy"] = "QComboBox::NoInsert";
         }
     }
 
@@ -321,89 +214,90 @@ static Widget convertComboBox(const Data &data, const QString &dialogId, Data::C
     if (it != data.dialogData.cend()) {
         const auto &values = it->values.value(control.id);
         if (!values.isEmpty())
-            widget.properties[Text] = values;
+            widget.properties["text"] = values;
     }
 
-    control.styles.removeOne(CBSDROPDOWNLIST);
-    control.styles.removeOne(WSVSCROLL);
+    control.styles.removeOne("CBS_DROPDOWNLIST");
+    control.styles.removeOne("WS_VSCROLL");
     convertStyles(data, widget, control);
     return widget;
 }
 
-// https://docs.microsoft.com/en-us/windows/desktop/menurc/ltext-control
-// https://docs.microsoft.com/en-us/windows/desktop/menurc/rtext-control
-// https://docs.microsoft.com/en-us/windows/desktop/menurc/ctext-control
+// https://docs.microsoft.com/en-us/windows/desktop/menurc/l"text"-control
+// https://docs.microsoft.com/en-us/windows/desktop/menurc/r"text"-control
+// https://docs.microsoft.com/en-us/windows/desktop/menurc/c"text"-control
 // https://docs.microsoft.com/en-us/windows/desktop/menurc/icon-control
 static Widget convertLabel(const Data &data, Data::Control &control, bool useIdForPixmap)
 {
     Widget widget;
     widget.className = "QLabel";
 
-    if (control.styles.removeOne(SSRIGHT) || control.type == static_cast<int>(Keywords::RTEXT))
-        widget.properties[Alignment] = "Qt::AlignRight";
-    if (control.styles.removeOne(SSCENTER) || control.styles.removeOne(SSCENTERIMAGE)
+    if (control.styles.removeOne("SS_RIGHT") || control.type == static_cast<int>(Keywords::RTEXT))
+        widget.properties["alignment"] = "Qt::AlignRight";
+    if (control.styles.removeOne("SS_CENTER") || control.styles.removeOne("SS_CENTERIMAGE")
         || control.type == static_cast<int>(Keywords::CTEXT))
-        widget.properties[Alignment] = "Qt::AlignHCenter";
+        widget.properties["alignment"] = "Qt::AlignHCenter";
 
-    if (control.styles.removeOne(SSSUNKEN)) {
-        widget.properties[FrameShape] = "QFrame::Panel";
-        widget.properties[FrameShadow] = "QFrame::Sunken";
+    if (control.styles.removeOne("SS_SUNKEN")) {
+        widget.properties["frameShape"] = "QFrame::Panel";
+        widget.properties["frameShadow"] = "QFrame::Sunken";
     }
 
-    if (control.styles.removeOne(SSBLACKFRAME))
-        widget.properties[FrameShape] = "QFrame::Box";
+    if (control.styles.removeOne("SS_BLACKFRAME"))
+        widget.properties["frameShape"] = "QFrame::Box";
 
-    if (control.styles.removeOne(SSREALSIZECONTROL))
-        widget.properties[ScaledContents] = true;
+    if (control.styles.removeOne("SS_REALSIZECONTROL"))
+        widget.properties["scaledContents"] = true;
 
-    if (control.styles.removeOne(SSBITMAP) || control.styles.removeOne(SSICON)
+    if (control.styles.removeOne("SS_BITMAP") || control.styles.removeOne("SS_ICON")
         || control.type == static_cast<int>(Keywords::ICON)) {
         if (useIdForPixmap) {
-            widget.properties[Pixmap] = QStringLiteral(":/%1").arg(control.text);
+            widget.properties["pixmap"] = QStringLiteral(":/%1").arg(control.text);
         } else {
             auto asset = data.asset(control.text);
             if (asset)
-                widget.properties[Pixmap] = asset->fileName;
+                widget.properties["pixmap"] = asset->fileName;
             else
-                widget.properties[Pixmap] = QStringLiteral(":/%1").arg(control.text);
+                widget.properties["pixmap"] = QStringLiteral(":/%1").arg(control.text);
         }
     } else {
-        widget.properties[Text] = control.text;
+        widget.properties["text"] = control.text;
     }
 
-    if (control.styles.removeOne(SSLEFTNOWORDWRAP))
-        widget.properties[WordWrap] = true;
+    if (control.styles.removeOne("SS_LEFTNOWORDWRAP"))
+        widget.properties["wordWrap"] = true;
 
-    control.styles.removeOne(SSLEFT);
+    control.styles.removeOne("SS_LEFT");
     convertStyles(data, widget, control, true);
     return widget;
 }
 
-// https://docs.microsoft.com/en-us/windows/desktop/menurc/edittext-control
+// https://docs.microsoft.com/en-us/windows/desktop/menurc/edit"text"-control
 static Widget convertEditText(const Data &data, Data::Control &control)
 {
     Widget widget;
     bool hasFrame = false;
 
     // TODO what about RichEdit20W
-    if (control.styles.removeOne(ESMULTILINE) || control.className == "RICHEDIT") {
+    if (control.styles.removeOne("ES_MULTILINE") || control.className == "RICHEDIT") {
         widget.className = "QTextEdit";
         hasFrame = true;
     } else {
         widget.className = "QLineEdit";
-        if (control.styles.removeOne(ESCENTER))
-            widget.properties[Alignment] = "Qt::AlignCenter|Qt::AlignVCenter";
-        else if (control.styles.removeOne(ESRIGHT))
-            widget.properties[Alignment] = "Qt::AlignRight|Qt::AlignVCenter";
-        else if (control.styles.removeOne(ESLEFT) || true) // this is the default, but I want to remove the style too
-            widget.properties[Alignment] = "Qt::AlignLeft|Qt::AlignVCenter";
+        if (control.styles.removeOne("ES_CENTER"))
+            widget.properties["alignment"] = "Qt::AlignCenter|Qt::AlignVCenter";
+        else if (control.styles.removeOne("ES_RIGHT"))
+            widget.properties["alignment"] = "Qt::AlignRight|Qt::AlignVCenter";
+        else if (control.styles.removeOne("ES_LEFT")
+                 || true) // this is the "default", but I want to remove the style too
+            widget.properties["alignment"] = "Qt::AlignLeft|Qt::AlignVCenter";
 
-        if (control.styles.removeOne(ESPASSWORD))
-            widget.properties[EchoMode] = "QLineEdit::Password";
+        if (control.styles.removeOne("ES_PASSWORD"))
+            widget.properties["echoMode"] = "QLineEdit::Password";
     }
 
-    if (control.styles.removeOne(ESREADONLY))
-        widget.properties[ReadOnly] = true;
+    if (control.styles.removeOne("ES_READONLY"))
+        widget.properties["readOnly"] = true;
 
     convertStyles(data, widget, control, hasFrame);
     return widget;
@@ -414,7 +308,7 @@ static Widget convertGroupBox(const Data &data, Data::Control &control)
 {
     Widget widget;
     widget.className = "QGroupBox";
-    widget.properties[Title] = control.text;
+    widget.properties["title"] = control.text;
     convertStyles(data, widget, control);
     return widget;
 }
@@ -427,31 +321,31 @@ static Widget convertListWidget(const Data &data, Data::Control &control)
 
     // The control is an icon view
     if (control.type == static_cast<int>(Keywords::CONTROL) && control.className == "SysListView32")
-        widget.properties[ViewMode] = "QListView::IconMode";
+        widget.properties["viewMode"] = "QListView::IconMode";
 
-    if (control.styles.removeOne(LBSNOSEL))
-        widget.properties[SelectionMode] = "QAbstractItemView::NoSelection";
-    else if (control.styles.removeOne(LBSMULTIPLESEL))
-        widget.properties[SelectionMode] = "QAbstractItemView::MultiSelection";
-    else if (control.styles.removeOne(LBSEXTENDEDSEL))
-        widget.properties[SelectionMode] = "QAbstractItemView::ExtendedSelection";
+    if (control.styles.removeOne("LBS_NOSEL"))
+        widget.properties["selectionMode"] = "QAbstractItemView::NoSelection";
+    else if (control.styles.removeOne("LBS_MULTIPLESEL"))
+        widget.properties["selectionMode"] = "QAbstractItemView::MultiSelection";
+    else if (control.styles.removeOne("LBS_EXTENDEDSEL"))
+        widget.properties["selectionMode"] = "QAbstractItemView::ExtendedSelection";
     else
-        widget.properties[SelectionMode] = "QAbstractItemView::SingleSelection";
+        widget.properties["selectionMode"] = "QAbstractItemView::SingleSelection";
 
-    if (control.styles.removeOne(LBSSORT) || control.styles.removeOne(LBSSTANDARD))
-        widget.properties[SortingEnabled] = true;
-    else if (control.styles.removeOne(LBSMULTIPLESEL))
-        widget.properties[SelectionMode] = "QAbstractItemView::MultiSelection";
+    if (control.styles.removeOne("LBS_SORT") || control.styles.removeOne("LBS_STANDARD"))
+        widget.properties["SortingEnabled"] = true;
+    else if (control.styles.removeOne("LBS_MULTIPLESEL"))
+        widget.properties["selectionMode"] = "QAbstractItemView::MultiSelection";
 
-    bool alwaysOn = control.styles.removeOne(LBSDISABLENOSCROLL);
-    if (control.styles.removeOne(WSHSCROLL))
-        widget.properties[HorizontalScrollBarPolicy] = alwaysOn ? "Qt::ScrollBarAlwaysOn" : "Qt::ScrollBarAsNeeded";
+    bool alwaysOn = control.styles.removeOne("LBS_DISABLENOSCROLL");
+    if (control.styles.removeOne("WS_HSCROLL"))
+        widget.properties["horizontalScrollBarPolicy"] = alwaysOn ? "Qt::ScrollBarAlwaysOn" : "Qt::ScrollBarAsNeeded";
     else
-        widget.properties[HorizontalScrollBarPolicy] = "Qt::ScrollBarAlwaysOff";
-    if (control.styles.removeOne(WSVSCROLL))
-        widget.properties[VerticalScrollBarPolicy] = alwaysOn ? "Qt::ScrollBarAlwaysOn" : "Qt::ScrollBarAsNeeded";
+        widget.properties["horizontalScrollBarPolicy"] = "Qt::ScrollBarAlwaysOff";
+    if (control.styles.removeOne("WS_VSCROLL"))
+        widget.properties["verticalScrollBarPolicy"] = alwaysOn ? "Qt::ScrollBarAlwaysOn" : "Qt::ScrollBarAsNeeded";
     else
-        widget.properties[VerticalScrollBarPolicy] = "Qt::ScrollBarAlwaysOff";
+        widget.properties["verticalScrollBarPolicy"] = "Qt::ScrollBarAlwaysOff";
 
     convertStyles(data, widget, control, true);
     return widget;
@@ -463,10 +357,10 @@ static Widget convertScrollBar(const Data &data, Data::Control &control)
     Widget widget;
     widget.className = "QScrollBar";
 
-    if (control.styles.removeOne(SBSVERT))
-        widget.properties[Orientation] = "Qt::Vertical";
-    else if (control.styles.removeOne(SBSHORZ) || true) // We want to remove the style if it exits
-        widget.properties[Orientation] = "Qt::Horizontal";
+    if (control.styles.removeOne("SBS_VERT"))
+        widget.properties["orientation"] = "Qt::Vertical";
+    else if (control.styles.removeOne("SBS_HORZ") || true) // We want to remove the style if it exits
+        widget.properties["orientation"] = "Qt::Horizontal";
 
     convertStyles(data, widget, control);
     return widget;
@@ -474,25 +368,25 @@ static Widget convertScrollBar(const Data &data, Data::Control &control)
 
 static Widget convertButton(const Data &data, Data::Control &control)
 {
-    if (control.styles.contains(BSPUSHLIKE))
+    if (control.styles.contains("BS_PUSHLIKE"))
         return convertPushButton(data, control);
-    if (control.styles.contains(BS3STATE))
+    if (control.styles.contains("BS_3STATE"))
         return convertCheckBox(data, control);
-    if (control.styles.contains(BSAUTO3STATE))
+    if (control.styles.contains("BS_AUTO3STATE"))
         return convertCheckBox(data, control);
-    if (control.styles.contains(BSAUTOCHECKBOX))
+    if (control.styles.contains("BS_AUTOCHECKBOX"))
         return convertCheckBox(data, control);
-    if (control.styles.contains(BSAUTORADIOBUTTON))
+    if (control.styles.contains("BS_AUTORADIOBUTTON"))
         return convertRadioButton(data, control);
-    if (control.styles.contains(BSCHECKBOX))
+    if (control.styles.contains("BS_CHECKBOX"))
         return convertCheckBox(data, control);
-    if (control.styles.contains(BSGROUPBOX))
+    if (control.styles.contains("BS_GROUPBOX"))
         return convertGroupBox(data, control);
-    if (control.styles.contains(BSDEFPUSHBUTTON))
+    if (control.styles.contains("BS_DEFPUSHBUTTON"))
         return convertPushButton(data, control);
-    if (control.styles.contains(BSPUSHBUTTON))
+    if (control.styles.contains("BS_PUSHBUTTON"))
         return convertPushButton(data, control);
-    if (control.styles.contains(BSRADIOBUTTON))
+    if (control.styles.contains("BS_RADIOBUTTON"))
         return convertRadioButton(data, control);
     return convertPushButton(data, control);
 }
@@ -502,23 +396,23 @@ static Widget convertSlider(const Data &data, Data::Control &control)
     Widget widget;
     widget.className = "QSlider";
 
-    if (control.styles.removeOne(TBS_VERT))
-        widget.properties[Orientation] = "Qt::Vertical";
-    else if (control.styles.removeOne(TBS_HORZ) || true) // We want to remove the style if it exits
-        widget.properties[Orientation] = "Qt::Horizontal";
+    if (control.styles.removeOne("TBS_VERT"))
+        widget.properties["orientation"] = "Qt::Vertical";
+    else if (control.styles.removeOne("TBS_HORZ") || true) // We want to remove the style if it exits
+        widget.properties["orientation"] = "Qt::Horizontal";
 
-    if (control.styles.removeOne(TBS_NOTICKS))
-        widget.properties[TickPosition] = "QSlider::NoTicks";
-    if (control.styles.removeOne(TBS_BOTH))
-        widget.properties[TickPosition] = "QSlider::TicksBothSides";
-    if (control.styles.removeOne(TBS_LEFT))
-        widget.properties[TickPosition] = "QSlider::TicksLeft";
-    if (control.styles.removeOne(TBS_RIGHT))
-        widget.properties[TickPosition] = "QSlider::TicksRight";
-    if (control.styles.removeOne(TBS_TOP))
-        widget.properties[TickPosition] = "QSlider::TicksAbove";
-    if (control.styles.removeOne(TBS_BOTTOM))
-        widget.properties[TickPosition] = "QSlider::TicksBelow";
+    if (control.styles.removeOne("TBS_NOTICKS"))
+        widget.properties["tickPosition"] = "QSlider::NoTicks";
+    if (control.styles.removeOne("TBS_BOTH"))
+        widget.properties["tickPosition"] = "QSlider::TicksBothSides";
+    if (control.styles.removeOne("TBS_LEFT"))
+        widget.properties["tickPosition"] = "QSlider::TicksLeft";
+    if (control.styles.removeOne("TBS_RIGHT"))
+        widget.properties["tickPosition"] = "QSlider::TicksRight";
+    if (control.styles.removeOne("TBS_TOP"))
+        widget.properties["tickPosition"] = "QSlider::TicksAbove";
+    if (control.styles.removeOne("TBS_BOTTOM"))
+        widget.properties["tickPosition"] = "QSlider::TicksBelow";
 
     convertStyles(data, widget, control);
     return widget;
@@ -537,10 +431,10 @@ static Widget convertProgressBar(const Data &data, Data::Control &control)
     Widget widget;
     widget.className = "QProgressBar";
 
-    if (control.styles.removeOne(TBS_VERT))
-        widget.properties[Orientation] = "Qt::Vertical";
-    else if (control.styles.removeOne(TBS_HORZ) || true) // We want to remove the style if it exits
-        widget.properties[Orientation] = "Qt::Horizontal";
+    if (control.styles.removeOne("TBS_VERT"))
+        widget.properties["orientation"] = "Qt::Vertical";
+    else if (control.styles.removeOne("TBS_HORZ") || true) // We want to remove the style if it exits
+        widget.properties["orientation"] = "Qt::Horizontal";
 
     convertStyles(data, widget, control);
     return widget;
@@ -559,16 +453,16 @@ static Widget convertDateTime(const Data &data, Data::Control &control)
     Widget widget;
     widget.className = "QDateTimeEdit";
 
-    if (control.styles.removeOne(DTS_LONGDATEFORMAT))
-        widget.properties[DisplayFormat] = "dddd, MMMM dd, yyyy";
-    if (control.styles.removeOne(DTS_SHORTDATEFORMAT))
-        widget.properties[DisplayFormat] = "M/d/yy";
-    if (control.styles.removeOne(DTS_SHORTDATECENTURYFORMAT))
-        widget.properties[DisplayFormat] = "M/d/yyyy";
-    if (control.styles.removeOne(DTS_TIMEFORMAT))
-        widget.properties[DisplayFormat] = "hh:mm:ss";
+    if (control.styles.removeOne("DTS_LONGDATEFORMAT"))
+        widget.properties["displayFormat"] = "dddd, MMMM dd, yyyy";
+    if (control.styles.removeOne("DTS_SHORTDATEFORMAT"))
+        widget.properties["displayFormat"] = "M/d/yy";
+    if (control.styles.removeOne("DTS_SHORTDATECENTURYFORMAT"))
+        widget.properties["displayFormat"] = "M/d/yyyy";
+    if (control.styles.removeOne("DTS_TIMEFORMAT"))
+        widget.properties["displayFormat"] = "hh:mm:ss";
 
-    widget.properties[CalendarPopup] = true;
+    widget.properties["calendarPopup"] = true;
 
     convertStyles(data, widget, control, true);
     return widget;
@@ -579,7 +473,7 @@ static Widget convertIpAddress(const Data &data, Data::Control &control)
     Widget widget;
     widget.className = "QLineEdit";
 
-    widget.properties[InputMask] = "000.000.000.000;_";
+    widget.properties["inputMask"] = "000.000.000.000;_";
 
     convertStyles(data, widget, control, true);
     return widget;
@@ -598,12 +492,12 @@ static Widget convertTabWidget(const Data &data, Data::Control &control)
     Widget widget;
     widget.className = "QTabWidget";
 
-    if (control.styles.removeOne(TCS_BOTTOM))
-        widget.properties[TabPosition] = "QTabWidget::South";
-    if (control.styles.removeOne(TCS_VERTICAL))
-        widget.properties[TabPosition] = "QTabWidget::West";
-    if (control.styles.removeOne(TCS_RIGHT))
-        widget.properties[TabPosition] = "QTabWidget::East";
+    if (control.styles.removeOne("TCS_BOTTOM"))
+        widget.properties["tabPosition"] = "QTabWidget::South";
+    if (control.styles.removeOne("TCS_VERTICAL"))
+        widget.properties["tabPosition"] = "QTabWidget::West";
+    if (control.styles.removeOne("TCS_RIGHT"))
+        widget.properties["tabPosition"] = "QTabWidget::East";
 
     convertStyles(data, widget, control, true);
     return widget;
@@ -793,7 +687,7 @@ Widget convertDialog(const Data &data, const Data::Dialog &d, Widget::Conversion
 
     if (dialog.menu.isEmpty()) {
         // If the dialog has a caption, it's a true Qt dialog, otherwise it's a widget
-        if (dialog.styles.removeOne(WSCAPTION)) {
+        if (dialog.styles.removeOne("WS_CAPTION")) {
             widget.className = "QDialog";
         } else {
             widget.className = "QWidget";
@@ -802,7 +696,7 @@ Widget convertDialog(const Data &data, const Data::Dialog &d, Widget::Conversion
         widget.className = "QMainWindow";
     }
     if (!dialog.caption.isEmpty())
-        widget.properties[WindowTitle] = dialog.caption;
+        widget.properties["windowTitle"] = dialog.caption;
 
     if (!dialog.styles.isEmpty()) {
         spdlog::info("{}({}): {} has unused styles {}", data.fileName.toStdString(), dialog.line,
