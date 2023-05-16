@@ -958,6 +958,7 @@ bool CppDocument::addMethodDefinition(const QString &method, const QString &clas
     cursor.insertText(indent + methodDef);
     auto methodStartPos = textEdit()->toPlainText().lastIndexOf('{');
     cursor.setPosition(methodStartPos + 1); // move to position after opening brace
+    cursor.endEditBlock();
 
     textEdit()->setTextCursor(cursor);
     return true;
