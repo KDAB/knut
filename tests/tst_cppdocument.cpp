@@ -207,8 +207,10 @@ private slots:
             Core::Project::instance()->setRoot(Test::testDataPath() + "/tst_cppdocument/addMethodDefinition");
             auto source = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open("addmethoddef.cpp"));
 
-            bool check = source->addMethodDefinition("bool func(std::string s, int a)", "Student");
-            QCOMPARE(check, true);
+            QVERIFY(source->addMethodDefinition("bool func(std::string s, int a)", "Student"));
+            // Test that addMethodDefinition can also strip declaration specifiers (i.e. override, etc.)
+            QVERIFY(source->addMethodDefinition("static Q_SLOT virtual bool func(const QString &str) const override",
+                                                "Student", "std::cout << str.toStdString() << std::endl;"));
 
             source->save();
             QVERIFY(sourceFile.compare());

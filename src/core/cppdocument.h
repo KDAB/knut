@@ -53,7 +53,9 @@ public slots:
     bool addMember(const QString &memberInfo, const QString &className, Core::CppDocument::AccessSpecifier specifier);
     bool addMethodDeclaration(const QString &method, const QString &className,
                               Core::CppDocument::AccessSpecifier specifier);
-    bool addMethodDefinition(const QString &method, const QString &className);
+    bool addMethodDefinition(const QString &declaration, const QString &className, const QString &body = "");
+    bool addMethod(const QString &declaration, const QString &className, Core::CppDocument::AccessSpecifier specifier,
+                   const QString &body = "");
     bool insertInclude(const QString &include, bool newGroup = false);
     bool removeInclude(const QString &include);
     void deleteMethod();

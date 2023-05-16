@@ -24,8 +24,11 @@ Inherited properties: [LspDocument properties](../script/lspdocument.md#properti
 | | Name |
 |-|-|
 ||**[addMember](#addMember)**(string member, string className, AccessSpecifier)|
+||**[addMethod](#addMethod)**(string declaration, string className, AccessSpecifier, string body)|
+||**[addMethod](#addMethod)**(string declaration, string className, AccessSpecifier)|
 ||**[addMethodDeclaration](#addMethodDeclaration)**(string member, string className, AccessSpecifier)|
-||**[addMethodDefintion](#addMethodDefintion)**(string method, string className)|
+||**[addMethodDefintion](#addMethodDefintion)**(string declaration, string className)|
+||**[addMethodDefintion](#addMethodDefintion)**(string declaration, string className, string body)|
 ||**[commentSelection](#commentSelection)**()|
 |string |**[correspondingHeaderSource](#correspondingHeaderSource)**()|
 |void |**[deleteMethod](#deleteMethod)**()|
@@ -70,6 +73,17 @@ The specifier can take these values:
 - `CppDocument.Protected`
 - `CppDocument.Private`
 
+#### <a name="addMethod"></a>**addMethod**(string declaration, string className, AccessSpecifier, string body)<br/>**addMethod**(string declaration, string className, AccessSpecifier)
+
+!!! note ""
+    Since: Knut 1.1
+
+Declares and defines a new method.
+This method can be called on either the header or source file.
+It will find the corresponding header/source file and add the declaration
+to the header and the definition to the source.
+
+
 #### <a name="addMethodDeclaration"></a>**addMethodDeclaration**(string member, string className, AccessSpecifier)
 
 !!! note ""
@@ -86,12 +100,16 @@ The specifier can take these values:
 - `CppDocument.Protected`
 - `CppDocument.Private`
 
-#### <a name="addMethodDefintion"></a>**addMethodDefintion**(string method, string className)
+#### <a name="addMethodDefintion"></a>**addMethodDefintion**(string declaration, string className)<br/>**addMethodDefintion**(string declaration, string className, string body)
 
 !!! note ""
     Since: Knut 1.1
 
-Defines a new method `method` for class `className` in the current file.
+Adds a new method definition for the method declared by the given `declaration` for
+class `className` in the current file.
+The provided `body` should not include the curly braces.
+
+If no body is provided, it will default to an empty body.
 
 #### <a name="commentSelection"></a>**commentSelection**()
 

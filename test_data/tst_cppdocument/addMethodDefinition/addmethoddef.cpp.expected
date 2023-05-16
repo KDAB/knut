@@ -7,3 +7,7 @@ Student::Student(const std::string& message)
 int Student::foo(const std::string& s) {}
 
 bool Student::func(std::string s, int a) {}
+
+bool Student::func(const QString &str) const {
+std::cout << str.toStdString() << std::endl;
+}

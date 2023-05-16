@@ -1,5 +1,6 @@
 #include "cppdocument.h"
 #include "cppdocument_p.h"
+#include "lspdocument_p.h"
 
 #include "functionsymbol.h"
 #include "logger.h"
@@ -924,25 +925,41 @@ bool CppDocument::addMethodDeclaration(const QString &method, const QString &cla
 }
 
 /*!
- * \qmlmethod CppDocument::addMethodDefintion(string method, string className)
+ * \qmlmethod CppDocument::addMethodDefintion(string declaration, string className)
+ * \qmlmethod CppDocument::addMethodDefintion(string declaration, string className, string body)
  * \since 1.1
- * Defines a new method `method` for class `className` in the current file.
+ *
+ * Adds a new method definition for the method declared by the given `declaration` for
+ * class `className` in the current file.
+ * The provided `body` should not include the curly braces.
+ *
+ * If no body is provided, it will default to an empty body.
  */
-
-bool CppDocument::addMethodDefinition(const QString &method, const QString &className)
+bool CppDocument::addMethodDefinition(const QString &declaration, const QString &className,
+                                      const QString &body /*= ""*/)
 {
-    LOG("CppDocument::addMethodDefinition", method, className);
+    LOG("CppDocument::addMethodDefinition", declaration, className);
+
+    QString definition = declaration;
+
+    // Remove declaration specific modifiers to make the parameter compatible with addMethodDeclaration
+    QStringList modifiers = {"override", "final", "virtual", "static", "Q_INVOKABLE", "Q_SLOT", "Q_SIGNAL"};
+    for (const auto &modifier : modifiers) {
+        definition.remove(modifier);
+    }
+    definition = definition.simplified();
 
     // Extract the return type and method name
-    int openParenIdx = method.indexOf('(');
-    int spaceIdx = method.lastIndexOf(' ', openParenIdx);
+    int openParenIdx = definition.indexOf('(');
+    int spaceIdx = definition.lastIndexOf(' ', openParenIdx);
 
-    QString returnType = method.left(spaceIdx);
-    QString methodName = method.mid(spaceIdx + 1, openParenIdx - spaceIdx - 1);
+    QString returnType = definition.left(spaceIdx);
+    QString methodName = definition.mid(spaceIdx + 1, openParenIdx - spaceIdx - 1);
 
     // Construct the method definition
     QString methodDef = QString("%1 %2::%3").arg(returnType, className, methodName);
-    methodDef += method.mid(openParenIdx) + " {}";
+    QString fullBody = body.isEmpty() ? " {}" : QString(" {\n%1\n}").arg(body);
+    methodDef += definition.mid(openParenIdx) + fullBody;
 
     QString indent = "\n\n";
 
@@ -962,6 +979,46 @@ bool CppDocument::addMethodDefinition(const QString &method, const QString &clas
 
     textEdit()->setTextCursor(cursor);
     return true;
+}
+
+/*!
+ * \qmlmethod CppDocument::addMethod(string declaration, string className, AccessSpecifier, string body)
+ * \qmlmethod CppDocument::addMethod(string declaration, string className, AccessSpecifier)
+ * \since 1.1
+ *
+ * Declares and defines a new method.
+ * This method can be called on either the header or source file.
+ * It will find the corresponding header/source file and add the declaration
+ * to the header and the definition to the source.
+ *
+ * \sa addMethodDeclaration
+ * \sa addMethodDefinition
+ */
+bool CppDocument::addMethod(const QString &declaration, const QString &className, AccessSpecifier specifier,
+                            const QString &body /*= ""*/)
+{
+    auto header = this;
+    auto source = openHeaderSource();
+
+    if (!isHeader()) {
+        std::swap(header, source);
+    }
+
+    auto result = true;
+
+    if (header) {
+        result &= header->addMethodDeclaration(declaration, className, specifier);
+    } else {
+        spdlog::error("CppDocument::addMethod - Can't find header file for '{}'", className.toStdString());
+    }
+
+    if (source) {
+        result &= source->addMethodDefinition(declaration, className, body);
+    } else {
+        spdlog::error("CppDocument::addMethod - Can't find source file for '{}'", className.toStdString());
+    }
+
+    return result;
 }
 
 bool CppDocument::addSpecifierSection(const QString &memberText, const QString &className, AccessSpecifier specifier)
