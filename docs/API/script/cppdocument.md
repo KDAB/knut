@@ -28,9 +28,9 @@ Inherited properties: [LspDocument properties](../script/lspdocument.md#properti
 ||**[addMethodDefintion](#addMethodDefintion)**(string method, string className)|
 ||**[commentSelection](#commentSelection)**()|
 |string |**[correspondingHeaderSource](#correspondingHeaderSource)**()|
-|void |**[deleteMethod](#deleteMethod)**(string methodName, string signature)|
-|void |**[deleteMethod](#deleteMethod)**(string methodName)|
 |void |**[deleteMethod](#deleteMethod)**()|
+|void |**[deleteMethod](#deleteMethod)**(string methodName)|
+|void |**[deleteMethod](#deleteMethod)**(string methodName, string signature)|
 |int |**[gotoBlockEnd](#gotoBlockEnd)**(int count)|
 |int |**[gotoBlockStart](#gotoBlockStart)**(int count)|
 ||**[insertCodeInMethod](#insertCodeInMethod)**(string methodName, string code, Position insertAt)|
@@ -109,6 +109,26 @@ Comments the selected lines (or current line if there's no selection) in current
 
 Returns the corresponding source or header file path.
 
+#### <a name="deleteMethod"></a>void **deleteMethod**()
+
+!!! note ""
+    Since: Knut 1.1
+
+Deletes the method/function at the current cursor position.
+Overloads of the function will not be deleted!
+
+Also see: CppDocument::deleteMethod(const QString& methodName, const QString& signature)
+
+#### <a name="deleteMethod"></a>void **deleteMethod**(string methodName)
+
+!!! note ""
+    Since: Knut 1.1
+
+Deletes a method of the specified `methodName`, without matching a specific `signature`.
+Therefore, all overloads of the function will be deleted.
+
+Also see: CppDocument::deleteMethod(string methodName, string signature)
+
 #### <a name="deleteMethod"></a>void **deleteMethod**(string methodName, string signature)
 
 !!! note ""
@@ -135,26 +155,6 @@ void (const QString&, int)
 ```
 
 If an empty string is provided as the `signature`, all overloads of the function are deleted as well.
-
-#### <a name="deleteMethod"></a>void **deleteMethod**(string methodName)
-
-!!! note ""
-    Since: Knut 1.1
-
-Deletes a method of the specified `methodName`, without matching a specific `signature`.
-Therefore, all overloads of the function will be deleted.
-
-Also see: CppDocument::deleteMethod(string methodName, string signature)
-
-#### <a name="deleteMethod"></a>void **deleteMethod**()
-
-!!! note ""
-    Since: Knut 1.1
-
-Deletes the method/function at the current cursor position.
-Overloads of the function will not be deleted!
-
-Also see: CppDocument::deleteMethod(const QString& methodName, const QString& signature)
 
 #### <a name="gotoBlockEnd"></a>int **gotoBlockEnd**(int count)
 

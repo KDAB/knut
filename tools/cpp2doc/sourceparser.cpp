@@ -139,6 +139,9 @@ static auto parseMethodDefinition(const QString &line)
     for (auto text : parameters) {
         Data::QmlMethod::Parameter param;
         text = text.simplified();
+        if (text.isEmpty())
+            continue;
+
         int space = text.lastIndexOf(' ');
         if (space != -1) {
             param.type = text.left(space);

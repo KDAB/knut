@@ -182,8 +182,14 @@ void DocWriter::writeTypeFile(const Data::TypeBlock &type)
     if (methods.size() || !type.inherits.isEmpty()) {
         stream << "\n## Methods\n\n";
         if (methods.size()) {
-            std::sort(methods.begin(), methods.end(), [](const auto &method1, const auto &method2) {
-                return method1.methods.front().name < method2.methods.front().name;
+            std::stable_sort(methods.begin(), methods.end(), [](const auto &method1, const auto &method2) {
+                const auto &m1 = method1.methods.front();
+                const auto &m2 = method2.methods.front();
+                if (m1.name != m2.name) {
+                    return m1.name < m2.name;
+                }
+                // sort by number of parameters - least parameters first
+                return m1.parameters.size() < m2.parameters.size();
             });
             stream << "| | Name |\n|-|-|\n";
             for (const auto &method : methods) {
