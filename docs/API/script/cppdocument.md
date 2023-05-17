@@ -40,6 +40,7 @@ Inherited properties: [LspDocument properties](../script/lspdocument.md#properti
 ||**[insertForwardDeclaration](#insertForwardDeclaration)**(string fwddecl)|
 ||**[insertInclude](#insertInclude)**(string include, bool newGroup = false)|
 ||**[mfcExtractMessageMap](#mfcExtractMessageMap)**(className = "")|
+||**[mfcReplaceAfxMsgDeclaration](#mfcReplaceAfxMsgDeclaration)**(string afxMsgName, string newDeclaration)|
 |[CppDocument](../script/cppdocument.md) |**[openHeaderSource](#openHeaderSource)**()|
 ||**[removeInclude](#removeInclude)**(string include)|
 |int |**[selectBlockEnd](#selectBlockEnd)**()|
@@ -227,6 +228,13 @@ If `newGroup` is true, it will insert the include at the end, with a new line se
 Extracts information contained in the MFC MESSAGE_MAP.
 The `className` parameter can be used to ensure the result matches to a specific class.
 Returns a `MessageMap` object.
+
+#### <a name="mfcReplaceAfxMsgDeclaration"></a>**mfcReplaceAfxMsgDeclaration**(string afxMsgName, string newDeclaration)
+
+!!! note ""
+    Since: Knut 1.1
+
+Replaces the declaration of an afx_msg with `afxMsgName` with a new declaration.
 
 #### <a name="openHeaderSource"></a>[CppDocument](../script/cppdocument.md) **openHeaderSource**()
 

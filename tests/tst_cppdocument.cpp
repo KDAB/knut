@@ -163,7 +163,6 @@ private slots:
         cppDocument->save();
     }
 
-private slots:
     void addMember()
     {
         Core::KnutCore core;
@@ -236,6 +235,22 @@ private slots:
 
         document->selectBlockUp();
         QCOMPARE(document->selectBlockUp(), lastCharacterPos - 1);
+    }
+
+    void mfcReplaceAfxMsgDeclaration()
+    {
+        Core::KnutCore core;
+
+        Test::FileTester headerFile(Test::testDataPath() + "/tst_cppdocument/message_map/afx_msg_declaration.h");
+        {
+            Core::Project::instance()->setRoot(Test::testDataPath() + "/tst_cppdocument/message_map");
+            auto header = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open("afx_msg_declaration.h"));
+
+            QVERIFY(header->mfcReplaceAfxMsgDeclaration("OnTimer", "void timerEvent(QTimerEvent *event) override;"));
+
+            header->save();
+            QVERIFY(headerFile.compare());
+        }
     }
 };
 

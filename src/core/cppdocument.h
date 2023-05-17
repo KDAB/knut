@@ -40,6 +40,7 @@ public slots:
 
     QVariantMap mfcExtractDDX(const QString &className);
     Core::MessageMap mfcExtractMessageMap(const QString &className = "");
+    bool mfcReplaceAfxMsgDeclaration(const QString &afxMsgName, const QString &newDeclaration);
 
     int gotoBlockStart(int count = 1);
     int gotoBlockEnd(int count = 1);

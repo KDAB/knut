@@ -1,14 +1,10 @@
 #include "cppdocument.h"
 #include "cppdocument_p.h"
-#include "lspdocument_p.h"
 
 #include "functionsymbol.h"
 #include "logger.h"
 #include "project.h"
 #include "settings.h"
-
-#include "lsp/client.h"
-#include "lsp/types.h"
 
 #include <QFileInfo>
 #include <QHash>
@@ -503,6 +499,44 @@ MessageMap CppDocument::mfcExtractMessageMap(const QString &className /* = ""*/)
     const auto &match = result.first();
 
     return MessageMap(match);
+}
+
+/*!
+ * \qmlmethod CppDocument::mfcReplaceAfxMsgDeclaration(string afxMsgName, string newDeclaration)
+ * \since 1.1
+ *
+ * Replaces the declaration of an afx_msg with `afxMsgName` with a new declaration.
+ */
+bool CppDocument::mfcReplaceAfxMsgDeclaration(const QString &afxMsgName, const QString &newDeclaration)
+{
+    // clang-format off
+    auto queryString = QString(R"EOF(
+        (field_declaration
+            type: (_) @type (#eq? @type "afx_msg")
+            (function_declarator
+                declarator: (field_identifier) @name (#eq? @name "%1")
+            )) @function
+    )EOF").arg(afxMsgName);
+    // clang-format on
+
+    auto matches = query(queryString);
+
+    if (matches.isEmpty()) {
+        spdlog::warn("CppDocument::mfcReplaceAfxMsgDeclaration: No afx_msg named `{}` found in `{}`",
+                     afxMsgName.toStdString(), fileName().toStdString());
+        return false;
+    }
+
+    if (matches.size() > 1) {
+        spdlog::warn("CppDocument::mfcReplaceAfxMsgDeclaration: Multiple afx_msg named `{}` found in `{}`!",
+                     afxMsgName.toStdString(), fileName().toStdString());
+    }
+
+    for (const auto &match : matches) {
+        match.get("function").replace(newDeclaration);
+    }
+
+    return true;
 }
 
 /*!
