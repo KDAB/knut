@@ -255,6 +255,54 @@ CppDocument *CppDocument::openHeaderSource()
 }
 
 /*!
+ * \qmlmethod array<QueryMatch> CppDocument::queryMethodDefinition(string scope, string methodName)
+ *
+ * Returns the list of methods definitions matching the given name and scope.
+ * `scope` may be either a class name, a namespace or empty.
+ *
+ * Every QueryMatch returned by this function will have the following captures available:
+ *
+ * - `scope` - The scope of the method (if any is provided)
+ * - `name` - The name of the function
+ * - `definition` - The entire method definition
+ * - `parameter-list` - The list of parameters
+ * - `parameters` - One capture per parameter, containing the type and name of the parameter, excluding comments!
+ * - `body` - The body of the method (including curly-braces)
+ */
+QVector<QueryMatch> CppDocument::queryMethodDefinition(const QString &scope, const QString &functionName)
+{
+    // Clang-format gets confused by the raw strings
+    // clang-format off
+    auto identifier = QString(R"EOF(
+            (identifier) @name (#eq? @name "%1")
+        )EOF").arg(functionName);
+
+    if (!scope.isEmpty()) {
+        identifier = QString(R"EOF(
+            (qualified_identifier
+                scope: (_) @scope (#eq? @scope "%1")
+                %2
+            )
+        )EOF").arg(scope, identifier);
+    }
+
+    const auto queryString = QString(R"EOF(
+        (function_definition
+            type: (_)? @returnType
+            declarator: (function_declarator
+                declarator: %1
+                parameters: (parameter_list
+                    (parameter_declaration)* @parameters
+                ) @parameter-list)
+            body: (compound_statement) @body
+        ) @definition
+    )EOF").arg(identifier);
+    //clang-format on
+
+    return query(queryString);
+}
+
+/*!
  * \qmlmethod CppDocument::insertCodeInMethod(string methodName, string code, Position insertAt)
  *
  * Provides a fast way to add some code in an existing method definition. Does nothing if the method does not exist in

@@ -207,6 +207,26 @@ private slots:
         QVERIFY(sourceFile.compare());
     }
 
+    void queryMethod()
+    {
+        testDocument("projects/cpp-project", "myobject.cpp", [](auto *document) {
+            const auto methods = document->queryMethodDefinition("MyObject", "sayMessage");
+            QCOMPARE(methods.size(), 2);
+
+            QCOMPARE(methods[0].get("name").text(), "sayMessage");
+            QCOMPARE(methods[0].get("returnType").text(), "void");
+            QCOMPARE(methods[0].getAll("parameters").size(), 0);
+            QCOMPARE(methods[0].get("parameter-list").text(), "()");
+            QCOMPARE(methods[0].get("body").text(), "{\n    std::cout << m_message << std::endl;\n}");
+
+            QCOMPARE(methods[1].get("name").text(), "sayMessage");
+            QCOMPARE(methods[1].get("returnType").text(), "void");
+            QCOMPARE(methods[1].getAll("parameters").size(), 1);
+            QCOMPARE(methods[1].get("parameter-list").text(), "(const std::string& test)");
+            QVERIFY(methods[1].get("body").text().contains("m_enum = MyEnum::C"));
+        });
+    }
+
     // Regression test:
     // Putting the cursor before the last character made `moveBlock` run into an infinite loop.
     void selectBlockUpAtEndOfFile()

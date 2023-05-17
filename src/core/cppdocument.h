@@ -30,6 +30,8 @@ public:
 
     Q_INVOKABLE QString correspondingHeaderSource() const;
 
+    Q_INVOKABLE QVector<Core::QueryMatch> queryMethodDefinition(const QString &scope, const QString &functionName);
+
 public slots:
     Core::CppDocument *openHeaderSource();
 

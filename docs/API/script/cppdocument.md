@@ -42,6 +42,7 @@ Inherited properties: [LspDocument properties](../script/lspdocument.md#properti
 ||**[mfcExtractMessageMap](#mfcExtractMessageMap)**(className = "")|
 ||**[mfcReplaceAfxMsgDeclaration](#mfcReplaceAfxMsgDeclaration)**(string afxMsgName, string newDeclaration)|
 |[CppDocument](../script/cppdocument.md) |**[openHeaderSource](#openHeaderSource)**()|
+|array<[QueryMatch](../script/querymatch.md)> |**[queryMethodDefinition](#queryMethodDefinition)**(string scope, string methodName)|
 ||**[removeInclude](#removeInclude)**(string include)|
 |int |**[selectBlockEnd](#selectBlockEnd)**()|
 |int |**[selectBlockStart](#selectBlockStart)**()|
@@ -240,6 +241,20 @@ Replaces the declaration of an afx_msg with `afxMsgName` with a new declaration.
 
 Opens the corresponding source or header files, the current document is the new file.
 If no files have been found, it's a no-op.
+
+#### <a name="queryMethodDefinition"></a>array<[QueryMatch](../script/querymatch.md)> **queryMethodDefinition**(string scope, string methodName)
+
+Returns the list of methods definitions matching the given name and scope.
+`scope` may be either a class name, a namespace or empty.
+
+Every QueryMatch returned by this function will have the following captures available:
+
+- `scope` - The scope of the method (if any is provided)
+- `name` - The name of the function
+- `definition` - The entire method definition
+- `parameter-list` - The list of parameters
+- `parameters` - One capture per parameter, containing the type and name of the parameter, excluding comments!
+- `body` - The body of the method (including curly-braces)
 
 #### <a name="removeInclude"></a>**removeInclude**(string include)
 
