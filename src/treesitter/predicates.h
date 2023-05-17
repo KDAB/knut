@@ -9,7 +9,7 @@
 namespace treesitter {
 
 // a common superclass for all caches to make sure the
-// constructors are correctly dispatched with virtual destructor calls.
+// destructors are correctly dispatched with virtual destructor calls.
 class PredicateCache
 {
 public:
