@@ -5,6 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Knut executable",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/build-debug/bin/${input:knutProgram}",
+            "cwd": "${workspaceFolder}",
+            "stopOnEntry": false
+        },
+        {
             "name": "qt6-msvc",
             "type": "cppvsdbg",
             "request":"launch",
@@ -18,5 +26,33 @@
                 "C:/Users/qt/work/qt": "${QTDIR}../Src"
             }
         }
+    ],
+    "inputs": [
+        {
+            "id": "knutProgram",
+            "type": "pickString",
+            "description": "Select the program to debug",
+            "options": [
+                "knut",
+                "tst_client",
+                "tst_clientbackend",
+                "tst_cppdocument",
+                "tst_cppdocument_clangd",
+                "tst_cppdocument_treesitter",
+                "tst_jsonify",
+                "tst_knut",
+                "tst_lspdocument",
+                "tst_rclexer",
+                "tst_rcparser",
+                "tst_rcwriter",
+                "tst_settings",
+                "tst_stringutils",
+                "tst_symbol",
+                "tst_textdocument",
+                "tst_treesitter",
+                "tst_uidocument"
+            ]
+        }
     ]
+
 }
