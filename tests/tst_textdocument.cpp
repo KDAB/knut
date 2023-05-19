@@ -265,8 +265,12 @@ private slots:
         document.selectEndOfWord();
         document.deleteSelection();
         QCOMPARE(mark.text(), " ipsum dolor sit amet, consectetur adipiscing elit.");
+
+        // When replacing the text in the rangemark, the rangemark should span the new text afterwards.
+        const auto newText = QString("Hello World");
+        mark.replace(newText);
         document.selectRangeMark(mark);
-        QCOMPARE(document.selectedText(), " ipsum dolor sit amet, consectetur adipiscing elit.");
+        QCOMPARE(document.selectedText(), newText);
 
         // Delete everything in the range mark.
         document.deleteSelection();
