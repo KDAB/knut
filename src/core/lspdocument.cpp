@@ -527,11 +527,12 @@ TextRange LspDocument::toRange(const Lsp::Range &range) const
 /*!
  * \qmlmethod array<QueryMatch> LspDocument::query(string query)
  * \since 1.1
- * Runs the `query` passed in parameter and returns the list of matches.
+ * Runs the given Tree-sitter `query` and returns the list of matches.
  *
- * The query is using the [TreeSitter](https://tree-sitter.github.io/tree-sitter/) query, you can find more information
- * on this page: [Pattern Matching with
- * Queries](https://tree-sitter.github.io/tree-sitter/using-parsers#pattern-matching-with-queries).
+ * The query is using [Tree-sitter
+ * queries](https://tree-sitter.github.io/tree-sitter/using-parsers#pattern-matching-with-queries).
+ *
+ * Also see: [Tree-sitter in Knut](../../getting-started/treesitter.md)
  */
 QVector<QueryMatch> LspDocument::query(const QString &query)
 {

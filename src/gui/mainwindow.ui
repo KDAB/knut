@@ -457,7 +457,7 @@
   </action>
   <action name="actionTreeSitterInspector">
    <property name="text">
-    <string>TreeSitter Inspector</string>
+    <string>Tree-sitter Inspector</string>
    </property>
    <property name="toolTip">
     <string>Inspect AST and prototype transformations</string>

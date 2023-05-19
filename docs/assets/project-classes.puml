@@ -25,7 +25,9 @@ class RcCore::Data
 class ImageDocument
 class LspDocument {
   Lsp::Client* m_client
+  TreeSitterHelper *m_treeSitterHelper
   vector<Symbol> symbols()
+  vector<QueryMatch> query(string)
 }
 class CppDocument {
   bool isHeader()

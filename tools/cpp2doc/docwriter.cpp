@@ -60,7 +60,7 @@ void DocWriter::saveDocumentation()
 
 void DocWriter::writeToc()
 {
-    QString nav("    - Script API:\n");
+    QString nav;
     QString currentModule;
     QString currentGroup;
     QString ident = QString(3 * 4, ' ');

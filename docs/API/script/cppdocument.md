@@ -39,7 +39,7 @@ Inherited properties: [LspDocument properties](../script/lspdocument.md#properti
 ||**[insertCodeInMethod](#insertCodeInMethod)**(string methodName, string code, Position insertAt)|
 ||**[insertForwardDeclaration](#insertForwardDeclaration)**(string fwddecl)|
 ||**[insertInclude](#insertInclude)**(string include, bool newGroup = false)|
-||**[mfcExtractMessageMap](#mfcExtractMessageMap)**(className = "")|
+|[MessageMap](../script/messagemap.md) |**[mfcExtractMessageMap](#mfcExtractMessageMap)**(string className = "")|
 ||**[mfcReplaceAfxMsgDeclaration](#mfcReplaceAfxMsgDeclaration)**(string afxMsgName, string newDeclaration)|
 |[CppDocument](../script/cppdocument.md) |**[openHeaderSource](#openHeaderSource)**()|
 |array<[QueryMatch](../script/querymatch.md)> |**[queryMethodDefinition](#queryMethodDefinition)**(string scope, string methodName)|
@@ -221,14 +221,13 @@ in the file.
 
 If `newGroup` is true, it will insert the include at the end, with a new line separating the other includes.
 
-#### <a name="mfcExtractMessageMap"></a>**mfcExtractMessageMap**(className = "")
+#### <a name="mfcExtractMessageMap"></a>[MessageMap](../script/messagemap.md) **mfcExtractMessageMap**(string className = "")
 
 !!! note ""
     Since: Knut 1.1
 
 Extracts information contained in the MFC MESSAGE_MAP.
 The `className` parameter can be used to ensure the result matches to a specific class.
-Returns a `MessageMap` object.
 
 #### <a name="mfcReplaceAfxMsgDeclaration"></a>**mfcReplaceAfxMsgDeclaration**(string afxMsgName, string newDeclaration)
 

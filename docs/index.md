@@ -2,7 +2,8 @@
 
 Knut is an automation tool for code transformation using scripts. The main use case is for migration, but it could be used elsewhere.
 
-The scripts are written either in javascript or QML languages, the latter being able to display a user interface to customize some parts of the application. The script API is available in this documentation, and range from normal text transformations (find and replace) to getting contextual informations based on the file language (using [Language Server Protrocal](https://microsoft.github.io/language-server-protocol/)).
+The scripts are written either in javascript or QML languages, the latter being able to display a user interface to customize some parts of the application.
+The script API is available in this documentation, and range from normal text transformations (find and replace) to getting contextual informations based on the file language (using [TreeSitter](https://tree-sitter.github.io/tree-sitter/) or the [Language Server Protocol](https://microsoft.github.io/language-server-protocol/)).
 
 Knut can be used via a command line interface or a user interface.
 

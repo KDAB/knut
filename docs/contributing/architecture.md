@@ -6,13 +6,17 @@ High-level architecture description.
 
 ![architecture](../assets/architecture.svg){ align=right }
 
+- **treesitter**: Tree-sitter C++ wrapper
+    - Wraps C interface into C++ classes
+    - Improved memory-safety by use of smart pointers
+    - High-Level user access through `QueryMatch` implemented in **core**
 - **lsp**: LSP client library
     - Complete LSP protocole definition
     - Client class to handle some of the messages
     - Use `clangd` for C/C++
 - **rccore**: rc files parser and converter
     - Conversion to ui files
-    - /!\ Not everything is parsed
+    - ⚠️ Not everything is parsed
 - **rcui**: widgets for viewing a rcfile
 - **core**: script engine and all script objects
     - The engine is based on QML
@@ -44,6 +48,15 @@ All objects exported **must be declared** inside the `ScriptRunner` class constr
 addProperties<CppDocument>(m_properties);
 ```
 This will store all property's names for this object, and is used when recording a script from the ui, to make a difference between a property call and a method call.
+
+### Tree-sitter
+
+Tree-sitter is used by knut to parse code and extract many higher-level structures (currently only C++).
+
+In the Knut GUI, use the `C++`>`Tree-sitter Inspector` widget to explore the current Tree-sitter state.
+
+!!! note
+    Tree-sitter capabilities are implemented on the LspDocument class. We expect Tree-sitter support to be available for any language that also supports the language server protocol.
 
 ### LSP server
 

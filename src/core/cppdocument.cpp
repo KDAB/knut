@@ -487,12 +487,11 @@ QVariantMap CppDocument::mfcExtractDDX(const QString &className)
 }
 
 /*!
- * \qmlmethod CppDocument::mfcExtractMessageMap(className = "")
+ * \qmlmethod MessageMap CppDocument::mfcExtractMessageMap(string className = "")
  * \since 1.1
  *
  * Extracts information contained in the MFC MESSAGE_MAP.
  * The `className` parameter can be used to ensure the result matches to a specific class.
- * Returns a `MessageMap` object.
  */
 MessageMap CppDocument::mfcExtractMessageMap(const QString &className /* = ""*/)
 {

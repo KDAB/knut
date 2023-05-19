@@ -67,11 +67,12 @@ The result of this call is a plain string that may be formatted in Markdown.
 !!! note ""
     Since: Knut 1.1
 
-Runs the `query` passed in parameter and returns the list of matches.
+Runs the given Tree-sitter `query` and returns the list of matches.
 
-The query is using the [TreeSitter](https://tree-sitter.github.io/tree-sitter/) query, you can find more information
-on this page: [Pattern Matching with
-Queries](https://tree-sitter.github.io/tree-sitter/using-parsers#pattern-matching-with-queries).
+The query is using [Tree-sitter
+queries](https://tree-sitter.github.io/tree-sitter/using-parsers#pattern-matching-with-queries).
+
+Also see: [Tree-sitter in Knut](../../getting-started/treesitter.md)
 
 #### <a name="queryInRange"></a>array<[QueryMatch](../script/querymatch.md)> **queryInRange**([RangeMark](../script/rangemark.md) range, string query)
 
