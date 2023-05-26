@@ -49,6 +49,8 @@ private:
     friend TextDocument;
 };
 
+bool operator==(const Mark &left, const Mark &right);
+
 } // namespace Core
 
 Q_DECLARE_METATYPE(Core::Mark)

@@ -152,4 +152,9 @@ void Mark::updateMark(int &mark, int from, int charsRemoved, int charsAdded)
         mark += charsAdded - charsRemoved;
 }
 
+bool operator==(const Mark &left, const Mark &right)
+{
+    return left.document() == right.document() && left.column() == right.column() && left.line() == right.line();
+}
+
 } // namespace Core
