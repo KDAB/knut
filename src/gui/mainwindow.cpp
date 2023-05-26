@@ -90,7 +90,15 @@ MainWindow::MainWindow(QWidget *parent)
     auto logPanel = new LogPanel(this);
     createDock(logPanel, Qt::BottomDockWidgetArea, logPanel->toolBar());
     createDock(m_historyPanel, Qt::BottomDockWidgetArea, m_historyPanel->toolBar());
-    createDock(m_scriptPanel, Qt::LeftDockWidgetArea, m_scriptPanel->toolBar());
+    auto scriptDock = createDock(m_scriptPanel, Qt::LeftDockWidgetArea, m_scriptPanel->toolBar());
+
+    // Ensure we display the script panel when a script is created
+    auto showScriptPanel = [scriptDock]() {
+        scriptDock->activateWindow();
+        scriptDock->show();
+        scriptDock->raise();
+    };
+    connect(m_scriptPanel, &ScriptPanel::newScriptCreated, scriptDock, showScriptPanel);
 
     connect(m_historyPanel, &HistoryPanel::scriptCreated, m_scriptPanel, &ScriptPanel::setNewScript);
     connect(m_historyPanel, &HistoryPanel::recordingChanged, m_scriptPanel, &ScriptPanel::setDisabled);
@@ -378,7 +386,7 @@ void MainWindow::saveAllDocuments()
     Core::Project::instance()->saveAllDocuments();
 }
 
-void MainWindow::createDock(QWidget *widget, Qt::DockWidgetArea area, QWidget *toolbar)
+QDockWidget *MainWindow::createDock(QWidget *widget, Qt::DockWidgetArea area, QWidget *toolbar)
 {
     Q_ASSERT(!widget->windowTitle().isEmpty());
     Q_ASSERT(!widget->objectName().isEmpty());
@@ -423,9 +431,10 @@ void MainWindow::createDock(QWidget *widget, Qt::DockWidgetArea area, QWidget *t
         if (dockWidgetArea(dockWidget) == area) {
             tabifyDockWidget(dockWidget, dock);
             dockWidget->raise();
-            return;
+            return dock;
         }
     }
+    return dock;
 }
 void MainWindow::followSymbol()
 {

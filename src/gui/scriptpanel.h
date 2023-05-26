@@ -22,6 +22,9 @@ public:
     bool hasScript() const;
     void playScript();
 
+signals:
+    void newScriptCreated();
+
 protected:
     void keyPressEvent(QKeyEvent *event) override;
     void mousePressEvent(QMouseEvent *mouseEvent) override;

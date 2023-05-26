@@ -126,6 +126,7 @@ void ScriptPanel::setNewScript(const QString &script)
     newScript();
     setPlainText(script);
     verticalScrollBar()->setValue(verticalScrollBar()->maximum());
+    emit newScriptCreated();
 }
 
 bool ScriptPanel::hasScript() const
