@@ -78,14 +78,8 @@ public:
 
         beginResetModel();
 
-        m_files.clear();
-        QDirIterator it(Core::Project::instance()->root(), QDirIterator::Subdirectories);
-        while (it.hasNext()) {
-            it.next();
-            auto fi = it.fileInfo();
-            if (fi.isFile())
-                m_files.push_back({fi.fileName(), fi.absoluteFilePath()});
-        }
+        m_files = allFilesInDirectory(Core::Project::instance()->root());
+
         auto byFileName = [](const auto &fi1, const auto &fi2) {
             return fi1.fileName < fi2.fileName;
         };
@@ -100,7 +94,24 @@ private:
         QString fileName;
         QString path;
     };
-    std::vector<FileInfo> m_files;
+
+    // Returns the list of all files recusively, without the hidden files or directories (starting with '.')
+    QVector<FileInfo> allFilesInDirectory(const QString &path)
+    {
+        QVector<FileInfo> result;
+        QDir dir(path);
+        auto fiList = dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
+        for (const auto &fi : fiList) {
+            if (fi.fileName().startsWith('.'))
+                continue;
+            if (fi.isFile())
+                result.push_back({fi.fileName(), fi.absoluteFilePath()});
+            else if (fi.isDir())
+                result.append(allFilesInDirectory(fi.absoluteFilePath()));
+        }
+        return result;
+    }
+    QVector<FileInfo> m_files;
 };
 
 //=============================================================================
