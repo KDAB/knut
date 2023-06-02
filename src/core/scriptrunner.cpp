@@ -210,11 +210,13 @@ QQmlEngine *ScriptRunner::getEngine(const QString &fileName)
 
 QVariant ScriptRunner::runJavascript(const QString &fileName, QQmlEngine *engine)
 {
-    const QString text = QStringLiteral("import QtQml 2.12\n"
-                                        "import Script 1.0\n"
-                                        "import \"%1\" as MyScript\n"
-                                        "QtObject { property var result: MyScript.main() }")
-                             .arg(QUrl::fromLocalFile(fileName).toString());
+    const QString text =
+        QStringLiteral(
+            "import QtQml 2.12\n"
+            "import Script 1.0\n"
+            "import \"%1\" as MyScript\n"
+            "QtObject { property var _scriptResult; Component.onCompleted : _scriptResult = MyScript.main() }")
+            .arg(QUrl::fromLocalFile(fileName).toString());
 
     QQmlComponent component(engine);
     component.setData(text.toLatin1(), QUrl::fromLocalFile(fileName));
@@ -223,7 +225,7 @@ QVariant ScriptRunner::runJavascript(const QString &fileName, QQmlEngine *engine
     engine->deleteLater();
     m_hasError = component.isError();
     if (component.isReady() && !m_hasError)
-        return result->property("result");
+        return result->property("_scriptResult");
 
     filterErrors(component);
     return QVariant(ErrorCode);
