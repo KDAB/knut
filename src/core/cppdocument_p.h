@@ -18,6 +18,35 @@ struct ToggleSectionSettings
     std::map<std::string, std::string> return_values;
 };
 
+namespace Queries
+{
+    static const inline QString findInclude = QStringLiteral(R"EOF(
+        (preproc_include
+            path: (_) @path
+        )
+    )EOF");
+
+    static const inline QString findPragma = QStringLiteral(R"EOF(
+        (translation_unit
+            (preproc_call
+                argument: (_) @value (#match? "once" @value)
+            )
+        )
+    )EOF");
+
+    static const inline QString findHeaderGuard = QString(R"EOF(
+        (translation_unit
+            (preproc_ifdef
+                "#ifndef"
+                name: (_) @name
+                (preproc_def
+                    name: (_) @value (#eq? @name @value)
+                )
+            )
+        )
+    )EOF");
+};
+
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ToggleSectionSettings, tag, debug, return_values);
 
 class IncludeHelper

@@ -101,29 +101,10 @@ IncludeHelper::IncludePosition IncludeHelper::findBestFirstIncludeLine() const
         return IncludePosition {1, false};
 
     // Find `#pragma once`
-    const auto pragmaQuery = QString(R"EOF(
-        (translation_unit
-            (preproc_call
-                argument: (_) @value (#match? "once" @value)
-            )
-        )
-    )EOF");
-
-    auto result = m_document->query(pragmaQuery);
+    auto result = m_document->query(Queries::findPragma);
     if (result.isEmpty()) {
         // Find `#ifndef / #define`
-        const auto guardsQuery = QString(R"EOF(
-            (translation_unit
-                (preproc_ifdef
-                    "#ifndef"
-                    name: (_) @name
-                    (preproc_def
-                        name: (_) @value (#eq? @name @value)
-                    )
-                )
-            )
-        )EOF");
-        result = m_document->query(guardsQuery);
+        result = m_document->query(Queries::findHeaderGuard);
         if (result.isEmpty())
             return IncludePosition {1, false};
     }
@@ -140,13 +121,7 @@ IncludeHelper::IncludePosition IncludeHelper::findBestFirstIncludeLine() const
 
 void IncludeHelper::computeIncludes()
 {
-    const auto includeQuery = QString(R"EOF(
-        (preproc_include
-            path: (_) @path
-        )
-    )EOF");
-
-    auto results = m_document->query(includeQuery);
+    auto results = m_document->query(Queries::findInclude);
 
     // Extract all includes
     int lastLine = -1;
@@ -184,4 +159,5 @@ void IncludeHelper::computeIncludes()
 
     return;
 }
+
 }

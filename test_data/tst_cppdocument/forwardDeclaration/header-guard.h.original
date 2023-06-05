@@ -1,0 +1,12 @@
+#ifndef TEST
+#define TEST
+
+namespace Foo {
+
+class Something
+{
+};
+
+} // namespace Foo
+
+#endif

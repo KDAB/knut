@@ -422,14 +422,27 @@ bool CppDocument::insertForwardDeclaration(const QString &fwddecl)
     for (const auto &qualifier : std::as_const(qualifierList))
         result = QString("namespace %1 {\n%2\n}").arg(qualifier, result);
 
-    cursor = QTextCursor(doc);
-    cursor.movePosition(QTextCursor::End, QTextCursor::MoveAnchor);
-    cursor = doc->find(QRegularExpression(QStringLiteral(R"(^#include\s*)")), cursor, QTextDocument::FindBackward);
-    if (!cursor.isNull()) {
-        cursor.beginEditBlock();
-        cursor.movePosition(QTextCursor::EndOfLine, QTextCursor::MoveAnchor);
-        cursor.insertText("\n\n" + result);
-        cursor.endEditBlock();
+    int pos = -1;
+    if (auto inc = query(Queries::findInclude); !inc.isEmpty()) {
+        auto def = inc.last().get("path");
+        pos = def.end();
+    } else if (auto pragma = query(Queries::findPragma); !pragma.isEmpty()) {
+        auto def = pragma.at(0).get("value");
+        pos = def.end();
+    } else if (auto guard = query(Queries::findHeaderGuard); !guard.isEmpty()) {
+        auto def = guard.at(0).get("value");
+        pos = def.end();
+    }
+
+    if (pos != -1) {
+        auto cur = textEdit()->textCursor();
+        cur.setPosition(pos);
+        textEdit()->setTextCursor(cur);
+        cur.beginEditBlock();
+        cur.movePosition(QTextCursor::EndOfLine, QTextCursor::MoveAnchor);
+        cur.insertText("\n\n" + result);
+        cur.endEditBlock();
+
         return true;
     }
 
