@@ -31,7 +31,7 @@ std::optional<typename Request::Result> sendRequest(ClientBackend *backend, Requ
     };
 
     if (callback) {
-        auto requestCallBack = [checkResponse, callback = move(callback)](typename Request::Response response) {
+        auto requestCallBack = [checkResponse, callback = std::move(callback)](typename Request::Response response) {
             if (checkResponse(response))
                 callback(response.result.value());
         };

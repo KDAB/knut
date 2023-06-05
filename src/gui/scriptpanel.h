@@ -24,8 +24,8 @@ public:
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
-    void mousePressEvent(QMouseEvent *mouseEvent);
-    void mouseReleaseEvent(QMouseEvent *mouseEvent);
+    void mousePressEvent(QMouseEvent *mouseEvent) override;
+    void mouseReleaseEvent(QMouseEvent *mouseEvent) override;
 
 private:
     void openScript();
