@@ -31,8 +31,7 @@ private:
     struct ApiInfo
     {
         Core::Document::Type type;
-        QByteArray name;
-        QVector<QPair<QByteArray, QByteArray>> args; // vectors of pair of name and typeName
+        QMetaMethod method;
     };
 
     struct ArgumentField
@@ -48,8 +47,7 @@ private:
     void populateArgumentList();
 
     void executeAPI(Core::Document *document, const QByteArray &name, const QList<QGenericArgument> &genericArgs);
-    QByteArray signatureForApi(const ApiInfo &apiInfo);
-    void createArgumentField(const QByteArray &name, const QByteArray &typeName);
+    void createArgumentField(const QByteArray &name, const QMetaType &type);
 
     std::unique_ptr<Ui::APIExecutorWidget> ui;
     QVector<ArgumentField> m_argumentFields;

@@ -447,8 +447,8 @@ bool CppDocument::insertCodeInMethod(const QString &methodName, QString code, Po
 }
 
 /*!
- * \qmlmethod CppDocument::insertForwardDeclaration(string fwddecl)
- * Inserts the forward declaration `fwddecl` into the current file.
+ * \qmlmethod CppDocument::insertForwardDeclaration(string forwardDeclaration)
+ * Inserts the forward declaration `forwardDeclaration` into the current file.
  * The method will check if the file is a header file, and also that the forward declaration starts with 'class ' or
  * 'struct '. Fully qualified the forward declaration to add namespaces: `class Foo::Bar::FooBar` will result in:
  *
@@ -460,23 +460,23 @@ bool CppDocument::insertCodeInMethod(const QString &methodName, QString code, Po
  * }
  * ```
  */
-bool CppDocument::insertForwardDeclaration(const QString &fwddecl)
+bool CppDocument::insertForwardDeclaration(const QString &forwardDeclaration)
 {
-    LOG("CppDocument::insertForwardDeclaration", LOG_ARG("text", fwddecl));
+    LOG("CppDocument::insertForwardDeclaration", LOG_ARG("text", forwardDeclaration));
     if (!isHeader()) {
         spdlog::warn("CppDocument::insertForwardDeclaration: {} - is not a header file. ", fileName().toStdString());
         return false;
     }
 
-    int spacePos = fwddecl.indexOf(' ');
-    auto classOrStruct = QStringView(fwddecl).left(spacePos);
-    if (fwddecl.isEmpty() || (classOrStruct != QStringLiteral("class") && classOrStruct != QStringLiteral("struct"))) {
+    int spacePos = forwardDeclaration.indexOf(' ');
+    auto classOrStruct = QStringView(forwardDeclaration).left(spacePos);
+    if (forwardDeclaration.isEmpty() || (classOrStruct != QStringLiteral("class") && classOrStruct != QStringLiteral("struct"))) {
         spdlog::warn("CppDocument::insertForwardDeclaration: {} - should start with 'class ' or 'struct '. ",
-                     fwddecl.toStdString());
+                     forwardDeclaration.toStdString());
         return false;
     }
 
-    auto qualifierList = QStringView(fwddecl).mid(spacePos + 1).split(QStringLiteral("::"));
+    auto qualifierList = QStringView(forwardDeclaration).mid(spacePos + 1).split(QStringLiteral("::"));
     std::ranges::reverse(qualifierList);
 
     // Get the un-qualified declaration
@@ -488,7 +488,7 @@ bool CppDocument::insertForwardDeclaration(const QString &fwddecl)
     QTextCursor cursor(doc);
     cursor = doc->find(result, cursor, QTextDocument::FindWholeWords);
     if (!cursor.isNull()) {
-        spdlog::warn("CppDocument::insertForwardDeclaration: '{}' - already exists in file.", fwddecl.toStdString());
+        spdlog::warn("CppDocument::insertForwardDeclaration: '{}' - already exists in file.", forwardDeclaration.toStdString());
         return false;
     }
 
@@ -1026,9 +1026,16 @@ CppDocument::addMemberOrMethod(const QString &memberInfo, const QString &classNa
     if (!result.isEmpty()) {
         const auto &match = result.last();
         const auto fields = match.getAll("field");
-        const auto pos = fields.last();
-        const auto indent = indentationAtPosition(pos.end());
-        insertAtPosition("\n" + indent + memberText, pos.end());
+        if (!fields.isEmpty()) {
+            const auto pos = fields.last();
+            const auto indent = indentationAtPosition(pos.end());
+            insertAtPosition("\n" + indent + memberText, pos.end());
+        } else {
+            const auto access = match.getAll("access");
+            const auto pos = access.last();
+            const auto indent = indentationAtPosition(pos.end());
+            insertAtPosition("\n" + indent + memberText, pos.end());
+        }
     } else {
         const bool check = addSpecifierSection(memberText, className, specifier);
         if (!check) {
@@ -1066,7 +1073,7 @@ bool CppDocument::addMember(const QString &member, const QString &className, Acc
 }
 
 /*!
- * \qmlmethod CppDocument::addMethodDeclaration(string member, string className, AccessSpecifier)
+ * \qmlmethod CppDocument::addMethodDeclaration(string method, string className, AccessSpecifier specifier)
  * \since 1.1
  * Declares a new method in a specific class under the specefic access specifier.
  *
@@ -1092,22 +1099,22 @@ bool CppDocument::addMethodDeclaration(const QString &method, const QString &cla
 }
 
 /*!
- * \qmlmethod CppDocument::addMethodDefintion(string declaration, string className)
- * \qmlmethod CppDocument::addMethodDefintion(string declaration, string className, string body)
+ * \qmlmethod CppDocument::addMethodDefintion(string method, string className)
+ * \qmlmethod CppDocument::addMethodDefintion(string method, string className, string body)
  * \since 1.1
  *
- * Adds a new method definition for the method declared by the given `declaration` for
+ * Adds a new method definition for the method declared by the given `method` for
  * class `className` in the current file.
  * The provided `body` should not include the curly braces.
  *
  * If no body is provided, it will default to an empty body.
  */
-bool CppDocument::addMethodDefinition(const QString &declaration, const QString &className,
+bool CppDocument::addMethodDefinition(const QString &method, const QString &className,
                                       const QString &body /*= ""*/)
 {
-    LOG("CppDocument::addMethodDefinition", declaration, className);
+    LOG("CppDocument::addMethodDefinition", method, className);
 
-    QString definition = declaration;
+    QString definition = method;
 
     // Remove declaration specific modifiers to make the parameter compatible with addMethodDeclaration
     QStringList modifiers = {"override", "final", "virtual", "static", "Q_INVOKABLE", "Q_SLOT", "Q_SIGNAL"};
@@ -1281,15 +1288,15 @@ void CppDocument::deleteMethodLocal(const QString &methodName, const QString &si
 }
 
 /*!
- * \qmlmethod void CppDocument::deleteMethod(string methodName, string signature)
+ * \qmlmethod void CppDocument::deleteMethod(string method, string signature)
  * \since 1.1
  *
- * Delete the method or function with the specified `methodName` and optional `signature`.
+ * Delete the method or function with the specified `method` and optional `signature`.
  * The method definition/declaration will be deleted from the current file,
  * as well as the corresponding header/source file.
  * References to the method will not be deleted.
  *
- * The `methodName` must be fully qualified, i.e. "<Namespaces>::<Class>::<Method>".
+ * The `method` must be fully qualified, i.e. "<Namespaces>::<Class>::<Method>".
  *
  * The `signature` must be in the form: "<return type> (<first parameter type>, <second parameter type>, <...>)".
  * i.e. for a function with the following declaration:
@@ -1306,16 +1313,16 @@ void CppDocument::deleteMethodLocal(const QString &methodName, const QString &si
  *
  * If an empty string is provided as the `signature`, all overloads of the function are deleted as well.
  */
-void CppDocument::deleteMethod(const QString &methodName, const QString &signature)
+void CppDocument::deleteMethod(const QString &method, const QString &signature)
 {
-    LOG("CppDocument::deleteMethod", methodName, signature);
+    LOG("CppDocument::deleteMethod", method, signature);
 
     QString headerSourceName = correspondingHeaderSource();
     if (!headerSourceName.isEmpty()) {
         auto headerSource = qobject_cast<CppDocument *>(Project::instance()->get(headerSourceName));
-        headerSource->deleteMethodLocal(methodName, signature);
+        headerSource->deleteMethodLocal(method, signature);
     }
-    deleteMethodLocal(methodName, signature);
+    deleteMethodLocal(method, signature);
 }
 
 /*!

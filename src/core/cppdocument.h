@@ -5,6 +5,10 @@
 
 #include <memory>
 
+#ifndef Q_MOC_RUN
+#define API_EXECUTOR
+#endif
+
 namespace Core {
 
 class CppDocument : public LspDocument
@@ -40,7 +44,7 @@ public slots:
 
     bool insertCodeInMethod(const QString &methodName, QString code,
                             Core::CppDocument::Position insertAt = Position::StartOfMethod);
-    bool insertForwardDeclaration(const QString &fwddecl);
+    API_EXECUTOR bool insertForwardDeclaration(const QString &forwardDeclaration);
     void commentSelection();
 
     QVariantMap mfcExtractDDX(const QString &className);
@@ -56,16 +60,17 @@ public slots:
 
     void toggleSection();
 
-    bool addMember(const QString &memberInfo, const QString &className, Core::CppDocument::AccessSpecifier specifier);
-    bool addMethodDeclaration(const QString &method, const QString &className,
+    API_EXECUTOR bool addMember(const QString &member, const QString &className,
+                                Core::CppDocument::AccessSpecifier specifier);
+    API_EXECUTOR bool addMethodDeclaration(const QString &method, const QString &className,
                               Core::CppDocument::AccessSpecifier specifier);
-    bool addMethodDefinition(const QString &declaration, const QString &className, const QString &body = "");
+    API_EXECUTOR bool addMethodDefinition(const QString &method, const QString &className, const QString &body = "");
     bool addMethod(const QString &declaration, const QString &className, Core::CppDocument::AccessSpecifier specifier,
                    const QString &body = "");
-    bool insertInclude(const QString &include, bool newGroup = false);
-    bool removeInclude(const QString &include);
+    API_EXECUTOR bool insertInclude(const QString &include, bool newGroup);
+    API_EXECUTOR bool removeInclude(const QString &include);
     void deleteMethod();
-    void deleteMethod(const QString &methodName, const QString &signature);
+    API_EXECUTOR void deleteMethod(const QString &method, const QString &signature);
     void deleteMethod(const QString &methodName);
 
 private:

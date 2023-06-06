@@ -31,7 +31,7 @@ private:
     {
         Test::FileTester fileTester(fileName);
         auto file = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(fileTester.fileName()));
-        file->insertInclude("<bar.h>");
+        file->insertInclude("<bar.h>", false);
         file->save();
         QVERIFY(fileTester.compare());
     }
@@ -47,15 +47,15 @@ private slots:
             auto cppFile = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(sourceFile.fileName()));
 
             // Add include files
-            QVERIFY(cppFile->insertInclude(R"("folder/foobar.h")"));
-            cppFile->insertInclude("<QPushButton>");
+            QVERIFY(cppFile->insertInclude(R"("folder/foobar.h")", false));
+            cppFile->insertInclude("<QPushButton>", false);
             cppFile->insertInclude("<memory>", true);
 
             // Mal-formed includes
-            cppFile->insertInclude(R"("foobar.h)");
-            cppFile->insertInclude(R"(<foobar.h)");
-            cppFile->insertInclude(R"(foobar.h")");
-            QVERIFY(!cppFile->insertInclude(R"(foobar.h>)"));
+            cppFile->insertInclude(R"("foobar.h)", false);
+            cppFile->insertInclude(R"(<foobar.h)", false);
+            cppFile->insertInclude(R"(foobar.h")", false);
+            QVERIFY(!cppFile->insertInclude(R"(foobar.h>)", false));
 
             // Remove include files
             QVERIFY(cppFile->removeInclude(R"("bar.h")"));

@@ -4,6 +4,10 @@
 #include "guisettings.h"
 
 #include "core/cppdocument.h"
+#include "core/slintdocument.h"
+#include "core/uidocument.h"
+#include "core/rcdocument.h"
+#include "core/imagedocument.h"
 #include "core/logger.h"
 #include "core/project.h"
 
@@ -42,47 +46,44 @@ APIExecutorWidget::APIExecutorWidget(QWidget *parent)
 
 APIExecutorWidget::~APIExecutorWidget() = default;
 
-void APIExecutorWidget::initializeApi()
-{
-    qRegisterMetaType<Core::CppDocument::AccessSpecifier>();
-
-    addApi({Core::Document::Type::Cpp,
-            "addMember",
-            {{"member", "QString"}, {"className", "QString"}, {"scope", "Core::CppDocument::AccessSpecifier"}}});
-    addApi({Core::Document::Type::Cpp,
-            "addMethodDeclaration",
-            {{"method", "QString"}, {"className", "QString"}, {"scope", "Core::CppDocument::AccessSpecifier"}}});
-    addApi({Core::Document::Type::Cpp, "addMethodDefinition", {{"method", "QString"}, {"className", "QString"}}});
-    addApi({Core::Document::Type::Cpp, "insertInclude", {{"include", "QString"}, {"newGroup", "bool"}}});
-    addApi({Core::Document::Type::Cpp, "insertForwardDeclaration", {{"forwardDeclaration", "QString"}}});
-    addApi({Core::Document::Type::Cpp, "removeInclude", {{"include", "QString"}}});
-    addApi({Core::Document::Type::Cpp, "deleteMethod", {{"method", "QString"}, {"signature", "QString"}}});
-}
-
 static const QMetaObject *metaObjectFromType(Core::Document::Type type)
 {
     switch (type) {
     case Core::Document::Type::Cpp:
         return &Core::CppDocument::staticMetaObject;
     case Core::Document::Type::Image:
+        return &Core::ImageDocument::staticMetaObject;
     case Core::Document::Type::Rc:
+        return &Core::RcDocument::staticMetaObject;
     case Core::Document::Type::Text:
+        return &Core::TextDocument::staticMetaObject;
     case Core::Document::Type::Ui:
+        return &Core::UiDocument::staticMetaObject;
     case Core::Document::Type::Slint:
-        Q_UNREACHABLE();
+        return &Core::SlintDocument::staticMetaObject;
     }
     Q_UNREACHABLE();
-    return nullptr;
 }
 
-void APIExecutorWidget::addApi(ApiInfo &&apiInfo)
+void APIExecutorWidget::initializeApi()
 {
-    const auto signature = signatureForApi(apiInfo);
-    auto metaObject = metaObjectFromType(apiInfo.type);
-    int methodIndex = metaObject->indexOfMethod(QMetaObject::normalizedSignature(signature));
-    Q_ASSERT(methodIndex != -1);
+    qRegisterMetaType<Core::CppDocument::AccessSpecifier>();
 
-    m_apis.insert(apiInfo.name, std::move(apiInfo));
+    const QMetaEnum enumMeta = QMetaEnum::fromType<Core::Document::Type>();
+    for (int enumIndex = 0; enumIndex < enumMeta.keyCount(); ++enumIndex) {
+        auto type = static_cast<Core::Document::Type>(enumMeta.value(enumIndex));
+        auto metaObject = metaObjectFromType(type);
+        if (!metaObject) {
+            continue;
+        }
+
+        for (int i = 0; i < metaObject->methodCount(); ++i) {
+            auto method = metaObject->method(i);
+            if (method.methodType() == QMetaMethod::Slot && method.tag() == QStringLiteral("API_EXECUTOR")) {
+                m_apis.insert(method.name(), {type, method});
+            }
+        }
+    }
 }
 
 void APIExecutorWidget::populateApiList()
@@ -93,7 +94,7 @@ void APIExecutorWidget::populateApiList()
     const auto currentType = Core::Project::instance()->currentDocument()->type();
     for (const auto &api : std::as_const(m_apis)) {
         if (api.type == currentType)
-            availableAPIs.push_back(api.name);
+            availableAPIs.push_back(api.method.name());
     }
 
     std::ranges::sort(availableAPIs);
@@ -115,8 +116,9 @@ void APIExecutorWidget::populateArgumentList()
     const QString apiName = ui->apiComboBox->currentText();
     const ApiInfo &apiInfo = m_apis.value(apiName);
 
-    for (const auto &arg : apiInfo.args)
-        createArgumentField(arg.first, arg.second);
+    for (int i = 0; i < apiInfo.method.parameterCount(); ++i) {
+        createArgumentField(apiInfo.method.parameterNames()[i], apiInfo.method.parameterMetaType(i));
+    }
 
     // Change focus chain
     QWidget *current = ui->apiComboBox;
@@ -130,25 +132,25 @@ void APIExecutorWidget::populateArgumentList()
     QWidget::setTabOrder(ui->executeButton, ui->closeButton);
 }
 
-std::optional<QMetaEnum> metaEnumFromName(QByteArrayView typeName)
+std::optional<QMetaEnum> metaEnumFromName(QMetaType metaType)
 {
-    auto metaType = QMetaType::fromName(typeName);
     Q_ASSERT(metaType.isValid());
     if (!metaType.flags().testFlag(QMetaType::IsEnumeration))
         return {};
 
     // We can't access the QMetaEnum directly, we need to go through the object containing it
+    const QString typeName = metaType.name();
     auto surroundingClass = metaType.metaObject();
-    const auto enumName = typeName.sliced(typeName.lastIndexOf(':') + 1).constData();
-    const int enumIndex = surroundingClass->indexOfEnumerator(enumName);
+    const auto enumName = typeName.sliced(typeName.lastIndexOf(':') + 1);
+    const int enumIndex = surroundingClass->indexOfEnumerator(qPrintable(enumName));
     Q_ASSERT(enumIndex != -1);
     return surroundingClass->enumerator(enumIndex);
 }
 
-void APIExecutorWidget::createArgumentField(const QByteArray &name, const QByteArray &typeName)
+void APIExecutorWidget::createArgumentField(const QByteArray &name, const QMetaType &type)
 {
     QWidget *widget = nullptr;
-    auto metaEnum = metaEnumFromName(typeName);
+    auto metaEnum = metaEnumFromName(type);
     if (metaEnum) {
         QComboBox *comboBox = new QComboBox(this);
         for (int i = 0; i < metaEnum->keyCount(); ++i)
@@ -156,7 +158,7 @@ void APIExecutorWidget::createArgumentField(const QByteArray &name, const QByteA
         widget = comboBox;
 
     } else {
-        const int typeId = QMetaType::fromName(typeName).id();
+        const int typeId = type.id();
         switch (typeId) {
         case QMetaType::Int: {
             widget = new QSpinBox(this);
@@ -200,14 +202,14 @@ void APIExecutorWidget::onExecuteButtonClicked()
     const ApiInfo &apiInfo = m_apis.value(apiName);
 
     QList<QGenericArgument> genericArgs;
-    genericArgs.reserve(apiInfo.args.count());
+    genericArgs.reserve(apiInfo.method.parameterCount());
 
     std::vector<std::unique_ptr<int>> intPointers;
     std::vector<std::unique_ptr<double>> doublePointers;
     std::vector<std::unique_ptr<bool>> boolPointers;
     std::vector<std::unique_ptr<QString>> stringPointers;
 
-    for (int i = 0; i < apiInfo.args.count(); i++) {
+    for (int i = 0; i < apiInfo.method.parameterCount(); i++) {
         QWidget *field = m_argumentFields.at(i).widget;
         QVariant value;
         if (QComboBox *comboBox = qobject_cast<QComboBox *>(field)) {
@@ -222,32 +224,32 @@ void APIExecutorWidget::onExecuteButtonClicked()
             Q_UNREACHABLE();
         }
 
-        const auto typeName = apiInfo.args.at(i).second;
-        auto metaEnum = metaEnumFromName(typeName);
+        const auto type = apiInfo.method.parameterMetaType(i);
+        auto metaEnum = metaEnumFromName(type);
         if (metaEnum) {
             intPointers.push_back(std::make_unique<int>(value.toInt()));
-            genericArgs.append(QGenericArgument(typeName, intPointers.back().get()));
+            genericArgs.append(QGenericArgument(type.name(), intPointers.back().get()));
         } else {
-            const int typeId = QMetaType::fromName(typeName).id();
+            const int typeId = type.id();
             switch (typeId) {
             case QMetaType::Int: {
                 intPointers.push_back(std::make_unique<int>(value.toInt()));
-                genericArgs.append(QGenericArgument(typeName, intPointers.back().get()));
+                genericArgs.append(QGenericArgument(type.name(), intPointers.back().get()));
                 break;
             }
             case QMetaType::Double: {
                 doublePointers.push_back(std::make_unique<double>(value.toDouble()));
-                genericArgs.append(QGenericArgument(typeName, doublePointers.back().get()));
+                genericArgs.append(QGenericArgument(type.name(), doublePointers.back().get()));
                 break;
             }
             case QMetaType::Bool: {
                 boolPointers.push_back(std::make_unique<bool>(value.toBool()));
-                genericArgs.append(QGenericArgument(typeName, boolPointers.back().get()));
+                genericArgs.append(QGenericArgument(type.name(), boolPointers.back().get()));
                 break;
             }
             case QMetaType::QString: {
                 stringPointers.push_back(std::make_unique<QString>(value.toString()));
-                genericArgs.append(QGenericArgument(typeName, stringPointers.back().get()));
+                genericArgs.append(QGenericArgument(type.name(), stringPointers.back().get()));
                 break;
             }
             default:
@@ -257,17 +259,8 @@ void APIExecutorWidget::onExecuteButtonClicked()
         }
     }
 
-    executeAPI(Core::Project::instance()->currentDocument(), apiInfo.name, genericArgs);
+    executeAPI(Core::Project::instance()->currentDocument(), apiInfo.method.name(), genericArgs);
     genericArgs.clear();
-}
-
-QByteArray APIExecutorWidget::signatureForApi(const ApiInfo &apiInfo)
-{
-    QList<QByteArray> args;
-    for (const auto &arg : apiInfo.args) {
-        args += arg.second;
-    }
-    return apiInfo.name + '(' + args.join(',') + ')';
 }
 
 void APIExecutorWidget::executeAPI(Core::Document *document, const QByteArray &name,
