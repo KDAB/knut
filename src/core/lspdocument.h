@@ -1,5 +1,6 @@
 #pragma once
 
+#include "astnode.h"
 #include "querymatch.h"
 #include "symbol.h"
 #include "textdocument.h"
@@ -22,6 +23,7 @@ namespace Core {
 class LspCache;
 class TreeSitterHelper;
 struct RegexpTransform;
+class AstNode;
 
 class LspDocument : public TextDocument
 {
@@ -50,6 +52,8 @@ public:
 
     int toPos(const Lsp::Position &pos) const;
     TextRange toRange(const Lsp::Range &range) const;
+
+    Q_INVOKABLE AstNode astNodeAt(int pos);
 
 public slots:
     Core::Document *followSymbol();
@@ -89,6 +93,8 @@ private:
     // TreeSitter
     friend TreeSitterHelper;
     std::unique_ptr<TreeSitterHelper> m_treeSitterHelper;
+
+    friend class AstNode;
 };
 
 } // namespace Core

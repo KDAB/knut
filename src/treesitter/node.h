@@ -44,6 +44,9 @@ public:
 
     QString textIn(const QString &source) const;
 
+    Node descendantForRange(uint32_t left, uint32_t right) const;
+    Node parent() const;
+
     bool operator==(const Node &other) const;
 
 private:

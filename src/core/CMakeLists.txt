@@ -1,6 +1,8 @@
 project(knut-core LANGUAGES CXX)
 
 set(PROJECT_SOURCES
+    astnode.h
+    astnode.cpp
     classsymbol.h
     classsymbol.cpp
     cpplanguagedata.h

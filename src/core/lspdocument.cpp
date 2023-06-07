@@ -10,6 +10,7 @@
 #include "string_utils.h"
 #include "symbol.h"
 #include "textlocation.h"
+#include "astnode.h"
 
 #include <QFile>
 #include <QJSEngine>
@@ -682,6 +683,15 @@ void LspDocument::changeContent(int position, int charsRemoved, int charsAdded)
 {
     changeContentLsp(position, charsRemoved, charsAdded);
     changeContentTreeSitter(position, charsRemoved, charsAdded);
+}
+
+AstNode LspDocument::astNodeAt(int pos)
+{
+    auto root = m_treeSitterHelper->syntaxTree()->rootNode();
+    if (auto node = root.descendantForRange(pos, pos); !node.isNull()) {
+        return AstNode(node, this);
+    }
+    return AstNode();
 }
 
 } // namespace Core

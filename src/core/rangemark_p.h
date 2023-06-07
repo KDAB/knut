@@ -35,6 +35,7 @@ private:
     int m_end;
 
     friend class RangeMark;
+    friend class AstNode;
 };
 
 } // namespace Core

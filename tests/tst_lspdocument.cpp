@@ -8,6 +8,7 @@
 #include <QSignalSpy>
 #include <QTest>
 #include <qtestcase.h>
+#include <QTemporaryFile>
 
 #include <kdalgorithms.h>
 
@@ -510,6 +511,68 @@ private slots:
 
         QCOMPARE(matches.size(), 2);
     }
+
+    void ast()
+    {
+        Test::FileTester header(Test::testDataPath() + "/tst_lspdocument/ast/header.h");
+
+        Core::KnutCore core;
+        auto project = Core::Project::instance();
+        project->setRoot(Test::testDataPath() + "/tst_lspdocument/ast/");
+
+        auto document = qobject_cast<Core::LspDocument *>(Core::Project::instance()->get(header.fileName()));
+        QVERIFY(document);
+
+        document->gotoLine(6, 9);
+        auto foo = document->astNodeAt(document->position());
+        QVERIFY(foo.isValid());
+        QCOMPARE(foo.type(), "function_definition");
+        QCOMPARE(foo.startPos(), 38);
+        QCOMPARE(foo.endPos(), 92);
+
+        {
+            auto parent = foo.parentNode();
+            QVERIFY(parent.isValid());
+            QCOMPARE(parent.type(), "field_declaration_list");
+        }
+
+        auto children = foo.childrenNodes();
+        QCOMPARE(children.size(), 3);
+
+        QCOMPARE(children[0].text(), "void");
+        QCOMPARE(children[0].type(), "primitive_type");
+        QCOMPARE(children[0].startPos(), 38);
+        QCOMPARE(children[0].endPos(), 42);
+
+        QVERIFY(foo.isValid());
+
+        // Change text before node, position etc should adopt
+        document->gotoLine(1);
+        document->insert("#include <test.h>\n\n");
+
+        QVERIFY(foo.isValid());
+
+        QCOMPARE(foo.type(), "function_definition");
+        QCOMPARE(foo.startPos(), 57);
+        QCOMPARE(foo.endPos(), 111);
+
+        {
+            auto parent = foo.parentNode();
+            QVERIFY(parent.isValid());
+            QCOMPARE(parent.type(), "field_declaration_list");
+        }
+
+        // Change text after node, position etc shouldn't change
+        document->gotoEndOfDocument();
+        document->insert("void bar();\n");
+
+        QVERIFY(foo.isValid());
+
+        QCOMPARE(foo.type(), "function_definition");
+        QCOMPARE(foo.startPos(), 57);
+        QCOMPARE(foo.endPos(), 111);
+    }
+
 };
 
 QTEST_MAIN(TestLspDocument)

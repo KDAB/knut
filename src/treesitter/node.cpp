@@ -129,4 +129,14 @@ bool Node::operator==(const Node &other) const
     return ts_node_eq(m_node, other.m_node);
 }
 
+Node Node::descendantForRange(uint32_t left, uint32_t right) const
+{
+    return Node(ts_node_descendant_for_byte_range(m_node, left * sizeof(QChar), right * sizeof(QChar)));
+}
+
+Node Node::parent() const
+{
+    return Node(ts_node_parent(m_node));
+}
+
 }

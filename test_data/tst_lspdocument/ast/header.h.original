@@ -1,0 +1,10 @@
+#pragma once
+
+class Foo
+{
+public:
+    void foo(int arg) const
+    {
+        (void)arg;
+    }
+};
