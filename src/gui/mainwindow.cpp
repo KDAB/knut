@@ -11,27 +11,29 @@
 #include "logpanel.h"
 #include "optionsdialog.h"
 #include "palette.h"
+#include "qmlview.h"
 #include "rctoqrcdialog.h"
 #include "rctouidialog.h"
 #include "runscriptdialog.h"
 #include "scriptpanel.h"
 #include "shortcutmanager.h"
 #include "shortcutsettings.h"
+#include "slintview.h"
 #include "textview.h"
+#include "toolbar.h"
 #include "treesitterinspector.h"
 #include "uiview.h"
-#include "slintview.h"
-#include "toolbar.h"
 
 #include "core/cppdocument.h"
 #include "core/document.h"
 #include "core/imagedocument.h"
 #include "core/logger.h"
 #include "core/project.h"
+#include "core/qmldocument.h"
 #include "core/rcdocument.h"
 #include "core/scriptmanager.h"
-#include "core/textdocument.h"
 #include "core/slintdocument.h"
+#include "core/textdocument.h"
 #include "core/uidocument.h"
 #include "rcui/rcfileview.h"
 
@@ -672,8 +674,17 @@ static QWidget *widgetForDocument(Core::Document *document)
     case Core::Document::Type::Slint: {
         auto slintView = new SlintView();
         slintView->setSlintDocument(qobject_cast<Core::SlintDocument *>(document));
-        GuiSettings::setupDocumentTextEdit(qobject_cast<Core::SlintDocument *>(document)->textEdit(), document->fileName());
+        GuiSettings::setupDocumentTextEdit(qobject_cast<Core::SlintDocument *>(document)->textEdit(),
+                                           document->fileName());
         return slintView;
+    }
+    case Core::Document::Type::Qml: {
+
+        auto qmlview = new QmlView();
+        qmlview->setQmlDocument(qobject_cast<Core::QmlDocument *>(document));
+        GuiSettings::setupDocumentTextEdit(qobject_cast<Core::QmlDocument *>(document)->textEdit(),
+                                           document->fileName());
+        return qmlview;
     }
     case Core::Document::Type::Cpp:
     case Core::Document::Type::Text:
@@ -728,7 +739,7 @@ void MainWindow::changeCurrentDocument()
         if (auto actions = widget->actions(); !actions.isEmpty()) {
             auto toolBar = new Toolbar(widget);
             toolBar->setVisible(true);
-            for(const auto& act: actions) {
+            for (const auto &act : actions) {
                 toolBar->addAction(act);
             }
         }

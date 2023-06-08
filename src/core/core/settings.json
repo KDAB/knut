@@ -35,7 +35,8 @@
         "bmp": "image_type",
         "jpg": "image_type",
         "ico": "image_type",
-        "slint": "slint_type"
+        "slint": "slint_type",
+        "qml": "qml_type"
     },
     "text_editor": {
         "tab": {

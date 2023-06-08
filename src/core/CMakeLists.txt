@@ -80,6 +80,8 @@ set(PROJECT_SOURCES
     textrange.cpp
     uidocument.h
     uidocument.cpp
+    qmldocument.h
+    qmldocument.cpp
     userdialog.h
     userdialog.cpp
     utils.h

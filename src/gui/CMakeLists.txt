@@ -68,6 +68,8 @@ set(PROJECT_SOURCES
     toolbar.cpp
     uiview.h
     uiview.cpp
+    qmlview.h
+    qmlview.cpp
     gui.qrc
 )
 

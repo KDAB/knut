@@ -4,12 +4,13 @@
 #include "guisettings.h"
 
 #include "core/cppdocument.h"
-#include "core/slintdocument.h"
-#include "core/uidocument.h"
-#include "core/rcdocument.h"
 #include "core/imagedocument.h"
 #include "core/logger.h"
 #include "core/project.h"
+#include "core/qmldocument.h"
+#include "core/rcdocument.h"
+#include "core/slintdocument.h"
+#include "core/uidocument.h"
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -61,6 +62,9 @@ static const QMetaObject *metaObjectFromType(Core::Document::Type type)
         return &Core::UiDocument::staticMetaObject;
     case Core::Document::Type::Slint:
         return &Core::SlintDocument::staticMetaObject;
+    case Core::Document::Type::Qml:
+        return &Core::QmlDocument::staticMetaObject;
+        Q_UNREACHABLE();
     }
     Q_UNREACHABLE();
 }

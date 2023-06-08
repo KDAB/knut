@@ -4,13 +4,13 @@
 #include "cppdocument.h"
 #include "imagedocument.h"
 #include "logger.h"
+#include "lsp/client.h"
+#include "qmldocument.h"
 #include "rcdocument.h"
 #include "settings.h"
+#include "slintdocument.h"
 #include "textdocument.h"
 #include "uidocument.h"
-#include "slintdocument.h"
-
-#include "lsp/client.h"
 
 #include <QDir>
 #include <QDirIterator>
@@ -208,6 +208,9 @@ static Document *createDocument(const QString &suffix)
         return new ImageDocument();
     case Document::Type::Slint:
         return new SlintDocument();
+    case Document::Type::Qml: {
+        return new QmlDocument();
+    }
     default:
         return new TextDocument();
     }
