@@ -8,6 +8,7 @@
 #include "settings.h"
 #include "textdocument.h"
 #include "uidocument.h"
+#include "slintdocument.h"
 
 #include "lsp/client.h"
 
@@ -205,6 +206,8 @@ static Document *createDocument(const QString &suffix)
         return new UiDocument();
     case Document::Type::Image:
         return new ImageDocument();
+    case Document::Type::Slint:
+        return new SlintDocument();
     default:
         return new TextDocument();
     }

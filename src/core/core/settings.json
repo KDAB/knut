@@ -34,7 +34,8 @@
         "png": "image_type",
         "bmp": "image_type",
         "jpg": "image_type",
-        "ico": "image_type"
+        "ico": "image_type",
+        "slint": "slint_type"
     },
     "text_editor": {
         "tab": {

@@ -22,6 +22,7 @@ public:
         Text,
         Ui,
         Image,
+        Slint,
     };
     Q_ENUM(Type)
 
@@ -75,6 +76,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(Document::Type,
                                  {Document::Type::Rc, "rc_type"},
                                  {Document::Type::Ui, "ui_type"},
                                  {Document::Type::Image, "image_type"},
+                                 {Document::Type::Slint, "slint_type"},
                              })
 
 } // namespace Core

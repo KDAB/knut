@@ -60,6 +60,8 @@ set(PROJECT_SOURCES
     shortcutsettings.h
     shortcutsettings.cpp
     shortcutsettings.ui
+    slintview.h
+    slintview.cpp
     textview.h
     textview.cpp
     uiview.h

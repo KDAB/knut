@@ -63,6 +63,8 @@ set(PROJECT_SOURCES
     scriptrunner.cpp
     settings.h
     settings.cpp
+    slintdocument.h
+    slintdocument.cpp
     string_utils.h
     string_utils.cpp
     symbol.h

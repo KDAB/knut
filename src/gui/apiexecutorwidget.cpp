@@ -68,6 +68,7 @@ static const QMetaObject *metaObjectFromType(Core::Document::Type type)
     case Core::Document::Type::Rc:
     case Core::Document::Type::Text:
     case Core::Document::Type::Ui:
+    case Core::Document::Type::Slint:
         Q_UNREACHABLE();
     }
     Q_UNREACHABLE();

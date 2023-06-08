@@ -20,6 +20,7 @@
 #include "textview.h"
 #include "treesitterinspector.h"
 #include "uiview.h"
+#include "slintview.h"
 
 #include "core/cppdocument.h"
 #include "core/document.h"
@@ -29,6 +30,7 @@
 #include "core/rcdocument.h"
 #include "core/scriptmanager.h"
 #include "core/textdocument.h"
+#include "core/slintdocument.h"
 #include "core/uidocument.h"
 #include "rcui/rcfileview.h"
 
@@ -656,6 +658,12 @@ static QWidget *widgetForDocument(Core::Document *document)
         auto imageview = new ImageView();
         imageview->setImageDocument(qobject_cast<Core::ImageDocument *>(document));
         return imageview;
+    }
+    case Core::Document::Type::Slint: {
+        auto slintView = new SlintView();
+        slintView->setSlintDocument(qobject_cast<Core::SlintDocument *>(document));
+        GuiSettings::setupDocumentTextEdit(qobject_cast<Core::SlintDocument *>(document)->textEdit(), document->fileName());
+        return slintView;
     }
     case Core::Document::Type::Cpp:
     case Core::Document::Type::Text:

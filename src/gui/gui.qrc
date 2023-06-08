@@ -23,5 +23,6 @@
     </qresource>
     <qresource prefix="/org.kde.syntax-highlighting/syntax-addons">
         <file alias="rc.xml">gui/rc.xml</file>
+        <file alias="slint.xml">gui/slint.xml</file>
     </qresource>
 </RCC>
