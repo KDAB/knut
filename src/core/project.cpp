@@ -189,8 +189,10 @@ static Document *createDocument(const QString &suffix)
         Settings::instance()->value<std::map<std::string, Document::Type>>(Settings::MimeTypes);
 
     auto it = mimeTypes.find(suffix.toStdString());
-    if (it == mimeTypes.end())
-        return nullptr;
+    if (it == mimeTypes.end()) {
+        // No mime found, so, just open it as text
+        return new TextDocument();
+    }
 
     switch (it->second) {
     case Document::Type::Cpp:
@@ -203,6 +205,8 @@ static Document *createDocument(const QString &suffix)
         return new UiDocument();
     case Document::Type::Image:
         return new ImageDocument();
+    default:
+        return new TextDocument();
     }
     Q_UNREACHABLE();
     return nullptr;

@@ -639,12 +639,6 @@ void MainWindow::changeTab()
 static QWidget *widgetForDocument(Core::Document *document)
 {
     switch (document->type()) {
-    case Core::Document::Type::Cpp:
-    case Core::Document::Type::Text: {
-        auto textView = new TextView();
-        textView->setTextDocument(qobject_cast<Core::TextDocument *>(document));
-        return textView;
-    }
     case Core::Document::Type::Rc: {
         auto rcDocument = qobject_cast<Core::RcDocument *>(document);
         auto rcview = new RcUi::RcFileView();
@@ -662,6 +656,13 @@ static QWidget *widgetForDocument(Core::Document *document)
         auto imageview = new ImageView();
         imageview->setImageDocument(qobject_cast<Core::ImageDocument *>(document));
         return imageview;
+    }
+    case Core::Document::Type::Cpp:
+    case Core::Document::Type::Text:
+    default: {
+        auto textView = new TextView();
+        textView->setTextDocument(qobject_cast<Core::TextDocument *>(document));
+        return textView;
     }
     }
     Q_UNREACHABLE();
