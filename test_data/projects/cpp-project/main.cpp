@@ -8,6 +8,7 @@ int main(int argc, char *argv[]) {
     MyObject object("Hello World!");
 
     object.sayMessage();
+    object.sayMessage("Another message" /*a comment*/);
 
     freeFunction(1, 1);
 

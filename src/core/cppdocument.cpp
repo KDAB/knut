@@ -302,6 +302,79 @@ QVector<QueryMatch> CppDocument::queryMethodDefinition(const QString &scope, con
     return query(queryString);
 }
 
+QVector<QueryMatch> CppDocument::internalQueryFunctionCall(const QString& functionName, const QString& argumentsQuery)
+{
+    const auto queryString = QString(R"EOF(
+                (call_expression
+                    function: (_) @name (#eq? @name "%1")
+                    arguments: (argument_list
+                            %2
+                        ) @argument-list
+                ) @call
+    )EOF").arg(functionName).arg(argumentsQuery);
+
+    return query(queryString);
+}
+
+/*!
+ * \qmlmethod array<QueryMatch> CppDocument::queryFunctionCall(string functionName, array<string> argumentCaptures)
+ * \since 1.1
+ *
+ * Returns the list of function calls to the function `functionName`.
+ * Only calls that have the same number of arguments as `argumentCaptures` will be returned.
+ *
+ * The `argumentCaptures` list is a list of names that will be used to capture the arguments of the function call.
+ * E.g. `queryFunctionCall("foo", ["first", "second"])` will return a list of calls to `foo` with two arguments,
+ * where the first argument will be captured in the `first` capture, and the second in the `second` capture.
+ *
+ * The returned QueryMatch instances will have the following captures available:
+ *
+ * - `call` - The entire call expression
+ * - `name` - The name of the function (the text will be equal to functionName)
+ * - `argument-list` - The entire list of arguments, including the surroundg parentheses `()`
+ * - a capture for every argument in `argumentCaptures`
+ */
+QVector<QueryMatch> CppDocument::queryFunctionCall(const QString &functionName, const QVector<QString> &argumentCaptures)
+{
+    LOG("queryFunctionCall", LOG_ARG("functionName", functionName), LOG_ARG("argumentCaptures", argumentCaptures));
+
+    for (const auto &argument : argumentCaptures) {
+        if (kdalgorithms::value_in(argument, {"call", "name", "argument-list"}) ){
+            spdlog::warn("CppDocument::queryFunctionCall: provided capture {} is reserved!", argument.toStdString());
+        }
+    }
+
+    const auto arguments = kdalgorithms::transformed(argumentCaptures, [](const auto& name) {
+            return QString(". (_)+ @%1").arg(name);
+            });
+    auto argumentsQuery = arguments.join(" \",\"\n");
+
+
+    return internalQueryFunctionCall(functionName, QString(R"EOF(
+        . "("
+        %1
+        . ")" .
+    )EOF").arg(argumentsQuery));
+}
+
+/*!
+ * \qmlmethod array<QueryMatch> CppDocument::queryFunctionCall(string functionName)
+ * \since 1.1
+ *
+ * Returns the list of function calls to the function `functionName`, no matter how many arguments they were called with.
+ *
+ * The returned QueryMatch instances will have the following captures available:
+ *
+ * - `call` - The entire call expresssion
+ * - `name` - The name of the function (the text will be equal to functionName)
+ * - `argument-list` - The entire list of arguments, including the surroundg parentheses `()`
+ */
+QVector<QueryMatch> CppDocument::queryFunctionCall(const QString& functionName)
+{
+    LOG("queryFunctionCall", LOG_ARG("functionName", functionName));
+    return internalQueryFunctionCall(functionName, "");
+}
+
 /*!
  * \qmlmethod CppDocument::insertCodeInMethod(string methodName, string code, Position insertAt)
  *

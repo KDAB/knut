@@ -498,7 +498,7 @@ private slots:
         auto lspdocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->get("main.cpp"));
 
         // Selection should include two function definitions "myFreeFunction" and "myOtherFreeFunction"
-        lspdocument->gotoLine(18);
+        lspdocument->gotoLine(19);
         lspdocument->selectNextLine(20);
         lspdocument->selectEndOfLine();
 

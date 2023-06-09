@@ -31,6 +31,9 @@ public:
     Q_INVOKABLE QString correspondingHeaderSource() const;
 
     Q_INVOKABLE QVector<Core::QueryMatch> queryMethodDefinition(const QString &scope, const QString &functionName);
+    Q_INVOKABLE QVector<Core::QueryMatch> queryFunctionCall(const QString &functionName,
+                                                            const QVector<QString> &argumentCaptures);
+    Q_INVOKABLE QVector<Core::QueryMatch> queryFunctionCall(const QString &functionName);
 
 public slots:
     Core::CppDocument *openHeaderSource();
@@ -66,6 +69,8 @@ public slots:
     void deleteMethod(const QString &methodName);
 
 private:
+    QVector<Core::QueryMatch> internalQueryFunctionCall(const QString &functionName, const QString &argumentsQuery);
+
     enum class MemberOrMethodAdditionResult { Success, ClassNotFound };
     MemberOrMethodAdditionResult addMemberOrMethod(const QString &memberInfo, const QString &className,
                                                    Core::CppDocument::AccessSpecifier specifier);

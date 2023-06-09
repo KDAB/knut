@@ -42,6 +42,8 @@ Inherited properties: [LspDocument properties](../script/lspdocument.md#properti
 |[MessageMap](../script/messagemap.md) |**[mfcExtractMessageMap](#mfcExtractMessageMap)**(string className = "")|
 ||**[mfcReplaceAfxMsgDeclaration](#mfcReplaceAfxMsgDeclaration)**(string afxMsgName, string newDeclaration)|
 |[CppDocument](../script/cppdocument.md) |**[openHeaderSource](#openHeaderSource)**()|
+|array<[QueryMatch](../script/querymatch.md)> |**[queryFunctionCall](#queryFunctionCall)**(string functionName)|
+|array<[QueryMatch](../script/querymatch.md)> |**[queryFunctionCall](#queryFunctionCall)**(string functionName, array<string> argumentCaptures)|
 |array<[QueryMatch](../script/querymatch.md)> |**[queryMethodDefinition](#queryMethodDefinition)**(string scope, string methodName)|
 ||**[removeInclude](#removeInclude)**(string include)|
 |int |**[selectBlockEnd](#selectBlockEnd)**()|
@@ -240,6 +242,35 @@ Replaces the declaration of an afx_msg with `afxMsgName` with a new declaration.
 
 Opens the corresponding source or header files, the current document is the new file.
 If no files have been found, it's a no-op.
+
+#### <a name="queryFunctionCall"></a>array<[QueryMatch](../script/querymatch.md)> **queryFunctionCall**(string functionName)
+
+Returns the list of function calls to the function `functionName`, no matter how many arguments they were called with.
+
+The returned QueryMatch instances will have the following captures available:
+
+- `call` - The entire call expresssion
+- `name` - The name of the function (the text will be equal to functionName)
+- `argument-list` - The entire list of arguments, including the surroundg parentheses `()`
+
+#### <a name="queryFunctionCall"></a>array<[QueryMatch](../script/querymatch.md)> **queryFunctionCall**(string functionName, array<string> argumentCaptures)
+
+!!! note ""
+    Since: Knut 1.1
+
+Returns the list of function calls to the function `functionName`.
+Only calls that have the same number of arguments as `argumentCaptures` will be returned.
+
+The `argumentCaptures` list is a list of names that will be used to capture the arguments of the function call.
+E.g. `queryFunctionCall("foo", ["first", "second"])` will return a list of calls to `foo` with two arguments,
+where the first argument will be captured in the `first` capture, and the second in the `second` capture.
+
+The returned QueryMatch instances will have the following captures available:
+
+- `call` - The entire call expression
+- `name` - The name of the function (the text will be equal to functionName)
+- `argument-list` - The entire list of arguments, including the surroundg parentheses `()`
+- a capture for every argument in `argumentCaptures`
 
 #### <a name="queryMethodDefinition"></a>array<[QueryMatch](../script/querymatch.md)> **queryMethodDefinition**(string scope, string methodName)
 

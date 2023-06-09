@@ -257,6 +257,35 @@ private slots:
         });
     }
 
+    void queryFunctionCall()
+    {
+        testDocument("projects/cpp-project", "main.cpp", [](auto *document) {
+            auto calls = document->queryFunctionCall("object.sayMessage", {"message"});
+            QCOMPARE(calls.size(), 1);
+            // All nodes, including comments will be captured as the parameter
+            const auto messageNodes = calls[0].getAll("message");
+            QCOMPARE(messageNodes.size(), 2);
+
+            QCOMPARE(calls[0].get("name").text(), "object.sayMessage");
+            QCOMPARE(messageNodes[0].text(), "\"Another message\"");
+            QCOMPARE(messageNodes[1].text(), "/*a comment*/");
+            QCOMPARE(calls[0].get("argument-list").text(), "(\"Another message\" /*a comment*/)");
+
+            calls = document->queryFunctionCall("object.sayMessage", {});
+            QCOMPARE(calls.size(), 1);
+
+            QCOMPARE(calls[0].get("name").text(), "object.sayMessage");
+            QCOMPARE(calls[0].get("argument-list").text(), "()");
+
+            calls = document->queryFunctionCall("object.sayMessage");
+            QCOMPARE(calls.size(), 2);
+            QCOMPARE(calls[0].get("name").text(), "object.sayMessage");
+            QCOMPARE(calls[0].get("argument-list").text(), "()");
+            QCOMPARE(calls[1].get("name").text(), "object.sayMessage");
+            QCOMPARE(calls[1].get("argument-list").text(), "(\"Another message\" /*a comment*/)");
+        });
+    }
+
     // Regression test:
     // Putting the cursor before the last character made `moveBlock` run into an infinite loop.
     void selectBlockUpAtEndOfFile()
