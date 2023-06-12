@@ -109,7 +109,8 @@ void writeAssetsToQrc(const QVector<Asset> &assets, QIODevice *device, const QSt
 //=============================================================================
 // Dialog writing
 //=============================================================================
-static void writePropery(QXmlStreamWriter &w, const QString &id, const QString &name, const QVariant &value)
+
+static void writeProperty(QXmlStreamWriter &w, const QString &id, const QString &name, const QVariant &value)
 {
     switch (static_cast<QMetaType::Type>(value.typeId())) {
     case QMetaType::Bool:
@@ -161,10 +162,93 @@ static void writePropery(QXmlStreamWriter &w, const QString &id, const QString &
     }
 }
 
+static QString convertToQtEnum(const QString &enumValue)
+{
+    return "Qt::" + enumValue;
+}
+
+static QString convertClassName(const QString &className)
+{
+    return "Q" + className;
+}
+
+static QVariant convertPropertyValue(const QString &property, const QVariant &value)
+{
+    QString convertedValue;
+    static const QHash<QString, QString> conversionMap {
+        {"tickPosition", "QSlider::"},
+        {"tabPosition", "QTabWidget::"},
+        {"selectionMode", "QAbstractItemView::"},
+        {"insertPolicy", "QComboBox::"},
+        {"echoMode", "QLineEdit::"},
+        {"viewMode", "QListView::"}
+        // Add more property conversions as needed
+    };
+
+    if (conversionMap.contains(property)) {
+        if (property == "tabPosition") {
+            if (value.toString() == "Bottom") {
+                convertedValue = conversionMap.value(property) + "South";
+            } else if (value.toString() == "Left") {
+                convertedValue = conversionMap.value(property) + "West";
+            } else if (value.toString() == "Right") {
+                convertedValue = conversionMap.value(property) + "East";
+            } else {
+                convertedValue = conversionMap.value(property) + value.toString();
+            }
+        } else {
+            convertedValue = conversionMap.value(property) + value.toString();
+        }
+        return QVariant(convertedValue);
+    }
+
+    if (property == "orientation" || property == "horizontalScrollBarPolicy" || property == "alignment") {
+        if (value.toString().contains("|")) {
+            QStringList parts = value.toString().split("|");
+            for (const QString &part : parts) {
+                convertedValue += convertToQtEnum(part) + "|";
+            }
+            convertedValue.chop(1); // Remove the trailing "|"
+
+            return QVariant(convertedValue);
+        }
+        return QVariant(convertToQtEnum(value.toString()));
+    }
+
+    // return QVariant(value.toString());
+    return value;
+}
+
+static void setFrameProperties(const Widget &widget)
+{
+    QVariantMap &properties = const_cast<Widget &>(widget).properties; // Get a non-const reference to properties
+
+    const QString frame = properties.value("frame").toString();
+    if (frame == "ClientEdge") {
+        properties["frameShape"] = "QFrame::Panel";
+        properties["frameShadow"] = "QFrame::Sunken";
+        properties["lineWidth"] = 2;
+    } else if (frame == "StaticEdge") {
+        properties["frameShape"] = "QFrame::Panel";
+        properties["frameShadow"] = "QFrame::Sunken";
+    } else if (frame == "ModalFrame") {
+        properties["frameShape"] = "QFrame::Panel";
+        properties["frameShadow"] = "QFrame::Raised";
+        properties["lineWidth"] = 2;
+    } else if (frame == "Border") {
+        properties["frameShape"] = "QFrame::Box";
+    } else if (frame == "Panel" || frame == "Box") {
+        properties["frameShape"] = "QFrame::" + frame;
+    } else if (frame == "Sunken") {
+        properties["frameShadow"] = "QFrame::" + frame;
+    }
+}
+
 static void writeWidget(QXmlStreamWriter &w, const Widget &widget, int &staticCount)
 {
     w.writeStartElement("widget");
-    w.writeAttribute("class", widget.className);
+    QString convertedClassName = convertClassName(widget.className);
+    w.writeAttribute("class", convertedClassName);
 
     QString id = widget.id;
     if (widget.id == "IDC_STATIC") {
@@ -187,11 +271,24 @@ static void writeWidget(QXmlStreamWriter &w, const Widget &widget, int &staticCo
         w.writeEndElement();
     }
 
-    auto itEnd = widget.properties.constEnd();
-    for (auto it = widget.properties.constBegin(); it != itEnd; ++it)
-        writePropery(w, id, it.key(), it.value());
+    // Process the frame property
 
-    const bool isMainWindow = (widget.className == "QMainWindow");
+    if (widget.properties.contains("frame")) {
+        setFrameProperties(widget);
+    }
+
+    auto itEnd = widget.properties.constEnd();
+    for (auto it = widget.properties.constBegin(); it != itEnd; ++it) {
+        if (it.key() == "frame") {
+            continue;
+        }
+
+        QVariant convertedValue = convertPropertyValue(it.key(), it.value());
+
+        writeProperty(w, id, it.key(), convertedValue);
+    }
+
+    const bool isMainWindow = (widget.className == "MainWindow");
     if (isMainWindow) {
         w.writeStartElement("widget");
         w.writeAttribute("class", "QWidget");

@@ -61,18 +61,18 @@ private slots:
 
         QCOMPARE(result.id, "IDD_ABOUTBOX");
         QCOMPARE(result.geometry, QRect(0, 0, 255, 103));
-        QCOMPARE(result.className, "QDialog");
+        QCOMPARE(result.className, "Dialog");
         QCOMPARE(result.properties["windowTitle"].toString(), "About 2048Game");
 
         auto ukData = rcFile.data.value("LANG_UKRAINIAN;SUBLANG_DEFAULT");
         result = convertDialog(ukData, ukData.dialogs.first(), RcCore::Widget::AllFlags);
         QCOMPARE(result.children.size(), 6);
         auto item = result.children.at(2);
-        QCOMPARE(item.className, "QPushButton");
+        QCOMPARE(item.className, "PushButton");
         QCOMPARE(item.properties.value("text").toString(), "OK");
         QCOMPARE(item.geometry, QRect(96, 108, 75, 24));
         item = result.children.last();
-        QCOMPARE(item.className, "QComboBox");
+        QCOMPARE(item.className, "ComboBox");
         QStringList values = {"3", "4", "5", "6"};
         QCOMPARE(item.properties.value("text").toStringList(), values);
     }
