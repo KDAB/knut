@@ -9,11 +9,11 @@ There are currently 3 types of scripts:
 If the first line is a comment, it will be used as the script description.
 
 !!! Note ""
-    If you need to know more about QML, follow this link: [https://doc.qt.io/qt-5/qmlapplications.html](https://doc.qt.io/qt-5/qmlapplications.html)
+    If you need to know more about QML, follow this link: [https://doc.qt.io/qt-6/qmlapplications.html](https://doc.qt.io/qt-6/qmlapplications.html)
 
 ## Javascript script
 
-Javascipt scrits **must** contain a main function, the entry point for the script:
+Javascript scripts **must** contain a main function, the entry point for the script:
 
 ```js
 // Script description
@@ -46,7 +46,7 @@ The `init()` function in the root item (visual or not) will automatically be cal
 To create a visual script, you can use the `ScriptDialog` item. Such a script requires a second ui file, with the same name and in the same folder as the qml file.
 
 For example, here is a small ui file named `my-script.ui`
-![My Sript UI file](script-dialog.png)
+![My Script UI file](script-dialog.png)
 
 The script using this ui file will be called `my-script.qml`:
 ```qml

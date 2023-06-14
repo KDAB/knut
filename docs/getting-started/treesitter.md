@@ -78,7 +78,7 @@ let [constructor] = cppFile.query(`
 // The result will be an empty list if nothing was found.
 // When using destructuring assignment, constructor will then be undefined.
 if (!constructor) {
-    Message.warn(`Cannot find constructor for class ${className}`);
+    Message.warning(`Cannot find constructor for class ${className}`);
     return;
 }
 

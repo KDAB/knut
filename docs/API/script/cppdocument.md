@@ -245,6 +245,9 @@ If no files have been found, it's a no-op.
 
 #### <a name="queryFunctionCall"></a>array<[QueryMatch](../script/querymatch.md)> **queryFunctionCall**(string functionName)
 
+!!! note ""
+    Since: Knut 1.1
+
 Returns the list of function calls to the function `functionName`, no matter how many arguments they were called with.
 
 The returned QueryMatch instances will have the following captures available:
