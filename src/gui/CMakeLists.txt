@@ -64,6 +64,8 @@ set(PROJECT_SOURCES
     slintview.cpp
     textview.h
     textview.cpp
+    toolbar.h
+    toolbar.cpp
     uiview.h
     uiview.cpp
     gui.qrc

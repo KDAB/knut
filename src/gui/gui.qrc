@@ -20,6 +20,9 @@
         <file>gui/application.png</file>
         <file>gui/application-edit.png</file>
         <file>gui/default-dialog.ui</file>
+        <file>gui/eye.png</file>
+        <file>gui/magnify-minus.png</file>
+        <file>gui/magnify-plus.png</file>
     </qresource>
     <qresource prefix="/org.kde.syntax-highlighting/syntax-addons">
         <file alias="rc.xml">gui/rc.xml</file>

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <QWidget>
 #include <QPointer>
+#include <QWidget>
 
 namespace Core {
 class SlintDocument;
@@ -11,7 +11,7 @@ class QProcess;
 
 namespace Gui {
 
-class SlintView: public QWidget
+class SlintView : public QWidget
 {
     Q_OBJECT
 

@@ -21,6 +21,7 @@
 #include "treesitterinspector.h"
 #include "uiview.h"
 #include "slintview.h"
+#include "toolbar.h"
 
 #include "core/cppdocument.h"
 #include "core/document.h"
@@ -723,6 +724,15 @@ void MainWindow::changeCurrentDocument()
         auto document = project->currentDocument();
         QDir dir(project->root());
         auto widget = widgetForDocument(document);
+
+        if (auto actions = widget->actions(); !actions.isEmpty()) {
+            auto toolBar = new Toolbar(widget);
+            toolBar->setVisible(true);
+            for(const auto& act: actions) {
+                toolBar->addAction(act);
+            }
+        }
+
         widget->setWindowTitle(fileName);
         windowIndex = ui->tabWidget->addTab(widget, dir.relativeFilePath(fileName));
 

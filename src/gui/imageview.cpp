@@ -1,6 +1,7 @@
 #include "imageview.h"
 
 #include "core/imagedocument.h"
+#include "guisettings.h"
 
 #include <QGraphicsItem>
 #include <QGraphicsScene>
@@ -14,23 +15,29 @@ ImageView::ImageView(QWidget *parent)
 {
     setScene(new QGraphicsScene(this));
 
-    auto zoomIn = new QShortcut(QKeySequence("Ctrl++"), this);
-    zoomIn->setContext(Qt::WidgetShortcut);
-    connect(zoomIn, &QShortcut::activated, this, [this]() {
-        scale(2, 2);
-    });
-
-    auto zoomOut = new QShortcut(QKeySequence("Ctrl+-"), this);
-    zoomOut->setContext(Qt::WidgetShortcut);
-    connect(zoomOut, &QShortcut::activated, this, [this]() {
-        scale(.5, .5);
-    });
-
     auto zoomReset = new QShortcut(QKeySequence("Ctrl+0"), this);
     zoomReset->setContext(Qt::WidgetShortcut);
     connect(zoomReset, &QShortcut::activated, this, [this]() {
         setTransform({});
     });
+
+    QAction* zoomIn = new QAction(tr("Zoom in"), this);
+    GuiSettings::setIcon(zoomIn, ":/gui/magnify-plus.png");
+    zoomIn->setShortcut(QKeySequence("Ctrl++"));
+    zoomIn->setShortcutContext(Qt::WidgetShortcut);
+    connect(zoomIn, &QAction::triggered, this, [this]() {
+        scale(2, 2);
+    });
+    addAction(zoomIn);
+
+    QAction* zoomOut = new QAction(tr("Zoom out"), this);
+    GuiSettings::setIcon(zoomOut, ":/gui/magnify-minus.png");
+    zoomOut->setShortcut(QKeySequence("Ctrl+-"));
+    zoomOut->setShortcutContext(Qt::WidgetShortcut);
+    connect(zoomOut, &QAction::triggered, this, [this]() {
+        scale(.5, .5);
+    });
+    addAction(zoomOut);
 }
 
 void ImageView::setImageDocument(Core::ImageDocument *document)
