@@ -6,6 +6,7 @@
 #include "rangemark.h"
 #include "settings.h"
 #include "string_utils.h"
+#include "texteditor.h"
 
 #include <QFile>
 #include <QKeyEvent>
@@ -85,7 +86,7 @@ TextDocument::~TextDocument()
 
 TextDocument::TextDocument(Type type, QObject *parent)
     : Document(type, parent)
-    , m_document(new QPlainTextEdit())
+    , m_document(new TextEditor)
 {
     m_document->hide();
     connect(m_document, &QPlainTextEdit::textChanged, this, &TextDocument::textChanged);
