@@ -26,18 +26,18 @@ Inherited properties: [LspDocument properties](../script/lspdocument.md#properti
 ||**[addMember](#addMember)**(string member, string className, AccessSpecifier)|
 ||**[addMethod](#addMethod)**(string declaration, string className, AccessSpecifier, string body)|
 ||**[addMethod](#addMethod)**(string declaration, string className, AccessSpecifier)|
-||**[addMethodDeclaration](#addMethodDeclaration)**(string member, string className, AccessSpecifier)|
-||**[addMethodDefintion](#addMethodDefintion)**(string declaration, string className)|
-||**[addMethodDefintion](#addMethodDefintion)**(string declaration, string className, string body)|
+||**[addMethodDeclaration](#addMethodDeclaration)**(string method, string className, AccessSpecifier specifier)|
+||**[addMethodDefintion](#addMethodDefintion)**(string method, string className)|
+||**[addMethodDefintion](#addMethodDefintion)**(string method, string className, string body)|
 ||**[commentSelection](#commentSelection)**()|
 |string |**[correspondingHeaderSource](#correspondingHeaderSource)**()|
 |void |**[deleteMethod](#deleteMethod)**()|
 |void |**[deleteMethod](#deleteMethod)**(string methodName)|
-|void |**[deleteMethod](#deleteMethod)**(string methodName, string signature)|
+|void |**[deleteMethod](#deleteMethod)**(string method, string signature)|
 |int |**[gotoBlockEnd](#gotoBlockEnd)**(int count)|
 |int |**[gotoBlockStart](#gotoBlockStart)**(int count)|
 ||**[insertCodeInMethod](#insertCodeInMethod)**(string methodName, string code, Position insertAt)|
-||**[insertForwardDeclaration](#insertForwardDeclaration)**(string fwddecl)|
+||**[insertForwardDeclaration](#insertForwardDeclaration)**(string forwardDeclaration)|
 ||**[insertInclude](#insertInclude)**(string include, bool newGroup = false)|
 |[MessageMap](../script/messagemap.md) |**[mfcExtractMessageMap](#mfcExtractMessageMap)**(string className = "")|
 ||**[mfcReplaceAfxMsgDeclaration](#mfcReplaceAfxMsgDeclaration)**(string afxMsgName, string newDeclaration)|
@@ -88,7 +88,7 @@ It will find the corresponding header/source file and add the declaration
 to the header and the definition to the source.
 
 
-#### <a name="addMethodDeclaration"></a>**addMethodDeclaration**(string member, string className, AccessSpecifier)
+#### <a name="addMethodDeclaration"></a>**addMethodDeclaration**(string method, string className, AccessSpecifier specifier)
 
 !!! note ""
     Since: Knut 1.1
@@ -104,12 +104,12 @@ The specifier can take these values:
 - `CppDocument.Protected`
 - `CppDocument.Private`
 
-#### <a name="addMethodDefintion"></a>**addMethodDefintion**(string declaration, string className)<br/>**addMethodDefintion**(string declaration, string className, string body)
+#### <a name="addMethodDefintion"></a>**addMethodDefintion**(string method, string className)<br/>**addMethodDefintion**(string method, string className, string body)
 
 !!! note ""
     Since: Knut 1.1
 
-Adds a new method definition for the method declared by the given `declaration` for
+Adds a new method definition for the method declared by the given `method` for
 class `className` in the current file.
 The provided `body` should not include the curly braces.
 
@@ -151,17 +151,17 @@ Therefore, all overloads of the function will be deleted.
 
 Also see: CppDocument::deleteMethod(string methodName, string signature)
 
-#### <a name="deleteMethod"></a>void **deleteMethod**(string methodName, string signature)
+#### <a name="deleteMethod"></a>void **deleteMethod**(string method, string signature)
 
 !!! note ""
     Since: Knut 1.1
 
-Delete the method or function with the specified `methodName` and optional `signature`.
+Delete the method or function with the specified `method` and optional `signature`.
 The method definition/declaration will be deleted from the current file,
 as well as the corresponding header/source file.
 References to the method will not be deleted.
 
-The `methodName` must be fully qualified, i.e. "<Namespaces>::<Class>::<Method>".
+The `method` must be fully qualified, i.e. "<Namespaces>::<Class>::<Method>".
 
 The `signature` must be in the form: "<return type> (<first parameter type>, <second parameter type>, <...>)".
 i.e. for a function with the following declaration:
@@ -199,9 +199,9 @@ This method will find a method in the current file with name matching with `meth
 current document, then it will insert the supplied `code` either at the beginning of the method, or at the end of the
 method, depending on the `insertAt` argument.
 
-#### <a name="insertForwardDeclaration"></a>**insertForwardDeclaration**(string fwddecl)
+#### <a name="insertForwardDeclaration"></a>**insertForwardDeclaration**(string forwardDeclaration)
 
-Inserts the forward declaration `fwddecl` into the current file.
+Inserts the forward declaration `forwardDeclaration` into the current file.
 The method will check if the file is a header file, and also that the forward declaration starts with 'class ' or
 'struct '. Fully qualified the forward declaration to add namespaces: `class Foo::Bar::FooBar` will result in:
 
