@@ -68,7 +68,7 @@ public slots:
     API_EXECUTOR bool addMethodDefinition(const QString &method, const QString &className, const QString &body = "");
     bool addMethod(const QString &declaration, const QString &className, Core::CppDocument::AccessSpecifier specifier,
                    const QString &body = "");
-    API_EXECUTOR bool insertInclude(const QString &include, bool newGroup);
+    API_EXECUTOR bool insertInclude(const QString &include, bool newGroup = false);
     API_EXECUTOR bool removeInclude(const QString &include);
     void deleteMethod();
     API_EXECUTOR void deleteMethod(const QString &method, const QString &signature);
