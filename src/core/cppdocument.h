@@ -39,6 +39,11 @@ public:
                                                             const QVector<QString> &argumentCaptures);
     Q_INVOKABLE QVector<Core::QueryMatch> queryFunctionCall(const QString &functionName);
 
+    Q_INVOKABLE QVariantMap mfcExtractDDX(const QString &className);
+    Q_INVOKABLE Core::MessageMap mfcExtractMessageMap(const QString &className = "");
+    Q_INVOKABLE bool mfcReplaceAfxMsgDeclaration(const QString &afxMsgName, const QString &newDeclaration);
+    Q_INVOKABLE QVector<Core::QueryMatch> mfcFindAfxMsgDeclaration(const QString &afxMsgName);
+
 public slots:
     Core::CppDocument *openHeaderSource();
 
@@ -46,10 +51,6 @@ public slots:
                             Core::CppDocument::Position insertAt = Position::StartOfMethod);
     API_EXECUTOR bool insertForwardDeclaration(const QString &forwardDeclaration);
     void commentSelection();
-
-    QVariantMap mfcExtractDDX(const QString &className);
-    Core::MessageMap mfcExtractMessageMap(const QString &className = "");
-    bool mfcReplaceAfxMsgDeclaration(const QString &afxMsgName, const QString &newDeclaration);
 
     int gotoBlockStart(int count = 1);
     int gotoBlockEnd(int count = 1);
@@ -63,7 +64,7 @@ public slots:
     API_EXECUTOR bool addMember(const QString &member, const QString &className,
                                 Core::CppDocument::AccessSpecifier specifier);
     API_EXECUTOR bool addMethodDeclaration(const QString &method, const QString &className,
-                              Core::CppDocument::AccessSpecifier specifier);
+                                           Core::CppDocument::AccessSpecifier specifier);
     API_EXECUTOR bool addMethodDefinition(const QString &method, const QString &className, const QString &body = "");
     bool addMethod(const QString &declaration, const QString &className, Core::CppDocument::AccessSpecifier specifier,
                    const QString &body = "");

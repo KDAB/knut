@@ -635,41 +635,61 @@ MessageMap CppDocument::mfcExtractMessageMap(const QString &className /* = ""*/)
 }
 
 /*!
- * \qmlmethod CppDocument::mfcReplaceAfxMsgDeclaration(string afxMsgName, string newDeclaration)
+ * \qmlmethod array<QueryMatch> CppDocument::mfcFindAfxMsgDeclaration(string afxMsgName)
  * \since 1.1
  *
- * Replaces the declaration of an afx_msg with `afxMsgName` with a new declaration.
+ * Finds the declaration of an afx_msg.
+ *
+ * Returns a list of QueryMatch objects containing the declaration.
+ * Note that there should usually only be one match.
+ * A warning will be logged if no or multiple declarations are found.
+ *
+ * The returned QueryMatch instances contain the following captures:
+ *
+ * - `declaration`: The full declaration of the afx_msg
+ * - `function`: The function declaration, without the "afx_msg" prefix
+ * - `name`: The name of the function
  */
-bool CppDocument::mfcReplaceAfxMsgDeclaration(const QString &afxMsgName, const QString &newDeclaration)
+QVector<Core::QueryMatch> CppDocument::mfcFindAfxMsgDeclaration(const QString &afxMsgName)
 {
     // clang-format off
     auto queryString = QString(R"EOF(
         (field_declaration
-            type: (_) @type (#eq? @type "afx_msg")
+            type: (_) @afx_msg (#eq? @afx_msg "afx_msg")
             (function_declarator
                 declarator: (field_identifier) @name (#eq? @name "%1")
-            )) @function
+            ) @function) @declaration
     )EOF").arg(afxMsgName);
     // clang-format on
 
     auto matches = query(queryString);
-
     if (matches.isEmpty()) {
         spdlog::warn("CppDocument::mfcReplaceAfxMsgDeclaration: No afx_msg named `{}` found in `{}`",
                      afxMsgName.toStdString(), fileName().toStdString());
-        return false;
     }
 
     if (matches.size() > 1) {
         spdlog::warn("CppDocument::mfcReplaceAfxMsgDeclaration: Multiple afx_msg named `{}` found in `{}`!",
                      afxMsgName.toStdString(), fileName().toStdString());
     }
+    return matches;
+}
+
+/*!
+ * \qmlmethod bool CppDocument::mfcReplaceAfxMsgDeclaration(string afxMsgName, string newDeclaration)
+ * \since 1.1
+ *
+ * Replaces the declaration of an afx_msg with `afxMsgName` with a new declaration.
+ */
+bool CppDocument::mfcReplaceAfxMsgDeclaration(const QString &afxMsgName, const QString &newDeclaration)
+{
+    auto matches = mfcFindAfxMsgDeclaration(afxMsgName);
 
     for (const auto &match : matches) {
-        match.get("function").replace(newDeclaration);
+        match.get("declaration").replace(newDeclaration);
     }
 
-    return true;
+    return matches.size() > 0;
 }
 
 /*!
@@ -1109,8 +1129,7 @@ bool CppDocument::addMethodDeclaration(const QString &method, const QString &cla
  *
  * If no body is provided, it will default to an empty body.
  */
-bool CppDocument::addMethodDefinition(const QString &method, const QString &className,
-                                      const QString &body /*= ""*/)
+bool CppDocument::addMethodDefinition(const QString &method, const QString &className, const QString &body /*= ""*/)
 {
     LOG("CppDocument::addMethodDefinition", method, className);
 
