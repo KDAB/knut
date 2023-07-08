@@ -247,7 +247,8 @@ static void setFrameProperties(const Widget &widget)
 static void writeWidget(QXmlStreamWriter &w, const Widget &widget, int &staticCount)
 {
     w.writeStartElement("widget");
-    QString convertedClassName = convertClassName(widget.className);
+    QString convertedClassName =
+        widget.className.startsWith("Q") ? widget.className : convertClassName(widget.className);
     w.writeAttribute("class", convertedClassName);
 
     QString id = widget.id;
