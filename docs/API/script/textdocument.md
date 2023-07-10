@@ -23,6 +23,8 @@ import Script 1.0
 |LineEnding|**[lineEnding](#lineEnding)**|
 |int|**[position](#position)**|
 |string|**[selectedText](#selectedText)**|
+|int|**[selectionEnd](#selectionEnd)**|
+|int|**[selectionStart](#selectionStart)**|
 |string|**[text](#text)**|
 
 Inherited properties: [Document properties](../script/document.md#properties)
@@ -31,6 +33,7 @@ Inherited properties: [Document properties](../script/document.md#properties)
 
 | | Name |
 |-|-|
+||**[columnAtPosition](#columnAtPosition)**(int position)|
 ||**[copy](#copy)**()|
 |[Mark](../script/mark.md) |**[createMark](#createMark)**(int pos = -1)|
 |[RangeMark](../script/rangemark.md) |**[createRangeMark](#createRangeMark)**()|
@@ -48,6 +51,7 @@ Inherited properties: [Document properties](../script/document.md#properties)
 ||**[deleteStartOfWord](#deleteStartOfWord)**()|
 |bool |**[find](#find)**(string text, int options = TextDocument.NoFindFlags)|
 |bool |**[findRegexp](#findRegexp)**(string regexp, int options = TextDocument.NoFindFlags)|
+|bool |**[findRegexp2](#findRegexp2)**(string regexp, int options = TextDocument.NoFindFlags)|
 ||**[gotoEndOfDocument](#gotoEndOfDocument)**()|
 ||**[gotoEndOfLine](#gotoEndOfLine)**()|
 ||**[gotoEndOfWord](#gotoEndOfWord)**()|
@@ -67,7 +71,9 @@ Inherited properties: [Document properties](../script/document.md#properties)
 ||**[insert](#insert)**(string text)|
 ||**[insertAtLine](#insertAtLine)**(string text, int line = -1)|
 ||**[insertAtPosition](#insertAtPosition)**(string text, int pos)|
+||**[lineAtPosition](#lineAtPosition)**(int position)|
 ||**[paste](#paste)**()|
+||**[positionAt](#positionAt)**(int line, int col)|
 ||**[redo](#redo)**(int count)|
 ||**[remove](#remove)**(int length)|
 ||**[removeIndent](#removeIndent)**(int count)|
@@ -141,11 +147,23 @@ This property holds the absolute position of the cursor inside the text document
 
 This property holds the selected text of the document.
 
+#### <a name="selectionEnd"></a>int **selectionEnd**
+
+This property holds the end of the selection or position if the cursor doesn't have a selection.
+
+#### <a name="selectionStart"></a>int **selectionStart**
+
+This property holds the start of the selection or position if the cursor doesn't have a selection.
+
 #### <a name="text"></a>string **text**
 
 This property holds the text of the document.
 
 ## Method Documentation
+
+#### <a name="columnAtPosition"></a>**columnAtPosition**(int position)
+
+Returns the column number for the given text cursor `position`. Or -1 if position is invalid
 
 #### <a name="copy"></a>**copy**()
 
@@ -237,6 +255,19 @@ Searches the string `regexp` in the editor using a regular expression. Options c
 
 Selects the match and returns `true` if a match is found.
 
+#### <a name="findRegexp2"></a>bool **findRegexp2**(string regexp, int options = TextDocument.NoFindFlags)
+
+Searches the string `regexp` in the editor using a regular expression. Options could be a combination of:
+
+- `TextDocument.FindBackward`: search backward
+- `TextDocument.FindCaseSensitively`: match case
+- `TextDocument.FindWholeWords`: match only complete words
+
+Selects the match and returns `true` if a match is found.
+Main differences of this method from previous one are:
+ * works with text document, not with a plain text
+ * more correct backward search (for example if you try to find last symbol backward)
+
 #### <a name="gotoEndOfDocument"></a>**gotoEndOfDocument**()
 
 Goes to the document end.
@@ -313,9 +344,17 @@ Inserts the string `text` at `line`. If `line` is -1, insert the text at the cur
 
 Inserts the string `text` at `pos`.
 
+#### <a name="lineAtPosition"></a>**lineAtPosition**(int position)
+
+Returns the line number for the given text cursor `position`. Or -1 if position is invalid
+
 #### <a name="paste"></a>**paste**()
 
 Pastes text in the clipboard.
+
+#### <a name="positionAt"></a>**positionAt**(int line, int col)
+
+Returns the text cursor position for the given `line` number and `column` number. Or -1 if position was not found
 
 #### <a name="redo"></a>**redo**(int count)
 

@@ -24,6 +24,8 @@ class TextDocument : public Document
     Q_PROPERTY(int line READ line NOTIFY positionChanged)
     Q_PROPERTY(int lineCount READ lineCount NOTIFY textChanged)
     Q_PROPERTY(int position READ position WRITE setPosition NOTIFY positionChanged)
+    Q_PROPERTY(int selectionStart READ selectionStart NOTIFY selectionChanged)
+    Q_PROPERTY(int selectionEnd READ selectionEnd NOTIFY selectionChanged)
     Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
     Q_PROPERTY(QString selectedText READ selectedText NOTIFY selectionChanged)
     Q_PROPERTY(QString currentLine READ currentLine NOTIFY positionChanged)
@@ -63,6 +65,8 @@ public:
     int lineCount() const;
 
     int position() const;
+    int selectionStart() const;
+    int selectionEnd() const;
 
     QString text() const;
     QString currentLine() const;
@@ -82,6 +86,10 @@ public slots:
     void setPosition(int newPosition);
     void setText(const QString &newText);
     void setLineEnding(Core::TextDocument::LineEnding newLineEnding);
+
+    int lineAtPosition(int position);
+    int columnAtPosition(int position);
+    int positionAt(int line, int column);
 
     void undo(int count = 1);
     void redo(int count = 1);
@@ -159,6 +167,7 @@ public slots:
     // Find
     bool find(const QString &text, int options = NoFindFlags);
     bool findRegexp(const QString &regexp, int options = NoFindFlags);
+    bool findRegexp2(const QString &regexp, int options = NoFindFlags);
 
     // Replace
     bool replaceOne(const QString &before, const QString &after, int options = NoFindFlags);

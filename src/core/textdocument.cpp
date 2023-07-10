@@ -48,6 +48,14 @@ namespace Core {
  * This property holds the absolute position of the cursor inside the text document.
  */
 /*!
+ * \qmlproperty int TextDocument::selectionStart
+ * This property holds the start of the selection or position if the cursor doesn't have a selection.
+ */
+/*!
+ * \qmlproperty int TextDocument::selectionEnd
+ * This property holds the end of the selection or position if the cursor doesn't have a selection.
+ */
+/*!
  * \qmlproperty string TextDocument::text
  * This property holds the text of the document.
  */
@@ -282,6 +290,18 @@ int TextDocument::position() const
     LOG_RETURN("pos", m_document->textCursor().position());
 }
 
+int TextDocument::selectionStart() const
+{
+    LOG("TextDocument::selectionStart");
+    LOG_RETURN("pos", m_document->textCursor().selectionStart());
+}
+
+int TextDocument::selectionEnd() const
+{
+    LOG("TextDocument::selectionEnd");
+    LOG_RETURN("pos", m_document->textCursor().selectionEnd());
+}
+
 void TextDocument::setPosition(int newPosition)
 {
     LOG("TextDocument::position", LOG_ARG("pos", newPosition));
@@ -320,6 +340,47 @@ int TextDocument::position(QTextCursor::MoveOperation operation, int pos) const
 
     cursor.movePosition(operation);
     return cursor.position();
+}
+
+/*!
+ * \qmlmethod TextDocument::lineAtPosition(int position)
+ * Returns the line number for the given text cursor `position`. Or -1 if position is invalid
+ */
+int TextDocument::lineAtPosition(int position)
+{
+    LOG("TextDocument::lineAtPosition", LOG_ARG("position", position));
+    int line = -1;
+    int col = -1;
+    convertPosition(position, &line, &col);
+    return line;
+}
+
+/*!
+ * \qmlmethod TextDocument::columnAtPosition(int position)
+ * Returns the column number for the given text cursor `position`. Or -1 if position is invalid
+ */
+int TextDocument::columnAtPosition(int position)
+{
+    LOG("TextDocument::columnAtPosition", LOG_ARG("position", position));
+    int line = -1;
+    int col = -1;
+    convertPosition(position, &line, &col);
+    return col;
+}
+
+/*!
+ * \qmlmethod TextDocument::positionAt(int line, int col)
+ * Returns the text cursor position for the given `line` number and `column` number. Or -1 if position was not found
+ */
+int TextDocument::positionAt(int line, int column)
+{
+    LOG("TextDocument::positionAt", LOG_ARG("line", line), LOG_ARG("column", column));
+    QTextBlock block = m_document->document()->findBlockByLineNumber(line - 1);
+    if (!block.isValid()) {
+        return -1;
+    } else {
+        return block.position() + column - 1;
+    }
 }
 
 QString TextDocument::text() const
@@ -1168,6 +1229,62 @@ bool TextDocument::findRegexp(const QString &regexp, int options)
     cursor.setPosition(match.capturedEnd(), QTextCursor::KeepAnchor);
 
     m_document->setTextCursor(cursor);
+    return true;
+}
+
+/*!
+ * \qmlmethod bool TextDocument::findRegexp2(string regexp, int options = TextDocument.NoFindFlags)
+ * Searches the string `regexp` in the editor using a regular expression. Options could be a combination of:
+ *
+ * - `TextDocument.FindBackward`: search backward
+ * - `TextDocument.FindCaseSensitively`: match case
+ * - `TextDocument.FindWholeWords`: match only complete words
+ *
+ * Selects the match and returns `true` if a match is found.
+ * Main differences of this method from previous one are:
+ *  * works with text document, not with a plain text
+ *  * more correct backward search (for example if you try to find last symbol backward)
+ */
+bool TextDocument::findRegexp2(const QString &regexp, int options)
+{
+    auto flags = [&]() {
+        QTextDocument::FindFlags result = QTextDocument::FindFlags(0);
+        if (options & TextDocument::FindBackward)
+            result |= QTextDocument::FindBackward;
+        if (options & TextDocument::FindCaseSensitively)
+            result |= QTextDocument::FindCaseSensitively;
+        if (options & TextDocument::FindWholeWords)
+            result |= QTextDocument::FindWholeWords;
+        return result;
+    }();
+
+    auto setCursorPosition = [&](int pos) {
+        auto cursor = m_document->textCursor();
+        cursor.setPosition(pos);
+        m_document->setTextCursor(cursor);
+    };
+
+    auto doc = m_document->document();
+    QTextCursor cursor = doc->find(QRegularExpression(regexp), position(), flags);
+    if (cursor.isNull()) {
+        return false;
+    }
+
+    if (options & TextDocument::FindBackward) {
+        // Unfortunately is the implementation of QTextDocument::find not greety,
+        // we therefore need to run the search until it no longer matches.
+        // Further the regexp object is copied in find(), so we will not be able to use it for capturing.
+        // We might consider roling our own copy similar to QTextDocument::find
+        const int endPoint = cursor.position();
+        int pos = cursor.anchor();
+        do {
+            --pos;
+            cursor = doc->find(QRegularExpression(regexp), pos, flags & ~QTextDocument::FindBackward);
+        } while (!cursor.isNull() && cursor.position() == endPoint && cursor.anchor() == pos);
+        setCursorPosition(pos + 1);
+    } else {
+        setCursorPosition(cursor.position());
+    }
     return true;
 }
 
