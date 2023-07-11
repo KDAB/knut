@@ -46,12 +46,12 @@ void CTutorialDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CTutorialDlg, CDialog)
-  ON_WM_PAINT()
   
   
   
   
-  ON_WM_MOUSEMOVE()
+  
+  
   
   
   
@@ -91,7 +91,7 @@ BOOL CTutorialDlg::OnInitDialog()
 // If you add a minimize button to your dialog, you will need the code below
 // to draw the icon.  For MFC applications using the document/view model,
 // this is automatically done for you by the framework.
-void CTutorialDlg::OnPaint() 
+void CTutorialDlg::paintEvent(QPaintEvent *event) 
 {
   if (IsIconic())
   {
@@ -192,14 +192,14 @@ void CTutorialDlg::OnLButtonDown(QMouseEvent *event)
   UpdateData(false);
 }
 
-void CTutorialDlg::OnMouseMove(UINT nFlags, CPoint point)
+void CTutorialDlg::mouseMoveEvent(QMouseEvent *event)
 {
   CString prefix;
-  if(nFlags & MK_CONTROL)
+  if(event->modifiers() & MK_CONTROL)
     prefix = L"[CTRL]";
-  if(nFlags & MK_SHIFT)
+  if(event->modifiers() & MK_SHIFT)
     prefix+= L"[SHIFT]";
-  m_ui->MouseEcho.Format(L"%sMouse move at %d,%d", prefix, point.x, point.y);
+  m_ui->MouseEcho.Format(L"%sMouse move at %d,%d", prefix, event->pos().x, event->pos().y);
   UpdateData(false);
 }
 
@@ -225,23 +225,22 @@ void CTutorialDlg::OnBnClickedTimerControlSliders()
 
 void CTutorialDlg::mousePressEvent(QMouseEvent * event) {
 
-              switch (event->button()) {
-                
-            
-            case Qt::RightButton:
-            {
-                OnRButtonDown(event);
-                break;
-            }
+    switch (event->button()) {
+    
+    case Qt::RightButton:
+    {
+        OnRButtonDown(event);
+        break;
+    }
 case Qt::LeftButton:
-            {
-                OnLButtonDown(event);
-                break;
-            }
-                default:
-                  break;
-              }
+    {
+        OnLButtonDown(event);
+        break;
+    }
+    default:
+        break;
+    }
 
-              QDialog::mousePressEvent(event);
+    QDialog::mousePressEvent(event);
             
 }

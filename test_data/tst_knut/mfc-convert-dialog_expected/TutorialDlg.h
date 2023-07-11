@@ -42,7 +42,7 @@ protected:
 
   /// Called when this dialog receives a WM_PAINT message (event)
   /// The MFC wizard adds code to paint properly if this dialog is minimized to the taskbar
-  afx_msg void OnPaint();
+  void paintEvent(QPaintEvent *event) override;
 
   /// Called when this dialog receives slider scroll messages from the slider controls
   /// Horizontal Scroll
@@ -53,7 +53,7 @@ protected:
   void OnVScroll(int nPos);
   void timerEvent(QTimerEvent *event) override;
   void OnLButtonDown(QMouseEvent *event);
-  afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+  void mouseMoveEvent(QMouseEvent *event) override;
   void OnRButtonDown(QMouseEvent *event);
   ///
   /// Called when this dialog receives button click message from the add button
