@@ -14,7 +14,6 @@
 #include "scriptitem.h"
 #include "settings.h"
 #include "symbol.h"
-#include "testutil.h"
 #include "textdocument.h"
 #include "textrange.h"
 #include "uidocument.h"
@@ -114,11 +113,6 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qRegisterMetaType<QVector<RcCore::Shortcut>>();
     qRegisterMetaType<RcCore::Action>();
     qRegisterMetaType<QVector<RcCore::Action>>();
-
-    // Script.Test
-    qmlRegisterSingletonType<TestUtil>("Script.Test", 1, 0, "TestUtil", [](QQmlEngine *, QJSEngine *) {
-        return new TestUtil();
-    });
 
     // Properties
     addProperties<FunctionArgument>(m_properties);

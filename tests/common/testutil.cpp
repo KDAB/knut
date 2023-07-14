@@ -8,7 +8,7 @@
 
 #include <spdlog/spdlog.h>
 
-namespace Core {
+#include "test_utils.h"
 
 /*!
  * \qmltype TestUtil
@@ -58,30 +58,7 @@ int TestUtil::callerLine(int frameIndex) const
  */
 bool TestUtil::compareFiles(const QString &file, const QString &expected, bool eolLF)
 {
-    QFile file1(file);
-    if (!file1.open(QIODevice::ReadOnly)) {
-        spdlog::warn("Cannot open {} for comparison!", file.toStdString());
-        return false;
-    }
-    QFile file2(expected);
-    if (!file2.open(QIODevice::ReadOnly)) {
-        spdlog::warn("Cannot open {} for comparison!", expected.toStdString());
-        return false;
-    }
-
-    auto data1 = file1.readAll();
-    auto data2 = file2.readAll();
-    if (eolLF) {
-        data1.replace("\r\n", "\n");
-        data2.replace("\r\n", "\n");
-    }
-    auto result = data1 == data2;
-    if (!result) {
-        spdlog::warn("Comparison of {} and {} failed!", file.toStdString(), expected.toStdString());
-        spdlog::warn("Actual: {}", data1.toStdString());
-        spdlog::warn("Expected: {}", data2.toStdString());
-    }
-    return result;
+    return Test::compareFiles(file, expected, eolLF);
 }
 
 QString TestUtil::createTestProjectFrom(const QString &path)
@@ -122,7 +99,7 @@ bool TestUtil::compareDirectories(const QString &current, const QString &expecte
 {
     QDir currentDir(current);
     if (!currentDir.exists()) {
-        spdlog::warn("Cannot open directory {} for comparison!", current.toStdString());
+        spdlog::error("Cannot open directory {} for comparison!", current.toStdString());
         return false;
     }
 
@@ -147,14 +124,5 @@ bool TestUtil::compareDirectories(const QString &current, const QString &expecte
 
 QString TestUtil::testDataPath() const
 {
-    QString path;
-#if defined(TEST_DATA_PATH)
-    path = TEST_DATA_PATH;
-#endif
-    if (path.isEmpty() || !QDir(path).exists()) {
-        path = QCoreApplication::applicationDirPath() + "/test_data";
-    }
-    return path;
+    return Test::testDataPath();
 }
-
-} // namespace Core

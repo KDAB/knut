@@ -2,8 +2,6 @@
 
 #include <QObject>
 
-namespace Core {
-
 class TestUtil : public QObject
 {
     Q_OBJECT
@@ -25,5 +23,3 @@ public slots:
 
     QString testDataPath() const;
 };
-
-} // namespace Core

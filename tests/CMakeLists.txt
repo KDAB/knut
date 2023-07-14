@@ -12,19 +12,29 @@ else()
     endif()
 endif()
 
-function(add_knut_test NAME SOURCES LIBS)
-    add_executable(${NAME} ${SOURCES})
+function(add_knut_test_variadic NAME)
+    cmake_parse_arguments(
+        ARG
+        ""
+        ""
+        "SOURCES;LIBS"
+        ${ARGN})
 
-    set(_LIBS ${LIBS} ${ARGN})
+    add_executable(${NAME} ${ARG_SOURCES})
+
     target_link_libraries(${NAME} PRIVATE
         Qt${QT_VERSION_MAJOR}::Test
-        ${_LIBS}
+        ${ARG_LIBS}
     )
     target_include_directories(${NAME}
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src
     )
 
     add_test(${NAME} ${CMAKE_BINARY_DIR}/bin/${NAME})
+endfunction()
+
+function(add_knut_test NAME SOURCE)
+    add_knut_test_variadic(${NAME} SOURCES ${SOURCE} LIBS ${ARGN})
 endfunction()
 
 add_knut_test(tst_jsonify tst_jsonify.cpp nlohmann_json::nlohmann_json)
@@ -35,7 +45,7 @@ add_knut_test(tst_client tst_client.cpp knut-lsp)
 
 add_knut_test(tst_settings tst_settings.cpp knut-core)
 
-add_knut_test(tst_knut tst_knut.cpp knut-core)
+add_knut_test_variadic(tst_knut SOURCES tst_knut.cpp common/testutil.cpp common/testutil.h tests.qrc LIBS knut-core)
 file(GLOB QML_FILES ../test_data/*.qml)
 add_custom_target(tst_knut_data SOURCES ${QML_FILES})
 
