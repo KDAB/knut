@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+    <class>CTutorialDlg</class>
+    <widget class="QQDialog" name="CTutorialDlg">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>480</width>
+                <height>330</height>
+            </rect>
+        </property>
+        <property name="windowTitle">
+            <string>Application Update GUI Elements</string>
+        </property>
+        <widget class="QPushButton" name="btn_add">
+            <property name="geometry">
+                <rect>
+                    <x>97</x>
+                    <y>11</y>
+                    <width>75</width>
+                    <height>27</height>
+                </rect>
+            </property>
+            <property name="default">
+                <bool>true</bool>
+            </property>
+            <property name="text">
+                <string comment="ID_BTN_ADD">Click to Add</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" name="cancel">
+            <property name="geometry">
+                <rect>
+                    <x>394</x>
+                    <y>292</y>
+                    <width>75</width>
+                    <height>27</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string comment="IDCANCEL">Quit</string>
+            </property>
+        </widget>
+        <widget class="QLabel" name="static0">
+            <property name="geometry">
+                <rect>
+                    <x>177</x>
+                    <y>18</y>
+                    <width>75</width>
+                    <height>14</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string comment="IDC_STATIC">Button Clicks:</string>
+            </property>
+        </widget>
+        <widget class="QLabel" name="EchoText">
+            <property name="geometry">
+                <rect>
+                    <x>249</x>
+                    <y>16</y>
+                    <width>83</width>
+                    <height>19</height>
+                </rect>
+            </property>
+            <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
+            </property>
+            <property name="frameShape">
+                <enum>QFrame::Panel</enum>
+            </property>
+            <property name="lineWidth">
+                <number>2</number>
+            </property>
+            <property name="text">
+                <string comment="IDC_ECHO_AREA">0</string>
+            </property>
+        </widget>
+        <widget class="QSlider" name="VSliderBar">
+            <property name="geometry">
+                <rect>
+                    <x>25</x>
+                    <y>31</y>
+                    <width>26</width>
+                    <height>233</height>
+                </rect>
+            </property>
+            <property name="orientation">
+                <enum>Qt::Vertical</enum>
+            </property>
+            <property name="tickPosition">
+                <enum>QSlider::TicksBothSides</enum>
+            </property>
+        </widget>
+        <widget class="QSlider" name="HSliderBar">
+            <property name="geometry">
+                <rect>
+                    <x>129</x>
+                    <y>293</y>
+                    <width>243</width>
+                    <height>25</height>
+                </rect>
+            </property>
+            <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="tickPosition">
+                <enum>QSlider::TicksBothSides</enum>
+            </property>
+        </widget>
+        <widget class="QLabel" name="static1">
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>265</y>
+                    <width>59</width>
+                    <height>14</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string comment="IDC_STATIC1">Vertical Bar</string>
+            </property>
+        </widget>
+        <widget class="QLabel" name="static2">
+            <property name="geometry">
+                <rect>
+                    <x>220</x>
+                    <y>268</y>
+                    <width>71</width>
+                    <height>14</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string comment="IDC_STATIC2">Horizontal Bar</string>
+            </property>
+        </widget>
+        <widget class="QLabel" name="VSliderEcho">
+            <property name="geometry">
+                <rect>
+                    <x>18</x>
+                    <y>16</y>
+                    <width>42</width>
+                    <height>17</height>
+                </rect>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignHCenter</set>
+            </property>
+            <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
+            </property>
+            <property name="frameShape">
+                <enum>QFrame::Panel</enum>
+            </property>
+            <property name="lineWidth">
+                <number>2</number>
+            </property>
+            <property name="text">
+                <string comment="IDC_V_SLIDER_ECHO">Static</string>
+            </property>
+        </widget>
+        <widget class="QLabel" name="HSliderEcho">
+            <property name="geometry">
+                <rect>
+                    <x>172</x>
+                    <y>268</y>
+                    <width>42</width>
+                    <height>17</height>
+                </rect>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignHCenter</set>
+            </property>
+            <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
+            </property>
+            <property name="frameShape">
+                <enum>QFrame::Panel</enum>
+            </property>
+            <property name="lineWidth">
+                <number>2</number>
+            </property>
+            <property name="text">
+                <string comment="IDC_H_SLIDER_ECHO">Static</string>
+            </property>
+        </widget>
+        <widget class="QLabel" name="TimerEcho">
+            <property name="geometry">
+                <rect>
+                    <x>250</x>
+                    <y>234</y>
+                    <width>219</width>
+                    <height>19</height>
+                </rect>
+            </property>
+            <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
+            </property>
+            <property name="frameShape">
+                <enum>QFrame::Panel</enum>
+            </property>
+            <property name="lineWidth">
+                <number>2</number>
+            </property>
+            <property name="text">
+                <string comment="IDC_TIMERECHO">0</string>
+            </property>
+        </widget>
+        <widget class="QLabel" name="MouseEcho">
+            <property name="geometry">
+                <rect>
+                    <x>250</x>
+                    <y>211</y>
+                    <width>219</width>
+                    <height>19</height>
+                </rect>
+            </property>
+            <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
+            </property>
+            <property name="frameShape">
+                <enum>QFrame::Panel</enum>
+            </property>
+            <property name="lineWidth">
+                <number>2</number>
+            </property>
+            <property name="text">
+                <string comment="IDC_MOUSEECHO">0</string>
+            </property>
+        </widget>
+        <widget class="QLabel" name="static3">
+            <property name="geometry">
+                <rect>
+                    <x>172</x>
+                    <y>235</y>
+                    <width>68</width>
+                    <height>14</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string comment="IDC_STATIC3">Timer Echo:</string>
+            </property>
+        </widget>
+        <widget class="QLabel" name="static4">
+            <property name="geometry">
+                <rect>
+                    <x>172</x>
+                    <y>214</y>
+                    <width>68</width>
+                    <height>14</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string comment="IDC_STATIC4">Mouse Echo:</string>
+            </property>
+        </widget>
+        <widget class="QCheckBox" name="TimerCtrlSliders">
+            <property name="geometry">
+                <rect>
+                    <x>174</x>
+                    <y>122</y>
+                    <width>129</width>
+                    <height>17</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string comment="IDC_TIMER_CONTROL_SLIDERS">Timer Control Sliders</string>
+            </property>
+        </widget>
+    </widget>
+    <resources />
+    <connections />
+</ui>

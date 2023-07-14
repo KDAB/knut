@@ -9,7 +9,6 @@
 #include "mark.h"
 #include "message.h"
 #include "project.h"
-#include "rangemark.h"
 #include "rcdocument.h"
 #include "scriptdialogitem.h"
 #include "scriptitem.h"

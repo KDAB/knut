@@ -33,6 +33,7 @@ class TestKnut : public QObject
 private slots:
     void initTestCase() { Q_INIT_RESOURCE(core); }
 
+    KNUT_TEST(mfc_convert_dialog)
     KNUT_TEST(settings)
     KNUT_TEST(dir)
     KNUT_TEST(fileinfo)

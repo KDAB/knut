@@ -80,21 +80,79 @@ namespace Core {
 
 ScriptDialogItem::ScriptDialogItem(QWidget *parent)
     : QDialog(parent)
-    , m_data(new DynamicObject(this))
+    , m_data(nullptr)
 {
     setAttribute(Qt::WA_DeleteOnClose);
 
-    Q_ASSERT(!ScriptRunner::currentScriptPath.isEmpty());
-    QFileInfo fi(ScriptRunner::currentScriptPath);
-    setUiFile(fi.absolutePath() + '/' + fi.baseName() + ".ui");
+    // The ui File by default is determined from the script path that the ScriptRunner is currently executing.
+    // However, if this ScriptDialog is created from another QML file, this will not be correct (i.e. during testing).
+    // Therefore, we expose a uiFilePath property that can be set to the correct path.
+    // This property is not yet set in the constructor, therefore we need to use a QueuedConnection to load the UI file
+    // after the property has been set by QML.
+    QMetaObject::invokeMethod(
+        this,
+        [this]() {
+            this->initializeUiAndData();
+        },
+        Qt::QueuedConnection);
+}
+
+QString ScriptDialogItem::uiFilePath() const
+{
+    // if no other ui file path has been specified, assume it can be derived
+    // from the script path that the ScriptRunner is currently executing.
+    if (m_uiFilePath.isNull()) {
+        Q_ASSERT(!ScriptRunner::currentScriptPath.isEmpty());
+        QFileInfo fi(ScriptRunner::currentScriptPath);
+        m_uiFilePath = fi.absolutePath() + '/' + fi.baseName() + ".ui";
+        emit uiFilePathChanged(m_uiFilePath);
+    }
+
+    return m_uiFilePath;
+}
+
+void ScriptDialogItem::setUiFilePath(const QString &filePath)
+{
+    if (!m_uiFilePath.isNull()) {
+        spdlog::error("ScriptDialog::uiFilePath should only be set once");
+        return;
+    }
+
+    if (m_uiFilePath != filePath) {
+        QFileInfo fi(filePath);
+        // If the path is relative, make it relative to the currently executing QML file,
+        // not relative to the `knut` binary.
+        if (fi.isRelative()) {
+            Q_ASSERT(!ScriptRunner::currentScriptPath.isEmpty());
+            QFileInfo base(ScriptRunner::currentScriptPath);
+            m_uiFilePath = base.absolutePath() + "/" + filePath;
+        } else {
+            m_uiFilePath = filePath;
+        }
+        uiFilePathChanged(m_uiFilePath);
+    }
+}
+
+void ScriptDialogItem::initializeUiAndData()
+{
+    if (m_data) {
+        return;
+    }
+
+    m_data = new DynamicObject(this);
+
+    setUiFile(uiFilePath());
+
+    m_data->ready();
 
     m_data->registerDataChangedCallback([this](const QString &key, const QVariant &value) {
         changeValue(key, value);
     });
 }
 
-QObject *ScriptDialogItem::data() const
+QObject *ScriptDialogItem::data()
 {
+    initializeUiAndData();
     return m_data;
 }
 
@@ -108,6 +166,7 @@ void ScriptDialogItem::setUiFile(const QString &fileName)
 {
     QUiLoader loader;
     QFile file(fileName);
+
     if (file.open(QFile::ReadOnly)) {
         QWidget *internalWidget = loader.load(&file, this);
         file.close();
@@ -182,8 +241,6 @@ void ScriptDialogItem::createProperties(QWidget *dialogWidget)
             }
         }
     }
-
-    m_data->ready();
 }
 
 void ScriptDialogItem::changeValue(const QString &key, const QVariant &value)

@@ -7,6 +7,7 @@ namespace Core {
 class TestUtil : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QString testDataPath READ testDataPath CONSTANT)
 
 public:
     explicit TestUtil(QObject *parent = nullptr);
@@ -17,6 +18,12 @@ public:
 
 public slots:
     bool compareFiles(const QString &file, const QString &expected, bool eolLF = true);
+
+    QString createTestProjectFrom(const QString &path);
+    void removeTestProject(const QString &path);
+    bool compareDirectories(const QString &current, const QString &expected);
+
+    QString testDataPath() const;
 };
 
 } // namespace Core
