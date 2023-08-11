@@ -19,7 +19,7 @@ public:
     class TreeNode
     {
     public:
-        TreeNode(const treesitter::Node &node, const TreeNode *parent);
+        TreeNode(const treesitter::Node &node, const TreeNode *parent, bool enableUnnamed);
 
         int childCount() const;
         const TreeNode *child(int row) const;
@@ -44,6 +44,7 @@ public:
         const TreeNode *m_parent;
         mutable std::vector<std::unique_ptr<TreeNode>> m_children;
         treesitter::Node m_node;
+        bool m_enableUnnamed;
     };
 
     TreeSitterTreeModel(QObject *parent = nullptr);
@@ -62,7 +63,7 @@ public:
     void setQuery(const std::shared_ptr<treesitter::Query> &query,
                   std::unique_ptr<treesitter::Predicates> &&predicates);
     void setCursorPosition(int position);
-    void setTree(treesitter::Tree &&tree, std::unique_ptr<treesitter::Predicates> &&predicates);
+    void setTree(treesitter::Tree &&tree, std::unique_ptr<treesitter::Predicates> &&predicates, bool enableUnnamed);
     void clear();
 
     std::optional<treesitter::Node> tsNode(const QModelIndex &index) const;

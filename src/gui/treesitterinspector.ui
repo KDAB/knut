@@ -14,17 +14,7 @@
    <string>TreeSitter Inspector</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0" colspan="3">
-    <widget class="QTreeView" name="treeInspector"/>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="queryInfo">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0" colspan="3">
+   <item row="8" column="0" colspan="3">
     <widget class="QDialogButtonBox" name="buttons">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -34,10 +24,10 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0" colspan="3">
-    <widget class="QLabel" name="transformationsLabel">
+   <item row="7" column="0">
+    <widget class="QLabel" name="queryInfo">
      <property name="text">
-      <string>Transformations</string>
+      <string/>
      </property>
     </widget>
    </item>
@@ -48,14 +38,14 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
-    <widget class="QLabel" name="arrowLabel">
+   <item row="3" column="0" colspan="3">
+    <widget class="QLabel" name="transformationsLabel">
      <property name="text">
-      <string>-&gt;</string>
+      <string>Transformations</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="2">
+   <item row="7" column="2">
     <layout class="QHBoxLayout" name="transformButtonLayout">
      <item>
       <widget class="QPushButton" name="previewButton">
@@ -73,7 +63,27 @@
      </item>
     </layout>
    </item>
-   <item row="3" column="0">
+   <item row="4" column="2">
+    <widget class="QPlainTextEdit" name="target">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="3">
+    <widget class="QTreeView" name="treeInspector"/>
+   </item>
+   <item row="4" column="1">
+    <widget class="QLabel" name="arrowLabel">
+     <property name="text">
+      <string>-&gt;</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
     <widget class="QPlainTextEdit" name="query">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -86,13 +96,10 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="2">
-    <widget class="QPlainTextEdit" name="target">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+   <item row="2" column="0" colspan="2">
+    <widget class="QCheckBox" name="enableUnnamed">
+     <property name="text">
+      <string>Show unnamed nodes</string>
      </property>
     </widget>
    </item>

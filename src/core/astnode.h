@@ -24,7 +24,7 @@ class AstNode
     Q_PROPERTY(int endPos READ endPos CONSTANT)
 
 public:
-    Q_INVOKABLE AstNode parentNode() const;
+    Q_INVOKABLE Core::AstNode parentNode() const;
     Q_INVOKABLE QVector<AstNode> childrenNodes() const;
     Q_INVOKABLE bool isValid() const;
 

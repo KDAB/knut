@@ -27,6 +27,7 @@ public:
 
     QString fieldNameForChild(const Node &child) const;
 
+    uint32_t childCount() const;
     QVector<Node> children() const;
 
     uint32_t startPosition() const;

@@ -95,6 +95,8 @@ TreeSitterInspector::TreeSitterInspector(QWidget *parent)
 
     connect(ui->previewButton, &QPushButton::clicked, this, &TreeSitterInspector::previewTransformation);
     connect(ui->runButton, &QPushButton::clicked, this, &TreeSitterInspector::runTransformation);
+
+    connect(ui->enableUnnamed, &QCheckBox::toggled, this, &TreeSitterInspector::showUnnamedChanged);
 }
 
 TreeSitterInspector::~TreeSitterInspector()
@@ -157,6 +159,13 @@ void TreeSitterInspector::changeQuery()
     }
 }
 
+void TreeSitterInspector::showUnnamedChanged()
+{
+    // technically the text didn't change, but this will force
+    // a complete re-parse and re-build of the entire tree.
+    changeText();
+}
+
 void TreeSitterInspector::changeText()
 {
     QString text;
@@ -166,7 +175,7 @@ void TreeSitterInspector::changeText()
     }
     auto tree = m_parser.parseString(text);
     if (tree.has_value()) {
-        m_treemodel.setTree(std::move(tree.value()), makePredicates());
+        m_treemodel.setTree(std::move(tree.value()), makePredicates(), ui->enableUnnamed->isChecked());
         ui->treeInspector->expandAll();
         for (int i = 0; i < 2; i++) {
             ui->treeInspector->resizeColumnToContents(i);

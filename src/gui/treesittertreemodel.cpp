@@ -7,9 +7,10 @@
 
 namespace Gui {
 
-TreeSitterTreeModel::TreeNode::TreeNode(const treesitter::Node &node, const TreeNode *parent)
+TreeSitterTreeModel::TreeNode::TreeNode(const treesitter::Node &node, const TreeNode *parent, bool enableUnnamed)
     : m_parent(parent)
     , m_node(node)
+    , m_enableUnnamed(enableUnnamed)
 {
 }
 
@@ -22,9 +23,11 @@ const std::vector<std::unique_ptr<TreeSitterTreeModel::TreeNode>> &TreeSitterTre
 
 std::vector<std::unique_ptr<TreeSitterTreeModel::TreeNode>> &TreeSitterTreeModel::TreeNode::children()
 {
-    if (m_children.empty() && m_node.namedChildCount() > 0) {
-        for (const auto &child : m_node.namedChildren()) {
-            m_children.emplace_back(new TreeNode(child, this));
+
+    if (m_children.empty() && childCount() > 0) {
+        auto children = m_enableUnnamed ? m_node.children() : m_node.namedChildren();
+        for (const auto &child : children) {
+            m_children.emplace_back(new TreeNode(child, this, m_enableUnnamed));
         }
     }
 
@@ -33,7 +36,7 @@ std::vector<std::unique_ptr<TreeSitterTreeModel::TreeNode>> &TreeSitterTreeModel
 
 int TreeSitterTreeModel::TreeNode::childCount() const
 {
-    return static_cast<int>(children().size());
+    return static_cast<int>(m_enableUnnamed ? m_node.childCount() : m_node.namedChildCount());
 }
 
 const TreeSitterTreeModel::TreeNode *TreeSitterTreeModel::TreeNode::child(int row) const
@@ -53,7 +56,11 @@ QVariant TreeSitterTreeModel::TreeNode::data(int column) const
     switch (column) {
     case 0:
         if (fieldName.isEmpty()) {
-            return m_node.type();
+            auto type = m_node.type();
+            // Some anonymouse nodes actually cover a newline, so we need to escape it.
+            // This is usually for C preprocessor directives.
+            type.replace("\n", "\\n");
+            return type;
         } else {
             return QString("%1: %2").arg(fieldName, m_node.type());
         }
@@ -239,11 +246,12 @@ Qt::ItemFlags TreeSitterTreeModel::flags(const QModelIndex &index) const
     return QAbstractItemModel::flags(index);
 }
 
-void TreeSitterTreeModel::setTree(treesitter::Tree &&tree, std::unique_ptr<treesitter::Predicates> &&predicates)
+void TreeSitterTreeModel::setTree(treesitter::Tree &&tree, std::unique_ptr<treesitter::Predicates> &&predicates,
+                                  bool enableUnnamed)
 {
     beginResetModel();
     m_tree = std::move(tree);
-    m_rootNode = std::make_unique<TreeNode>(m_tree->rootNode(), nullptr);
+    m_rootNode = std::make_unique<TreeNode>(m_tree->rootNode(), nullptr, enableUnnamed);
     executeQuery(std::move(predicates));
     endResetModel();
 }

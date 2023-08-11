@@ -45,6 +45,7 @@ public:
     ~TreeSitterInspector();
 
 private:
+    void showUnnamedChanged();
     void changeCurrentDocument();
     void setDocument(Core::LspDocument *document);
     void changeText();

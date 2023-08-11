@@ -31,7 +31,11 @@ Node Node::namedChild(uint32_t index) const
 
 QString Node::fieldNameForChild(const Node &child) const
 {
-    const auto index = children().indexOf(child);
+    if (!child.isNamed()) {
+        return "";
+    }
+
+    const auto index = namedChildren().indexOf(child);
     QString result;
     if (index != -1) {
         auto name = ts_node_field_name_for_child(m_node, static_cast<uint32_t>(index));
@@ -45,9 +49,14 @@ QString Node::fieldNameForChild(const Node &child) const
     return result;
 }
 
+uint32_t Node::childCount() const
+{
+    return ts_node_child_count(m_node);
+}
+
 QVector<Node> Node::children() const
 {
-    const auto count = ts_node_child_count(m_node);
+    const auto count = childCount();
     QVector<Node> result;
     result.reserve(count);
 
