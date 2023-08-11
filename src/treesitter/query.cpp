@@ -3,6 +3,7 @@
 #include "node.h"
 #include "predicates.h"
 
+#include <kdalgorithms.h>
 #include <tree_sitter/api.h>
 
 #include <QStringList>
@@ -128,7 +129,6 @@ QVector<Query::Capture> Query::captures() const
     }
     return results;
 }
-
 Query::Capture Query::captureAt(uint32_t index) const
 {
     uint32_t length;
@@ -187,6 +187,13 @@ QVector<QueryMatch::Capture> QueryMatch::captures() const
     return m_captures;
 }
 
+QVector<QueryMatch::Capture> QueryMatch::capturesWithId(uint32_t id) const
+{
+    return kdalgorithms::filtered(captures(), [id](const auto &capture) {
+        return capture.id == id;
+    });
+}
+
 // ----------------------- QueryCursor --------------------
 QueryCursor::QueryCursor()
     : m_cursor(ts_query_cursor_new())
@@ -201,7 +208,9 @@ QueryCursor::~QueryCursor()
 }
 
 QueryCursor::QueryCursor(QueryCursor &&other) noexcept
-    : m_cursor(std::move(other.m_cursor))
+    : m_query(std::move(other.m_query))
+    , m_predicates(std::move(other.m_predicates))
+    , m_cursor(std::move(other.m_cursor))
 {
     other.m_cursor = nullptr;
 }

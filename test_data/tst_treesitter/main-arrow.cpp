@@ -31,7 +31,7 @@ int myOtherFreeFunction(
         unsigned int b,
         long long c,
         const string d,
-        const std::string& e_123,
+        const std::string &e_123,
         long long (*f)(unsigned, const std::string&)
         ) {
     return 42;

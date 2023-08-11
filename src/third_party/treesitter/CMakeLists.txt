@@ -12,3 +12,5 @@ add_library(${PROJECT_NAME} STATIC
   ${treesitter_SOURCE_DIR}/lib/src/lib.c)
 target_include_directories(${PROJECT_NAME}
   PUBLIC ${treesitter_SOURCE_DIR}/lib/include)
+target_link_libraries(${PROJECT_NAME} PUBLIC
+  kdalgorithms)

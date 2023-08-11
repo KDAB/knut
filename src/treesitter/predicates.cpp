@@ -12,6 +12,18 @@
 
 namespace treesitter {
 
+QString QString_identity(const QString &string)
+{
+    return string;
+}
+
+QString QString_no_whitespace(const QString &string)
+{
+    auto simplified = string.simplified();
+    simplified.replace(" ", "");
+    return simplified;
+}
+
 Predicates::Filters Predicates::filters()
 {
     Predicates::Filters filters;
@@ -20,6 +32,9 @@ Predicates::Filters Predicates::filters()
     filters.checkFunctions[#NAME "?"] = &Predicates::checkFilter_##NAME
 
     REGISTER_FILTER(eq);
+    REGISTER_FILTER(eq_except);
+    REGISTER_FILTER(like);
+    REGISTER_FILTER(like_except);
     REGISTER_FILTER(match);
     REGISTER_FILTER(in_message_map);
 #undef REGISTER_FILTER
@@ -68,18 +83,18 @@ std::optional<QString> Predicates::checkFilter_eq(const Predicates::PredicateArg
     }
     return {};
 }
-
-bool Predicates::filter_eq(const QueryMatch &match,
-                           const QVector<std::variant<Query::Capture, QString>> &arguments) const
+bool Predicates::filter_eq_with(const QueryMatch &match,
+                                const QVector<std::variant<Query::Capture, QString>> &arguments,
+                                std::function<QString(const QString &)> textTransform) const
 {
     std::set<QString> texts;
 
     auto matched = matchArguments(match, arguments);
     for (const auto &arg : matched) {
         if (const auto *capture = std::get_if<QueryMatch::Capture>(&arg)) {
-            texts.emplace(capture->node.textIn(m_source));
+            texts.emplace(textTransform(capture->node.textIn(m_source)));
         } else if (const auto *string = std::get_if<QString>(&arg)) {
-            texts.emplace(*string);
+            texts.emplace(textTransform(*string));
         } else if (std::holds_alternative<MissingCapture>(arg)) {
             spdlog::warn("Predicates: #eq? - Unmatched capture!");
             // Insert an empty string into the set if we find an unmatched capture.
@@ -92,6 +107,110 @@ bool Predicates::filter_eq(const QueryMatch &match,
         }
     }
     return texts.size() == 1;
+}
+
+bool Predicates::filter_eq(const QueryMatch &match,
+                           const QVector<std::variant<Query::Capture, QString>> &arguments) const
+{
+    return filter_eq_with(match, arguments, QString_identity);
+}
+
+std::optional<QString> Predicates::checkFilter_eq_except(const Predicates::PredicateArguments &arguments)
+{
+    if (arguments.size() < 3) {
+        return "Too few arguments";
+    }
+    auto args = arguments;
+
+    if (!std::holds_alternative<QString>(args.front())) {
+        return "First argument must be a string";
+    }
+    args.pop_front();
+
+    if (!std::holds_alternative<Query::Capture>(args.front())) {
+        return "Second argument must be a capture";
+    }
+    args.pop_front();
+
+    for (const auto &arg : args) {
+        if (!std::holds_alternative<QString>(arg)) {
+            return "Non-QString type Argument";
+        }
+    }
+
+    return {};
+}
+
+bool Predicates::filter_like(const QueryMatch &match,
+                             const QVector<std::variant<Query::Capture, QString>> &arguments) const
+{
+    return filter_eq_with(match, arguments, QString_no_whitespace);
+}
+bool Predicates::filter_eq_except_with(const QueryMatch &match,
+                                       const QVector<std::variant<Query::Capture, QString>> &arguments,
+                                       std::function<QString(const QString &)> textTransform) const
+{
+    auto args = arguments;
+    if (const auto *rawExpected = std::get_if<QString>(&args.front())) {
+        auto expected = textTransform(*rawExpected);
+        args.pop_front();
+        if (const auto *rawCapture = std::get_if<Query::Capture>(&args.front())) {
+            // we need to copy the capture here, as otherwise it might get dropped
+            // when we pop_front() on args
+            auto capture = *rawCapture;
+            args.pop_front();
+
+            auto types = QVector<QString>();
+            for (const auto &arg : args) {
+                if (const auto *type = std::get_if<QString>(&arg)) {
+                    types.push_back(*type);
+                }
+            }
+
+            auto captures = match.capturesWithId(capture.id);
+            if (captures.isEmpty()) {
+                spdlog::warn("Predicates: #eq_except? - No captures");
+                // Insert an empty string into the set if we find an unmatched capture.
+                // This likely means we have encountered a quantified capture that matched 0 times.
+                // So check whether the expected string is also empty
+                return expected.isEmpty();
+            }
+
+            for (const auto &capture : captures) {
+                if (expected != textTransform(capture.node.textExcept(m_source, types))) {
+                    return false;
+                }
+            }
+
+            return true;
+        } else {
+            spdlog::warn("Predicates: #eq_except? - Expected Capture argument");
+            return false;
+        }
+    } else {
+        spdlog::warn("Predicates: #eq_except? - Non-string expected argument");
+        return false;
+    }
+}
+
+bool Predicates::filter_eq_except(const QueryMatch &match, const PredicateArguments &arguments) const
+{
+    return filter_eq_except_with(match, arguments, QString_identity);
+}
+
+bool Predicates::filter_like_except(const QueryMatch &match, const PredicateArguments &arguments) const
+{
+    return filter_eq_except_with(match, arguments, QString_no_whitespace);
+}
+
+std::optional<QString> Predicates::checkFilter_like(const Predicates::PredicateArguments &arguments)
+{
+    return Predicates::checkFilter_eq(arguments);
+}
+
+std::optional<QString> Predicates::checkFilter_like_except(const Predicates::PredicateArguments &arguments)
+{
+    return Predicates::checkFilter_eq_except(arguments);
 }
 
 std::optional<QString> Predicates::checkFilter_match(const Predicates::PredicateArguments &arguments)
@@ -268,19 +387,15 @@ Predicates::matchArguments(const QueryMatch &match, const Predicates::PredicateA
         if (const auto string = std::get_if<QString>(&argument)) {
             result.emplace_back(*string);
         } else if (const auto captureArgument = std::get_if<Query::Capture>(&argument)) {
-            const auto captures = match.captures();
-            bool found = false;
+            auto captures = match.capturesWithId(captureArgument->id);
+
             // Multiple captures for the same ID may exist, if quantifiers are used.
             // Add all of them.
             for (const auto &capture : captures) {
-                if (capture.id == captureArgument->id) {
-                    result.emplace_back(capture);
-                    found = true;
-                }
+                result.emplace_back(capture);
             }
-            if (!found) {
+            if (captures.isEmpty())
                 result.emplace_back(MissingCapture {.capture = *captureArgument});
-            }
         }
     }
     return result;
@@ -290,5 +405,4 @@ void Predicates::setRootNode(const Node &node)
 {
     m_rootNode = node;
 }
-
 }

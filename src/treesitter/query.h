@@ -93,6 +93,7 @@ public:
     uint32_t patternIndex() const;
 
     QVector<Capture> captures() const;
+    QVector<Capture> capturesWithId(uint32_t id) const;
 
     // Captures with quantifiers may return multiple values for the same capture.
     QVector<Capture> capturesNamed(const QString &) const;

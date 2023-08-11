@@ -230,26 +230,35 @@ private slots:
         QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), R"EOF(
         (#eq?)
         )EOF"));
+        // Still too few arguments
+        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), R"EOF(
+        (#eq? "test")
+        )EOF"));
+    }
+
+    // make sure we keep the tree alive, as otherwise the nodes will be dangling references
+    std::tuple<QString, treesitter::Tree, treesitter::QueryCursor> runQuery(const QString &queryString)
+    {
+        auto source = readTestFile("/tst_treesitter/main.cpp");
+        treesitter::Parser parser(tree_sitter_cpp());
+        auto tree = parser.parseString(source);
+        auto query = std::make_shared<treesitter::Query>(tree_sitter_cpp(), queryString);
+
+        treesitter::QueryCursor cursor;
+        cursor.execute(query, tree->rootNode(), std::make_unique<treesitter::Predicates>(source));
+
+        return std::make_tuple(source, std::move(*tree), std::move(cursor));
     }
 
     void eq_predicate()
     {
-
-        auto source = readTestFile("/tst_treesitter/main.cpp");
-        treesitter::Parser parser(tree_sitter_cpp());
-        auto tree = parser.parseString(source);
-        QVERIFY(tree.has_value());
-
-        auto query = std::make_shared<treesitter::Query>(tree_sitter_cpp(), R"EOF(
+        auto [source, tree, cursor] = runQuery(R"EOF(
             (function_definition
                 (function_declarator
                     declarator: (_) @name
                     (#eq? "main" @name)
                     ))
         )EOF");
-
-        treesitter::QueryCursor cursor;
-        cursor.execute(query, tree->rootNode(), std::make_unique<treesitter::Predicates>(source));
 
         auto firstMatch = cursor.nextMatch();
 
@@ -281,21 +290,13 @@ private slots:
 
     void match_predicate()
     {
-        auto source = readTestFile("/tst_treesitter/main.cpp");
-        treesitter::Parser parser(tree_sitter_cpp());
-        auto tree = parser.parseString(source);
-        QVERIFY(tree.has_value());
-
-        auto query = std::make_shared<treesitter::Query>(tree_sitter_cpp(), R"EOF(
+        auto [source, tree, cursor] = runQuery(R"EOF(
             (function_definition
                 (function_declarator
                     declarator: (_) @name
                     (#match? "my(Other)?FreeFunction" @name)
                     ))
         )EOF");
-
-        treesitter::QueryCursor cursor;
-        cursor.execute(query, tree->rootNode(), std::make_unique<treesitter::Predicates>(source));
 
         auto firstMatch = cursor.nextMatch();
         QVERIFY(firstMatch.has_value());
@@ -341,6 +342,102 @@ private slots:
 
         auto matches = cursor.allRemainingMatches();
         QCOMPARE(matches.size(), 2);
+    }
+
+    void eq_except_predicate_errors()
+    {
+        using Error = treesitter::Query::Error;
+        // Too few arguments
+        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(#eq_except? \"test\" @x)"));
+        // Non-capture argument
+        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(#eq_except? \"test\" \"\" \"\")"));
+        // Non-String argument
+        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(#eq_except? @x \"\" \"\")"));
+        // Non-String type argument
+        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(#eq_except? \"\" \"\" \"\" @x)"));
+    }
+
+    void eq_except_predicate()
+    {
+        auto [source, tree, cursor] = runQuery(R"EOF(
+            (
+                (parameter_declaration) @param
+                (#eq_except? "const std::string &" @param "identifier"))
+        )EOF");
+
+        auto match = cursor.nextMatch();
+        QVERIFY(match.has_value());
+        auto captures = match->capturesNamed("param");
+        QCOMPARE(captures.size(), 1);
+        QCOMPARE(captures.first().node.textIn(source), "const std::string &e_123");
+
+        QVERIFY(!cursor.nextMatch().has_value());
+    }
+
+    void like_predicate_errors()
+    {
+        using Error = treesitter::Query::Error;
+        // Too few arguments
+        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(#like?)"));
+        // Too few arguments
+        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(#like? \"test\")"));
+    }
+
+    void like_predicate()
+    {
+        auto [source, tree, cursor] = runQuery(R"EOF(
+            (function_definition
+                declarator: (function_declarator
+                    parameters: (parameter_list
+                        (parameter_declaration) @param
+                        (#like? "const std::string &" @param))))
+        )EOF");
+
+        auto match = cursor.nextMatch();
+        QVERIFY(match.has_value());
+        auto captures = match->capturesNamed("param");
+        QCOMPARE(captures.size(), 1);
+        QCOMPARE(captures.first().node.textIn(source), "const std::string&");
+
+        QVERIFY(!cursor.nextMatch().has_value());
+    }
+
+    void like_except_predicate_errors()
+    {
+        using Error = treesitter::Query::Error;
+        // Too few arguments
+        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(#like_except?)"));
+        // Only string arguments
+        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(#like_except?) \"\" \"\" \"\""));
+        // capture as expected argument
+        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(#like_except?) @x @x \"\""));
+        // capture as filter argument
+        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(#like_except?) \"\" @x @x"));
+    }
+
+    void like_except_predicate()
+    {
+        auto [source, tree, cursor] = runQuery(R"EOF(
+        (function_definition
+            declarator: (function_declarator
+                parameters: (parameter_list
+                    (parameter_declaration) @param
+                    (#like_except? "const std::string &" @param "identifier"))))
+        )EOF");
+
+        auto match = cursor.nextMatch();
+        QVERIFY(match.has_value());
+        auto captures = match->capturesNamed("param");
+        QCOMPARE(captures.size(), 1);
+        QCOMPARE(captures.first().node.textIn(source), "const std::string&");
+
+        match = cursor.nextMatch();
+        QVERIFY(match.has_value());
+        captures = match->capturesNamed("param");
+        QCOMPARE(captures.size(), 1);
+        QCOMPARE(captures.first().node.textIn(source), "const std::string &e_123");
+
+        QVERIFY(!cursor.nextMatch().has_value());
     }
 
     // Comments are actually not documented on the tree-sitter.github.io website.

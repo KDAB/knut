@@ -44,6 +44,7 @@ public:
     bool hasError() const;
 
     QString textIn(const QString &source) const;
+    QString textExcept(const QString &source, const QVector<QString> &nodeTypes) const;
 
     Node descendantForRange(uint32_t left, uint32_t right) const;
     Node parent() const;
@@ -52,6 +53,8 @@ public:
 
 private:
     Node(const TSNode &node);
+
+    QVector<Node> allChildrenOfType(const QVector<QString> &nodeTypes) const;
 
     // TODO: make private again
 public:

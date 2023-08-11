@@ -53,9 +53,17 @@ private:
     static std::optional<QString> checkFilter_##NAME(const PredicateArguments &arguments)
 
     PREDICATE_FILTER(eq);
+    PREDICATE_FILTER(eq_except);
+    PREDICATE_FILTER(like);
+    PREDICATE_FILTER(like_except);
     PREDICATE_FILTER(match);
     PREDICATE_FILTER(in_message_map);
 #undef PREDICATE_FILTER
+
+    bool filter_eq_with(const QueryMatch &match, const QVector<std::variant<Query::Capture, QString>> &arguments,
+                        std::function<QString(const QString &)> textTransform) const;
+    bool filter_eq_except_with(const QueryMatch &match, const QVector<std::variant<Query::Capture, QString>> &arguments,
+                               std::function<QString(const QString &)> textTransform) const;
 
     // ################## Argument matching #########################
     // Marker type indicating a capture is missing

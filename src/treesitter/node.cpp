@@ -1,5 +1,6 @@
 #include "node.h"
 
+#include <kdalgorithms.h>
 #include <spdlog/spdlog.h>
 
 namespace treesitter {
@@ -131,6 +132,43 @@ QString Node::textIn(const QString &source) const
     const auto end = this->endPosition();
 
     return source.sliced(start, end - start);
+}
+
+QString Node::textExcept(const QString &source, const QVector<QString> &nodeTypes) const
+{
+    auto text = textIn(source);
+
+    auto children = allChildrenOfType(nodeTypes);
+    // make sure to sort the children back-to-front, so that removing them in order
+    // doesn't mess up the ranges of the remaining children.
+    kdalgorithms::sort(children, [](const auto &left, const auto &right) {
+        return left.startPosition() > right.startPosition();
+    });
+
+    for (const auto &child : children) {
+        const auto start = child.startPosition();
+        const auto end = child.endPosition();
+        text.remove(start - this->startPosition(), end - start);
+    }
+
+    return text;
+}
+
+QVector<Node> Node::allChildrenOfType(const QVector<QString> &nodeTypes) const
+{
+    auto result = QVector<Node>();
+
+    for (const auto &child : children()) {
+        // break the recursion at the first node that is of the given type
+        // That way we don't get overlapping child nodes.
+        if (kdalgorithms::contains(nodeTypes, child.type())) {
+            result.push_back(child);
+        } else {
+            result.append(child.allChildrenOfType(nodeTypes));
+        }
+    }
+
+    return result;
 }
 
 bool Node::operator==(const Node &other) const
