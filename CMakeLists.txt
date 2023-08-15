@@ -30,7 +30,7 @@ find_package(Qt6 COMPONENTS Widgets Qml Quick Test UiTools REQUIRED)
 # ##########################################################
 FetchContent_Declare(spdlog
     GIT_REPOSITORY https://github.com/gabime/spdlog.git
-    GIT_TAG v1.11.0
+    GIT_TAG v1.12.0
 )
 # See https://github.com/gabime/spdlog/issues/1190
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -58,7 +58,7 @@ FetchContent_MakeAvailable(pugixml)
 # ##########################################################
 FetchContent_Declare(kdalgorithms
     GIT_REPOSITORY https://github.com/KDAB/KDAlgorithms
-    GIT_TAG f063ca710aff2c87b20770d654c049bd65234a64
+    GIT_TAG 1.1
 )
 FetchContent_MakeAvailable(kdalgorithms)
 
@@ -78,7 +78,6 @@ endif()
 #  - compile error for me in Qt Creator, needs to compile on the command line
 #  - does not compile with CMAKE_CXX_STANDARD 23
 #  - leak 2 targets in the project
-#  - call ECM/KDEClangFormat, which inconditionnaly replace your pre-commit hook :(
 option(USE_SYNTAX_HIGHLIGHTING "Enable syntax highlighting in IDE" ON)
 if(USE_SYNTAX_HIGHLIGHTING)
     FetchContent_Declare(KSyntaxHighlighting
