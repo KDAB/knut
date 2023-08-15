@@ -20,14 +20,14 @@ class RangeMark;
 class TextDocument : public Document
 {
     Q_OBJECT
-    Q_PROPERTY(int column READ column)
-    Q_PROPERTY(int line READ line)
-    Q_PROPERTY(int lineCount READ lineCount)
+    Q_PROPERTY(int column READ column NOTIFY positionChanged)
+    Q_PROPERTY(int line READ line NOTIFY positionChanged)
+    Q_PROPERTY(int lineCount READ lineCount NOTIFY textChanged)
     Q_PROPERTY(int position READ position WRITE setPosition NOTIFY positionChanged)
     Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
     Q_PROPERTY(QString selectedText READ selectedText NOTIFY selectionChanged)
-    Q_PROPERTY(QString currentLine READ currentLine)
-    Q_PROPERTY(QString currentWord READ currentWord)
+    Q_PROPERTY(QString currentLine READ currentLine NOTIFY positionChanged)
+    Q_PROPERTY(QString currentWord READ currentWord NOTIFY positionChanged)
     Q_PROPERTY(LineEnding lineEnding READ lineEnding WRITE setLineEnding NOTIFY lineEndingChanged)
 
 public:

@@ -30,7 +30,7 @@ public:
 signals:
     void clicked(const QString &name);
     void childrenDataChanged();
-    void uiFilePathChanged(const QString &uiFilePath) const;
+    void uiFilePathChanged(const QString &uiFilePath);
 
 private:
     void initializeUiAndData();

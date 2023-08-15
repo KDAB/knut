@@ -105,7 +105,7 @@ QString ScriptDialogItem::uiFilePath() const
         Q_ASSERT(!ScriptRunner::currentScriptPath.isEmpty());
         QFileInfo fi(ScriptRunner::currentScriptPath);
         m_uiFilePath = fi.absolutePath() + '/' + fi.baseName() + ".ui";
-        emit uiFilePathChanged(m_uiFilePath);
+        emit const_cast<ScriptDialogItem *>(this)->uiFilePathChanged(m_uiFilePath);
     }
 
     return m_uiFilePath;
@@ -129,7 +129,7 @@ void ScriptDialogItem::setUiFilePath(const QString &filePath)
         } else {
             m_uiFilePath = filePath;
         }
-        uiFilePathChanged(m_uiFilePath);
+        emit uiFilePathChanged(m_uiFilePath);
     }
 }
 

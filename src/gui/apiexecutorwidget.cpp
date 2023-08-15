@@ -121,7 +121,8 @@ void APIExecutorWidget::populateArgumentList()
     const ApiInfo &apiInfo = m_apis.value(apiName);
 
     for (int i = 0; i < apiInfo.method.parameterCount(); ++i) {
-        createArgumentField(apiInfo.method.parameterNames()[i], apiInfo.method.parameterMetaType(i));
+        const auto &parameterNames = apiInfo.method.parameterNames();
+        createArgumentField(parameterNames[i], apiInfo.method.parameterMetaType(i));
     }
 
     // Change focus chain

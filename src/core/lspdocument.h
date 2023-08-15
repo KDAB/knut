@@ -53,7 +53,7 @@ public:
     int toPos(const Lsp::Position &pos) const;
     TextRange toRange(const Lsp::Range &range) const;
 
-    Q_INVOKABLE AstNode astNodeAt(int pos);
+    Q_INVOKABLE Core::AstNode astNodeAt(int pos);
 
 public slots:
     Core::Document *followSymbol();

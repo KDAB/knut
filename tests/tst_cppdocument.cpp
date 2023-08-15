@@ -17,7 +17,7 @@ private:
     {
         Core::KnutCore core;
         const auto rootFullPath = Test::testDataPath() + "/" + projectRoot;
-        QVERIFY(QFileInfo(rootFullPath).exists());
+        QVERIFY(QFileInfo::exists(rootFullPath));
 
         Core::Project::instance()->setRoot(rootFullPath);
         auto document = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(documentPath));

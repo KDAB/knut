@@ -311,7 +311,7 @@ QVector<QueryMatch> CppDocument::internalQueryFunctionCall(const QString& functi
                             %2
                         ) @argument-list
                 ) @call
-    )EOF").arg(functionName).arg(argumentsQuery);
+    )EOF").arg(functionName, argumentsQuery);
 
     return query(queryString);
 }

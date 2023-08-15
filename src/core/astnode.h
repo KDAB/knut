@@ -25,7 +25,7 @@ class AstNode
 
 public:
     Q_INVOKABLE Core::AstNode parentNode() const;
-    Q_INVOKABLE QVector<AstNode> childrenNodes() const;
+    Q_INVOKABLE QVector<Core::AstNode> childrenNodes() const;
     Q_INVOKABLE bool isValid() const;
 
     QString type() const;

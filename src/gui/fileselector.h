@@ -9,7 +9,7 @@ namespace Gui {
 class FileSelector : public QWidget
 {
     Q_OBJECT
-    Q_PROPERTY(QString fileName READ fileName WRITE setFileName)
+    Q_PROPERTY(QString fileName READ fileName WRITE setFileName NOTIFY fileNameChanged)
 
 public:
     enum class Mode { OpenFile, OpenDirectory, SaveFile };
