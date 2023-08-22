@@ -137,11 +137,17 @@ enable_testing()
 
 # Knut (finally)
 ###########################################################
-add_subdirectory(scripts)
 add_subdirectory(src)
 add_subdirectory(tools)
-
 add_subdirectory(tests)
 
 file(GLOB DOCS_FILES README.md mkdocs.yml docs/*.md docs/contributing/*.md docs/getting-started/*.md)
 add_custom_target(docs ALL cpp2doc SOURCES ${DOCS_FILES})
+
+add_custom_command(OUTPUT scripts_copy
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/scripts
+    COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_BINARY_DIR}/bin/scripts"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/bin/scripts"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/scripts" "${CMAKE_BINARY_DIR}/bin/scripts"
+)
+add_custom_target(scripts ALL DEPENDS scripts_copy)
