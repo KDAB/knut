@@ -127,7 +127,7 @@ static void convertStyles(const Data &data, Widget &widget, Data::Control &contr
 static Widget convertPushButton(const Data &data, Data::Control &control)
 {
     Widget widget;
-    widget.className = "PushButton";
+    widget.className = "QPushButton";
     widget.properties["text"] = control.text;
 
     if (control.styles.removeOne("BS_AUTO3STATE") || control.styles.removeOne("BS_3STATE")
@@ -155,7 +155,7 @@ static Widget convertPushButton(const Data &data, Data::Control &control)
 static Widget convertRadioButton(const Data &data, Data::Control &control)
 {
     Widget widget;
-    widget.className = "RadioButton";
+    widget.className = "QRadioButton";
     widget.properties["text"] = control.text;
 
     control.styles.removeOne("BS_RADIOBUTTON");
@@ -171,7 +171,7 @@ static Widget convertRadioButton(const Data &data, Data::Control &control)
 static Widget convertCheckBox(const Data &data, Data::Control &control)
 {
     Widget widget;
-    widget.className = "CheckBox";
+    widget.className = "QCheckBox";
     widget.properties["text"] = control.text;
 
     if (control.styles.removeOne("BS_AUTO3STATE") || control.styles.removeOne("BS_3STATE")
@@ -189,10 +189,10 @@ static Widget convertCheckBox(const Data &data, Data::Control &control)
 static Widget convertComboBox(const Data &data, const QString &dialogId, Data::Control &control)
 {
     Widget widget;
-    widget.className = "ComboBox";
+    widget.className = "QComboBox";
 
     if (control.styles.removeOne("CBS_SIMPLE")) {
-        widget.className = "ListWidget";
+        widget.className = "QListWidget";
     } else {
         // In MFC, the height is not the height of the combobox
         // So we take the "default" height of a combobox
@@ -200,7 +200,7 @@ static Widget convertComboBox(const Data &data, const QString &dialogId, Data::C
 
         if (control.styles.removeOne("CBS_DROPDOWN")) {
             widget.properties["editable"] = true;
-            widget.properties["insertPolicy"] = "NoInsert";
+            widget.properties["insertPolicy"] = "QComboBox::NoInsert";
         }
     }
 
@@ -227,21 +227,20 @@ static Widget convertComboBox(const Data &data, const QString &dialogId, Data::C
 static Widget convertLabel(const Data &data, Data::Control &control, bool useIdForPixmap)
 {
     Widget widget;
-    widget.className = "Label";
+    widget.className = "QLabel";
 
     if (control.styles.removeOne("SS_RIGHT") || control.type == static_cast<int>(Keywords::RTEXT))
-        widget.properties["alignment"] = "AlignRight";
+        widget.properties["alignment"] = "Qt::AlignRight";
     if (control.styles.removeOne("SS_CENTER") || control.styles.removeOne("SS_CENTERIMAGE")
         || control.type == static_cast<int>(Keywords::CTEXT))
-        widget.properties["alignment"] = "AlignHCenter";
+        widget.properties["alignment"] = "Qt::AlignHCenter";
 
     if (control.styles.removeOne("SS_SUNKEN")) {
-        widget.properties["frame"] = "Panel";
         widget.properties["frame"] = "Sunken";
     }
 
     if (control.styles.removeOne("SS_BLACKFRAME"))
-        widget.properties["frame"] = "Box";
+        widget.properties["frame"] = "BlackFrame";
 
     if (control.styles.removeOne("SS_REALSIZECONTROL"))
         widget.properties["scaledContents"] = true;
@@ -277,20 +276,20 @@ static Widget convertEditText(const Data &data, Data::Control &control)
 
     // TODO what about RichEdit20W
     if (control.styles.removeOne("ES_MULTILINE") || control.className == "RICHEDIT") {
-        widget.className = "TextEdit";
+        widget.className = "QTextEdit";
         hasFrame = true;
     } else {
-        widget.className = "LineEdit";
+        widget.className = "QLineEdit";
         if (control.styles.removeOne("ES_CENTER"))
-            widget.properties["alignment"] = "AlignCenter|AlignVCenter";
+            widget.properties["alignment"] = "Qt::AlignCenter|Qt::AlignVCenter";
         else if (control.styles.removeOne("ES_RIGHT"))
-            widget.properties["alignment"] = "AlignRight|AlignVCenter";
+            widget.properties["alignment"] = "Qt::AlignRight|Qt::AlignVCenter";
         else if (control.styles.removeOne("ES_LEFT")
                  || true) // this is the "default", but I want to remove the style too
-            widget.properties["alignment"] = "AlignLeft|AlignVCenter";
+            widget.properties["alignment"] = "Qt::AlignLeft|Qt::AlignVCenter";
 
         if (control.styles.removeOne("ES_PASSWORD"))
-            widget.properties["echoMode"] = "Password";
+            widget.properties["echoMode"] = "QLineEdit::Password";
     }
 
     if (control.styles.removeOne("ES_READONLY"))
@@ -304,7 +303,7 @@ static Widget convertEditText(const Data &data, Data::Control &control)
 static Widget convertGroupBox(const Data &data, Data::Control &control)
 {
     Widget widget;
-    widget.className = "GroupBox";
+    widget.className = "QGroupBox";
     widget.properties["title"] = control.text;
     convertStyles(data, widget, control);
     return widget;
@@ -314,35 +313,35 @@ static Widget convertGroupBox(const Data &data, Data::Control &control)
 static Widget convertListWidget(const Data &data, Data::Control &control)
 {
     Widget widget;
-    widget.className = "ListWidget";
+    widget.className = "QListWidget";
 
     // The control is an icon view
     if (control.type == static_cast<int>(Keywords::CONTROL) && control.className == "SysListView32")
-        widget.properties["viewMode"] = "IconMode";
+        widget.properties["viewMode"] = "QListView::IconMode";
 
     if (control.styles.removeOne("LBS_NOSEL"))
-        widget.properties["selectionMode"] = "NoSelection";
+        widget.properties["selectionMode"] = "QAbstractItemView::NoSelection";
     else if (control.styles.removeOne("LBS_MULTIPLESEL"))
-        widget.properties["selectionMode"] = "MultiSelection";
+        widget.properties["selectionMode"] = "QAbstractItemView::MultiSelection";
     else if (control.styles.removeOne("LBS_EXTENDEDSEL"))
-        widget.properties["selectionMode"] = "ExtendedSelection";
+        widget.properties["selectionMode"] = "QAbstractItemView::ExtendedSelection";
     else
-        widget.properties["selectionMode"] = "SingleSelection";
+        widget.properties["selectionMode"] = "QAbstractItemView::SingleSelection";
 
     if (control.styles.removeOne("LBS_SORT") || control.styles.removeOne("LBS_STANDARD"))
         widget.properties["SortingEnabled"] = true;
     else if (control.styles.removeOne("LBS_MULTIPLESEL"))
-        widget.properties["selectionMode"] = "MultiSelection";
+        widget.properties["selectionMode"] = "QAbstractItemView::MultiSelection";
 
     bool alwaysOn = control.styles.removeOne("LBS_DISABLENOSCROLL");
     if (control.styles.removeOne("WS_HSCROLL"))
-        widget.properties["horizontalScrollBarPolicy"] = alwaysOn ? "ScrollBarAlwaysOn" : "ScrollBarAsNeeded";
+        widget.properties["horizontalScrollBarPolicy"] = alwaysOn ? "Qt::ScrollBarAlwaysOn" : "Qt::ScrollBarAsNeeded";
     else
-        widget.properties["horizontalScrollBarPolicy"] = "ScrollBarAlwaysOff";
+        widget.properties["horizontalScrollBarPolicy"] = "Qt::ScrollBarAlwaysOff";
     if (control.styles.removeOne("WS_VSCROLL"))
-        widget.properties["verticalScrollBarPolicy"] = alwaysOn ? "ScrollBarAlwaysOn" : "ScrollBarAsNeeded";
+        widget.properties["verticalScrollBarPolicy"] = alwaysOn ? "Qt::ScrollBarAlwaysOn" : "Qt::ScrollBarAsNeeded";
     else
-        widget.properties["verticalScrollBarPolicy"] = "ScrollBarAlwaysOff";
+        widget.properties["verticalScrollBarPolicy"] = "Qt::ScrollBarAlwaysOff";
 
     convertStyles(data, widget, control, true);
     return widget;
@@ -352,12 +351,12 @@ static Widget convertListWidget(const Data &data, Data::Control &control)
 static Widget convertScrollBar(const Data &data, Data::Control &control)
 {
     Widget widget;
-    widget.className = "ScrollBar";
+    widget.className = "QScrollBar";
 
     if (control.styles.removeOne("SBS_VERT"))
-        widget.properties["orientation"] = "Vertical";
+        widget.properties["orientation"] = "Qt::Vertical";
     else if (control.styles.removeOne("SBS_HORZ") || true) // We want to remove the style if it exits
-        widget.properties["orientation"] = "Horizontal";
+        widget.properties["orientation"] = "Qt::Horizontal";
 
     convertStyles(data, widget, control);
     return widget;
@@ -391,25 +390,25 @@ static Widget convertButton(const Data &data, Data::Control &control)
 static Widget convertSlider(const Data &data, Data::Control &control)
 {
     Widget widget;
-    widget.className = "Slider";
+    widget.className = "QSlider";
 
     if (control.styles.removeOne("TBS_VERT"))
-        widget.properties["orientation"] = "Vertical";
+        widget.properties["orientation"] = "Qt::Vertical";
     else if (control.styles.removeOne("TBS_HORZ") || true) // We want to remove the style if it exits
-        widget.properties["orientation"] = "Horizontal";
+        widget.properties["orientation"] = "Qt::Horizontal";
 
     if (control.styles.removeOne("TBS_NOTICKS"))
-        widget.properties["tickPosition"] = "NoTicks";
+        widget.properties["tickPosition"] = "QSlider::NoTicks";
     if (control.styles.removeOne("TBS_BOTH"))
-        widget.properties["tickPosition"] = "TicksBothSides";
+        widget.properties["tickPosition"] = "QSlider::TicksBothSides";
     if (control.styles.removeOne("TBS_LEFT"))
-        widget.properties["tickPosition"] = "TicksLeft";
+        widget.properties["tickPosition"] = "QSlider::TicksLeft";
     if (control.styles.removeOne("TBS_RIGHT"))
-        widget.properties["tickPosition"] = "TicksRight";
+        widget.properties["tickPosition"] = "QSlider::TicksRight";
     if (control.styles.removeOne("TBS_TOP"))
-        widget.properties["tickPosition"] = "TicksAbove";
+        widget.properties["tickPosition"] = "QSlider::TicksAbove";
     if (control.styles.removeOne("TBS_BOTTOM"))
-        widget.properties["tickPosition"] = "TicksBelow";
+        widget.properties["tickPosition"] = "QSlider::TicksBelow";
 
     convertStyles(data, widget, control);
     return widget;
@@ -418,7 +417,7 @@ static Widget convertSlider(const Data &data, Data::Control &control)
 static Widget convertSpinBox(const Data &data, Data::Control &control)
 {
     Widget widget;
-    widget.className = "SpinBox";
+    widget.className = "QSpinBox";
     convertStyles(data, widget, control, true);
     return widget;
 }
@@ -426,12 +425,12 @@ static Widget convertSpinBox(const Data &data, Data::Control &control)
 static Widget convertProgressBar(const Data &data, Data::Control &control)
 {
     Widget widget;
-    widget.className = "ProgressBar";
+    widget.className = "QProgressBar";
 
     if (control.styles.removeOne("TBS_VERT"))
-        widget.properties["orientation"] = "Vertical";
+        widget.properties["orientation"] = "Qt::Vertical";
     else if (control.styles.removeOne("TBS_HORZ") || true) // We want to remove the style if it exits
-        widget.properties["orientation"] = "Horizontal";
+        widget.properties["orientation"] = "Qt::Horizontal";
 
     convertStyles(data, widget, control);
     return widget;
@@ -440,7 +439,7 @@ static Widget convertProgressBar(const Data &data, Data::Control &control)
 static Widget convertCalendarWidget(const Data &data, Data::Control &control)
 {
     Widget widget;
-    widget.className = "CalendarWidget";
+    widget.className = "QCalendarWidget";
     convertStyles(data, widget, control, true);
     return widget;
 }
@@ -448,7 +447,7 @@ static Widget convertCalendarWidget(const Data &data, Data::Control &control)
 static Widget convertDateTime(const Data &data, Data::Control &control)
 {
     Widget widget;
-    widget.className = "DateTimeEdit";
+    widget.className = "QDateTimeEdit";
 
     if (control.styles.removeOne("DTS_LONGDATEFORMAT"))
         widget.properties["displayFormat"] = "dddd, MMMM dd, yyyy";
@@ -468,7 +467,7 @@ static Widget convertDateTime(const Data &data, Data::Control &control)
 static Widget convertIpAddress(const Data &data, Data::Control &control)
 {
     Widget widget;
-    widget.className = "LineEdit";
+    widget.className = "QLineEdit";
 
     widget.properties["inputMask"] = "000.000.000.000;_";
 
@@ -479,7 +478,7 @@ static Widget convertIpAddress(const Data &data, Data::Control &control)
 static Widget convertTreeWidget(const Data &data, Data::Control &control)
 {
     Widget widget;
-    widget.className = "TreeWidget";
+    widget.className = "QTreeWidget";
     convertStyles(data, widget, control, true);
     return widget;
 }
@@ -487,14 +486,14 @@ static Widget convertTreeWidget(const Data &data, Data::Control &control)
 static Widget convertTabWidget(const Data &data, Data::Control &control)
 {
     Widget widget;
-    widget.className = "TabWidget";
+    widget.className = "QTabWidget";
 
     if (control.styles.removeOne("TCS_BOTTOM"))
-        widget.properties["tabPosition"] = "Bottom";
+        widget.properties["tabPosition"] = "QTabWidget::South";
     if (control.styles.removeOne("TCS_VERTICAL"))
-        widget.properties["tabPosition"] = "Left";
+        widget.properties["tabPosition"] = "QTabWidget::West";
     if (control.styles.removeOne("TCS_RIGHT"))
-        widget.properties["tabPosition"] = "Right";
+        widget.properties["tabPosition"] = "QTabWidget::East";
 
     convertStyles(data, widget, control, true);
     return widget;
@@ -562,7 +561,7 @@ static Widget convertControl(const Data &data, const QString &dialogId, Data::Co
                  control.className.toStdString());
 
     Widget widget;
-    widget.className = "Widget";
+    widget.className = "QWidget";
     return widget;
 }
 
@@ -662,7 +661,7 @@ static QVector<Widget> adjustHierarchy(QVector<Widget> widgets)
 void adjustGeometry(Widget &widget, double scaleX, double scaleY)
 {
     QRect geometry = widget.geometry;
-    const bool isComboBox = (widget.className == "ComboBox");
+    const bool isComboBox = (widget.className == "QComboBox");
 
     geometry = QRect(static_cast<int>(scaleX * geometry.x()), static_cast<int>(scaleY * geometry.y()),
                      static_cast<int>(std::ceil(scaleX * geometry.width())),
@@ -685,12 +684,12 @@ Widget convertDialog(const Data &data, const Data::Dialog &d, Widget::Conversion
     if (dialog.menu.isEmpty()) {
         // If the dialog has a caption, it's a true Qt dialog, otherwise it's a widget
         if (dialog.styles.removeOne("WS_CAPTION")) {
-            widget.className = "Dialog";
+            widget.className = "QDialog";
         } else {
-            widget.className = "Widget";
+            widget.className = "QWidget";
         }
     } else {
-        widget.className = "MainWindow";
+        widget.className = "QMainWindow";
     }
 
     if (!dialog.caption.isEmpty()) {

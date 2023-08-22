@@ -94,7 +94,7 @@
                 </property>
             </widget>
         </widget>
-        <widget class="QGroupBox" name="IDC_STATIC1">
+        <widget class="QGroupBox" name="IDC_STATIC2">
             <property name="geometry">
                 <rect>
                     <x>12</x>
@@ -107,7 +107,7 @@
                 <string>Runtime Settings</string>
             </property>
         </widget>
-        <widget class="QGroupBox" name="IDC_STATIC2">
+        <widget class="QGroupBox" name="IDC_STATIC3">
             <property name="geometry">
                 <rect>
                     <x>10</x>
@@ -130,7 +130,7 @@
                 </property>
             </widget>
         </widget>
-        <widget class="QGroupBox" name="IDC_STATIC3">
+        <widget class="QGroupBox" name="IDC_STATIC4">
             <property name="geometry">
                 <rect>
                     <x>219</x>
@@ -142,7 +142,7 @@
             <property name="title">
                 <string>Compression Settings</string>
             </property>
-            <widget class="QLabel" name="IDC_STATIC4">
+            <widget class="QLabel" name="IDC_STATIC5">
                 <property name="geometry">
                     <rect>
                         <x>12</x>
@@ -152,7 +152,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string comment="IDC_STATIC4">UV Max:</string>
+                    <string comment="IDC_STATIC">UV Max:</string>
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_INDEXFRAMEDISTANCE">
@@ -168,7 +168,7 @@
                     <set>Qt::AlignLeft|Qt::AlignVCenter</set>
                 </property>
             </widget>
-            <widget class="QLabel" name="IDC_STATIC5">
+            <widget class="QLabel" name="IDC_STATIC6">
                 <property name="geometry">
                     <rect>
                         <x>12</x>
@@ -178,10 +178,10 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string comment="IDC_STATIC5">Precision (mm):</string>
+                    <string comment="IDC_STATIC">Precision (mm):</string>
                 </property>
             </widget>
-            <widget class="QLabel" name="IDC_STATIC6">
+            <widget class="QLabel" name="IDC_STATIC7">
                 <property name="geometry">
                     <rect>
                         <x>12</x>
@@ -191,7 +191,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string comment="IDC_STATIC6">Block Compression:</string>
+                    <string comment="IDC_STATIC">Block Compression:</string>
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_PRECISION">
@@ -207,7 +207,7 @@
                     <set>Qt::AlignLeft|Qt::AlignVCenter</set>
                 </property>
             </widget>
-            <widget class="QLabel" name="IDC_STATIC7">
+            <widget class="QLabel" name="IDC_STATIC8">
                 <property name="geometry">
                     <rect>
                         <x>12</x>
@@ -217,7 +217,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string comment="IDC_STATIC7">Index Frame Distance:</string>
+                    <string comment="IDC_STATIC">Index Frame Distance:</string>
                 </property>
             </widget>
             <widget class="QComboBox" name="IDC_BLOCKCOMPRESSION">

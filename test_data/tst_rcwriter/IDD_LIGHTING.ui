@@ -89,7 +89,7 @@
                     </property>
                 </widget>
             </widget>
-            <widget class="QGroupBox" name="IDC_STATIC1">
+            <widget class="QGroupBox" name="IDC_STATIC2">
                 <property name="geometry">
                     <rect>
                         <x>510</x>
@@ -101,7 +101,7 @@
                 <property name="title">
                     <string>Time of Day</string>
                 </property>
-                <widget class="QLabel" name="IDC_STATIC2">
+                <widget class="QLabel" name="IDC_STATIC3">
                     <property name="geometry">
                         <rect>
                             <x>15</x>
@@ -111,7 +111,7 @@
                         </rect>
                     </property>
                     <property name="text">
-                        <string comment="IDC_STATIC2">Time:</string>
+                        <string comment="IDC_STATIC">Time:</string>
                     </property>
                 </widget>
                 <widget class="QLineEdit" name="IDC_TIME_OF_DAY_EDIT">
@@ -144,7 +144,7 @@
                     </property>
                 </widget>
             </widget>
-            <widget class="QGroupBox" name="IDC_STATIC3">
+            <widget class="QGroupBox" name="IDC_STATIC4">
                 <property name="geometry">
                     <rect>
                         <x>297</x>
@@ -182,7 +182,7 @@
                         <set>Qt::AlignLeft|Qt::AlignVCenter</set>
                     </property>
                 </widget>
-                <widget class="QLabel" name="IDC_STATIC4">
+                <widget class="QLabel" name="IDC_STATIC5">
                     <property name="geometry">
                         <rect>
                             <x>9</x>
@@ -195,10 +195,10 @@
                         <set>Qt::AlignHCenter</set>
                     </property>
                     <property name="text">
-                        <string comment="IDC_STATIC4">NorthPole .. Equator .. SouthPole:</string>
+                        <string comment="IDC_STATIC">NorthPole .. Equator .. SouthPole:</string>
                     </property>
                 </widget>
-                <widget class="QLabel" name="IDC_STATIC5">
+                <widget class="QLabel" name="IDC_STATIC6">
                     <property name="geometry">
                         <rect>
                             <x>1</x>
@@ -211,7 +211,7 @@
                         <set>Qt::AlignRight</set>
                     </property>
                     <property name="text">
-                        <string comment="IDC_STATIC5">Sun Direction (map orientation):</string>
+                        <string comment="IDC_STATIC">Sun Direction (map orientation):</string>
                     </property>
                 </widget>
                 <widget class="QSlider" name="IDC_SUNMAPLONGITUDE">
@@ -247,7 +247,7 @@
                     </property>
                 </widget>
             </widget>
-            <widget class="QGroupBox" name="IDC_STATIC6">
+            <widget class="QGroupBox" name="IDC_STATIC7">
                 <property name="geometry">
                     <rect>
                         <x>297</x>
@@ -259,7 +259,7 @@
                 <property name="title">
                     <string>Terrain Occlusion</string>
                 </property>
-                <widget class="QLabel" name="IDC_STATIC7">
+                <widget class="QLabel" name="IDC_STATIC8">
                     <property name="geometry">
                         <rect>
                             <x>6</x>
@@ -269,7 +269,7 @@
                         </rect>
                     </property>
                     <property name="text">
-                        <string comment="IDC_STATIC7">Sky Terrain Occlusion Quality (low .. high):</string>
+                        <string comment="IDC_STATIC">Sky Terrain Occlusion Quality (low .. high):</string>
                     </property>
                 </widget>
                 <widget class="QSlider" name="IDC_HEMISAMPLEQ">
@@ -302,7 +302,7 @@
                     </property>
                 </widget>
             </widget>
-            <widget class="QGroupBox" name="IDC_STATIC8">
+            <widget class="QGroupBox" name="IDC_STATIC9">
                 <property name="geometry">
                     <rect>
                         <x>297</x>
@@ -314,7 +314,7 @@
                 <property name="title">
                     <string>Moon/Sun Shadow Transition</string>
                 </property>
-                <widget class="QLabel" name="IDC_STATIC9">
+                <widget class="QLabel" name="IDC_STATIC10">
                     <property name="geometry">
                         <rect>
                             <x>16</x>
@@ -324,10 +324,10 @@
                         </rect>
                     </property>
                     <property name="text">
-                        <string comment="IDC_STATIC9">0</string>
+                        <string comment="IDC_STATIC">0</string>
                     </property>
                 </widget>
-                <widget class="QLabel" name="IDC_STATIC10">
+                <widget class="QLabel" name="IDC_STATIC11">
                     <property name="geometry">
                         <rect>
                             <x>411</x>
@@ -337,10 +337,10 @@
                         </rect>
                     </property>
                     <property name="text">
-                        <string comment="IDC_STATIC10">24</string>
+                        <string comment="IDC_STATIC">24</string>
                     </property>
                 </widget>
-                <widget class="QLabel" name="IDC_STATIC11">
+                <widget class="QLabel" name="IDC_STATIC12">
                     <property name="geometry">
                         <rect>
                             <x>115</x>
@@ -350,10 +350,10 @@
                         </rect>
                     </property>
                     <property name="text">
-                        <string comment="IDC_STATIC11">6</string>
+                        <string comment="IDC_STATIC">6</string>
                     </property>
                 </widget>
-                <widget class="QLabel" name="IDC_STATIC12">
+                <widget class="QLabel" name="IDC_STATIC13">
                     <property name="geometry">
                         <rect>
                             <x>213</x>
@@ -363,10 +363,10 @@
                         </rect>
                     </property>
                     <property name="text">
-                        <string comment="IDC_STATIC12">12</string>
+                        <string comment="IDC_STATIC">12</string>
                     </property>
                 </widget>
-                <widget class="QLabel" name="IDC_STATIC13">
+                <widget class="QLabel" name="IDC_STATIC14">
                     <property name="geometry">
                         <rect>
                             <x>312</x>
@@ -376,10 +376,10 @@
                         </rect>
                     </property>
                     <property name="text">
-                        <string comment="IDC_STATIC13">18</string>
+                        <string comment="IDC_STATIC">18</string>
                     </property>
                 </widget>
-                <widget class="QLabel" name="IDC_STATIC14">
+                <widget class="QLabel" name="IDC_STATIC15">
                     <property name="geometry">
                         <rect>
                             <x>334</x>
@@ -389,36 +389,36 @@
                         </rect>
                     </property>
                     <property name="text">
-                        <string comment="IDC_STATIC14">Noon</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" name="IDC_STATIC15">
-                    <property name="geometry">
-                        <rect>
-                            <x>103</x>
-                            <y>42</y>
-                            <width>27</width>
-                            <height>14</height>
-                        </rect>
-                    </property>
-                    <property name="text">
-                        <string comment="IDC_STATIC15">0 min</string>
+                        <string comment="IDC_STATIC">Noon</string>
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC16">
                     <property name="geometry">
                         <rect>
                             <x>103</x>
+                            <y>42</y>
+                            <width>27</width>
+                            <height>14</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string comment="IDC_STATIC">0 min</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" name="IDC_STATIC17">
+                    <property name="geometry">
+                        <rect>
+                            <x>103</x>
                             <y>83</y>
                             <width>27</width>
                             <height>14</height>
                         </rect>
                     </property>
                     <property name="text">
-                        <string comment="IDC_STATIC16">0 min</string>
+                        <string comment="IDC_STATIC">0 min</string>
                     </property>
                 </widget>
-                <widget class="QLabel" name="IDC_STATIC17">
+                <widget class="QLabel" name="IDC_STATIC18">
                     <property name="geometry">
                         <rect>
                             <x>334</x>
@@ -428,10 +428,10 @@
                         </rect>
                     </property>
                     <property name="text">
-                        <string comment="IDC_STATIC17">60 min</string>
+                        <string comment="IDC_STATIC">60 min</string>
                     </property>
                 </widget>
-                <widget class="QLabel" name="IDC_STATIC18">
+                <widget class="QLabel" name="IDC_STATIC19">
                     <property name="geometry">
                         <rect>
                             <x>334</x>
@@ -441,10 +441,10 @@
                         </rect>
                     </property>
                     <property name="text">
-                        <string comment="IDC_STATIC18">60 min</string>
+                        <string comment="IDC_STATIC">60 min</string>
                     </property>
                 </widget>
-                <widget class="QLabel" name="IDC_STATIC19">
+                <widget class="QLabel" name="IDC_STATIC20">
                     <property name="geometry">
                         <rect>
                             <x>334</x>
@@ -454,10 +454,10 @@
                         </rect>
                     </property>
                     <property name="text">
-                        <string comment="IDC_STATIC19">Midnight</string>
+                        <string comment="IDC_STATIC">Midnight</string>
                     </property>
                 </widget>
-                <widget class="QLabel" name="IDC_STATIC20">
+                <widget class="QLabel" name="IDC_STATIC21">
                     <property name="geometry">
                         <rect>
                             <x>88</x>
@@ -467,10 +467,10 @@
                         </rect>
                     </property>
                     <property name="text">
-                        <string comment="IDC_STATIC20">Midnight</string>
+                        <string comment="IDC_STATIC">Midnight</string>
                     </property>
                 </widget>
-                <widget class="QLabel" name="IDC_STATIC21">
+                <widget class="QLabel" name="IDC_STATIC22">
                     <property name="geometry">
                         <rect>
                             <x>88</x>
@@ -480,7 +480,7 @@
                         </rect>
                     </property>
                     <property name="text">
-                        <string comment="IDC_STATIC21">Noon</string>
+                        <string comment="IDC_STATIC">Noon</string>
                     </property>
                 </widget>
                 <widget class="QLineEdit" name="IDC_DAWN_INFO">
@@ -509,7 +509,7 @@
                         <set>Qt::AlignLeft|Qt::AlignVCenter</set>
                     </property>
                 </widget>
-                <widget class="QLabel" name="IDC_STATIC22">
+                <widget class="QLabel" name="IDC_STATIC23">
                     <property name="geometry">
                         <rect>
                             <x>6</x>
@@ -519,10 +519,10 @@
                         </rect>
                     </property>
                     <property name="text">
-                        <string comment="IDC_STATIC22">Dusk Time:</string>
+                        <string comment="IDC_STATIC">Dusk Time:</string>
                     </property>
                 </widget>
-                <widget class="QLabel" name="IDC_STATIC23">
+                <widget class="QLabel" name="IDC_STATIC24">
                     <property name="geometry">
                         <rect>
                             <x>6</x>
@@ -532,7 +532,7 @@
                         </rect>
                     </property>
                     <property name="text">
-                        <string comment="IDC_STATIC23">Dawn Time:</string>
+                        <string comment="IDC_STATIC">Dawn Time:</string>
                     </property>
                 </widget>
                 <widget class="QLineEdit" name="IDC_DAWN_DUR_INFO">
@@ -561,7 +561,7 @@
                         <set>Qt::AlignLeft|Qt::AlignVCenter</set>
                     </property>
                 </widget>
-                <widget class="QLabel" name="IDC_STATIC24">
+                <widget class="QLabel" name="IDC_STATIC25">
                     <property name="geometry">
                         <rect>
                             <x>6</x>
@@ -571,10 +571,10 @@
                         </rect>
                     </property>
                     <property name="text">
-                        <string comment="IDC_STATIC24">Dusk Duration:</string>
+                        <string comment="IDC_STATIC">Dusk Duration:</string>
                     </property>
                 </widget>
-                <widget class="QLabel" name="IDC_STATIC25">
+                <widget class="QLabel" name="IDC_STATIC26">
                     <property name="geometry">
                         <rect>
                             <x>6</x>
@@ -584,7 +584,7 @@
                         </rect>
                     </property>
                     <property name="text">
-                        <string comment="IDC_STATIC25">Dawn Duration:</string>
+                        <string comment="IDC_STATIC">Dawn Duration:</string>
                     </property>
                 </widget>
                 <widget class="QSlider" name="IDC_DAWN_SLIDER">

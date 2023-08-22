@@ -64,11 +64,11 @@
                     <height>19</height>
                 </rect>
             </property>
-            <property name="frameShadow">
-                <enum>QFrame::Sunken</enum>
-            </property>
             <property name="frameShape">
                 <enum>QFrame::Panel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
             </property>
             <property name="lineWidth">
                 <number>2</number>
@@ -109,7 +109,7 @@
                 <enum>QSlider::TicksBothSides</enum>
             </property>
         </widget>
-        <widget class="QLabel" name="static1">
+        <widget class="QLabel" name="static2">
             <property name="geometry">
                 <rect>
                     <x>10</x>
@@ -119,10 +119,10 @@
                 </rect>
             </property>
             <property name="text">
-                <string comment="IDC_STATIC1">Vertical Bar</string>
+                <string comment="IDC_STATIC">Vertical Bar</string>
             </property>
         </widget>
-        <widget class="QLabel" name="static2">
+        <widget class="QLabel" name="static3">
             <property name="geometry">
                 <rect>
                     <x>220</x>
@@ -132,7 +132,7 @@
                 </rect>
             </property>
             <property name="text">
-                <string comment="IDC_STATIC2">Horizontal Bar</string>
+                <string comment="IDC_STATIC">Horizontal Bar</string>
             </property>
         </widget>
         <widget class="QLabel" name="VSliderEcho">
@@ -147,11 +147,11 @@
             <property name="alignment">
                 <set>Qt::AlignHCenter</set>
             </property>
-            <property name="frameShadow">
-                <enum>QFrame::Sunken</enum>
-            </property>
             <property name="frameShape">
                 <enum>QFrame::Panel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
             </property>
             <property name="lineWidth">
                 <number>2</number>
@@ -172,11 +172,11 @@
             <property name="alignment">
                 <set>Qt::AlignHCenter</set>
             </property>
-            <property name="frameShadow">
-                <enum>QFrame::Sunken</enum>
-            </property>
             <property name="frameShape">
                 <enum>QFrame::Panel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
             </property>
             <property name="lineWidth">
                 <number>2</number>
@@ -194,11 +194,11 @@
                     <height>19</height>
                 </rect>
             </property>
-            <property name="frameShadow">
-                <enum>QFrame::Sunken</enum>
-            </property>
             <property name="frameShape">
                 <enum>QFrame::Panel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
             </property>
             <property name="lineWidth">
                 <number>2</number>
@@ -216,11 +216,11 @@
                     <height>19</height>
                 </rect>
             </property>
-            <property name="frameShadow">
-                <enum>QFrame::Sunken</enum>
-            </property>
             <property name="frameShape">
                 <enum>QFrame::Panel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
             </property>
             <property name="lineWidth">
                 <number>2</number>
@@ -229,7 +229,7 @@
                 <string comment="IDC_MOUSEECHO">0</string>
             </property>
         </widget>
-        <widget class="QLabel" name="static3">
+        <widget class="QLabel" name="static4">
             <property name="geometry">
                 <rect>
                     <x>172</x>
@@ -239,10 +239,10 @@
                 </rect>
             </property>
             <property name="text">
-                <string comment="IDC_STATIC3">Timer Echo:</string>
+                <string comment="IDC_STATIC">Timer Echo:</string>
             </property>
         </widget>
-        <widget class="QLabel" name="static4">
+        <widget class="QLabel" name="static5">
             <property name="geometry">
                 <rect>
                     <x>172</x>
@@ -252,7 +252,7 @@
                 </rect>
             </property>
             <property name="text">
-                <string comment="IDC_STATIC4">Mouse Echo:</string>
+                <string comment="IDC_STATIC">Mouse Echo:</string>
             </property>
         </widget>
         <widget class="QCheckBox" name="TimerCtrlSliders">

@@ -460,7 +460,7 @@
                 </property>
             </widget>
         </widget>
-        <widget class="QGroupBox" name="IDC_STATIC1">
+        <widget class="QGroupBox" name="IDC_STATIC2">
             <property name="geometry">
                 <rect>
                     <x>6</x>
@@ -577,7 +577,7 @@
                 </property>
             </widget>
         </widget>
-        <widget class="QGroupBox" name="IDC_STATIC2">
+        <widget class="QGroupBox" name="IDC_STATIC3">
             <property name="geometry">
                 <rect>
                     <x>6</x>
@@ -759,7 +759,7 @@
                 </property>
             </widget>
         </widget>
-        <widget class="QGroupBox" name="IDC_STATIC3">
+        <widget class="QGroupBox" name="IDC_STATIC4">
             <property name="geometry">
                 <rect>
                     <x>6</x>

@@ -49,7 +49,7 @@
                 <string comment="IDC_STATIC">Stereo Mode:</string>
             </property>
         </widget>
-        <widget class="QLabel" name="IDC_STATIC1">
+        <widget class="QLabel" name="IDC_STATIC2">
             <property name="geometry">
                 <rect>
                     <x>13</x>
@@ -59,10 +59,10 @@
                 </rect>
             </property>
             <property name="text">
-                <string comment="IDC_STATIC1">Stereo Output:</string>
+                <string comment="IDC_STATIC">Stereo Output:</string>
             </property>
         </widget>
-        <widget class="QLabel" name="IDC_STATIC2">
+        <widget class="QLabel" name="IDC_STATIC3">
             <property name="geometry">
                 <rect>
                     <x>13</x>
@@ -72,10 +72,10 @@
                 </rect>
             </property>
             <property name="text">
-                <string comment="IDC_STATIC2">Stereo Eye Dist:</string>
+                <string comment="IDC_STATIC">Stereo Eye Dist:</string>
             </property>
         </widget>
-        <widget class="QLabel" name="IDC_STATIC3">
+        <widget class="QLabel" name="IDC_STATIC4">
             <property name="geometry">
                 <rect>
                     <x>13</x>
@@ -85,7 +85,7 @@
                 </rect>
             </property>
             <property name="text">
-                <string comment="IDC_STATIC3">Stereo Flip Eyes:</string>
+                <string comment="IDC_STATIC">Stereo Flip Eyes:</string>
             </property>
         </widget>
         <widget class="QRadioButton" name="IDC_STEREO_FLIPEYES_RADIO">
@@ -114,7 +114,7 @@
                 <string comment="IDC_STEREO_FLIPEYES_RADIO2">flip</string>
             </property>
         </widget>
-        <widget class="QLabel" name="IDC_STATIC4">
+        <widget class="QLabel" name="IDC_STATIC5">
             <property name="geometry">
                 <rect>
                     <x>13</x>
@@ -124,7 +124,7 @@
                 </rect>
             </property>
             <property name="text">
-                <string comment="IDC_STATIC4">Stereo Screen Dist:</string>
+                <string comment="IDC_STATIC">Stereo Screen Dist:</string>
             </property>
         </widget>
         <widget class="QComboBox" name="IDC_STEREO_MODE_COMBO">

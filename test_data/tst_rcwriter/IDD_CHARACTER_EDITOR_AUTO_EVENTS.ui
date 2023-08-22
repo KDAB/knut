@@ -54,7 +54,7 @@
             <property name="title">
                 <string>Audio</string>
             </property>
-            <widget class="QLabel" name="IDC_STATIC1">
+            <widget class="QLabel" name="IDC_STATIC2">
                 <property name="geometry">
                     <rect>
                         <x>254</x>
@@ -64,10 +64,10 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string comment="IDC_STATIC1">Bone</string>
+                    <string comment="IDC_STATIC">Bone</string>
                 </property>
             </widget>
-            <widget class="QLabel" name="IDC_STATIC2">
+            <widget class="QLabel" name="IDC_STATIC3">
                 <property name="geometry">
                     <rect>
                         <x>26</x>
@@ -77,10 +77,10 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string comment="IDC_STATIC2">Foley</string>
+                    <string comment="IDC_STATIC">Foley</string>
                 </property>
             </widget>
-            <widget class="QLabel" name="IDC_STATIC3">
+            <widget class="QLabel" name="IDC_STATIC4">
                 <property name="geometry">
                     <rect>
                         <x>192</x>
@@ -90,10 +90,10 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string comment="IDC_STATIC3">Foley delay</string>
+                    <string comment="IDC_STATIC">Foley delay</string>
                 </property>
             </widget>
-            <widget class="QLabel" name="IDC_STATIC4">
+            <widget class="QLabel" name="IDC_STATIC5">
                 <property name="geometry">
                     <rect>
                         <x>171</x>
@@ -103,10 +103,10 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string comment="IDC_STATIC4">Footstep height</string>
+                    <string comment="IDC_STATIC">Footstep height</string>
                 </property>
             </widget>
-            <widget class="QLabel" name="IDC_STATIC5">
+            <widget class="QLabel" name="IDC_STATIC6">
                 <property name="geometry">
                     <rect>
                         <x>114</x>
@@ -116,10 +116,10 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string comment="IDC_STATIC5">Event Name</string>
+                    <string comment="IDC_STATIC">Event Name</string>
                 </property>
             </widget>
-            <widget class="QLabel" name="IDC_STATIC6">
+            <widget class="QLabel" name="IDC_STATIC7">
                 <property name="geometry">
                     <rect>
                         <x>26</x>
@@ -129,10 +129,10 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string comment="IDC_STATIC6">Left footstep</string>
+                    <string comment="IDC_STATIC">Left footstep</string>
                 </property>
             </widget>
-            <widget class="QLabel" name="IDC_STATIC7">
+            <widget class="QLabel" name="IDC_STATIC8">
                 <property name="geometry">
                     <rect>
                         <x>26</x>
@@ -142,7 +142,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string comment="IDC_STATIC7">Right footstep</string>
+                    <string comment="IDC_STATIC">Right footstep</string>
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_FOLEYS_CHECK">

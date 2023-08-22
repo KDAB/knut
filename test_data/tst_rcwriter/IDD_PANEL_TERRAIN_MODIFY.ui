@@ -61,7 +61,7 @@
                     <string comment="IDC_STATIC">Scale:</string>
                 </property>
             </widget>
-            <widget class="QLabel" name="IDC_STATIC1">
+            <widget class="QLabel" name="IDC_STATIC2">
                 <property name="geometry">
                     <rect>
                         <x>9</x>
@@ -71,7 +71,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string comment="IDC_STATIC1">Frequency</string>
+                    <string comment="IDC_STATIC">Frequency</string>
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_NOISE_SCALE">
@@ -158,7 +158,7 @@
             <property name="title">
                 <string>Brush Settings</string>
             </property>
-            <widget class="QLabel" name="IDC_STATIC2">
+            <widget class="QLabel" name="IDC_STATIC3">
                 <property name="geometry">
                     <rect>
                         <x>9</x>
@@ -168,10 +168,10 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string comment="IDC_STATIC2">Type:</string>
+                    <string comment="IDC_STATIC">Type:</string>
                 </property>
             </widget>
-            <widget class="QLabel" name="IDC_STATIC3">
+            <widget class="QLabel" name="IDC_STATIC4">
                 <property name="geometry">
                     <rect>
                         <x>9</x>
@@ -181,10 +181,10 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string comment="IDC_STATIC3">Height:</string>
+                    <string comment="IDC_STATIC">Height:</string>
                 </property>
             </widget>
-            <widget class="QLabel" name="IDC_STATIC4">
+            <widget class="QLabel" name="IDC_STATIC5">
                 <property name="geometry">
                     <rect>
                         <x>9</x>
@@ -194,10 +194,10 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string comment="IDC_STATIC4">Hardness:</string>
+                    <string comment="IDC_STATIC">Hardness:</string>
                 </property>
             </widget>
-            <widget class="QLabel" name="IDC_STATIC5">
+            <widget class="QLabel" name="IDC_STATIC6">
                 <property name="geometry">
                     <rect>
                         <x>9</x>
@@ -207,10 +207,10 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string comment="IDC_STATIC5">Inside Radius:</string>
+                    <string comment="IDC_STATIC">Inside Radius:</string>
                 </property>
             </widget>
-            <widget class="QLabel" name="IDC_STATIC6">
+            <widget class="QLabel" name="IDC_STATIC7">
                 <property name="geometry">
                     <rect>
                         <x>9</x>
@@ -220,7 +220,7 @@
                     </rect>
                 </property>
                 <property name="text">
-                    <string comment="IDC_STATIC6">Outside Radius</string>
+                    <string comment="IDC_STATIC">Outside Radius</string>
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_BRUSH_RADIUS">
