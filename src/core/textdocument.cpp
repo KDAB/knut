@@ -1247,6 +1247,8 @@ bool TextDocument::findRegexp(const QString &regexp, int options)
  */
 bool TextDocument::findRegexp2(const QString &regexp, int options)
 {
+    LOG("TextDocument::findRegexp2", regexp, options);
+
     auto flags = [&]() {
         QTextDocument::FindFlags result = QTextDocument::FindFlags(0);
         if (options & TextDocument::FindBackward)

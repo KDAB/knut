@@ -70,3 +70,5 @@ add_knut_test(tst_lspdocument tst_lspdocument.cpp knut-core)
 add_knut_test(tst_symbol tst_symbol.cpp knut-core)
 
 add_knut_test(tst_treesitter tst_treesitter.cpp knut-core knut-treesitter)
+
+add_knut_test(tst_photon tst_photon.cpp knut-core)

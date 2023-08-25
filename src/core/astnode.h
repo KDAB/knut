@@ -33,9 +33,10 @@ public:
     int startPos() const;
     int endPos() const;
 
+    AstNode() = default;
+
 private:
-    AstNode(const treesitter::Node &node, LspDocument *parent);
-    AstNode();
+    explicit AstNode(const treesitter::Node &node, LspDocument *parent);
 
     std::optional<treesitter::Node> node() const;
     LspDocument *document() const;

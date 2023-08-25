@@ -54,6 +54,7 @@ public:
         PreserveCase = 0x10
     };
     Q_DECLARE_FLAGS(FindFlags, FindFlag)
+    Q_ENUM(FindFlag)
 
     explicit TextDocument(QObject *parent = nullptr);
     virtual ~TextDocument();

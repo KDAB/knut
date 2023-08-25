@@ -15,11 +15,6 @@ AstNode::AstNode(const treesitter::Node &node, LspDocument *parent)
 {
 }
 
-AstNode::AstNode()
-    : m_mark(nullptr, 0, 0)
-{
-}
-
 AstNode AstNode::parentNode() const
 {
     if (auto n = node(); auto doc = document()) {
