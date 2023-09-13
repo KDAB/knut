@@ -18,13 +18,13 @@
 namespace Gui {
 
 constexpr int MarkWidth = 6;
-constexpr int MarkWidth2 = MarkWidth / 2;
+constexpr float MarkWidth2 = MarkWidth / 2.0f;
 
-class MarkRect : public QRubberBand
+class MarkRect : public QWidget
 {
 public:
     explicit MarkRect(QWidget *parent)
-        : QRubberBand(QRubberBand::Line, parent)
+        : QWidget(parent)
     {
     }
 
@@ -39,10 +39,11 @@ protected:
         p.setBrush(color);
 
         const QRect r = rect();
-        QPolygon p1({r.topLeft(), r.topRight(), {r.center().x(), r.top() + MarkWidth2 + 1}});
+        QPolygonF p1({r.topLeft(), r.topRight(), {static_cast<float>(r.center().x()), r.top() + MarkWidth2 + 1}});
         p.drawPolygon(p1);
 
-        QPolygon p2({r.bottomLeft(), r.bottomRight(), {r.center().x(), r.bottom() - MarkWidth2 - 1}});
+        QPolygonF p2(
+            {r.bottomLeft(), r.bottomRight(), {static_cast<float>(r.center().x()), r.bottom() - MarkWidth2 - 1}});
         p.drawPolygon(p2);
 
         p.setOpacity(0.7);
@@ -147,7 +148,8 @@ void TextView::updateMarkRect()
         auto textCursor = m_document->textEdit()->textCursor();
         textCursor.setPosition(m_mark->position());
         auto rect = m_document->textEdit()->cursorRect(textCursor);
-        rect.adjust(-MarkWidth2, -MarkWidth2, MarkWidth2, MarkWidth2);
+        auto viewport = m_document->textEdit()->viewport();
+        rect.adjust(-MarkWidth2 + viewport->x(), -MarkWidth2, MarkWidth2 + viewport->x(), MarkWidth2);
         m_markRect->setGeometry(rect);
     }
 }

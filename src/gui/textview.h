@@ -30,7 +30,7 @@ private:
 
     Core::TextDocument *m_document;
     std::optional<Core::Mark> m_mark = {};
-    QRubberBand *m_markRect = nullptr;
+    QWidget *m_markRect = nullptr;
 };
 
 } // namespace Gui
