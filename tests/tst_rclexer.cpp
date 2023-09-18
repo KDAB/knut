@@ -2,7 +2,7 @@
 
 #include <QByteArray>
 #include <QFile>
-#include <QtTest>
+#include <QTest>
 
 using namespace RcCore;
 

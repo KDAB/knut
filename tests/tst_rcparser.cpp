@@ -2,7 +2,7 @@
 
 #include "common/test_utils.h"
 
-#include <QtTest>
+#include <QTest>
 
 using namespace RcCore;
 

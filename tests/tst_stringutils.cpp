@@ -1,4 +1,4 @@
-#include <QtTest>
+#include <QTest>
 
 #include "core/string_utils.h"
 

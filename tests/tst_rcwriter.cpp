@@ -5,8 +5,8 @@
 #include <QBuffer>
 #include <QFile>
 #include <QSet>
+#include <QTest>
 #include <QUiLoader>
-#include <QtTest>
 
 using namespace RcCore;
 

@@ -1,8 +1,9 @@
 #include "testutil.h"
 
+#include <QDirIterator>
 #include <QFile>
+#include <QQmlEngine>
 #include <QUrl>
-#include <QtQml>
 
 #include <QtQml/private/qqmlengine_p.h>
 
