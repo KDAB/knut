@@ -49,7 +49,13 @@ public slots:
 
 signals:
     void scriptFinished(const QVariant &result);
+
+    // Added to allow models to call beginInsertRows, etc. correctly
+    void aboutToAddScript(const Core::ScriptManager::Script &script, int index);
     void scriptAdded(const Core::ScriptManager::Script &script);
+
+    // Added to allow models to emit abouToAddRow, etc. correctly
+    void aboutToRemoveScript(const Core::ScriptManager::Script &script, int index);
     void scriptRemoved(const Core::ScriptManager::Script &script);
 
 private:
@@ -64,6 +70,8 @@ private:
 
     void updateDirectories();
     void updateScriptDirectory(const QString &path);
+
+    ScriptList::iterator removeScript(const ScriptList::iterator &iterator);
 
 private:
     inline static ScriptManager *m_instance = nullptr;

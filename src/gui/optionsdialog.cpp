@@ -7,6 +7,7 @@
 #include "core/scriptmanager.h"
 #include "core/settings.h"
 #include "core/textdocument_p.h"
+#include "gui/scriptsinpath.h"
 
 #include <QApplication>
 #include <QDesktopServices>
@@ -21,6 +22,7 @@ namespace Gui {
 OptionsDialog::OptionsDialog(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::OptionsDialog)
+    , m_scriptsModel(new ScriptsInPath(this))
 {
     ui->setupUi(this);
     setWindowTitle(QApplication::applicationName() + ' ' + QApplication::applicationVersion() + " - " + windowTitle());
@@ -38,7 +40,6 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     initializeRcSettings();
 
     updateScriptPaths();
-    updateJsonPaths();
 }
 
 void OptionsDialog::addSettings(QWidget *widget)
@@ -66,12 +67,8 @@ void OptionsDialog::initializeScriptPathSettings()
         ui->removeButton->setEnabled(ui->scriptPathList->selectedItems().size());
     });
 
-    // Json paths settings
-    connect(ui->addJsonButton, &QPushButton::clicked, this, &OptionsDialog::addJsonPath);
-    connect(ui->removeJsonButton, &QPushButton::clicked, this, &OptionsDialog::removeJsonPath);
-    connect(ui->jsonPathList, &QListWidget::itemSelectionChanged, this, [this]() {
-        ui->removeJsonButton->setEnabled(ui->jsonPathList->selectedItems().size());
-    });
+    // Script list
+    ui->scriptsList->setModel(m_scriptsModel);
 }
 
 void OptionsDialog::initializeScriptBehaviorSettings()
@@ -225,37 +222,6 @@ void OptionsDialog::updateScriptPaths()
     std::ranges::sort(scriptPaths);
     ui->scriptPathList->clear();
     ui->scriptPathList->addItems(scriptPaths);
-}
-
-void OptionsDialog::addJsonPath()
-{
-    const QString jsonPath = QFileDialog::getExistingDirectory(this, tr("Add Json Path"), QDir::currentPath());
-    if (jsonPath.isEmpty())
-        return;
-    Core::Settings::instance()->addJsonPath(jsonPath);
-    updateJsonPaths();
-}
-
-void OptionsDialog::removeJsonPath()
-{
-    const QString jsonPath = ui->jsonPathList->selectedItems().first()->text();
-    Core::Settings::instance()->removeJsonPath(jsonPath);
-    updateJsonPaths();
-}
-
-void OptionsDialog::updateJsonPaths()
-{
-    QStringList jsonPaths = Core::Settings::instance()->value<QStringList>(Core::Settings::JsonPaths);
-    std::ranges::sort(jsonPaths);
-    ui->jsonPathList->clear();
-    for (const auto &path : jsonPaths) {
-        if (path.startsWith(":/")) {
-            auto item = new QListWidgetItem(tr("<internal>"), ui->jsonPathList);
-            item->setFlags(Qt::ItemIsEnabled);
-        } else {
-            ui->jsonPathList->addItem(path);
-        }
-    }
 }
 
 void OptionsDialog::changeToggleSectionSetting()

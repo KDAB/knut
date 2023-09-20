@@ -12,6 +12,7 @@
 #include <QTextStream>
 #include <QTimer>
 
+#include <kdalgorithms.h>
 #include <spdlog/spdlog.h>
 
 namespace Core {
@@ -89,7 +90,10 @@ void ScriptManager::addScript(const QString &fileName)
     const QString &line = stream.readLine();
     const QString description = line.startsWith("//") ? line.mid(2).simplified() : "";
     QFileInfo fi(fileName);
-    m_scriptList.push_back(Script {fi.fileName(), fileName, description});
+
+    Script script {fi.fileName(), fileName, description};
+    emit aboutToAddScript(script, static_cast<int>(m_scriptList.size()));
+    m_scriptList.push_back(std::move(script));
     emit scriptAdded(m_scriptList.back());
 }
 
@@ -106,24 +110,31 @@ static QStringList scriptListFromDir(const QString &path)
 
 void ScriptManager::updateScriptDirectory(const QString &path)
 {
-    QStringList files = scriptListFromDir(path);
+    QStringList filesInDir = scriptListFromDir(path);
 
     // Remove deleted scripts
     auto it = m_scriptList.begin();
     while (it != m_scriptList.end()) {
-        if (files.contains(it->fileName)) {
-            files.removeAll(it->fileName);
-            ++it;
+        const auto &script = *it;
+
+        // Only remove the script if it was actually in the directory that had changes
+        if (script.fileName.startsWith(path) && !filesInDir.contains(script.fileName)) {
+            it = removeScript(it);
         } else {
-            auto script = *it;
-            it = m_scriptList.erase(it);
-            emit scriptRemoved(script);
+            ++it;
         }
     }
 
+    auto scriptToFileName = [](const auto &script) {
+        return script.fileName;
+    };
+    auto currentFileNames = kdalgorithms::transformed(m_scriptList, scriptToFileName);
     // Add new scripts
-    for (const auto &fileName : files)
-        addScript(fileName);
+    for (const auto &fileName : filesInDir) {
+        if (!kdalgorithms::contains(currentFileNames, fileName)) {
+            addScript(fileName);
+        }
+    }
 }
 
 void ScriptManager::addScriptsFromPath(const QString &path)
@@ -156,13 +167,20 @@ void ScriptManager::removeScriptsFromPath(const QString &path)
     auto it = m_scriptList.begin();
     while (it != m_scriptList.end()) {
         if (files.contains(it->fileName)) {
-            auto script = *it;
-            it = m_scriptList.erase(it);
-            emit scriptRemoved(script);
+            it = removeScript(it);
         } else {
             ++it;
         }
     }
+}
+
+ScriptManager::ScriptList::iterator ScriptManager::removeScript(const ScriptList::iterator &iterator)
+{
+    auto script = *iterator;
+    emit aboutToRemoveScript(script, static_cast<int>(iterator - m_scriptList.begin()));
+    auto it = m_scriptList.erase(iterator);
+    emit scriptRemoved(script);
+    return it;
 }
 
 void ScriptManager::doRunScript(const QString &fileName, std::function<void()> endFunc)

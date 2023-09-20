@@ -55,6 +55,8 @@ set(PROJECT_SOURCES
     runscriptdialog.ui
     scriptpanel.h
     scriptpanel.cpp
+    scriptsinpath.h
+    scriptsinpath.cpp
     shortcutmanager.h
     shortcutmanager.cpp
     shortcutsettings.h

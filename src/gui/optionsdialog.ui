@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>732</width>
+    <width>829</width>
     <height>510</height>
    </rect>
   </property>
@@ -112,13 +112,6 @@
           <string>Scripts</string>
          </property>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_3">
-            <property name="text">
-             <string>Script Paths:</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="2">
            <widget class="QPushButton" name="addButton">
             <property name="text">
@@ -136,6 +129,33 @@
             </property>
            </widget>
           </item>
+          <item row="0" column="1" rowspan="3">
+           <widget class="QListWidget" name="scriptPathList"/>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Script Paths:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QListView" name="scriptsList">
+            <property name="editTriggers">
+             <set>QAbstractItemView::NoEditTriggers</set>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Scripts in Path:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+            </property>
+           </widget>
+          </item>
           <item row="2" column="2">
            <spacer name="verticalSpacer">
             <property name="orientation">
@@ -145,58 +165,6 @@
              <size>
               <width>20</width>
               <height>91</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="1" rowspan="3">
-           <widget class="QListWidget" name="scriptPathList"/>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="groupBox_3">
-         <property name="title">
-          <string>Symbol Transformations</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_3">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>Json Paths:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" rowspan="3">
-           <widget class="QListWidget" name="jsonPathList"/>
-          </item>
-          <item row="0" column="2">
-           <widget class="QPushButton" name="addJsonButton">
-            <property name="text">
-             <string>Add</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <widget class="QPushButton" name="removeJsonButton">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string>Remove</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
-           <spacer name="verticalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>20</height>
              </size>
             </property>
            </spacer>
