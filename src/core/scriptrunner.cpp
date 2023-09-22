@@ -139,7 +139,8 @@ ScriptRunner::ScriptRunner(QObject *parent)
 
 ScriptRunner::~ScriptRunner() { }
 
-QVariant ScriptRunner::runScript(const QString &fileName, std::function<void()> endCallback)
+QVariant ScriptRunner::runScript(const QString &fileName, std::function<void()> endCallback,
+                                 std::optional<QueryMatch> context)
 {
     QFileInfo fi(fileName);
 
@@ -155,10 +156,15 @@ QVariant ScriptRunner::runScript(const QString &fileName, std::function<void()> 
         auto engine = getEngine(fullName);
         if (endCallback)
             connect(engine, &QObject::destroyed, this, endCallback);
-        if (fi.suffix() == "js")
+
+        if (fi.suffix() == "js") {
+            if (context.has_value()) {
+                spdlog::warn("ScriptRunner::runScript: context is not supported for javascript files");
+            }
             result = runJavascript(fullName, engine);
-        else
-            result = runQml(fullName, engine);
+        } else {
+            result = runQml(fullName, engine, context);
+        }
         // engine is deleted in runJavascript or runQml
     } else {
         spdlog::error("File {} doesn't exist", fileName.toStdString());
@@ -224,7 +230,7 @@ QVariant ScriptRunner::runJavascript(const QString &fileName, QQmlEngine *engine
     return QVariant(ErrorCode);
 }
 
-QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine)
+QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine, std::optional<QueryMatch> context)
 {
     auto component = new QQmlComponent(engine, engine);
     component->loadUrl(QUrl::fromLocalFile(fileName));
@@ -271,11 +277,17 @@ QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine)
 
             // Run the run method if it exists
             if (topLevel->metaObject()->indexOfMethod("run()") != -1) {
-                QMetaObject::invokeMethod(topLevel, "run", Qt::DirectConnection);
+                if (context.has_value()) {
+                    QMetaObject::invokeMethod(topLevel, "run", Qt::DirectConnection, Q_ARG(Core::QueryMatch, *context));
+                } else {
+                    QMetaObject::invokeMethod(topLevel, "run", Qt::DirectConnection);
+                }
                 if (m_hasError)
                     return ErrorCode;
                 QVariant result = topLevel->property("failed");
-                delete engine;
+                if (!window) {
+                    delete engine;
+                }
                 return result;
             }
 

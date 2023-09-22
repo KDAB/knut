@@ -80,6 +80,67 @@ void ScriptManager::runScript(const QString &fileName, bool async, bool log)
         doRunScript(fileName, logEndScript);
 }
 
+void ScriptManager::runScriptInContext(const QString &fileName, QueryMatch context, bool async, bool log)
+{
+    if (log)
+        spdlog::debug("==> Start script {} -- context: {}", fileName.toStdString(), context.toString().toStdString());
+    ScriptRunner::EndScriptFunc logEndScript;
+    if (log)
+        logEndScript = [fileName]() {
+            spdlog::debug("<== End script {}", fileName.toStdString());
+        };
+
+    if (async)
+        QTimer::singleShot(0, this, [this, fileName, logEndScript, context = std::move(context)]() {
+            doRunScript(fileName, logEndScript, context);
+        });
+    else
+        doRunScript(fileName, logEndScript, context);
+}
+
+static QStringList readContextQueries(const QString &fileName, QTextStream &stream)
+{
+    QString line;
+    QStringList contextQueries;
+    QString contextQuery;
+    bool inContextQuery = false;
+
+    auto finishContextQuery = [&]() {
+        if (!contextQuery.isEmpty()) {
+            contextQueries.push_back(contextQuery.simplified());
+            contextQuery.clear();
+        } else {
+            spdlog::warn("Encountered empty context query in {}", fileName.toStdString());
+        }
+
+        inContextQuery = false;
+    };
+
+    while ((line = stream.readLine()).startsWith("//")) {
+        auto content = line.mid(2);
+        if (content.simplified() == "CONTEXT QUERY") {
+            if (inContextQuery) {
+                // recover somewhat gracefully from a missing END CONTEXT QUERY
+                spdlog::warn("Encountered another 'CONTEXT QUERY' without a preceding 'END CONTEXT QUERY' in {}",
+                             fileName.toStdString());
+                finishContextQuery();
+            }
+            inContextQuery = true;
+        } else if (content.simplified() == "END CONTEXT QUERY") {
+            finishContextQuery();
+        } else if (inContextQuery) {
+            contextQuery += content + '\n';
+        }
+    }
+    if (inContextQuery) {
+        spdlog::warn("Encountered 'CONTEXT QUERY' without a following 'END CONTEXT QUERY' in {}",
+                     fileName.toStdString());
+        finishContextQuery();
+    }
+
+    return contextQueries;
+}
+
 void ScriptManager::addScript(const QString &fileName)
 {
     QFile file(fileName);
@@ -87,11 +148,14 @@ void ScriptManager::addScript(const QString &fileName)
         return;
 
     QTextStream stream(&file);
-    const QString &line = stream.readLine();
+    auto line = stream.readLine();
     const QString description = line.startsWith("//") ? line.mid(2).simplified() : "";
+
+    const auto contextQueries = readContextQueries(fileName, stream);
+
     QFileInfo fi(fileName);
 
-    Script script {fi.fileName(), fileName, description};
+    Script script {fi.fileName(), fileName, description, contextQueries};
     emit aboutToAddScript(script, static_cast<int>(m_scriptList.size()));
     m_scriptList.push_back(std::move(script));
     emit scriptAdded(m_scriptList.back());
@@ -183,9 +247,10 @@ ScriptManager::ScriptList::iterator ScriptManager::removeScript(const ScriptList
     return it;
 }
 
-void ScriptManager::doRunScript(const QString &fileName, std::function<void()> endFunc)
+void ScriptManager::doRunScript(const QString &fileName, std::function<void()> endFunc,
+                                std::optional<QueryMatch> context)
 {
-    auto result = m_runner->runScript(fileName, endFunc);
+    auto result = m_runner->runScript(fileName, endFunc, context);
     if (m_runner->hasError()) {
         const auto errors = m_runner->errors();
         for (const auto &error : errors)
@@ -200,8 +265,11 @@ void ScriptManager::doRunScript(const QString &fileName, std::function<void()> e
 
 void ScriptManager::updateDirectories()
 {
-    LoggerDisabler ld(true);
-    const auto directories = Settings::instance()->value<QStringList>(Settings::ScriptPaths);
+    QStringList directories;
+    {
+        LoggerDisabler ld(true);
+        directories = Settings::instance()->value<QStringList>(Settings::ScriptPaths);
+    }
     for (const auto &path : directories)
         addScriptsFromPath(path);
 }

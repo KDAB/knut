@@ -20,6 +20,18 @@ class ScriptsInPath : public QAbstractTableModel
 public:
     explicit ScriptsInPath(QObject *parent = nullptr);
 
+    enum Column : int {
+        Path = 0,
+        Name = 1,
+        Description = 2,
+    };
+    Q_ENUM(Column)
+
+    enum Role : int {
+        ContextQueries = Qt::UserRole,
+    };
+    Q_ENUM(Role)
+
 public slots:
     void aboutToAddScript(const Core::ScriptManager::Script &, int);
     void aboutToRemoveScript(const Core::ScriptManager::Script &, int);
@@ -31,10 +43,14 @@ public:
     int columnCount(const QModelIndex &parent) const override;
     int rowCount(const QModelIndex &parent) const override;
 
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+
     QVariant data(const QModelIndex &index, int role) const override;
 
 private:
     QVariant displayData(const Core::ScriptManager::Script &script, int column) const;
+
+    QVariant columnHeaderDisplayData(int column) const;
 };
 
 } // namespace Gui

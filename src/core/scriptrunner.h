@@ -7,6 +7,9 @@
 #include <QString>
 
 #include <functional>
+#include <optional>
+
+#include "querymatch.h"
 
 namespace Core {
 
@@ -26,7 +29,7 @@ public:
 
     // Run a script
     using EndScriptFunc = std::function<void()>;
-    QVariant runScript(const QString &filePath, EndScriptFunc endCallback = {});
+    QVariant runScript(const QString &filePath, EndScriptFunc endCallback = {}, std::optional<QueryMatch> context = {});
 
     bool hasError() const { return m_hasError; }
     QList<QQmlError> errors() const { return m_errors; }
@@ -36,7 +39,7 @@ public:
 private:
     QQmlEngine *getEngine(const QString &fileName);
     QVariant runJavascript(const QString &fileName, QQmlEngine *engine);
-    QVariant runQml(const QString &fileName, QQmlEngine *engine);
+    QVariant runQml(const QString &fileName, QQmlEngine *engine, std::optional<QueryMatch> context = {});
     void filterErrors(const QQmlComponent &component);
 
 private:

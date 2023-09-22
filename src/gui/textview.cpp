@@ -6,11 +6,15 @@
 #include "core/lspdocument.h"
 #include "core/mark.h"
 #include "core/textdocument.h"
+#include "scriptsinpath.h"
+#include "scriptsuggestions.h"
 
 #include <QEvent>
+#include <QHeaderView>
 #include <QPainter>
 #include <QPlainTextEdit>
 #include <QRubberBand>
+#include <QTableView>
 #include <QTextDocument>
 #include <QToolTip>
 #include <QVBoxLayout>
@@ -70,6 +74,25 @@ void TextView::setTextDocument(Core::TextDocument *document)
     setFocusProxy(textEdit);
     connect(textEdit->document(), &QTextDocument::contentsChanged, this, &TextView::updateMarkRect);
     GuiSettings::setupDocumentTextEdit(textEdit, document->fileName());
+
+    if (auto *lspDocument = qobject_cast<Core::LspDocument *>(document)) {
+        auto table = new QTableView(this);
+        auto allScripts = new ScriptsInPath(this);
+        auto suggestedScripts = new ScriptSuggestions(*lspDocument, this);
+        suggestedScripts->setSourceModel(allScripts);
+        table->setModel(suggestedScripts);
+
+        table->hideColumn(0);
+        table->hideColumn(3);
+
+        layout->addWidget(table);
+        table->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+        table->verticalHeader()->hide();
+        table->setSelectionBehavior(QAbstractItemView::SelectRows);
+
+        connect(table, &QAbstractItemView::doubleClicked, suggestedScripts, &ScriptSuggestions::run);
+    }
 }
 
 void TextView::toggleMark()

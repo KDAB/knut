@@ -6,6 +6,8 @@
 #include <functional>
 #include <vector>
 
+#include "querymatch.h"
+
 class QFileSystemWatcher;
 
 namespace Core {
@@ -30,6 +32,7 @@ public:
         QString name;
         QString fileName;
         QString description;
+        QStringList contextQueries;
     };
     using ScriptList = std::vector<Script>;
 
@@ -46,6 +49,7 @@ public:
 
 public slots:
     void runScript(const QString &scriptName, bool async = true, bool log = true);
+    void runScriptInContext(const QString &scriptName, Core::QueryMatch context, bool async = true, bool log = true);
 
 signals:
     void scriptFinished(const QVariant &result);
@@ -66,7 +70,8 @@ private:
     void addScriptsFromPath(const QString &path);
     void removeScriptsFromPath(const QString &path);
 
-    void doRunScript(const QString &fileName, std::function<void()> endFunc = {});
+    void doRunScript(const QString &fileName, std::function<void()> endFunc = {},
+                     std::optional<QueryMatch> context = {});
 
     void updateDirectories();
     void updateScriptDirectory(const QString &path);

@@ -44,12 +44,43 @@ void ScriptsInPath::scriptRemoved(const Core::ScriptManager::Script &)
 
 int ScriptsInPath::columnCount(const QModelIndex &parent) const
 {
-    return parent.isValid() ? 0 : 3;
+    return parent.isValid() ? 0 : 4;
 }
 
 int ScriptsInPath::rowCount(const QModelIndex &parent) const
 {
     return parent.isValid() ? 0 : static_cast<int>(scriptList().size());
+}
+
+QVariant ScriptsInPath::columnHeaderDisplayData(int column) const
+{
+    switch (column) {
+    case 0:
+        return tr("Path");
+    case 1:
+        return tr("Name");
+    case 2:
+        return tr("Description");
+    case 3:
+        return tr("Context Queries");
+    default:
+        spdlog::error("SuggestedScripts::columnHeaderDisplayData: column out of range: {}", column);
+        return {};
+    }
+}
+
+QVariant ScriptsInPath::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if (orientation != Qt::Horizontal) {
+        return QAbstractTableModel::headerData(section, orientation, role);
+    }
+
+    switch (role) {
+    case Qt::DisplayRole:
+        return columnHeaderDisplayData(section);
+    default:
+        return QAbstractTableModel::headerData(section, orientation, role);
+    }
 }
 
 QVariant ScriptsInPath::data(const QModelIndex &index, int role) const
@@ -68,6 +99,8 @@ QVariant ScriptsInPath::data(const QModelIndex &index, int role) const
         return displayData(script, index.column());
     case Qt::ToolTipRole:
         return script.description;
+    case ScriptsInPath::Role::ContextQueries:
+        return script.contextQueries;
     default:
         return QVariant {};
     }
@@ -76,11 +109,11 @@ QVariant ScriptsInPath::data(const QModelIndex &index, int role) const
 QVariant ScriptsInPath::displayData(const ScriptManager::Script &script, int column) const
 {
     switch (column) {
-    case 0:
+    case ScriptsInPath::Column::Path:
         return script.fileName;
-    case 1:
+    case ScriptsInPath::Column::Name:
         return script.name;
-    case 2:
+    case ScriptsInPath::Column::Description:
         return script.description;
     default:
         spdlog::error("SuggestedScripts::displayData: column out of range: {}", column);

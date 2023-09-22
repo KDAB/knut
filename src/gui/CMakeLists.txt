@@ -57,6 +57,8 @@ set(PROJECT_SOURCES
     scriptpanel.cpp
     scriptsinpath.h
     scriptsinpath.cpp
+    scriptsuggestions.cpp
+    scriptsuggestions.h
     shortcutmanager.h
     shortcutmanager.cpp
     shortcutsettings.h
