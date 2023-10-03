@@ -21,7 +21,7 @@ InterfaceSettings::InterfaceSettings(QWidget *parent)
 {
     ui->setupUi(this);
 
-    ui->styleCombo->addItems({"[Defaut]", "Fusion Light", "Fusion Dark"});
+    ui->styleCombo->addItems({"[Defaut]", "Fusion", "Oreo"});
 
     // Help Path
     QDir dir(QCoreApplication::applicationDirPath());

@@ -19,8 +19,8 @@ class GuiSettings : public QObject
 public:
     enum Style {
         DefaultStyle = 0,
-        FusionLight,
-        FusionDark,
+        FusionStyle,
+        OreoStyle,
     };
 
     static GuiSettings *instance();

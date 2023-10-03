@@ -212,21 +212,22 @@ void GuiSettings::updateStyle() const
 {
     // Store the name of the default style... else there's no way to get it back
     static QString defaultStyle = qApp->style()->objectName();
+    static QPalette defaultPalette = qApp->palette();
 
     switch (m_style) {
     case GuiSettings::DefaultStyle: {
         auto style = QStyleFactory::create(defaultStyle);
         qApp->setStyle(style);
-        qApp->setPalette(style->standardPalette());
+        qApp->setPalette(defaultPalette);
         break;
     }
-    case GuiSettings::FusionLight: {
+    case GuiSettings::FusionStyle: {
         auto style = new KnutStyle("Fusion");
         qApp->setStyle(style);
         qApp->setPalette(style->standardPalette());
         break;
     }
-    case GuiSettings::FusionDark: {
+    case GuiSettings::OreoStyle: {
         auto style = new KnutStyle("Fusion");
         qApp->setStyle(style);
 
