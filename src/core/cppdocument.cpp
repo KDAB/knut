@@ -255,6 +255,50 @@ CppDocument *CppDocument::openHeaderSource()
 }
 
 /*!
+ * \qmlmethod QueryMatch CppDocument::queryClassDefinition(string className)
+ *
+ * Returns the class or struct definition matching the given `className`.
+ *
+ * Every QueryMatch returned by this function will have the following captures available:
+ *
+ * - `name` - The name of the class or struct
+ * - `base` - The list of base classes/structs, if any
+ * - `body` - The body of the class or struct definition (including curly-braces)
+ */
+Core::QueryMatch CppDocument::queryClassDefinition(const QString &className)
+{
+    LOG("CppDocument::queryClassDefinition", LOG_ARG("className", className));
+
+    // clang-format off
+    const auto classDefinitionQuery = QString(R"EOF(
+        [(class_specifier
+            name: (_) @name
+            (base_class_clause
+                [(type_identifier) @base _]*)?
+            body: (_) @body)
+        (struct_specifier
+            name: (_) @name
+            (base_class_clause
+                [(type_identifier) @base _]*)?
+            body: (_) @body)]
+    )EOF").arg(className);
+    // clang-format on
+
+    auto matches = query(classDefinitionQuery);
+    if (matches.isEmpty()) {
+        spdlog::warn("CppDocument::queryClassDefinition: No class named `{}` found in `{}`", className.toStdString(),
+                     fileName().toStdString());
+        return {};
+    }
+
+    if (matches.size() > 1) {
+        spdlog::warn("CppDocument::queryClassDefinition: Multiple classes named `{}` found in `{}`!",
+                     className.toStdString(), fileName().toStdString());
+    }
+    return matches.first();
+}
+
+/*!
  * \qmlmethod array<QueryMatch> CppDocument::queryMethodDefinition(string scope, string methodName)
  *
  * Returns the list of methods definitions matching the given name and scope.
@@ -998,31 +1042,6 @@ bool CppDocument::insertInclude(const QString &include, bool newGroup)
     return true;
 }
 
-RangeMark CppDocument::findClassBody(const QString &className)
-{
-    LOG("CppDocument::findClassBody", LOG_ARG("className", className));
-
-    // clang-format off
-    const auto classDefinitionQuery = QString(R"EOF(
-        (class_specifier
-            name:(_) @className (#eq? @className "%1")
-            body: (_) @classBody
-        )
-    )EOF").arg(className);
-    // clang-format on
-
-    auto result = query(classDefinitionQuery);
-
-    if (!result.isEmpty()) {
-
-        const auto &match = result.first();
-        auto classMatch = match.get("classBody");
-
-        return createRangeMark(classMatch.start(), classMatch.end());
-    }
-    return {};
-}
-
 CppDocument::MemberOrMethodAdditionResult
 CppDocument::addMemberOrMethod(const QString &memberInfo, const QString &className, AccessSpecifier specifier)
 {
@@ -1037,7 +1056,7 @@ CppDocument::addMemberOrMethod(const QString &memberInfo, const QString &classNa
     )EOF").arg(accessSpecifierMap.value(specifier));
     // clang-format on
 
-    const auto range = findClassBody(className);
+    const auto range = queryClassDefinition(className).get("body");
     if (!range.isValid()) {
         return MemberOrMethodAdditionResult::ClassNotFound;
     }
@@ -1225,7 +1244,7 @@ bool CppDocument::addSpecifierSection(const QString &memberText, const QString &
     )EOF");
     // clang-format on
 
-    auto range = findClassBody(className);
+    auto range = queryClassDefinition(className).get("body");
     auto result = queryInRange(range, queryString);
 
     if (!result.isEmpty()) {

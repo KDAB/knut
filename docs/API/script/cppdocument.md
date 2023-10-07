@@ -43,6 +43,7 @@ Inherited properties: [LspDocument properties](../script/lspdocument.md#properti
 |array<[QueryMatch](../script/querymatch.md)> |**[mfcFindAfxMsgDeclaration](#mfcFindAfxMsgDeclaration)**(string afxMsgName)|
 |bool |**[mfcReplaceAfxMsgDeclaration](#mfcReplaceAfxMsgDeclaration)**(string afxMsgName, string newDeclaration)|
 |[CppDocument](../script/cppdocument.md) |**[openHeaderSource](#openHeaderSource)**()|
+|[QueryMatch](../script/querymatch.md) |**[queryClassDefinition](#queryClassDefinition)**(string className)|
 |array<[QueryMatch](../script/querymatch.md)> |**[queryFunctionCall](#queryFunctionCall)**(string functionName)|
 |array<[QueryMatch](../script/querymatch.md)> |**[queryFunctionCall](#queryFunctionCall)**(string functionName, array<string> argumentCaptures)|
 |array<[QueryMatch](../script/querymatch.md)> |**[queryMethodDefinition](#queryMethodDefinition)**(string scope, string methodName)|
@@ -260,6 +261,16 @@ Replaces the declaration of an afx_msg with `afxMsgName` with a new declaration.
 
 Opens the corresponding source or header files, the current document is the new file.
 If no files have been found, it's a no-op.
+
+#### <a name="queryClassDefinition"></a>[QueryMatch](../script/querymatch.md) **queryClassDefinition**(string className)
+
+Returns the class or struct definition matching the given `className`.
+
+Every QueryMatch returned by this function will have the following captures available:
+
+- `name` - The name of the class or struct
+- `base` - The list of base classes/structs, if any
+- `body` - The body of the class or struct definition (including curly-braces)
 
 #### <a name="queryFunctionCall"></a>array<[QueryMatch](../script/querymatch.md)> **queryFunctionCall**(string functionName)
 

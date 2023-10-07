@@ -34,6 +34,7 @@ public:
 
     Q_INVOKABLE QString correspondingHeaderSource() const;
 
+    Q_INVOKABLE Core::QueryMatch queryClassDefinition(const QString &className);
     Q_INVOKABLE QVector<Core::QueryMatch> queryMethodDefinition(const QString &scope, const QString &functionName);
     Q_INVOKABLE QVector<Core::QueryMatch> queryFunctionCall(const QString &functionName,
                                                             const QVector<QString> &argumentCaptures);
