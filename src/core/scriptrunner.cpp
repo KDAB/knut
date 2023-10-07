@@ -285,9 +285,6 @@ QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine, std::
                 if (m_hasError)
                     return ErrorCode;
                 QVariant result = topLevel->property("failed");
-                if (!window) {
-                    delete engine;
-                }
                 return result;
             }
 
@@ -297,7 +294,6 @@ QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine, std::
                 if (m_hasError)
                     return ErrorCode;
                 QVariant result = topLevel->property("failed");
-                delete engine;
                 return result;
             }
 
