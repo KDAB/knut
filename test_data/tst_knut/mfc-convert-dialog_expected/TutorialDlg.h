@@ -33,12 +33,11 @@ protected:
   /// Called immediately after a dialog is created, but before it is displayed.
   /// This is where all of the control initialization usually occurs. This is
   /// also where the graphics window is set up
-  virtual BOOL OnInitDialog();
+  virtual bool OnInitDialog();
 
   /// A message map is an MFC macro for mapping window's events (paint, size, mouse,...) that
   /// occur on a window to functions in this class.
-  /// The functions in this class that begin with afx_msg are "handlers" for window's messages
-  DECLARE_MESSAGE_MAP()
+  /// The functions in this class that begin with are "handlers" for window's messages
 
   /// Called when this dialog receives a WM_PAINT message (event)
   /// The MFC wizard adds code to paint properly if this dialog is minimized to the taskbar
@@ -57,8 +56,8 @@ protected:
   void OnRButtonDown(QMouseEvent *event);
   ///
   /// Called when this dialog receives button click message from the add button
-   void OnBnClickedBtnAdd();
-   void OnBnClickedTimerControlSliders();
+  void OnBnClickedBtnAdd();
+  void OnBnClickedTimerControlSliders();
   void mousePressEvent(QMouseEvent * event) override;
 
 private:
@@ -74,7 +73,7 @@ private:
   CString m_MouseEcho;
   CString m_TimerEcho;
 
-  BOOL m_TimerCtrlSliders;
+  bool m_TimerCtrlSliders;
   HICON m_hIcon;
 private:
 	std::unique_ptr<Ui::CTutorialDlg> m_ui;
