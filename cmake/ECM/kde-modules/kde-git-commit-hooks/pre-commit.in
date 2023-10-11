@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-${CLANG_FORMAT_SCRIPT}

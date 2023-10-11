@@ -5,7 +5,7 @@ project(knut VERSION 1.1 LANGUAGES CXX)
 
 # Project initialization
 ###########################################################
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
@@ -16,7 +16,9 @@ add_definitions(-DKNUT_VERSION="${PROJECT_VERSION}")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
+include(InstallDependency)
+include(CheckSubmodule)
 
 # Qt
 ###########################################################
@@ -28,45 +30,33 @@ find_package(Qt6 COMPONENTS Widgets Qml Quick Test UiTools REQUIRED)
 
 # spdlog
 # ##########################################################
-FetchContent_Declare(spdlog
-    GIT_REPOSITORY https://github.com/gabime/spdlog.git
-    GIT_TAG v1.12.0
-)
+CheckSubmodule(spdlog 3rdparty/spdlog)
 # See https://github.com/gabime/spdlog/issues/1190
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-set(SPDLOG_USE_STD_FORMAT OFF)
-FetchContent_MakeAvailable(spdlog)
+add_subdirectory(3rdparty/spdlog)
 
 # nlohmann/json
 # ##########################################################
-FetchContent_Declare(json
-    GIT_REPOSITORY https://github.com/nlohmann/json
-    GIT_TAG v3.11.2
-)
+CheckSubmodule(nlohmann-json 3rdparty/nlohmann-json)
 set(JSON_ImplicitConversions OFF)
-FetchContent_MakeAvailable(json)
+add_subdirectory(3rdparty/nlohmann-json)
 
 # pugixml
 # ##########################################################
-FetchContent_Declare(pugixml
-    GIT_REPOSITORY https://github.com/zeux/pugixml.git
-    GIT_TAG v1.13
-)
-FetchContent_MakeAvailable(pugixml)
+CheckSubmodule(pugixml 3rdparty/pugixml)
+add_subdirectory(3rdparty/pugixml)
 
 # KDAlgorithms
 # ##########################################################
-FetchContent_Declare(kdalgorithms
-    GIT_REPOSITORY https://github.com/KDAB/KDAlgorithms
-    GIT_TAG 1.1
-)
-FetchContent_MakeAvailable(kdalgorithms)
+CheckSubmodule(kdalgorithms 3rdparty/kdalgorithms)
+add_subdirectory(3rdparty/kdalgorithms)
 
 # ECM
 # ##########################################################
-# Couldn't find a way to initialize it with FetchContent :(
-find_package(ECM 5.103.0 REQUIRED NO_MODULE)
-set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
+CheckSubmodule(extra-cmake-modules 3rdparty/extra-cmake-modules)
+InstallDependency(ECM "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/extra-cmake-modules" "-DBUILD_TESTING=OFF;-DBUILD_HTML_DOCS=OFF;-DBUILD_MAN_DOCS=OFF;-DBUILD_QTHELP_DOCS=OFF")
+find_package(ECM CONFIG REQUIRED)
+list(PREPEND CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 include(ECMEnableSanitizers)
 if (ECM_ENABLE_SANITIZERS)
     add_definitions(-DSANITIZERS_ENABLED)
@@ -76,23 +66,26 @@ endif()
 ###########################################################
 # A bit of a pain to integrate:
 #  - compile error for me in Qt Creator, needs to compile on the command line
-#  - does not compile with CMAKE_CXX_STANDARD 23
 #  - leak 2 targets in the project
 option(USE_SYNTAX_HIGHLIGHTING "Enable syntax highlighting in IDE" ON)
 if(USE_SYNTAX_HIGHLIGHTING)
-    FetchContent_Declare(KSyntaxHighlighting
-        GIT_REPOSITORY https://github.com/KDE/syntax-highlighting.git
-        GIT_TAG v5.103.0
-    )
     # Don't build tests and examples
     set(KSYNTAXHIGHLIGHTING_USE_GUI OFF)
     set(DISABLE_ALL_OPTIONAL_SUBDIRECTORIES TRUE)
     set(BUILD_TESTING OFF)
-    FetchContent_MakeAvailable(KSyntaxHighlighting)
+    CheckSubmodule(ksyntaxhighlighting 3rdparty/ksyntaxhighlighting)
+    add_subdirectory(3rdparty/ksyntaxhighlighting)
     add_definitions(-DUSE_SYNTAX_HIGHLIGHTING)
 endif()
 
-add_subdirectory(src/third_party)
+#TreeSitter and TreeSitterCpp
+###########################################################
+CheckSubmodule(tree-sitter 3rdparty/tree-sitter)
+# Currently, bumping TreeSitterCpp to 0.20.3 causes the Parser
+# to get hung up. 0.20.2 is the latest version that works as of 2023-Oct-11
+# This may be related to: https://github.com/tree-sitter/tree-sitter/issues/2684
+CheckSubmodule(tree-sitter-cpp 3rdparty/tree-sitter-cpp)
+add_subdirectory(3rdparty)
 
 # test_data
 ###########################################################
