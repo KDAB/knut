@@ -4,11 +4,14 @@
 #include <QWidget>
 
 class QRubberBand;
+class QToolButton;
 
 namespace Core {
 class TextDocument;
 }
 namespace Gui {
+
+class ScriptSuggestions;
 
 class TextView : public QWidget
 {
@@ -27,10 +30,14 @@ public:
 
 private:
     void updateMarkRect();
+    void updateQuickActionRect();
+    void showQuickActionMenu();
 
     Core::TextDocument *m_document;
     std::optional<Core::Mark> m_mark = {};
     QWidget *m_markRect = nullptr;
+    ScriptSuggestions *m_scriptSuggestions = nullptr;
+    QToolButton *m_quickActionButton = nullptr;
 };
 
 } // namespace Gui

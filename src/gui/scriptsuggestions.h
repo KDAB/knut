@@ -11,6 +11,8 @@ namespace Gui {
 
 class ScriptSuggestions : public QSortFilterProxyModel
 {
+    Q_OBJECT
+
 public:
     explicit ScriptSuggestions(Core::LspDocument &document, QObject *parent = nullptr);
 
@@ -18,6 +20,9 @@ public:
 
 public slots:
     void run(const QModelIndex &index);
+
+signals:
+    void suggestionsUpdated();
 
 private:
     std::optional<Core::QueryMatch> contextQuery(const QStringList &queries) const;

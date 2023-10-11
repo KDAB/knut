@@ -1,21 +1,22 @@
 #include "textview.h"
 
-#include "guisettings.h"
-
 #include "core/logger.h"
 #include "core/lspdocument.h"
 #include "core/mark.h"
 #include "core/textdocument.h"
+#include "guisettings.h"
 #include "scriptsinpath.h"
 #include "scriptsuggestions.h"
 
+#include <QAction>
 #include <QEvent>
-#include <QHeaderView>
+#include <QMenu>
 #include <QPainter>
 #include <QPlainTextEdit>
 #include <QRubberBand>
-#include <QTableView>
+#include <QScrollBar>
 #include <QTextDocument>
+#include <QToolButton>
 #include <QToolTip>
 #include <QVBoxLayout>
 
@@ -57,7 +58,14 @@ protected:
 
 TextView::TextView(QWidget *parent)
     : QWidget {parent}
+    , m_quickActionButton(new QToolButton(this))
 {
+    m_quickActionButton->hide();
+    m_quickActionButton->setIcon(QIcon(":/gui/lightbulb.png"));
+    m_quickActionButton->setAutoRaise(true);
+    m_quickActionButton->setFixedSize(fontMetrics().height(), fontMetrics().height());
+    connect(m_quickActionButton, &QToolButton::clicked, this, &TextView::showQuickActionMenu);
+
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 }
 
@@ -76,23 +84,18 @@ void TextView::setTextDocument(Core::TextDocument *document)
     GuiSettings::setupDocumentTextEdit(textEdit, document->fileName());
 
     if (auto *lspDocument = qobject_cast<Core::LspDocument *>(document)) {
-        auto table = new QTableView(this);
         auto allScripts = new ScriptsInPath(this);
-        auto suggestedScripts = new ScriptSuggestions(*lspDocument, this);
-        suggestedScripts->setSourceModel(allScripts);
-        table->setModel(suggestedScripts);
-
-        table->hideColumn(0);
-        table->hideColumn(3);
-
-        layout->addWidget(table);
-        table->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-        table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-        table->verticalHeader()->hide();
-        table->setSelectionBehavior(QAbstractItemView::SelectRows);
-
-        connect(table, &QAbstractItemView::doubleClicked, suggestedScripts, &ScriptSuggestions::run);
+        m_scriptSuggestions = new ScriptSuggestions(*lspDocument, this);
+        m_scriptSuggestions->setSourceModel(allScripts);
+        auto updateQuickAction = [this]() {
+            m_quickActionButton->setVisible(m_scriptSuggestions->rowCount() > 0);
+            updateQuickActionRect();
+        };
+        connect(m_scriptSuggestions, &ScriptSuggestions::suggestionsUpdated, this, updateQuickAction);
+        connect(textEdit->verticalScrollBar(), &QScrollBar::valueChanged, this, updateQuickAction);
     }
+
+    m_quickActionButton->raise();
 }
 
 void TextView::toggleMark()
@@ -175,6 +178,37 @@ void TextView::updateMarkRect()
         rect.adjust(-MarkWidth2 + viewport->x(), -MarkWidth2, MarkWidth2 + viewport->x(), MarkWidth2);
         m_markRect->setGeometry(rect);
     }
+}
+
+void TextView::updateQuickActionRect()
+{
+    if (m_quickActionButton->isHidden())
+        return;
+
+    auto *textEdit = m_document->textEdit();
+    const int top = textEdit->cursorRect().translated(textEdit->viewport()->pos()).top();
+    m_quickActionButton->move(textEdit->viewport()->x() - m_quickActionButton->width(), top);
+}
+
+void TextView::showQuickActionMenu()
+{
+    if (!m_scriptSuggestions || m_scriptSuggestions->rowCount() <= 0)
+        return;
+
+    QMenu menu;
+    menu.setToolTipsVisible(true);
+
+    for (int row = 0; row < m_scriptSuggestions->rowCount(); ++row) {
+        const auto index = m_scriptSuggestions->index(row, ScriptsInPath::Column::Name);
+        auto action = new QAction(index.data().toString());
+        action->setToolTip(index.data(Qt::ToolTipRole).toString());
+        auto executeScript = [this, index] {
+            m_scriptSuggestions->run(index);
+        };
+        connect(action, &QAction::triggered, this, executeScript);
+        menu.addAction(action);
+    }
+    menu.exec(QCursor::pos());
 }
 
 } // namespace Gui

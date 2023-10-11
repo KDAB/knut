@@ -15,6 +15,7 @@ ScriptSuggestions::ScriptSuggestions(Core::LspDocument &document, QObject *paren
 {
     auto invalidate = [this]() {
         this->invalidateRowsFilter();
+        emit suggestionsUpdated();
     };
     connect(ScriptManager::instance(), &ScriptManager::scriptAdded, this, invalidate);
     connect(ScriptManager::instance(), &ScriptManager::scriptRemoved, this, invalidate);
