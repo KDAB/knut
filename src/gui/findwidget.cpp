@@ -22,8 +22,8 @@ FindWidget::FindWidget(QWidget *parent)
     setProperty("panelWidget", true);
     setFocusProxy(ui->findEdit);
 
-    auto createAction = [](const QString &text, const QString &icon, const QString &shortcut, QLineEdit *lineEdit) {
-        auto action = new QAction(text);
+    auto createAction = [this](const QString &text, const QString &icon, const QString &shortcut, QLineEdit *lineEdit) {
+        auto action = new QAction(text, this);
         action->setCheckable(true);
         GuiSettings::setIcon(action, icon);
         action->setShortcut(shortcut);

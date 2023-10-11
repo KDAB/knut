@@ -8,6 +8,7 @@
 #include <QApplication>
 #include <QTimer>
 
+#include <spdlog/cfg/env.h>
 #include <spdlog/spdlog.h>
 
 namespace Core {
@@ -18,6 +19,8 @@ KnutCore::KnutCore(QObject *parent)
 #ifdef QT_DEBUG
     spdlog::set_level(spdlog::level::trace);
 #endif
+
+    spdlog::cfg::load_env_levels();
 
     // Initialize some singletons
     auto settings = new Settings(this);

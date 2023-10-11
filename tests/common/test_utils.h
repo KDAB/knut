@@ -12,7 +12,9 @@
 #include <spdlog/sinks/base_sink.h>
 #include <spdlog/spdlog.h>
 
+#include <iostream>
 #include <memory>
+#include <string_view>
 #include <vector>
 
 namespace Test {
@@ -128,13 +130,17 @@ public:
         m_logger = name.empty() ? spdlog::default_logger() : spdlog::get(name);
 
         if (m_logger) {
-            auto callback_sink = std::make_shared<callback_sink_mt>([this](const spdlog::details::log_msg &msg) {
+            m_sink = std::make_shared<callback_sink_mt>([this](const spdlog::details::log_msg &msg) {
                 Q_UNUSED(msg);
+                std::cout << "############### LogCounter - Counting message ##############\n";
+                std::cout << std::string_view(msg.payload.data(), msg.payload.size()) << '\n';
+                std::cout << "############################################################" << std::endl;
+
                 ++m_count;
             });
-            callback_sink->set_level(level);
+            m_sink->set_level(level);
 
-            m_logger->sinks().push_back(callback_sink);
+            m_logger->sinks().push_back(m_sink);
         }
     }
 
