@@ -13,6 +13,7 @@ add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
 target_link_libraries(${PROJECT_NAME}
     TreeSitter
     TreeSitterCpp
+    kdalgorithms
     spdlog::spdlog
     Qt${QT_VERSION_MAJOR}::Core
 )
