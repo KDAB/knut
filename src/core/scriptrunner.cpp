@@ -243,6 +243,7 @@ QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine, std::
                 engine->setIncubationController(window->incubationController());
             } else if (auto contentItem = qobject_cast<QQuickItem *>(topLevel)) {
                 auto qxView = new QQuickView(engine, nullptr);
+                static_cast<QObject *>(qxView)->setParent(engine);
                 window = qxView;
                 qxView->setResizeMode(QQuickView::SizeViewToRootObject);
                 qxView->setContent(fileName, component, contentItem);
@@ -265,11 +266,10 @@ QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine, std::
                 dialog->show();
                 connect(dialog, &ScriptDialogItem::finished, engine, &QObject::deleteLater);
                 connect(engine, &QQmlEngine::quit, dialog, &QDialog::close);
-            } else {
-                // Handle quit for non-gui qml, and make sure everything is deleted
-                topLevel->setParent(engine);
-                connect(engine, &QQmlEngine::quit, engine, &QObject::deleteLater);
             }
+            // Make sure calling `Qt.quit()` in QML deletes everything
+            topLevel->setParent(engine);
+            connect(engine, &QQmlEngine::quit, engine, &QObject::deleteLater);
 
             // Start the init function if it exists.
             if (topLevel->metaObject()->indexOfMethod("init()") != -1)
