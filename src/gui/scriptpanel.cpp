@@ -106,8 +106,8 @@ ScriptPanel::ScriptPanel(QWidget *parent)
     m_scriptName = new QLabel(tr(Untitled));
     layout->addWidget(m_scriptName);
 
-    auto playButton = createButton(":/gui/play.png", tr("Play"));
-    connect(playButton, &QToolButton::clicked, this, &ScriptPanel::playScript);
+    auto runButton = createButton(":/gui/play.png", tr("Run"));
+    connect(runButton, &QToolButton::clicked, this, &ScriptPanel::runScript);
 
     layout->addSpacing(20);
 
@@ -243,7 +243,7 @@ QString ScriptPanel::createDialogFile()
     return uiFileName;
 }
 
-void ScriptPanel::playScript()
+void ScriptPanel::runScript()
 {
     Core::LoggerDisabler ld;
 

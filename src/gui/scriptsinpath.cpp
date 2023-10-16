@@ -44,7 +44,7 @@ void ScriptsInPath::scriptRemoved(const Core::ScriptManager::Script &)
 
 int ScriptsInPath::columnCount(const QModelIndex &parent) const
 {
-    return parent.isValid() ? 0 : 4;
+    return parent.isValid() ? 0 : ColumnCount;
 }
 
 int ScriptsInPath::rowCount(const QModelIndex &parent) const
@@ -55,14 +55,10 @@ int ScriptsInPath::rowCount(const QModelIndex &parent) const
 QVariant ScriptsInPath::columnHeaderDisplayData(int column) const
 {
     switch (column) {
-    case 0:
-        return tr("Path");
-    case 1:
+    case NameColumn:
         return tr("Name");
-    case 2:
+    case DescriptionColumn:
         return tr("Description");
-    case 3:
-        return tr("Context Queries");
     default:
         spdlog::error("SuggestedScripts::columnHeaderDisplayData: column out of range: {}", column);
         return {};
@@ -99,7 +95,9 @@ QVariant ScriptsInPath::data(const QModelIndex &index, int role) const
         return displayData(script, index.column());
     case Qt::ToolTipRole:
         return script.description;
-    case ScriptsInPath::Role::ContextQueries:
+    case PathRole:
+        return script.fileName;
+    case ContextQueriesRole:
         return script.contextQueries;
     default:
         return QVariant {};
@@ -109,11 +107,9 @@ QVariant ScriptsInPath::data(const QModelIndex &index, int role) const
 QVariant ScriptsInPath::displayData(const ScriptManager::Script &script, int column) const
 {
     switch (column) {
-    case ScriptsInPath::Column::Path:
-        return script.fileName;
-    case ScriptsInPath::Column::Name:
+    case NameColumn:
         return script.name;
-    case ScriptsInPath::Column::Description:
+    case DescriptionColumn:
         return script.description;
     default:
         spdlog::error("SuggestedScripts::displayData: column out of range: {}", column);

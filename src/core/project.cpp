@@ -306,7 +306,7 @@ Document *Project::open(const QString &fileName)
     LOG("Project::open", LOG_ARG("path", fileName));
 
     m_current = getDocument(fileName, true);
-    emit currentDocumentChanged();
+    emit currentDocumentChanged(m_current);
 
     LOG_RETURN("document", m_current);
 }

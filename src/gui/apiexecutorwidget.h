@@ -6,6 +6,10 @@
 
 class QLabel;
 
+namespace Core {
+class Document;
+}
+
 namespace Gui {
 
 namespace Ui {
@@ -42,7 +46,7 @@ private:
 
     void initializeApi();
 
-    void populateApiList();
+    void populateApiList(Core::Document *document);
     void populateArgumentList();
 
     void executeAPI(Core::Document *document, const QByteArray &name, const QList<QGenericArgument> &genericArgs);

@@ -21,14 +21,15 @@ public:
     explicit ScriptsInPath(QObject *parent = nullptr);
 
     enum Column : int {
-        Path = 0,
-        Name = 1,
-        Description = 2,
+        NameColumn = 0,
+        DescriptionColumn,
+        ColumnCount,
     };
     Q_ENUM(Column)
 
     enum Role : int {
-        ContextQueries = Qt::UserRole,
+        PathRole = Qt::UserRole,
+        ContextQueriesRole,
     };
     Q_ENUM(Role)
 

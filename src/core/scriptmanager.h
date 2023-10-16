@@ -49,7 +49,7 @@ public:
 
 public slots:
     void runScript(const QString &fileName, bool async = true, bool log = true);
-    void runScriptInContext(const QString &fileName, Core::QueryMatch context, bool async = true, bool log = true);
+    void runScriptInContext(const QString &fileName, const QueryMatch &context, bool async = true, bool log = true);
 
 signals:
     void scriptFinished(const QVariant &result);

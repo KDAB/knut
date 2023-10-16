@@ -13,9 +13,11 @@ namespace Gui {
 class Palette;
 class HistoryPanel;
 class ScriptPanel;
+class ScriptSuggestionsPanel;
 class DocumentPalette;
 class ShortcutManager;
 class TreeSitterInspector;
+class ScriptSuggestions;
 
 namespace Ui {
     class MainWindow;
@@ -87,7 +89,6 @@ private:
     void changeCurrentDocument();
     QDockWidget *createDock(QWidget *widget, Qt::DockWidgetArea area, QWidget *toolbar = nullptr);
 
-private:
     std::unique_ptr<Ui::MainWindow> ui;
     QMenu *m_recentProjects = nullptr;
     QFileSystemModel *const m_fileModel = nullptr;
@@ -95,9 +96,11 @@ private:
     Palette *const m_palette = nullptr;
     HistoryPanel *const m_historyPanel = nullptr;
     ScriptPanel *const m_scriptPanel = nullptr;
+    ScriptSuggestionsPanel *const m_scriptSuggestionsPanel = nullptr;
     DocumentPalette *const m_documentPalette = nullptr;
     ShortcutManager *const m_shortcutManager = nullptr;
     TreeSitterInspector *const m_treeSitterInspector = nullptr;
+    ScriptSuggestions *const m_scriptSuggestions = nullptr;
 };
 
 } // namespace Gui

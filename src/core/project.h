@@ -55,7 +55,7 @@ public slots:
 
 signals:
     void rootChanged();
-    void currentDocumentChanged();
+    void currentDocumentChanged(Core::Document *document);
     void documentsChanged();
 
 private:

@@ -86,17 +86,7 @@ void TextView::setTextDocument(Core::TextDocument *document)
     connect(textEdit->document(), &QTextDocument::contentsChanged, this, &TextView::updateMarkRect);
     GuiSettings::setupDocumentTextEdit(textEdit, document->fileName());
 
-    if (auto *lspDocument = qobject_cast<Core::LspDocument *>(document)) {
-        auto allScripts = new ScriptsInPath(this);
-        m_scriptSuggestions = new ScriptSuggestions(*lspDocument, this);
-        m_scriptSuggestions->setSourceModel(allScripts);
-        auto updateQuickAction = [this]() {
-            m_quickActionButton->setVisible(m_scriptSuggestions->rowCount() > 0);
-            updateQuickActionRect();
-        };
-        connect(m_scriptSuggestions, &ScriptSuggestions::suggestionsUpdated, this, updateQuickAction);
-        connect(textEdit->verticalScrollBar(), &QScrollBar::valueChanged, this, updateQuickAction);
-    }
+    connect(textEdit->verticalScrollBar(), &QScrollBar::valueChanged, this, &TextView::updateQuickActionRect);
 
     m_quickActionButton->raise();
 }
@@ -138,6 +128,17 @@ void TextView::selectToMark()
 bool TextView::hasMark() const
 {
     return m_mark.has_value();
+}
+
+void TextView::setScriptSuggestions(ScriptSuggestions *model)
+{
+    m_scriptSuggestions = model;
+
+    auto updateQuickAction = [this](Core::Document *document) {
+        m_quickActionButton->setVisible(document == m_document && m_scriptSuggestions->rowCount() > 0);
+        updateQuickActionRect();
+    };
+    connect(m_scriptSuggestions, &ScriptSuggestions::suggestionsUpdated, this, updateQuickAction);
 }
 
 bool TextView::eventFilter(QObject *obj, QEvent *event)
@@ -202,7 +203,7 @@ void TextView::showQuickActionMenu()
     menu.setToolTipsVisible(true);
 
     for (int row = 0; row < m_scriptSuggestions->rowCount(); ++row) {
-        const auto index = m_scriptSuggestions->index(row, ScriptsInPath::Column::Name);
+        const auto index = m_scriptSuggestions->index(row, ScriptsInPath::Column::NameColumn);
         auto action = new QAction(index.data().toString());
         action->setToolTip(index.data(Qt::ToolTipRole).toString());
         auto executeScript = [this, index] {

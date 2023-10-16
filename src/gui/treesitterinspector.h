@@ -14,6 +14,7 @@ class Predicates;
 }
 
 namespace Core {
+class Document;
 class LspDocument;
 }
 
@@ -46,7 +47,7 @@ public:
 
 private:
     void showUnnamedChanged();
-    void changeCurrentDocument();
+    void changeCurrentDocument(Core::Document *document);
     void setDocument(Core::LspDocument *document);
     void changeText();
     void changeCursor();

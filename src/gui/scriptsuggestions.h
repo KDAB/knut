@@ -1,9 +1,12 @@
 #pragma once
 
 #include "core/querymatch.h"
+
+#include <QPointer>
 #include <QSortFilterProxyModel>
 
 namespace Core {
+class Document;
 class LspDocument;
 }
 
@@ -14,7 +17,8 @@ class ScriptSuggestions : public QSortFilterProxyModel
     Q_OBJECT
 
 public:
-    explicit ScriptSuggestions(Core::LspDocument &document, QObject *parent = nullptr);
+    explicit ScriptSuggestions(QObject *parent = nullptr);
+    ~ScriptSuggestions();
 
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
 
@@ -22,12 +26,15 @@ public slots:
     void run(const QModelIndex &index);
 
 signals:
-    void suggestionsUpdated();
+    void suggestionsUpdated(Core::Document *document);
 
 private:
+    void invalidate();
+    void setCurrentDocument(Core::Document *document);
+
     std::optional<Core::QueryMatch> contextQuery(const QStringList &queries) const;
 
-    Core::LspDocument &m_document;
+    QPointer<Core::LspDocument> m_document;
 };
 
 } // namespace Gui

@@ -20,7 +20,7 @@ public:
     void setNewScript(const QString &script);
 
     bool hasScript() const;
-    void playScript();
+    void runScript();
 
 signals:
     void newScriptCreated();

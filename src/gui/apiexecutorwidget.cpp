@@ -89,12 +89,12 @@ void APIExecutorWidget::initializeApi()
     }
 }
 
-void APIExecutorWidget::populateApiList()
+void APIExecutorWidget::populateApiList(Core::Document *document)
 {
     ui->apiComboBox->clear();
 
     QStringList availableAPIs;
-    const auto currentType = Core::Project::instance()->currentDocument()->type();
+    const auto currentType = document->type();
     for (const auto &api : std::as_const(m_apis)) {
         if (api.type == currentType)
             availableAPIs.push_back(api.method.name());

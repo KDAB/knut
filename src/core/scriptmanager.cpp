@@ -80,7 +80,7 @@ void ScriptManager::runScript(const QString &fileName, bool async, bool log)
         doRunScript(fileName, logEndScript);
 }
 
-void ScriptManager::runScriptInContext(const QString &fileName, QueryMatch context, bool async, bool log)
+void ScriptManager::runScriptInContext(const QString &fileName, const QueryMatch &context, bool async, bool log)
 {
     if (log)
         spdlog::debug("==> Start script {} -- context: {}", fileName.toStdString(), context.toString().toStdString());

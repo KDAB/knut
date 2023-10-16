@@ -90,7 +90,7 @@ TreeSitterInspector::TreeSitterInspector(QWidget *parent)
 
     connect(ui->query, &QPlainTextEdit::textChanged, this, &TreeSitterInspector::changeQuery);
 
-    changeCurrentDocument();
+    changeCurrentDocument(Core::Project::instance()->currentDocument());
 
     connect(ui->previewButton, &QPushButton::clicked, this, &TreeSitterInspector::previewTransformation);
     connect(ui->runButton, &QPushButton::clicked, this, &TreeSitterInspector::runTransformation);
@@ -117,9 +117,9 @@ void TreeSitterInspector::changeQueryState()
     }
 }
 
-void TreeSitterInspector::changeCurrentDocument()
+void TreeSitterInspector::changeCurrentDocument(Core::Document *document)
 {
-    setDocument(qobject_cast<Core::LspDocument *>(Core::Project::instance()->currentDocument()));
+    setDocument(qobject_cast<Core::LspDocument *>(document));
 }
 
 void TreeSitterInspector::changeQuery()

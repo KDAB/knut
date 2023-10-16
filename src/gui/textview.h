@@ -26,6 +26,8 @@ public:
     void selectToMark();
     bool hasMark() const;
 
+    void setScriptSuggestions(ScriptSuggestions *model);
+
     bool eventFilter(QObject *obj, QEvent *event) override;
 
 private:
