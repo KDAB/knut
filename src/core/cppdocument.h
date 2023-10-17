@@ -35,6 +35,7 @@ public:
     Q_INVOKABLE QString correspondingHeaderSource() const;
 
     Q_INVOKABLE Core::QueryMatch queryClassDefinition(const QString &className);
+    Q_INVOKABLE QVector<Core::QueryMatch> queryMethodDeclaration(const QString &className, const QString &functionName);
     Q_INVOKABLE QVector<Core::QueryMatch> queryMethodDefinition(const QString &scope, const QString &functionName);
     Q_INVOKABLE QVector<Core::QueryMatch> queryFunctionCall(const QString &functionName,
                                                             const QVector<QString> &argumentCaptures);
@@ -42,8 +43,6 @@ public:
 
     Q_INVOKABLE QVariantMap mfcExtractDDX(const QString &className);
     Q_INVOKABLE Core::MessageMap mfcExtractMessageMap(const QString &className = "");
-    Q_INVOKABLE bool mfcReplaceAfxMsgDeclaration(const QString &afxMsgName, const QString &newDeclaration);
-    Q_INVOKABLE QVector<Core::QueryMatch> mfcFindAfxMsgDeclaration(const QString &afxMsgName);
 
 public slots:
     Core::CppDocument *openHeaderSource();

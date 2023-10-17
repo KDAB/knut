@@ -309,8 +309,9 @@ private slots:
     {
         Test::FileTester headerFile(Test::testDataPath() + "/tst_cppdocument/message_map/afx_msg_declaration.h");
         testDocument("/tst_cppdocument/message_map", "afx_msg_declaration.h", [](auto *header) {
-            QVERIFY(header->mfcReplaceAfxMsgDeclaration("OnTimer", "void timerEvent(QTimerEvent *event) override;"));
-
+            auto funcDecl = header->queryMethodDeclaration("CTutorialDlg", "OnTimer");
+            QCOMPARE(funcDecl.size(), 1);
+            funcDecl.first().get("declaration").replace("void timerEvent(QTimerEvent *event) override;");
             header->save();
         });
         QVERIFY(headerFile.compare());

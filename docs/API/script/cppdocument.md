@@ -40,12 +40,11 @@ Inherited properties: [LspDocument properties](../script/lspdocument.md#properti
 ||**[insertForwardDeclaration](#insertForwardDeclaration)**(string forwardDeclaration)|
 ||**[insertInclude](#insertInclude)**(string include, bool newGroup = false)|
 |[MessageMap](../script/messagemap.md) |**[mfcExtractMessageMap](#mfcExtractMessageMap)**(string className = "")|
-|array<[QueryMatch](../script/querymatch.md)> |**[mfcFindAfxMsgDeclaration](#mfcFindAfxMsgDeclaration)**(string afxMsgName)|
-|bool |**[mfcReplaceAfxMsgDeclaration](#mfcReplaceAfxMsgDeclaration)**(string afxMsgName, string newDeclaration)|
 |[CppDocument](../script/cppdocument.md) |**[openHeaderSource](#openHeaderSource)**()|
 |[QueryMatch](../script/querymatch.md) |**[queryClassDefinition](#queryClassDefinition)**(string className)|
 |array<[QueryMatch](../script/querymatch.md)> |**[queryFunctionCall](#queryFunctionCall)**(string functionName)|
 |array<[QueryMatch](../script/querymatch.md)> |**[queryFunctionCall](#queryFunctionCall)**(string functionName, array<string> argumentCaptures)|
+|array<[QueryMatch](../script/querymatch.md)> |**[queryMethodDeclaration](#queryMethodDeclaration)**(string className, string functionName)|
 |array<[QueryMatch](../script/querymatch.md)> |**[queryMethodDefinition](#queryMethodDefinition)**(string scope, string methodName)|
 ||**[removeInclude](#removeInclude)**(string include)|
 |int |**[selectBlockEnd](#selectBlockEnd)**()|
@@ -233,30 +232,6 @@ If `newGroup` is true, it will insert the include at the end, with a new line se
 Extracts information contained in the MFC MESSAGE_MAP.
 The `className` parameter can be used to ensure the result matches to a specific class.
 
-#### <a name="mfcFindAfxMsgDeclaration"></a>array<[QueryMatch](../script/querymatch.md)> **mfcFindAfxMsgDeclaration**(string afxMsgName)
-
-!!! note ""
-    Since: Knut 1.1
-
-Finds the declaration of an afx_msg.
-
-Returns a list of QueryMatch objects containing the declaration.
-Note that there should usually only be one match.
-A warning will be logged if no or multiple declarations are found.
-
-The returned QueryMatch instances contain the following captures:
-
-- `declaration`: The full declaration of the afx_msg
-- `function`: The function declaration, without the "afx_msg" prefix
-- `name`: The name of the function
-
-#### <a name="mfcReplaceAfxMsgDeclaration"></a>bool **mfcReplaceAfxMsgDeclaration**(string afxMsgName, string newDeclaration)
-
-!!! note ""
-    Since: Knut 1.1
-
-Replaces the declaration of an afx_msg with `afxMsgName` with a new declaration.
-
 #### <a name="openHeaderSource"></a>[CppDocument](../script/cppdocument.md) **openHeaderSource**()
 
 Opens the corresponding source or header files, the current document is the new file.
@@ -304,6 +279,23 @@ The returned QueryMatch instances will have the following captures available:
 - `argument-list` - The entire list of arguments, including the surroundg parentheses `()`
 - a capture for every argument in `argumentCaptures`
 
+#### <a name="queryMethodDeclaration"></a>array<[QueryMatch](../script/querymatch.md)> **queryMethodDeclaration**(string className, string functionName)
+
+!!! note ""
+    Since: Knut 1.1
+
+Finds the declaration of a method inside a class or struct definition.
+
+Returns a list of QueryMatch objects containing the declaration.
+Note that there should usually only be one match.
+A warning will be logged if no declarations are found.
+
+The returned QueryMatch instances contain the following captures:
+
+- `declaration`: The full declaration of the method
+- `function`: The function declaration, without the return type
+- `name`: The name of the function
+
 #### <a name="queryMethodDefinition"></a>array<[QueryMatch](../script/querymatch.md)> **queryMethodDefinition**(string scope, string methodName)
 
 Returns the list of methods definitions matching the given name and scope.
@@ -317,6 +309,8 @@ Every QueryMatch returned by this function will have the following captures avai
 - `parameter-list` - The list of parameters
 - `parameters` - One capture per parameter, containing the type and name of the parameter, excluding comments!
 - `body` - The body of the method (including curly-braces)
+
+Please note that the return type is not available, as TreeSitter is not able to parse it easily.
 
 #### <a name="removeInclude"></a>**removeInclude**(string include)
 

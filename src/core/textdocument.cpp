@@ -919,11 +919,7 @@ void TextDocument::replace(int from, int to, const QString &text)
 void TextDocument::replace(const TextRange &range, const QString &text)
 {
     LOG("TextDocument::replace", range, text);
-    QTextCursor cursor(m_document->document());
-    cursor.setPosition(range.start);
-    cursor.setPosition(range.end, QTextCursor::KeepAnchor);
-    cursor.insertText(text);
-    m_document->setTextCursor(cursor);
+    replace(range.start, range.end, text);
 }
 
 /*!

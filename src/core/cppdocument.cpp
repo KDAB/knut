@@ -271,13 +271,14 @@ Core::QueryMatch CppDocument::queryClassDefinition(const QString &className)
 
     // clang-format off
     const auto classDefinitionQuery = QString(R"EOF(
+        ; query classes or structs
         [(class_specifier
-            name: (_) @name
+            name: (_) @name (#like? @name "%1")
             (base_class_clause
                 [(type_identifier) @base _]*)?
             body: (_) @body)
         (struct_specifier
-            name: (_) @name
+            name: (_) @name (#like? @name "%1")
             (base_class_clause
                 [(type_identifier) @base _]*)?
             body: (_) @body)]
@@ -312,9 +313,13 @@ Core::QueryMatch CppDocument::queryClassDefinition(const QString &className)
  * - `parameter-list` - The list of parameters
  * - `parameters` - One capture per parameter, containing the type and name of the parameter, excluding comments!
  * - `body` - The body of the method (including curly-braces)
+ *
+ * Please note that the return type is not available, as TreeSitter is not able to parse it easily.
  */
 QVector<QueryMatch> CppDocument::queryMethodDefinition(const QString &scope, const QString &functionName)
 {
+    LOG("CppDocument::queryMethodDefinition", LOG_ARG("scope", scope), LOG_ARG("functionName", functionName));
+
     // Clang-format gets confused by the raw strings
     // clang-format off
     auto identifier = QString(R"EOF(
@@ -324,20 +329,35 @@ QVector<QueryMatch> CppDocument::queryMethodDefinition(const QString &scope, con
     if (!scope.isEmpty()) {
         identifier = QString(R"EOF(
             (qualified_identifier
-                scope: (_) @scope (#eq? @scope "%1")
+                scope: (_) @scope (#like? @scope "%1")
                 %2
             )
         )EOF").arg(scope, identifier);
     }
 
+    // TODO: The return type is captured, byt we have issues with const &, pointers and other virtual keywords
+    // For simplicity, the documentation says the return type is not captured
     const auto queryString = QString(R"EOF(
         (function_definition
             type: (_)? @returnType
-            declarator: (function_declarator
-                declarator: %1
-                parameters: (parameter_list
-                    (parameter_declaration)* @parameters
-                ) @parameter-list)
+            declarator: [
+                ; function without pointer return type
+                (function_declarator
+                    declarator: %1
+                    parameters: (parameter_list
+                        (parameter_declaration)* @parameters
+                    ) @parameter-list
+                )
+                ; function with pointer return type
+                (pointer_declarator
+                    declarator: (function_declarator
+                        declarator: %1
+                        parameters: (parameter_list
+                            (parameter_declaration)* @parameters
+                        ) @parameter-list
+                    )
+                )
+            ]
             body: (compound_statement) @body
         ) @definition
     )EOF").arg(identifier);
@@ -679,61 +699,53 @@ MessageMap CppDocument::mfcExtractMessageMap(const QString &className /* = ""*/)
 }
 
 /*!
- * \qmlmethod array<QueryMatch> CppDocument::mfcFindAfxMsgDeclaration(string afxMsgName)
+ * \qmlmethod array<QueryMatch> CppDocument::queryMethodDeclaration(string className, string functionName)
  * \since 1.1
  *
- * Finds the declaration of an afx_msg.
+ * Finds the declaration of a method inside a class or struct definition.
  *
  * Returns a list of QueryMatch objects containing the declaration.
  * Note that there should usually only be one match.
- * A warning will be logged if no or multiple declarations are found.
+ * A warning will be logged if no declarations are found.
  *
  * The returned QueryMatch instances contain the following captures:
  *
- * - `declaration`: The full declaration of the afx_msg
- * - `function`: The function declaration, without the "afx_msg" prefix
+ * - `declaration`: The full declaration of the method
+ * - `function`: The function declaration, without the return type
  * - `name`: The name of the function
  */
-QVector<Core::QueryMatch> CppDocument::mfcFindAfxMsgDeclaration(const QString &afxMsgName)
+QVector<Core::QueryMatch> CppDocument::queryMethodDeclaration(const QString &className, const QString &functionName)
 {
+    LOG("CppDocument::queryMethodDeclaration", LOG_ARG("className", className), LOG_ARG("functionName", functionName));
+
+    auto classQuery = queryClassDefinition(className);
+
     // clang-format off
     auto queryString = QString(R"EOF(
         (field_declaration
-            type: (_) @afx_msg (#eq? @afx_msg "afx_msg")
-            (function_declarator
-                declarator: (field_identifier) @name (#eq? @name "%1")
-            ) @function) @declaration
-    )EOF").arg(afxMsgName);
+            [
+                ; Method with non-pointer return type
+                (function_declarator
+                    declarator: (field_identifier) @name (#eq? @name "%1")
+                ) @function
+                ; Method with pointer return type
+                (pointer_declarator
+                    (function_declarator
+                        declarator: (field_identifier) @name (#eq? @name "%1")
+                    ) @function
+                )
+            ]
+        ) @declaration
+    )EOF").arg(functionName);
     // clang-format on
 
-    auto matches = query(queryString);
+    auto matches = classQuery.queryIn("body", queryString);
     if (matches.isEmpty()) {
-        spdlog::warn("CppDocument::mfcReplaceAfxMsgDeclaration: No afx_msg named `{}` found in `{}`",
-                     afxMsgName.toStdString(), fileName().toStdString());
+        spdlog::warn("CppDocument::queryMethodDeclaration: No method named `{}` found in `{}`",
+                     functionName.toStdString(), fileName().toStdString());
     }
 
-    if (matches.size() > 1) {
-        spdlog::warn("CppDocument::mfcReplaceAfxMsgDeclaration: Multiple afx_msg named `{}` found in `{}`!",
-                     afxMsgName.toStdString(), fileName().toStdString());
-    }
     return matches;
-}
-
-/*!
- * \qmlmethod bool CppDocument::mfcReplaceAfxMsgDeclaration(string afxMsgName, string newDeclaration)
- * \since 1.1
- *
- * Replaces the declaration of an afx_msg with `afxMsgName` with a new declaration.
- */
-bool CppDocument::mfcReplaceAfxMsgDeclaration(const QString &afxMsgName, const QString &newDeclaration)
-{
-    auto matches = mfcFindAfxMsgDeclaration(afxMsgName);
-
-    for (const auto &match : matches) {
-        match.get("declaration").replace(newDeclaration);
-    }
-
-    return !matches.isEmpty();
 }
 
 /*!
