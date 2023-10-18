@@ -73,6 +73,10 @@ QString QueryCapture::toString() const
  *      Usually you won't need to access the captures directly.
  *      Instead prefer to use the getter functions.
  */
+/*!
+ * \qmlproperty bool QueryMatch::isEmpty
+ * Return true if the `QueryMatch` is empty.
+ */
 
 QueryMatch::QueryMatch(TextDocument &document, const treesitter::QueryMatch &match)
 {
@@ -90,6 +94,11 @@ QueryMatch::QueryMatch(TextDocument &document, const treesitter::QueryMatch &mat
 const QVector<QueryCapture> &QueryMatch::captures() const
 {
     return m_captures;
+}
+
+bool QueryMatch::isEmpty() const
+{
+    return m_captures.isEmpty();
 }
 
 /*!

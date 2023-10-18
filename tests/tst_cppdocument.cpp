@@ -2,6 +2,7 @@
 #include "core/knutcore.h"
 #include "core/project.h"
 
+#include "common/test_cpputils.h"
 #include "common/test_utils.h"
 
 #include <QFileInfo>
@@ -10,21 +11,6 @@
 class TestCppDocument : public QObject
 {
     Q_OBJECT
-
-private:
-    void testDocument(const QString &projectRoot, const QString &documentPath,
-                      const std::function<void(Core::CppDocument *)> &test)
-    {
-        Core::KnutCore core;
-        const auto rootFullPath = Test::testDataPath() + "/" + projectRoot;
-        QVERIFY(QFileInfo::exists(rootFullPath));
-
-        Core::Project::instance()->setRoot(rootFullPath);
-        auto document = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(documentPath));
-        QVERIFY(document);
-
-        test(document);
-    }
 
 private slots:
     void initTestCase() { Q_INIT_RESOURCE(core); }
@@ -56,9 +42,10 @@ private slots:
         sourceOrHeader =
             sourceOrHeader.isEmpty() ? "" : Test::testDataPath() + "/tst_cppdocument/headerSource/" + sourceOrHeader;
 
-        testDocument("/tst_cppdocument/headerSource/", headerOrSource, [&sourceOrHeader](Core::CppDocument *document) {
-            QCOMPARE(sourceOrHeader, document->correspondingHeaderSource());
-        });
+        Test::testCppDocument("/tst_cppdocument/headerSource/", headerOrSource,
+                              [&sourceOrHeader](Core::CppDocument *document) {
+                                  QCOMPARE(sourceOrHeader, document->correspondingHeaderSource());
+                              });
     }
 
     void insertForwardDeclaration()
@@ -66,7 +53,7 @@ private slots:
         {
             Test::FileTester file(Test::testDataPath() + "/tst_cppdocument/forwardDeclaration/header.h");
 
-            testDocument("/tst_cppdocument/forwardDeclaration", file.fileName(), [](auto *headerFile) {
+            Test::testCppDocument("/tst_cppdocument/forwardDeclaration", file.fileName(), [](auto *headerFile) {
                 QCOMPARE(headerFile->insertForwardDeclaration("class Foo"), true);
                 QCOMPARE(headerFile->insertForwardDeclaration("class Foo::Bar::FooBar"), true);
                 QCOMPARE(headerFile->insertForwardDeclaration("class Foo::Bar::FooBar"), false);
@@ -80,7 +67,7 @@ private slots:
         }
         {
             Test::FileTester file(Test::testDataPath() + "/tst_cppdocument/forwardDeclaration/header-pragma.h");
-            testDocument("/tst_cppdocument/forwardDeclaration", file.fileName(), [](auto *headerFile) {
+            Test::testCppDocument("/tst_cppdocument/forwardDeclaration", file.fileName(), [](auto *headerFile) {
                 QCOMPARE(headerFile->insertForwardDeclaration("class Foo"), true);
                 QCOMPARE(headerFile->insertForwardDeclaration("class Foo::Bar::FooBar"), true);
                 QCOMPARE(headerFile->insertForwardDeclaration("class Foo::Bar::FooBar"), false);
@@ -94,7 +81,7 @@ private slots:
         }
         {
             Test::FileTester file(Test::testDataPath() + "/tst_cppdocument/forwardDeclaration/header-guard.h");
-            testDocument("/tst_cppdocument/forwardDeclaration", file.fileName(), [](auto *headerFile) {
+            Test::testCppDocument("/tst_cppdocument/forwardDeclaration", file.fileName(), [](auto *headerFile) {
                 QCOMPARE(headerFile->insertForwardDeclaration("class Foo"), true);
                 QCOMPARE(headerFile->insertForwardDeclaration("class Foo::Bar::FooBar"), true);
                 QCOMPARE(headerFile->insertForwardDeclaration("class Foo::Bar::FooBar"), false);
@@ -110,7 +97,7 @@ private slots:
 
     void gotoBlockStartEnd()
     {
-        testDocument("tst_cppdocument/blockStartEnd", "source.cpp", [](auto *document) {
+        Test::testCppDocument("tst_cppdocument/blockStartEnd", "source.cpp", [](auto *document) {
             // When cursor position is at the beginning of block
             document->setPosition(0);
             QCOMPARE(document->gotoBlockStart(), 0);
@@ -181,25 +168,25 @@ private slots:
 
         resultantFilePath = Test::testDataPath() + "/tst_cppdocument/commentSelection/" + resultantFilePath;
 
-        testDocument("tst_cppdocument/commentSelection", "main.cpp",
-                     [&regionStartPos, &regionEndPos, &resultantFilePath](auto *document) {
-                         if (regionEndPos == -1) {
-                             document->setPosition(regionStartPos);
-                         } else {
-                             document->selectRegion(regionStartPos, regionEndPos);
-                         }
-                         document->commentSelection();
-                         document->save();
-                         QVERIFY(Test::compareFiles(document->fileName(), resultantFilePath));
-                         document->undo();
-                         document->save();
-                     });
+        Test::testCppDocument("tst_cppdocument/commentSelection", "main.cpp",
+                              [&regionStartPos, &regionEndPos, &resultantFilePath](auto *document) {
+                                  if (regionEndPos == -1) {
+                                      document->setPosition(regionStartPos);
+                                  } else {
+                                      document->selectRegion(regionStartPos, regionEndPos);
+                                  }
+                                  document->commentSelection();
+                                  document->save();
+                                  QVERIFY(Test::compareFiles(document->fileName(), resultantFilePath));
+                                  document->undo();
+                                  document->save();
+                              });
     }
 
     void addMember()
     {
         Test::FileTester sourceFile(Test::testDataPath() + "/tst_cppdocument/addMember/addmember.cpp");
-        testDocument("tst_cppdocument/addMember", sourceFile.fileName(), [](auto *cppFile) {
+        Test::testCppDocument("tst_cppdocument/addMember", sourceFile.fileName(), [](auto *cppFile) {
             cppFile->addMember("QString foo", "Student", Core::CppDocument::AccessSpecifier::Public);
             cppFile->addMember("int bar", "Student", Core::CppDocument::AccessSpecifier::Protected);
 
@@ -211,7 +198,7 @@ private slots:
     void addMethodDeclaration()
     {
         Test::FileTester sourceFile(Test::testDataPath() + "/tst_cppdocument/addMethodDeclaration/addmethoddecl.cpp");
-        testDocument("/tst_cppdocument/addMethodDeclaration", sourceFile.fileName(), [](auto *cppFile) {
+        Test::testCppDocument("/tst_cppdocument/addMethodDeclaration", sourceFile.fileName(), [](auto *cppFile) {
             cppFile->addMethodDeclaration("bool func(QString s, int a)", "Student",
                                           Core::CppDocument::AccessSpecifier::Public);
             cppFile->addMethodDeclaration("bool foo(QString s, int a)", "Student",
@@ -226,7 +213,7 @@ private slots:
     {
 
         Test::FileTester sourceFile(Test::testDataPath() + "/tst_cppdocument/addMethodDefinition/addmethoddef.cpp");
-        testDocument("/tst_cppdocument/addMethodDefinition", sourceFile.fileName(), [](auto *source) {
+        Test::testCppDocument("/tst_cppdocument/addMethodDefinition", sourceFile.fileName(), [](auto *source) {
             QVERIFY(source->addMethodDefinition("bool func(std::string s, int a)", "Student"));
             // Test that addMethodDefinition can also strip declaration specifiers (i.e. override, etc.)
             QVERIFY(source->addMethodDefinition("static Q_SLOT virtual bool func(const QString &str) const override",
@@ -239,18 +226,18 @@ private slots:
 
     void queryMethod()
     {
-        testDocument("projects/cpp-project", "myobject.cpp", [](auto *document) {
+        Test::testCppDocument("projects/cpp-project", "myobject.cpp", [](auto *document) {
             const auto methods = document->queryMethodDefinition("MyObject", "sayMessage");
             QCOMPARE(methods.size(), 2);
 
             QCOMPARE(methods[0].get("name").text(), "sayMessage");
-            QCOMPARE(methods[0].get("returnType").text(), "void");
+            QCOMPARE(methods[0].get("return-type").text(), "void");
             QCOMPARE(methods[0].getAll("parameters").size(), 0);
             QCOMPARE(methods[0].get("parameter-list").text(), "()");
             QCOMPARE(methods[0].get("body").text(), "{\n    std::cout << m_message << std::endl;\n}");
 
             QCOMPARE(methods[1].get("name").text(), "sayMessage");
-            QCOMPARE(methods[1].get("returnType").text(), "void");
+            QCOMPARE(methods[1].get("return-type").text(), "void");
             QCOMPARE(methods[1].getAll("parameters").size(), 1);
             QCOMPARE(methods[1].get("parameter-list").text(), "(const std::string& test)");
             QVERIFY(methods[1].get("body").text().contains("m_enum = MyEnum::C"));
@@ -259,7 +246,7 @@ private slots:
 
     void queryFunctionCall()
     {
-        testDocument("projects/cpp-project", "main.cpp", [](auto *document) {
+        Test::testCppDocument("projects/cpp-project", "main.cpp", [](auto *document) {
             auto calls = document->queryFunctionCall("object.sayMessage", {"message"});
             QCOMPARE(calls.size(), 1);
             // All nodes, including comments will be captured as the parameter
@@ -290,7 +277,7 @@ private slots:
     // Putting the cursor before the last character made `moveBlock` run into an infinite loop.
     void selectBlockUpAtEndOfFile()
     {
-        testDocument("/tst_cppdocument/blockStartEnd", "source.cpp", [](auto *document) {
+        Test::testCppDocument("/tst_cppdocument/blockStartEnd", "source.cpp", [](auto *document) {
             auto textEdit = document->textEdit();
 
             auto cursor = textEdit->textCursor();
@@ -308,7 +295,7 @@ private slots:
     void mfcReplaceAfxMsgDeclaration()
     {
         Test::FileTester headerFile(Test::testDataPath() + "/tst_cppdocument/message_map/afx_msg_declaration.h");
-        testDocument("/tst_cppdocument/message_map", "afx_msg_declaration.h", [](auto *header) {
+        Test::testCppDocument("/tst_cppdocument/message_map", "afx_msg_declaration.h", [](auto *header) {
             auto funcDecl = header->queryMethodDeclaration("CTutorialDlg", "OnTimer");
             QCOMPARE(funcDecl.size(), 1);
             funcDecl.first().get("declaration").replace("void timerEvent(QTimerEvent *event) override;");

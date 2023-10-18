@@ -2,6 +2,7 @@
 #include "core/knutcore.h"
 #include "core/project.h"
 
+#include "common/test_cpputils.h"
 #include "common/test_utils.h"
 
 #include <kdalgorithms.h>
@@ -173,6 +174,132 @@ private slots:
             // TODO: This line crash the test on the CI, comment out for now
             // QVERIFY(!cppdocument->mfcExtractMessageMap("CTutorialDlg").isValid());
         }
+    }
+
+    void queryMember_data()
+    {
+        QTest::addColumn<QString>("memberName");
+        QTest::addColumn<QString>("type");
+        QTest::addColumn<QString>("text");
+
+        QTest::newRow("empty") << "m_doesnotexist"
+                               << ""
+                               << "";
+        QTest::newRow("double") << "m_double"
+                                << "double"
+                                << "double m_double = 1.1;";
+        QTest::newRow("int") << "m_constInt"
+                             << "int"
+                             << "const int m_constInt = 2;";
+        QTest::newRow("ref") << "m_fooRef"
+                             << "Foo"
+                             << "Foo &m_fooRef;";
+        QTest::newRow("ptr") << "m_barPtr"
+                             << "Bar"
+                             << "Bar *m_barPtr = nullptr;";
+        QTest::newRow("ptrRef") << "m_fooPtrRef"
+                                << "Foo"
+                                << "const Foo *& m_fooPtrRef;";
+        QTest::newRow("ptrptr") << "m_barPtrPtr"
+                                << "Bar"
+                                << "Bar **m_barPtrPtr;";
+    }
+
+    void queryMember()
+    {
+        QFETCH(QString, memberName);
+        QFETCH(QString, type);
+        QFETCH(QString, text);
+
+        Test::testCppDocument("tst_cppdocument/query", "myclass.h",
+                              [&memberName, &type, &text](Core::CppDocument *document) {
+                                  auto query = document->queryMember("MyClass", memberName);
+                                  QCOMPARE(query.get("type").text(), type);
+                                  QCOMPARE(query.get("member").text(), text);
+                              });
+    }
+
+    void queryMethodDeclaration_data()
+    {
+        QTest::addColumn<QString>("functionName");
+        QTest::addColumn<QString>("text");
+
+        QTest::newRow("foo") << "foo"
+                             << "Foo foo() const;";
+        QTest::newRow("setFoo") << "setFoo"
+                                << "void setFoo(Foo* foo);";
+        QTest::newRow("setFooBar") << "setFooBar"
+                                   << "virtual void setFooBar(Foo* foo, Bar* bar);";
+        QTest::newRow("fooRef") << "fooRef"
+                                << "Foo &fooRef() const;";
+        QTest::newRow("barPtr") << "barPtr"
+                                << "Bar *barPtr() const;";
+        QTest::newRow("fooPtrRef") << "fooPtrRef"
+                                   << "const Foo *&fooPtrRef() const;";
+        QTest::newRow("barPtrPtr") << "barPtrPtr"
+                                   << "Bar **barPtrPtr() const;";
+    }
+
+    void queryMethodDeclaration()
+    {
+        QFETCH(QString, functionName);
+        QFETCH(QString, text);
+
+        Test::testCppDocument("tst_cppdocument/query", "myclass.h",
+                              [&functionName, &text](Core::CppDocument *document) {
+                                  auto queries = document->queryMethodDeclaration("MyClass", functionName);
+                                  QCOMPARE(queries.size(), 1);
+                                  QCOMPARE(queries.first().get("declaration").text(), text);
+                              });
+
+        // TODO: test overloads (same funciton name)
+    }
+
+    void queryMethodDefinition_data()
+    {
+        QTest::addColumn<QString>("functionName");
+        QTest::addColumn<QString>("definition");
+        QTest::addColumn<QString>("parameterList");
+
+        QTest::newRow("foo") << "foo"
+                             << "Foo MyClass::foo() const\n{ \n    return m_fooRef; \n}"
+                             << "()";
+        QTest::newRow("setFoo") << "setFoo"
+                                << "void MyClass::setFoo(Foo* foo)\n{\n    // Do something\n}"
+                                << "(Foo* foo)";
+        QTest::newRow("setFooBar") << "setFooBar"
+                                   << "void MyClass::setFooBar(Foo* foo, Bar* bar)\n{\n    // Do Something\n}"
+                                   << "(Foo* foo, Bar* bar)";
+        QTest::newRow("fooRef") << "fooRef"
+                                << "Foo &MyClass::fooRef() const\n{\n    return m_fooRef;\n}"
+                                << "()";
+        QTest::newRow("barPtr") << "barPtr"
+                                << "Bar *MyClass::barPtr() const\n{\n    return m_barPtr;\n}"
+                                << "()";
+        QTest::newRow("fooPtrRef") << "fooPtrRef"
+                                   << "const Foo *&MyClass::fooPtrRef() const\n{\n    return m_fooPtrRef;\n}"
+                                   << "()";
+        QTest::newRow("barPtrPtr") << "barPtrPtr"
+                                   << "Bar **MyClass::barPtrPtr() const\n{\n    return m_barPtrPtr;\n}"
+                                   << "()";
+    }
+
+    void queryMethodDefinition()
+    {
+        QFETCH(QString, functionName);
+        QFETCH(QString, definition);
+        QFETCH(QString, parameterList);
+
+        Test::testCppDocument("tst_cppdocument/query", "myclass.cpp",
+                              [&functionName, &definition, &parameterList](Core::CppDocument *document) {
+                                  auto queries = document->queryMethodDefinition("MyClass", functionName);
+                                  QCOMPARE(queries.size(), 1);
+                                  QCOMPARE(queries.first().get("definition").text(), definition);
+                                  QCOMPARE(queries.first().get("parameter-list").text(), parameterList);
+                              });
+
+        // TODO: test overloads
+        // TODO: test parameters
     }
 };
 

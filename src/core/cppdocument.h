@@ -36,6 +36,7 @@ public:
 
     Q_INVOKABLE Core::QueryMatch queryClassDefinition(const QString &className);
     Q_INVOKABLE QVector<Core::QueryMatch> queryMethodDeclaration(const QString &className, const QString &functionName);
+    Q_INVOKABLE Core::QueryMatch queryMember(const QString &className, const QString &memberName);
     Q_INVOKABLE QVector<Core::QueryMatch> queryMethodDefinition(const QString &scope, const QString &functionName);
     Q_INVOKABLE QVector<Core::QueryMatch> queryFunctionCall(const QString &functionName,
                                                             const QVector<QString> &argumentCaptures);

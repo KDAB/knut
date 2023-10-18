@@ -15,6 +15,7 @@ import Script 1.0
 | | Name |
 |-|-|
 |array<[QueryCapture](../script/querycapture.md)>|**[captures](#captures)**|
+|bool|**[isEmpty](#isEmpty)**|
 
 ## Methods
 
@@ -59,6 +60,10 @@ This allows you to get access to both the [range](./rangemark.md) and the name o
 !!! note
      Usually you won't need to access the captures directly.
      Instead prefer to use the getter functions.
+
+#### <a name="isEmpty"></a>bool **isEmpty**
+
+Return true if the `QueryMatch` is empty.
 
 ## Method Documentation
 

@@ -32,6 +32,7 @@ class QueryMatch
     Q_GADGET
 
     Q_PROPERTY(QVector<QueryCapture> captures READ captures CONSTANT FINAL)
+    Q_PROPERTY(bool isEmpty READ isEmpty CONSTANT FINAL)
 
 public:
     // Default constructor is required for Q_DECLARE_METATYPE
@@ -39,6 +40,7 @@ public:
     QueryMatch(TextDocument &document, const treesitter::QueryMatch &match);
 
     const QVector<QueryCapture> &captures() const;
+    bool isEmpty() const;
 
     // Access to captures
     Q_INVOKABLE Core::RangeMark get(const QString &name) const;

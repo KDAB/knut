@@ -44,6 +44,7 @@ Inherited properties: [LspDocument properties](../script/lspdocument.md#properti
 |[QueryMatch](../script/querymatch.md) |**[queryClassDefinition](#queryClassDefinition)**(string className)|
 |array<[QueryMatch](../script/querymatch.md)> |**[queryFunctionCall](#queryFunctionCall)**(string functionName)|
 |array<[QueryMatch](../script/querymatch.md)> |**[queryFunctionCall](#queryFunctionCall)**(string functionName, array<string> argumentCaptures)|
+|[QueryMatch](../script/querymatch.md) |**[queryMember](#queryMember)**(string className, string memberName)|
 |array<[QueryMatch](../script/querymatch.md)> |**[queryMethodDeclaration](#queryMethodDeclaration)**(string className, string functionName)|
 |array<[QueryMatch](../script/querymatch.md)> |**[queryMethodDefinition](#queryMethodDefinition)**(string scope, string methodName)|
 ||**[removeInclude](#removeInclude)**(string include)|
@@ -241,7 +242,7 @@ If no files have been found, it's a no-op.
 
 Returns the class or struct definition matching the given `className`.
 
-Every QueryMatch returned by this function will have the following captures available:
+The returned QueryMatch instance will have the following captures available:
 
 - `name` - The name of the class or struct
 - `base` - The list of base classes/structs, if any
@@ -279,6 +280,20 @@ The returned QueryMatch instances will have the following captures available:
 - `argument-list` - The entire list of arguments, including the surroundg parentheses `()`
 - a capture for every argument in `argumentCaptures`
 
+#### <a name="queryMember"></a>[QueryMatch](../script/querymatch.md) **queryMember**(string className, string memberName)
+
+!!! note ""
+    Since: Knut 1.1
+
+Finds the member definition inside a class or struct definition.
+Returns a QueryMatch object containing the member definition if it exists.
+
+The returned QueryMatch instance will have the following captures available:
+
+- `member`: The full definition of the member
+- `type`: The type of the member, without `const` or any reference/pointer specifiers (i.e. `&`/`*`)
+- `name`: The name of the member (should be equal to memberName)
+
 #### <a name="queryMethodDeclaration"></a>array<[QueryMatch](../script/querymatch.md)> **queryMethodDeclaration**(string className, string functionName)
 
 !!! note ""
@@ -287,7 +302,6 @@ The returned QueryMatch instances will have the following captures available:
 Finds the declaration of a method inside a class or struct definition.
 
 Returns a list of QueryMatch objects containing the declaration.
-Note that there should usually only be one match.
 A warning will be logged if no declarations are found.
 
 The returned QueryMatch instances contain the following captures:

@@ -259,7 +259,7 @@ CppDocument *CppDocument::openHeaderSource()
  *
  * Returns the class or struct definition matching the given `className`.
  *
- * Every QueryMatch returned by this function will have the following captures available:
+ * The returned QueryMatch instance will have the following captures available:
  *
  * - `name` - The name of the class or struct
  * - `base` - The list of base classes/structs, if any
@@ -293,8 +293,8 @@ Core::QueryMatch CppDocument::queryClassDefinition(const QString &className)
     }
 
     if (matches.size() > 1) {
-        spdlog::warn("CppDocument::queryClassDefinition: Multiple classes named `{}` found in `{}`!",
-                     className.toStdString(), fileName().toStdString());
+        spdlog::error("CppDocument::queryClassDefinition: Multiple classes named `{}` found in `{}`!",
+                      className.toStdString(), fileName().toStdString());
     }
     return matches.first();
 }
@@ -335,32 +335,26 @@ QVector<QueryMatch> CppDocument::queryMethodDefinition(const QString &scope, con
         )EOF").arg(scope, identifier);
     }
 
-    // TODO: The return type is captured, byt we have issues with const &, pointers and other virtual keywords
-    // For simplicity, the documentation says the return type is not captured
+    const auto queryFunctionName = QString(R"EOF(
+        (function_declarator
+            declarator: %1
+            parameters: (parameter_list
+                (parameter_declaration)* @parameters
+            ) @parameter-list
+        )
+    )EOF").arg(identifier);
+    // handle Type, Type *, Type &, Type *&, Type &* and Type **
     const auto queryString = QString(R"EOF(
         (function_definition
-            type: (_)? @returnType
-            declarator: [
-                ; function without pointer return type
-                (function_declarator
-                    declarator: %1
-                    parameters: (parameter_list
-                        (parameter_declaration)* @parameters
-                    ) @parameter-list
-                )
-                ; function with pointer return type
-                (pointer_declarator
-                    declarator: (function_declarator
-                        declarator: %1
-                        parameters: (parameter_list
-                            (parameter_declaration)* @parameters
-                        ) @parameter-list
-                    )
-                )
+            type: (_)? @return-type
+            [
+                declarator: (_ (_ %1 ) )
+                declarator: (_ %1 )
+                declarator: %1
             ]
             body: (compound_statement) @body
         ) @definition
-    )EOF").arg(identifier);
+    )EOF").arg(queryFunctionName);
     //clang-format on
 
     return query(queryString);
@@ -705,7 +699,6 @@ MessageMap CppDocument::mfcExtractMessageMap(const QString &className /* = ""*/)
  * Finds the declaration of a method inside a class or struct definition.
  *
  * Returns a list of QueryMatch objects containing the declaration.
- * Note that there should usually only be one match.
  * A warning will be logged if no declarations are found.
  *
  * The returned QueryMatch instances contain the following captures:
@@ -720,23 +713,26 @@ QVector<Core::QueryMatch> CppDocument::queryMethodDeclaration(const QString &cla
 
     auto classQuery = queryClassDefinition(className);
 
+    // TODO: extract parameters
+    // TODO: make it works with constructors and destructors
+
     // clang-format off
+    auto queryFunctionName = QString(R"EOF(
+        (function_declarator
+            declarator:(field_identifier) @name (#eq? @name "%1")
+        )
+    )EOF").arg(functionName);
+    // handle Type, Type *, Type &, Type *&, Type &* and Type **
     auto queryString = QString(R"EOF(
         (field_declaration
+            type: (_)? @return-type
             [
-                ; Method with non-pointer return type
-                (function_declarator
-                    declarator: (field_identifier) @name (#eq? @name "%1")
-                ) @function
-                ; Method with pointer return type
-                (pointer_declarator
-                    (function_declarator
-                        declarator: (field_identifier) @name (#eq? @name "%1")
-                    ) @function
-                )
+                declarator: (_ (_ %1 ) )
+                declarator: (_ %1 )
+                declarator: %1
             ]
         ) @declaration
-    )EOF").arg(functionName);
+    )EOF").arg(queryFunctionName);
     // clang-format on
 
     auto matches = classQuery.queryIn("body", queryString);
@@ -746,6 +742,56 @@ QVector<Core::QueryMatch> CppDocument::queryMethodDeclaration(const QString &cla
     }
 
     return matches;
+}
+
+/*!
+ * \qmlmethod QueryMatch CppDocument::queryMember(string className, string memberName)
+ * \since 1.1
+ *
+ * Finds the member definition inside a class or struct definition.
+ * Returns a QueryMatch object containing the member definition if it exists.
+ *
+ * The returned QueryMatch instance will have the following captures available:
+ *
+ * - `member`: The full definition of the member
+ * - `type`: The type of the member, without `const` or any reference/pointer specifiers (i.e. `&`/`*`)
+ * - `name`: The name of the member (should be equal to memberName)
+ */
+Core::QueryMatch CppDocument::queryMember(const QString &className, const QString &memberName)
+{
+    LOG("CppDocument::queryMember", LOG_ARG("className", className), LOG_ARG("memberName", memberName));
+
+    auto classQuery = queryClassDefinition(className);
+
+    // clang-format off
+    auto queryMemberName = QString(R"EOF(
+        (field_identifier) @name (#eq? @name "%1")
+    )EOF").arg(memberName);
+    // handle Type, Type *, Type &, Type *&, Type &* and Type **
+    auto queryString = QString(R"EOF(
+        (field_declaration
+            type: (_) @type
+            [
+                declarator: (_ (_ %1 ) )
+                declarator: (_ %1 )
+                declarator: %1
+            ]
+        ) @member
+    )EOF").arg(queryMemberName);
+    // clang-format on
+
+    auto matches = classQuery.queryIn("body", queryString);
+    if (matches.isEmpty()) {
+        spdlog::warn("CppDocument::queryMember: No member named `{}` found in `{}`", memberName.toStdString(),
+                     fileName().toStdString());
+        return {};
+    }
+
+    if (matches.size() > 1) {
+        spdlog::error("CppDocument::queryMember: Multiple members named `{}` found in `{}`!", memberName.toStdString(),
+                      fileName().toStdString());
+    }
+    return matches.first();
 }
 
 /*!
