@@ -1,9 +1,8 @@
 #pragma once
 
+#include "dataexchange.h"
 #include "lspdocument.h"
 #include "messagemap.h"
-
-#include <memory>
 
 #ifndef Q_MOC_RUN
 #define API_EXECUTOR
@@ -42,7 +41,7 @@ public:
                                                             const QVector<QString> &argumentCaptures);
     Q_INVOKABLE QVector<Core::QueryMatch> queryFunctionCall(const QString &functionName);
 
-    Q_INVOKABLE QVariantMap mfcExtractDDX(const QString &className);
+    Q_INVOKABLE Core::DataExchange mfcExtractDDX(const QString &className);
     Q_INVOKABLE Core::MessageMap mfcExtractMessageMap(const QString &className = "");
 
 public slots:

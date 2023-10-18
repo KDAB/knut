@@ -1,6 +1,6 @@
 # MessageMap
 
-Keeps track of a message map within a text document. [More...](#detailed-description)
+Message map in a MFC C++ document [More...](#detailed-description)
 
 ```qml
 import Script 1.0
@@ -29,7 +29,7 @@ import Script 1.0
 
 ## Detailed Description
 
-The MessageMap object represents the data contained in the MFC MessageMap.
+The `MessageMap` object represents the data contained in the MFC MessageMap.
 
 ## Property Documentation
 
@@ -39,7 +39,7 @@ The name of the class this message map belongs to.
 
 #### <a name="entries"></a>list<[MessageMapEntry](../script/messagemapentry.md)> **entries**
 
-All entries found in the MessageMap as \c MessageMapEntry .
+All entries found in the MessageMap as `MessageMapEntry`.
 
 #### <a name="isValid"></a>bool **isValid**
 

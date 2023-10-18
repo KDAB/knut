@@ -581,53 +581,51 @@ bool CppDocument::insertForwardDeclaration(const QString &forwardDeclaration)
 }
 
 /*!
- * \qmlmethod map<string, string> CppDocument::mfcExtractDDX()
+ * \qmlmethod DataExchange CppDocument::mfcExtractDDX(string className)
  * Extracts the DDX information from a MFC class.
  *
- * The DDX information gives the mapping between the ID and the member variables in the class.
+ * The DDX information gives the mapping between the IDC and the member variables in the class.
+ * \see DataExchange
  */
-QVariantMap CppDocument::mfcExtractDDX(const QString &className)
+DataExchange CppDocument::mfcExtractDDX(const QString &className)
 {
     LOG("CppDocument::mfcExtractDDX", LOG_ARG("text", className));
 
-    QVariantMap map;
+    // clang-format off
+    auto queryString = QString(R"EOF(
+        (function_definition
+            declarator: (function_declarator
+                (qualified_identifier
+                    scope: (_) @scope (#eq? @scope "%1")
+                    name: (_) @name (#eq? @name "DoDataExchange")
+                )
+            )
+            body: (compound_statement
+                ((expression_statement
+                    (call_expression
+                        function: (identifier) @ddx-function(#match? "^DDX_" @ddx-function)
+                        arguments: (argument_list
+                            (identifier)
+                            (identifier) @ddx-idc
+                            (identifier) @ddx-member))
+                )@ddx)*)
+        ) @do-data-exchange
+    )EOF").arg(className);
+    // clang-format on
 
-    // TODO: Use semantic information coming from LSP instead of regexp to find the method
-
-    const QString source = text();
-    static const QRegularExpression searchFunctionExpression(
-        QString(R"*(void\s*%1\s*::DoDataExchange\s*\()*").arg(className), QRegularExpression::MultilineOption);
-    QRegularExpressionMatch match = searchFunctionExpression.match(source);
-
-    if (match.hasMatch()) {
-        const int capturedStart = match.capturedStart(0);
-        const int capturedEnd = match.capturedEnd(0);
-        int bracketCount = 0;
-        int positionEnd = -1;
-        for (int i = capturedEnd; i < source.length(); ++i) {
-            if (source.at(i) == QLatin1Char('{')) {
-                bracketCount++;
-            } else if (source.at(i) == QLatin1Char('}')) {
-                bracketCount--;
-                if (bracketCount == 0) {
-                    positionEnd = i;
-                    break;
-                }
-            }
-        }
-
-        if (positionEnd == -1)
-            return {};
-
-        const QString ddxText = source.mid(capturedStart, (positionEnd - capturedStart + 1));
-        static const QRegularExpression doDataExchangeExpression(R"*(DDX_.*\(.*,\s*(.*)\s*,\s*(.*)\))*");
-        QRegularExpressionMatchIterator userIteratorWidgetExpression = doDataExchangeExpression.globalMatch(ddxText);
-        while (userIteratorWidgetExpression.hasNext()) {
-            const QRegularExpressionMatch expressionMatch = userIteratorWidgetExpression.next();
-            map.insert(expressionMatch.captured(1), expressionMatch.captured(2));
-        }
+    auto result = query(queryString);
+    if (result.isEmpty()) {
+        spdlog::warn("CppDocument::mfcExtractDDX: No DoDataExchange found in `{}`", fileName().toStdString());
+        return {};
     }
-    return map;
+
+    if (result.size() > 1) {
+        spdlog::warn("CppDocument::mfcExtractDDX: Too many DoDataExchange methods found in `{}`",
+                     fileName().toStdString());
+    }
+
+    const auto &match = result.first();
+    return DataExchange(className, match);
 }
 
 /*!
@@ -683,7 +681,7 @@ MessageMap CppDocument::mfcExtractMessageMap(const QString &className /* = ""*/)
 
     auto result = query(queryString);
     if (result.isEmpty()) {
-        spdlog::warn("CppDocument::findMessageMap: No message map found in `{}`", fileName().toStdString());
+        spdlog::warn("CppDocument::mfcExtractMessageMap: No message map found in `{}`", fileName().toStdString());
         return {};
     }
 

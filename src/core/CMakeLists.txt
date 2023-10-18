@@ -13,6 +13,8 @@ set(PROJECT_SOURCES
     cppdocument_p.cpp
     functionsymbol.h
     functionsymbol.cpp
+    dataexchange.h
+    dataexchange.cpp
     dir.h
     dir.cpp
     document.h

@@ -45,6 +45,8 @@ nav:
             - Project: API/script/project.md
             - CppDocument:
                 - CppDocument: API/script/cppdocument.md
+                - DataExchange: API/script/dataexchange.md
+                - DataExchangeEntry: API/script/dataexchangeentry.md
                 - MessageMap: API/script/messagemap.md
                 - MessageMapEntry: API/script/messagemapentry.md
             - LspDocument:

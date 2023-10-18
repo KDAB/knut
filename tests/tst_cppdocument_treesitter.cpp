@@ -16,15 +16,22 @@ private slots:
 
     void extractDataExchange()
     {
-        Core::KnutCore core;
-        Core::Project::instance()->setRoot(Test::testDataPath() + "/projects/mfc-tutorial");
+        Test::testCppDocument("projects/mfc-tutorial", "TutorialDlg.cpp", [](Core::CppDocument *document) {
+            auto ddx = document->mfcExtractDDX("CTutorialDlg");
 
-        auto document = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open("TutorialDlg.cpp"));
-        auto ddxMap = document->mfcExtractDDX("CTutorialDlg");
+            QCOMPARE(ddx.entries.size(), 8);
+            QCOMPARE(ddx.entries.first().function, "DDX_Text");
+            QCOMPARE(ddx.entries.first().idc, "IDC_ECHO_AREA");
+            QCOMPARE(ddx.entries.first().member, "m_EchoText");
 
-        QCOMPARE(ddxMap.size(), 8);
-        QCOMPARE(ddxMap.value("IDC_ECHO_AREA"), "m_EchoText");
-        QCOMPARE(ddxMap.value("IDC_MOUSEECHO"), "m_MouseEcho");
+            QCOMPARE(ddx.entries.at(3).function, "DDX_Control");
+            QCOMPARE(ddx.entries.at(3).idc, "IDC_V_SLIDER_BAR");
+            QCOMPARE(ddx.entries.at(3).member, "m_VSliderBar");
+
+            QCOMPARE(ddx.entries.last().function, "DDX_Check");
+            QCOMPARE(ddx.entries.last().idc, "IDC_TIMER_CONTROL_SLIDERS");
+            QCOMPARE(ddx.entries.last().member, "m_TimerCtrlSliders");
+        });
     }
 
 private:

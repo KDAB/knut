@@ -62,12 +62,12 @@ MessageMapEntry fromMessage(const QueryMatch &match, const RangeMark &range)
 
 /*!
  * \qmltype MessageMap
- * \brief Keeps track of a message map within a text document.
+ * \brief Message map in a MFC C++ document
  * \inqmlmodule Script
  * \ingroup CppDocument
  * \since 1.1
  *
- * The MessageMap object represents the data contained in the MFC MessageMap.
+ * The `MessageMap` object represents the data contained in the MFC MessageMap.
  */
 
 /*!
@@ -90,7 +90,7 @@ MessageMapEntry fromMessage(const QueryMatch &match, const RangeMark &range)
  */
 /*!
  * \qmlproperty list<MessageMapEntry> MessageMap::entries
- * All entries found in the MessageMap as \c MessageMapEntry .
+ * All entries found in the MessageMap as `MessageMapEntry`.
  */
 MessageMap::MessageMap(const QueryMatch &match)
     : className(match.get("class").text())
