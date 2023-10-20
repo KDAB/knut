@@ -606,8 +606,8 @@ DataExchange CppDocument::mfcExtractDDX(const QString &className)
                         function: (identifier) @ddx-function(#match? "^DDX_" @ddx-function)
                         arguments: (argument_list
                             (identifier)
-                            (identifier) @ddx-idc
-                            (identifier) @ddx-member))
+                            (_) @ddx-idc
+                            (_) @ddx-member))
                 )@ddx)*)
         ) @do-data-exchange
     )EOF").arg(className);

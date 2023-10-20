@@ -3,6 +3,8 @@
 #include "TutorialDlg.h"
 #include "ui_TutorialDlg.h"
 
+#include <QMouseEvent>
+
 // DEBUG_NEW macro allows MFC applications to determine memory leak locations in debug builds
 #ifdef _DEBUG
   #define new DEBUG_NEW
@@ -33,22 +35,24 @@ CTutorialDlg::CTutorialDlg(CWnd* pParent)
     connect(m_ui->btn_add, &QAbstractButton::clicked, this, &CTutorialDlg::OnBnClickedBtnAdd);
     connect(m_ui->timer_control_sliders, &QAbstractButton::clicked, this, &CTutorialDlg::OnBnClickedTimerControlSliders);
     
+    // Create the mapping between the MFC proxy classes and the Qt widget
+    DoDataExchange();
+    
     // KDAB_TODO Mfc delay the initialisation to the first time the dialog is shown
     // This is usually not needed, if it is you need to call OnInitDialog from showEvent once
     OnInitDialog();
 }
 
-void CTutorialDlg::DoDataExchange(CDataExchange* pDX)
+void CTutorialDlg::DoDataExchange()
 {
-  CDialog::DoDataExchange(pDX);
-  DDX_Text(pDX, m_ui->echo_area, m_EchoText);
-  DDX_Text(pDX, m_ui->h_slider_echo, m_HSliderEcho);
-  DDX_Text(pDX, m_ui->v_slider_echo, m_VSliderEcho);
-  DDX_Control(pDX, m_ui->v_slider_bar, m_VSliderBar);
-  DDX_Control(pDX, m_ui->h_slider_bar, m_HSliderBar);
-  DDX_Text(pDX, m_ui->mouseecho, m_MouseEcho);
-  DDX_Text(pDX, m_ui->timerecho, m_TimerEcho);
-  DDX_Check(pDX, m_ui->timer_control_sliders, m_TimerCtrlSliders);
+    m_EchoText.setWidget(m_ui->echo_area);
+    m_HSliderEcho.setWidget(m_ui->h_slider_echo);
+    m_VSliderEcho.setWidget(m_ui->v_slider_echo);
+    m_VSliderBar.setWidget(m_ui->v_slider_bar);
+    m_HSliderBar.setWidget(m_ui->h_slider_bar);
+    m_MouseEcho.setWidget(m_ui->mouseecho);
+    m_TimerEcho.setWidget(m_ui->timerecho);
+    m_TimerCtrlSliders.setWidget(m_ui->timer_control_sliders);
 }
 
 BEGIN_MESSAGE_MAP(CTutorialDlg, CDialog)
@@ -67,7 +71,6 @@ END_MESSAGE_MAP()
 // It is a good spot to initialize member variables.
 bool CTutorialDlg::OnInitDialog()
 {
-  CDialog::OnInitDialog();
 
   // Set the icon for this dialog.  The framework does this automatically
   //  when the application's main window is not a dialog
@@ -133,7 +136,7 @@ void CTutorialDlg::OnBnClickedBtnAdd()
 void CTutorialDlg::OnHScroll(int nPos)
 {
   // We should check to make sure we know which slider bar is generating the events
-  if (sender() == (CScrollBar *) &m_HSliderBar)
+  if (sender() == m_HSliderBar.widget())
   {
     int value = m_HSliderBar.GetPos();
     m_HSliderEcho.Format(L"%d", value);
@@ -145,7 +148,7 @@ void CTutorialDlg::OnHScroll(int nPos)
 void CTutorialDlg::OnVScroll(int nPos)
 {
   // We should check to make sure we know which slider bar is generating the events
-  if (sender() == (CScrollBar *) &m_VSliderBar)
+  if (sender() == m_VSliderBar.widget())
   {
     int value = m_VSliderBar.GetPos();
     m_VSliderEcho.Format(L"%d", value);

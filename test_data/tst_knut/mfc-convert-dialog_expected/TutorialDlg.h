@@ -18,7 +18,7 @@ class CTutorialDlg;
 class CTutorialDlg : public CDialog
 {
 public:
-  CTutorialDlg(CWnd* pParent = NULL);
+  CTutorialDlg(CWnd* pParent = nullptr);
 
   /// The IDD enum is a common technique in MFC to associate a dialog with
   /// a resource that you edit in the dialog editor
@@ -28,7 +28,7 @@ protected:
   /// The virtual DoDataExchange is an MFC method for synchronizing values in this
   /// class with their corresponding controls on the dialog.
   /// See MSDN documentation for more information
-  virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
+  virtual void DoDataExchange();	// DDX/DDV support
 
   /// Called immediately after a dialog is created, but before it is displayed.
   /// This is where all of the control initialization usually occurs. This is
@@ -63,17 +63,17 @@ protected:
 private:
   int m_Seconds;
   int m_OkCount;
-  CString m_EchoText;
+  CText<CString> m_EchoText;
 
-  CString m_HSliderEcho;
-  CString m_VSliderEcho;
+  CText<CString> m_HSliderEcho;
+  CText<CString> m_VSliderEcho;
   CSliderCtrl m_VSliderBar;
   CSliderCtrl m_HSliderBar;
 
-  CString m_MouseEcho;
-  CString m_TimerEcho;
+  CText<CString> m_MouseEcho;
+  CText<CString> m_TimerEcho;
 
-  bool m_TimerCtrlSliders;
+  CCheck m_TimerCtrlSliders;
   HICON m_hIcon;
 private:
 	std::unique_ptr<Ui::CTutorialDlg> m_ui;
