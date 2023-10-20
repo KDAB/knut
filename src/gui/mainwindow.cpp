@@ -8,6 +8,7 @@
 #include "historypanel.h"
 #include "imageview.h"
 #include "interfacesettings.h"
+#include "kdalgorithms.h"
 #include "logpanel.h"
 #include "optionsdialog.h"
 #include "palette.h"
@@ -33,7 +34,6 @@
 #include "core/project.h"
 #include "core/qmldocument.h"
 #include "core/rcdocument.h"
-#include "core/scriptmanager.h"
 #include "core/slintdocument.h"
 #include "core/textdocument.h"
 #include "core/uidocument.h"
@@ -49,6 +49,7 @@
 #include <QLabel>
 #include <QMessageBox>
 #include <QPlainTextEdit>
+#include <QScopedValueRollback>
 #include <QSettings>
 #include <QShortcut>
 #include <QToolButton>
@@ -203,6 +204,12 @@ MainWindow::MainWindow(QWidget *parent)
     auto project = Core::Project::instance();
     connect(project, &Core::Project::currentDocumentChanged, this, &MainWindow::changeCurrentDocument);
 
+    auto reloadDocsIfNeeded = [this](Qt::ApplicationState state) {
+        if (state == Qt::ApplicationActive)
+            reloadDocuments();
+    };
+    connect(qApp, &QGuiApplication::applicationStateChanged, this, reloadDocsIfNeeded);
+
     auto path = project->root();
     if (!path.isEmpty())
         initProject(path);
@@ -245,7 +252,6 @@ ShortcutManager *MainWindow::shortcutManager() const
 
 bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 {
-
     if (event->type() == QEvent::Show) {
         if (qobject_cast<FindWidget *>(watched)) {
             ui->apiExecutorWidget->hide();
@@ -459,6 +465,47 @@ QDockWidget *MainWindow::createDock(QWidget *widget, Qt::DockWidgetArea area, QW
     }
     return dock;
 }
+
+void MainWindow::reloadDocuments()
+{
+    static bool conflictDialogShown = false;
+    if (conflictDialogShown)
+        return;
+
+    std::vector<Core::Document *> conflictDocs;
+    const auto documents = Core::Project::instance()->documents();
+    // Reload all documents that have changed on disk
+    for (auto *document : documents) {
+        if (document->hasChangedOnDisk()) {
+            if (document->hasChanged())
+                conflictDocs.push_back(document);
+            else
+                document->reload();
+        }
+    }
+
+    if (conflictDocs.empty())
+        return;
+    auto conflictFiles = kdalgorithms::transformed<QStringList>(conflictDocs, &Core::Document::fileName);
+
+    const auto title = conflictFiles.size() == 1 ? "File changed externally" : "Files changed externally";
+
+    const auto message = conflictFiles.size() == 1
+        ? QString("%1\n\nThe file has unsaved changes inside this editor and has been changed externally.\n"
+                  "Do you want to reload it and lose the changes made in Knut?")
+              .arg(conflictFiles.front())
+        : QString("%1\n\nThe files have unsaved changes inside this editor and have been changed externally.\n"
+                  "Do you want to reload them and lose the changes made in Knut?")
+              .arg(conflictFiles.join("\n"));
+
+    QScopedValueRollback rollback(conflictDialogShown, true);
+    const auto result = QMessageBox::question(this, title, message);
+    if (result == QMessageBox::Yes) {
+        for (auto *document : conflictDocs)
+            document->reload();
+    }
+}
+
 void MainWindow::followSymbol()
 {
     auto *project = Core::Project::instance();
@@ -672,7 +719,13 @@ static QWidget *widgetForDocument(Core::Document *document)
         auto rcview = new RcUi::RcFileView();
         rcview->setRcFile(rcDocument->file());
         QObject::connect(rcview, &RcUi::RcFileView::languageChanged, rcDocument, &Core::RcDocument::setLanguage);
-        GuiSettings::setupDocumentTextEdit(rcview->textEdit(), document->fileName());
+        GuiSettings::setupDocumentTextEdit(rcview->textEdit(), document);
+
+        auto updateData = [rcview, rcDocument]() {
+            rcview->setRcFile(rcDocument->file());
+        };
+        QObject::connect(rcDocument, &Core::RcDocument::fileUpdated, rcview, updateData);
+
         return rcview;
     }
     case Core::Document::Type::Ui: {

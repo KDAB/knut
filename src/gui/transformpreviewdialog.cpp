@@ -16,7 +16,7 @@ TransformPreviewDialog::TransformPreviewDialog(Core::LspDocument *document, cons
 
     ui->replacementsLabel->setText(tr("%1 Replacements made").arg(numberReplacements));
     ui->transformedText->setPlainText(resultText);
-    GuiSettings::setupDocumentTextEdit(ui->transformedText, document->fileName());
+    GuiSettings::setupDocumentTextEdit(ui->transformedText, document);
 
     if (auto applyButton = ui->buttonBox->button(QDialogButtonBox::Apply)) {
         connect(applyButton, &QPushButton::clicked, this, &QDialog::accept);

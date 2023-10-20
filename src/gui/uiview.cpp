@@ -1,5 +1,6 @@
 #include "uiview.h"
 
+#include "core/rcdocument.h"
 #include "core/uidocument.h"
 
 #include <QAbstractTableModel>
@@ -7,6 +8,7 @@
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QMdiArea>
+#include <QMdiSubWindow>
 #include <QMessageBox>
 #include <QTableView>
 #include <QUiLoader>
@@ -101,13 +103,28 @@ void UiView::setUiDocument(Core::UiDocument *document)
 {
     Q_ASSERT(document);
 
-    m_tableView->setModel(new UiModelView(document));
+    if (m_document)
+        m_document->disconnect(this);
+
+    m_document = document;
+    if (m_document)
+        connect(m_document, &Core::UiDocument::fileUpdated, this, &UiView::updateView);
+
+    updateView();
+}
+
+void UiView::updateView()
+{
+    delete m_tableView->model();
+    m_previewArea->removeSubWindow(m_previewWindow);
+
+    m_tableView->setModel(new UiModelView(m_document));
     m_tableView->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
     m_tableView->setMinimumWidth(m_tableView->horizontalHeader()->sectionSize(0)
                                  + m_tableView->horizontalHeader()->sectionSize(1) + 2 * m_tableView->frameWidth());
 
     QUiLoader loader;
-    QFile file(document->fileName());
+    QFile file(m_document->fileName());
     if (file.open(QIODevice::ReadOnly)) {
         QWidget *widget = loader.load(&file);
         if (!widget) {
@@ -115,9 +132,14 @@ void UiView::setUiDocument(Core::UiDocument *document)
                                  tr("Can't load the ui file due to some errors:\n%1").arg(loader.errorString()));
             return;
         }
+        widget->setAttribute(Qt::WA_DeleteOnClose);
         widget->setMinimumSize(widget->size());
-        m_previewArea->addSubWindow(widget, Qt::CustomizeWindowHint);
+        m_previewWindow = m_previewArea->addSubWindow(widget, Qt::CustomizeWindowHint);
+        m_previewWindow->setVisible(true);
     }
+
+    qDebug() << m_previewArea->subWindowList().count();
+    qDebug() << m_previewWindow->geometry();
 }
 
 } // namespace Gui

@@ -2,6 +2,7 @@
 
 #include "knutstyle.h"
 
+#include "core/document.h"
 #include "core/settings.h"
 #include "core/textdocument_p.h"
 
@@ -19,9 +20,6 @@
 #include <QStyleFactory>
 #include <QToolButton>
 #include <QWidget>
-
-#include <algorithm>
-#include <functional>
 
 namespace Gui {
 
@@ -180,13 +178,28 @@ static void setupHighlighter(KSyntaxHighlighting::SyntaxHighlighter *highlighter
     }
 }
 
-void GuiSettings::setupDocumentTextEdit(QPlainTextEdit *textEdit, const QString &fileName)
+KSyntaxHighlighting::SyntaxHighlighter *GuiSettings::initializeTextEdit(QPlainTextEdit *textEdit,
+                                                                        const QString &fileName)
 {
     textEdit->setProperty(IsDocument, true);
     instance()->updateTextEdit(textEdit, instance()->computeTextEditSettings());
 
     auto highlighter = new KSyntaxHighlighting::SyntaxHighlighter(textEdit->document());
     setupHighlighter(highlighter, instance()->m_theme, fileName);
+    return highlighter;
+}
+
+void GuiSettings::setupDocumentTextEdit(QPlainTextEdit *textEdit, Core::Document *document)
+{
+    const auto &fileName = document->fileName();
+    auto highlighter = initializeTextEdit(textEdit, fileName);
+
+    connect(document, &Core::Document::fileUpdated, highlighter, &KSyntaxHighlighting::SyntaxHighlighter::rehighlight);
+}
+
+void GuiSettings::setupFileNameTextEdit(QPlainTextEdit *textEdit, const QString &fileName)
+{
+    initializeTextEdit(textEdit, fileName);
 }
 
 void GuiSettings::setupTextEdit(QPlainTextEdit *textEdit)

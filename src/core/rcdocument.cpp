@@ -341,13 +341,13 @@ const RcCore::Data &RcDocument::data() const
 
 QString RcDocument::language() const
 {
-    LOG("Document::language");
+    LOG("RcDocument::language");
     LOG_RETURN("language", m_language);
 }
 
 void RcDocument::setLanguage(const QString &language)
 {
-    LOG("Document::setLanguage", language);
+    LOG("RcDocument::setLanguage", language);
 
     if (!m_rcFile.data.contains(language)) {
         spdlog::warn("RcDocument::setLanguage: language {} does not exist in the rc file.", language.toStdString());
@@ -366,7 +366,7 @@ void RcDocument::setLanguage(const QString &language)
 
 QStringList RcDocument::languages() const
 {
-    LOG("Document::languages");
+    LOG("RcDocument::languages");
 
     QStringList langs;
     if (m_rcFile.isValid) {

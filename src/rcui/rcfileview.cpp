@@ -97,6 +97,7 @@ void RcFileView::setRcFile(const RcCore::RcFile &rcFile)
     ui->languageCombo->clear();
     ui->languageCombo->addItems(languageList);
 
+    delete m_dataProxyModel->sourceModel();
     auto model = new DataModel(rcFile, ui->languageCombo->currentText(), this);
     m_dataProxyModel->setSourceModel(model);
     ui->dataView->sortByColumn(0, Qt::AscendingOrder);
@@ -108,6 +109,8 @@ void RcFileView::setRcFile(const RcCore::RcFile &rcFile)
     ui->textEdit->setPlainText(content.replace("\t", "    "));
 
     connect(ui->languageCombo, &QComboBox::currentTextChanged, model, &DataModel::setLanguage);
+
+    changeDataItem({});
 }
 
 QPlainTextEdit *RcFileView::textEdit() const

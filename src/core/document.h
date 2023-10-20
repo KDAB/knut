@@ -2,7 +2,11 @@
 
 #include "json_utils.h"
 
+#include <QDateTime>
+#include <QFileSystemWatcher>
 #include <QObject>
+
+#include <functional>
 
 namespace Core {
 
@@ -41,6 +45,9 @@ public:
 
     bool hasChanged() const;
 
+    bool hasChangedOnDisk() const;
+    void reload();
+
 public slots:
     bool load(const QString &fileName);
     bool save();
@@ -52,6 +59,7 @@ signals:
     void existsChanged();
     void errorStringChanged();
     void hasChangedChanged();
+    void fileUpdated();
 
 protected:
     virtual bool doSave(const QString &fileName) = 0;
@@ -64,10 +72,16 @@ protected:
     void setErrorString(const QString &error);
 
 private:
+    enum ConflictResolution { KeepDiskChanges, OverwriteDiskChanges };
+    ConflictResolution resolveConflictsOnSave() const;
+
     QString m_fileName;
     Type m_type;
     QString m_errorString;
     bool m_hasChanged = false;
+
+    // Members used for refreshing file after external changes
+    QDateTime m_lastModified;
 };
 
 NLOHMANN_JSON_SERIALIZE_ENUM(Document::Type,

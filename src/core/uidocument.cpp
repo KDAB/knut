@@ -70,6 +70,7 @@ bool UiDocument::doSave(const QString &fileName)
 
 bool UiDocument::doLoad(const QString &fileName)
 {
+    m_widgets.clear();
     pugi::xml_parse_result result = m_document.load_file(fileName.toLatin1().constData(), pugi::parse_declaration);
 
     if (!result) {

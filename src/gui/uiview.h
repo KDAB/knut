@@ -4,6 +4,7 @@
 
 class QTableView;
 class QMdiArea;
+class QMdiSubWindow;
 
 namespace Core {
 class UiDocument;
@@ -20,8 +21,12 @@ public:
     void setUiDocument(Core::UiDocument *document);
 
 private:
+    void updateView();
+
     QTableView *m_tableView = nullptr;
     QMdiArea *m_previewArea = nullptr;
+    Core::UiDocument *m_document = nullptr;
+    QMdiSubWindow *m_previewWindow = nullptr;
 };
 
 } // namespace Gui

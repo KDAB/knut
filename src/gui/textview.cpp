@@ -85,7 +85,7 @@ void TextView::setDocument(Core::TextDocument *document)
     textEdit->installEventFilter(this);
     setFocusProxy(textEdit);
     connect(textEdit->document(), &QTextDocument::contentsChanged, this, &TextView::updateMarkRect);
-    GuiSettings::setupDocumentTextEdit(textEdit, document->fileName());
+    GuiSettings::setupDocumentTextEdit(textEdit, document);
 
     connect(textEdit->verticalScrollBar(), &QScrollBar::valueChanged, this, &TextView::updateQuickActionRect);
 

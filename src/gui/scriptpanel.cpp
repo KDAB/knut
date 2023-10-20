@@ -60,7 +60,7 @@ ScriptPanel::ScriptPanel(QWidget *parent)
     setWindowTitle(tr("Script Panel"));
     setObjectName("ScriptPanel");
 
-    GuiSettings::setupDocumentTextEdit(this, "script.qml");
+    GuiSettings::setupFileNameTextEdit(this, "script.qml");
 
     // Setup titlebar
     auto layout = new QHBoxLayout(m_toolBar);

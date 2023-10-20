@@ -11,6 +11,14 @@
 class QPlainTextEdit;
 class QObject;
 
+namespace KSyntaxHighlighting {
+class SyntaxHighlighter;
+}
+
+namespace Core {
+class Document;
+}
+
 namespace Gui {
 
 class GuiSettings : public QObject
@@ -46,7 +54,8 @@ public:
     void removeShortcut(const QString &id);
     ShortcutList shortcuts() const;
 
-    static void setupDocumentTextEdit(QPlainTextEdit *textEdit, const QString &fileName);
+    static void setupDocumentTextEdit(QPlainTextEdit *textEdit, Core::Document *document);
+    static void setupFileNameTextEdit(QPlainTextEdit *textEdit, const QString &fileName);
     static void setupTextEdit(QPlainTextEdit *textEdit);
 
     static void setIcon(QObject *object, const QString &asset);
@@ -65,6 +74,9 @@ private:
     };
     TextEditSettings computeTextEditSettings() const;
     void updateTextEdit(QPlainTextEdit *textEdit, const TextEditSettings &settings) const;
+
+    static KSyntaxHighlighting::SyntaxHighlighter *initializeTextEdit(QPlainTextEdit *textEdit,
+                                                                      const QString &fileName);
 
     void updateIcons() const;
     void updateIcon(QObject *object, const QString &asset) const;

@@ -2,7 +2,10 @@
 
 #include "logger.h"
 
-#include <QFile>
+#include <QApplication>
+#include <QFileInfo>
+#include <QMessageBox>
+#include <QSignalBlocker>
 #include <QUrl>
 
 #include <spdlog/spdlog.h>
@@ -92,9 +95,39 @@ void Document::setErrorString(const QString &error)
     emit errorStringChanged();
 }
 
+Document::ConflictResolution Document::resolveConflictsOnSave() const
+{
+    const QFileInfo fi(m_fileName);
+    const auto result = QMessageBox::question(
+        QApplication::activeWindow(), "File changed externally",
+        QString("%1\n\nThe file has unsaved changes inside this editor and has been changed externally.\n"
+                "Do you want to overwrite the changes on the disk?")
+            .arg(fi.fileName()));
+    return result == QMessageBox::Yes ? Core::Document::OverwriteDiskChanges : Core::Document::KeepDiskChanges;
+};
+
 bool Document::hasChanged() const
 {
     return m_hasChanged;
+}
+
+bool Document::hasChangedOnDisk() const
+{
+    if (!QFile::exists(m_fileName))
+        return false;
+
+    // Don't update if it was saved by Knut
+    if (const QFileInfo fi(m_fileName); fi.lastModified() == m_lastModified)
+        return false;
+    return true;
+}
+
+void Document::reload()
+{
+    doLoad(m_fileName);
+    const QFileInfo fi(m_fileName);
+    m_lastModified = fi.lastModified();
+    emit fileUpdated();
 }
 
 /*!
@@ -111,9 +144,13 @@ bool Document::load(const QString &fileName)
     }
     if (m_fileName == fileName)
         return true;
+
     close();
-    bool loadDone = doLoad(fileName);
+    const bool loadDone = doLoad(fileName);
     m_fileName = fileName;
+    const QFileInfo fi(m_fileName);
+    m_lastModified = fi.lastModified();
+
     didOpen();
     emit fileNameChanged();
     return loadDone;
@@ -126,14 +163,7 @@ bool Document::load(const QString &fileName)
 bool Document::save()
 {
     LOG("Document::save");
-    if (m_fileName.isEmpty()) {
-        spdlog::error("Document::save - fileName is empty");
-        return false;
-    }
-    bool saveDone = doSave(m_fileName);
-    if (saveDone)
-        setHasChanged(false);
-    return saveDone;
+    return saveAs(m_fileName);
 }
 
 /*!
@@ -148,17 +178,27 @@ bool Document::saveAs(const QString &fileName)
         spdlog::error("Document::saveAs - fileName is empty");
         return false;
     }
-    bool isNewName = m_fileName != fileName;
+
+    const bool isNewName = m_fileName != fileName;
     if (isNewName) {
+        // We suppose that if the file exists, the user already agreed to overwrite it
         if (!m_fileName.isEmpty())
             didClose();
         m_fileName = fileName;
         emit fileNameChanged();
+    } else {
+        if (hasChangedOnDisk() && resolveConflictsOnSave() == KeepDiskChanges) {
+            return false;
+        }
     }
-    bool saveDone = doSave(m_fileName);
+
+    const bool saveDone = doSave(m_fileName);
     if (saveDone) {
         setHasChanged(false);
-        didOpen();
+        if (isNewName)
+            didOpen();
+        const QFileInfo fi(m_fileName);
+        m_lastModified = fi.lastModified();
     }
     return saveDone;
 }

@@ -88,6 +88,7 @@ private:
     void changeTab();
     void changeCurrentDocument();
     QDockWidget *createDock(QWidget *widget, Qt::DockWidgetArea area, QWidget *toolbar = nullptr);
+    void reloadDocuments();
 
     std::unique_ptr<Ui::MainWindow> ui;
     QMenu *m_recentProjects = nullptr;
