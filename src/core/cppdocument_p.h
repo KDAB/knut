@@ -18,8 +18,7 @@ struct ToggleSectionSettings
     std::map<std::string, std::string> return_values;
 };
 
-namespace Queries
-{
+namespace Queries {
     static const inline QString findInclude = QStringLiteral(R"EOF(
         (preproc_include
             path: (_) @path
@@ -90,8 +89,8 @@ private:
     struct IncludeGroup
     {
         int first;
-        int last;
-        int lastLine; // line are 1-based
+        int last = -1;
+        int lastLine = -1; // line are 1-based
         QString prefix;
         int scope = 0;
     };

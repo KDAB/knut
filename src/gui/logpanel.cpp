@@ -81,7 +81,7 @@ protected:
         spdlog::sinks::base_sink<Mutex>::formatter_->format(msg, formatted);
 
         // In case it's coming from different thread, we can't call appendPlainText directly
-        auto string = QString::fromStdString(fmt::to_string(formatted));
+        auto string = QString::fromStdString(formatted);
         QMetaObject::invokeMethod(m_textEdit, "appendPlainText", Qt::AutoConnection,
                                   Q_ARG(QString, string.simplified()));
     }

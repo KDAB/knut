@@ -38,29 +38,6 @@
                 "CMAKE_BUILD_TYPE": "RelWithDebInfo",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
             }
-        },
-        {
-            "name": "clazy",
-            "displayName": "Clazy build",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build-clazy",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug"
-            },
-            "environment": {
-                "CXX": "clazy",
-                "CCACHE_DISABLE": "ON"
-            }
-        }
-    ],
-    "buildPresets": [
-        {
-            "name": "clazy",
-            "configurePreset": "clazy",
-            "environment": {
-                "CLAZY_CHECKS" : "level0,level1,no-qproperty-without-notify,no-non-pod-global-static",
-                "CCACHE_DISABLE" : "ON"
-            }
         }
     ]
 }

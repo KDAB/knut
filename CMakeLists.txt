@@ -33,6 +33,7 @@ find_package(Qt6 COMPONENTS Widgets Qml Quick Test UiTools REQUIRED)
 CheckSubmodule(spdlog 3rdparty/spdlog)
 # See https://github.com/gabime/spdlog/issues/1190
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(SPDLOG_USE_STD_FORMAT ON)
 add_subdirectory(3rdparty/spdlog)
 
 # nlohmann/json

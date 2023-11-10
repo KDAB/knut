@@ -936,7 +936,7 @@ void CppDocument::toggleSection()
     if (cursor.hasSelection()) {
         // If there's a selection, just add #ifdef/#endif
         cursor.beginEditBlock();
-        auto [min, max] = std::minmax(cursor.selectionStart(), cursor.selectionEnd());
+        auto [min, max] = std::minmax({cursor.selectionStart(), cursor.selectionEnd()});
         int line, col;
         convertPosition(max, &line, &col);
         // Add #endif / #ifdef, starts to the end or min/max won't be right

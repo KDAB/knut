@@ -87,3 +87,5 @@ cpp_server.log
 docs/assets/*.svg
 
 .vscode/settings.json
+
+.idea
