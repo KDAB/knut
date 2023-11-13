@@ -6,10 +6,8 @@
 #include <QDir>
 #include <QFileDialog>
 
-#ifdef USE_SYNTAX_HIGHLIGHTING
 #include <repository.h>
 #include <theme.h>
-#endif
 
 #include <algorithm>
 
@@ -32,7 +30,6 @@ InterfaceSettings::InterfaceSettings(QWidget *parent)
 
     connect(ui->openHelpPath, &QPushButton::clicked, this, &InterfaceSettings::browseHelpPath);
 
-#ifdef USE_SYNTAX_HIGHLIGHTING
     KSyntaxHighlighting::Repository repository;
     const auto themes = repository.themes();
     QStringList themeNames = {"[Default]"};
@@ -41,7 +38,7 @@ InterfaceSettings::InterfaceSettings(QWidget *parent)
     };
     std::transform(std::begin(themes), std::end(themes), std::back_inserter(themeNames), themeToString);
     ui->themeCombo->addItems(themeNames);
-#endif
+
     initialize();
 
     auto setStyle = [](int idx) {

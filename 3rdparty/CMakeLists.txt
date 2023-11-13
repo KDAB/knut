@@ -38,16 +38,12 @@ endif()
 # A bit of a pain to integrate:
 #  - compile error for me in Qt Creator, needs to compile on the command line
 #  - leak 2 targets in the project
-option(USE_SYNTAX_HIGHLIGHTING "Enable syntax highlighting in IDE" ON)
-if(USE_SYNTAX_HIGHLIGHTING)
-    # Don't build tests and examples
-    set(KSYNTAXHIGHLIGHTING_USE_GUI OFF)
-    set(DISABLE_ALL_OPTIONAL_SUBDIRECTORIES TRUE)
-    set(BUILD_TESTING OFF)
-    CheckSubmodule(ksyntaxhighlighting ksyntaxhighlighting)
-    add_subdirectory(ksyntaxhighlighting)
-    add_definitions(-DUSE_SYNTAX_HIGHLIGHTING)
-endif()
+# Don't build tests and examples
+set(KSYNTAXHIGHLIGHTING_USE_GUI OFF)
+set(DISABLE_ALL_OPTIONAL_SUBDIRECTORIES TRUE)
+set(BUILD_TESTING OFF)
+CheckSubmodule(ksyntaxhighlighting ksyntaxhighlighting)
+add_subdirectory(ksyntaxhighlighting)
 
 # TreeSitter
 ###########################################################

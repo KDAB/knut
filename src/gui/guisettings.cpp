@@ -5,12 +5,10 @@
 #include "core/settings.h"
 #include "core/textdocument_p.h"
 
-#ifdef USE_SYNTAX_HIGHLIGHTING
 #include <definition.h>
 #include <repository.h>
 #include <syntaxhighlighter.h>
 #include <theme.h>
-#endif
 
 #include <QAction>
 #include <QApplication>
@@ -168,7 +166,6 @@ GuiSettings::ShortcutList GuiSettings::shortcuts() const
     return shortcuts;
 }
 
-#ifdef USE_SYNTAX_HIGHLIGHTING
 static void setupHighlighter(KSyntaxHighlighting::SyntaxHighlighter *highlighter, const QString &theme,
                              const QString &fileName = {})
 {
@@ -182,19 +179,14 @@ static void setupHighlighter(KSyntaxHighlighting::SyntaxHighlighter *highlighter
         highlighter->setDefinition(def);
     }
 }
-#endif
 
 void GuiSettings::setupDocumentTextEdit(QPlainTextEdit *textEdit, const QString &fileName)
 {
     textEdit->setProperty(IsDocument, true);
     instance()->updateTextEdit(textEdit, instance()->computeTextEditSettings());
 
-#ifdef USE_SYNTAX_HIGHLIGHTING
     auto highlighter = new KSyntaxHighlighting::SyntaxHighlighter(textEdit->document());
     setupHighlighter(highlighter, instance()->m_theme, fileName);
-#else
-    Q_UNUSED(fileName)
-#endif
 }
 
 void GuiSettings::setupTextEdit(QPlainTextEdit *textEdit)
@@ -274,7 +266,6 @@ void GuiSettings::updateStyle() const
 
 void GuiSettings::updateTheme() const
 {
-#ifdef USE_SYNTAX_HIGHLIGHTING
     const auto topLevels = QApplication::topLevelWidgets();
     for (auto topLevel : topLevels) {
         const auto highlighters = topLevel->findChildren<KSyntaxHighlighting::SyntaxHighlighter *>();
@@ -283,7 +274,6 @@ void GuiSettings::updateTheme() const
             highlighter->rehighlight();
         }
     }
-#endif
 }
 
 void GuiSettings::updateTextEdits() const
