@@ -290,7 +290,7 @@ public:
     {
     }
 
-    ~MessageMapCache() = default;
+    ~MessageMapCache() override = default;
 
     Node m_begin;
     Node m_end;

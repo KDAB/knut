@@ -11,9 +11,9 @@ class DynamicObject : public QObject
 public:
     QT_WARNING_PUSH
     Q_OBJECT_NO_OVERRIDE_WARNING
-    virtual const QMetaObject *metaObject() const;
-    virtual void *qt_metacast(const char *);
-    virtual int qt_metacall(QMetaObject::Call, int, void **);
+    const QMetaObject *metaObject() const override;
+    void *qt_metacast(const char *) override;
+    int qt_metacall(QMetaObject::Call, int, void **) override;
     QT_TR_FUNCTIONS
 private:
     Q_OBJECT_NO_ATTRIBUTES_WARNING

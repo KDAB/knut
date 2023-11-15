@@ -45,7 +45,7 @@ void from_json(const nlohmann::json &j, SelectionRange &value)
 {
     value.range = j["range"].get<Range>();
     if (j.contains("parent")) {
-        SelectionRange parent = j["parent"].get<SelectionRange>();
+        auto parent = j["parent"].get<SelectionRange>();
         value.parent.reset(new SelectionRange(std::move(parent)));
     }
 }

@@ -2,9 +2,7 @@
 
 #include <QStringList>
 
-namespace Core {
-namespace Cpp {
-    extern const QStringList keywords;
-    extern const QStringList primitiveTypes;
-}
+namespace Core::Cpp {
+extern const QStringList keywords;
+extern const QStringList primitiveTypes;
 }

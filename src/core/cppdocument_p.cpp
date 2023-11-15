@@ -22,7 +22,7 @@ IncludeHelper::IncludeHelper(CppDocument *document)
     computeIncludes();
 }
 
-static QStringView getCommonPrefix(QString const &s1, QString const &s2)
+static QStringView getCommonPrefix(const QString &s1, const QString &s2)
 {
     auto it1 = std::ranges::mismatch(s1, s2).in1;
     auto common = QStringView(s1.begin(), it1);

@@ -5,15 +5,13 @@
 #include <QString>
 #include <QUrl>
 
-namespace Lsp {
-namespace Utils {
+namespace Lsp::Utils {
 
-    inline DocumentUri toDocumentUri(const QString &localFile)
-    {
-        return QUrl::fromLocalFile(localFile).toString().toStdString();
-    }
-
-    QString removeTypeAliasInformation(const QString &typeInfo);
-
+inline DocumentUri toDocumentUri(const QString &localFile)
+{
+    return QUrl::fromLocalFile(localFile).toString().toStdString();
 }
+
+QString removeTypeAliasInformation(const QString &typeInfo);
+
 }

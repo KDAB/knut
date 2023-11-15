@@ -91,7 +91,7 @@ FunctionSymbol::FunctionSymbol(QObject *parent, const QString &name, const QStri
         auto toType = [](const FunctionArgument &arg) {
             return arg.type;
         };
-        QStringList argumentTypes = kdalgorithms::transformed<QStringList>(args, toType);
+        auto argumentTypes = kdalgorithms::transformed<QStringList>(args, toType);
 
         m_description = QString("%1 (%2)").arg(returnType(), argumentTypes.join(", "));
     }

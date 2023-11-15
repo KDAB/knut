@@ -927,10 +927,10 @@ void CppDocument::toggleSection()
     LOG("CppDocument::toggleSection");
 
     auto sectionSettings = Settings::instance()->value<ToggleSectionSettings>(Settings::ToggleSection);
-    const QString endifString = QStringLiteral("#endif // ") + sectionSettings.tag;
-    const QString ifdefString = QStringLiteral("#ifdef ") + sectionSettings.tag;
-    const QString elseString = QStringLiteral("#else // ") + sectionSettings.tag;
-    const QString newLine = QStringLiteral("\n");
+    const auto endifString = QStringLiteral("#endif // ") + sectionSettings.tag;
+    const auto ifdefString = QStringLiteral("#ifdef ") + sectionSettings.tag;
+    const auto elseString = QStringLiteral("#else // ") + sectionSettings.tag;
+    const auto newLine = QStringLiteral("\n");
 
     QTextCursor cursor = textEdit()->textCursor();
     if (cursor.hasSelection()) {
