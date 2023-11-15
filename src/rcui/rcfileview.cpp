@@ -31,7 +31,8 @@ public:
 protected:
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override
     {
-        return !sourceModel()->index(source_row, 0, source_parent).data(DataModel::EmptyRole).toBool();
+        const bool isEmpty = sourceModel()->index(source_row, 0, source_parent).data(DataModel::EmptyRole).toBool();
+        return isEmpty ? false : QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
     }
 };
 
