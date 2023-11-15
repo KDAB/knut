@@ -23,7 +23,7 @@ File::File(QObject *parent)
 {
 }
 
-File::~File() { }
+File::~File() = default;
 
 /*!
  * \qmlmethod bool File::copy(string fileName, string newName)

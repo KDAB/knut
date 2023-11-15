@@ -57,7 +57,7 @@ public:
     Q_ENUM(FindFlag)
 
     explicit TextDocument(QObject *parent = nullptr);
-    virtual ~TextDocument();
+    ~TextDocument() override;
 
     bool eventFilter(QObject *watched, QEvent *event) override;
 
@@ -199,9 +199,9 @@ protected:
     int position(QTextCursor::MoveOperation operation, int pos) const;
 
     int replaceAll(const QString &before, const QString &after, int options,
-                   std::function<bool(QRegularExpressionMatch, QTextCursor)> regexFilter);
+                   const std::function<bool(QRegularExpressionMatch, QTextCursor)> &regexFilter);
     int replaceAllRegexp(const QString &regexp, const QString &after, int options,
-                         std::function<bool(QRegularExpressionMatch, QTextCursor)> regexFilter);
+                         const std::function<bool(QRegularExpressionMatch, QTextCursor)> &regexFilter);
 
 private:
     void detectFormat(const QByteArray &data);

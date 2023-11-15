@@ -27,7 +27,7 @@ TestUtil::TestUtil(QObject *parent)
 {
 }
 
-TestUtil::~TestUtil() { }
+TestUtil::~TestUtil() = default;
 
 QString TestUtil::callerFile(int frameIndex) const
 {

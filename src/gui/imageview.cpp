@@ -21,7 +21,7 @@ ImageView::ImageView(QWidget *parent)
         setTransform({});
     });
 
-    QAction* zoomIn = new QAction(tr("Zoom in"), this);
+    auto zoomIn = new QAction(tr("Zoom in"), this);
     GuiSettings::setIcon(zoomIn, ":/gui/magnify-plus.png");
     zoomIn->setShortcut(QKeySequence("Ctrl++"));
     zoomIn->setShortcutContext(Qt::WidgetShortcut);
@@ -30,7 +30,7 @@ ImageView::ImageView(QWidget *parent)
     });
     addAction(zoomIn);
 
-    QAction* zoomOut = new QAction(tr("Zoom out"), this);
+    auto zoomOut = new QAction(tr("Zoom out"), this);
     GuiSettings::setIcon(zoomOut, ":/gui/magnify-minus.png");
     zoomOut->setShortcut(QKeySequence("Ctrl+-"));
     zoomOut->setShortcutContext(Qt::WidgetShortcut);

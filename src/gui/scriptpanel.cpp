@@ -234,7 +234,7 @@ void ScriptPanel::checkEditDialogButton()
 QString ScriptPanel::createDialogFile()
 {
     const QFileInfo fi(m_fileName);
-    const QString uiFileName = fi.absolutePath() + '/' + fi.baseName() + ".ui";
+    QString uiFileName = fi.absolutePath() + '/' + fi.baseName() + ".ui";
 
     if (!QFile::exists(uiFileName) && !QFile::copy(":/gui/default-dialog.ui", uiFileName)) {
         spdlog::error("Error creating dialog - can't create the dialog file.");
@@ -281,7 +281,7 @@ QString ScriptPanel::findMethodSignature(const QObject *object, const QString &f
     }
 
     // Function not found
-    return QString();
+    return {};
 }
 
 void ScriptPanel::mousePressEvent(QMouseEvent *mouseEvent)

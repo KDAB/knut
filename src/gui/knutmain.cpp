@@ -23,21 +23,21 @@ void KnutMain::initParser(QCommandLineParser &parser) const
 
 void KnutMain::doParse(const QCommandLineParser &parser) const
 {
-    bool ide = parser.isSet("gui");
-    if (ide || parser.optionNames().isEmpty()) {
+    const bool gui = parser.isSet("gui");
+    if (gui || parser.optionNames().isEmpty()) {
         auto ide = new MainWindow();
         ide->show();
         return;
     }
 
-    bool runDialog = parser.isSet("gui-script");
+    const bool runDialog = parser.isSet("gui-script");
     if (runDialog) {
         auto dialog = new RunScriptDialog;
         dialog->show();
         return;
     }
 
-    bool settingsDialog = parser.isSet("gui-settings");
+    const bool settingsDialog = parser.isSet("gui-settings");
     if (settingsDialog) {
         auto dialog = new OptionsDialog;
         dialog->show();

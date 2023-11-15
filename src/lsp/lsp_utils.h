@@ -8,7 +8,7 @@
 namespace Lsp {
 namespace Utils {
 
-    inline DocumentUri toDocumentUri(QString localFile)
+    inline DocumentUri toDocumentUri(const QString &localFile)
     {
         return QUrl::fromLocalFile(localFile).toString().toStdString();
     }

@@ -48,11 +48,11 @@ const QVector<Symbol *> &LspCache::symbols()
     }
     const auto lspSymbols = std::get<std::vector<Lsp::DocumentSymbol>>(result.value());
 
-    // Create a recusive lambda to flatten the hierarchy
+    // Create a recursive lambda to flatten the hierarchy
     // Add the full symbol name (with namespaces/classes)
     m_symbols.clear();
     const std::function<void(const std::vector<Lsp::DocumentSymbol> &, QString)> fillSymbols =
-        [this, &fillSymbols](const std::vector<Lsp::DocumentSymbol> &lspSymbols, QString context) {
+        [this, &fillSymbols](const std::vector<Lsp::DocumentSymbol> &lspSymbols, const QString &context) {
             for (const auto &lspSymbol : lspSymbols) {
                 auto symbol = Symbol::makeSymbol(m_document, lspSymbol, m_document->toRange(lspSymbol.range),
                                                  m_document->toRange(lspSymbol.selectionRange), context);
@@ -238,7 +238,7 @@ std::shared_ptr<treesitter::Query> TreeSitterHelper::constructQuery(const QStrin
     std::shared_ptr<treesitter::Query> tsQuery;
     try {
         tsQuery = std::make_shared<treesitter::Query>(parser().language(), query);
-    } catch (treesitter::Query::Error error) {
+    } catch (treesitter::Query::Error &error) {
         spdlog::error("LspDocument::constructQuery: Failed to parse query `{}` error: {} at: {}", query.toStdString(),
                       error.description.toStdString(), error.utf8_offset);
         return {};

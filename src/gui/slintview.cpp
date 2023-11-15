@@ -35,7 +35,7 @@ SlintView::SlintView(QWidget *parent)
 {
     auto exec = findSlintViewer();
 
-    QAction *act = new QAction(tr("Run"), this);
+    auto act = new QAction(tr("Run"), this);
     GuiSettings::setIcon(act, ":/gui/eye.png");
     act->setDisabled(exec.isEmpty());
     connect(act, &QAction::triggered, this, &SlintView::runSlint);

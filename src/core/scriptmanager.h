@@ -48,8 +48,8 @@ public:
     QStringList directories() const;
 
 public slots:
-    void runScript(const QString &scriptName, bool async = true, bool log = true);
-    void runScriptInContext(const QString &scriptName, Core::QueryMatch context, bool async = true, bool log = true);
+    void runScript(const QString &fileName, bool async = true, bool log = true);
+    void runScriptInContext(const QString &fileName, Core::QueryMatch context, bool async = true, bool log = true);
 
 signals:
     void scriptFinished(const QVariant &result);
@@ -70,8 +70,8 @@ private:
     void addScriptsFromPath(const QString &path);
     void removeScriptsFromPath(const QString &path);
 
-    void doRunScript(const QString &fileName, std::function<void()> endFunc = {},
-                     std::optional<QueryMatch> context = {});
+    void doRunScript(const QString &fileName, const std::function<void()> &endFunc = {},
+                     const std::optional<QueryMatch> &context = {});
 
     void updateDirectories();
     void updateScriptDirectory(const QString &path);

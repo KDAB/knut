@@ -18,7 +18,7 @@ class Dir : public QObject
     Q_PROPERTY(QString tempPath READ tempPath CONSTANT)
 
 public:
-    explicit Dir(const QString &currentScriptPath, QObject *parent = nullptr);
+    explicit Dir(QString currentScriptPath, QObject *parent = nullptr);
     ~Dir() override;
 
     enum Filter {

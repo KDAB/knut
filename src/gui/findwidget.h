@@ -14,7 +14,7 @@ class FindWidget : public QWidget
 
 public:
     explicit FindWidget(QWidget *parent = nullptr);
-    ~FindWidget();
+    ~FindWidget() override;
 
     void findNext();
     void findPrevious();

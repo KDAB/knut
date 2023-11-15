@@ -251,8 +251,8 @@ private slots:
             arg.type.remove("std::");
         };
         auto args = fun->arguments();
-        std::for_each(args.begin(), args.end(), removeStd);
-        std::for_each(functionData.arguments.begin(), functionData.arguments.end(), removeStd);
+        std::ranges::for_each(args, removeStd);
+        std::ranges::for_each(functionData.arguments, removeStd);
         QCOMPARE(args, functionData.arguments);
         // do not compare the range here, subject to change in the file, not much sense to testing it.
     }
@@ -300,7 +300,7 @@ private slots:
         spdlog::warn("Finding references");
         const auto references = symbol->references();
         QCOMPARE(references.size(), 9);
-        QVERIFY2(std::find_if(references.cbegin(), references.cend(), isSymbolRange) == references.cend(),
+        QVERIFY2(std::ranges::find_if(references, isSymbolRange) == references.cend(),
                  "Ensure the symbol range itself is not part of the result.");
         QCOMPARE(qobject_cast<Core::LspDocument *>(Core::Project::instance()->currentDocument()), lspDocument);
 
@@ -310,22 +310,22 @@ private slots:
         }
 
         spdlog::warn("Counting documents");
-        QCOMPARE(std::count_if(references.cbegin(), references.cend(),
-                               [](const auto &location) {
-                                   return location.document->fileName().endsWith("main.cpp");
-                               }),
+        QCOMPARE(std::ranges::count_if(references,
+                                       [](const auto &location) {
+                                           return location.document->fileName().endsWith("main.cpp");
+                                       }),
                  1);
 
-        QCOMPARE(std::count_if(references.cbegin(), references.cend(),
-                               [](const auto &location) {
-                                   return location.document->fileName().endsWith("myobject.h");
-                               }),
+        QCOMPARE(std::ranges::count_if(references,
+                                       [](const auto &location) {
+                                           return location.document->fileName().endsWith("myobject.h");
+                                       }),
                  2);
 
-        QCOMPARE(std::count_if(references.cbegin(), references.cend(),
-                               [](const auto &location) {
-                                   return location.document->fileName().endsWith("myobject.cpp");
-                               }),
+        QCOMPARE(std::ranges::count_if(references,
+                                       [](const auto &location) {
+                                           return location.document->fileName().endsWith("myobject.cpp");
+                                       }),
                  6);
     }
 };

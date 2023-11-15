@@ -16,13 +16,13 @@ class FunctionSymbol;
 class Symbol : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString name READ name CONSTANT);
-    Q_PROPERTY(QString description READ description CONSTANT);
-    Q_PROPERTY(Kind kind READ kind CONSTANT);
-    Q_PROPERTY(Core::TextRange range READ range CONSTANT);
-    Q_PROPERTY(Core::TextRange selectionRange READ selectionRange CONSTANT);
-    Q_PROPERTY(QVector<Core::TextLocation> references READ references CONSTANT);
-    Q_PROPERTY(QString importLocation READ importLocation CONSTANT);
+    Q_PROPERTY(QString name READ name CONSTANT)
+    Q_PROPERTY(QString description READ description CONSTANT)
+    Q_PROPERTY(Kind kind READ kind CONSTANT)
+    Q_PROPERTY(Core::TextRange range READ range CONSTANT)
+    Q_PROPERTY(Core::TextRange selectionRange READ selectionRange CONSTANT)
+    Q_PROPERTY(QVector<Core::TextLocation> references READ references CONSTANT)
+    Q_PROPERTY(QString importLocation READ importLocation CONSTANT)
 
 public:
     enum Kind {
@@ -56,8 +56,8 @@ public:
     Q_ENUM(Kind)
 
 protected:
-    Symbol(QObject *parent, const QString &name, const QString &description, const QString &importLocation, Kind kind,
-           TextRange range, TextRange selectionRange);
+    Symbol(QObject *parent, QString name, QString description, QString importLocation, Kind kind, TextRange range,
+           TextRange selectionRange);
 
     QString m_name;
     QString m_description;
@@ -70,7 +70,7 @@ protected:
 
 public:
     static Symbol *makeSymbol(QObject *parent, const Lsp::DocumentSymbol &lspSymbol, TextRange range,
-                              TextRange selectionRange, QString context = "");
+                              TextRange selectionRange, const QString &context = "");
 
     static Symbol *makeSymbol(QObject *parent, const QString &name, const QString &description,
                               const QString &importLocation, Kind kind, TextRange range, TextRange selectionRange);

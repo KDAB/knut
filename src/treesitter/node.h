@@ -70,11 +70,11 @@ public:
 template <>
 struct std::hash<treesitter::Node>
 {
-    std::size_t operator()(const treesitter::Node &node) const
+    std::size_t operator()(const treesitter::Node &node) const noexcept
     {
         std::size_t result = 0;
-        for (int i = 0; i < 4; i++) {
-            result ^= std::hash<uint32_t> {}(node.m_node.context[i]);
+        for (unsigned int i : node.m_node.context) {
+            result ^= std::hash<uint32_t> {}(i);
         }
         return result ^ std::hash<const void *> {}(node.m_node.id) ^ std::hash<const TSTree *> {}(node.m_node.tree);
     }

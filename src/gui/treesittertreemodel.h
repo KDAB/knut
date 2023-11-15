@@ -19,7 +19,7 @@ public:
     class TreeNode
     {
     public:
-        TreeNode(const treesitter::Node &node, const TreeNode *parent, bool enableUnnamed);
+        explicit TreeNode(const treesitter::Node &node, const TreeNode *parent, bool enableUnnamed);
 
         int childCount() const;
         const TreeNode *child(int row) const;
@@ -36,7 +36,7 @@ public:
         std::vector<std::unique_ptr<TreeNode>> &children();
 
         void traverse(
-            std::function<void(TreeNode *)> fun, std::function<bool(TreeNode *)> filter = [](auto) {
+            const std::function<void(TreeNode *)> &fun, const std::function<bool(TreeNode *)> &filter = [](auto) {
                 return true;
             });
 
@@ -75,7 +75,7 @@ public:
 
 private:
     void positionChanged(int position);
-    void capturesChanged(std::unordered_map<treesitter::Node, QString> oldCaptures);
+    void capturesChanged(const std::unordered_map<treesitter::Node, QString> &oldCaptures);
     void executeQuery(std::unique_ptr<treesitter::Predicates> &&predicates);
 
     int m_cursorPosition;

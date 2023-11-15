@@ -14,7 +14,7 @@ AssetModel::AssetModel(const QVector<Asset> &assets, QObject *parent)
     : QAbstractTableModel(parent)
     , m_assets(assets)
 {
-    std::sort(m_assets.begin(), m_assets.end(), [](const auto &left, const auto &right) {
+    std::ranges::sort(m_assets, [](const auto &left, const auto &right) {
         return left.id < right.id;
     });
 }

@@ -25,7 +25,7 @@ Message::Message(QObject *parent)
 {
 }
 
-Message::~Message() { }
+Message::~Message() = default;
 
 /*!
  * \qmlmethod Message::error(string text)

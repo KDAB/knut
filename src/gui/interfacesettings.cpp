@@ -36,7 +36,7 @@ InterfaceSettings::InterfaceSettings(QWidget *parent)
     auto themeToString = [](const auto &theme) {
         return theme.name();
     };
-    std::transform(std::begin(themes), std::end(themes), std::back_inserter(themeNames), themeToString);
+    std::ranges::transform(themes, std::back_inserter(themeNames), themeToString);
     ui->themeCombo->addItems(themeNames);
 
     initialize();

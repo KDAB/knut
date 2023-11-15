@@ -170,7 +170,7 @@ void ScriptDialogItem::setUiFile(const QString &fileName)
     if (file.open(QFile::ReadOnly)) {
         QWidget *internalWidget = loader.load(&file, this);
         file.close();
-        QVBoxLayout *layout = new QVBoxLayout;
+        auto layout = new QVBoxLayout;
         layout->addWidget(internalWidget);
         setLayout(layout);
         setWindowTitle(internalWidget->windowTitle());

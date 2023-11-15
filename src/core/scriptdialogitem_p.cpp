@@ -37,7 +37,7 @@ void DynamicObject::ready()
 
 void DynamicObject::registerDataChangedCallback(DataChangedFunc func)
 {
-    m_dataChangedCallback = func;
+    m_dataChangedCallback = std::move(func);
 }
 
 const QMetaObject *DynamicObject::metaObject() const
@@ -58,7 +58,7 @@ int DynamicObject::qt_metacall(QMetaObject::Call call, int id, void **argv)
         metaType.construct(argv[0], property.variant.data());
     } else if (call == QMetaObject::WriteProperty) {
         auto &property = m_properties.at(static_cast<size_t>(realId));
-        property.variant = QVariant((QMetaType)property.typeId, (void *)argv[0]);
+        property.variant = QVariant(QMetaType(property.typeId), (void *)argv[0]);
         *reinterpret_cast<int *>(argv[2]) = 1; // setProperty return value
         QMetaObject::activate(this, m_metaObject, realId, nullptr);
         if (m_dataChangedCallback)

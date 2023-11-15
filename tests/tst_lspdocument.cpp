@@ -6,9 +6,9 @@
 #include <QAction>
 #include <QPlainTextEdit>
 #include <QSignalSpy>
+#include <QTemporaryFile>
 #include <QTest>
 #include <qtestcase.h>
-#include <QTemporaryFile>
 
 #include <kdalgorithms.h>
 
@@ -454,7 +454,7 @@ private slots:
 
         QCOMPARE(matches.size(), 1);
         auto match = matches[0];
-        auto captures = match.captures();
+        const auto &captures = match.captures();
         QCOMPARE(captures.size(), 4);
         QCOMPARE(match.getAll("name").size(), 1);
         QCOMPARE(match.getAll("return-type").size(), 1);
@@ -572,7 +572,6 @@ private slots:
         QCOMPARE(foo.startPos(), 57);
         QCOMPARE(foo.endPos(), 111);
     }
-
 };
 
 QTEST_MAIN(TestLspDocument)

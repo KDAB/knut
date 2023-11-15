@@ -27,7 +27,7 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    ~MainWindow() override;
 
     QList<QAction *> menuActions() const;
     ShortcutManager *shortcutManager() const;

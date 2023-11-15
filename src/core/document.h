@@ -57,8 +57,8 @@ protected:
     virtual bool doSave(const QString &fileName) = 0;
     virtual bool doLoad(const QString &fileName) = 0;
 
-    virtual void didOpen() {};
-    virtual void didClose() {};
+    virtual void didOpen() { }
+    virtual void didClose() { }
 
     void setHasChanged(bool newHasChanged);
     void setErrorString(const QString &error);
@@ -67,7 +67,7 @@ private:
     QString m_fileName;
     Type m_type;
     QString m_errorString;
-    bool m_hasChanged = 0;
+    bool m_hasChanged = false;
 };
 
 NLOHMANN_JSON_SERIALIZE_ENUM(Document::Type,

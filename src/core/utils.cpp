@@ -31,7 +31,7 @@ Utils::Utils(QObject *parent)
 {
 }
 
-Utils::~Utils() { }
+Utils::~Utils() = default;
 
 /*!
  * \qmlmethod string Utils::getEnv(string varName)

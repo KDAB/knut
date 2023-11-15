@@ -31,7 +31,7 @@ public:
     QString absolutePath() const;
     QString canonicalPath() const;
     QString dirName() const;
-    uint count() const;
+    qsizetype count() const;
     bool isReadable() const;
     bool exists() const;
     bool isRoot() const;

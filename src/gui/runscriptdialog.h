@@ -16,7 +16,7 @@ class RunScriptDialog : public QDialog
 
 public:
     explicit RunScriptDialog(QWidget *parent = nullptr);
-    ~RunScriptDialog();
+    ~RunScriptDialog() override;
 
 public slots:
     void accept() override;

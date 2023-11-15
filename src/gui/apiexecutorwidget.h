@@ -18,11 +18,11 @@ class APIExecutorWidget : public QWidget
 
 public:
     explicit APIExecutorWidget(QWidget *parent = nullptr);
-    ~APIExecutorWidget();
+    ~APIExecutorWidget() override;
 
     void open();
 
-    bool eventFilter(QObject *obj, QEvent *event);
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
 public slots:
     void onExecuteButtonClicked();
@@ -41,7 +41,6 @@ private:
     };
 
     void initializeApi();
-    void addApi(ApiInfo &&apiInfo);
 
     void populateApiList();
     void populateArgumentList();

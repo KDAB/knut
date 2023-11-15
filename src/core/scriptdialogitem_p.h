@@ -25,7 +25,7 @@ private:
 
 public:
     using QObject::QObject;
-    ~DynamicObject();
+    ~DynamicObject() override;
 
     /** Adds a new property to the object, must be called before ready(). */
     void addProperty(const QByteArray &name, const QByteArray &type, QMetaType::Type typeId, const QVariant &value);

@@ -22,7 +22,7 @@ class Palette : public QFrame
 
 public:
     explicit Palette(QMainWindow *parent);
-    ~Palette();
+    ~Palette() override;
 
     bool eventFilter(QObject *watched, QEvent *event) override;
 

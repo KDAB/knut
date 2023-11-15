@@ -64,7 +64,6 @@ static const QMetaObject *metaObjectFromType(Core::Document::Type type)
         return &Core::SlintDocument::staticMetaObject;
     case Core::Document::Type::Qml:
         return &Core::QmlDocument::staticMetaObject;
-        Q_UNREACHABLE();
     }
     Q_UNREACHABLE();
 }
@@ -157,7 +156,7 @@ void APIExecutorWidget::createArgumentField(const QByteArray &name, const QMetaT
     QWidget *widget = nullptr;
     auto metaEnum = metaEnumFromName(type);
     if (metaEnum) {
-        QComboBox *comboBox = new QComboBox(this);
+        auto comboBox = new QComboBox(this);
         for (int i = 0; i < metaEnum->keyCount(); ++i)
             comboBox->addItem(metaEnum->key(i), metaEnum->value(i));
         widget = comboBox;
@@ -174,7 +173,7 @@ void APIExecutorWidget::createArgumentField(const QByteArray &name, const QMetaT
             break;
         }
         case QMetaType::Bool: {
-            QComboBox *comboBox = new QComboBox(this);
+            auto comboBox = new QComboBox(this);
             comboBox->addItem("false", false);
             comboBox->addItem("true", true);
             widget = comboBox;
@@ -217,13 +216,13 @@ void APIExecutorWidget::onExecuteButtonClicked()
     for (int i = 0; i < apiInfo.method.parameterCount(); i++) {
         QWidget *field = m_argumentFields.at(i).widget;
         QVariant value;
-        if (QComboBox *comboBox = qobject_cast<QComboBox *>(field)) {
+        if (auto comboBox = qobject_cast<QComboBox *>(field)) {
             value = comboBox->currentData();
-        } else if (QLineEdit *lineEdit = qobject_cast<QLineEdit *>(field)) {
+        } else if (auto lineEdit = qobject_cast<QLineEdit *>(field)) {
             value = lineEdit->text();
-        } else if (QSpinBox *spinBox = qobject_cast<QSpinBox *>(field)) {
+        } else if (auto spinBox = qobject_cast<QSpinBox *>(field)) {
             value = spinBox->value();
-        } else if (QDoubleSpinBox *doubleSpinBox = qobject_cast<QDoubleSpinBox *>(field)) {
+        } else if (auto doubleSpinBox = qobject_cast<QDoubleSpinBox *>(field)) {
             value = doubleSpinBox->value();
         } else {
             Q_UNREACHABLE();

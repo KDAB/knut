@@ -50,7 +50,7 @@ static bool isHeaderSuffix(const QString &suffix)
 
 bool CppDocument::isHeader() const
 {
-    QFileInfo fi(fileName());
+    const QFileInfo fi(fileName());
     return isHeaderSuffix(fi.suffix());
 }
 
@@ -73,12 +73,12 @@ void CppDocument::commentSelection()
     QTextCursor cursor = textEdit()->textCursor();
     cursor.beginEditBlock();
 
-    int cursorPos = cursor.position();
+    const int cursorPos = cursor.position();
     int selectionOffset = 0;
 
     if (hasSelection()) {
         int selectionStartPos = cursor.selectionStart();
-        int selectionEndPos = cursor.selectionEnd();
+        const int selectionEndPos = cursor.selectionEnd();
 
         // Preparing to check if the start and end positions of the selection are before any text of the lines
         cursor.setPosition(selectionStartPos);
@@ -168,8 +168,8 @@ static QStringList candidateFileNames(const QString &baseName, const QStringList
 
 static int commonFilePathLength(const QString &s1, const QString &s2)
 {
-    int length = qMin(s1.length(), s2.length());
-    for (int i = 0; i < length; ++i) {
+    const qsizetype length = qMin(s1.length(), s2.length());
+    for (qsizetype i = 0; i < length; ++i) {
         if (s1[i].toLower() != s2[i].toLower())
             return i;
     }
@@ -192,7 +192,7 @@ QString CppDocument::correspondingHeaderSource() const
     const bool header = isHeader();
     const QStringList suffixes = matchingSuffixes(header);
 
-    QFileInfo fi(fileName());
+    const QFileInfo fi(fileName());
     QStringList candidates = candidateFileNames(fi.completeBaseName(), suffixes);
 
     // Search in the current directory
@@ -391,7 +391,7 @@ QVector<QueryMatch> CppDocument::queryFunctionCall(const QString &functionName, 
     const auto arguments = kdalgorithms::transformed(argumentCaptures, [](const auto& name) {
             return QString(". (_)+ @%1").arg(name);
             });
-    auto argumentsQuery = arguments.join(" \",\"\n");
+    const auto argumentsQuery = arguments.join(" \",\"\n");
 
 
     return internalQueryFunctionCall(functionName, QString(R"EOF(
@@ -512,8 +512,8 @@ bool CppDocument::insertForwardDeclaration(const QString &forwardDeclaration)
         return false;
     }
 
-    int spacePos = forwardDeclaration.indexOf(' ');
-    auto classOrStruct = QStringView(forwardDeclaration).left(spacePos);
+    const int spacePos = forwardDeclaration.indexOf(' ');
+    const auto classOrStruct = QStringView(forwardDeclaration).left(spacePos);
     if (forwardDeclaration.isEmpty() || (classOrStruct != QStringLiteral("class") && classOrStruct != QStringLiteral("struct"))) {
         spdlog::warn("CppDocument::insertForwardDeclaration: {} - should start with 'class ' or 'struct '. ",
                      forwardDeclaration.toStdString());
@@ -540,14 +540,14 @@ bool CppDocument::insertForwardDeclaration(const QString &forwardDeclaration)
         result = QString("namespace %1 {\n%2\n}").arg(qualifier, result);
 
     int pos = -1;
-    if (auto inc = query(Queries::findInclude); !inc.isEmpty()) {
-        auto def = inc.last().get("path");
+    if (const auto inc = query(Queries::findInclude); !inc.isEmpty()) {
+        const auto def = inc.last().get("path");
         pos = def.end();
-    } else if (auto pragma = query(Queries::findPragma); !pragma.isEmpty()) {
-        auto def = pragma.at(0).get("value");
+    } else if (const auto pragma = query(Queries::findPragma); !pragma.isEmpty()) {
+        const auto def = pragma.at(0).get("value");
         pos = def.end();
-    } else if (auto guard = query(Queries::findHeaderGuard); !guard.isEmpty()) {
-        auto def = guard.at(0).get("value");
+    } else if (const auto guard = query(Queries::findHeaderGuard); !guard.isEmpty()) {
+        const auto def = guard.at(0).get("value");
         pos = def.end();
     }
 
@@ -609,8 +609,8 @@ QVariantMap CppDocument::mfcExtractDDX(const QString &className)
         static const QRegularExpression doDataExchangeExpression(R"*(DDX_.*\(.*,\s*(.*)\s*,\s*(.*)\))*");
         QRegularExpressionMatchIterator userIteratorWidgetExpression = doDataExchangeExpression.globalMatch(ddxText);
         while (userIteratorWidgetExpression.hasNext()) {
-            const QRegularExpressionMatch match = userIteratorWidgetExpression.next();
-            map.insert(match.captured(1), match.captured(2));
+            const QRegularExpressionMatch expressionMatch = userIteratorWidgetExpression.next();
+            map.insert(expressionMatch.captured(1), expressionMatch.captured(2));
         }
     }
     return map;
@@ -733,7 +733,7 @@ bool CppDocument::mfcReplaceAfxMsgDeclaration(const QString &afxMsgName, const Q
         match.get("declaration").replace(newDeclaration);
     }
 
-    return matches.size() > 0;
+    return !matches.isEmpty();
 }
 
 /*!
@@ -1066,12 +1066,12 @@ CppDocument::addMemberOrMethod(const QString &memberInfo, const QString &classNa
         const auto &match = result.last();
         const auto fields = match.getAll("field");
         if (!fields.isEmpty()) {
-            const auto pos = fields.last();
+            const auto &pos = fields.last();
             const auto indent = indentationAtPosition(pos.end());
             insertAtPosition("\n" + indent + memberText, pos.end());
         } else {
             const auto access = match.getAll("access");
-            const auto pos = access.last();
+            const auto &pos = access.last();
             const auto indent = indentationAtPosition(pos.end());
             insertAtPosition("\n" + indent + memberText, pos.end());
         }
@@ -1088,7 +1088,7 @@ CppDocument::addMemberOrMethod(const QString &memberInfo, const QString &classNa
 /*!
  * \qmlmethod CppDocument::addMember(string member, string className, AccessSpecifier)
  * \since 1.1
- * Adds a new member in a specific class under the specefic access specifier.
+ * Adds a new member in a specific class under the specific access specifier.
  *
  * If the class does not exist, log error can't find the class, but if the
  * specifier is valid but does not exist in the class, we will add that specifier in the end of the
@@ -1114,7 +1114,7 @@ bool CppDocument::addMember(const QString &member, const QString &className, Acc
 /*!
  * \qmlmethod CppDocument::addMethodDeclaration(string method, string className, AccessSpecifier specifier)
  * \since 1.1
- * Declares a new method in a specific class under the specefic access specifier.
+ * Declares a new method in a specific class under the specific access specifier.
  *
  * If the class does not exist, log error can't find the class, but if the
  * specifier is valid but does not exist in the class, we will add that specifier in the end of the
@@ -1138,8 +1138,8 @@ bool CppDocument::addMethodDeclaration(const QString &method, const QString &cla
 }
 
 /*!
- * \qmlmethod CppDocument::addMethodDefintion(string method, string className)
- * \qmlmethod CppDocument::addMethodDefintion(string method, string className, string body)
+ * \qmlmethod CppDocument::addMethodDefinition(string method, string className)
+ * \qmlmethod CppDocument::addMethodDefinition(string method, string className, string body)
  * \since 1.1
  *
  * Adds a new method definition for the method declared by the given `method` for

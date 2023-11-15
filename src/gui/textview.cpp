@@ -23,7 +23,7 @@
 namespace Gui {
 
 constexpr int MarkWidth = 6;
-constexpr float MarkWidth2 = MarkWidth / 2.0f;
+constexpr int MarkWidth2 = MarkWidth / 2.0f;
 
 class MarkRect : public QWidget
 {
@@ -44,11 +44,14 @@ protected:
         p.setBrush(color);
 
         const QRect r = rect();
-        QPolygonF p1({r.topLeft(), r.topRight(), {static_cast<float>(r.center().x()), r.top() + MarkWidth2 + 1}});
+        QPolygonF p1({r.topLeft(),
+                      r.topRight(),
+                      {static_cast<float>(r.center().x()), static_cast<float>(r.top() + MarkWidth2 + 1)}});
         p.drawPolygon(p1);
 
-        QPolygonF p2(
-            {r.bottomLeft(), r.bottomRight(), {static_cast<float>(r.center().x()), r.bottom() - MarkWidth2 - 1}});
+        QPolygonF p2({r.bottomLeft(),
+                      r.bottomRight(),
+                      {static_cast<float>(r.center().x()), static_cast<float>(r.bottom() - MarkWidth2 - 1)}});
         p.drawPolygon(p2);
 
         p.setOpacity(0.7);

@@ -85,7 +85,7 @@ QString QDirValueType::dirName() const
     return m_dirValue.dirName();
 }
 
-uint QDirValueType::count() const
+qsizetype QDirValueType::count() const
 {
     return m_dirValue.count();
 }
@@ -137,7 +137,7 @@ bool QDirValueType::cdUp()
 QString QDirValueType::at(int pos) const
 {
     // We have to check here, as we don't want any errors
-    if (pos >= 0 && uint(pos) <= count())
+    if (pos >= 0 && pos <= count())
         return m_dirValue[pos];
     return QString();
 }

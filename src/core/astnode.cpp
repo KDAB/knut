@@ -17,18 +17,17 @@ AstNode::AstNode(const treesitter::Node &node, LspDocument *parent)
 
 AstNode AstNode::parentNode() const
 {
-    if (auto n = node(); auto doc = document()) {
-        return AstNode(n->parent(), doc);
-    }
-    return AstNode();
+    if (auto n = node())
+        return AstNode(n->parent(), document());
+    return {};
 }
 
 QVector<AstNode> AstNode::childrenNodes() const
 {
     QVector<AstNode> children;
-    if (auto n = node(); auto doc = document()) {
+    if (auto n = node()) {
         for (const auto &node : n->children()) {
-            children.append(AstNode(node, doc));
+            children.append(AstNode(node, document()));
         }
     }
     return children;

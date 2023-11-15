@@ -247,8 +247,8 @@ ScriptManager::ScriptList::iterator ScriptManager::removeScript(const ScriptList
     return it;
 }
 
-void ScriptManager::doRunScript(const QString &fileName, std::function<void()> endFunc,
-                                std::optional<QueryMatch> context)
+void ScriptManager::doRunScript(const QString &fileName, const std::function<void()> &endFunc,
+                                const std::optional<QueryMatch> &context)
 {
     auto result = m_runner->runScript(fileName, endFunc, context);
     if (m_runner->hasError()) {

@@ -39,7 +39,7 @@ namespace RcCore {
  */
 /*!
  * \qmlproperty bool ToolBarItem::isSeparator
- * This property returns `true` if the toolbar item is a separatior (vertical line visually).
+ * This property returns `true` if the toolbar item is a separator (vertical line visually).
  */
 
 /*!
@@ -289,11 +289,9 @@ static bool containActionId(const QString &id, const MenuItem &menuItem)
     if (menuItem.id == id)
         return true;
 
-    for (const auto &child : menuItem.children) {
-        if (containActionId(id, child))
-            return true;
-    }
-    return false;
+    return std::ranges::any_of(menuItem.children, [&id](const MenuItem &child) {
+        return containActionId(id, child);
+    });
 }
 
 /*!
@@ -302,11 +300,9 @@ static bool containActionId(const QString &id, const MenuItem &menuItem)
  */
 bool Menu::contains(const QString &id) const
 {
-    for (const auto &child : children) {
-        if (containActionId(id, child))
-            return true;
-    }
-    return false;
+    return std::ranges::any_of(children, [&id](const MenuItem &child) {
+        return containActionId(id, child);
+    });
 }
 
 static void fillActionIds(QStringList &result, const MenuItem &menuItem)

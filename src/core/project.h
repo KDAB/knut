@@ -29,7 +29,7 @@ public:
     Q_ENUM(PathType)
 
 public:
-    ~Project();
+    ~Project() override;
 
     static Project *instance();
 
@@ -47,8 +47,8 @@ public:
                                                    Core::Project::PathType type = RelativeToRoot);
 
 public slots:
-    Core::Document *get(QString fileName);
-    Core::Document *open(QString fileName);
+    Core::Document *get(const QString &fileName);
+    Core::Document *open(const QString &fileName);
     void closeAll();
     void saveAllDocuments();
     Core::Document *openPrevious(int index = 1);

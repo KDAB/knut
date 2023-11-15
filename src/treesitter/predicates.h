@@ -38,7 +38,7 @@ class Predicates
     static Filters filters();
 
 public:
-    explicit Predicates(const QString &source);
+    explicit Predicates(QString source);
 
     // Returns an error message if the predicate is not supported
     static std::optional<QString> checkPredicate(const Query::Predicate &predicate);
@@ -61,9 +61,9 @@ private:
 #undef PREDICATE_FILTER
 
     bool filter_eq_with(const QueryMatch &match, const QVector<std::variant<Query::Capture, QString>> &arguments,
-                        std::function<QString(const QString &)> textTransform) const;
+                        const std::function<QString(const QString &)> &textTransform) const;
     bool filter_eq_except_with(const QueryMatch &match, const QVector<std::variant<Query::Capture, QString>> &arguments,
-                               std::function<QString(const QString &)> textTransform) const;
+                               const std::function<QString(const QString &)> &textTransform) const;
 
     // ################## Argument matching #########################
     // Marker type indicating a capture is missing

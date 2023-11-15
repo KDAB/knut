@@ -56,7 +56,7 @@ public:
 
         switch (role) {
         case Qt::DisplayRole:
-            if (index.column() == 0 && role == Qt::DisplayRole) {
+            if (index.column() == 0) {
                 return m_files.at(index.row()).fileName;
             } else if (index.column() == 1) {
                 QDir dir(Core::Project::instance()->root());
@@ -144,7 +144,7 @@ public:
 
         switch (role) {
         case Qt::DisplayRole:
-            if (index.column() == 0 && role == Qt::DisplayRole) {
+            if (index.column() == 0) {
                 return list.at(index.row()).name;
             } else if (index.column() == 1) {
                 return list.at(index.row()).description;
@@ -336,7 +336,7 @@ Palette::~Palette() = default;
 
 bool Palette::eventFilter(QObject *watched, QEvent *event)
 {
-    Q_UNUSED(watched);
+    Q_UNUSED(watched)
     if (event->type() == QEvent::KeyPress) {
         auto keyEvent = static_cast<QKeyEvent *>(event);
         if (keyEvent->key() == Qt::Key_Up) {

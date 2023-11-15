@@ -4,15 +4,16 @@
 #include "tree.h"
 
 #include <QObject>
+#include <utility>
 
 namespace treesitter {
 
-Transformation::Transformation(const QString &source, Parser &&parser, const std::shared_ptr<Query> &query,
+Transformation::Transformation(QString source, Parser &&parser, std::shared_ptr<Query> query,
                                QString transformationTarget)
-    : m_source(source)
+    : m_source(std::move(source))
     , m_parser(std::move(parser))
     , m_query(query)
-    , m_to(transformationTarget)
+    , m_to(std::move(transformationTarget))
 {
 }
 

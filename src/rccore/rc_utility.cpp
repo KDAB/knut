@@ -2,7 +2,7 @@
 
 namespace RcCore {
 
-void RcFile::mergeLanguages(const QStringList languages, const QString &newLanguage)
+void RcFile::mergeLanguages(const QStringList &languages, const QString &newLanguage)
 {
     if (languages.isEmpty() || (languages.count() == 1 && languages.first() == newLanguage))
         return;

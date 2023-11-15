@@ -16,7 +16,7 @@ class InterfaceSettings : public QWidget
 
 public:
     explicit InterfaceSettings(QWidget *parent = nullptr);
-    ~InterfaceSettings();
+    ~InterfaceSettings() override;
 
     void initialize();
     QString getHelpPath();

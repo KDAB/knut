@@ -74,11 +74,11 @@ RcFileView::RcFileView(QWidget *parent)
     connect(ui->searchText, &QLineEdit::textChanged, this, &RcFileView::slotSearchText);
     connect(ui->searchText, &QLineEdit::returnPressed, this, &RcFileView::slotSearchNext);
 
-    QShortcut *findNext = new QShortcut(QKeySequence(QKeySequence::FindNext), this);
+    auto findNext = new QShortcut(QKeySequence(QKeySequence::FindNext), this);
     findNext->setContext(Qt::WidgetWithChildrenShortcut);
     connect(findNext, &QShortcut::activated, this, &RcFileView::slotSearchNext);
 
-    QShortcut *findPrevious = new QShortcut(QKeySequence(QKeySequence::FindPrevious), this);
+    auto findPrevious = new QShortcut(QKeySequence(QKeySequence::FindPrevious), this);
     findPrevious->setContext(Qt::WidgetWithChildrenShortcut);
     connect(findPrevious, &QShortcut::activated, this, &RcFileView::slotSearchPrevious);
 

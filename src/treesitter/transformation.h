@@ -15,8 +15,7 @@ public:
         QString description;
     };
 
-    Transformation(const QString &source, Parser &&parser, const std::shared_ptr<Query> &query,
-                   QString transformationTarget);
+    Transformation(QString source, Parser &&parser, std::shared_ptr<Query> query, QString transformationTarget);
 
     // Throws a Transformation::Error on failure
     QString run();

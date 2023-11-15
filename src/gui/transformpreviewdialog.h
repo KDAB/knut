@@ -16,9 +16,9 @@ class TransformPreviewDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit TransformPreviewDialog(Core::LspDocument *document, QString resultText, int numberReplacements,
+    explicit TransformPreviewDialog(Core::LspDocument *document, const QString &resultText, int numberReplacements,
                                     QWidget *parent = nullptr);
-    ~TransformPreviewDialog();
+    ~TransformPreviewDialog() override;
 
 private:
     Ui::TransformPreviewDialog *ui;

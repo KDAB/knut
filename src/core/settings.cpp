@@ -36,7 +36,7 @@ static std::optional<nlohmann::json> loadSettings(const QString &name, bool log 
 
 namespace Core {
 
-static const char SettingsName[] = "knut.json";
+static constexpr char SettingsName[] = "knut.json";
 
 /*!
  * \qmltype Settings
@@ -143,7 +143,7 @@ QVariant Settings::value(QString path, const QVariant &defaultValue) const
             return val.get<QString>();
         else if (val.is_array()) {
             // Only support QStringList for now
-            if (val.size()) {
+            if (!val.empty()) {
                 if (val[0].is_string())
                     return val.get<QStringList>();
             } else {

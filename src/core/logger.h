@@ -132,7 +132,7 @@ public:
     enum Columns { NameCol = 0, ParamCol, ColumnCount };
 
     explicit HistoryModel(QObject *parent = nullptr);
-    ~HistoryModel();
+    ~HistoryModel() override;
 
     int rowCount(const QModelIndex &parent = {}) const override;
     int columnCount(const QModelIndex &parent = {}) const override;
@@ -181,7 +181,7 @@ private:
         m_data.back().returnArg.value = QVariant::fromValue(value);
     }
 
-    void fillLogData(LogData &) {};
+    void fillLogData(LogData &) { }
 
     template <typename T, typename... Ts>
     void fillLogData(LogData &data, T param, Ts... params)

@@ -137,10 +137,10 @@ ScriptRunner::ScriptRunner(QObject *parent)
     addProperties<RcDocument>(m_properties);
 }
 
-ScriptRunner::~ScriptRunner() { }
+ScriptRunner::~ScriptRunner() = default;
 
-QVariant ScriptRunner::runScript(const QString &fileName, std::function<void()> endCallback,
-                                 std::optional<QueryMatch> context)
+QVariant ScriptRunner::runScript(const QString &fileName, const std::function<void()> &endCallback,
+                                 const std::optional<QueryMatch> &context)
 {
     QFileInfo fi(fileName);
 
@@ -230,7 +230,7 @@ QVariant ScriptRunner::runJavascript(const QString &fileName, QQmlEngine *engine
     return QVariant(ErrorCode);
 }
 
-QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine, std::optional<QueryMatch> context)
+QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine, const std::optional<QueryMatch> &context)
 {
     auto component = new QQmlComponent(engine, engine);
     component->loadUrl(QUrl::fromLocalFile(fileName));

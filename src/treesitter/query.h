@@ -65,8 +65,6 @@ public:
 private:
     QVector<Predicate> predicatesForPattern(uint32_t index) const;
 
-    Query(TSQuery *query);
-
     QByteArray m_utf8_text;
     TSQuery *m_query;
 
@@ -98,10 +96,10 @@ public:
     // Captures with quantifiers may return multiple values for the same capture.
     QVector<Capture> capturesNamed(const QString &) const;
 
-    const std::shared_ptr<Query> query() const;
+    std::shared_ptr<Query> query() const;
 
 private:
-    QueryMatch(const TSQueryMatch &match, const std::shared_ptr<Query> query);
+    QueryMatch(const TSQueryMatch &match, std::shared_ptr<Query> query);
 
     uint32_t m_id;
     uint16_t m_pattern_index;

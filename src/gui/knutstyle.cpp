@@ -18,7 +18,7 @@ constexpr int LineMargin = 3;
 class PainterPen
 {
 public:
-    PainterPen(QPainter *painter)
+    explicit PainterPen(QPainter *painter)
         : m_painter(painter)
         , m_oldPen(painter->pen())
     {
@@ -110,7 +110,7 @@ void KnutStyle::drawControl(ControlElement element, const QStyleOption *option, 
 
     switch (element) {
     case CE_ShapedFrame:
-        if (const QStyleOptionFrame *f = qstyleoption_cast<const QStyleOptionFrame *>(option)) {
+        if (const auto *f = qstyleoption_cast<const QStyleOptionFrame *>(option)) {
             if (f->frameShape == QFrame::HLine || f->frameShape == QFrame::VLine) {
                 QPoint p1, p2;
                 if (f->frameShape == QFrame::HLine) {
@@ -137,7 +137,7 @@ void KnutStyle::drawControl(ControlElement element, const QStyleOption *option, 
         break;
 
     case CE_TabBarTabShape:
-        if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
+        if (const auto *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
             const bool selected = tab->state & State_Selected;
             const int tabOverlap = pixelMetric(PM_TabBarTabOverlap, option, widget);
             const bool onlyOne = tab->position == QStyleOptionTab::OnlyOneTab;
@@ -203,7 +203,7 @@ void KnutStyle::drawComplexControl(ComplexControl control, const QStyleOptionCom
             arrowRect.translate(QProxyStyle::pixelMetric(PM_ButtonShiftHorizontal, option, widget),
                                 QProxyStyle::pixelMetric(PM_ButtonShiftVertical, option, widget));
 
-        QStyleOption arrowOpt = *option;
+        auto arrowOpt = *option;
         arrowOpt.rect = arrowRect;
         if (styleHint(SH_ComboBox_Popup, option, widget)) {
             arrowOpt.rect.translate(0, -3);

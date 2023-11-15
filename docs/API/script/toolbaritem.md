@@ -25,4 +25,4 @@ This property holds the id of the toolbar item.
 
 #### <a name="isSeparator"></a>bool **isSeparator**
 
-This property returns `true` if the toolbar item is a separatior (vertical line visually).
+This property returns `true` if the toolbar item is a separator (vertical line visually).

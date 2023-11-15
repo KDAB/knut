@@ -111,9 +111,9 @@ int RangeMark::length() const
     return end() - start();
 }
 
-bool RangeMark::contains(int pos) const
+bool RangeMark::contains(int position) const
 {
-    return isValid() && pos >= start() && pos < end();
+    return isValid() && position >= start() && position < end();
 }
 
 bool RangeMark::contains(const RangeMark &other) const

@@ -16,7 +16,7 @@ class ShortcutSettings : public QWidget
 
 public:
     explicit ShortcutSettings(QWidget *parent = nullptr);
-    ~ShortcutSettings();
+    ~ShortcutSettings() override;
 
 private:
     void updateCurrentItem();

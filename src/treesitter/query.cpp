@@ -138,7 +138,7 @@ Query::Capture Query::captureAt(uint32_t index) const
 }
 
 // ------------------------ QueryMatch --------------------
-QueryMatch::QueryMatch(const TSQueryMatch &match, const std::shared_ptr<Query> query)
+QueryMatch::QueryMatch(const TSQueryMatch &match, std::shared_ptr<Query> query)
     : m_id(match.id)
     , m_pattern_index(match.pattern_index)
     , m_query(query)
@@ -167,7 +167,7 @@ uint32_t QueryMatch::patternIndex() const
     return m_pattern_index;
 }
 
-const std::shared_ptr<Query> QueryMatch::query() const
+std::shared_ptr<Query> QueryMatch::query() const
 {
     return m_query;
 }
@@ -176,7 +176,7 @@ QVector<QueryMatch::Capture> QueryMatch::capturesNamed(const QString &name) cons
 {
     auto captures = this->captures();
     QVector<Capture> result;
-    std::copy_if(captures.cbegin(), captures.cend(), std::back_inserter(result), [this, &name](const auto &capture) {
+    std::ranges::copy_if(std::as_const(captures), std::back_inserter(result), [this, &name](const auto &capture) {
         return m_query->captureAt(capture.id).name == name;
     });
     return result;

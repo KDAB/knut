@@ -85,8 +85,6 @@ FunctionArgument FunctionArgument::fromHover(const QString &parameter, Document:
 FunctionSymbol::FunctionSymbol(QObject *parent, const QString &name, const QString &description,
                                const QString &importLocation, Kind kind, TextRange range, TextRange selectionRange)
     : Symbol(parent, name, description, importLocation, kind, range, selectionRange)
-    , m_returnType {}
-    , m_arguments {}
 {
     if (m_description.isEmpty()) {
         const auto args = arguments();

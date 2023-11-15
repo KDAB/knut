@@ -45,7 +45,7 @@ public:
     Q_DECLARE_FLAGS(ConversionFlags, ConversionFlag)
     Q_FLAG(ConversionFlags)
 
-    static inline const char DefaultLanguage[] = "[default]";
+    static inline constexpr char DefaultLanguage[] = "[default]";
 
 public:
     explicit RcDocument(QObject *parent = nullptr);

@@ -9,12 +9,11 @@
 #include <QTest>
 
 #include <spdlog/details/log_msg.h>
-#include <spdlog/sinks/base_sink.h>
+#include <spdlog/sinks/callback_sink.h>
 #include <spdlog/spdlog.h>
 
 #include <iostream>
 #include <memory>
-#include <string_view>
 #include <vector>
 
 namespace Test {
@@ -94,33 +93,6 @@ private:
 };
 
 // *****************************************************************************
-// ###    The callback_sink code is adapted from the spdlog repository.
-// ###    With the next release of spdlog, it can be used from spdlog directly!
-
-// callbacks type
-typedef std::function<void(const spdlog::details::log_msg &msg)> custom_log_callback;
-/*
- * Trivial callback sink, gets a callback function and calls it on each log
- */
-template <typename Mutex>
-class callback_sink final : public spdlog::sinks::base_sink<Mutex>
-{
-public:
-    explicit callback_sink(const custom_log_callback &callback)
-        : callback_ {callback}
-    {
-    }
-
-protected:
-    void sink_it_(const spdlog::details::log_msg &msg) override { callback_(msg); }
-    void flush_() override {};
-
-private:
-    custom_log_callback callback_;
-};
-
-using callback_sink_mt = callback_sink<std::mutex>;
-// *****************************************************************************
 
 class LogCounter
 {
@@ -130,8 +102,8 @@ public:
         m_logger = name.empty() ? spdlog::default_logger() : spdlog::get(name);
 
         if (m_logger) {
-            m_sink = std::make_shared<callback_sink_mt>([this](const spdlog::details::log_msg &msg) {
-                Q_UNUSED(msg);
+            m_sink = std::make_shared<spdlog::sinks::callback_sink_mt>([this](const spdlog::details::log_msg &msg) {
+                Q_UNUSED(msg)
                 std::cout << "############### LogCounter - Counting message ##############\n";
                 std::cout << std::string_view(msg.payload.data(), msg.payload.size()) << '\n';
                 std::cout << "############################################################" << std::endl;
@@ -147,8 +119,7 @@ public:
     ~LogCounter()
     {
         if (m_logger && m_sink) {
-            auto iter = std::find(m_logger->sinks().begin(), m_logger->sinks().end(),
-                                  std::dynamic_pointer_cast<spdlog::sinks::sink>(m_sink));
+            auto iter = std::ranges::find(m_logger->sinks(), std::dynamic_pointer_cast<spdlog::sinks::sink>(m_sink));
             if (iter != m_logger->sinks().end()) {
                 m_logger->sinks().erase(iter);
             }
@@ -160,7 +131,7 @@ public:
 private:
     std::atomic<int> m_count;
     std::shared_ptr<spdlog::logger> m_logger;
-    std::shared_ptr<callback_sink_mt> m_sink;
+    std::shared_ptr<spdlog::sinks::callback_sink_mt> m_sink;
 };
 
 class LogSilencer

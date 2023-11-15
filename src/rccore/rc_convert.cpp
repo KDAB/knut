@@ -15,11 +15,10 @@ namespace RcCore {
 
 static QVector<Asset> splitToolBar(const Data &data, const ToolBar &toolBar, const Asset &asset)
 {
-    const int iconCount =
-        std::count_if(toolBar.children.cbegin(), toolBar.children.cend(), [](const auto &toolBarItem) {
-            return !toolBarItem.id.isEmpty();
-        });
-    const int zeroCount = std::log10(iconCount) + 1;
+    const int iconCount = std::ranges::count_if(toolBar.children, [](const auto &toolBarItem) {
+        return !toolBarItem.id.isEmpty();
+    });
+    const int zeroCount = static_cast<int>(std::log10(iconCount)) + 1;
 
     QImage image(asset.originalFileName);
     const int width = toolBar.iconSize.width();
@@ -205,7 +204,7 @@ static Widget convertComboBox(const Data &data, const QString &dialogId, Data::C
     }
 
     // Initialize the values if they exists
-    const auto it = std::find_if(data.dialogData.cbegin(), data.dialogData.cend(), [dialogId](const auto &dialogData) {
+    const auto it = std::ranges::find_if(data.dialogData, [dialogId](const auto &dialogData) {
         return dialogData.id == dialogId;
     });
     if (it != data.dialogData.cend()) {
@@ -569,7 +568,7 @@ static Widget convertChildWidget(const Data &data, const QString &dialogId, Data
 {
     Widget widget;
 
-    Keywords type = static_cast<Keywords>(control.type);
+    auto type = static_cast<Keywords>(control.type);
     switch (type) {
     case Keywords::DEFPUSHBUTTON:
     case Keywords::PUSHBOX:
@@ -631,7 +630,7 @@ static QVector<Widget> adjustHierarchy(QVector<Widget> widgets)
         const int area2 = w2.geometry.width() * w2.geometry.height();
         return area1 < area2;
     };
-    std::stable_sort(widgets.begin(), widgets.end(), sortByArea);
+    std::ranges::stable_sort(widgets, sortByArea);
 
     QVector<Widget> result;
     for (int i = 0; i < widgets.size(); ++i) {
@@ -788,14 +787,14 @@ static void createActionForAccelerator(const Data &data, QVector<Action> &action
         }
         auto &shortcuts = actions[index].shortcuts;
         auto shortcut = createShortcut(data, accelerator);
-        auto it = std::find(shortcuts.begin(), shortcuts.end(), shortcut);
+        auto it = std::ranges::find(shortcuts, shortcut);
         if (it == shortcuts.end())
             actions[index].shortcuts.push_back(shortcut);
     }
 }
 
 // actionIdMap allows to find the index of the action in the action vector in case it already exists
-// the convesion flags are used to compute the name of the icon
+// the conversion flags are used to compute the name of the icon
 static void createActionForToolBar(const Data &data, QVector<Action> &actions, QHash<QString, int> &actionIdMap,
                                    const ToolBar &toolBar, Asset::ConversionFlags flags)
 {

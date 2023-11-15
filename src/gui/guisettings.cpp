@@ -25,13 +25,13 @@
 
 namespace Gui {
 
-constexpr const char StyleKey[] = "Interface/Style";
-constexpr const char ThemeKey[] = "Interface/Theme";
-constexpr const char ShortcutsKey[] = "Interface/Shortcuts";
-constexpr const char FontFamilyKey[] = "TextEditor/FontFamily";
-constexpr const char FontSizeKey[] = "TextEditor/FontSize";
-constexpr const char WordWrapKey[] = "TextEditor/WordWrap";
-constexpr const char IsDocument[] = "isDoc";
+constexpr char StyleKey[] = "Interface/Style";
+constexpr char ThemeKey[] = "Interface/Theme";
+constexpr char ShortcutsKey[] = "Interface/Shortcuts";
+constexpr char FontFamilyKey[] = "TextEditor/FontFamily";
+constexpr char FontSizeKey[] = "TextEditor/FontSize";
+constexpr char WordWrapKey[] = "TextEditor/WordWrap";
+constexpr char IsDocument[] = "isDoc";
 
 GuiSettings::GuiSettings()
     : QObject()
@@ -223,11 +223,11 @@ void GuiSettings::updateStyle() const
         auto style = new KnutStyle("Fusion");
         qApp->setStyle(style);
 
-        const QColor darkGray(64, 66, 65);
-        const QColor gray(128, 128, 128);
-        const QColor black(46, 47, 48);
-        const QColor blue(42, 130, 218);
-        const QColor text(190, 192, 193);
+        constexpr QColor darkGray(64, 66, 65);
+        constexpr QColor gray(128, 128, 128);
+        constexpr QColor black(46, 47, 48);
+        constexpr QColor blue(42, 130, 218);
+        constexpr QColor text(190, 192, 193);
 
         QPalette darkPalette;
         darkPalette.setColor(QPalette::Window, darkGray);

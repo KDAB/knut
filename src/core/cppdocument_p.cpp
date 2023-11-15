@@ -156,8 +156,6 @@ void IncludeHelper::computeIncludes()
     };
     for (auto &group : m_includeGroups)
         processGroup(group);
-
-    return;
 }
 
 }

@@ -39,7 +39,7 @@ import Script 1.0
 ||**[convertAssets](#convertAssets)**(int flags)|
 |[Widget](../script/widget.md) |**[dialog](#dialog)**(string id, int flags, real scaleX, real scaleY)|
 |[Menu](../script/menu.md) |**[menu](#menu)**(string id)|
-|bool |**[mergeAllLanguages](#mergeAllLanguages)**(string newLanguage = "[default]")|
+|bool |**[mergeAllLanguages](#mergeAllLanguages)**(string language = "[default]")|
 |bool |**[mergeLanguages](#mergeLanguages)**()|
 |bool |**[previewDialog](#previewDialog)**([Widget](../script/widget.md) dialog)|
 |string |**[text](#text)**(string id)|
@@ -151,7 +151,7 @@ The `flags` are used to fill the iconPath of the action:
 Convert all assets using the `flags`.
 
 - `RcDocument.RemoveUnknown`: remove the unknown assets
-- `RcDocument.SplitToolBar`: split oolbars strip into individual icon, one per action
+- `RcDocument.SplitToolBar`: split toolbars strip into individual icon, one per action
 - `RcDocument.ConvertToPng`: convert BMPs to PNGs, needed if we want to also change the transparency
 - `RcDocument.AllFlags`: combination of all above
 
@@ -164,7 +164,7 @@ values are coming from the project settings.
 
 Flags could be:
 
-- `RcDocument.UpdateHierachy`: create a hierarchy of parent-children, by default there are none in MFC
+- `RcDocument.UpdateHierarchy`: create a hierarchy of parent-children, by default there are none in MFC
 - `RcDocument.UpdateGeometry`: use the scale factor to change the dialog size
 - `RcDocument.UseIdForPixmap`: use the id as a resource value for the pixmaps in labels
 - `RcDocument.AllFlags`: combination of all above
@@ -173,7 +173,7 @@ Flags could be:
 
 Returns the menu for the given `id`.
 
-#### <a name="mergeAllLanguages"></a>bool **mergeAllLanguages**(string newLanguage = "[default]")
+#### <a name="mergeAllLanguages"></a>bool **mergeAllLanguages**(string language = "[default]")
 
 Merges all languages data into one.
 

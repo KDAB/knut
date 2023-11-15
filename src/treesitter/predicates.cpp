@@ -52,8 +52,8 @@ std::optional<QString> Predicates::checkPredicate(const Query::Predicate &predic
     return "Unknown predicate";
 }
 
-Predicates::Predicates(const QString &source)
-    : m_source(source)
+Predicates::Predicates(QString source)
+    : m_source(std::move(source))
 {
 }
 
@@ -85,7 +85,7 @@ std::optional<QString> Predicates::checkFilter_eq(const Predicates::PredicateArg
 }
 bool Predicates::filter_eq_with(const QueryMatch &match,
                                 const QVector<std::variant<Query::Capture, QString>> &arguments,
-                                std::function<QString(const QString &)> textTransform) const
+                                const std::function<QString(const QString &)> &textTransform) const
 {
     std::set<QString> texts;
 
@@ -148,7 +148,7 @@ bool Predicates::filter_like(const QueryMatch &match,
 }
 bool Predicates::filter_eq_except_with(const QueryMatch &match,
                                        const QVector<std::variant<Query::Capture, QString>> &arguments,
-                                       std::function<QString(const QString &)> textTransform) const
+                                       const std::function<QString(const QString &)> &textTransform) const
 {
     auto args = arguments;
     if (const auto *rawExpected = std::get_if<QString>(&args.front())) {
@@ -167,8 +167,8 @@ bool Predicates::filter_eq_except_with(const QueryMatch &match,
                 }
             }
 
-            auto captures = match.capturesWithId(capture.id);
-            if (captures.isEmpty()) {
+            const auto idCaptures = match.capturesWithId(capture.id);
+            if (idCaptures.isEmpty()) {
                 spdlog::warn("Predicates: #eq_except? - No captures");
                 // Insert an empty string into the set if we find an unmatched capture.
                 // This likely means we have encountered a quantified capture that matched 0 times.
@@ -176,8 +176,8 @@ bool Predicates::filter_eq_except_with(const QueryMatch &match,
                 return expected.isEmpty();
             }
 
-            for (const auto &capture : captures) {
-                if (expected != textTransform(capture.node.textExcept(m_source, types))) {
+            for (const auto &idCapture : idCaptures) {
+                if (expected != textTransform(idCapture.node.textExcept(m_source, types))) {
                     return false;
                 }
             }
@@ -290,7 +290,7 @@ public:
     {
     }
 
-    virtual ~MessageMapCache() = default;
+    ~MessageMapCache() = default;
 
     Node m_begin;
     Node m_end;

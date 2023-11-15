@@ -30,7 +30,7 @@ class LspDocument : public TextDocument
     Q_OBJECT
 
 public:
-    virtual ~LspDocument();
+    ~LspDocument() override;
 
     void setLspClient(Lsp::Client *client);
 
@@ -45,7 +45,7 @@ public:
 
     bool hasLspClient() const;
 
-    Symbol *currentSymbol(std::function<bool(const Symbol &)> filterFunc) const;
+    Symbol *currentSymbol(const std::function<bool(const Symbol &)> &filterFunc) const;
     void deleteSymbol(const Symbol &symbol);
 
     QString hover(int position, std::function<void(const QString &)> asyncCallback = {}) const;

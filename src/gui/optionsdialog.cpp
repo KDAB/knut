@@ -64,7 +64,7 @@ void OptionsDialog::initializeScriptPathSettings()
     connect(ui->addButton, &QPushButton::clicked, this, &OptionsDialog::addScriptPath);
     connect(ui->removeButton, &QPushButton::clicked, this, &OptionsDialog::removeScriptPath);
     connect(ui->scriptPathList, &QListWidget::itemSelectionChanged, this, [this]() {
-        ui->removeButton->setEnabled(ui->scriptPathList->selectedItems().size());
+        ui->removeButton->setEnabled(!ui->scriptPathList->selectedItems().isEmpty());
     });
 
     // Script list
@@ -119,7 +119,7 @@ void OptionsDialog::initializeScriptBehaviorSettings()
     connect(ui->removeReturnButton, &QPushButton::clicked, this, removeReturnValue);
 
     connect(ui->returnValues, &QTreeWidget::itemSelectionChanged, this, [this]() {
-        ui->removeReturnButton->setEnabled(ui->returnValues->selectedItems().size());
+        ui->removeReturnButton->setEnabled(!ui->returnValues->selectedItems().isEmpty());
     });
 }
 
@@ -186,7 +186,7 @@ void OptionsDialog::initializeRcSettings()
     connect(ui->removeLanguageButton, &QPushButton::clicked, this, removeLanguageValue);
 
     connect(ui->languageMap, &QTreeWidget::itemSelectionChanged, this, [this]() {
-        ui->removeLanguageButton->setEnabled(ui->languageMap->selectedItems().size());
+        ui->removeLanguageButton->setEnabled(!ui->languageMap->selectedItems().isEmpty());
     });
 }
 

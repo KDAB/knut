@@ -8,6 +8,7 @@ class LogPanel : public QPlainTextEdit
 {
 public:
     explicit LogPanel(QWidget *parent = nullptr);
+    ~LogPanel() override;
 
     QWidget *toolBar() const;
 

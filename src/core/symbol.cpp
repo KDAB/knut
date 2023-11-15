@@ -81,12 +81,12 @@ namespace Core {
  * List of all references of this symbol in the current project.
  */
 
-Symbol::Symbol(QObject *parent, const QString &name, const QString &description, const QString &importLocation,
-               Kind kind, TextRange range, TextRange selectionRange)
+Symbol::Symbol(QObject *parent, QString name, QString description, QString importLocation, Kind kind, TextRange range,
+               TextRange selectionRange)
     : QObject(parent)
-    , m_name {name}
-    , m_description {description}
-    , m_importLocation {importLocation}
+    , m_name {std::move(name)}
+    , m_description {std::move(description)}
+    , m_importLocation {std::move(importLocation)}
     , m_kind {kind}
     , m_range {range}
     , m_selectionRange {selectionRange}
@@ -106,10 +106,10 @@ Symbol *Symbol::makeSymbol(QObject *parent, const QString &name, const QString &
 }
 
 Symbol *Symbol::makeSymbol(QObject *parent, const Lsp::DocumentSymbol &lspSymbol, TextRange range,
-                           TextRange selectionRange, QString context /* = ""*/)
+                           TextRange selectionRange, const QString &context /* = ""*/)
 {
-    auto description = QString::fromStdString(lspSymbol.detail.value_or(""));
-    auto kind = static_cast<Symbol::Kind>(lspSymbol.kind);
+    const auto description = QString::fromStdString(lspSymbol.detail.value_or(""));
+    const auto kind = static_cast<Symbol::Kind>(lspSymbol.kind);
     auto name = QString::fromStdString(lspSymbol.name);
 
     if (!context.isEmpty())

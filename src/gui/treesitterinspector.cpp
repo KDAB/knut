@@ -20,7 +20,6 @@ namespace Gui {
 
 QueryErrorHighlighter::QueryErrorHighlighter(QTextDocument *parent)
     : QSyntaxHighlighter(parent)
-    , m_errorUtf8Position(-1)
 {
 }
 
@@ -146,7 +145,7 @@ void TreeSitterInspector::changeQuery()
         m_errorHighlighter->setUtf8Position(-1);
 
         changeQueryState();
-    } catch (treesitter::Query::Error error) {
+    } catch (treesitter::Query::Error &error) {
         m_treemodel.setQuery({}, nullptr);
         ui->queryInfo->setText(highlightQueryError(error));
 
@@ -228,7 +227,7 @@ QString TreeSitterInspector::preCheckTransformation() const
         return tr("You need to specify a transformation target!");
     }
 
-    return QString();
+    return {};
 }
 
 void TreeSitterInspector::previewTransformation()
@@ -261,7 +260,7 @@ void TreeSitterInspector::runTransformation()
 }
 
 void TreeSitterInspector::prepareTransformation(
-    std::function<void(treesitter::Transformation &transformation)> runFunction)
+    const std::function<void(treesitter::Transformation &transformation)> &runFunction)
 {
     const auto errorMessage = preCheckTransformation();
     if (!errorMessage.isEmpty()) {
@@ -280,20 +279,18 @@ void TreeSitterInspector::prepareTransformation(
                                                   ui->target->toPlainText());
 
         runFunction(transformation);
-    } catch (treesitter::Query::Error error) {
+    } catch (treesitter::Query::Error &error) {
         QMessageBox msgBox;
         msgBox.setText(tr("Error in Query"));
         msgBox.setInformativeText(highlightQueryError(error));
         msgBox.setIcon(QMessageBox::Critical);
         msgBox.exec();
-        return;
-    } catch (treesitter::Transformation::Error error) {
+    } catch (treesitter::Transformation::Error &error) {
         QMessageBox msgBox;
         msgBox.setText(tr("Error performing Transformation"));
         msgBox.setInformativeText(error.description);
         msgBox.setIcon(QMessageBox::Critical);
         msgBox.exec();
-        return;
     }
 }
 
@@ -310,7 +307,7 @@ std::unique_ptr<treesitter::Predicates> TreeSitterInspector::makePredicates()
 
 void TreeSitterInspector::changeTreeSelection(const QModelIndex &current, const QModelIndex &previous)
 {
-    Q_UNUSED(previous);
+    Q_UNUSED(previous)
 
     const auto node = m_treemodel.tsNode(current);
     if (node.has_value()) {

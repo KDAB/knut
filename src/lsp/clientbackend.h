@@ -21,7 +21,7 @@ class ClientBackend : public QObject
 
 public:
     ClientBackend(const std::string &language, QString program, QStringList arguments, QObject *parent = nullptr);
-    ~ClientBackend();
+    ~ClientBackend() override;
 
     bool start();
 

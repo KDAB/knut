@@ -36,13 +36,13 @@ namespace Core {
  * \qmlproperty string Dir::tempPath
  */
 
-Dir::Dir(const QString &currentScriptPath, QObject *parent)
+Dir::Dir(QString currentScriptPath, QObject *parent)
     : QObject(parent)
-    , m_currentScriptPath(currentScriptPath)
+    , m_currentScriptPath(std::move(currentScriptPath))
 {
 }
 
-Dir::~Dir() { }
+Dir::~Dir() = default;
 
 /*!
  * \qmlmethod string Dir::toNativeSeparators(string pathName)

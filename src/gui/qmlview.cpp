@@ -18,13 +18,13 @@ QmlView::QmlView(QWidget *parent)
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 }
 
-QmlView::~QmlView() { }
+QmlView::~QmlView() = default;
 
 void QmlView::setQmlDocument(Core::QmlDocument *document)
 {
     m_qmlDocument = document;
     auto layout = new QVBoxLayout(this);
-    QAction *action = new QAction(tr("Run"));
+    auto action = new QAction(tr("Run"));
     GuiSettings::setIcon(action, ":/gui/eye.png");
     connect(action, &QAction::triggered, this, &QmlView::runQml);
 
@@ -49,7 +49,7 @@ void QmlView::runQml()
 
     QString qmlFilePath = m_qmlDocument->fileName();
 
-    QQuickView *qmlView = new QQuickView();
+    auto qmlView = new QQuickView();
     qmlView->setSource(QUrl::fromLocalFile(qmlFilePath));
     qmlView->show();
 }

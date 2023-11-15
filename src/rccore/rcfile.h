@@ -21,7 +21,7 @@ struct RcFile
     // Data by languages
     QHash<QString, Data> data;
 
-    void mergeLanguages(const QStringList languages, const QString &newLanguage);
+    void mergeLanguages(const QStringList &languages, const QString &newLanguage);
 };
 
 // Parse method

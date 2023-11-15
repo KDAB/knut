@@ -18,7 +18,7 @@ class CppDocument : public LspDocument
 
 public:
     explicit CppDocument(QObject *parent = nullptr);
-    virtual ~CppDocument();
+    ~CppDocument() override;
 
     enum Position { StartOfMethod, EndOfMethod };
     Q_ENUM(Position)
@@ -81,7 +81,6 @@ private:
     enum class MemberOrMethodAdditionResult { Success, ClassNotFound };
     MemberOrMethodAdditionResult addMemberOrMethod(const QString &memberInfo, const QString &className,
                                                    Core::CppDocument::AccessSpecifier specifier);
-    RangeMark findClassBody(const QString &className);
 
     void deleteMethodLocal(const QString &methodName, const QString &signature = "");
 

@@ -29,20 +29,20 @@ class Settings : public QObject
     Q_OBJECT
 
 public:
-    static inline const char MimeTypes[] = "/mime_types";
-    static inline const char LspServers[] = "/lsp";
-    static inline const char RcDialogFlags[] = "/rc/dialog_flags";
-    static inline const char RcDialogScaleX[] = "/rc/dialog_scalex";
-    static inline const char RcDialogScaleY[] = "/rc/dialog_scaley";
-    static inline const char RcAssetFlags[] = "/rc/asset_flags";
-    static inline const char RcAssetColors[] = "/rc/asset_transparent_colors";
-    static inline const char RcLanguageMap[] = "/rc/language_map";
-    static inline const char ScriptPaths[] = "/script_paths";
-    static inline const char Tab[] = "/text_editor/tab";
-    static inline const char ToggleSection[] = "/toggle_section";
+    static inline constexpr char MimeTypes[] = "/mime_types";
+    static inline constexpr char LspServers[] = "/lsp";
+    static inline constexpr char RcDialogFlags[] = "/rc/dialog_flags";
+    static inline constexpr char RcDialogScaleX[] = "/rc/dialog_scalex";
+    static inline constexpr char RcDialogScaleY[] = "/rc/dialog_scaley";
+    static inline constexpr char RcAssetFlags[] = "/rc/asset_flags";
+    static inline constexpr char RcAssetColors[] = "/rc/asset_transparent_colors";
+    static inline constexpr char RcLanguageMap[] = "/rc/language_map";
+    static inline constexpr char ScriptPaths[] = "/script_paths";
+    static inline constexpr char Tab[] = "/text_editor/tab";
+    static inline constexpr char ToggleSection[] = "/toggle_section";
 
 public:
-    ~Settings();
+    ~Settings() override;
 
     static Settings *instance();
 

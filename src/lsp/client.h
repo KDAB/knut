@@ -26,7 +26,7 @@ public:
     };
 
     explicit Client(std::string languageId, QString program, QStringList arguments, QObject *parent = nullptr);
-    ~Client();
+    ~Client() override;
 
     std::string languageId() const;
 
@@ -113,7 +113,7 @@ private:
 
         Request request;
         request.id = m_nextRequestId++;
-        request.params = std::move(params);
+        request.params = std::forward<Params>(params);
 
         return sendRequest(m_backend, request, asyncCallback);
     }

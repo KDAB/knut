@@ -121,7 +121,7 @@ namespace Core {
  * \qmlproperty Date QFileInfoValueType::lastRead
  */
 
-QFileInfoValueType::QFileInfoValueType() { }
+QFileInfoValueType::QFileInfoValueType() = default;
 
 QFileInfoValueType::QFileInfoValueType(const QString &file)
     : m_fileInfoValue(file)

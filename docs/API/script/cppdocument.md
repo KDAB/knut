@@ -27,8 +27,8 @@ Inherited properties: [LspDocument properties](../script/lspdocument.md#properti
 ||**[addMethod](#addMethod)**(string declaration, string className, AccessSpecifier, string body)|
 ||**[addMethod](#addMethod)**(string declaration, string className, AccessSpecifier)|
 ||**[addMethodDeclaration](#addMethodDeclaration)**(string method, string className, AccessSpecifier specifier)|
-||**[addMethodDefintion](#addMethodDefintion)**(string method, string className)|
-||**[addMethodDefintion](#addMethodDefintion)**(string method, string className, string body)|
+||**[addMethodDefinition](#addMethodDefinition)**(string method, string className)|
+||**[addMethodDefinition](#addMethodDefinition)**(string method, string className, string body)|
 ||**[commentSelection](#commentSelection)**()|
 |string |**[correspondingHeaderSource](#correspondingHeaderSource)**()|
 |void |**[deleteMethod](#deleteMethod)**()|
@@ -68,7 +68,7 @@ Return true if the current document is a header.
 !!! note ""
     Since: Knut 1.1
 
-Adds a new member in a specific class under the specefic access specifier.
+Adds a new member in a specific class under the specific access specifier.
 
 If the class does not exist, log error can't find the class, but if the
 specifier is valid but does not exist in the class, we will add that specifier in the end of the
@@ -95,7 +95,7 @@ to the header and the definition to the source.
 !!! note ""
     Since: Knut 1.1
 
-Declares a new method in a specific class under the specefic access specifier.
+Declares a new method in a specific class under the specific access specifier.
 
 If the class does not exist, log error can't find the class, but if the
 specifier is valid but does not exist in the class, we will add that specifier in the end of the
@@ -106,7 +106,7 @@ The specifier can take these values:
 - `CppDocument.Protected`
 - `CppDocument.Private`
 
-#### <a name="addMethodDefintion"></a>**addMethodDefintion**(string method, string className)<br/>**addMethodDefintion**(string method, string className, string body)
+#### <a name="addMethodDefinition"></a>**addMethodDefinition**(string method, string className)<br/>**addMethodDefinition**(string method, string className, string body)
 
 !!! note ""
     Since: Knut 1.1

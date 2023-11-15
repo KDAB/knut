@@ -42,7 +42,7 @@ class TreeSitterInspector : public QDialog
 
 public:
     explicit TreeSitterInspector(QWidget *parent = nullptr);
-    ~TreeSitterInspector();
+    ~TreeSitterInspector() override;
 
 private:
     void showUnnamedChanged();
@@ -54,7 +54,7 @@ private:
     void changeQueryState();
     void previewTransformation();
     void runTransformation();
-    void prepareTransformation(std::function<void(treesitter::Transformation &transformation)> runFunction);
+    void prepareTransformation(const std::function<void(treesitter::Transformation &transformation)> &runFunction);
 
     std::unique_ptr<treesitter::Predicates> makePredicates();
 

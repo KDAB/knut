@@ -38,7 +38,7 @@ struct Context
     }
 };
 
-#define LEXER_FROM_CONTEXT Lexer &lexer = context.lexer;
+#define LEXER_FROM_CONTEXT Lexer &lexer = context.lexer
 
 //=============================================================================
 // Utility methods
@@ -358,7 +358,7 @@ static QString toShortcut(QString event, bool isAscii, Qt::KeyboardModifiers mod
         key = event.toUpper().at(0).toLatin1();
     }
 
-    QKeySequence seq(key | modifiers);
+    const QKeySequence seq(key | modifiers);
     return seq.toString();
 }
 

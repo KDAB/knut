@@ -94,7 +94,7 @@ ShortcutManager::ShortcutManager(MainWindow *parent)
     QTimer::singleShot(0, this, &ShortcutManager::initialize);
 
     auto addScript = [this](const Script &script) {
-        m_commands.push_back(script);
+        m_commands.emplace_back(script);
     };
     connect(Core::ScriptManager::instance(), &Core::ScriptManager::scriptAdded, this, addScript);
     auto removeScript = [this](const Script &script) {
@@ -151,12 +151,12 @@ void ShortcutManager::initialize()
     const auto &actions = qobject_cast<MainWindow *>(parent())->menuActions();
     m_commands.reserve(actions.size());
     for (auto action : actions)
-        m_commands.push_back(Action {action, action->shortcut()});
+        m_commands.emplace_back(Action {action, action->shortcut()});
 
     // Scripts
     const auto &scripts = Core::ScriptManager::instance()->scriptList();
     for (const auto &script : scripts)
-        m_commands.push_back(script);
+        m_commands.emplace_back(script);
 
     // Restore shortcuts
     auto shortcuts = GuiSettings::instance()->shortcuts();

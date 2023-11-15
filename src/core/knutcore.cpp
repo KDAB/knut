@@ -95,7 +95,7 @@ void KnutCore::initParser(QCommandLineParser &parser) const
 
 void KnutCore::doParse(const QCommandLineParser &parser) const
 {
-    Q_UNUSED(parser);
+    Q_UNUSED(parser)
 }
 
 } // namespace Core

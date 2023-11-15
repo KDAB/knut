@@ -119,8 +119,8 @@ bool MessageMap::isValid() const
  */
 MessageMapEntry MessageMap::get(const QString &name) const
 {
-    auto entry = kdalgorithms::find_if(entries, [&name](const auto &entry) {
-        return entry.name == name;
+    auto entry = kdalgorithms::find_if(entries, [&name](const auto &e) {
+        return e.name == name;
     });
     if (entry) {
         return *entry;

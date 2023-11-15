@@ -204,7 +204,7 @@ RcCore::ToolBar RcDocument::toolBar(const QString &id) const
  *
  * Flags could be:
  *
- * - `RcDocument.UpdateHierachy`: create a hierarchy of parent-children, by default there are none in MFC
+ * - `RcDocument.UpdateHierarchy`: create a hierarchy of parent-children, by default there are none in MFC
  * - `RcDocument.UpdateGeometry`: use the scale factor to change the dialog size
  * - `RcDocument.UseIdForPixmap`: use the id as a resource value for the pixmaps in labels
  * - `RcDocument.AllFlags`: combination of all above
@@ -246,7 +246,7 @@ QStringList RcDocument::dialogIds() const
         const auto &dialogs = data().dialogs;
         QStringList result;
         result.reserve(dialogs.size());
-        std::transform(std::cbegin(dialogs), std::cend(dialogs), std::back_inserter(result), [](const auto &dialog) {
+        std::ranges::transform(dialogs, std::back_inserter(result), [](const auto &dialog) {
             return dialog.id;
         });
         result.sort();
@@ -262,7 +262,7 @@ QStringList RcDocument::menuIds() const
         const auto &menus = data().menus;
         QStringList result;
         result.reserve(menus.size());
-        std::transform(std::cbegin(menus), std::cend(menus), std::back_inserter(result), [](const auto &menu) {
+        std::ranges::transform(menus, std::back_inserter(result), [](const auto &menu) {
             return menu.id;
         });
         result.sort();
@@ -278,10 +278,9 @@ QStringList RcDocument::acceleratorIds() const
         const auto &accelerators = data().acceleratorTables;
         QStringList result;
         result.reserve(accelerators.size());
-        std::transform(std::cbegin(accelerators), std::cend(accelerators), std::back_inserter(result),
-                       [](const auto &accelerator) {
-                           return accelerator.id;
-                       });
+        std::ranges::transform(accelerators, std::back_inserter(result), [](const auto &accelerator) {
+            return accelerator.id;
+        });
         result.sort();
         return result;
     }
@@ -295,7 +294,7 @@ QStringList RcDocument::toolbarIds() const
         const auto &toolbars = data().toolBars;
         QStringList result;
         result.reserve(toolbars.size());
-        std::transform(std::cbegin(toolbars), std::cend(toolbars), std::back_inserter(result), [](const auto &toolbar) {
+        std::ranges::transform(toolbars, std::back_inserter(result), [](const auto &toolbar) {
             return toolbar.id;
         });
         result.sort();
@@ -397,7 +396,7 @@ QVector<RcCore::Menu> RcDocument::menus() const
  * Convert all assets using the `flags`.
  *
  * - `RcDocument.RemoveUnknown`: remove the unknown assets
- * - `RcDocument.SplitToolBar`: split oolbars strip into individual icon, one per action
+ * - `RcDocument.SplitToolBar`: split toolbars strip into individual icon, one per action
  * - `RcDocument.ConvertToPng`: convert BMPs to PNGs, needed if we want to also change the transparency
  * - `RcDocument.AllFlags`: combination of all above
  */
@@ -525,18 +524,18 @@ void RcDocument::previewDialog(const RcCore::Widget &dialog) const
 }
 
 /*!
- * \qmlmethod bool RcDocument::mergeAllLanguages(string newLanguage = "[default]")
+ * \qmlmethod bool RcDocument::mergeAllLanguages(string language = "[default]")
  * Merges all languages data into one.
  */
-void RcDocument::mergeAllLanguages(const QString &newLanguage)
+void RcDocument::mergeAllLanguages(const QString &language)
 {
-    LOG("RcDocument::mergeAllLanguages", newLanguage);
+    LOG("RcDocument::mergeAllLanguages", language);
 
-    m_rcFile.mergeLanguages(m_rcFile.data.keys(), newLanguage);
+    m_rcFile.mergeLanguages(m_rcFile.data.keys(), language);
     {
         // Even if the newLanguage is set, we want to send the signals unconditionnaly
         QSignalBlocker sb(this);
-        setLanguage(newLanguage);
+        setLanguage(language);
     }
     emit languagesChanged();
     emit languageChanged();
@@ -587,7 +586,7 @@ void RcDocument::mergeLanguages()
 
 bool RcDocument::doSave(const QString &fileName)
 {
-    Q_UNUSED(fileName);
+    Q_UNUSED(fileName)
     // nothing to do
     return true;
 }

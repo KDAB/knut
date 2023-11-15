@@ -19,7 +19,7 @@ namespace RcCore {
 //=============================================================================
 // Asset writing
 //=============================================================================
-static QImage convertBmpImage(Asset asset, Asset::TransparentColors colors)
+static QImage convertBmpImage(const Asset &asset, Asset::TransparentColors colors)
 {
     QImage image(asset.originalFileName);
 
@@ -100,11 +100,11 @@ void writeAssetsToQrc(const QVector<Asset> &assets, QIODevice *device, const QSt
         w.writeAttribute("alias", asset.id);
 
         // Compute relative filePath for assets
-        QString fileName = asset.fileName;
+        QString assetFileName = asset.fileName;
         if (asset.exist)
-            fileName = fi.absoluteDir().relativeFilePath(asset.fileName);
+            assetFileName = fi.absoluteDir().relativeFilePath(asset.fileName);
 
-        w.writeCharacters(fileName);
+        w.writeCharacters(assetFileName);
         w.writeEndElement();
     }
 
@@ -125,7 +125,7 @@ static void logWarnings(const QList<QQmlError> &warnings)
             spdlog::warn("{}({}): {}", warning.url().toLocalFile().toStdString(), warning.line(),
                          warning.description().toStdString());
     }
-};
+}
 
 void writeDialogToUi(const Widget &widget, QIODevice *device, const QString &scriptPath)
 {

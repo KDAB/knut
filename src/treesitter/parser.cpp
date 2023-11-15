@@ -40,7 +40,7 @@ void Parser::swap(Parser &other) noexcept
 std::optional<Tree> Parser::parseString(const QString &text, const Tree *old_tree)
 {
     auto tree =
-        ts_parser_parse_string_encoding(m_parser, old_tree ? old_tree->m_tree : nullptr, (char *)text.constData(),
+        ts_parser_parse_string_encoding(m_parser, old_tree ? old_tree->m_tree : nullptr, (const char *)text.constData(),
                                         static_cast<uint32_t>(text.size() * sizeof(QChar)), TSInputEncodingUTF16);
 
     // TreeSitter may return a nullptr. See: https://tree-sitter.docsforge.com/master/api/ts_parser_parse/

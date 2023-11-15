@@ -45,7 +45,7 @@ private:
 
 private:
     mutable QString m_uiFilePath;
-    // needs to be mutable for lazy-initalization
+    // needs to be mutable for lazy-initialization
     mutable DynamicObject *m_data;
     std::vector<QObject *> m_children;
 };

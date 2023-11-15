@@ -62,8 +62,8 @@ Project::~Project()
 
     closeAll();
 
-    for (auto clients : m_lspClients)
-        clients.second->shutdown();
+    for (auto client : m_lspClients | std::views::values)
+        client->shutdown();
 }
 
 Project *Project::instance()
@@ -93,8 +93,8 @@ bool Project::setRoot(const QString &newRoot)
 
     m_root = dir.absolutePath();
     Settings::instance()->loadProjectSettings(m_root);
-    for (auto clients : m_lspClients)
-        clients.second->openProject(m_root);
+    for (auto client : m_lspClients | std::views::values)
+        client->openProject(m_root);
 
     emit rootChanged();
     return true;
@@ -282,11 +282,11 @@ Document *Project::getDocument(QString fileName, bool moveToBack)
 
 /*!
  * \qmlmethod Document Project::get(string fileName)
- * Get the document for the given `fileName`. If the document is not opented yet, open it. If the document already
+ * Get the document for the given `fileName`. If the document is not opened yet, open it. If the document already
  * exists, returns the same instance, a document can't be open twice. If the fileName is relative, use the root path as
  * the base.
  */
-Document *Project::get(QString fileName)
+Document *Project::get(const QString &fileName)
 {
     LOG("Project::get", LOG_ARG("path", fileName));
 
@@ -298,7 +298,7 @@ Document *Project::get(QString fileName)
  * Opens a document for the given `fileName`. If the document already exists, returns the same instance, a document
  * can't be open twice. If the fileName is relative, use the root path as the base.
  */
-Document *Project::open(QString fileName)
+Document *Project::open(const QString &fileName)
 {
     if (m_current && m_current->fileName() == fileName)
         return m_current;

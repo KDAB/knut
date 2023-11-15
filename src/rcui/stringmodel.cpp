@@ -12,7 +12,7 @@ StringModel::StringModel(const Data &data, QObject *parent)
     : QAbstractTableModel(parent)
     , m_strings(data.strings.values())
 {
-    std::sort(m_strings.begin(), m_strings.end(), [](const auto &left, const auto &right) {
+    std::ranges::sort(m_strings, [](const auto &left, const auto &right) {
         return left.id < right.id;
     });
 }

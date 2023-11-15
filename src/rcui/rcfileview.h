@@ -26,9 +26,9 @@ class RcFileView : public QWidget
 
 public:
     explicit RcFileView(QWidget *parent = nullptr);
-    ~RcFileView();
+    ~RcFileView() override;
 
-    void setRcFile(const RcCore::RcFile &data);
+    void setRcFile(const RcCore::RcFile &rcFile);
 
     QPlainTextEdit *textEdit() const;
 
@@ -52,7 +52,7 @@ private:
 
 private:
     std::unique_ptr<Ui::RcFileView> ui;
-    const RcCore::RcFile *m_rcFile;
+    const RcCore::RcFile *m_rcFile = nullptr;
     QSortFilterProxyModel *const m_dataProxyModel;
     QSortFilterProxyModel *const m_contentProxyModel;
     QAbstractItemModel *m_contentModel = nullptr;

@@ -20,9 +20,9 @@ namespace Lsp {
 
 // Create a new LSP message to send
 // Return the message to send, with the header + content
-static QByteArray toMessage(json content)
+static QByteArray toMessage(const json &content)
 {
-    QByteArray data = QByteArray::fromStdString(content.dump());
+    const QByteArray data = QByteArray::fromStdString(content.dump());
     const int length = data.size();
 
     // https://microsoft.github.io/language-server-protocol/specifications/specification-current/#headerPart
@@ -165,7 +165,7 @@ void ClientBackend::logMessage(std::string type, const nlohmann::json &message)
     json log = {
         {"type", type},
         {"message", message},
-        {"timestamp", std::time(0)},
+        {"timestamp", std::time(nullptr)},
     };
     m_messageLogger->info(log.dump());
     m_messageLogger->flush();
@@ -219,7 +219,7 @@ bool ClientBackend::Message::readHeader()
                 m_length = length;
                 m_data = m_data.mid(buf.pos());
                 return true;
-            };
+            }
 
             int assignmentIndex = headerLine.indexOf(": ");
             if (assignmentIndex >= 0) {

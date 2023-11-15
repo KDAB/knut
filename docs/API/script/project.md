@@ -81,7 +81,7 @@ Close all documents. If the document has some changes, save the changes.
 
 #### <a name="get"></a>[Document](../script/document.md) **get**(string fileName)
 
-Get the document for the given `fileName`. If the document is not opented yet, open it. If the document already
+Get the document for the given `fileName`. If the document is not opened yet, open it. If the document already
 exists, returns the same instance, a document can't be open twice. If the fileName is relative, use the root path as
 the base.
 

@@ -12,7 +12,7 @@
 #include <QTextCharFormat>
 #include <QToolButton>
 
-#include <spdlog/sinks/base_sink.h>
+#include <spdlog/sinks/qt_sinks.h>
 #include <spdlog/spdlog.h>
 
 #include <mutex>
@@ -22,7 +22,7 @@ namespace Gui {
 class LogHighlighter : public QSyntaxHighlighter
 {
 public:
-    LogHighlighter(QTextDocument *parent = nullptr)
+    explicit LogHighlighter(QTextDocument *parent = nullptr)
         : QSyntaxHighlighter(parent)
     {
         auto getFormat = [](const QColor &color, const QColor &background = {}) {
@@ -60,42 +60,6 @@ private:
     QVector<HighlightingRule> m_rules;
 };
 
-template <typename Mutex>
-class qt_sink : public spdlog::sinks::base_sink<Mutex>
-{
-public:
-    qt_sink(QPlainTextEdit *textEdit)
-        : spdlog::sinks::base_sink<Mutex>()
-        , m_textEdit(textEdit)
-    {
-        Q_ASSERT(textEdit);
-    }
-
-protected:
-    void sink_it_(const spdlog::details::log_msg &msg) override
-    {
-        if (!m_textEdit)
-            return;
-
-        spdlog::memory_buf_t formatted;
-        spdlog::sinks::base_sink<Mutex>::formatter_->format(msg, formatted);
-
-        // In case it's coming from different thread, we can't call appendPlainText directly
-        auto string = QString::fromStdString(formatted);
-        QMetaObject::invokeMethod(m_textEdit, "appendPlainText", Qt::AutoConnection,
-                                  Q_ARG(QString, string.simplified()));
-    }
-
-    void flush_() override
-    {
-        // Nothing to do here
-    }
-
-private:
-    QPointer<QPlainTextEdit> m_textEdit;
-};
-using qt_sink_mt = qt_sink<std::mutex>;
-
 LogPanel::LogPanel(QWidget *parent)
     : QPlainTextEdit(parent)
     , m_toolBar(new QWidget)
@@ -105,7 +69,7 @@ LogPanel::LogPanel(QWidget *parent)
     setReadOnly(true);
 
     auto logger = spdlog::default_logger();
-    logger->sinks().push_back(std::shared_ptr<spdlog::sinks::sink>(new qt_sink_mt(this)));
+    logger->sinks().push_back(std::make_shared<spdlog::sinks::qt_sink_mt>(this, "appendPlainText"));
 
     // Setup text edit
     new LogHighlighter(document());
@@ -131,6 +95,11 @@ LogPanel::LogPanel(QWidget *parent)
     connect(levelCombo, qOverload<int>(&QComboBox::currentIndexChanged), levelCombo, [logger](int index) {
         logger->set_level(static_cast<spdlog::level::level_enum>(index));
     });
+}
+LogPanel::~LogPanel()
+{
+    auto logger = spdlog::default_logger();
+    logger->sinks().pop_back();
 }
 
 QWidget *LogPanel::toolBar() const

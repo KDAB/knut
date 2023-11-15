@@ -7,8 +7,8 @@
 
 namespace Gui {
 
-TransformPreviewDialog::TransformPreviewDialog(Core::LspDocument *document, QString resultText, int numberReplacements,
-                                               QWidget *parent /* = nullptr */)
+TransformPreviewDialog::TransformPreviewDialog(Core::LspDocument *document, const QString &resultText,
+                                               int numberReplacements, QWidget *parent /* = nullptr */)
     : QDialog(parent)
     , ui(new Ui::TransformPreviewDialog)
 {

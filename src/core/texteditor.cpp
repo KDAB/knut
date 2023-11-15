@@ -13,7 +13,6 @@ public:
     static constexpr int Padding = 6;
     static constexpr int Margin = 12;
 
-public:
     explicit Gutter(TextEditor *editor);
 
     QSize sizeHint() const override;
@@ -78,7 +77,7 @@ QSize Gutter::sizeHint() const
 int Gutter::preferedWidth() const
 {
     int count = textEditor()->blockCount();
-    int digits = floor(log10(count) + 1);
+    int digits = static_cast<int>(floor(log10(count) + 1));
 
     return Padding * 2 + fontMetrics().horizontalAdvance(QLatin1Char('9')) * digits + Margin;
 }

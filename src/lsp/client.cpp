@@ -60,7 +60,7 @@ Client::Client(std::string languageId, QString program, QStringList arguments, Q
     });
 }
 
-Client::~Client() { }
+Client::~Client() = default;
 
 std::string Client::languageId() const
 {

@@ -37,7 +37,7 @@ Inherited properties: [Document properties](../script/document.md#properties)
 ||**[copy](#copy)**()|
 |[Mark](../script/mark.md) |**[createMark](#createMark)**(int pos = -1)|
 |[RangeMark](../script/rangemark.md) |**[createRangeMark](#createRangeMark)**()|
-|[RangeMark](../script/rangemark.md) |**[createRangeMark](#createRangeMark)**(int start, int end)|
+|[RangeMark](../script/rangemark.md) |**[createRangeMark](#createRangeMark)**(int from, int to)|
 ||**[cut](#cut)**()|
 ||**[deleteEndOfLine](#deleteEndOfLine)**()|
 ||**[deleteEndOfWord](#deleteEndOfWord)**()|
@@ -183,12 +183,12 @@ Creates a range mark from the current selection.
 
 Note: if there is no selection, the range mark will span an empty range!
 
-#### <a name="createRangeMark"></a>[RangeMark](../script/rangemark.md) **createRangeMark**(int start, int end)
+#### <a name="createRangeMark"></a>[RangeMark](../script/rangemark.md) **createRangeMark**(int from, int to)
 
 !!! note ""
     Since: Knut 1.1
 
-Creates a range mark from `start` to `end`.
+Creates a range mark from `from` to `to`.
 
 #### <a name="cut"></a>**cut**()
 
@@ -382,7 +382,7 @@ Replaces the text from `from` to `to` with the string `text`.
 
 #### <a name="replaceAll"></a>bool **replaceAll**(string before, string after, int options = TextDocument.NoFindFlags)
 
-Replaces all occurences of the string `before` with `after`. Options could be a combination of:
+Replaces all occurrences of the string `before` with `after`. Options could be a combination of:
 
 - `TextDocument.FindCaseSensitively`: match case
 - `TextDocument.FindWholeWords`: match only complete words
@@ -402,7 +402,7 @@ Returns the number of changes done in the document.
 
 #### <a name="replaceAllRegexp"></a>bool **replaceAllRegexp**(string regexp, string after, int options = TextDocument.NoFindFlags)
 
-Replaces all occurences of the matches for the `regexp` with `after`. See the options from `replaceAll`.
+Replaces all occurrences of the matches for the `regexp` with `after`. See the options from `replaceAll`.
 
 The captures coming from the regexp can be used in the replacement text, using `\1`..`\n` or `$1`..`$n`.
 
@@ -413,7 +413,7 @@ Returns the number of changes done in the document.
 !!! note ""
     Since: Knut 1.1
 
-Replaces all occurences of the matches for the `regexp` with `after` in the given `range`. See the options from `replaceAll`.
+Replaces all occurrences of the matches for the `regexp` with `after` in the given `range`. See the options from `replaceAll`.
 
 The captures coming from the regexp can be used in the replacement text, using `\1`..`\n` or `$1`..`$n`.
 

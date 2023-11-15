@@ -49,8 +49,6 @@ protected:
     std::optional<QString> returnTypeFromLSP() const;
     std::optional<QVector<FunctionArgument>> argumentsFromLSP() const;
 
-    FunctionArgument splitNameAndType(const QString &parameter) const;
-
 public:
     QString returnType() const;
     const QVector<FunctionArgument> &arguments() const;

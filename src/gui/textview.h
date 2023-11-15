@@ -33,7 +33,7 @@ private:
     void updateQuickActionRect();
     void showQuickActionMenu();
 
-    Core::TextDocument *m_document;
+    Core::TextDocument *m_document = nullptr;
     std::optional<Core::Mark> m_mark = {};
     QWidget *m_markRect = nullptr;
     ScriptSuggestions *m_scriptSuggestions = nullptr;

@@ -1,6 +1,7 @@
 #include "lspdocument.h"
 #include "lspdocument_p.h"
 
+#include "astnode.h"
 #include "json_utils.h"
 #include "logger.h"
 #include "project.h"
@@ -10,7 +11,6 @@
 #include "string_utils.h"
 #include "symbol.h"
 #include "textlocation.h"
-#include "astnode.h"
 
 #include <QFile>
 #include <QJSEngine>
@@ -64,7 +64,7 @@ bool LspDocument::hasLspClient() const
  * Note that the returned `Symbol` pointer is only valid until the document
  * it originates from is deconstructed.
  */
-Symbol *LspDocument::currentSymbol(std::function<bool(const Symbol &)> filterFunc) const
+Symbol *LspDocument::currentSymbol(const std::function<bool(const Symbol &)> &filterFunc) const
 {
     const int pos = textEdit()->textCursor().position();
 
@@ -691,7 +691,7 @@ AstNode LspDocument::astNodeAt(int pos)
     if (auto node = root.descendantForRange(pos, pos); !node.isNull()) {
         return AstNode(node, this);
     }
-    return AstNode();
+    return {};
 }
 
 } // namespace Core

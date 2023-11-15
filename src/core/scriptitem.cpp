@@ -26,7 +26,7 @@ ScriptItem::ScriptItem(QObject *parent)
 {
 }
 
-ScriptItem::~ScriptItem() { }
+ScriptItem::~ScriptItem() = default;
 
 QQmlListProperty<QObject> ScriptItem::data()
 {

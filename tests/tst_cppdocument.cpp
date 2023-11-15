@@ -13,7 +13,7 @@ class TestCppDocument : public QObject
 
 private:
     void testDocument(const QString &projectRoot, const QString &documentPath,
-                      std::function<void(Core::CppDocument *)> test)
+                      const std::function<void(Core::CppDocument *)> &test)
     {
         Core::KnutCore core;
         const auto rootFullPath = Test::testDataPath() + "/" + projectRoot;

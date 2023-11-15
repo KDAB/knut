@@ -15,7 +15,7 @@ class UiWriter : public QObject
 
 public:
     UiWriter(QIODevice *device, QObject *parent = nullptr);
-    ~UiWriter();
+    ~UiWriter() override;
 
 public slots:
     void setClassName(const QString &className);

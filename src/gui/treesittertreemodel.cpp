@@ -57,7 +57,7 @@ QVariant TreeSitterTreeModel::TreeNode::data(int column) const
     case 0:
         if (fieldName.isEmpty()) {
             auto type = m_node.type();
-            // Some anonymouse nodes actually cover a newline, so we need to escape it.
+            // Some anonymous nodes actually cover a newline, so we need to escape it.
             // This is usually for C preprocessor directives.
             type.replace("\n", "\\n");
             return type;
@@ -70,11 +70,10 @@ QVariant TreeSitterTreeModel::TreeNode::data(int column) const
             .arg(m_node.startPoint().column)
             .arg(m_node.endPoint().row)
             .arg(m_node.endPoint().column);
-        break;
     default:
         break;
     }
-    return QVariant();
+    return {};
 }
 
 bool operator==(const std::unique_ptr<TreeSitterTreeModel::TreeNode> &unique, const TreeSitterTreeModel::TreeNode *ptr)
@@ -108,8 +107,8 @@ treesitter::Node TreeSitterTreeModel::TreeNode::tsNode() const
     return m_node;
 }
 
-void TreeSitterTreeModel::TreeNode::traverse(std::function<void(TreeNode *)> fun,
-                                             std::function<bool(TreeNode *)> filter)
+void TreeSitterTreeModel::TreeNode::traverse(const std::function<void(TreeNode *)> &fun,
+                                             const std::function<bool(TreeNode *)> &filter)
 {
     if (filter(this)) {
         fun(this);
@@ -136,7 +135,7 @@ QModelIndex TreeSitterTreeModel::indexFor(const TreeNode &node, int column) cons
 QModelIndex TreeSitterTreeModel::index(int row, int column, const QModelIndex &parent) const
 {
     if (!m_rootNode) {
-        return QModelIndex();
+        return {};
     }
 
     if (!parent.isValid() && row == 0) {
@@ -148,7 +147,7 @@ QModelIndex TreeSitterTreeModel::index(int row, int column, const QModelIndex &p
     if (child) {
         return createIndex(row, column, child);
     } else {
-        return QModelIndex();
+        return {};
     }
 }
 
@@ -182,13 +181,13 @@ QModelIndex TreeSitterTreeModel::parent(const QModelIndex &index) const
         return createIndex(parent->row(), 0, parent);
     }
 
-    return QModelIndex();
+    return {};
 }
 
 QVariant TreeSitterTreeModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (orientation != Qt::Horizontal) {
-        return QVariant();
+        return {};
     }
 
     if (role == Qt::DisplayRole) {
@@ -200,17 +199,17 @@ QVariant TreeSitterTreeModel::headerData(int section, Qt::Orientation orientatio
         case 2:
             return "Query Captures";
         default:
-            return QVariant();
+            return {};
         }
     }
 
-    return QVariant();
+    return {};
 }
 
 QVariant TreeSitterTreeModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid()) {
-        return QVariant();
+        return {};
     }
 
     const auto *node = static_cast<TreeNode *>(index.internalPointer());
@@ -234,7 +233,7 @@ QVariant TreeSitterTreeModel::data(const QModelIndex &index, int role) const
         break;
     }
 
-    return QVariant();
+    return {};
 }
 
 Qt::ItemFlags TreeSitterTreeModel::flags(const QModelIndex &index) const
@@ -287,13 +286,12 @@ void TreeSitterTreeModel::executeQuery(std::unique_ptr<treesitter::Predicates> &
     }
 }
 
-void TreeSitterTreeModel::capturesChanged(std::unordered_map<treesitter::Node, QString> oldCaptures)
+void TreeSitterTreeModel::capturesChanged(const std::unordered_map<treesitter::Node, QString> &oldCaptures)
 {
     if (m_rootNode) {
         m_rootNode->traverse([&oldCaptures, this](const auto *node) {
-            bool isOldCapture = oldCaptures.find(node->tsNode()) != oldCaptures.cend();
-            bool isNewCapture =
-                m_query.has_value() && m_query->captures.find(node->tsNode()) != m_query->captures.cend();
+            const bool isOldCapture = oldCaptures.contains(node->tsNode());
+            const bool isNewCapture = m_query.has_value() && m_query->captures.contains(node->tsNode());
             if (isOldCapture || isNewCapture) {
                 emit dataChanged(indexFor(*node, 2), indexFor(*node, 2));
             }

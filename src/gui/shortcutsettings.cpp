@@ -52,7 +52,7 @@ public:
     }
     int columnCount(const QModelIndex &parent = QModelIndex()) const override
     {
-        Q_UNUSED(parent);
+        Q_UNUSED(parent)
         return ColumnsCount;
     }
 
@@ -172,7 +172,7 @@ private:
         return m_shortcuts[index.internalId()][index.row()];
     }
     std::vector<ShortcutManager::Shortcut> m_shortcuts[2];
-    ShortcutManager *m_shortcutManager;
+    ShortcutManager *m_shortcutManager = nullptr;
 };
 
 //=============================================================================

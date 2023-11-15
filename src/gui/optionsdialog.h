@@ -16,7 +16,7 @@ class OptionsDialog : public QDialog
 
 public:
     explicit OptionsDialog(QWidget *parent = nullptr);
-    ~OptionsDialog();
+    ~OptionsDialog() override;
 
     void addSettings(QWidget *widget);
 

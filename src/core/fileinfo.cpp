@@ -22,7 +22,7 @@ FileInfo::FileInfo(QObject *parent)
 {
 }
 
-FileInfo::~FileInfo() { }
+FileInfo::~FileInfo() = default;
 
 /*!
  * \qmlmethod bool FileInfo::exists(string file)
