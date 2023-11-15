@@ -2,10 +2,8 @@
 
 namespace Core {
 
-SlintDocument::SlintDocument(QObject *parent):
-    TextDocument(Type::Slint, parent)
+SlintDocument::SlintDocument(QObject *parent)
+    : TextDocument(Type::Slint, parent)
 {
-
 }
-
 }

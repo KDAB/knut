@@ -3,13 +3,12 @@
 
 namespace Core {
 
-class SlintDocument: public TextDocument
+class SlintDocument : public TextDocument
 {
     Q_OBJECT
 
 public:
     explicit SlintDocument(QObject *parent = nullptr);
-
 };
 
 }
