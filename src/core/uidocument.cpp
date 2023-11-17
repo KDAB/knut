@@ -47,9 +47,9 @@ UiWidget *UiDocument::findWidget(const QString &name) const
 
 /*!
  * \qmlmethod UiDocument::preview()
- * Open a dilaog to preview the current ui file.
+ * Open a dialog to preview the current ui file.
  */
-void UiDocument::preview()
+void UiDocument::preview() const
 {
     LOG("UiDocument::preview");
 
@@ -77,11 +77,10 @@ bool UiDocument::doLoad(const QString &fileName)
         return false;
     }
 
-    auto widgets = m_document.select_nodes("//widget");
+    const auto widgets = m_document.select_nodes("//widget");
 
     bool isRoot = true;
-    for (auto it = widgets.begin(); it != widgets.end(); ++it) {
-        pugi::xpath_node node = *it;
+    for (const auto &node : widgets) {
         Q_ASSERT(!node.node().empty());
         m_widgets.push_back(new UiWidget(node.node(), isRoot, this));
         isRoot = false;

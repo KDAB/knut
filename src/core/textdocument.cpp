@@ -725,7 +725,7 @@ void TextDocument::selectNextLine(int count)
 
 /*!
  * \qmlmethod TextDocument::selectPreviousLine(int count = 1)
- * Selectes the previous line, repeat the operation `count` times.
+ * Selects the previous line, repeat the operation `count` times.
  */
 void TextDocument::selectPreviousLine(int count)
 {
@@ -1273,10 +1273,10 @@ bool TextDocument::findRegexp2(const QString &regexp, int options)
     }
 
     if (options & TextDocument::FindBackward) {
-        // Unfortunately is the implementation of QTextDocument::find not greety,
+        // Unfortunately is the implementation of QTextDocument::find not greedy,
         // we therefore need to run the search until it no longer matches.
         // Further the regexp object is copied in find(), so we will not be able to use it for capturing.
-        // We might consider roling our own copy similar to QTextDocument::find
+        // We might consider rolling our own copy similar to QTextDocument::find
         const int endPoint = cursor.position();
         int pos = cursor.anchor();
         do {
@@ -1292,7 +1292,7 @@ bool TextDocument::findRegexp2(const QString &regexp, int options)
 
 /*!
  * \qmlmethod bool TextDocument::replaceOne(string before, string after, int options = TextDocument.NoFindFlags)
- * Replaces one occurence of the string `before` with `after`. Options could be a combination of:
+ * Replaces one occurrence of the string `before` with `after`. Options could be a combination of:
  *
  * - `TextDocument.FindCaseSensitively`: match case
  * - `TextDocument.FindWholeWords`: match only complete words

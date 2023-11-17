@@ -84,8 +84,8 @@ static void printDependencies(const Data &data)
 
 int main(int argc, char *argv[])
 {
-    Q_UNUSED(argc);
-    Q_UNUSED(argv);
+    Q_UNUSED(argc)
+    Q_UNUSED(argv)
 
     MetaModelSpecParser parser;
 

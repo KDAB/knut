@@ -48,8 +48,8 @@ private:
     {
         QString prefix;
         std::unique_ptr<QAbstractItemModel> model;
-        std::function<void()> resetFunc;
         std::function<void(const QVariant &)> selectionFunc;
+        std::function<void()> resetFunc = {};
     };
 
     std::unique_ptr<Ui::Palette> ui;

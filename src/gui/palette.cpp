@@ -474,7 +474,7 @@ void Palette::addFileSelector()
     auto selectFile = [](const QVariant &path) {
         Core::Project::instance()->open(path.toString());
     };
-    m_selectors.push_back(Selector {"", std::move(fileModel), resetFiles, selectFile});
+    m_selectors.emplace_back("", std::move(fileModel), selectFile, resetFiles);
 }
 
 void Palette::addLineSelector()
@@ -490,7 +490,7 @@ void Palette::addLineSelector()
             }
         }
     };
-    m_selectors.push_back(Selector {":", nullptr, {}, gotoLine});
+    m_selectors.emplace_back(":", nullptr, gotoLine);
 }
 
 void Palette::addScriptSelector()
@@ -498,7 +498,7 @@ void Palette::addScriptSelector()
     auto runScript = [](const QVariant &fileName) {
         Core::Utils::runScript(fileName.toString(), true);
     };
-    m_selectors.push_back(Selector {".", std::make_unique<ScriptModel>(), {}, runScript});
+    m_selectors.emplace_back(".", std::make_unique<ScriptModel>(), runScript);
 }
 
 void Palette::addSymbolSelector()
@@ -514,7 +514,7 @@ void Palette::addSymbolSelector()
             lspDocument->textEdit()->centerCursor();
         }
     };
-    m_selectors.push_back(Selector {"@", std::move(symbolModel), resetSymbols, gotoSymbol});
+    m_selectors.emplace_back("@", std::move(symbolModel), gotoSymbol, resetSymbols);
 }
 
 void Palette::addActionSelector()
@@ -528,7 +528,7 @@ void Palette::addActionSelector()
         if (val && val->isEnabled())
             val->trigger();
     };
-    m_selectors.push_back(Selector {">", std::move(actionModel), {}, runAction});
+    m_selectors.emplace_back(">", std::move(actionModel), runAction);
 }
 
 } // namespace Gui

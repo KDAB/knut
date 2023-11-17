@@ -94,7 +94,7 @@ struct MetaData
         QString since;
 
         explicit Common(QString _name = QStringLiteral(""))
-            : name(_name)
+            : name(std::move(_name))
         {
         }
 

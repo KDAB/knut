@@ -6,8 +6,6 @@
 
 #include <optional>
 
-SpecParser::SpecParser() { }
-
 /*
  * Entry point for parsing, with a state machine to parse depending on the state
  */
@@ -80,7 +78,7 @@ void SpecParser::pushState(State newState)
         m_type.comment = comment();
         break;
     case InInterface:
-        m_interfaces.push_back({});
+        m_interfaces.emplace_back();
         m_interfaces.back().comment = comment();
         break;
     }
@@ -183,9 +181,9 @@ QString SpecParser::decodeType(QString param)
 
     if (param.contains('|')) {
         auto params = param.split('|');
-        for (auto &param : params) {
-            param = param.simplified();
-            param = decodeType(param);
+        for (auto &innnerParam : params) {
+            innnerParam = innnerParam.simplified();
+            innnerParam = decodeType(innnerParam);
         }
         return QString("std::variant<%1>").arg(params.join(','));
     }
@@ -677,7 +675,7 @@ MetaData MetaModelSpecParser::parse(const QString &fileName)
     try {
         json = nlohmann::json::parse(in.readAll().toStdString());
     } catch (nlohmann::json::exception &exception) {
-        Q_UNUSED(exception);
+        Q_UNUSED(exception)
         return {};
     }
 
@@ -772,8 +770,7 @@ MetaData::TypePtr MetaModelSpecParser::readType(const nlohmann::json &object)
 
     const auto addDependency = [this](const auto &name) {
         // Add dependencies until an interface adds it.
-        for (auto it = m_typeStack.begin(); it != m_typeStack.end(); ++it) {
-            auto type = *it;
+        for (auto &type : m_typeStack) {
             if (type->name != name)
                 type->dependencies.append(name);
 
@@ -936,12 +933,12 @@ MetaData::TypePtr MetaModelSpecParser::readProperty(const nlohmann::json &object
         });
 
         if (stringLiterals) {
-            QString name = property->name;
-            name.remove('?');
+            QString propertyName = property->name;
+            propertyName.remove('?');
 
             // Split list of stringLiterals to separate properties
             for (const auto &item : property->items) {
-                item->name = QString("%1_%2").arg(name, item->value);
+                item->name = QString("%1_%2").arg(propertyName, item->value);
             }
 
             property->kind = MetaData::TypeKind::StringLiteral;
@@ -1013,7 +1010,7 @@ void MetaModelSpecParser::parseStructure(const nlohmann::json &object)
     m_typeStack.pop_back();
 
     // Partition items by type (keep order)
-    std::stable_partition(interface->items.begin(), interface->items.end(), [](const auto &value) {
+    std::ranges::stable_partition(interface->items, [](const auto &value) {
         return value->is_interface();
     });
 }
@@ -1125,7 +1122,7 @@ bool MetaModelSpecParser::parseLiteral(const nlohmann::json &object, const QStri
     m_typeStack.pop_back();
 
     // Partition items by type (keep order)
-    std::stable_partition(interface->items.begin(), interface->items.end(), [](const auto &value) {
+    std::ranges::stable_partition(interface->items, [](const auto &value) {
         return value->is_interface();
     });
 

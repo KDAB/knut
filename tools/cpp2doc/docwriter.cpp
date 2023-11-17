@@ -8,7 +8,7 @@
 #include <algorithm>
 
 DocWriter::DocWriter(Data data)
-    : m_data(data)
+    : m_data(std::move(data))
 {
 }
 
@@ -63,7 +63,7 @@ void DocWriter::writeToc()
     QString nav;
     QString currentModule;
     QString currentGroup;
-    QString ident = QString(3 * 4, ' ');
+    auto ident = QString(3 * 4, ' ');
     for (const auto &type : m_data.types) {
         if (type.qmlModule != currentModule) {
             currentModule = type.qmlModule;
@@ -100,7 +100,7 @@ void DocWriter::writeToc()
     }
 }
 
-static const char Experimental[] = R"(
+static constexpr char Experimental[] = R"(
 
 !!! Warning "Experimental API"
     The API here is still experimental, and may change in follow-up release. Use it at your own risk.
@@ -110,7 +110,7 @@ static const char Experimental[] = R"(
 // %2 type brief
 // %3 type module
 // rest will be added
-static const char TypeFile[] = R"(# %1
+static constexpr char TypeFile[] = R"(# %1
 
 %2 [More...](#detailed-description)
 
@@ -120,13 +120,13 @@ import %3 1.0
 )";
 
 // %1 property/method since
-static const char Since[] = R"(
+static constexpr char Since[] = R"(
 !!! note ""
     Since: Knut %1
 )";
 
 // %1 type since
-static const char SinceTypeFile[] = R"(
+static constexpr char SinceTypeFile[] = R"(
 <table>
 <tr><td>Since:</td><td>Knut %1</td></tr>
 </table>
@@ -134,7 +134,7 @@ static const char SinceTypeFile[] = R"(
 
 // %1 type since
 // %2 type inherits
-static const char SinceInheritTypeFile[] = R"(
+static constexpr char SinceInheritTypeFile[] = R"(
 <table>
 <tr><td>Since:</td><td>Knut %1</td></tr>
 <tr><td>Inherits:</td><td><a href="%2.html">%2</a></td></tr>
@@ -166,7 +166,7 @@ void DocWriter::writeTypeFile(const Data::TypeBlock &type)
     if (properties.size() || !type.inherits.isEmpty()) {
         stream << "\n## Properties\n\n";
         if (properties.size()) {
-            std::sort(properties.begin(), properties.end(), [](const auto &prop1, const auto &prop2) {
+            std::ranges::sort(properties, [](const auto &prop1, const auto &prop2) {
                 return prop1.name < prop2.name;
             });
             stream << "| | Name |\n|-|-|\n";
@@ -182,7 +182,7 @@ void DocWriter::writeTypeFile(const Data::TypeBlock &type)
     if (methods.size() || !type.inherits.isEmpty()) {
         stream << "\n## Methods\n\n";
         if (methods.size()) {
-            std::stable_sort(methods.begin(), methods.end(), [](const auto &method1, const auto &method2) {
+            std::ranges::stable_sort(methods, [](const auto &method1, const auto &method2) {
                 const auto &m1 = method1.methods.front();
                 const auto &m2 = method2.methods.front();
                 if (m1.name != m2.name) {
@@ -206,7 +206,7 @@ void DocWriter::writeTypeFile(const Data::TypeBlock &type)
     if (qmlSignals.size()) {
         stream << "\n## Signals\n\n";
         if (qmlSignals.size()) {
-            std::sort(qmlSignals.begin(), qmlSignals.end(), [](const auto &signal1, const auto &signal2) {
+            std::ranges::sort(qmlSignals, [](const auto &signal1, const auto &signal2) {
                 return signal1.method.name < signal2.method.name;
             });
             stream << "| | Name |\n|-|-|\n";
@@ -266,10 +266,9 @@ void DocWriter::writeTypeFile(const Data::TypeBlock &type)
 std::vector<Data::PropertyBlock> DocWriter::propertyForType(const Data::TypeBlock &type) const
 {
     std::vector<Data::PropertyBlock> results;
-    std::copy_if(m_data.properties.begin(), m_data.properties.end(), std::back_inserter(results),
-                 [type](const auto &prop) {
-                     return prop.qmlType == type.name;
-                 });
+    std::ranges::copy_if(m_data.properties, std::back_inserter(results), [type](const auto &prop) {
+        return prop.qmlType == type.name;
+    });
 #if 0
     if (!type.inherits.isEmpty()) {
         auto it = std::find_if(m_data.types.begin(), m_data.types.end(), [&type](const auto &t) {
@@ -287,7 +286,7 @@ std::vector<Data::PropertyBlock> DocWriter::propertyForType(const Data::TypeBloc
 std::vector<Data::MethodBlock> DocWriter::methodForType(const Data::TypeBlock &type) const
 {
     std::vector<Data::MethodBlock> results;
-    std::copy_if(m_data.methods.begin(), m_data.methods.end(), std::back_inserter(results), [type](const auto &method) {
+    std::ranges::copy_if(m_data.methods, std::back_inserter(results), [type](const auto &method) {
         return method.qmlType == type.name;
     });
 #if 0
@@ -307,10 +306,9 @@ std::vector<Data::MethodBlock> DocWriter::methodForType(const Data::TypeBlock &t
 std::vector<Data::SignalBlock> DocWriter::signalForType(const Data::TypeBlock &type) const
 {
     std::vector<Data::SignalBlock> results;
-    std::copy_if(m_data.qmlSignals.begin(), m_data.qmlSignals.end(), std::back_inserter(results),
-                 [type](const auto &signal) {
-                     return signal.qmlType == type.name;
-                 });
+    std::ranges::copy_if(m_data.qmlSignals, std::back_inserter(results), [type](const auto &signal) {
+        return signal.qmlType == type.name;
+    });
 #if 0
     if (!type.inherits.isEmpty()) {
         auto it = std::find_if(m_data.types.begin(), m_data.types.end(), [&type](const auto &t) {

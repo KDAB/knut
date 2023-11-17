@@ -22,8 +22,6 @@ class SpecParser
     };
 
 public:
-    SpecParser();
-
     Data parse(const QString &fileName);
 
 private:

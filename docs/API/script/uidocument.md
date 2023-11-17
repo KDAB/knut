@@ -37,4 +37,4 @@ Returns the widget for the given `name`.
 
 #### <a name="preview"></a>**preview**()
 
-Open a dilaog to preview the current ui file.
+Open a dialog to preview the current ui file.

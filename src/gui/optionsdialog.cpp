@@ -149,13 +149,13 @@ void OptionsDialog::initializeRcSettings()
     connect(ui->updateHierarchy, &QCheckBox::toggled, this, &OptionsDialog::changeDialogFlagsSetting);
     connect(ui->idForPixmap, &QCheckBox::toggled, this, &OptionsDialog::changeDialogFlagsSetting);
 
-    const double scaleX = DEFAULT_VALUE(double, RcDialogScaleX);
+    const auto scaleX = DEFAULT_VALUE(double, RcDialogScaleX);
     ui->scaleX->setValue(scaleX);
     connect(ui->scaleX, &QDoubleSpinBox::valueChanged, this, [](double value) {
         SET_DEFAULT_VALUE(RcDialogScaleX, value);
     });
 
-    const double scaleY = DEFAULT_VALUE(double, RcDialogScaleY);
+    const auto scaleY = DEFAULT_VALUE(double, RcDialogScaleY);
     ui->scaleY->setValue(scaleY);
     connect(ui->scaleY, &QDoubleSpinBox::valueChanged, this, [](double value) {
         SET_DEFAULT_VALUE(RcDialogScaleY, value);

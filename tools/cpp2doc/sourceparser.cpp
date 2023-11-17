@@ -101,7 +101,6 @@ Data::PropertyBlock SourceParser::parseProperty(QTextStream &stream, QString lin
 {
     Data::PropertyBlock currentProperty;
     line = line.mid(13);
-    currentProperty.name = line;
     static QRegularExpression regexp(R"(^([\w<>]+) (\w+)::(\w+)$)");
     auto match = regexp.match(line);
     currentProperty.type = match.captured(1);
@@ -172,7 +171,7 @@ Data::MethodBlock SourceParser::parseMethod(QTextStream &stream, QString line)
         line = cleanupCommentLine(line);
 
         if (line.startsWith("\\qmlmethod")) {
-            auto definition = parseMethodDefinition(line.mid(11));
+            definition = parseMethodDefinition(line.mid(11));
             currentMethod.methods.push_back(definition.method);
         } else {
             parseBlock(line, currentMethod);

@@ -35,9 +35,9 @@ RcToUiDialog::RcToUiDialog(Core::RcDocument *document, QWidget *parent)
     ui->updateHierarchy->setChecked(flags & Core::RcDocument::UpdateHierarchy);
     ui->idForPixmap->setChecked(flags & Core::RcDocument::UseIdForPixmap);
 
-    const double scaleX = DEFAULT_VALUE(double, RcDialogScaleX);
+    const auto scaleX = DEFAULT_VALUE(double, RcDialogScaleX);
     ui->scaleX->setValue(scaleX);
-    const double scaleY = DEFAULT_VALUE(double, RcDialogScaleY);
+    const auto scaleY = DEFAULT_VALUE(double, RcDialogScaleY);
     ui->scaleY->setValue(scaleY);
 
     const QStringList dialogIds = m_document->dialogIds();

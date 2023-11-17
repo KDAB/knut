@@ -46,7 +46,7 @@ public:
     Q_INVOKABLE Core::UiWidget *findWidget(const QString &name) const;
 
 public slots:
-    void preview();
+    void preview() const;
 
 protected:
     bool doSave(const QString &fileName) override;

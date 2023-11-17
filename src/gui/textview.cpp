@@ -23,7 +23,7 @@
 namespace Gui {
 
 constexpr int MarkWidth = 6;
-constexpr int MarkWidth2 = MarkWidth / 2.0f;
+constexpr int MarkWidth2 = MarkWidth / 2;
 
 class MarkRect : public QWidget
 {

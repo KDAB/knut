@@ -421,7 +421,7 @@ Returns the number of changes done in the document.
 
 #### <a name="replaceOne"></a>bool **replaceOne**(string before, string after, int options = TextDocument.NoFindFlags)
 
-Replaces one occurence of the string `before` with `after`. Options could be a combination of:
+Replaces one occurrence of the string `before` with `after`. Options could be a combination of:
 
 - `TextDocument.FindCaseSensitively`: match case
 - `TextDocument.FindWholeWords`: match only complete words
@@ -469,7 +469,7 @@ Selects the previous character, repeat the operation `count` times.
 
 #### <a name="selectPreviousLine"></a>**selectPreviousLine**(int count = 1)
 
-Selectes the previous line, repeat the operation `count` times.
+Selects the previous line, repeat the operation `count` times.
 
 #### <a name="selectPreviousWord"></a>**selectPreviousWord**(int count = 1)
 
