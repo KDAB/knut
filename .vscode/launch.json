@@ -15,7 +15,7 @@
         {
             "name": "qt6-msvc",
             "type": "cppvsdbg",
-            "request":"launch",
+            "request": "launch",
             // Resolved by CMake Tools:
             "program": "${command:cmake.launchTargetPath}",
             "visualizerFile": "${workspaceFolder}/qt6.natvis",

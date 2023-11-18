@@ -7,17 +7,16 @@
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build-debug",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
-                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+                "CMAKE_BUILD_TYPE": "Debug"
             }
         },
         {
-            "name": "asan",
-            "displayName": "Asan debug build",
+            "name": "debug-asan",
+            "displayName": "Debug Asan build",
             "inherits": "debug",
             "binaryDir": "${sourceDir}/build-debug-asan",
             "cacheVariables": {
-                "ECM_ENABLE_SANITIZERS" : "'address;undefined'"
+                "USE_ASAN": "ON"
             }
         },
         {
@@ -35,8 +34,7 @@
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build-profile",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "RelWithDebInfo",
-                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo"
             }
         }
     ]

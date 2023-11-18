@@ -1,5 +1,5 @@
 {
-    "lsp" : [
+    "lsp": [
         {
             "type": "cpp_type",
             "program": "clangd",
@@ -7,10 +7,17 @@
         }
     ],
     "rc": {
-        "dialog_flags": ["UpdateGeometry", "UseIdForPixmap"],
+        "dialog_flags": [
+            "UpdateGeometry",
+            "UseIdForPixmap"
+        ],
         "dialog_scalex": 1.5,
         "dialog_scaley": 1.65,
-        "asset_flags": ["RemoveUnknown", "SplitToolBar", "ConvertToPng"],
+        "asset_flags": [
+            "RemoveUnknown",
+            "SplitToolBar",
+            "ConvertToPng"
+        ],
         "asset_transparent_colors": [
             "Gray",
             "Magenta",

@@ -74,19 +74,14 @@ set(PROJECT_SOURCES
     uiview.cpp
     qmlview.h
     qmlview.cpp
-    gui.qrc
-)
+    gui.qrc)
 
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
-target_link_libraries(${PROJECT_NAME} PUBLIC
-    Qt${QT_VERSION_MAJOR}::Core
-    Qt${QT_VERSION_MAJOR}::Widgets
-    Qt${QT_VERSION_MAJOR}::UiTools
-    knut-core
-    knut-rcui
-    KF5SyntaxHighlighting
-)
+target_link_libraries(
+  ${PROJECT_NAME}
+  PUBLIC Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets
+         Qt${QT_VERSION_MAJOR}::UiTools knut-core knut-rcui
+         KF5SyntaxHighlighting)
 
 target_include_directories(${PROJECT_NAME}
-    INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/..
-)
+                           INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/..)

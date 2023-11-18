@@ -119,7 +119,10 @@ void knut_from_json(const char *key, const nlohmann::json &j, T &value)
  * \brief Macro used for empty types, it's serialized as an empty object
  */
 #define JSONIFY_EMPTY(Type)                                                                                            \
-    inline void to_json(nlohmann::json &nlohmann_json_j, const Type &) { nlohmann_json_j = nlohmann::json::object(); } \
+    inline void to_json(nlohmann::json &nlohmann_json_j, const Type &)                                                 \
+    {                                                                                                                  \
+        nlohmann_json_j = nlohmann::json::object();                                                                    \
+    }                                                                                                                  \
     inline void from_json(const nlohmann::json &, Type &) { }
 
 /**
