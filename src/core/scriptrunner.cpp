@@ -265,11 +265,14 @@ QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine, const
             } else if (auto dialog = qobject_cast<ScriptDialogItem *>(topLevel)) {
                 dialog->show();
                 connect(dialog, &ScriptDialogItem::finished, engine, &QObject::deleteLater);
-                connect(engine, &QQmlEngine::quit, dialog, &QDialog::close);
             }
             // Make sure calling `Qt.quit()` in QML deletes everything
-            topLevel->setParent(engine);
-            connect(engine, &QQmlEngine::quit, engine, &QObject::deleteLater);
+            auto cleanup = [engine, topLevel]() {
+                engine->deleteLater();
+                if (topLevel)
+                    topLevel->deleteLater();
+            };
+            connect(engine, &QQmlEngine::quit, engine, cleanup);
 
             // Start the init function if it exists.
             if (topLevel->metaObject()->indexOfMethod("init()") != -1)
