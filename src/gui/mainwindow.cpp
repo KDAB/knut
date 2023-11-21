@@ -683,24 +683,20 @@ static QWidget *widgetForDocument(Core::Document *document)
     }
     case Core::Document::Type::Slint: {
         auto slintView = new SlintView();
-        slintView->setSlintDocument(qobject_cast<Core::SlintDocument *>(document));
-        GuiSettings::setupDocumentTextEdit(qobject_cast<Core::SlintDocument *>(document)->textEdit(),
-                                           document->fileName());
+        slintView->setDocument(qobject_cast<Core::SlintDocument *>(document));
         return slintView;
     }
     case Core::Document::Type::Qml: {
 
         auto qmlview = new QmlView();
-        qmlview->setQmlDocument(qobject_cast<Core::QmlDocument *>(document));
-        GuiSettings::setupDocumentTextEdit(qobject_cast<Core::QmlDocument *>(document)->textEdit(),
-                                           document->fileName());
+        qmlview->setDocument(qobject_cast<Core::QmlDocument *>(document));
         return qmlview;
     }
     case Core::Document::Type::Cpp:
     case Core::Document::Type::Text:
     default: {
         auto textView = new TextView();
-        textView->setTextDocument(qobject_cast<Core::TextDocument *>(document));
+        textView->setDocument(qobject_cast<Core::TextDocument *>(document));
         return textView;
     }
     }

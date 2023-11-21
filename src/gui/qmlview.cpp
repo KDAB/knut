@@ -13,43 +13,25 @@
 namespace Gui {
 
 QmlView::QmlView(QWidget *parent)
-    : QWidget {parent}
+    : TextView(parent)
 {
-    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    auto *action = new QAction(tr("Run"));
+    GuiSettings::setIcon(action, ":/gui/eye.png");
+    connect(action, &QAction::triggered, this, &QmlView::runQml);
+    addAction(action);
 }
 
 QmlView::~QmlView() = default;
 
-void QmlView::setQmlDocument(Core::QmlDocument *document)
-{
-    m_qmlDocument = document;
-    auto layout = new QVBoxLayout(this);
-    auto action = new QAction(tr("Run"));
-    GuiSettings::setIcon(action, ":/gui/eye.png");
-    connect(action, &QAction::triggered, this, &QmlView::runQml);
-
-    auto bar = new QToolBar(this);
-    bar->addAction(action);
-    layout->addWidget(bar);
-
-    layout->setContentsMargins({});
-    auto *textEdit = m_qmlDocument->textEdit();
-    layout->addWidget(textEdit);
-    textEdit->setVisible(true);
-    textEdit->installEventFilter(this);
-    setFocusProxy(textEdit);
-    GuiSettings::setupDocumentTextEdit(textEdit, m_qmlDocument->fileName());
-}
-
 void QmlView::runQml()
 {
-    if (!m_qmlDocument) {
+    if (!document()) {
         return;
     }
 
-    QString qmlFilePath = m_qmlDocument->fileName();
+    const QString qmlFilePath = document()->fileName();
 
-    auto qmlView = new QQuickView();
+    auto *qmlView = new QQuickView();
     qmlView->setSource(QUrl::fromLocalFile(qmlFilePath));
     qmlView->show();
 }

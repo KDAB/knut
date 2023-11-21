@@ -1,7 +1,6 @@
 #pragma once
 
-#include <QPointer>
-#include <QWidget>
+#include "textview.h"
 
 namespace Core {
 class SlintDocument;
@@ -11,7 +10,7 @@ class QProcess;
 
 namespace Gui {
 
-class SlintView : public QWidget
+class SlintView : public TextView
 {
     Q_OBJECT
 
@@ -19,13 +18,10 @@ public:
     explicit SlintView(QWidget *parent = nullptr);
     ~SlintView() override;
 
-    void setSlintDocument(Core::SlintDocument *document);
-
 private:
     void runSlint();
 
 private:
-    QPointer<Core::SlintDocument> m_document;
     QProcess *m_process = nullptr;
 };
 

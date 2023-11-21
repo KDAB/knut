@@ -73,7 +73,7 @@ TextView::TextView(QWidget *parent)
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 }
 
-void TextView::setTextDocument(Core::TextDocument *document)
+void TextView::setDocument(Core::TextDocument *document)
 {
     m_document = document;
     auto layout = new QVBoxLayout(this);
@@ -171,6 +171,11 @@ bool TextView::eventFilter(QObject *obj, QEvent *event)
         }
     }
     return false;
+}
+
+Core::TextDocument *TextView::document() const
+{
+    return m_document;
 }
 
 void TextView::updateMarkRect()

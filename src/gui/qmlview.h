@@ -1,26 +1,22 @@
 #pragma once
 
-#include <QPointer>
-#include <QWidget>
+#include "textview.h"
+
 namespace Core {
 class QmlDocument;
 }
 
 namespace Gui {
 
-class QmlView : public QWidget
+class QmlView : public TextView
 {
     Q_OBJECT
 public:
     explicit QmlView(QWidget *parent = nullptr);
     ~QmlView() override;
 
-    void setQmlDocument(Core::QmlDocument *document);
-
 private:
     void runQml();
-
-    QPointer<Core::QmlDocument> m_qmlDocument;
 };
 
 } // namespace Gui

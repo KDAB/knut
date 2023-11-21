@@ -30,16 +30,19 @@ static QString findSlintViewer()
 }
 
 SlintView::SlintView(QWidget *parent)
-    : QWidget(parent)
+    : TextView(parent)
     , m_process(new QProcess(this))
 {
-    auto exec = findSlintViewer();
+    const auto exec = findSlintViewer();
 
-    auto act = new QAction(tr("Run"), this);
-    GuiSettings::setIcon(act, ":/gui/eye.png");
-    act->setDisabled(exec.isEmpty());
-    connect(act, &QAction::triggered, this, &SlintView::runSlint);
-    addAction(act);
+    auto *action = new QAction(tr("Run"), this);
+    GuiSettings::setIcon(action, ":/gui/eye.png");
+    action->setDisabled(exec.isEmpty());
+    if (exec.isEmpty()) {
+        action->setToolTip(tr("slint-viewer executable wasn't found. Install it using: cargo install slint-viewer"));
+    }
+    connect(action, &QAction::triggered, this, &SlintView::runSlint);
+    addAction(action);
 }
 
 SlintView::~SlintView()
@@ -50,17 +53,6 @@ SlintView::~SlintView()
     }
 }
 
-void SlintView::setSlintDocument(Core::SlintDocument *document)
-{
-    m_document = document;
-    auto lay = new QVBoxLayout(this);
-    lay->setContentsMargins(0, 0, 0, 0);
-
-    auto edit = document->textEdit();
-    edit->setVisible(true);
-    lay->addWidget(edit, 1);
-}
-
 void SlintView::runSlint()
 {
     if (m_process && m_process->state() == QProcess::Running) {
@@ -68,18 +60,18 @@ void SlintView::runSlint()
         return;
     }
 
-    if (!m_document) {
+    if (!document()) {
         return;
     }
 
-    auto exec = findSlintViewer();
+    const auto exec = findSlintViewer();
 
     if (exec.isEmpty()) {
         return;
     }
 
     if (m_process) {
-        m_process->start(exec, {m_document->fileName()});
+        m_process->start(exec, {document()->fileName()});
     }
 }
 

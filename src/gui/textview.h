@@ -19,7 +19,7 @@ class TextView : public QWidget
 public:
     explicit TextView(QWidget *parent = nullptr);
 
-    void setTextDocument(Core::TextDocument *document);
+    virtual void setDocument(Core::TextDocument *document);
 
     void toggleMark();
     void gotoMark();
@@ -29,6 +29,9 @@ public:
     void setScriptSuggestions(ScriptSuggestions *model);
 
     bool eventFilter(QObject *obj, QEvent *event) override;
+
+protected:
+    Core::TextDocument *document() const;
 
 private:
     void updateMarkRect();
