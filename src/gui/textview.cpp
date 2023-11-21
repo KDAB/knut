@@ -1,12 +1,13 @@
 #include "textview.h"
 
+#include "guisettings.h"
+#include "scriptsuggestions.h"
+
 #include "core/logger.h"
 #include "core/lspdocument.h"
 #include "core/mark.h"
+#include "core/scriptmodel.h"
 #include "core/textdocument.h"
-#include "guisettings.h"
-#include "scriptsinpath.h"
-#include "scriptsuggestions.h"
 
 #include <QAction>
 #include <QEvent>
@@ -203,7 +204,7 @@ void TextView::showQuickActionMenu()
     menu.setToolTipsVisible(true);
 
     for (int row = 0; row < m_scriptSuggestions->rowCount(); ++row) {
-        const auto index = m_scriptSuggestions->index(row, ScriptsInPath::Column::NameColumn);
+        const auto index = m_scriptSuggestions->index(row, Core::ScriptModel::NameColumn);
         auto action = new QAction(index.data().toString());
         action->setToolTip(index.data(Qt::ToolTipRole).toString());
         auto executeScript = [this, index] {

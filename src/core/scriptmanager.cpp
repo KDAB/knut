@@ -1,6 +1,7 @@
 #include "scriptmanager.h"
 
 #include "logger.h"
+#include "scriptmodel.h"
 #include "scriptrunner.h"
 #include "settings.h"
 
@@ -60,6 +61,12 @@ void ScriptManager::removeDirectory(const QString &path)
 QStringList ScriptManager::directories() const
 {
     return m_directories;
+}
+
+QAbstractItemModel *ScriptManager::model()
+{
+    static auto *model = new ScriptModel(instance());
+    return model;
 }
 
 void ScriptManager::runScript(const QString &fileName, bool async, bool log)

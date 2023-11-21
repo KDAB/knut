@@ -9,6 +9,7 @@
 #include "querymatch.h"
 
 class QFileSystemWatcher;
+class QAbstractItemModel;
 
 namespace Core {
 
@@ -46,6 +47,8 @@ public:
     void removeDirectory(const QString &path);
 
     QStringList directories() const;
+
+    static QAbstractItemModel *model();
 
 public slots:
     void runScript(const QString &fileName, bool async = true, bool log = true);

@@ -3,9 +3,8 @@
 #include "classsymbol.h"
 #include "functionsymbol.h"
 #include "logger.h"
-
-#include <core/lspdocument.h>
-#include <core/project.h>
+#include "lspdocument.h"
+#include "project.h"
 
 #include <kdalgorithms.h>
 #include <spdlog/spdlog.h>

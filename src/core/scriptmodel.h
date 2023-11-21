@@ -1,25 +1,19 @@
 #pragma once
 
-#include <core/scriptmanager.h>
+#include "scriptmanager.h"
 
 #include <QAbstractTableModel>
 #include <QString>
 
 namespace Core {
 
-class LspDocument;
+class ScriptManager;
 
-} // namespace Core
-
-namespace Gui {
-
-class ScriptsInPath : public QAbstractTableModel
+class ScriptModel : public QAbstractTableModel
 {
     Q_OBJECT
 
 public:
-    explicit ScriptsInPath(QObject *parent = nullptr);
-
     enum Column : int {
         NameColumn = 0,
         DescriptionColumn,
@@ -33,13 +27,6 @@ public:
     };
     Q_ENUM(Role)
 
-public slots:
-    void aboutToAddScript(const Core::ScriptManager::Script &, int);
-    void aboutToRemoveScript(const Core::ScriptManager::Script &, int);
-
-    void scriptAdded(const Core::ScriptManager::Script &);
-    void scriptRemoved(const Core::ScriptManager::Script &);
-
 public:
     int columnCount(const QModelIndex &parent) const override;
     int rowCount(const QModelIndex &parent) const override;
@@ -49,9 +36,18 @@ public:
     QVariant data(const QModelIndex &index, int role) const override;
 
 private:
+    friend ScriptManager;
+    explicit ScriptModel(ScriptManager *parent);
+
+    void onAboutToAddScript(const Core::ScriptManager::Script &, int);
+    void onAboutToRemoveScript(const Core::ScriptManager::Script &, int);
+
+    void onScriptAdded(const Core::ScriptManager::Script &);
+    void onScriptRemoved(const Core::ScriptManager::Script &);
+
     QVariant displayData(const Core::ScriptManager::Script &script, int column) const;
 
     QVariant columnHeaderDisplayData(int column) const;
 };
 
-} // namespace Gui
+} // namespace Core

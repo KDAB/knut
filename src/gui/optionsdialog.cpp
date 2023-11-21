@@ -7,7 +7,6 @@
 #include "core/scriptmanager.h"
 #include "core/settings.h"
 #include "core/textdocument_p.h"
-#include "gui/scriptsinpath.h"
 
 #include <QApplication>
 #include <QDesktopServices>
@@ -22,7 +21,6 @@ namespace Gui {
 OptionsDialog::OptionsDialog(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::OptionsDialog)
-    , m_scriptsModel(new ScriptsInPath(this))
 {
     ui->setupUi(this);
     setWindowTitle(QApplication::applicationName() + ' ' + QApplication::applicationVersion() + " - " + windowTitle());
@@ -68,7 +66,7 @@ void OptionsDialog::initializeScriptPathSettings()
     });
 
     // Script list
-    ui->scriptsList->setModel(m_scriptsModel);
+    ui->scriptsList->setModel(Core::ScriptManager::model());
 }
 
 void OptionsDialog::initializeScriptBehaviorSettings()

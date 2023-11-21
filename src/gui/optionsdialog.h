@@ -42,7 +42,6 @@ private:
 
 private:
     std::unique_ptr<Ui::OptionsDialog> ui;
-    class ScriptsInPath *m_scriptsModel;
 };
 
 } // namespace Gui

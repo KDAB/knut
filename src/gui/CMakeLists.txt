@@ -55,8 +55,6 @@ set(PROJECT_SOURCES
     runscriptwidget.ui
     scriptpanel.h
     scriptpanel.cpp
-    scriptsinpath.h
-    scriptsinpath.cpp
     scriptsuggestions.cpp
     scriptsuggestions.h
     scriptsuggestionspanel.cpp

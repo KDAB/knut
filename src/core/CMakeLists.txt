@@ -61,6 +61,8 @@ set(PROJECT_SOURCES
     scriptitem.cpp
     scriptmanager.h
     scriptmanager.cpp
+    scriptmodel.h
+    scriptmodel.cpp
     scriptrunner.h
     scriptrunner.cpp
     settings.h

@@ -1,21 +1,23 @@
-#include "scriptsinpath.h"
+#include "scriptmodel.h"
 
-#include <core/scriptmanager.h>
+#include "scriptmanager.h"
 
 #include <spdlog/spdlog.h>
 
 using ScriptManager = Core::ScriptManager;
 
-namespace Gui {
+namespace Core {
 
-ScriptsInPath::ScriptsInPath(QObject *parent)
+ScriptModel::ScriptModel(ScriptManager *parent)
     : QAbstractTableModel(parent)
 {
-    connect(ScriptManager::instance(), &ScriptManager::aboutToAddScript, this, &ScriptsInPath::aboutToAddScript);
-    connect(ScriptManager::instance(), &ScriptManager::aboutToRemoveScript, this, &ScriptsInPath::aboutToRemoveScript);
+    Q_ASSERT(parent);
 
-    connect(ScriptManager::instance(), &ScriptManager::scriptAdded, this, &ScriptsInPath::scriptAdded);
-    connect(ScriptManager::instance(), &ScriptManager::scriptRemoved, this, &ScriptsInPath::scriptRemoved);
+    connect(parent, &ScriptManager::aboutToAddScript, this, &ScriptModel::onAboutToAddScript);
+    connect(parent, &ScriptManager::aboutToRemoveScript, this, &ScriptModel::onAboutToRemoveScript);
+
+    connect(parent, &ScriptManager::scriptAdded, this, &ScriptModel::onScriptAdded);
+    connect(parent, &ScriptManager::scriptRemoved, this, &ScriptModel::onScriptRemoved);
 }
 
 const ScriptManager::ScriptList &scriptList()
@@ -23,36 +25,37 @@ const ScriptManager::ScriptList &scriptList()
     return ScriptManager::instance()->scriptList();
 }
 
-void ScriptsInPath::aboutToAddScript(const Core::ScriptManager::Script &, int index)
+void ScriptModel::onAboutToAddScript(const Core::ScriptManager::Script &, int index)
 {
     beginInsertRows({}, index, index);
 }
 
-void ScriptsInPath::scriptAdded(const Core::ScriptManager::Script &)
+void ScriptModel::onScriptAdded(const Core::ScriptManager::Script &)
 {
     endInsertRows();
 }
 
-void ScriptsInPath::aboutToRemoveScript(const Core::ScriptManager::Script &, int index)
+void ScriptModel::onAboutToRemoveScript(const Core::ScriptManager::Script &, int index)
 {
     beginRemoveRows({}, index, index);
 }
-void ScriptsInPath::scriptRemoved(const Core::ScriptManager::Script &)
+
+void ScriptModel::onScriptRemoved(const Core::ScriptManager::Script &)
 {
     endRemoveRows();
 }
 
-int ScriptsInPath::columnCount(const QModelIndex &parent) const
+int ScriptModel::columnCount(const QModelIndex &parent) const
 {
     return parent.isValid() ? 0 : ColumnCount;
 }
 
-int ScriptsInPath::rowCount(const QModelIndex &parent) const
+int ScriptModel::rowCount(const QModelIndex &parent) const
 {
     return parent.isValid() ? 0 : static_cast<int>(scriptList().size());
 }
 
-QVariant ScriptsInPath::columnHeaderDisplayData(int column) const
+QVariant ScriptModel::columnHeaderDisplayData(int column) const
 {
     switch (column) {
     case NameColumn:
@@ -65,7 +68,7 @@ QVariant ScriptsInPath::columnHeaderDisplayData(int column) const
     }
 }
 
-QVariant ScriptsInPath::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant ScriptModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (orientation != Qt::Horizontal) {
         return QAbstractTableModel::headerData(section, orientation, role);
@@ -79,7 +82,7 @@ QVariant ScriptsInPath::headerData(int section, Qt::Orientation orientation, int
     }
 }
 
-QVariant ScriptsInPath::data(const QModelIndex &index, int role) const
+QVariant ScriptModel::data(const QModelIndex &index, int role) const
 {
     auto row = index.row();
 
@@ -104,7 +107,7 @@ QVariant ScriptsInPath::data(const QModelIndex &index, int role) const
     }
 }
 
-QVariant ScriptsInPath::displayData(const ScriptManager::Script &script, int column) const
+QVariant ScriptModel::displayData(const ScriptManager::Script &script, int column) const
 {
     switch (column) {
     case NameColumn:
@@ -117,4 +120,4 @@ QVariant ScriptsInPath::displayData(const ScriptManager::Script &script, int col
     }
 }
 
-} // namespace Gui
+} // namespace Core

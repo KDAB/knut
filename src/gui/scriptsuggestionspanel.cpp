@@ -1,8 +1,9 @@
 #include "scriptsuggestionspanel.h"
 
 #include "guisettings.h"
-#include "scriptsinpath.h"
 #include "scriptsuggestions.h"
+
+#include "core/scriptmodel.h"
 
 #include <QHBoxLayout>
 #include <QHeaderView>
@@ -49,8 +50,8 @@ void ScriptSuggestionsPanel::setModel(QAbstractItemModel *model)
     Q_ASSERT(qobject_cast<ScriptSuggestions *>(model));
 
     QTreeView::setModel(model);
-    header()->setSectionResizeMode(ScriptsInPath::NameColumn, QHeaderView::ResizeToContents);
-    header()->setSectionResizeMode(ScriptsInPath::DescriptionColumn, QHeaderView::Stretch);
+    header()->setSectionResizeMode(Core::ScriptModel::NameColumn, QHeaderView::ResizeToContents);
+    header()->setSectionResizeMode(Core::ScriptModel::DescriptionColumn, QHeaderView::Stretch);
     connect(selectionModel(), &QItemSelectionModel::selectionChanged, this, &ScriptSuggestionsPanel::updateRunButton);
 
     updateRunButton();
