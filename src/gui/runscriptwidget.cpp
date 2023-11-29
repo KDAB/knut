@@ -1,5 +1,5 @@
-#include "runscriptdialog.h"
-#include "ui_runscriptdialog.h"
+#include "runscriptwidget.h"
+#include "ui_runscriptwidget.h"
 
 #include "core/scriptmanager.h"
 
@@ -12,19 +12,23 @@
 
 namespace Gui {
 
-RunScriptDialog::RunScriptDialog(QWidget *parent)
-    : QDialog(parent)
-    , ui(new Ui::RunScriptDialog)
+RunScriptWidget::RunScriptWidget(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::RunScriptWidget)
 {
     ui->setupUi(this);
     setWindowTitle(QApplication::applicationName() + ' ' + QApplication::applicationVersion() + " - " + windowTitle());
 
-    connect(ui->toolButton, &QToolButton::clicked, this, &RunScriptDialog::chooseScript);
-    auto okButton = ui->buttonBox->button(QDialogButtonBox::Ok);
-    okButton->setEnabled(false);
-    connect(ui->lineEdit, &QLineEdit::textChanged, this, [okButton](const QString &str) {
-        okButton->setEnabled(!str.trimmed().isEmpty());
+    setProperty("panelWidget", true);
+    setFocusProxy(ui->lineEdit);
+
+    connect(ui->openButton, &QToolButton::clicked, this, &RunScriptWidget::chooseScript);
+    ui->runButton->setEnabled(false);
+    connect(ui->lineEdit, &QLineEdit::textChanged, this, [this](const QString &str) {
+        ui->runButton->setEnabled(!str.trimmed().isEmpty());
     });
+    connect(ui->runButton, &QToolButton::clicked, this, &RunScriptWidget::run);
+    connect(ui->closeButton, &QToolButton::clicked, this, &RunScriptWidget::close);
 
     const auto &list = Core::ScriptManager::instance()->scriptList();
     QStringList scriptNames;
@@ -35,9 +39,9 @@ RunScriptDialog::RunScriptDialog(QWidget *parent)
     ui->lineEdit->setCompleter(completer);
 }
 
-RunScriptDialog::~RunScriptDialog() = default;
+RunScriptWidget::~RunScriptWidget() = default;
 
-void RunScriptDialog::accept()
+void RunScriptWidget::run()
 {
     if (ui->lineEdit->text().isEmpty())
         return;
@@ -55,10 +59,15 @@ void RunScriptDialog::accept()
     }
 
     Core::ScriptManager::instance()->runScript(scriptName);
-    QDialog::accept();
 }
 
-void RunScriptDialog::chooseScript()
+void RunScriptWidget::open()
+{
+    show();
+    ui->lineEdit->setFocus();
+}
+
+void RunScriptWidget::chooseScript()
 {
     const QString fileName =
         QFileDialog::getOpenFileName(this, QString(), ui->lineEdit->text(), tr("Scripts (*.js *.qml)"));

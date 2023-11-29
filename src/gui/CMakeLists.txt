@@ -50,9 +50,9 @@ set(PROJECT_SOURCES
     rctouidialog.h
     rctouidialog.cpp
     rctouidialog.ui
-    runscriptdialog.h
-    runscriptdialog.cpp
-    runscriptdialog.ui
+    runscriptwidget.h
+    runscriptwidget.cpp
+    runscriptwidget.ui
     scriptpanel.h
     scriptpanel.cpp
     scriptsinpath.h

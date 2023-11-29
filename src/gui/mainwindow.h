@@ -47,9 +47,6 @@ private:
     void openOptions();
     void returnToEditor();
 
-    // Script
-    void runScript();
-
     // Edit
     void selectAll();
     void toggleMark();

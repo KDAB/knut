@@ -38,6 +38,9 @@
      </widget>
     </item>
     <item>
+     <widget class="Gui::RunScriptWidget" name="runScriptWidget" native="true"/>
+    </item>
+    <item>
      <widget class="Gui::FindWidget" name="findWidget" native="true"/>
     </item>
     <item>
@@ -486,6 +489,12 @@
    <class>Gui::APIExecutorWidget</class>
    <extends>QWidget</extends>
    <header>apiexecutorwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Gui::RunScriptWidget</class>
+   <extends>QWidget</extends>
+   <header>runscriptwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
