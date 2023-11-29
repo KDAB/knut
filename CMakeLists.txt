@@ -24,6 +24,7 @@ include(InstallDependency)
 include(CheckSubmodule)
 
 option(USE_ASAN "use Address Sanitizer" OFF)
+option(KNUT_USE_STD_FORMAT "Use std format library for speed log library" ON)
 
 if(USE_ASAN)
   # /MD will be used implicitly
