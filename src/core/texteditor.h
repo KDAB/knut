@@ -19,11 +19,13 @@ protected:
 private:
     void updateGutterWidth(int);
     void updateGutter(const QRect &rect, int dy);
+    void updateCurrentLine();
 
 private:
     friend class Gutter;
 
     Gutter *m_gutter;
+    int m_currentLine = -1;
 };
 
 }

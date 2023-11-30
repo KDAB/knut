@@ -33,6 +33,7 @@ TextEditor::TextEditor(QWidget *parent)
 {
     connect(this, &TextEditor::blockCountChanged, this, &TextEditor::updateGutterWidth);
     connect(this, &TextEditor::updateRequest, this, &TextEditor::updateGutter);
+    connect(this, &TextEditor::cursorPositionChanged, this, &TextEditor::updateCurrentLine);
 
     updateGutterWidth(0);
 }
@@ -52,6 +53,22 @@ void TextEditor::updateGutter(const QRect &rect, int dy)
     if (rect.contains(viewport()->rect())) {
         updateGutterWidth(0);
     }
+}
+
+void TextEditor::updateCurrentLine()
+{
+    if (m_currentLine == textCursor().blockNumber())
+        return;
+    m_currentLine = textCursor().blockNumber();
+
+    QList<QTextEdit::ExtraSelection> extraSelections;
+    QTextEdit::ExtraSelection selection;
+    selection.format.setBackground(palette().alternateBase());
+    selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+    selection.cursor = textCursor();
+    selection.cursor.clearSelection();
+    extraSelections.append(selection);
+    setExtraSelections(extraSelections);
 }
 
 void TextEditor::resizeEvent(QResizeEvent *e)
