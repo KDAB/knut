@@ -72,6 +72,7 @@ Inherited properties: [Document properties](../script/document.md#properties)
 ||**[insertAtLine](#insertAtLine)**(string text, int line = -1)|
 ||**[insertAtPosition](#insertAtPosition)**(string text, int pos)|
 ||**[lineAtPosition](#lineAtPosition)**(int position)|
+|bool |**[match](#match)**(string regexp, int options = TextDocument.NoFindFlags)|
 ||**[paste](#paste)**()|
 ||**[positionAt](#positionAt)**(int line, int col)|
 ||**[redo](#redo)**(int count)|
@@ -347,6 +348,16 @@ Inserts the string `text` at `pos`.
 #### <a name="lineAtPosition"></a>**lineAtPosition**(int position)
 
 Returns the line number for the given text cursor `position`. Or -1 if position is invalid
+
+#### <a name="match"></a>bool **match**(string regexp, int options = TextDocument.NoFindFlags)
+
+Searches the string `regexp` in the editor using a regular expression. Options could be a combination of:
+
+- `TextDocument.FindBackward`: search backward
+- `TextDocument.FindCaseSensitively`: match case
+- `TextDocument.FindWholeWords`: match only complete words
+
+Selects the match and returns the named group if a match is found.
 
 #### <a name="paste"></a>**paste**()
 

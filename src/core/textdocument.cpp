@@ -19,6 +19,68 @@
 
 #include <spdlog/spdlog.h>
 
+namespace {
+
+// this is a port from QTextDocument::findInBlock
+// instead of returning the cursor we return the name of the regex group that was found
+static QString matchInBlock(const QTextBlock &block, const QRegularExpression &expr, int offset,
+                            QTextDocument::FindFlags options, QTextCursor *cursor)
+{
+    QString text = block.text();
+    text.replace(QChar::Nbsp, u' ');
+    QRegularExpressionMatch match;
+    int idx = -1;
+
+    while (offset >= 0 && offset <= text.size()) {
+        idx = (options & QTextDocument::FindBackward) ? text.lastIndexOf(expr, offset, &match)
+                                                      : text.indexOf(expr, offset, &match);
+        if (idx == -1)
+            return {};
+
+        if (options & QTextDocument::FindWholeWords) {
+            const int start = idx;
+            const int end = start + match.capturedLength();
+            if ((start != 0 && text.at(start - 1).isLetterOrNumber())
+                || (end != text.size() && text.at(end).isLetterOrNumber())) {
+                // if this is not a whole word, continue the search in the string
+                offset = (options & QTextDocument::FindBackward) ? idx - 1 : end + 1;
+                idx = -1;
+                continue;
+            }
+        }
+        // we have a hit, return the cursor for that.
+        *cursor = QTextCursor(const_cast<QTextDocument *>(block.document()));
+        cursor->setPosition(block.position() + idx + match.capturedLength(), QTextCursor::KeepAnchor);
+
+        for (auto name : expr.namedCaptureGroups()) {
+            if (match.hasCaptured(name))
+                return name;
+        }
+        return {};
+    }
+    return {};
+}
+
+void setCursorPosition(QPlainTextEdit *editor, int pos)
+{
+    auto cursor = editor->textCursor();
+    cursor.setPosition(pos);
+    editor->setTextCursor(cursor);
+}
+
+QTextDocument::FindFlags parseOptions(int options)
+{
+    auto result = QTextDocument::FindFlags(0);
+    if (options & Core::TextDocument::FindBackward)
+        result |= QTextDocument::FindBackward;
+    if (options & Core::TextDocument::FindCaseSensitively)
+        result |= QTextDocument::FindCaseSensitively;
+    if (options & Core::TextDocument::FindWholeWords)
+        result |= QTextDocument::FindWholeWords;
+    return result;
+}
+}
+
 namespace Core {
 
 /*!
@@ -1245,24 +1307,8 @@ bool TextDocument::findRegexp2(const QString &regexp, int options)
 {
     LOG("TextDocument::findRegexp2", regexp, options);
 
-    auto flags = [&]() {
-        auto result = QTextDocument::FindFlags(0);
-        if (options & TextDocument::FindBackward)
-            result |= QTextDocument::FindBackward;
-        if (options & TextDocument::FindCaseSensitively)
-            result |= QTextDocument::FindCaseSensitively;
-        if (options & TextDocument::FindWholeWords)
-            result |= QTextDocument::FindWholeWords;
-        return result;
-    }();
-
-    auto setCursorPosition = [&](int pos) {
-        auto cursor = m_document->textCursor();
-        cursor.setPosition(pos);
-        m_document->setTextCursor(cursor);
-    };
-
     auto doc = m_document->document();
+    const auto flags = parseOptions(options);
     QTextCursor cursor = doc->find(QRegularExpression(regexp), position(), flags);
     if (cursor.isNull()) {
         return false;
@@ -1279,11 +1325,69 @@ bool TextDocument::findRegexp2(const QString &regexp, int options)
             --pos;
             cursor = doc->find(QRegularExpression(regexp), pos, flags & ~QTextDocument::FindBackward);
         } while (!cursor.isNull() && cursor.position() == endPoint && cursor.anchor() == pos);
-        setCursorPosition(pos + 1);
+        setCursorPosition(m_document, pos + 1);
     } else {
-        setCursorPosition(cursor.position());
+        setCursorPosition(m_document, cursor.position());
     }
     return true;
+}
+
+/*!
+ * \qmlmethod bool TextDocument::match(string regexp, int options = TextDocument.NoFindFlags)
+ * Searches the string `regexp` in the editor using a regular expression. Options could be a combination of:
+ *
+ * - `TextDocument.FindBackward`: search backward
+ * - `TextDocument.FindCaseSensitively`: match case
+ * - `TextDocument.FindWholeWords`: match only complete words
+ *
+ * Selects the match and returns the named group if a match is found.
+ */
+QString TextDocument::match(const QString &regexp, int options)
+{
+    int pos = m_document->textCursor().position();
+    // the cursor is positioned between characters, so for a backward search
+    // do not include the character given in the position.
+    if (options & FindBackward) {
+        --pos;
+        if (pos < 0)
+            return {};
+    }
+
+    setCursorPosition(m_document.get(), pos);
+    QTextCursor cursor;
+    QTextBlock block = m_document->textCursor().block();
+    const auto flags = parseOptions(options);
+    int blockOffset = pos - block.position();
+
+    QRegularExpression expression(regexp);
+    if (!(options & QTextDocument::FindCaseSensitively))
+        expression.setPatternOptions(expression.patternOptions() | QRegularExpression::CaseInsensitiveOption);
+    else
+        expression.setPatternOptions(expression.patternOptions() & ~QRegularExpression::CaseInsensitiveOption);
+
+    if (!(options & FindBackward)) {
+        while (block.isValid()) {
+            const auto found = matchInBlock(block, expression, blockOffset, flags, &cursor);
+            if (!found.isEmpty()) {
+                setCursorPosition(m_document, cursor.position());
+                return found;
+            }
+            block = block.next();
+            blockOffset = 0;
+        }
+    } else {
+        while (block.isValid()) {
+            const auto found = matchInBlock(block, expression, blockOffset, flags, &cursor);
+            if (!found.isEmpty()) {
+                setCursorPosition(m_document, cursor.position());
+                return found;
+            }
+            block = block.previous();
+            blockOffset = block.length() - 1;
+        }
+    }
+
+    return {};
 }
 
 /*!
