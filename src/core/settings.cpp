@@ -54,9 +54,15 @@ static constexpr char SettingsName[] = "knut.json";
  * - array<string>
  */
 
-Settings::Settings(QObject *parent)
+/*
+ * \qmlproperty bool Settings::isTesting
+ * Returns true if Knut is currently in a test, and false otherwise
+ */
+
+Settings::Settings(bool isTesting, QObject *parent)
     : QObject(parent)
     , m_saveTimer(new QTimer(this))
+    , m_isTesting(isTesting)
 {
     Q_ASSERT(m_instance == nullptr);
     m_instance = this;
@@ -221,6 +227,11 @@ QString Settings::userFilePath() const
 QString Settings::projectFilePath() const
 {
     return m_projectPath + '/' + SettingsName;
+}
+
+bool Settings::isTesting() const
+{
+    return m_isTesting;
 }
 
 void Settings::loadKnutSettings()

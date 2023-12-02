@@ -10,6 +10,12 @@ import Script 1.0
 <tr><td>Since:</td><td>Knut 1.0</td></tr>
 </table>
 
+## Properties
+
+| | Name |
+|-|-|
+|bool|**[isTesting](#isTesting)**|
+
 ## Methods
 
 | | Name |
@@ -27,6 +33,12 @@ The settings are stored in a json file, and could be:
 - double
 - string
 - array<string>
+
+## Property Documentation
+
+#### <a name="isTesting"></a>bool **isTesting**
+
+Returns true if Knut is currently in a test, and false otherwise
 
 ## Method Documentation
 

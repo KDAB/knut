@@ -27,6 +27,7 @@ namespace Core {
 class Settings : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(bool isTesting READ isTesting CONSTANT)
 
 public:
     static inline constexpr char MimeTypes[] = "/mime_types";
@@ -92,6 +93,8 @@ public:
     QString userFilePath() const;
     QString projectFilePath() const;
 
+    bool isTesting() const;
+
 public slots:
     bool setValue(QString path, const QVariant &value);
 
@@ -101,7 +104,7 @@ signals:
     void settingsSaved();
 
 protected:
-    Settings(QObject *parent = nullptr);
+    Settings(bool isTesting = true, QObject *parent = nullptr);
 
 private:
     friend class KnutCore;
@@ -111,7 +114,6 @@ private:
     void saveSettings();
     bool isUser() const;
 
-private:
     inline static Settings *m_instance = nullptr;
 
     nlohmann::json m_settings;
@@ -119,6 +121,7 @@ private:
     nlohmann::json m_projectSettings;
     QString m_projectPath;
     QTimer *m_saveTimer = nullptr;
+    bool m_isTesting = true;
 };
 
 } // namespace Core

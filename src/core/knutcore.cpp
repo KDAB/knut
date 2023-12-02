@@ -14,6 +14,11 @@
 namespace Core {
 
 KnutCore::KnutCore(QObject *parent)
+    : KnutCore(true, parent)
+{
+}
+
+KnutCore::KnutCore(bool isTesting, QObject *parent)
     : QObject(parent)
 {
 #ifdef QT_DEBUG
@@ -23,7 +28,7 @@ KnutCore::KnutCore(QObject *parent)
     spdlog::cfg::load_env_levels();
 
     // Initialize some singletons
-    auto settings = new Settings(this);
+    auto settings = new Settings(isTesting, this);
     settings->loadUserSettings();
 
     new Project(this);

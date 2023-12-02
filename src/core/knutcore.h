@@ -18,6 +18,8 @@ public:
     void process(const QStringList &arguments);
 
 protected:
+    explicit KnutCore(bool isTesting, QObject *parent = nullptr);
+
     virtual void initParser(QCommandLineParser &parser) const;
     virtual void doParse(const QCommandLineParser &parser) const;
 };
