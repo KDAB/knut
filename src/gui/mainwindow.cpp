@@ -72,7 +72,6 @@ MainWindow::MainWindow(QWidget *parent)
     , m_scriptSuggestionsPanel(new ScriptSuggestionsPanel(this))
     , m_documentPalette(new DocumentPalette(this))
     , m_shortcutManager(new ShortcutManager(this))
-    , m_treeSitterInspector(new TreeSitterInspector(this))
     , m_scriptSuggestions(new ScriptSuggestions(this))
 {
     // Initialize the settings before anything
@@ -312,6 +311,11 @@ void MainWindow::toggleSection()
 
 void MainWindow::inspectTreeSitter()
 {
+    // Lazy-initialize the treesitter inspector.
+    // Otherwise, even if it's never opened, it will do relatively expensive updates whenever the user types anything.
+    if (!m_treeSitterInspector) {
+        m_treeSitterInspector = new TreeSitterInspector(this);
+    }
     m_treeSitterInspector->show();
 }
 

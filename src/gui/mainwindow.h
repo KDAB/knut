@@ -99,7 +99,7 @@ private:
     ScriptSuggestionsPanel *const m_scriptSuggestionsPanel = nullptr;
     DocumentPalette *const m_documentPalette = nullptr;
     ShortcutManager *const m_shortcutManager = nullptr;
-    TreeSitterInspector *const m_treeSitterInspector = nullptr;
+    TreeSitterInspector *m_treeSitterInspector = nullptr;
     ScriptSuggestions *const m_scriptSuggestions = nullptr;
 };
 
