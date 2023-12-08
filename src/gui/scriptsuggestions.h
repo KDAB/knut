@@ -1,7 +1,8 @@
 #pragma once
 
+#include "KDSignalThrottler.h"
 #include "core/querymatch.h"
-#include "core/scriptmanager.h"
+#include "treesitter/query.h"
 
 #include <QPointer>
 #include <QSortFilterProxyModel>
@@ -36,6 +37,11 @@ private:
     std::optional<Core::QueryMatch> contextQuery(const treesitter::QueryList &queries) const;
 
     QPointer<Core::LspDocument> m_document;
+    // Debounce editing changes, as they can be quite frequent (e.g. on every keystroke, or when running a script)
+    // and it's not really important if updating them is a few milliseconds late.
+    // Also, when typing, both the text and the position changed, which caused the filter to be invalidated and
+    // recalculated twice.
+    KDToolBox::KDSignalDebouncer *m_debouncer;
 };
 
 } // namespace Gui

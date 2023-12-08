@@ -13,6 +13,7 @@ namespace Gui {
 
 ScriptSuggestions::ScriptSuggestions(QObject *parent)
     : QSortFilterProxyModel(parent)
+    , m_debouncer(new KDToolBox::KDSignalDebouncer(this))
 {
     setSourceModel(Core::ScriptManager::model());
 
@@ -21,6 +22,9 @@ ScriptSuggestions::ScriptSuggestions(QObject *parent)
 
     auto *project = Core::Project::instance();
     connect(project, &Core::Project::currentDocumentChanged, this, &ScriptSuggestions::setCurrentDocument);
+
+    m_debouncer->setTimeout(200 /*ms*/);
+    connect(m_debouncer, &KDToolBox::KDSignalDebouncer::triggered, this, &ScriptSuggestions::invalidate);
 }
 
 ScriptSuggestions::~ScriptSuggestions() = default;
@@ -47,14 +51,14 @@ void ScriptSuggestions::setCurrentDocument(Core::Document *document)
         return;
 
     if (m_document) {
-        m_document->disconnect(this);
+        m_document->disconnect(m_debouncer);
     }
 
     m_document = qobject_cast<Core::LspDocument *>(document);
 
     if (m_document) {
-        connect(m_document, &Core::TextDocument::textChanged, this, &ScriptSuggestions::invalidate);
-        connect(m_document, &Core::TextDocument::positionChanged, this, &ScriptSuggestions::invalidate);
+        connect(m_document, &Core::TextDocument::textChanged, m_debouncer, &KDToolBox::KDSignalDebouncer::throttle);
+        connect(m_document, &Core::TextDocument::positionChanged, m_debouncer, &KDToolBox::KDSignalDebouncer::throttle);
     }
     invalidate();
 }
