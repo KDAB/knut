@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "querymatch.h"
+#include "treesitter/query.h"
 
 class QFileSystemWatcher;
 class QAbstractItemModel;
@@ -33,7 +34,11 @@ public:
         QString name;
         QString fileName;
         QString description;
-        QStringList contextQueries;
+        // The context queries for this script.
+        // These are directly converted to Query instances from Strings in the ScriptManager.
+        // Profiling has revealed that creating Queries is actually quite expensive, so we
+        // do it once here and then reuse the same query every time.
+        treesitter::QueryList contextQueries;
     };
     using ScriptList = std::vector<Script>;
 

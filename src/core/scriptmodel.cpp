@@ -101,7 +101,7 @@ QVariant ScriptModel::data(const QModelIndex &index, int role) const
     case PathRole:
         return script.fileName;
     case ContextQueriesRole:
-        return script.contextQueries;
+        return QVariant::fromValue(script.contextQueries);
     default:
         return QVariant {};
     }

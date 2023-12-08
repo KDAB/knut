@@ -16,6 +16,8 @@
 #include <kdalgorithms.h>
 #include <spdlog/spdlog.h>
 
+#include "treesitter/languages.h"
+
 namespace Core {
 
 ScriptManager::ScriptManager(QObject *parent)
@@ -105,16 +107,16 @@ void ScriptManager::runScriptInContext(const QString &fileName, const QueryMatch
         doRunScript(fileName, logEndScript, context);
 }
 
-static QStringList readContextQueries(const QString &fileName, QTextStream &stream)
+static treesitter::QueryList readContextQueries(const QString &fileName, QTextStream &stream)
 {
     QString line;
-    QStringList contextQueries;
+    QStringList contextQueryStrings;
     QString contextQuery;
     bool inContextQuery = false;
 
     auto finishContextQuery = [&]() {
         if (!contextQuery.isEmpty()) {
-            contextQueries.push_back(contextQuery.simplified());
+            contextQueryStrings.push_back(contextQuery.simplified());
             contextQuery.clear();
         } else {
             spdlog::warn("Encountered empty context query in {}", fileName.toStdString());
@@ -144,6 +146,19 @@ static QStringList readContextQueries(const QString &fileName, QTextStream &stre
                      fileName.toStdString());
         finishContextQuery();
     }
+
+    auto constructQuery = [&fileName](const QString &query) -> std::shared_ptr<treesitter::Query> {
+        try {
+            return std::make_shared<treesitter::Query>(tree_sitter_cpp(), query);
+        } catch (treesitter::Query::Error &error) {
+            spdlog::error("ScriptManager - failed to parse CONTEXT QUERY in {} - query: `{}` error: {}",
+                          fileName.toStdString(), query.toStdString(), error.description.toStdString());
+            return {};
+        }
+    };
+
+    auto contextQueries = kdalgorithms::filtered(kdalgorithms::transformed(contextQueryStrings, constructQuery),
+                                                 &std::shared_ptr<treesitter::Query>::operator bool);
 
     return contextQueries;
 }

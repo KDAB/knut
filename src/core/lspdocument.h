@@ -43,6 +43,13 @@ public:
     Q_INVOKABLE QVector<Core::QueryMatch> query(const QString &query);
     Q_INVOKABLE QVector<Core::QueryMatch> queryInRange(const Core::RangeMark &range, const QString &query);
 
+    // This overload exists for improved performance. It's not user-facing API.
+    //
+    // It turns out that constructing Query instances is relatively expensive.
+    // Therefore it's better to construct them once and reuse them.
+    // So allow this for outside users.
+    QVector<Core::QueryMatch> query(const std::shared_ptr<treesitter::Query> &query);
+
     bool hasLspClient() const;
 
     Symbol *currentSymbol(const std::function<bool(const Symbol &)> &filterFunc) const;

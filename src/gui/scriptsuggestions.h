@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/querymatch.h"
+#include "core/scriptmanager.h"
 
 #include <QPointer>
 #include <QSortFilterProxyModel>
@@ -32,7 +33,7 @@ private:
     void invalidate();
     void setCurrentDocument(Core::Document *document);
 
-    std::optional<Core::QueryMatch> contextQuery(const QStringList &queries) const;
+    std::optional<Core::QueryMatch> contextQuery(const treesitter::QueryList &queries) const;
 
     QPointer<Core::LspDocument> m_document;
 };

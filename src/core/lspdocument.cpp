@@ -525,6 +525,22 @@ TextRange LspDocument::toRange(const Lsp::Range &range) const
     return {toPos(range.start), toPos(range.end)};
 }
 
+QVector<Core::QueryMatch> LspDocument::query(const std::shared_ptr<treesitter::Query> &query)
+{
+    const auto &tree = m_treeSitterHelper->syntaxTree();
+    if (!tree || !query) {
+        return {};
+    }
+
+    treesitter::QueryCursor cursor;
+    cursor.execute(query, tree->rootNode(), std::make_unique<treesitter::Predicates>(text()));
+    auto matches = cursor.allRemainingMatches();
+
+    return kdalgorithms::transformed<QVector<QueryMatch>>(matches, [this](const treesitter::QueryMatch &match) {
+        return QueryMatch(*this, match);
+    });
+}
+
 /*!
  * \qmlmethod array<QueryMatch> LspDocument::query(string query)
  * \since 1.1
@@ -539,20 +555,7 @@ QVector<QueryMatch> LspDocument::query(const QString &query)
 {
     LOG("LspDocument::query", LOG_ARG("query", query));
 
-    const auto &tree = m_treeSitterHelper->syntaxTree();
-    auto tsQuery = m_treeSitterHelper->constructQuery(query);
-
-    if (!tree || !tsQuery) {
-        return {};
-    }
-
-    treesitter::QueryCursor cursor;
-    cursor.execute(tsQuery, tree->rootNode(), std::make_unique<treesitter::Predicates>(text()));
-    auto matches = cursor.allRemainingMatches();
-
-    return kdalgorithms::transformed<QVector<QueryMatch>>(matches, [this](const treesitter::QueryMatch &match) {
-        return QueryMatch(*this, match);
-    });
+    return this->query(m_treeSitterHelper->constructQuery(query));
 }
 
 /**

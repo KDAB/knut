@@ -308,7 +308,12 @@ void Predicates::findMessageMap() const
         return;
     }
 
-    auto query = std::make_shared<Query>(tree_sitter_cpp() /*in_message_map only makes sense in C++*/, R"EOF(
+    // This variable is "static" because Query construction is actually a non-trivial task.
+    // We don't want to construct the query every time we call this function, as it's always the same query anyway.
+    //
+    // This has caused performance problems in the past, when combined with the ScriptSuggestions model, which queries
+    // after every keystroke.
+    static auto query = std::make_shared<Query>(tree_sitter_cpp() /*in_message_map only makes sense in C++*/, R"EOF(
 (
 (expression_statement
     (call_expression

@@ -34,7 +34,8 @@ bool ScriptSuggestions::filterAcceptsRow(int sourceRow, const QModelIndex &sourc
         return false;
 
     const auto index = sourceModel()->index(sourceRow, Core::ScriptModel::NameColumn, sourceParent);
-    const auto queries = sourceModel()->data(index, Core::ScriptModel::ContextQueriesRole).toStringList();
+    const auto queriesVariant = sourceModel()->data(index, Core::ScriptModel::ContextQueriesRole);
+    const auto queries = queriesVariant.value<treesitter::QueryList>();
 
     Core::LoggerDisabler loggerDisabler(true);
     return contextQuery(queries).has_value();
@@ -60,7 +61,8 @@ void ScriptSuggestions::setCurrentDocument(Core::Document *document)
 
 void ScriptSuggestions::run(const QModelIndex &index)
 {
-    const auto queries = data(index, Core::ScriptModel::ContextQueriesRole).toStringList();
+    const auto queriesVariant = data(index, Core::ScriptModel::ContextQueriesRole);
+    const auto queries = queriesVariant.value<treesitter::QueryList>();
     const auto fileName = data(index, Core::ScriptModel::PathRole).toString();
 
     if (fileName.isEmpty()) {
@@ -71,6 +73,8 @@ void ScriptSuggestions::run(const QModelIndex &index)
     const auto match = contextQuery(queries);
     if (match) {
         ScriptManager::instance()->runScriptInContext(fileName, *match);
+    } else {
+        spdlog::warn("ScriptSuggestions::run - couldn't find the context for this script!");
     }
 }
 
@@ -80,7 +84,7 @@ void ScriptSuggestions::invalidate()
     emit suggestionsUpdated(m_document);
 }
 
-std::optional<Core::QueryMatch> ScriptSuggestions::contextQuery(const QStringList &queries) const
+std::optional<Core::QueryMatch> ScriptSuggestions::contextQuery(const treesitter::QueryList &queries) const
 {
     if (!m_document)
         return {};

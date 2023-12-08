@@ -144,4 +144,6 @@ private:
     TSQueryCursor *m_cursor;
 };
 
+using QueryList = QVector<std::shared_ptr<Query>>;
+
 }
