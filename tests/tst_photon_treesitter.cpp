@@ -20,6 +20,8 @@ private slots:
         QTest::addColumn<QString>("source");
 
         QTest::addRow("PgColors") << "PgColors.cpp";
+        QTest::addRow("PtSetResources") << "PtSetResources.cpp";
+        QTest::addRow("PtSetResources2") << "PtSetResources2.cpp";
     }
 
     void conversion()
