@@ -97,6 +97,7 @@ enable_testing()
 # Knut (finally)
 # ##############################################################################
 add_subdirectory(src)
+add_subdirectory(scripts)
 add_subdirectory(tools)
 add_subdirectory(tests)
 
