@@ -22,6 +22,7 @@ private slots:
         QTest::addRow("PgColors") << "PgColors.cpp";
         QTest::addRow("PtSetResources") << "PtSetResources.cpp";
         QTest::addRow("PtSetResources2") << "PtSetResources2.cpp";
+        QTest::addRow("PtSetResource") << "PtSetResource.cpp";
     }
 
     void conversion()
