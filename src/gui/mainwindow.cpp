@@ -708,8 +708,9 @@ static QWidget *widgetForDocument(Core::Document *document)
     return nullptr;
 }
 
-static void updateTabTitle(QTabWidget *tabWidget, int index, bool hasChanged)
+static void updateTabTitle(QTabWidget *tabWidget, QWidget *widget, bool hasChanged)
 {
+    const int index = tabWidget->indexOf(widget);
     QString text = tabWidget->tabText(index);
     if (hasChanged && !text.endsWith('*'))
         text += '*';
@@ -743,7 +744,6 @@ void MainWindow::changeCurrentDocument()
     // open the window if it's already opened
     if (windowIndex == -1) {
         auto document = project->currentDocument();
-        QDir dir(project->root());
         auto widget = widgetForDocument(document);
         if (auto textView = qobject_cast<TextView *>(widget))
             textView->setScriptSuggestions(m_scriptSuggestions);
@@ -757,10 +757,12 @@ void MainWindow::changeCurrentDocument()
         }
 
         widget->setWindowTitle(fileName);
-        windowIndex = ui->tabWidget->addTab(widget, dir.relativeFilePath(fileName));
+        const auto fi = QFileInfo {fileName};
+        windowIndex = ui->tabWidget->addTab(widget, fi.fileName());
+        ui->tabWidget->setTabToolTip(windowIndex, fileName);
 
-        connect(document, &Core::Document::hasChangedChanged, this, [this, windowIndex, document]() {
-            updateTabTitle(ui->tabWidget, windowIndex, document->hasChanged());
+        connect(document, &Core::Document::hasChangedChanged, this, [this, widget, document]() {
+            updateTabTitle(ui->tabWidget, widget, document->hasChanged());
         });
     }
     ui->tabWidget->setCurrentIndex(windowIndex);
