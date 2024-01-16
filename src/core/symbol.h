@@ -97,6 +97,8 @@ public:
     friend class LspDocument;
 };
 
+using SymbolList = QList<Core::Symbol *>;
+
 } // namespace Core
 
 Q_DECLARE_METATYPE(Core::Symbol)

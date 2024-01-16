@@ -58,5 +58,7 @@ private:
     friend TextDocument;
 };
 
+using RangeMarkList = QList<Core::RangeMark>;
+
 } // namespace Core
 Q_DECLARE_METATYPE(Core::RangeMark)

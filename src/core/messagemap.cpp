@@ -133,7 +133,7 @@ MessageMapEntry MessageMap::get(const QString &name) const
  *
  * Gets all entries with the given `name`.
  */
-QVector<MessageMapEntry> MessageMap::getAll(const QString &name) const
+Core::MessageMapEntryList MessageMap::getAll(const QString &name) const
 {
     return kdalgorithms::filtered(entries, [&name](const auto &entry) {
         return entry.name == name;

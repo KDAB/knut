@@ -316,7 +316,7 @@ Core::QueryMatch CppDocument::queryClassDefinition(const QString &className)
  *
  * Please note that the return type is not available, as TreeSitter is not able to parse it easily.
  */
-QVector<QueryMatch> CppDocument::queryMethodDefinition(const QString &scope, const QString &functionName)
+Core::QueryMatchList CppDocument::queryMethodDefinition(const QString &scope, const QString &functionName)
 {
     LOG("CppDocument::queryMethodDefinition", LOG_ARG("scope", scope), LOG_ARG("functionName", functionName));
 
@@ -392,7 +392,7 @@ QVector<QueryMatch> CppDocument::internalQueryFunctionCall(const QString& functi
  * - `argument-list` - The entire list of arguments, including the surroundg parentheses `()`
  * - a capture for every argument in `argumentCaptures`
  */
-QVector<QueryMatch> CppDocument::queryFunctionCall(const QString &functionName, const QVector<QString> &argumentCaptures)
+Core::QueryMatchList CppDocument::queryFunctionCall(const QString &functionName, const QStringList &argumentCaptures)
 {
     LOG("queryFunctionCall", LOG_ARG("functionName", functionName), LOG_ARG("argumentCaptures", argumentCaptures));
 
@@ -427,7 +427,7 @@ QVector<QueryMatch> CppDocument::queryFunctionCall(const QString &functionName, 
  * - `name` - The name of the function (the text will be equal to functionName)
  * - `argument-list` - The entire list of arguments, including the surroundg parentheses `()`
  */
-QVector<QueryMatch> CppDocument::queryFunctionCall(const QString& functionName)
+Core::QueryMatchList CppDocument::queryFunctionCall(const QString& functionName)
 {
     LOG("queryFunctionCall", LOG_ARG("functionName", functionName));
     return internalQueryFunctionCall(functionName, "");
@@ -684,7 +684,7 @@ MessageMap CppDocument::mfcExtractMessageMap(const QString &className /* = ""*/)
  * - `function`: The function declaration, without the return type
  * - `name`: The name of the function
  */
-QVector<Core::QueryMatch> CppDocument::queryMethodDeclaration(const QString &className, const QString &functionName)
+Core::QueryMatchList CppDocument::queryMethodDeclaration(const QString &className, const QString &functionName)
 {
     LOG("CppDocument::queryMethodDeclaration", LOG_ARG("className", className), LOG_ARG("functionName", functionName));
 

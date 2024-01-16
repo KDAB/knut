@@ -55,8 +55,8 @@ public:
     QVector<RcCore::Asset> assets() const;
     QVector<RcCore::Action> actions() const;
     Q_INVOKABLE RcCore::Action action(const QString &id) const;
-    Q_INVOKABLE QVector<RcCore::Action> actionsFromMenu(const QString &menuId) const;
-    Q_INVOKABLE QVector<RcCore::Action> actionsFromToolbar(const QString &toolBarId) const;
+    Q_INVOKABLE RcCore::ActionList actionsFromMenu(const QString &menuId) const;
+    Q_INVOKABLE RcCore::ActionList actionsFromToolbar(const QString &toolBarId) const;
 
     QVector<RcCore::ToolBar> toolBars() const;
     Q_INVOKABLE RcCore::ToolBar toolBar(const QString &id) const;

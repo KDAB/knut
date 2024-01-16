@@ -105,9 +105,9 @@ bool QueryMatch::isEmpty() const
  * \qmlmethod vector<RangeMark> QueryMatch::getAll(string name)
  * Returns all ranges that are covered by the captures of the given `name`
  */
-QVector<RangeMark> QueryMatch::getAll(const QString &name) const
+Core::RangeMarkList QueryMatch::getAll(const QString &name) const
 {
-    QVector<RangeMark> result;
+    Core::RangeMarkList result;
 
     for (const auto &capture : m_captures) {
         if (capture.name == name)
@@ -121,7 +121,7 @@ QVector<RangeMark> QueryMatch::getAll(const QString &name) const
  * \qmlmethod vector<RangeMark> QueryMatch::getAllInRange(string name, RangeMark range)
  * Returns all ranges that are covered by the captures of the given `name` in the given `range`.
  */
-Q_INVOKABLE QVector<Core::RangeMark> QueryMatch::getAllInRange(const QString &name, const Core::RangeMark &range) const
+Core::RangeMarkList QueryMatch::getAllInRange(const QString &name, const Core::RangeMark &range) const
 {
     auto captureMatch = [&name, &range](const QueryCapture &capture) {
         return capture.name == name && range.contains(capture.range);
@@ -162,7 +162,7 @@ RangeMark QueryMatch::get(const QString &name) const
  * \qmlmethod RangeMark QueryMatch::getInRange(string name, RangeMark range)
  * Returns the range covered by the first capture with the given `name` in the given `range`.
  */
-Q_INVOKABLE Core::RangeMark QueryMatch::getInRange(const QString &name, const Core::RangeMark &range) const
+Core::RangeMark QueryMatch::getInRange(const QString &name, const Core::RangeMark &range) const
 {
     auto captureMatch = [&name, &range](const QueryCapture &capture) {
         return capture.name == name && range.contains(capture.range);
@@ -209,9 +209,9 @@ RangeMark QueryMatch::getAllJoined(const QString &name) const
  * ```
  * \sa LspDocument::query
  */
-QVector<QueryMatch> QueryMatch::queryIn(const QString &capture, const QString &query) const
+Core::QueryMatchList QueryMatch::queryIn(const QString &capture, const QString &query) const
 {
-    QVector<QueryMatch> result;
+    Core::QueryMatchList result;
 
     auto ranges = getAll(capture);
     for (const auto &range : ranges) {

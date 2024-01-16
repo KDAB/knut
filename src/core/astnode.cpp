@@ -22,7 +22,7 @@ AstNode AstNode::parentNode() const
     return {};
 }
 
-QVector<AstNode> AstNode::childrenNodes() const
+Core::AstNodeList AstNode::childrenNodes() const
 {
     QVector<AstNode> children;
     if (auto n = node()) {

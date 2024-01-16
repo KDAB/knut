@@ -135,14 +135,14 @@ RcCore::Action RcDocument::action(const QString &id) const
  * \since 1.1
  * Returns all actions used in the menu `menuId`.
  */
-QVector<RcCore::Action> RcDocument::actionsFromMenu(const QString &menuId) const
+RcCore::ActionList RcDocument::actionsFromMenu(const QString &menuId) const
 {
     LOG("RcDocument::actionsFromMenu", menuId);
 
     if (!isDataValid())
         return {};
 
-    QVector<RcCore::Action> actions;
+    RcCore::ActionList actions;
     if (auto menu = data().menu(menuId)) {
         const auto actionIds = menu->actionIds();
         for (const auto &id : actionIds)
@@ -156,14 +156,14 @@ QVector<RcCore::Action> RcDocument::actionsFromMenu(const QString &menuId) const
  * \since 1.1
  * Returns all actions used in the toolbar `toolBarId`.
  */
-QVector<RcCore::Action> RcDocument::actionsFromToolbar(const QString &toolBarId) const
+RcCore::ActionList RcDocument::actionsFromToolbar(const QString &toolBarId) const
 {
     LOG("RcDocument::actionsFromMenu", toolBarId);
 
     if (!isDataValid())
         return {};
 
-    QVector<RcCore::Action> actions;
+    RcCore::ActionList actions;
     if (auto toolbar = data().toolBar(toolBarId)) {
         const auto actionIds = toolbar->actionIds();
         for (const auto &id : actionIds)

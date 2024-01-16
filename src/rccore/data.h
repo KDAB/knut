@@ -186,6 +186,8 @@ public:
     bool checked = false;
 };
 
+using ActionList = QList<RcCore::Action>;
+
 struct String
 {
     Q_GADGET

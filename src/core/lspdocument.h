@@ -35,13 +35,13 @@ public:
     void setLspClient(Lsp::Client *client);
 
     Q_INVOKABLE Core::Symbol *findSymbol(const QString &name, int options = NoFindFlags) const;
-    Q_INVOKABLE QVector<Core::Symbol *> symbols() const;
+    Q_INVOKABLE Core::SymbolList symbols() const;
     Q_INVOKABLE QString hover() const;
     Q_INVOKABLE const Core::Symbol *symbolUnderCursor() const;
-    Q_INVOKABLE QVector<Core::TextLocation> references(int position) const;
+    Q_INVOKABLE Core::TextLocationList references(int position) const;
 
-    Q_INVOKABLE QVector<Core::QueryMatch> query(const QString &query);
-    Q_INVOKABLE QVector<Core::QueryMatch> queryInRange(const Core::RangeMark &range, const QString &query);
+    Q_INVOKABLE Core::QueryMatchList query(const QString &query);
+    Q_INVOKABLE Core::QueryMatchList queryInRange(const Core::RangeMark &range, const QString &query);
 
     // This overload exists for improved performance. It's not user-facing API.
     //

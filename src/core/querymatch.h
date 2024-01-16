@@ -11,7 +11,6 @@ class QueryMatch;
 namespace Core {
 
 class TextDocument;
-class RangeMark;
 
 class QueryCapture
 {
@@ -45,8 +44,8 @@ public:
     // Access to captures
     Q_INVOKABLE Core::RangeMark get(const QString &name) const;
     Q_INVOKABLE Core::RangeMark getInRange(const QString &name, const Core::RangeMark &range) const;
-    Q_INVOKABLE QVector<Core::RangeMark> getAll(const QString &name) const;
-    Q_INVOKABLE QVector<Core::RangeMark> getAllInRange(const QString &name, const Core::RangeMark &range) const;
+    Q_INVOKABLE Core::RangeMarkList getAll(const QString &name) const;
+    Q_INVOKABLE Core::RangeMarkList getAllInRange(const QString &name, const Core::RangeMark &range) const;
     Q_INVOKABLE Core::RangeMark getAllJoined(const QString &name) const;
 
     // Sub-query in capture
@@ -61,13 +60,15 @@ public:
     // let [function] = document.query(...);
     // let matches = function.queryIn("body", ...);
     // ```
-    Q_INVOKABLE QVector<Core::QueryMatch> queryIn(const QString &capture, const QString &query) const;
+    Q_INVOKABLE QList<Core::QueryMatch> queryIn(const QString &capture, const QString &query) const;
 
     Q_INVOKABLE QString toString() const;
 
 private:
     QVector<QueryCapture> m_captures;
 };
+
+using QueryMatchList = QList<Core::QueryMatch>;
 
 } // namespace Core
 

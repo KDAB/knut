@@ -26,6 +26,8 @@ public:
     static QVector<TextLocation> fromLsp(const std::vector<Lsp::Location> &locations);
 };
 
+using TextLocationList = QList<Core::TextLocation>;
+
 } // namespace Core
 
 Q_DECLARE_METATYPE(Core::TextLocation)

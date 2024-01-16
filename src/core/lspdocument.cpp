@@ -125,7 +125,7 @@ void LspDocument::deleteSymbol(const Symbol &symbol)
  * Note that the returned `Symbol` pointers are only valid until the document they
  * originate from is deconstructed.
  */
-QVector<Core::Symbol *> LspDocument::symbols() const
+Core::SymbolList LspDocument::symbols() const
 {
     LOG("LspDocument::symbols");
     if (!checkClient())
@@ -265,7 +265,7 @@ std::pair<QString, std::optional<TextRange>> LspDocument::hoverWithRange(
  * \since 1.1
  * Returns the list of references at the given position.
  */
-QVector<Core::TextLocation> LspDocument::references(int position) const
+Core::TextLocationList LspDocument::references(int position) const
 {
     LOG("LspDocument::references");
 
@@ -277,7 +277,7 @@ QVector<Core::TextLocation> LspDocument::references(int position) const
     params.textDocument.uri = toUri();
     params.position = fromPos(position);
 
-    QVector<Core::TextLocation> textLocations;
+    Core::TextLocationList textLocations;
     if (auto result = client()->references(std::move(params))) {
         const auto &value = result.value();
         if (const auto *locations = std::get_if<std::vector<Lsp::Location>>(&value)) {
@@ -525,7 +525,7 @@ TextRange LspDocument::toRange(const Lsp::Range &range) const
     return {toPos(range.start), toPos(range.end)};
 }
 
-QVector<Core::QueryMatch> LspDocument::query(const std::shared_ptr<treesitter::Query> &query)
+Core::QueryMatchList LspDocument::query(const std::shared_ptr<treesitter::Query> &query)
 {
     const auto &tree = m_treeSitterHelper->syntaxTree();
     if (!tree || !query) {
@@ -536,7 +536,7 @@ QVector<Core::QueryMatch> LspDocument::query(const std::shared_ptr<treesitter::Q
     cursor.execute(query, tree->rootNode(), std::make_unique<treesitter::Predicates>(text()));
     auto matches = cursor.allRemainingMatches();
 
-    return kdalgorithms::transformed<QVector<QueryMatch>>(matches, [this](const treesitter::QueryMatch &match) {
+    return kdalgorithms::transformed<Core::QueryMatchList>(matches, [this](const treesitter::QueryMatch &match) {
         return QueryMatch(*this, match);
     });
 }
@@ -551,7 +551,7 @@ QVector<Core::QueryMatch> LspDocument::query(const std::shared_ptr<treesitter::Q
  *
  * Also see: [Tree-sitter in Knut](../../getting-started/treesitter.md)
  */
-QVector<QueryMatch> LspDocument::query(const QString &query)
+Core::QueryMatchList LspDocument::query(const QString &query)
 {
     LOG("LspDocument::query", LOG_ARG("query", query));
 
@@ -566,7 +566,7 @@ QVector<QueryMatch> LspDocument::query(const QString &query)
  *
  * \sa LspDocument::query
  */
-QVector<QueryMatch> LspDocument::queryInRange(const Core::RangeMark &range, const QString &query)
+Core::QueryMatchList LspDocument::queryInRange(const Core::RangeMark &range, const QString &query)
 {
     LOG("LspDocument::queryInRange", LOG_ARG("range", range), LOG_ARG("query", query));
 
@@ -588,7 +588,7 @@ QVector<QueryMatch> LspDocument::queryInRange(const Core::RangeMark &range, cons
         return {};
 
     treesitter::QueryCursor cursor;
-    QVector<QueryMatch> matches;
+    Core::QueryMatchList matches;
     for (const treesitter::Node &node : nodes) {
         cursor.execute(tsQuery, node, std::make_unique<treesitter::Predicates>(text()));
         matches.append(kdalgorithms::transformed<QVector<QueryMatch>>(cursor.allRemainingMatches(),
