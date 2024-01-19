@@ -26,10 +26,12 @@ void CTutorialDlg::DoDataExchange(CDataExchange* pDX)
 {
   CDialog::DoDataExchange(pDX);
   DDX_Text(pDX, IDC_ECHO_AREA, m_EchoText);
+  DDV_MaxChars(pDX, m_EchoText, 3); // added for testing DDV_ doesn't break extraction!
   DDX_Text(pDX, IDC_H_SLIDER_ECHO, m_HSliderEcho);
   DDX_Text(pDX, IDC_V_SLIDER_ECHO, m_VSliderEcho);
   DDX_Control(pDX, IDC_V_SLIDER_BAR, m_VSliderBar);
   DDX_Control(pDX, IDC_H_SLIDER_BAR, m_HSliderBar);
+  // Added a comment here for testing
   DDX_Text(pDX, IDC_MOUSEECHO, m_MouseEcho);
   DDX_Text(pDX, IDC_TIMERECHO, m_TimerEcho);
   DDX_Check(pDX, IDC_TIMER_CONTROL_SLIDERS, m_TimerCtrlSliders);

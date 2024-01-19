@@ -34,11 +34,11 @@ Q_INVOKABLE QString DataExchangeEntry::toString() const
     return QString("%1(%2, %3)").arg(function, idc, member);
 }
 
-DataExchangeEntry fromDDX(const QueryMatch &match, const RangeMark &range)
+DataExchangeEntry fromDDX(const QueryMatch &ddxCall)
 {
-    auto function = match.getInRange("ddx-function", range).text();
-    auto idc = match.getInRange("ddx-idc", range).text();
-    auto member = match.getInRange("ddx-member", range).text();
+    auto function = ddxCall.get("ddx-function").text();
+    auto idc = ddxCall.get("ddx-idc").text();
+    auto member = ddxCall.get("ddx-member").text();
 
     return DataExchangeEntry {.function = function, .idc = idc, .member = member};
 }
@@ -65,15 +65,23 @@ DataExchangeEntry fromDDX(const QueryMatch &match, const RangeMark &range)
  * \qmlproperty RangeMark DataExchange::range
  * The entire range of the `DoDataExchange` method.
  */
-DataExchange::DataExchange(const QString &_className, const QueryMatch &query)
+DataExchange::DataExchange(const QString &_className, const QueryMatch &ddxFunction)
     : className(_className)
+    , range(ddxFunction.get("definition"))
 {
-    range = query.get("do-data-exchange");
+    auto ddxCalls = ddxFunction.queryIn("body", R"EOF(
+                (expression_statement
+                    (call_expression
+                        function: (identifier) @ddx-function(#match? "^DDX_" @ddx-function)
+                        arguments: (argument_list
+                            (identifier)
+                            (_) @ddx-idc
+                            (_) @ddx-member))) @ddx
+    )EOF");
 
-    auto ddxList = query.getAll("ddx");
-    entries.reserve(ddxList.size());
-    for (const auto &ddx : ddxList) {
-        entries.push_back(fromDDX(query, ddx));
+    entries.reserve(ddxCalls.size());
+    for (const auto &ddx : ddxCalls) {
+        entries.push_back(fromDDX(ddx));
     }
 }
 

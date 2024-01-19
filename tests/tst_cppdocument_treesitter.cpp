@@ -19,6 +19,11 @@ private slots:
         Test::testCppDocument("projects/mfc-tutorial", "TutorialDlg.cpp", [](Core::CppDocument *document) {
             auto ddx = document->mfcExtractDDX("CTutorialDlg");
 
+            QCOMPARE(ddx.className, "CTutorialDlg");
+            QCOMPARE(ddx.isValid(), true);
+            QVERIFY(ddx.range.text().startsWith("void CTutorialDlg::DoDataExchange(CDataExchange* pDX)"));
+            QVERIFY(ddx.range.text().endsWith("}"));
+
             QCOMPARE(ddx.entries.size(), 8);
             QCOMPARE(ddx.entries.first().function, "DDX_Text");
             QCOMPARE(ddx.entries.first().idc, "IDC_ECHO_AREA");

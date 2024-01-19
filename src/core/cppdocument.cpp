@@ -591,41 +591,20 @@ DataExchange CppDocument::mfcExtractDDX(const QString &className)
 {
     LOG("CppDocument::mfcExtractDDX", LOG_ARG("text", className));
 
-    // clang-format off
-    auto queryString = QString(R"EOF(
-        (function_definition
-            declarator: (function_declarator
-                (qualified_identifier
-                    scope: (_) @scope (#eq? @scope "%1")
-                    name: (_) @name (#eq? @name "DoDataExchange")
-                )
-            )
-            body: (compound_statement
-                ((expression_statement
-                    (call_expression
-                        function: (identifier) @ddx-function(#match? "^DDX_" @ddx-function)
-                        arguments: (argument_list
-                            (identifier)
-                            (_) @ddx-idc
-                            (_) @ddx-member))
-                )@ddx)*)
-        ) @do-data-exchange
-    )EOF").arg(className);
-    // clang-format on
+    auto functions = queryMethodDefinition(className, "DoDataExchange");
 
-    auto result = query(queryString);
-    if (result.isEmpty()) {
+    if (functions.isEmpty()) {
         spdlog::warn("CppDocument::mfcExtractDDX: No DoDataExchange found in `{}`", fileName().toStdString());
         return {};
     }
 
-    if (result.size() > 1) {
-        spdlog::warn("CppDocument::mfcExtractDDX: Too many DoDataExchange methods found in `{}`",
-                     fileName().toStdString());
+    if (functions.size() > 1) {
+        spdlog::warn("CppDocument::mfcExtractDDX: Too many DoDataExchange methods found in `{}`", fileName().toStdString());
     }
 
-    const auto &match = result.first();
-    return DataExchange(className, match);
+    auto &function = functions.first();
+
+    return DataExchange(className, function);
 }
 
 /*!
