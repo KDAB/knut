@@ -13,6 +13,14 @@
             "stopOnEntry": false
         },
         {
+            "name": "Knut executable (asan)",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/build-debug-asan/bin/${input:knutProgram}",
+            "cwd": "${workspaceFolder}",
+            "stopOnEntry": false
+        },
+        {
             "name": "qt6-msvc",
             "type": "cppvsdbg",
             "request": "launch",
