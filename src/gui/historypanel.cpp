@@ -5,7 +5,6 @@
 #include "core/logger.h"
 
 #include <QAction>
-#include <QDebug>
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QToolButton>

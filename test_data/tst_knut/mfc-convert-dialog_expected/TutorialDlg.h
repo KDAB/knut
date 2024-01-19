@@ -63,15 +63,15 @@ protected:
 private:
   int m_Seconds;
   int m_OkCount;
-  CText<CString> m_EchoText;
+  CText m_EchoText;
 
-  CText<CString> m_HSliderEcho;
-  CText<CString> m_VSliderEcho;
+  CText m_HSliderEcho;
+  CText m_VSliderEcho;
   CSliderCtrl m_VSliderBar;
   CSliderCtrl m_HSliderBar;
 
-  CText<CString> m_MouseEcho;
-  CText<CString> m_TimerEcho;
+  CText m_MouseEcho;
+  CText m_TimerEcho;
 
   CCheck m_TimerCtrlSliders;
   HICON m_hIcon;

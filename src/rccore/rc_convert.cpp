@@ -312,10 +312,15 @@ static Widget convertGroupBox(const Data &data, Data::Control &control)
 static Widget convertListWidget(const Data &data, Data::Control &control)
 {
     Widget widget;
-    widget.className = "QListWidget";
+    widget.className = "QListView";
+    bool isListView = true;
+    if (control.styles.removeOne("LVS_REPORT")) {
+        widget.className = "QTreeView";
+        isListView = false;
+    }
 
     // The control is an icon view
-    if (control.type == static_cast<int>(Keywords::CONTROL) && control.className == "SysListView32")
+    if (isListView && control.type == static_cast<int>(Keywords::CONTROL) && control.className == "SysListView32")
         widget.properties["viewMode"] = "QListView::IconMode";
 
     if (control.styles.removeOne("LBS_NOSEL"))
@@ -477,7 +482,7 @@ static Widget convertIpAddress(const Data &data, Data::Control &control)
 static Widget convertTreeWidget(const Data &data, Data::Control &control)
 {
     Widget widget;
-    widget.className = "QTreeWidget";
+    widget.className = "QTreeView";
     convertStyles(data, widget, control, true);
     return widget;
 }
