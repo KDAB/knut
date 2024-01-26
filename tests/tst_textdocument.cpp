@@ -370,18 +370,18 @@ private slots:
             Core::TextDocument document;
             document.load(file.fileName());
 
-            QString lorem_quisque("(Lorem.+)\n(Quisque.+)");
-            QString quisque_lorem("\\2\n\\1");
+            QString lorem_ipsum("(Lorem)\\s(ipsum)");
+            QString ipsum_lorem("\\2 \\1");
 
-            QVERIFY(document.replaceOne(lorem_quisque, quisque_lorem, Core::TextDocument::FindRegexp));
-            QCOMPARE(document.replaceAllRegexp(lorem_quisque, quisque_lorem), 3);
+            QVERIFY(document.replaceOne(lorem_ipsum, ipsum_lorem, Core::TextDocument::FindRegexp));
+            QCOMPARE(document.replaceAllRegexp(lorem_ipsum, ipsum_lorem), 3);
 
-            document.gotoLine(8);
-            QVERIFY(document.findRegexp("Qui"));
-            QCOMPARE(document.line(), 13);
-            QCOMPARE(document.selectedText(), "Qui");
-            QCOMPARE(document.currentWord(), "Quisque");
-            QVERIFY(!document.findRegexp("\\bQui\\b"));
+            document.gotoLine(6);
+            QVERIFY(document.findRegexp("Lor"));
+            QCOMPARE(document.line(), 7);
+            QCOMPARE(document.selectedText(), "Lor");
+            QCOMPARE(document.currentWord(), "Lorem");
+            QVERIFY(!document.findRegexp("Lor", Core::TextDocument::FindWholeWords));
 
             document.save();
             QVERIFY(file.compare());
@@ -395,17 +395,18 @@ private slots:
             Core::TextDocument document;
             document.load(file.fileName());
 
-            QString lorem_quisque("(Lorem.+)\n(Quisque.+)");
-            QString quisque_lorem("\\2\n\\1");
+            QString lorem_ipsum("(Lorem)\\s(ipsum)");
+            QString ipsum_lorem("\\2 \\1");
 
-            QCOMPARE(document.replaceAllRegexp(lorem_quisque, quisque_lorem, Core::TextDocument::FindBackward), 4);
+            QCOMPARE(document.replaceAllRegexp(lorem_ipsum, ipsum_lorem, Core::TextDocument::FindBackward), 4);
 
             document.gotoLine(8);
-            QVERIFY(document.findRegexp("Qui", Core::TextDocument::FindBackward));
+            QVERIFY(document.findRegexp("ips", Core::TextDocument::FindBackward));
             QCOMPARE(document.line(), 7);
-            QCOMPARE(document.selectedText(), "Qui");
-            QCOMPARE(document.currentWord(), "Quisque");
-            QVERIFY(!document.findRegexp("\\bQui\\b"));
+            QCOMPARE(document.selectedText(), "ips");
+            QCOMPARE(document.currentWord(), "ipsum");
+            document.gotoEndOfDocument();
+            QVERIFY(!document.findRegexp("ips", Core::TextDocument::FindWholeWords | Core::TextDocument::FindBackward));
 
             document.save();
             QVERIFY(file.compare());
@@ -509,6 +510,75 @@ private slots:
         // FindWholeWords is supported
         document.gotoStartOfDocument();
         QCOMPARE(document.match("(?<lor>Lor)", Core::TextDocument::FindWholeWords), "");
+        QCOMPARE(document.selectedText(), "");
+    }
+
+    // Test that findRegexp behaves like match
+    //
+    // Specifically this means:
+    // - The regexp is matched against the entire document line-by-line (no multi-line support)
+    // - Backwards matching is supported
+    // - Case insensitivity is the default, case-sensitive is supported
+    // - Matching is greedy by default, both forwards and backwards
+    // - FindWholeWords is supported
+    void findRegexp()
+    {
+        Core::TextDocument document;
+        document.load(Test::testDataPath() + "/tst_textdocument/loremipsum_lf_utf8.txt");
+
+        document.gotoStartOfDocument();
+
+        // findRegexp selects the match
+        auto lorqui = "(Lorem)|(Quisque)";
+        QVERIFY(document.findRegexp(lorqui));
+        QCOMPARE(document.selectedText(), "Lorem");
+
+        // Continued searching matches the next capture group.
+        QVERIFY(document.findRegexp(lorqui));
+        QCOMPARE(document.selectedText(), "Quisque");
+
+        // findRegexp is case-insensitive by default
+        document.gotoStartOfDocument();
+        auto lorquiLowercase = "(lorem)|(quisque)";
+        QVERIFY(document.findRegexp(lorquiLowercase));
+        QCOMPARE(document.selectedText(), "Lorem");
+
+        // Optional case-sensitivity
+        QVERIFY(!document.findRegexp(lorquiLowercase, Core::TextDocument::FindCaseSensitively));
+        QCOMPARE(document.selectedText(), "");
+        QVERIFY(!document.findRegexp(lorquiLowercase, Core::TextDocument::PreserveCase));
+        QCOMPARE(document.selectedText(), "");
+
+        // findRegexp is greedy in both forwards and backwards direction.
+        document.gotoStartOfDocument();
+        auto etit = R"EOF(\S*((et)|(it))\b)EOF";
+        QVERIFY(document.findRegexp(etit));
+        QCOMPARE(document.selectedText(), "sit");
+
+        // Matching backwards works too.
+        document.gotoEndOfDocument();
+        QVERIFY(document.findRegexp(etit, Core::TextDocument::FindBackward));
+        QCOMPARE(document.selectedText(), "amet");
+
+        // Repeated as well.
+        QVERIFY(document.findRegexp(etit, Core::TextDocument::FindBackward));
+        QCOMPARE(document.selectedText(), "sit");
+
+        // A failed findRegexp clears the selection but doesn't move the cursor!
+        auto oldPosition = document.position();
+        QVERIFY(!document.findRegexp("nothing"));
+        QCOMPARE(document.selectedText(), "");
+        QCOMPARE(document.position(), oldPosition);
+
+        // Multiline regexp search is **NOT** supported
+        document.gotoStartOfDocument();
+        QEXPECT_FAIL("", "Multinline regexp search is NOT supported", Continue);
+        QVERIFY(document.findRegexp("Lorem.*Quisque"));
+        QCOMPARE(document.selectedText(), "");
+
+        // FindWholeWords is supported
+        document.gotoStartOfDocument();
+        QVERIFY(!document.findRegexp("Lor", Core::TextDocument::FindWholeWords));
         QCOMPARE(document.selectedText(), "");
     }
 };

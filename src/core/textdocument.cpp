@@ -1251,34 +1251,8 @@ bool TextDocument::find(const QString &text, int options)
  */
 bool TextDocument::findRegexp(const QString &regexp, int options)
 {
-    LOG("TextDocument::findRegexp", regexp, options);
-    auto regularExpression = createRegularExpression(regexp, options | TextDocument::FindRegexp);
-
-    auto cursor = m_document->textCursor();
-    auto text = m_document->toPlainText();
-
-    QRegularExpressionMatch match;
-    if (options & TextDocument::FindBackward) {
-        int pos;
-        if (cursor.hasSelection())
-            pos = cursor.selectionStart();
-        else
-            pos = qMax(0, cursor.position() - 1);
-
-        // Find last match
-        Q_UNUSED(text.sliced(0, pos).lastIndexOf(regularExpression, &match))
-    } else {
-        match = regularExpression.match(text, cursor.position());
-    }
-
-    if (!match.hasMatch())
-        return false;
-
-    cursor.setPosition(match.capturedStart(), QTextCursor::MoveAnchor);
-    cursor.setPosition(match.capturedEnd(), QTextCursor::KeepAnchor);
-
-    m_document->setTextCursor(cursor);
-    return true;
+    auto found = selectRegexpMatch(regexp, options);
+    return found.has_value();
 }
 
 /*!
@@ -1323,20 +1297,11 @@ bool TextDocument::findRegexp2(const QString &regexp, int options)
     return true;
 }
 
-/*!
- * \qmlmethod bool TextDocument::match(string regexp, int options = TextDocument.NoFindFlags)
- * Searches the string `regexp` in the editor using a regular expression. Options could be a combination of:
- *
- * - `TextDocument.FindBackward`: search backward
- * - `TextDocument.FindCaseSensitively`: match case
- * - `TextDocument.FindWholeWords`: match only complete words
- *
- * Selects the match and returns the named group if a match is found.
- */
-QString TextDocument::match(QString regexp, int options)
+auto TextDocument::selectRegexpMatch(
+    QString regexp, int options,
+    std::function<bool(const QRegularExpression &, const QRegularExpressionMatch &, const QTextCursor &)>
+        selectionFunction) -> std::optional<std::pair<QRegularExpressionMatch, QTextCursor>>
 {
-    LOG("TextDocument::match", regexp, options);
-
     unselect();
 
     if (options & FindWholeWords) {
@@ -1352,23 +1317,21 @@ QString TextDocument::match(QString regexp, int options)
     else
         expression.setPatternOptions(expression.patternOptions() | QRegularExpression::CaseInsensitiveOption);
 
-    QTextCursor cursor = m_document->textCursor();
-    QTextBlock block = cursor.block();
-    int blockOffset = cursor.positionInBlock();
+    QTextCursor startCursor = m_document->textCursor();
+    QTextBlock block = startCursor.block();
+    int blockOffset = startCursor.positionInBlock();
 
     while (block.isValid()) {
         const auto found = matchInBlock(block, expression, blockOffset, options);
         if (found.has_value()) {
-            auto [match, cursor] = *found;
-            for (auto name : expression.namedCaptureGroups()) {
-                if (match.hasCaptured(name)) {
-                    m_document->setTextCursor(cursor);
-                    LOG_RETURN("group", name);
-                }
+            const auto &[match, newCursor] = *found;
+            if (selectionFunction(expression, match, newCursor)) {
+                m_document->setTextCursor(newCursor);
+                return found;
             }
 
-            // No named capture group found, continue searching
-            blockOffset = cursor.positionInBlock();
+            // The previous match has been discarded, continue searching
+            blockOffset = newCursor.positionInBlock();
         } else {
             if (options & FindBackward) {
                 block = block.previous();
@@ -1382,7 +1345,37 @@ QString TextDocument::match(QString regexp, int options)
         }
     }
 
-    LOG_RETURN("group", QString(""));
+    return {};
+}
+
+/*!
+ * \qmlmethod bool TextDocument::match(string regexp, int options = TextDocument.NoFindFlags)
+ * Searches the string `regexp` in the editor using a regular expression. Options could be a combination of:
+ *
+ * - `TextDocument.FindBackward`: search backward
+ * - `TextDocument.FindCaseSensitively`: match case
+ * - `TextDocument.FindWholeWords`: match only complete words
+ *
+ * Selects the match and returns the named group if a match is found.
+ */
+QString TextDocument::match(QString regexp, int options)
+{
+    LOG("TextDocument::match", regexp, options);
+
+    QString captureGroup;
+    auto result = selectRegexpMatch(regexp, options,
+                                    [&captureGroup](const auto &expression, const auto &match, const auto &cursor) {
+                                        Q_UNUSED(cursor);
+                                        for (auto name : expression.namedCaptureGroups()) {
+                                            if (match.hasCaptured(name)) {
+                                                captureGroup = name;
+                                                return true;
+                                            }
+                                        }
+                                        return false;
+                                    });
+
+    LOG_RETURN("group", result.has_value() ? captureGroup : QString(""));
 }
 
 /*!

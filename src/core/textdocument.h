@@ -210,6 +210,13 @@ private:
     void movePosition(QTextCursor::MoveOperation operation, QTextCursor::MoveMode mode = QTextCursor::MoveAnchor,
                       int count = 1);
 
+    auto selectRegexpMatch(
+        QString regexp, int options,
+        std::function<bool(const QRegularExpression &, const QRegularExpressionMatch &, const QTextCursor &)>
+            selectionFunction = [](const auto &, const auto &, const auto &) {
+                return true;
+            }) -> std::optional<std::pair<QRegularExpressionMatch, QTextCursor>>;
+
     // TODO: use a QTextDocument maybe, to avoid creating a widget
     // The QPlainTextEdit has a nicer API, so it's slightly easier with that now
     QPointer<QPlainTextEdit> m_document;
