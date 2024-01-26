@@ -51,7 +51,6 @@ Inherited properties: [Document properties](../script/document.md#properties)
 ||**[deleteStartOfWord](#deleteStartOfWord)**()|
 |bool |**[find](#find)**(string text, int options = TextDocument.NoFindFlags)|
 |bool |**[findRegexp](#findRegexp)**(string regexp, int options = TextDocument.NoFindFlags)|
-|bool |**[findRegexp2](#findRegexp2)**(string regexp, int options = TextDocument.NoFindFlags)|
 ||**[gotoEndOfDocument](#gotoEndOfDocument)**()|
 ||**[gotoEndOfLine](#gotoEndOfLine)**()|
 ||**[gotoEndOfWord](#gotoEndOfWord)**()|
@@ -255,19 +254,6 @@ Searches the string `regexp` in the editor using a regular expression. Options c
 - `TextDocument.FindWholeWords`: match only complete words
 
 Selects the match and returns `true` if a match is found.
-
-#### <a name="findRegexp2"></a>bool **findRegexp2**(string regexp, int options = TextDocument.NoFindFlags)
-
-Searches the string `regexp` in the editor using a regular expression. Options could be a combination of:
-
-- `TextDocument.FindBackward`: search backward
-- `TextDocument.FindCaseSensitively`: match case
-- `TextDocument.FindWholeWords`: match only complete words
-
-Selects the match and returns `true` if a match is found.
-Main differences of this method from previous one are:
- * works with text document, not with a plain text
- * more correct backward search (for example if you try to find last symbol backward)
 
 #### <a name="gotoEndOfDocument"></a>**gotoEndOfDocument**()
 

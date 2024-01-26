@@ -168,7 +168,6 @@ public slots:
     // Find
     bool find(const QString &text, int options = NoFindFlags);
     bool findRegexp(const QString &regexp, int options = NoFindFlags);
-    bool findRegexp2(const QString &regexp, int options = NoFindFlags);
     QString match(QString expr, int options = NoFindFlags);
 
     // Replace

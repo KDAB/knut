@@ -55,25 +55,6 @@ matchInBlock(const QTextBlock &block, const QRegularExpression &expr, int offset
     return {};
 }
 
-static void setCursorPosition(QPlainTextEdit *editor, int pos)
-{
-    auto cursor = editor->textCursor();
-    cursor.setPosition(pos);
-    editor->setTextCursor(cursor);
-}
-
-static QTextDocument::FindFlags parseOptions(int options)
-{
-    auto result = QTextDocument::FindFlags(0);
-    if (options & Core::TextDocument::FindBackward)
-        result |= QTextDocument::FindBackward;
-    if (options & Core::TextDocument::FindCaseSensitively)
-        result |= QTextDocument::FindCaseSensitively;
-    if (options & Core::TextDocument::FindWholeWords)
-        result |= QTextDocument::FindWholeWords;
-    return result;
-}
-
 /*!
  * \qmltype TextDocument
  * \brief Document object for text files.
@@ -1253,48 +1234,6 @@ bool TextDocument::findRegexp(const QString &regexp, int options)
 {
     auto found = selectRegexpMatch(regexp, options);
     return found.has_value();
-}
-
-/*!
- * \qmlmethod bool TextDocument::findRegexp2(string regexp, int options = TextDocument.NoFindFlags)
- * Searches the string `regexp` in the editor using a regular expression. Options could be a combination of:
- *
- * - `TextDocument.FindBackward`: search backward
- * - `TextDocument.FindCaseSensitively`: match case
- * - `TextDocument.FindWholeWords`: match only complete words
- *
- * Selects the match and returns `true` if a match is found.
- * Main differences of this method from previous one are:
- *  * works with text document, not with a plain text
- *  * more correct backward search (for example if you try to find last symbol backward)
- */
-bool TextDocument::findRegexp2(const QString &regexp, int options)
-{
-    LOG("TextDocument::findRegexp2", regexp, options);
-
-    auto doc = m_document->document();
-    const auto flags = parseOptions(options);
-    QTextCursor cursor = doc->find(QRegularExpression(regexp), position(), flags);
-    if (cursor.isNull()) {
-        return false;
-    }
-
-    if (options & TextDocument::FindBackward) {
-        // Unfortunately is the implementation of QTextDocument::find not greedy,
-        // we therefore need to run the search until it no longer matches.
-        // Further the regexp object is copied in find(), so we will not be able to use it for capturing.
-        // We might consider rolling our own copy similar to QTextDocument::find
-        const int endPoint = cursor.position();
-        int pos = cursor.anchor();
-        do {
-            --pos;
-            cursor = doc->find(QRegularExpression(regexp), pos, flags & ~QTextDocument::FindBackward);
-        } while (!cursor.isNull() && cursor.position() == endPoint && cursor.anchor() == pos);
-        setCursorPosition(m_document, pos + 1);
-    } else {
-        setCursorPosition(m_document, cursor.position());
-    }
-    return true;
 }
 
 auto TextDocument::selectRegexpMatch(
