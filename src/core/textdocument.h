@@ -169,7 +169,7 @@ public slots:
     bool find(const QString &text, int options = NoFindFlags);
     bool findRegexp(const QString &regexp, int options = NoFindFlags);
     bool findRegexp2(const QString &regexp, int options = NoFindFlags);
-    QString match(const QString &expr, int options = NoFindFlags);
+    QString match(QString expr, int options = NoFindFlags);
 
     // Replace
     bool replaceOne(const QString &before, const QString &after, int options = NoFindFlags);

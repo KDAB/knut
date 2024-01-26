@@ -19,57 +19,50 @@
 
 #include <spdlog/spdlog.h>
 
-namespace {
+namespace Core {
 
-// this is a port from QTextDocument::findInBlock
-// instead of returning the cursor we return the name of the regex group that was found
-static QString matchInBlock(const QTextBlock &block, const QRegularExpression &expr, int offset,
-                            QTextDocument::FindFlags options, QTextCursor *cursor)
+static std::optional<std::pair<QRegularExpressionMatch, QTextCursor>>
+matchInBlock(const QTextBlock &block, const QRegularExpression &expr, int offset, int options)
 {
     QString text = block.text();
+    // Open Question: Why is this replacement necesary?
     text.replace(QChar::Nbsp, u' ');
     QRegularExpressionMatch match;
-    int idx = -1;
 
-    while (offset >= 0 && offset <= text.size()) {
-        idx = (options & QTextDocument::FindBackward) ? text.lastIndexOf(expr, offset, &match)
-                                                      : text.indexOf(expr, offset, &match);
-        if (idx == -1)
+    if (options & TextDocument::FindBackward) {
+        // For backwards search use offset - 1 because the cursor is positioned between characters,
+        // so don't include the character for backward search.
+        --offset;
+    }
+
+    if (offset >= 0 && offset <= text.size()) {
+        auto matchStart = (options & TextDocument::FindBackward) ? text.lastIndexOf(expr, offset, &match)
+                                                                 : text.indexOf(expr, offset, &match);
+        if (matchStart == -1)
             return {};
 
-        if (options & QTextDocument::FindWholeWords) {
-            const int start = idx;
-            const int end = start + match.capturedLength();
-            if ((start != 0 && text.at(start - 1).isLetterOrNumber())
-                || (end != text.size() && text.at(end).isLetterOrNumber())) {
-                // if this is not a whole word, continue the search in the string
-                offset = (options & QTextDocument::FindBackward) ? idx - 1 : end + 1;
-                idx = -1;
-                continue;
-            }
+        QTextCursor cursor(block);
+        if (options & TextDocument::FindBackward) {
+            cursor.movePosition(QTextCursor::Right, QTextCursor::MoveAnchor, matchStart + match.capturedLength());
+            cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, match.capturedLength());
+        } else {
+            cursor.movePosition(QTextCursor::Right, QTextCursor::MoveAnchor, matchStart);
+            cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, match.capturedLength());
         }
-        // we have a hit, return the cursor for that.
-        *cursor = QTextCursor(const_cast<QTextDocument *>(block.document()));
-        cursor->setPosition(block.position() + idx + match.capturedLength(), QTextCursor::KeepAnchor);
 
-        const auto namedCaptures = expr.namedCaptureGroups();
-        for (const auto &name : namedCaptures) {
-            if (match.hasCaptured(name))
-                return name;
-        }
-        return {};
+        return std::make_pair(match, cursor);
     }
     return {};
 }
 
-void setCursorPosition(QPlainTextEdit *editor, int pos)
+static void setCursorPosition(QPlainTextEdit *editor, int pos)
 {
     auto cursor = editor->textCursor();
     cursor.setPosition(pos);
     editor->setTextCursor(cursor);
 }
 
-QTextDocument::FindFlags parseOptions(int options)
+static QTextDocument::FindFlags parseOptions(int options)
 {
     auto result = QTextDocument::FindFlags(0);
     if (options & Core::TextDocument::FindBackward)
@@ -80,9 +73,6 @@ QTextDocument::FindFlags parseOptions(int options)
         result |= QTextDocument::FindWholeWords;
     return result;
 }
-}
-
-namespace Core {
 
 /*!
  * \qmltype TextDocument
@@ -1343,52 +1333,56 @@ bool TextDocument::findRegexp2(const QString &regexp, int options)
  *
  * Selects the match and returns the named group if a match is found.
  */
-QString TextDocument::match(const QString &regexp, int options)
+QString TextDocument::match(QString regexp, int options)
 {
-    int pos = m_document->textCursor().position();
-    // the cursor is positioned between characters, so for a backward search
-    // do not include the character given in the position.
-    if (options & FindBackward) {
-        --pos;
-        if (pos < 0)
-            return {};
-    }
+    LOG("TextDocument::match", regexp, options);
 
-    setCursorPosition(m_document.get(), pos);
-    QTextCursor cursor;
-    QTextBlock block = m_document->textCursor().block();
-    const auto flags = parseOptions(options);
-    int blockOffset = pos - block.position();
+    unselect();
+
+    if (options & FindWholeWords) {
+        if (!regexp.startsWith("\\b"))
+            regexp = "\\b" + regexp;
+        if (!regexp.endsWith("\\b"))
+            regexp += "\\b";
+    }
 
     QRegularExpression expression(regexp);
-    if (!(options & QTextDocument::FindCaseSensitively))
-        expression.setPatternOptions(expression.patternOptions() | QRegularExpression::CaseInsensitiveOption);
-    else
+    if (options & (TextDocument::FindCaseSensitively | TextDocument::PreserveCase))
         expression.setPatternOptions(expression.patternOptions() & ~QRegularExpression::CaseInsensitiveOption);
+    else
+        expression.setPatternOptions(expression.patternOptions() | QRegularExpression::CaseInsensitiveOption);
 
-    if (!(options & FindBackward)) {
-        while (block.isValid()) {
-            const auto found = matchInBlock(block, expression, blockOffset, flags, &cursor);
-            if (!found.isEmpty()) {
-                setCursorPosition(m_document, cursor.position());
-                return found;
+    QTextCursor cursor = m_document->textCursor();
+    QTextBlock block = cursor.block();
+    int blockOffset = cursor.positionInBlock();
+
+    while (block.isValid()) {
+        const auto found = matchInBlock(block, expression, blockOffset, options);
+        if (found.has_value()) {
+            auto [match, cursor] = *found;
+            for (auto name : expression.namedCaptureGroups()) {
+                if (match.hasCaptured(name)) {
+                    m_document->setTextCursor(cursor);
+                    LOG_RETURN("group", name);
+                }
             }
-            block = block.next();
-            blockOffset = 0;
-        }
-    } else {
-        while (block.isValid()) {
-            const auto found = matchInBlock(block, expression, blockOffset, flags, &cursor);
-            if (!found.isEmpty()) {
-                setCursorPosition(m_document, cursor.position());
-                return found;
+
+            // No named capture group found, continue searching
+            blockOffset = cursor.positionInBlock();
+        } else {
+            if (options & FindBackward) {
+                block = block.previous();
+                // Use `block.text().size()` here, instead of `block.length()`, as the later includes the trailing
+                // newline.
+                blockOffset = block.text().size();
+            } else {
+                block = block.next();
+                blockOffset = 0;
             }
-            block = block.previous();
-            blockOffset = block.length() - 1;
         }
     }
 
-    return {};
+    LOG_RETURN("group", QString(""));
 }
 
 /*!

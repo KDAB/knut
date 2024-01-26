@@ -435,6 +435,82 @@ private slots:
             QVERIFY(file.compare());
         }
     }
+
+    // This test documents the desired behavior of any regexp matching in Knut.
+    // All other regexp functions should exhibit similar behavior.
+    //
+    // Specifically this means:
+    // - The regexp is matched against the entire document line-by-line (no multi-line support)
+    // - Backwards matching is supported
+    // - Case insensitivity is the default, case-sensitive is supported
+    // - Matching is greedy by default, both forwards and backwards
+    // - FindWholeWords is supported
+    void match()
+    {
+        Core::TextDocument document;
+        document.load(Test::testDataPath() + "/tst_textdocument/loremipsum_lf_utf8.txt");
+
+        document.gotoStartOfDocument();
+
+        // Match without a capture group doesn't match anything!
+        QCOMPARE(document.match("Lorem"), "");
+        QCOMPARE(document.selectedText(), "");
+        QCOMPARE(document.position(), 0);
+
+        // Match with a capture group matches the capture group and selects the match.
+        auto lorqui = "(?<lor>Lorem)|(?<qui>Quisque)";
+        QCOMPARE(document.match(lorqui), "lor");
+        QCOMPARE(document.selectedText(), "Lorem");
+
+        // Continued searching matches the next capture group.
+        QCOMPARE(document.match(lorqui), "qui");
+        QCOMPARE(document.selectedText(), "Quisque");
+
+        // Matching is case-insensitive by default
+        document.gotoStartOfDocument();
+        auto lorquiLowercase = "(?<lor>lorem)|(?<qui>quisque)";
+        QCOMPARE(document.match(lorquiLowercase), "lor");
+        QCOMPARE(document.selectedText(), "Lorem");
+
+        // Optional case-sensitivity
+        QCOMPARE(document.match(lorquiLowercase, Core::TextDocument::FindCaseSensitively), "");
+        QCOMPARE(document.selectedText(), "");
+        QCOMPARE(document.match(lorquiLowercase, Core::TextDocument::PreserveCase), "");
+        QCOMPARE(document.selectedText(), "");
+
+        // The whole match is selected, even if the capture group doesn't span
+        // the entire regexp.
+        // Also: Matching is greedy in both forwards and backwards direction.
+        document.gotoStartOfDocument();
+        auto etit = R"EOF(\S*((?<et>et)|(?<it>it))\b)EOF";
+        QCOMPARE(document.match(etit), "it");
+        QCOMPARE(document.selectedText(), "sit");
+
+        // Matching backwards works too.
+        document.gotoEndOfDocument();
+        QCOMPARE(document.match(etit, Core::TextDocument::FindBackward), "et");
+        QCOMPARE(document.selectedText(), "amet");
+
+        // Repeated as well.
+        QCOMPARE(document.match(etit, Core::TextDocument::FindBackward), "it");
+        QCOMPARE(document.selectedText(), "sit");
+
+        // A failed match clears the selection but doesn't move the cursor!
+        auto oldPosition = document.position();
+        QCOMPARE(document.match("nothing"), "");
+        QCOMPARE(document.selectedText(), "");
+        QCOMPARE(document.position(), oldPosition);
+
+        // Multiline matching is **NOT** supported
+        document.gotoStartOfDocument();
+        QCOMPARE(document.match("(?<loqui>Lorem.*Quisque)"), "");
+        QCOMPARE(document.selectedText(), "");
+
+        // FindWholeWords is supported
+        document.gotoStartOfDocument();
+        QCOMPARE(document.match("(?<lor>Lor)", Core::TextDocument::FindWholeWords), "");
+        QCOMPARE(document.selectedText(), "");
+    }
 };
 
 QTEST_MAIN(TestTextDocument)
