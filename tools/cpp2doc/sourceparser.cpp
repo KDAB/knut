@@ -17,7 +17,7 @@ static QStringList getAllSourceFiles(const QString &directory)
     QStringList result;
 
     QDir dir(directory);
-    auto files = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
+    const auto files = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
 
     for (const auto &fileInfo : files) {
         if (fileInfo.suffix() == "cpp" || fileInfo.suffix() == "qml")
@@ -30,7 +30,7 @@ static QStringList getAllSourceFiles(const QString &directory)
 
 void SourceParser::parseDirectory(const QString &directory)
 {
-    QStringList sourceFiles = getAllSourceFiles(directory);
+    const QStringList sourceFiles = getAllSourceFiles(directory);
     for (const auto &sourceFile : sourceFiles)
         parseFile(sourceFile);
 }
@@ -134,7 +134,7 @@ static auto parseMethodDefinition(const QString &line)
     result.qmlType = match.captured(2);
     result.method.name = match.captured(3);
 
-    QStringList parameters = match.captured(4).split(',');
+    const QStringList parameters = match.captured(4).split(',');
     for (auto text : parameters) {
         Data::QmlMethod::Parameter param;
         text = text.simplified();
