@@ -68,9 +68,8 @@ Symbol *LspDocument::currentSymbol(const std::function<bool(const Symbol &)> &fi
 {
     const int pos = textEdit()->textCursor().position();
 
-    auto symbolList = symbols();
-    std::ranges::reverse(symbolList);
-    for (auto symbol : symbolList) {
+    const auto symbolList = symbols();
+    for (auto symbol : symbolList | std::views::reverse) {
         if (symbol->range().contains(pos) && (!filterFunc || filterFunc(*symbol)))
             return symbol;
     }
@@ -344,7 +343,7 @@ Document *LspDocument::followSymbol(int pos)
             locations = std::move(std::get<std::vector<Lsp::Location>>(declaration));
         }
     } else if (std::holds_alternative<std::vector<Lsp::DeclarationLink>>(*result)) {
-        auto locationLinks = std::get<std::vector<Lsp::DeclarationLink>>(*result);
+        const auto locationLinks = std::get<std::vector<Lsp::DeclarationLink>>(*result);
         for (const auto &link : locationLinks)
             locations.push_back({link.targetUri, link.targetSelectionRange});
     }
@@ -575,7 +574,7 @@ Core::QueryMatchList LspDocument::queryInRange(const Core::RangeMark &range, con
         return {};
     }
 
-    auto nodes = m_treeSitterHelper->nodesInRange(range);
+    const auto nodes = m_treeSitterHelper->nodesInRange(range);
 
     if (nodes.isEmpty()) {
         spdlog::warn("LspDocument::queryInRange: No nodes in range");
@@ -690,8 +689,8 @@ void LspDocument::changeContent(int position, int charsRemoved, int charsAdded)
 
 AstNode LspDocument::astNodeAt(int pos)
 {
-    auto root = m_treeSitterHelper->syntaxTree()->rootNode();
-    if (auto node = root.descendantForRange(pos, pos); !node.isNull()) {
+    const auto root = m_treeSitterHelper->syntaxTree()->rootNode();
+    if (const auto node = root.descendantForRange(pos, pos); !node.isNull()) {
         return AstNode(node, this);
     }
     return {};

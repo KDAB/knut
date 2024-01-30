@@ -94,7 +94,8 @@ std::optional<Core::QueryMatch> ScriptSuggestions::contextQuery(const treesitter
         return {};
 
     for (const auto &query : queries) {
-        for (const auto &match : m_document->query(query)) {
+        const auto matches = m_document->query(query);
+        for (const auto &match : matches) {
             const auto hereRanges = match.getAll("here");
 
             // If there is no @here capture in the match, it is assumed that the

@@ -196,7 +196,7 @@ static QStringList scriptListFromDir(const QString &path)
 
 void ScriptManager::updateScriptDirectory(const QString &path)
 {
-    QStringList filesInDir = scriptListFromDir(path);
+    const QStringList filesInDir = scriptListFromDir(path);
 
     // Remove deleted scripts
     auto it = m_scriptList.begin();
@@ -287,11 +287,10 @@ void ScriptManager::doRunScript(const QString &fileName, const std::function<voi
 
 void ScriptManager::updateDirectories()
 {
-    QStringList directories;
-    {
+    const QStringList directories = []() {
         LoggerDisabler ld(true);
-        directories = Settings::instance()->value<QStringList>(Settings::ScriptPaths);
-    }
+        return Settings::instance()->value<QStringList>(Settings::ScriptPaths);
+    }();
     for (const auto &path : directories)
         addScriptsFromPath(path);
 }

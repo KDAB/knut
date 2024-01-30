@@ -81,10 +81,9 @@ void DocumentPalette::keyReleaseEvent(QKeyEvent *event)
 void DocumentPalette::fillList()
 {
     clear();
-    auto documents = Core::Project::instance()->documents();
-    std::ranges::reverse(documents);
+    const auto documents = Core::Project::instance()->documents();
 
-    for (auto document : std::as_const(documents)) {
+    for (auto document : documents | std::views::reverse) {
         QFileInfo fi(document->fileName());
         addItem(fi.fileName());
     }

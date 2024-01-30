@@ -19,21 +19,21 @@ struct ToggleSectionSettings
 };
 
 namespace Queries {
-    static const inline QString findInclude = QStringLiteral(R"EOF(
+    constexpr char findInclude[] = R"EOF(
         (preproc_include
             path: (_) @path
         )
-    )EOF");
+    )EOF";
 
-    static const inline QString findPragma = QStringLiteral(R"EOF(
+    constexpr char findPragma[] = R"EOF(
         (translation_unit
             (preproc_call
                 argument: (_) @value (#match? "once" @value)
             )
         )
-    )EOF");
+    )EOF";
 
-    static const inline QString findHeaderGuard = QString(R"EOF(
+    constexpr char findHeaderGuard[] = R"EOF(
         (translation_unit
             (preproc_ifdef
                 "#ifndef"
@@ -43,7 +43,7 @@ namespace Queries {
                 )
             )
         )
-    )EOF");
+    )EOF";
 };
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ToggleSectionSettings, tag, debug, return_values);

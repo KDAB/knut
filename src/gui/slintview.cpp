@@ -18,7 +18,8 @@ static QString findSlintViewer()
 #else
     if (auto path = QStandardPaths::findExecutable("slint-viewer"); path.isEmpty()) {
         QStringList paths;
-        for (const auto &home : QStandardPaths::standardLocations(QStandardPaths::HomeLocation)) {
+        const auto standarLocations = QStandardPaths::standardLocations(QStandardPaths::HomeLocation);
+        for (const auto &home : standarLocations) {
             paths.append(home + "/.cargo/bin/");
         }
         path = QStandardPaths::findExecutable("slint-viewer", paths);

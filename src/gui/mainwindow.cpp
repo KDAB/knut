@@ -801,7 +801,7 @@ void MainWindow::changeCurrentDocument()
         if (auto textView = qobject_cast<TextView *>(widget))
             textView->setScriptSuggestions(m_scriptSuggestions);
 
-        if (auto actions = widget->actions(); !actions.isEmpty()) {
+        if (const auto actions = widget->actions(); !actions.isEmpty()) {
             auto toolBar = new Toolbar(widget);
             toolBar->setVisible(true);
             for (const auto &act : actions) {

@@ -100,7 +100,7 @@ private:
     {
         QVector<FileInfo> result;
         QDir dir(path);
-        auto fiList = dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
+        const auto fiList = dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
         for (const auto &fi : fiList) {
             if (fi.fileName().startsWith('.'))
                 continue;

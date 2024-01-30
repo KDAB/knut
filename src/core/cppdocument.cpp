@@ -193,7 +193,7 @@ QString CppDocument::correspondingHeaderSource() const
     const QStringList suffixes = matchingSuffixes(header);
 
     const QFileInfo fi(fileName());
-    QStringList candidates = candidateFileNames(fi.completeBaseName(), suffixes);
+    const QStringList candidates = candidateFileNames(fi.completeBaseName(), suffixes);
 
     // Search in the current directory
     for (const auto &candidate : candidates) {
@@ -220,7 +220,7 @@ QString CppDocument::correspondingHeaderSource() const
     // Find the file having the most common path with fileName
     QString bestFileName;
     int compareValue = 0;
-    for (const auto &path : fullPathNames) {
+    for (const auto &path : std::as_const(fullPathNames)) {
         int value = commonFilePathLength(path, fileName());
         if (value > compareValue) {
             compareValue = value;
@@ -1190,7 +1190,8 @@ bool CppDocument::addMethodDefinition(const QString &method, const QString &clas
     QString definition = method;
 
     // Remove declaration specific modifiers to make the parameter compatible with addMethodDeclaration
-    QStringList modifiers = {"override", "final", "virtual", "static", "Q_INVOKABLE", "Q_SLOT", "Q_SIGNAL"};
+    const static QStringList modifiers = {"override",    "final",  "virtual", "static",
+                                          "Q_INVOKABLE", "Q_SLOT", "Q_SIGNAL"};
     for (const auto &modifier : modifiers) {
         definition.remove(modifier);
     }
@@ -1353,7 +1354,7 @@ void CppDocument::deleteMethodLocal(const QString &methodName, const QString &si
     };
     std::ranges::sort(symbolList, byRange);
 
-    for (const auto &symbol : symbolList) {
+    for (const auto &symbol : std::as_const(symbolList)) {
         spdlog::trace("CppDocument::deleteMethodLocal: Removing symbol '{}'", symbol->name().toStdString());
 
         deleteSymbol(*symbol);

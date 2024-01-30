@@ -6,6 +6,7 @@
 
 #include "spdlog/spdlog.h"
 
+#include <ranges>
 #include <set>
 
 #include <QRegularExpression>
@@ -59,8 +60,8 @@ Predicates::Predicates(QString source)
 
 bool Predicates::filterMatch(const QueryMatch &match) const
 {
-    auto patterns = match.query()->patterns();
-    auto pattern = patterns.at(match.patternIndex());
+    const auto patterns = match.query()->patterns();
+    const auto pattern = patterns.at(match.patternIndex());
 
     for (const auto &predicate : pattern.predicates) {
         const auto filters = Predicates::filters();
@@ -89,7 +90,7 @@ bool Predicates::filter_eq_with(const QueryMatch &match,
 {
     std::set<QString> texts;
 
-    auto matched = matchArguments(match, arguments);
+    const auto matched = matchArguments(match, arguments);
     for (const auto &arg : matched) {
         if (const auto *capture = std::get_if<QueryMatch::Capture>(&arg)) {
             texts.emplace(textTransform(capture->node.textIn(m_source)));
@@ -132,7 +133,7 @@ std::optional<QString> Predicates::checkFilter_eq_except(const Predicates::Predi
     }
     args.pop_front();
 
-    for (const auto &arg : args) {
+    for (const auto &arg : std::as_const(args)) {
         if (!std::holds_alternative<QString>(arg)) {
             return "Non-QString type Argument";
         }
@@ -161,7 +162,7 @@ bool Predicates::filter_eq_except_with(const QueryMatch &match,
             args.pop_front();
 
             auto types = QVector<QString>();
-            for (const auto &arg : args) {
+            for (const auto &arg : std::as_const(args)) {
                 if (const auto *type = std::get_if<QString>(&arg)) {
                     types.push_back(*type);
                 }
@@ -220,7 +221,7 @@ std::optional<QString> Predicates::checkFilter_match(const Predicates::Predicate
     }
 
     if (const auto regexString = std::get_if<QString>(&arguments.first())) {
-        QRegularExpression regex(*regexString);
+        const QRegularExpression regex(*regexString);
         if (!regex.isValid()) {
             return "Invalid Regex";
         }
@@ -228,7 +229,7 @@ std::optional<QString> Predicates::checkFilter_match(const Predicates::Predicate
         return "Missing regex";
     }
 
-    for (const auto &arg : arguments.last(arguments.size() - 1)) {
+    for (const auto &arg : arguments | std::views::drop(1)) {
         if (!std::holds_alternative<Query::Capture>(arg)) {
             return "Argument is not a capture";
         }
@@ -240,20 +241,20 @@ std::optional<QString> Predicates::checkFilter_match(const Predicates::Predicate
 bool Predicates::filter_match(const QueryMatch &match,
                               const QVector<std::variant<Query::Capture, QString>> &arguments) const
 {
-    auto matched = matchArguments(match, arguments);
+    const auto matched = matchArguments(match, arguments);
 
     if (arguments.size() < 2) {
         return false;
     }
 
     if (const auto regexString = std::get_if<QString>(&matched.first())) {
-        QRegularExpression regex(*regexString);
+        const QRegularExpression regex(*regexString);
         if (!regex.isValid()) {
             spdlog::warn("Predicates: #match? - Invalid regex");
             return false;
         }
 
-        for (const auto &argument : matched.last(matched.size() - 1)) {
+        for (const auto &argument : matched | std::views::drop(1)) {
             if (const auto *capture = std::get_if<QueryMatch::Capture>(&argument)) {
                 auto source = capture->node.textIn(m_source);
                 if (!regex.match(source).hasMatch()) {
@@ -361,7 +362,7 @@ bool Predicates::filter_in_message_map(const QueryMatch &match, const PredicateA
     findMessageMap();
 
     if (const auto *message_map = findCache<MessageMapCache>()) {
-        auto matched = matchArguments(match, arguments);
+        const auto matched = matchArguments(match, arguments);
 
         for (const auto &argument : matched) {
             if (const auto capture = std::get_if<QueryMatch::Capture>(&argument)) {
@@ -392,7 +393,7 @@ Predicates::matchArguments(const QueryMatch &match, const Predicates::PredicateA
         if (const auto string = std::get_if<QString>(&argument)) {
             result.emplace_back(*string);
         } else if (const auto captureArgument = std::get_if<Query::Capture>(&argument)) {
-            auto captures = match.capturesWithId(captureArgument->id);
+            const auto captures = match.capturesWithId(captureArgument->id);
 
             // Multiple captures for the same ID may exist, if quantifiers are used.
             // Add all of them.

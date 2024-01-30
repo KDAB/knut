@@ -182,7 +182,7 @@ void ScriptDialogItem::setUiFile(const QString &fileName)
 
 void ScriptDialogItem::createProperties(QWidget *dialogWidget)
 {
-    auto widgets = dialogWidget->findChildren<QWidget *>();
+    const auto widgets = dialogWidget->findChildren<QWidget *>();
     for (auto widget : widgets) {
         if (auto dialogButtonBox = qobject_cast<QDialogButtonBox *>(widget)) {
             connect(dialogButtonBox, &QDialogButtonBox::accepted, this, &ScriptDialogItem::accept);

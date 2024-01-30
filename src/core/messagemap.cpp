@@ -100,7 +100,7 @@ MessageMap::MessageMap(const QueryMatch &match)
     auto end = match.get("end");
     range = RangeMark(begin.document(), begin.start(), end.end());
 
-    auto messages = match.getAll("message");
+    const auto messages = match.getAll("message");
     for (const auto &message : messages) {
         entries.append(fromMessage(match, message));
     }

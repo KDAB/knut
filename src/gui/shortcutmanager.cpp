@@ -108,7 +108,7 @@ ShortcutManager::ShortcutManager(MainWindow *parent)
 
 void ShortcutManager::resetAll()
 {
-    for (const auto &command : m_commands)
+    for (const auto &command : std::as_const(m_commands))
         resetShortcut(command, false);
     GuiSettings::instance()->removeAllShortcuts();
 }

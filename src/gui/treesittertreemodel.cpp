@@ -278,7 +278,8 @@ void TreeSitterTreeModel::executeQuery(std::unique_ptr<treesitter::Predicates> &
         while (const auto match = cursor.nextMatch()) {
             m_query->numMatches++;
 
-            for (const auto &capture : match->captures()) {
+            const auto captures = match->captures();
+            for (const auto &capture : captures) {
                 m_query->numCaptures++;
                 m_query->captures[capture.node] += " @" + m_query->query->captureAt(capture.id).name;
             }

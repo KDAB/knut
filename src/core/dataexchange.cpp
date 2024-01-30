@@ -69,7 +69,7 @@ DataExchange::DataExchange(const QString &_className, const QueryMatch &ddxFunct
     : className(_className)
     , range(ddxFunction.get("definition"))
 {
-    auto ddxCalls = ddxFunction.queryIn("body", R"EOF(
+    const auto ddxCalls = ddxFunction.queryIn("body", R"EOF(
                 (expression_statement
                     (call_expression
                         function: (identifier) @ddx-function(#match? "^DDX_" @ddx-function)

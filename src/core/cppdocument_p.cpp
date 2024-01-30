@@ -121,7 +121,7 @@ IncludeHelper::IncludePosition IncludeHelper::findBestFirstIncludeLine() const
 
 void IncludeHelper::computeIncludes()
 {
-    auto results = m_document->query(Queries::findInclude);
+    const auto results = m_document->query(Queries::findInclude);
 
     // Extract all includes
     int lastLine = -1;

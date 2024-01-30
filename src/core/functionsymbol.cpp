@@ -141,7 +141,7 @@ QVector<FunctionArgument> FunctionSymbol::argumentsFromDescription() const
 
     QVector<FunctionArgument> arguments;
     arguments.reserve(argsList.size());
-    for (const auto &arg : std::as_const(argsList)) {
+    for (const auto &arg : argsList) {
         arguments.push_back(FunctionArgument {.type = arg.trimmed(), .name = ""});
     }
 

@@ -196,7 +196,7 @@ QString Node::textExcept(const QString &source, const QVector<QString> &nodeType
         return left.startPosition() > right.startPosition();
     });
 
-    for (const auto &child : children) {
+    for (const auto &child : std::as_const(children)) {
         const auto start = child.startPosition();
         const auto end = child.endPosition();
         text.remove(start - this->startPosition(), end - start);
@@ -209,7 +209,8 @@ QVector<Node> Node::allChildrenOfType(const QVector<QString> &nodeTypes) const
 {
     auto result = QVector<Node>();
 
-    for (const auto &child : children()) {
+    const auto allChildren = children();
+    for (const auto &child : allChildren) {
         // break the recursion at the first node that is of the given type
         // That way we don't get overlapping child nodes.
         if (kdalgorithms::contains(nodeTypes, child.type())) {

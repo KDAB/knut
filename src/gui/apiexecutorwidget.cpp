@@ -109,7 +109,7 @@ void APIExecutorWidget::populateApiList(Core::Document *document)
 void APIExecutorWidget::populateArgumentList()
 {
     // Remove all widgets
-    for (const auto &field : m_argumentFields) {
+    for (const auto &field : std::as_const(m_argumentFields)) {
         delete field.label;
         delete field.widget;
     }
@@ -127,7 +127,7 @@ void APIExecutorWidget::populateArgumentList()
     // Change focus chain
     QWidget *current = ui->apiComboBox;
     QWidget *next = nullptr;
-    for (auto field : m_argumentFields) {
+    for (const auto &field : std::as_const(m_argumentFields)) {
         next = field.widget;
         QWidget::setTabOrder(current, next);
         current = next;

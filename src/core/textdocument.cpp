@@ -52,7 +52,8 @@ static QString matchInBlock(const QTextBlock &block, const QRegularExpression &e
         *cursor = QTextCursor(const_cast<QTextDocument *>(block.document()));
         cursor->setPosition(block.position() + idx + match.capturedLength(), QTextCursor::KeepAnchor);
 
-        for (auto name : expr.namedCaptureGroups()) {
+        const auto namedCaptures = expr.namedCaptureGroups();
+        for (const auto &name : namedCaptures) {
             if (match.hasCaptured(name))
                 return name;
         }

@@ -48,7 +48,7 @@ bool Transformation::runOneTransformation(QueryCursor &cursor, QString &resultTe
     // Loop over them until we find a @from capture.
     while (auto match = cursor.nextMatch()) {
         hasMatch = true;
-        auto captures = match->captures();
+        const auto captures = match->captures();
         for (const auto &capture : captures) {
             auto captureName = m_query->captureAt(capture.id).name;
             context[captureName] = capture.node.textIn(resultText);

@@ -25,7 +25,7 @@ static QString methodToName(const QString &method)
         names.removeFirst();
 
     QString name;
-    for (const auto &word : names) {
+    for (const auto &word : std::as_const(names)) {
         name += word[0].toUpper() + word.mid(1);
     }
     return name;
@@ -265,11 +265,11 @@ QString SpecWriter::writeTypesAndInterfaces()
 
         // Cleanup dependencies
         for (auto it = endType; it != types.end(); ++it) {
-            for (const auto &name : existingNames)
+            for (const auto &name : std::as_const(existingNames))
                 it->dependencies.removeAll(name);
         }
         for (auto it = endStruct; it != interfaces.end(); ++it) {
-            for (const auto &name : existingNames)
+            for (const auto &name : std::as_const(existingNames))
                 it->dependencies.removeAll(name);
         }
         existingNames.clear();
@@ -630,7 +630,7 @@ QString MetaSpecWriter::writeTypesAndInterfaces()
 
         // Cleanup dependencies
         for (auto it = endType; it != m_rootTypes.end(); ++it) {
-            for (const auto &name : existingNames) {
+            for (const auto &name : std::as_const(existingNames)) {
                 (*it)->dependencies.removeAll(name);
             }
         }

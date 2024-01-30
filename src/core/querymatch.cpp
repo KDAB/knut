@@ -213,7 +213,7 @@ Core::QueryMatchList QueryMatch::queryIn(const QString &capture, const QString &
 {
     Core::QueryMatchList result;
 
-    auto ranges = getAll(capture);
+    const auto ranges = getAll(capture);
     for (const auto &range : ranges) {
         auto document = qobject_cast<LspDocument *>(range.document());
         if (document) {

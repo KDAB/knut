@@ -26,7 +26,8 @@ Core::AstNodeList AstNode::childrenNodes() const
 {
     QVector<AstNode> children;
     if (auto n = node()) {
-        for (const auto &node : n->children()) {
+        const auto childNodes = n->children();
+        for (const auto &node : childNodes) {
             children.append(AstNode(node, document()));
         }
     }
