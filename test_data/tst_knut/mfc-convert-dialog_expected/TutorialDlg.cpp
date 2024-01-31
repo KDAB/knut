@@ -4,6 +4,7 @@
 #include "ui_TutorialDlg.h"
 
 #include <QMouseEvent>
+#include <QRegularExpressionValidator>
 
 // DEBUG_NEW macro allows MFC applications to determine memory leak locations in debug builds
 #ifdef _DEBUG
@@ -53,6 +54,9 @@ void CTutorialDlg::DoDataExchange()
     m_MouseEcho.setWidget(m_ui->mouseecho);
     m_TimerEcho.setWidget(m_ui->timerecho);
     m_TimerCtrlSliders.setWidget(m_ui->timer_control_sliders);
+
+    // Validators
+    m_ui->echo_area->setValidator(new QRegularExpressionValidator(QRegularExpression("^.{0,3}$"), m_ui->echo_area))
 }
 
 BEGIN_MESSAGE_MAP(CTutorialDlg, CDialog)

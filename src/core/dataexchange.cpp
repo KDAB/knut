@@ -2,6 +2,8 @@
 
 #include "querymatch.h"
 
+#include <kdalgorithms.h>
+
 namespace Core {
 
 /*!
@@ -34,13 +36,58 @@ Q_INVOKABLE QString DataExchangeEntry::toString() const
     return QString("%1(%2, %3)").arg(function, idc, member);
 }
 
-DataExchangeEntry fromDDX(const QueryMatch &ddxCall)
+QString DataValidationEntry::toString() const
+{
+    return QString("%1(%2, %3)").arg(function, member, arguments.join(", "));
+}
+
+static DataExchangeEntry fromDDX(const QueryMatch &ddxCall)
 {
     auto function = ddxCall.get("ddx-function").text();
     auto idc = ddxCall.get("ddx-idc").text();
     auto member = ddxCall.get("ddx-member").text();
 
     return DataExchangeEntry {.function = function, .idc = idc, .member = member};
+}
+
+static QVector<DataExchangeEntry> queryDDXCalls(const QueryMatch &ddxFunction)
+{
+    const auto ddxCalls = ddxFunction.queryIn("body", R"EOF(
+                (expression_statement
+                    (call_expression
+                        function: (identifier) @ddx-function(#match? "^DDX_" @ddx-function)
+                        arguments: (argument_list
+                            (identifier)
+                            (_) @ddx-idc
+                            (_) @ddx-member))) @ddx
+    )EOF");
+
+    return kdalgorithms::transformed(ddxCalls, fromDDX);
+}
+
+static DataValidationEntry fromDDV(const QueryMatch &ddvCall)
+{
+    auto function = ddvCall.get("ddv-function").text();
+    auto member = ddvCall.get("ddv-member").text();
+    auto arguments = kdalgorithms::transformed(ddvCall.getAll("ddv-arguments"), &RangeMark::text);
+
+    return DataValidationEntry {.function = function, .member = member, .arguments = arguments};
+}
+
+static QVector<DataValidationEntry> queryDDVCalls(const QueryMatch &ddxFunction)
+{
+    const auto ddvCalls = ddxFunction.queryIn("body", R"EOF(
+                (expression_statement
+                    (call_expression
+                        function: (identifier) @ddv-function(#match? "^DDV_" @ddv-function)
+                        arguments: (argument_list
+                            (_)* ","
+                            (_)* @ddv-member ","
+                            ((_) ","?)* @ddv-arguments))) @ddv
+
+    )EOF");
+
+    return kdalgorithms::transformed(ddvCalls, fromDDV);
 }
 
 /*!
@@ -69,20 +116,8 @@ DataExchange::DataExchange(const QString &_className, const QueryMatch &ddxFunct
     : className(_className)
     , range(ddxFunction.get("definition"))
 {
-    const auto ddxCalls = ddxFunction.queryIn("body", R"EOF(
-                (expression_statement
-                    (call_expression
-                        function: (identifier) @ddx-function(#match? "^DDX_" @ddx-function)
-                        arguments: (argument_list
-                            (identifier)
-                            (_) @ddx-idc
-                            (_) @ddx-member))) @ddx
-    )EOF");
-
-    entries.reserve(ddxCalls.size());
-    for (const auto &ddx : ddxCalls) {
-        entries.push_back(fromDDX(ddx));
-    }
+    entries = queryDDXCalls(ddxFunction);
+    validators = queryDDVCalls(ddxFunction);
 }
 
 bool DataExchange::isValid() const

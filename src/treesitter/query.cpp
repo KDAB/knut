@@ -106,8 +106,6 @@ QVector<Query::Pattern> Query::patterns() const
 {
     QVector<Query::Pattern> result;
 
-    ts_query_capture_quantifier_for_id(m_query, 0, 0);
-
     auto count = ts_query_pattern_count(m_query);
     result.reserve(count);
     for (uint32_t patternIndex = 0; patternIndex < count; ++patternIndex) {

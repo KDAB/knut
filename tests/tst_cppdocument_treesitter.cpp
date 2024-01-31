@@ -36,6 +36,12 @@ private slots:
             QCOMPARE(ddx.entries.last().function, "DDX_Check");
             QCOMPARE(ddx.entries.last().idc, "IDC_TIMER_CONTROL_SLIDERS");
             QCOMPARE(ddx.entries.last().member, "m_TimerCtrlSliders");
+
+            QCOMPARE(ddx.validators.size(), 1);
+            const auto &validator = ddx.validators.first();
+            QCOMPARE(validator.function, "DDV_MaxChars");
+            QCOMPARE(validator.member, "m_EchoText");
+            QCOMPARE(validator.arguments, QStringList({"3"}));
         });
     }
 

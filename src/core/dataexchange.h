@@ -25,12 +25,31 @@ public:
     bool operator==(const DataExchangeEntry &other) const = default;
 };
 
+struct DataValidationEntry
+{
+    Q_GADGET
+
+    Q_PROPERTY(QString function MEMBER function)
+    Q_PROPERTY(QString member MEMBER member)
+    Q_PROPERTY(QStringList arguments MEMBER arguments)
+
+public:
+    Q_INVOKABLE QString toString() const;
+
+    QString function;
+    QString member;
+    QStringList arguments;
+
+    bool operator==(const DataValidationEntry &other) const = default;
+};
+
 struct DataExchange
 {
     Q_GADGET
 
     Q_PROPERTY(QString className MEMBER className)
     Q_PROPERTY(QVector<Core::DataExchangeEntry> entries MEMBER entries FINAL)
+    Q_PROPERTY(QVector<Core::DataValidationEntry> validators MEMBER validators FINAL)
     Q_PROPERTY(Core::RangeMark range MEMBER range)
     Q_PROPERTY(bool isValid READ isValid FINAL)
 
@@ -47,6 +66,7 @@ public:
 
     QString className;
     QVector<DataExchangeEntry> entries;
+    QVector<DataValidationEntry> validators;
     RangeMark range;
 };
 
