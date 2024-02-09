@@ -56,7 +56,7 @@ void CTutorialDlg::DoDataExchange()
     m_TimerCtrlSliders.setWidget(m_ui->timer_control_sliders);
 
     // Validators
-    m_ui->echo_area->setValidator(new QRegularExpressionValidator(QRegularExpression("^.{0,3}$"), m_ui->echo_area))
+    m_ui->echo_area->setValidator(new QRegularExpressionValidator(QRegularExpression("^.{0,3}$"), m_ui->echo_area));
 }
 
 BEGIN_MESSAGE_MAP(CTutorialDlg, CDialog)
