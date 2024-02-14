@@ -45,22 +45,25 @@ private slots:
         QCOMPARE(root.namedChildren().size(), 9);
     }
 
+#define VERIFY_PREDICATE_ERROR(queryString)                                                                            \
+    QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), queryString));
+
     void querySyntaxError()
     {
         using Error = treesitter::Query::Error;
         // Syntax Error - missing ")".
-        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(field_expression"));
+        VERIFY_PREDICATE_ERROR("(field_expression");
         // Invalid node type
-        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(field_expr)"));
+        VERIFY_PREDICATE_ERROR("(field_expr)");
         // Invalid field
-        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(field_expression arg: (_))"));
+        VERIFY_PREDICATE_ERROR("(field_expression arg: (_))");
         // Capture Error
-        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(field_expression (#eq? @from @from))"));
+        VERIFY_PREDICATE_ERROR("(field_expression (#eq? @from @from))");
         // Structure Error
-        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(field_expression \"*\")"));
+        VERIFY_PREDICATE_ERROR("(field_expression \"*\")");
         // Predicate errors
         // Non-existing predicate
-        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(#non_existing_predicate?)"));
+        VERIFY_PREDICATE_ERROR("(#non_existing_predicate?)");
     }
 
     void simpleQuery()
@@ -227,13 +230,13 @@ private slots:
     {
         using Error = treesitter::Query::Error;
         // Too few arguments
-        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), R"EOF(
+        VERIFY_PREDICATE_ERROR(R"EOF(
         (#eq?)
-        )EOF"));
+        )EOF");
         // Still too few arguments
-        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), R"EOF(
+        VERIFY_PREDICATE_ERROR(R"EOF(
         (#eq? "test")
-        )EOF"));
+        )EOF");
     }
 
     // make sure we keep the tree alive, as otherwise the nodes will be dangling references
@@ -274,18 +277,16 @@ private slots:
     {
         using Error = treesitter::Query::Error;
         // Too few arguments
-        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(#match?)"));
+        VERIFY_PREDICATE_ERROR("(#match?)");
 
         // Non-regex argument
-        QVERIFY_THROWS_EXCEPTION(
-            Error, treesitter::Query(tree_sitter_cpp(), "((identifier) @ident (#match? @ident @ident)))"));
+        VERIFY_PREDICATE_ERROR("((identifier) @ident (#match? @ident @ident)))");
 
         // Invalid regex
-        QVERIFY_THROWS_EXCEPTION(
-            Error, treesitter::Query(tree_sitter_cpp(), "((identifier) @ident (#match? \"tes[\" @ident))"));
+        VERIFY_PREDICATE_ERROR("((identifier) @ident (#match? \"tes[\" @ident))");
 
         // Non-capture argument
-        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(#match? \"test\" \"test\")"));
+        VERIFY_PREDICATE_ERROR("(#match? \"test\" \"test\")");
     }
 
     void match_predicate()
@@ -317,10 +318,10 @@ private slots:
     {
         using Error = treesitter::Query::Error;
         // Too few arguments
-        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(#in_message_map?)"));
+        VERIFY_PREDICATE_ERROR("(#in_message_map?)");
 
         // Non-capture argument
-        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(#in_message_map? \"xxxx\"))"));
+        VERIFY_PREDICATE_ERROR("(#in_message_map? \"xxxx\"))");
     }
 
     void in_message_map_predicate()
@@ -348,13 +349,13 @@ private slots:
     {
         using Error = treesitter::Query::Error;
         // Too few arguments
-        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(#eq_except? \"test\" @x)"));
+        VERIFY_PREDICATE_ERROR("(_) @x (#eq_except? \"test\" @x)");
         // Non-capture argument
-        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(#eq_except? \"test\" \"\" \"\")"));
+        VERIFY_PREDICATE_ERROR("(#eq_except? \"test\" \"\" \"\")");
         // Non-String argument
-        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(#eq_except? @x \"\" \"\")"));
+        VERIFY_PREDICATE_ERROR("(_) @x (#eq_except? @x \"\" \"\")");
         // Non-String type argument
-        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(#eq_except? \"\" \"\" \"\" @x)"));
+        VERIFY_PREDICATE_ERROR("(_) @x (#eq_except? \"\" \"\" \"\" @x)");
     }
 
     void eq_except_predicate()
@@ -378,9 +379,9 @@ private slots:
     {
         using Error = treesitter::Query::Error;
         // Too few arguments
-        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(#like?)"));
+        VERIFY_PREDICATE_ERROR("(#like?)");
         // Too few arguments
-        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(#like? \"test\")"));
+        VERIFY_PREDICATE_ERROR("(#like? \"test\")");
     }
 
     void like_predicate()
@@ -406,13 +407,13 @@ private slots:
     {
         using Error = treesitter::Query::Error;
         // Too few arguments
-        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(#like_except?)"));
+        VERIFY_PREDICATE_ERROR("(#like_except?)");
         // Only string arguments
-        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(#like_except?) \"\" \"\" \"\""));
+        VERIFY_PREDICATE_ERROR("(#like_except? \"\" \"\" \"\")");
         // capture as expected argument
-        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(#like_except?) @x @x \"\""));
+        VERIFY_PREDICATE_ERROR("(_) @x (#like_except? @x @x \"\")");
         // capture as filter argument
-        QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), "(#like_except?) \"\" @x @x"));
+        VERIFY_PREDICATE_ERROR("(_) @x (#like_except? \"\" @x @x)");
     }
 
     void like_except_predicate()
