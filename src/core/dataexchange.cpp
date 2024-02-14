@@ -57,9 +57,10 @@ static QVector<DataExchangeEntry> queryDDXCalls(const QueryMatch &ddxFunction)
                     (call_expression
                         function: (identifier) @ddx-function(#match? "^DDX_" @ddx-function)
                         arguments: (argument_list
-                            (identifier)
-                            (_) @ddx-idc
-                            (_) @ddx-member))) @ddx
+                            (_)* "," ; The CDataExchange* pDX argument
+                            (_)* @ddx-idc ","
+                            (_)* @ddx-member
+                            (#exclude! @ddx-idc @ddx-member comment)))) @ddx
     )EOF");
 
     return kdalgorithms::transformed(ddxCalls, fromDDX);
@@ -83,8 +84,8 @@ static QVector<DataValidationEntry> queryDDVCalls(const QueryMatch &ddxFunction)
                         arguments: (argument_list
                             (_)* ","
                             (_)* @ddv-member ","
-                            ((_) ","?)* @ddv-arguments))) @ddv
-
+                            ((_) ","?)* @ddv-arguments
+                            (#exclude! @ddv-arguments @ddv-member comment)))) @ddv
     )EOF");
 
     return kdalgorithms::transformed(ddvCalls, fromDDV);

@@ -4,18 +4,18 @@ void TestClass::DoDataExchange(CDataExchange* pDX)
 {
   CDialog::DoDataExchange(pDX);
 
-  DDX_Text(pDX, IDC_ECHO_AREA, m_EchoText);
+  DDX_Text(pDX, IDC_ECHO_AREA, /*some comment*/ m_EchoText);
   DDV_MaxChars(pDX, m_EchoText, 3);
-  DDX_Control(pDX, IDC_MY_CONTROL, m_MyControl);
+  DDX_Control(pDX, /* more comments*/ IDC_MY_CONTROL, m_MyControl);
   // Added a comment here for testing
   DDX_Check(pDX, IDC_CHECK, m_Check);
   DDV_MinMaxDouble(pDX, m_MyControl, 0.0, 100);
   DDV_MinMaxFloat(pDX, m_MyControl, 1.0, 100.1);
 
-  DDV_MinMaxInt(pDX, m_Unknown, 1, 11);
+  DDV_MinMaxInt(pDX, m_Unknown, 1 /*comment here, because why not?*/, 11);
   DDV_MinMaxLong(pDX, m_EchoText, 2, 22);
   DDV_MinMaxLongLong(pDX, m_EchoText, 3, 33);
-  DDV_MinMaxShort(pDX, m_EchoText, 4, 44);
+  DDV_MinMaxShort(pDX, /*another comment*/ m_EchoText, 4, 44);
   DDV_MinMaxUInt(pDX, m_EchoText, 4, 44);
   DDV_MinMaxUnsigned(pDX, m_EchoText, 5, 55);
   DDV_MinMaxULongLong(pDX, m_EchoText, 6, 66);

@@ -266,10 +266,15 @@ private slots:
 
             calls = document->queryFunctionCall("object.sayMessage");
             QCOMPARE(calls.size(), 2);
+
             QCOMPARE(calls[0].get("name").text(), "object.sayMessage");
             QCOMPARE(calls[0].get("argument-list").text(), "()");
+            QCOMPARE(calls[0].getAll("arguments").size(), 0);
+
             QCOMPARE(calls[1].get("name").text(), "object.sayMessage");
             QCOMPARE(calls[1].get("argument-list").text(), "(\"Another message\" /*a comment*/)");
+            QCOMPARE(calls[1].getAll("arguments").size(), 1);
+            QCOMPARE(calls[1].getAll("arguments")[0].text(), "\"Another message\"");
         });
     }
 

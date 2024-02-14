@@ -45,8 +45,8 @@ BEGIN_MESSAGE_MAP(CTutorialDlg, CDialog)
   ON_WM_LBUTTONDOWN()
   ON_WM_MOUSEMOVE()
   ON_WM_RBUTTONDOWN()
-  ON_BN_CLICKED(ID_BTN_ADD, OnBnClickedBtnAdd)
-  ON_BN_CLICKED(IDC_TIMER_CONTROL_SLIDERS, OnBnClickedTimerControlSliders)
+  ON_BN_CLICKED(ID_BTN_ADD, /*a random comment*/OnBnClickedBtnAdd)
+  ON_BN_CLICKED(/*another random comment*/ IDC_TIMER_CONTROL_SLIDERS, OnBnClickedTimerControlSliders)
 END_MESSAGE_MAP()
 
 // This is called when the dialog is first created and shown.

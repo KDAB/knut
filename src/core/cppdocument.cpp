@@ -426,11 +426,14 @@ Core::QueryMatchList CppDocument::queryFunctionCall(const QString &functionName,
  * - `call` - The entire call expresssion
  * - `name` - The name of the function (the text will be equal to functionName)
  * - `argument-list` - The entire list of arguments, including the surroundg parentheses `()`
+ * - `arguments` - Each argument provided to the function call, in order, excluding any comments
  */
 Core::QueryMatchList CppDocument::queryFunctionCall(const QString& functionName)
 {
     LOG("queryFunctionCall", LOG_ARG("functionName", functionName));
-    return internalQueryFunctionCall(functionName, "");
+    return internalQueryFunctionCall(
+            functionName,
+            R"EOF([(_) @arguments ","]* (#exclude! @arguments comment))EOF");
 }
 
 /*!
@@ -642,7 +645,8 @@ MessageMap CppDocument::mfcExtractMessageMap(const QString &className /* = ""*/)
                     (call_expression
                         function: (identifier) @message-name
                         arguments: (argument_list
-                            ((_) @parameter ("," (_) @parameter)*)?)
+                            [(_)* @parameter ","]*
+                            (#exclude! @parameter comment))
                 ))@message
                 (_)
                 ]*

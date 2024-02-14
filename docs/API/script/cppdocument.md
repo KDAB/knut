@@ -267,6 +267,7 @@ The returned QueryMatch instances will have the following captures available:
 - `call` - The entire call expresssion
 - `name` - The name of the function (the text will be equal to functionName)
 - `argument-list` - The entire list of arguments, including the surroundg parentheses `()`
+- `arguments` - Each argument provided to the function call, in order, excluding any comments
 
 #### <a name="queryFunctionCall"></a>array<[QueryMatch](../script/querymatch.md)> **queryFunctionCall**(string functionName, array<string> argumentCaptures)
 
