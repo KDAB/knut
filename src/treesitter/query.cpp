@@ -180,6 +180,11 @@ QVector<QueryMatch::Capture> QueryMatch::capturesNamed(const QString &name) cons
     return result;
 }
 
+void QueryMatch::setCaptures(QVector<Capture> &&captures)
+{
+    m_captures = std::move(captures);
+}
+
 QVector<QueryMatch::Capture> QueryMatch::captures() const
 {
     return m_captures;
@@ -241,7 +246,12 @@ std::optional<QueryMatch> QueryCursor::nextMatch()
 
     while (ts_query_cursor_next_match(m_cursor, &match)) {
         QueryMatch result(match, m_query);
-        if (!m_predicates || m_predicates->filterMatch(result)) {
+        if (m_predicates) {
+            m_predicates->executeCommands(result);
+            if (m_predicates->filterMatch(result)) {
+                return result;
+            }
+        } else {
             return result;
         }
     }

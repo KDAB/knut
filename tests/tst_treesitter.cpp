@@ -441,6 +441,36 @@ private slots:
         QVERIFY(!cursor.nextMatch().has_value());
     }
 
+    void exclude_predicate_errors()
+    {
+        using Error = treesitter::Query::Error;
+        // Too few arguments
+        VERIFY_PREDICATE_ERROR("(#exclude!)");
+        // Only string arguments
+        VERIFY_PREDICATE_ERROR("(#exclude! \"\" \"\")");
+        // only capture arguments
+        VERIFY_PREDICATE_ERROR("(_) @x (#exclude! @x @x)");
+    }
+
+    void exclude_predicate()
+    {
+        auto [source, tree, cursor] = runQuery(R"EOF(
+        (call_expression
+            function: (identifier) @name (#eq? @name freeFunction)
+            arguments: (argument_list
+                _* @argument)
+            (#exclude! @argument comment "," "(" ")"))
+        )EOF");
+
+        auto match = cursor.nextMatch();
+        QVERIFY(match.has_value());
+        auto arguments = match->capturesNamed("argument");
+        QCOMPARE(arguments.size(), 2);
+
+        QCOMPARE(arguments[0].node.textIn(source), "1");
+        QCOMPARE(arguments[1].node.textIn(source), "2");
+    }
+
     // Comments are actually not documented on the tree-sitter.github.io website.
     // They can be used with ";"
     void comments()

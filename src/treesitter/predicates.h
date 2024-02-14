@@ -35,7 +35,15 @@ class Predicates
         std::unordered_map<QString, std::optional<QString> (*)(const PredicateArguments &)> checkFunctions;
     };
 
+    struct Commands
+    {
+        std::unordered_map<QString, std::optional<QString> (*)(const PredicateArguments &)> checkFunctions;
+        std::unordered_map<QString, void (Predicates::*)(QueryMatch &, const PredicateArguments &) const>
+            commandFunctions;
+    };
+
     static Filters filters();
+    static Commands commands();
 
 public:
     explicit Predicates(QString source);
@@ -43,10 +51,21 @@ public:
     // Returns an error message if the predicate is not supported
     static std::optional<QString> checkPredicate(const Query::Predicate &predicate);
 
+    // Executes all command-predicates (e.g. exclude!) on the match.
+    void executeCommands(QueryMatch &match) const;
+
     // Returns true if the match fulfills all query predicates.
     bool filterMatch(const QueryMatch &match) const;
 
 private:
+    // ################# Commands #########################
+#define PREDICATE_COMMAND(NAME)                                                                                        \
+    void command_##NAME(QueryMatch &match, const PredicateArguments &arguments) const;                                 \
+    static std::optional<QString> checkCommand_##NAME(const PredicateArguments &arguments);
+
+    PREDICATE_COMMAND(exclude);
+#undef PREDCIATE_COMMAND
+
     // ################## Filters #########################
 #define PREDICATE_FILTER(NAME)                                                                                         \
     bool filter_##NAME(const QueryMatch &match, const PredicateArguments &arguments) const;                            \

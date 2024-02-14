@@ -98,7 +98,40 @@ constructor.get("body").remove()
 
 Tree-sitter queries can be extended by the embedding application (in this case Knut) using predicates.
 
+The predicates provided by Knut are divided into two categories:
+
+1. Commands - Predicates ending with an exclamation mark (`!`)
+    - These predicates may modify a QueryMatch, but not discard it
+    - Commands are run *before* the filters are checked
+2. Filters - Predicates ending with a question mark (`?`)
+    - These predicates can discard, but not modify a QueryMatch
+    - A filter discards a QueryMatch if its check fails
+    - Filters are checked *after* the commands run
+
 Knut currently provides implementations for these predicates:
+
+### `(exclude! [capture]+ [exclusion]+)`
+Exclude node types listed in `exclusion` from the given `capture`s.
+
+This is especially useful to remove any unwanted `(comment)` nodes.
+Especially when transforming function calls, this is helpful, as the order of arguments is often relevant there and inline comments should likely not be treated as positional arguments.
+
+Example:
+``` treesitter
+(call_expression
+    function: (identifier) @name (#eq? @name myFunction)
+    arguments: (argument_list
+        [(_) @argument ","]*)
+    (#exclude! @argument comment))
+```
+This query would return a QueryMatch with only 2 captures for "argument" on the following call:
+```
+myFunction(1, /*documentation for the second parameter*/ 2);
+```
+
+Where the first `@argument` capture would be `"1"` and the second `"2"`.
+
+Without the `(#exclude!)` predicate, 3 nodes would have been captured, with the comment as the second capture.
 
 ### `(#eq? [args]+)`
 Check if all arguments are exactly string-equal
@@ -114,6 +147,40 @@ Example usage to find the constructor of `MyClass`
     body: (compound_statement) @body)
 ```
 Would find the constructor of the class `MyClass`.
+
+### `(like? [args]+)`
+Check if all arguments are "alike".
+
+In this case "alike" means the arguments are all string-equal, after all white-space is removed.
+
+This is very useful when comparing strings that might span multiple lines or may be indented/formatted differently depening on preference.
+E.g. `const QString&` could also be formatted as `const QString &`.
+The `like?` predicate would match both of these variations.
+
+In general, prefer `like?` over `eq?` when matching anything other than a single identifier.
+
+### `(eq_except? [pattern] [capture] [exclusion]+)`
+Check if the pattern and the capture are string-equal, excluding any (sub-)nodes that have a type listed in `exclusion`.
+
+This is similar to the `(#eq?)` operator.
+However, the captured nodes and their child nodes are filtered.
+Any (child) node listed in `exclusion` is removed from the string before comparing for string-equality.
+
+This is useful to remove the `identifier` from a parameter_declaration, that may have arbitrarily many pointer indirections.
+
+E.g.: To check that the type of a parameter is `const std::string &`, you can simply exclude the identifier:
+``` treesitter
+(function_definition
+    declarator: (function_declarator
+        parameters: (parameter_list
+            (parameter_declaration) @param
+            (#eq_except? "const std::string &" @param "identifier"))))
+```
+
+### `(like_except? [pattern] [capture] [exclusion]+)`
+Check if the pattern and capture are "alike", excluding any (sub-)nodes that have a type listed in `exclusion`.
+
+See: [`(#eq_except?)`](#eq_except-pattern-capture-exclusion) and [`(#like?)`](#like-args).
 
 ### `(#match? [regex] [args]+)`
 Check if the given `args` match the given `regex`

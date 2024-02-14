@@ -1,9 +1,8 @@
 #include "predicates.h"
 
 #include "languages.h"
-#include "parser.h"
-#include "tree.h"
 
+#include "kdalgorithms.h"
 #include "spdlog/spdlog.h"
 
 #include <ranges>
@@ -43,6 +42,19 @@ Predicates::Filters Predicates::filters()
     return filters;
 }
 
+Predicates::Commands Predicates::commands()
+{
+    Predicates::Commands commands;
+
+#define REGISTER_COMMAND(NAME)                                                                                         \
+    commands.commandFunctions[#NAME "!"] = &Predicates::command_##NAME;                                                \
+    commands.checkFunctions[#NAME "!"] = &Predicates::checkCommand_##NAME;
+
+    REGISTER_COMMAND(exclude);
+#undef REGISTER_COMMAND
+    return commands;
+}
+
 std::optional<QString> Predicates::checkPredicate(const Query::Predicate &predicate)
 {
     const auto filters = Predicates::filters();
@@ -50,12 +62,34 @@ std::optional<QString> Predicates::checkPredicate(const Query::Predicate &predic
     if (it != filters.checkFunctions.cend()) {
         return it->second(predicate.arguments);
     }
+
+    const auto commands = Predicates::commands();
+    it = commands.checkFunctions.find(predicate.name);
+    if (it != commands.checkFunctions.cend()) {
+        return it->second(predicate.arguments);
+    }
+
     return "Unknown predicate";
 }
 
 Predicates::Predicates(QString source)
     : m_source(std::move(source))
 {
+}
+
+void Predicates::executeCommands(QueryMatch &match) const
+{
+    const auto patterns = match.query()->patterns();
+    const auto pattern = patterns.at(match.patternIndex());
+
+    for (const auto &predicate : pattern.predicates) {
+        const auto commands = Predicates::commands();
+        const auto it = commands.commandFunctions.find(predicate.name);
+        if (it != commands.commandFunctions.cend()) {
+            const auto commandPredicate = it->second;
+            (this->*(commandPredicate))(match, predicate.arguments);
+        }
+    }
 }
 
 bool Predicates::filterMatch(const QueryMatch &match) const
@@ -65,9 +99,9 @@ bool Predicates::filterMatch(const QueryMatch &match) const
 
     for (const auto &predicate : pattern.predicates) {
         const auto filters = Predicates::filters();
-        const auto &it = filters.filterFunctions.find(predicate.name);
+        const auto it = filters.filterFunctions.find(predicate.name);
         if (it != filters.filterFunctions.cend()) {
-            const auto &filterPredicate = it->second;
+            const auto filterPredicate = it->second;
             if (!(this->*(filterPredicate))(match, predicate.arguments)) {
                 return false;
             }
@@ -75,6 +109,58 @@ bool Predicates::filterMatch(const QueryMatch &match) const
     }
 
     return true;
+}
+
+std::optional<QString> Predicates::checkCommand_exclude(const Predicates::PredicateArguments &arguments)
+{
+    if (arguments.size() < 2) {
+        return "Too few arguments";
+    }
+
+    bool has_capture = kdalgorithms::any_of(arguments, [](const auto &arg) {
+        return std::holds_alternative<Query::Capture>(arg);
+    });
+    if (!has_capture) {
+        return "No capture in arguments";
+    }
+
+    bool has_string = kdalgorithms::any_of(arguments, [](const auto &arg) {
+        return std::holds_alternative<QString>(arg);
+    });
+    if (!has_string) {
+        return "No string in arguments";
+    }
+
+    return {};
+}
+
+void Predicates::command_exclude(QueryMatch &match, const Predicates::PredicateArguments &arguments) const
+{
+    auto to_string = [](const auto &variant) {
+        return std::get<QString>(variant);
+    };
+    auto is_string = [](const auto &variant) {
+        return std::holds_alternative<QString>(variant);
+    };
+    auto exclusions = kdalgorithms::filtered_transformed<std::set>(arguments, to_string, is_string);
+
+    auto to_capture_id = [](const auto &variant) {
+        return std::get<treesitter::Query::Capture>(variant).id;
+    };
+    auto is_capture = [](const auto &variant) {
+        return std::holds_alternative<treesitter::Query::Capture>(variant);
+    };
+    auto capture_ids = kdalgorithms::filtered_transformed<std::set>(arguments, to_capture_id, is_capture);
+
+    auto new_captures = kdalgorithms::filtered(match.captures(), [&exclusions, &capture_ids](const auto &capture) {
+        if (!capture_ids.contains(capture.id)) {
+            return true;
+        }
+
+        return !exclusions.contains(capture.node.type());
+    });
+
+    match.setCaptures(std::move(new_captures));
 }
 
 std::optional<QString> Predicates::checkFilter_eq(const Predicates::PredicateArguments &arguments)

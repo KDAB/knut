@@ -90,6 +90,7 @@ public:
     uint32_t id() const;
     uint32_t patternIndex() const;
 
+    void setCaptures(QVector<Capture> &&captures);
     QVector<Capture> captures() const;
     QVector<Capture> capturesWithId(uint32_t id) const;
 
