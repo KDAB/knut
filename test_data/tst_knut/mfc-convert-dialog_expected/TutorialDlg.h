@@ -75,6 +75,5 @@ private:
 
   CCheck m_TimerCtrlSliders;
   HICON m_hIcon;
-private:
-	std::unique_ptr<Ui::CTutorialDlg> m_ui;
+  std::unique_ptr<Ui::CTutorialDlg> m_ui;
 };
