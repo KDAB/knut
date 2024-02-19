@@ -93,7 +93,7 @@ struct MetaData
         QString documentation;
         QString since;
 
-        explicit Common(QString _name = QStringLiteral(""))
+        explicit Common(QString _name = QLatin1String(""))
             : name(std::move(_name))
         {
         }
