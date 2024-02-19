@@ -450,7 +450,7 @@ Symbol *LspDocument::findSymbol(const QString &name, int options) const
         else if (options & FindRegexp)
             return regexp.match(symbol->name()).hasMatch();
         else
-            return symbol->name().contains(name,
+            return symbol->name().endsWith(name,
                                            (options & FindCaseSensitively) ? Qt::CaseSensitive : Qt::CaseInsensitive);
     };
     auto it = std::ranges::find_if(symbols, byName);
