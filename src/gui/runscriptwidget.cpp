@@ -28,6 +28,7 @@ RunScriptWidget::RunScriptWidget(QWidget *parent)
         ui->runButton->setEnabled(!str.trimmed().isEmpty());
     });
     connect(ui->runButton, &QToolButton::clicked, this, &RunScriptWidget::run);
+    connect(ui->lineEdit, &QLineEdit::returnPressed, this, &RunScriptWidget::run);
     connect(ui->closeButton, &QToolButton::clicked, this, &RunScriptWidget::close);
 
     const auto &list = Core::ScriptManager::instance()->scriptList();
