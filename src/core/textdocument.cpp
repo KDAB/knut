@@ -1306,7 +1306,7 @@ QString TextDocument::match(QString regexp, int options)
                                     [&captureGroup](const auto &expression, const auto &match, const auto &cursor) {
                                         Q_UNUSED(cursor);
                                         for (auto name : expression.namedCaptureGroups()) {
-                                            if (match.hasCaptured(name)) {
+                                            if (!name.isEmpty() && match.hasCaptured(name)) {
                                                 captureGroup = name;
                                                 return true;
                                             }
