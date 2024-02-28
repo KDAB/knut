@@ -22,6 +22,6 @@ TestCase {
     }
 
     property MFCConvertDialog dialog: MFCConvertDialog {
-        uiFilePath: "../scripts/mfc-convert-dialog.ui"
+        uiFilePath: "../scripts/mfc-deprecated-convert-dialog.ui"
     }
 }
