@@ -8,6 +8,8 @@
 #include <QString>
 #include <QVector>
 
+#include <functional>
+
 struct TSLanguage;
 struct TSQuery;
 struct TSQueryCursor;
@@ -136,10 +138,15 @@ public:
     // will no longer return new matches.
     QVector<QueryMatch> allRemainingMatches();
 
+    // The progress callback is called after each match is found, even if it is discarded later by the predicate engine.
+    // It allows the UI to update and remain responsive while the query is running.
+    void setProgressCallback(std::function<void()> callback);
+
 private:
     // The query must be kept alive for as long as the cursor is alive.
     // Otherwise, no new matches can be returned and the Predicates can't be executed.
     std::shared_ptr<Query> m_query;
+    std::function<void()> m_progressCallback;
 
     std::unique_ptr<Predicates> m_predicates;
     TSQueryCursor *m_cursor;

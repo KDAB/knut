@@ -240,6 +240,11 @@ void QueryCursor::execute(const std::shared_ptr<Query> &query, const Node &node,
     ts_query_cursor_exec(m_cursor, m_query->m_query, node.m_node);
 }
 
+void QueryCursor::setProgressCallback(std::function<void()> callback)
+{
+    m_progressCallback = callback;
+}
+
 std::optional<QueryMatch> QueryCursor::nextMatch()
 {
     TSQueryMatch match;
@@ -253,6 +258,10 @@ std::optional<QueryMatch> QueryCursor::nextMatch()
             }
         } else {
             return result;
+        }
+
+        if (m_progressCallback) {
+            m_progressCallback();
         }
     }
     return {};

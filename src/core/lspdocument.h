@@ -4,6 +4,7 @@
 #include "querymatch.h"
 #include "symbol.h"
 #include "textdocument.h"
+#include "treesitter/query.h"
 
 #include <functional>
 #include <memory>
@@ -88,6 +89,8 @@ protected:
 private:
     bool checkClient() const;
     Document *followSymbol(int pos);
+
+    std::optional<treesitter::QueryCursor> createQueryCursor(const std::shared_ptr<treesitter::Query> &query);
 
     void changeContent(int position, int charsRemoved, int charsAdded);
     void changeContentLsp(int position, int charsRemoved, int charsAdded);

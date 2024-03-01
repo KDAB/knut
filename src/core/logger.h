@@ -3,6 +3,7 @@
 #include "string_utils.h"
 
 #include <QAbstractItemModel>
+#include <QCoreApplication>
 #include <QMetaEnum>
 #include <QString>
 #include <QVariantList>
@@ -11,6 +12,8 @@
 
 #include <concepts>
 #include <vector>
+
+#include "scriptdialogitem.h"
 
 /**
  * Create a return value, the name will depend on the type returned.
@@ -59,16 +62,10 @@ private:
 // Internal structs and classes
 ///////////////////////////////////////////////////////////////////////////////
 template <typename T>
-concept HasToString = requires(const T &t)
-{
-    t.toString();
-};
+concept HasToString = requires(const T &t) { t.toString(); };
 
 template <typename T>
-concept HasPointerToString = requires(const T &t)
-{
-    t->toString();
-};
+concept HasPointerToString = requires(const T &t) { t->toString(); };
 
 /**
  * @brief toString
@@ -211,6 +208,14 @@ public:
     explicit LoggerObject(QString name, bool /*unused*/)
         : LoggerObject()
     {
+        // When we're running a script, we ideally want to show some kind of feedback.
+        // As our scripts currently have to run on the GUI thread, the GUI is blocked.
+        // So we need to update the progress bar to show that the script is still running.
+        //
+        // We're doing this here, as logging happens quite often in pretty much all scripts.
+        // This has nothing to do with logging itself, but is just a good place to do it.
+        ScriptDialogItem::updateProgress();
+
         if (!m_canLog)
             return;
         if (m_model)

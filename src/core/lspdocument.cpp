@@ -524,7 +524,7 @@ TextRange LspDocument::toRange(const Lsp::Range &range) const
     return {toPos(range.start), toPos(range.end)};
 }
 
-Core::QueryMatch LspDocument::queryFirst(const std::shared_ptr<treesitter::Query> &query)
+std::optional<treesitter::QueryCursor> LspDocument::createQueryCursor(const std::shared_ptr<treesitter::Query> &query)
 {
     const auto &tree = m_treeSitterHelper->syntaxTree();
     if (!tree || !query) {
@@ -532,8 +532,19 @@ Core::QueryMatch LspDocument::queryFirst(const std::shared_ptr<treesitter::Query
     }
 
     treesitter::QueryCursor cursor;
+    cursor.setProgressCallback(ScriptDialogItem::updateProgress);
     cursor.execute(query, tree->rootNode(), std::make_unique<treesitter::Predicates>(text()));
-    auto match = cursor.nextMatch();
+    return cursor;
+}
+
+Core::QueryMatch LspDocument::queryFirst(const std::shared_ptr<treesitter::Query> &query)
+{
+    auto cursor = createQueryCursor(query);
+    if (!cursor.has_value()) {
+        return {};
+    }
+
+    auto match = cursor->nextMatch();
     if (match.has_value()) {
         return QueryMatch(*this, match.value());
     } else {
@@ -543,14 +554,12 @@ Core::QueryMatch LspDocument::queryFirst(const std::shared_ptr<treesitter::Query
 
 Core::QueryMatchList LspDocument::query(const std::shared_ptr<treesitter::Query> &query)
 {
-    const auto &tree = m_treeSitterHelper->syntaxTree();
-    if (!tree || !query) {
+    auto cursor = createQueryCursor(query);
+    if (!cursor.has_value()) {
         return {};
     }
 
-    treesitter::QueryCursor cursor;
-    cursor.execute(query, tree->rootNode(), std::make_unique<treesitter::Predicates>(text()));
-    auto matches = cursor.allRemainingMatches();
+    auto matches = cursor->allRemainingMatches();
 
     return kdalgorithms::transformed<Core::QueryMatchList>(matches, [this](const treesitter::QueryMatch &match) {
         return QueryMatch(*this, match);

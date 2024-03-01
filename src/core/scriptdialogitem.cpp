@@ -7,11 +7,13 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QCompleter>
+#include <QCoreApplication>
 #include <QDialogButtonBox>
 #include <QDoubleSpinBox>
 #include <QFile>
 #include <QFileInfo>
 #include <QLineEdit>
+#include <QProgressDialog>
 #include <QPushButton>
 #include <QQmlContext>
 #include <QRadioButton>
@@ -62,6 +64,14 @@ namespace Core {
  */
 
 /*!
+ * \qmlproperty bool ScriptDialog::showProgress
+ * \since 1.1
+ *
+ * If set to true, a progress dialog will be shown when the dialog is accepted.
+ * This is useful for long-running scripts.
+ */
+
+/*!
  * \qmlsignal ScriptDialog::clicked(string name)
  * This handler is called when a button is cliked, the `name` is the name of the button.
  */
@@ -82,7 +92,7 @@ ScriptDialogItem::ScriptDialogItem(QWidget *parent)
     : QDialog(parent)
     , m_data(nullptr)
 {
-    setAttribute(Qt::WA_DeleteOnClose);
+    setAttribute(Qt::WA_DeleteOnClose, false);
 
     // The ui File by default is determined from the script path that the ScriptRunner is currently executing.
     // However, if this ScriptDialog is created from another QML file, this will not be correct (i.e. during testing).
@@ -130,6 +140,70 @@ void ScriptDialogItem::setUiFilePath(const QString &filePath)
             m_uiFilePath = filePath;
         }
         emit uiFilePathChanged(m_uiFilePath);
+    }
+}
+
+bool ScriptDialogItem::showProgress()
+{
+    return m_showProgress;
+}
+
+void ScriptDialogItem::done(int code)
+{
+    if (code == QDialog::Accepted && showProgress()) {
+        startShowingProgress();
+    }
+
+    // When showing progress, the `onAccepted` handler will likely call `QCoreApplication::processEvents` multiple
+    // times. This will cause other slots that are connected to `finished` to be evaluated as well. Therefore we use the
+    // additional `conversionFinished` signal for cleanup. This signal is only emitted once all handlers of
+    // `QDialog::done` have finished.
+    QDialog::done(code);
+    emit conversionFinished();
+}
+
+void ScriptDialogItem::setShowProgress(bool value)
+{
+    if (m_showProgress != value) {
+        m_showProgress = value;
+        emit showProgressChanged(m_showProgress);
+    }
+}
+
+static bool isShowingProgress = false;
+
+void ScriptDialogItem::startShowingProgress()
+{
+    if (!m_progressDialog) {
+        m_progressDialog = new QProgressDialog();
+        m_progressDialog->setModal(true);
+        m_progressDialog->setWindowModality(Qt::ApplicationModal);
+        m_progressDialog->setWindowTitle(windowTitle());
+        m_progressDialog->setLabelText("Converting your code...");
+        m_progressDialog->setCancelButton(nullptr);
+        m_progressDialog->setMinimumDuration(0);
+        // Using min,max,value of 0 causes an undetermined progress bar
+        // As we don't know how long a script may take without the script telling us, this is the default.
+        m_progressDialog->setMinimum(0);
+        m_progressDialog->setMaximum(0);
+        m_progressDialog->setValue(0);
+
+        connect(this, &ScriptDialogItem::conversionFinished, m_progressDialog, [this]() {
+            m_progressDialog->close();
+            m_progressDialog->deleteLater();
+            isShowingProgress = false;
+        });
+    }
+    m_progressDialog->show();
+    isShowingProgress = true;
+
+    ScriptDialogItem::updateProgress();
+}
+
+void ScriptDialogItem::updateProgress()
+{
+    if (isShowingProgress) {
+        QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
     }
 }
 

@@ -15,6 +15,7 @@ import Script 1.0
 | | Name |
 |-|-|
 |QQmlPropertyMap|**[data](#data)**|
+|bool|**[showProgress](#showProgress)**|
 
 ## Signals
 
@@ -55,6 +56,14 @@ ScriptDialog {
 #### <a name="data"></a>QQmlPropertyMap **data**
 
 This read-only property contains all properties mapping the widgets.
+
+#### <a name="showProgress"></a>bool **showProgress**
+
+!!! note ""
+    Since: Knut 1.1
+
+If set to true, a progress dialog will be shown when the dialog is accepted.
+This is useful for long-running scripts.
 
 ## Signal Documentation
 
