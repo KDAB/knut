@@ -41,6 +41,7 @@ public:
     Q_INVOKABLE Core::TextLocationList references(int position) const;
 
     Q_INVOKABLE Core::QueryMatchList query(const QString &query);
+    Q_INVOKABLE Core::QueryMatch queryFirst(const QString &query);
     Q_INVOKABLE Core::QueryMatchList queryInRange(const Core::RangeMark &range, const QString &query);
 
     // This overload exists for improved performance. It's not user-facing API.
@@ -49,6 +50,7 @@ public:
     // Therefore it's better to construct them once and reuse them.
     // So allow this for outside users.
     QVector<Core::QueryMatch> query(const std::shared_ptr<treesitter::Query> &query);
+    Core::QueryMatch queryFirst(const std::shared_ptr<treesitter::Query> &query);
 
     bool hasLspClient() const;
 

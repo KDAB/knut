@@ -662,13 +662,14 @@ MessageMap CppDocument::mfcExtractMessageMap(const QString &className /* = ""*/)
     )EOF").arg(checkClassName);
     // clang-format on
 
-    auto result = query(queryString);
-    if (result.isEmpty()) {
+    // We assume there is at most one MessageMap per file.
+    // This allows us to return immediately after the message map is found.
+    // As the MessageMap query is quite complicated, this can significantly improve performance.
+    auto match = queryFirst(queryString);
+    if (match.isEmpty()) {
         spdlog::warn("CppDocument::mfcExtractMessageMap: No message map found in `{}`", fileName().toStdString());
         return {};
     }
-
-    const auto &match = result.first();
 
     return MessageMap(match);
 }

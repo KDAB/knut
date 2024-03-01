@@ -24,6 +24,7 @@ Inherited properties: [TextDocument properties](../script/textdocument.md#proper
 ||**[followSymbol](#followSymbol)**()|
 |string |**[hover](#hover)**()|
 |array<[QueryMatch](../script/querymatch.md)> |**[query](#query)**(string query)|
+|[QueryMatch](../script/querymatch.md) |**[queryFirst](#queryFirst)**(string query)|
 |array<[QueryMatch](../script/querymatch.md)> |**[queryInRange](#queryInRange)**([RangeMark](../script/rangemark.md) range, string query)|
 |array<[TextLocation](../script/textlocation.md)> |**[references](#references)**()|
 ||**[selectSymbol](#selectSymbol)**(string name, int options = TextDocument.NoFindFlags)|
@@ -73,6 +74,22 @@ The query is using [Tree-sitter
 queries](https://tree-sitter.github.io/tree-sitter/using-parsers#pattern-matching-with-queries).
 
 Also see: [Tree-sitter in Knut](../../getting-started/treesitter.md)
+
+#### <a name="queryFirst"></a>[QueryMatch](../script/querymatch.md) **queryFirst**(string query)
+
+!!! note ""
+    Since: Knut 1.1
+
+Runs the given Tree-sitter `query` and returns the first match.
+If no match can be found an empty match will be returned.
+
+This can be a lot faster than `query` if you only need the first match.
+
+The query is using [Tree-sitter
+queries](https://tree-sitter.github.io/tree-sitter/using-parsers#pattern-matching-with-queries).
+
+Also see: [Tree-sitter in Knut](../../getting-started/treesitter.md)
+ Core::QueryMatchList LspDocument::query(const QString &query)
 
 #### <a name="queryInRange"></a>array<[QueryMatch](../script/querymatch.md)> **queryInRange**([RangeMark](../script/rangemark.md) range, string query)
 

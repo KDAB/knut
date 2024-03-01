@@ -524,6 +524,23 @@ TextRange LspDocument::toRange(const Lsp::Range &range) const
     return {toPos(range.start), toPos(range.end)};
 }
 
+Core::QueryMatch LspDocument::queryFirst(const std::shared_ptr<treesitter::Query> &query)
+{
+    const auto &tree = m_treeSitterHelper->syntaxTree();
+    if (!tree || !query) {
+        return {};
+    }
+
+    treesitter::QueryCursor cursor;
+    cursor.execute(query, tree->rootNode(), std::make_unique<treesitter::Predicates>(text()));
+    auto match = cursor.nextMatch();
+    if (match.has_value()) {
+        return QueryMatch(*this, match.value());
+    } else {
+        return QueryMatch();
+    }
+}
+
 Core::QueryMatchList LspDocument::query(const std::shared_ptr<treesitter::Query> &query)
 {
     const auto &tree = m_treeSitterHelper->syntaxTree();
@@ -555,6 +572,27 @@ Core::QueryMatchList LspDocument::query(const QString &query)
     LOG("LspDocument::query", LOG_ARG("query", query));
 
     return this->query(m_treeSitterHelper->constructQuery(query));
+}
+
+/*!
+ * \qmlmethod QueryMatch LspDocument::queryFirst(string query)
+ * \since 1.1
+ * Runs the given Tree-sitter `query` and returns the first match.
+ * If no match can be found an empty match will be returned.
+ *
+ * This can be a lot faster than `query` if you only need the first match.
+ *
+ * The query is using [Tree-sitter
+ * queries](https://tree-sitter.github.io/tree-sitter/using-parsers#pattern-matching-with-queries).
+ *
+ * Also see: [Tree-sitter in Knut](../../getting-started/treesitter.md)
+ Core::QueryMatchList LspDocument::query(const QString &query)
+ */
+Core::QueryMatch LspDocument::queryFirst(const QString &query)
+{
+    LOG("LspDocument::queryOne", LOG_ARG("query", query));
+
+    return this->queryFirst(m_treeSitterHelper->constructQuery(query));
 }
 
 /**
