@@ -20,7 +20,7 @@
         QStringList arguments {"knut.exe", "-s", fi.absoluteFilePath()};                                               \
         QDir dir(Test::testDataPath() + "/tst_" #name);                                                                \
         if (dir.exists())                                                                                              \
-            arguments.append({"-r", dir.absolutePath()});                                                              \
+            arguments.append({dir.absolutePath()});                                                                    \
         Core::KnutCore knut;                                                                                           \
         qmlRegisterSingletonType<TestUtil>("Script.Test", 1, 0, "TestUtil", [](QQmlEngine *, QJSEngine *) {            \
             return new TestUtil();                                                                                     \

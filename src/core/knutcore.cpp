@@ -6,6 +6,7 @@
 #include "textdocument.h"
 
 #include <QApplication>
+#include <QDir>
 #include <QTimer>
 
 #include <spdlog/cfg/env.h>
@@ -47,10 +48,18 @@ void KnutCore::process(const QStringList &arguments)
     initParser(parser);
     parser.process(arguments);
 
+    const QStringList positionalArguments = parser.positionalArguments();
     // Set the root directory
-    const QString rootDir = parser.value("root");
-    if (!rootDir.isEmpty())
-        Project::instance()->setRoot(rootDir);
+    if (!positionalArguments.isEmpty()) {
+        const QString rootDir = positionalArguments.at(0);
+        const QDir pathDir(rootDir);
+        if (pathDir.exists()) {
+            Project::instance()->setRoot(rootDir);
+        } else {
+            spdlog::error("KnutCore::process - Root directory: {}, does not exist. Cannot open a new project!",
+                          pathDir.absolutePath().toStdString());
+        }
+    }
 
     // Open document on startup
     const QString fileName = parser.value("input");
@@ -85,17 +94,16 @@ void KnutCore::process(const QStringList &arguments)
 void KnutCore::initParser(QCommandLineParser &parser) const
 {
     parser.setApplicationDescription("Automation tool for code transformation using scripts");
+    parser.addPositionalArgument(QStringLiteral("root"), QStringLiteral("The root directory."));
     parser.addHelpOption();
     parser.addVersionOption();
 
     // Added two more parameters(line,column) to the knut commandline.
-    parser.addOptions({
-        {{"s", "script"}, "Run given script <file> then exit", "file"},
-        {{"r", "root"}, "Root <directory> of the project", "directory"},
-        {{"i", "input"}, "Open document <file> on startup", "file"},
-        {{"l", "line"}, "Line value to set the current cursor position in the passed file", "line"},
-        {{"c", "column"}, "Column value to set the current cursor position in the passed file", "column"},
-    });
+    parser.addOptions(
+        {{{"s", "script"}, "Run given script <file> then exit", "file"},
+         {{"i", "input"}, "Open document <file> on startup", "file"},
+         {{"l", "line"}, "Line value to set the current cursor position in the passed file", "line"},
+         {{"c", "column"}, "Column value to set the current cursor position in the passed file", "column"}});
 }
 
 void KnutCore::doParse(const QCommandLineParser &parser) const
