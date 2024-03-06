@@ -39,7 +39,7 @@ private slots:
 
     void testSource(const QString &source)
     {
-        Test::FileTester file(Test::testDataPath() + "/tst_photon/" + source);
+        Test::FileTester file(Test::testDataPath() + "/tst_photon_ts/" + source);
         qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(file.fileName()));
 
         const auto scriptPath = QCoreApplication::applicationDirPath() + "/scripts/photon-convert-file-ts.qml";
