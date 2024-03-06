@@ -37,6 +37,9 @@ public:
     // This method should be called in regular intervals to ensure visual progress.
     static void updateProgress();
 
+    Q_INVOKABLE void setProgressSteps(int numSteps);
+    Q_INVOKABLE void nextStep(const QString &title);
+
 public Q_SLOTS:
     void done(int code) override;
 
@@ -64,7 +67,10 @@ private:
     // needs to be mutable for lazy-initialization
     mutable DynamicObject *m_data;
     std::vector<QObject *> m_children;
+
     QProgressDialog *m_progressDialog = nullptr;
+    int m_numProgressSteps = 0;
+    int m_currentProgressStep = 0;
     bool m_showProgress = false;
 };
 

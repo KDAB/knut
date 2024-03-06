@@ -170,6 +170,55 @@ void ScriptDialogItem::setShowProgress(bool value)
     }
 }
 
+/**
+ * \qmlmethod ScriptDialog::setProgressSteps(int numSteps)
+ * \since 1.1
+ *
+ * Set the number of progress steps.
+ *
+ * This method should be called before calling `nextStep` for the first time.
+ * The number of `nextStep` calls should match the number of steps set here.
+ */
+void ScriptDialogItem::setProgressSteps(int numSteps)
+{
+    m_numProgressSteps = numSteps;
+    if (m_progressDialog) {
+        m_progressDialog->setMaximum(numSteps);
+    }
+}
+
+/**
+ * \qmlmethod ScriptDialog::nextStep(string title)
+ * \since 1.1
+ *
+ * Indicate a new progress step.
+ *
+ * This will update the progress bar and the title of the progress dialog.
+ * Make sure that the number of steps is set correctly before calling this method.
+ * \sa setProgressSteps
+ */
+void ScriptDialogItem::nextStep(const QString &title)
+{
+    // Only update the number after updating the title & progress bar.
+    // Otherwise the first call to `nextStep` would already update the progress bar to 1.
+    // And we'd have the progress bar show 100% when the last step started, not when it finished.
+    //
+    // Also, never allow the progress bar to actually reach 100%.
+    // That always looks silly. "Hey I'm 100% done, but still not finished!"
+    //
+    // This is likely just caused by a script that's indicating too few progress steps.
+    // So just increase the maximum.
+    if (m_currentProgressStep >= m_numProgressSteps) {
+        setProgressSteps(m_numProgressSteps + 1);
+    }
+
+    if (m_progressDialog) {
+        m_progressDialog->setLabelText(title);
+        m_progressDialog->setValue(m_currentProgressStep);
+    }
+    ++m_currentProgressStep;
+}
+
 static bool isShowingProgress = false;
 
 void ScriptDialogItem::startShowingProgress()
@@ -182,11 +231,13 @@ void ScriptDialogItem::startShowingProgress()
         m_progressDialog->setLabelText("Converting your code...");
         m_progressDialog->setCancelButton(nullptr);
         m_progressDialog->setMinimumDuration(0);
+        m_progressDialog->setAutoClose(false);
+        m_progressDialog->setAutoReset(false);
         // Using min,max,value of 0 causes an undetermined progress bar
         // As we don't know how long a script may take without the script telling us, this is the default.
         m_progressDialog->setMinimum(0);
-        m_progressDialog->setMaximum(0);
-        m_progressDialog->setValue(0);
+        m_progressDialog->setMaximum(m_numProgressSteps);
+        m_progressDialog->setValue(m_currentProgressStep);
 
         connect(this, &ScriptDialogItem::conversionFinished, m_progressDialog, [this]() {
             m_progressDialog->close();

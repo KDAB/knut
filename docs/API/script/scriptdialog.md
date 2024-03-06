@@ -17,6 +17,13 @@ import Script 1.0
 |QQmlPropertyMap|**[data](#data)**|
 |bool|**[showProgress](#showProgress)**|
 
+## Methods
+
+| | Name |
+|-|-|
+||**[nextStep](#nextStep)**(string title)|
+||**[setProgressSteps](#setProgressSteps)**(int numSteps)|
+
 ## Signals
 
 | | Name |
@@ -64,6 +71,28 @@ This read-only property contains all properties mapping the widgets.
 
 If set to true, a progress dialog will be shown when the dialog is accepted.
 This is useful for long-running scripts.
+
+## Method Documentation
+
+#### <a name="nextStep"></a>**nextStep**(string title)
+
+!!! note ""
+    Since: Knut 1.1
+
+Indicate a new progress step.
+
+This will update the progress bar and the title of the progress dialog.
+Make sure that the number of steps is set correctly before calling this method.
+
+#### <a name="setProgressSteps"></a>**setProgressSteps**(int numSteps)
+
+!!! note ""
+    Since: Knut 1.1
+
+Set the number of progress steps.
+
+This method should be called before calling `nextStep` for the first time.
+The number of `nextStep` calls should match the number of steps set here.
 
 ## Signal Documentation
 
