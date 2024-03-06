@@ -44,7 +44,7 @@ private slots:
 
         const auto scriptPath = QCoreApplication::applicationDirPath() + "/scripts/photon-convert-file-ts.qml";
 
-        QBENCHMARK {
+        QBENCHMARK_ONCE {
             Core::ScriptManager::instance()->runScript(scriptPath, false, true);
         }
 
