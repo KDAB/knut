@@ -38,6 +38,12 @@ add_knut_test(tst_client tst_client.cpp knut-lsp)
 
 add_knut_test(tst_settings tst_settings.cpp knut-core)
 
+if(KNUT_USE_STD_FORMAT)
+  add_knut_test(tst_qt_std_format tst_qt_std_format.cpp)
+else()
+  add_knut_test(tst_qt_fmt_format tst_qt_fmt_format.cpp)
+endif()
+
 add_knut_test_variadic(
   tst_knut
   SOURCES
