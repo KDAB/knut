@@ -15,7 +15,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
 add_definitions(-DTEST_DATA_PATH="${CMAKE_SOURCE_DIR}/test_data")
-add_definitions(-DKNUT_VERSION="${PROJECT_VERSION}")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -31,6 +30,34 @@ if(USE_ASAN)
   add_compile_options($<$<CONFIG:Debug>:-fsanitize=address>)
   add_link_options($<$<CONFIG:Debug>:-fsanitize=address>)
 endif()
+
+# Project version
+# ##############################################################################
+add_definitions(-DKNUT_VERSION="${PROJECT_VERSION}")
+set(KNUT_VERSION_STRING "${PROJECT_VERSION}")
+
+if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
+  find_package(Git)
+  if(GIT_FOUND)
+    execute_process(
+      COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD
+      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+      OUTPUT_VARIABLE GIT_REVISION)
+    string(REGEX REPLACE "\n" "" GIT_REVISION "${GIT_REVISION}")
+    message(STATUS "Git revision ${GIT_REVISION} with exe ${GIT_EXECUTABLE}")
+    set(KNUT_VERSION_STRING
+        "${KNUT_VERSION_STRING} (revision: ${GIT_REVISION})")
+  else()
+    message(STATUS "GIT not found!?")
+  endif()
+endif()
+add_definitions(-DKNUT_VERSION_STRING="${KNUT_VERSION_STRING}")
+
+# Generate build date for the about dialog Note: This is the simplest way to get
+# a build date out of CMake Drawbacks: The timestamp is only updated when CMake
+# is rerun. But this should sufficient for our use-case.
+string(TIMESTAMP KNUT_BUILDDATE "%Y-%m-%d")
+add_definitions(-DKNUT_BUILDDATE="${KNUT_BUILDDATE}")
 
 # Qt
 # ##############################################################################

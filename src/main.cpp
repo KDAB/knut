@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 
     QApplication::setOrganizationName("KDAB");
     QApplication::setApplicationName("knut");
-    QApplication::setApplicationVersion(KNUT_VERSION);
+    QApplication::setApplicationVersion(KNUT_VERSION_STRING);
     QApplication::setWindowIcon(QIcon(":/gui/icons/knut-64.png"));
 
     Q_INIT_RESOURCE(core);

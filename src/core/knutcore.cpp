@@ -98,12 +98,10 @@ void KnutCore::initParser(QCommandLineParser &parser) const
     parser.addHelpOption();
     parser.addVersionOption();
 
-    // Added two more parameters(line,column) to the knut commandline.
-    parser.addOptions(
-        {{{"s", "script"}, "Run given script <file> then exit", "file"},
-         {{"i", "input"}, "Open document <file> on startup", "file"},
-         {{"l", "line"}, "Line value to set the current cursor position in the passed file", "line"},
-         {{"c", "column"}, "Column value to set the current cursor position in the passed file", "column"}});
+    parser.addOptions({{{"s", "script"}, "Runs given script <file> then exit.", "file"},
+                       {{"i", "input"}, "Opens document <file> on startup.", "file"},
+                       {{"l", "line"}, "Line in the current file, if any.", "line"},
+                       {{"c", "column"}, "Column in the current file, if any.", "column"}});
 }
 
 void KnutCore::doParse(const QCommandLineParser &parser) const
