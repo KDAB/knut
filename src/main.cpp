@@ -13,6 +13,7 @@ int main(int argc, char *argv[])
     QApplication::setWindowIcon(QIcon(":/gui/icons/knut-64.png"));
 
     Q_INIT_RESOURCE(core);
+    Q_INIT_RESOURCE(rccore);
     Q_INIT_RESOURCE(gui);
 
     Gui::KnutMain knut;

@@ -36,7 +36,11 @@ class TestKnut : public QObject
     Q_OBJECT
 
 private slots:
-    void initTestCase() { Q_INIT_RESOURCE(core); }
+    void initTestCase()
+    {
+        Q_INIT_RESOURCE(core);
+        Q_INIT_RESOURCE(rccore);
+    }
 
     KNUT_TEST(mfc_convert_dialog)
     KNUT_TEST(mfc_convert_dataexchange)

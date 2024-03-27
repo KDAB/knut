@@ -13,7 +13,8 @@ set(PROJECT_SOURCES
     stream.h
     stream.cpp
     uiwriter.h
-    uiwriter.cpp)
+    uiwriter.cpp
+    rccore.qrc)
 
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
 target_link_libraries(

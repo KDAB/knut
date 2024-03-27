@@ -15,6 +15,8 @@ class TestRcwriter : public QObject
     Q_OBJECT
 
 private slots:
+    void initTestCase() { Q_INIT_RESOURCE(rccore); }
+
     void testQrc()
     {
         Test::LogSilencer ls;

@@ -127,26 +127,29 @@ static void logWarnings(const QList<QQmlError> &warnings)
     }
 }
 
+QString createConversionScript(const QString &scriptPath)
+{
+    ;
+    const auto path = scriptPath.isEmpty() ? "qrc:/rccore/rc2ui.js"
+                                           : QUrl::fromLocalFile((QFileInfo(scriptPath).absoluteFilePath())).toString();
+    return QStringLiteral("import QtQml 2.12\n"
+                          "import \"%1\" as MyScript\n"
+                          "QtObject { function runScript(dialog, writer) {"
+                          "MyScript.main(dialog, writer);"
+                          "}}")
+        .arg(path);
+}
+
 void writeDialogToUi(const Widget &widget, QIODevice *device, const QString &scriptPath)
 {
-    auto path = scriptPath;
-    if (path.isEmpty())
-        path = QCoreApplication::applicationDirPath() + "/scripts/lib/rc2ui.js";
-    QFileInfo fi(path);
-
-    const QString text = QStringLiteral("import QtQml 2.12\n"
-                                        "import \"%1\" as MyScript\n"
-                                        "QtObject { function runScript(dialog, writer) {"
-                                        "MyScript.main(dialog, writer);"
-                                        "}}")
-                             .arg(QUrl::fromLocalFile(fi.absoluteFilePath()).toString());
+    const QString script = createConversionScript(scriptPath);
 
     QQmlEngine engine;
     QObject::connect(&engine, &QQmlEngine::warnings, logWarnings);
     engine.setOutputWarningsToStandardError(false);
 
     QQmlComponent component(&engine);
-    component.setData(text.toLatin1(), QUrl::fromLocalFile(fi.absoluteFilePath()));
+    component.setData(script.toLatin1(), {});
     auto *result = qobject_cast<QObject *>(component.create());
 
     if (component.isReady() && !component.isError()) {
