@@ -1216,6 +1216,8 @@ bool TextDocument::find(const QString &text, int options)
     LOG("TextDocument::find", LOG_ARG("text", text), options);
     if (options & FindRegexp)
         return findRegexp(text, options);
+    else if (options & FindWholeWords)
+        return findRegexp(QRegularExpression::escape(text), options);
     else
         return m_document->find(text, static_cast<QTextDocument::FindFlags>(options));
 }

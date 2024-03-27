@@ -581,6 +581,19 @@ private slots:
         QVERIFY(!document.findRegexp("Lor", Core::TextDocument::FindWholeWords));
         QCOMPARE(document.selectedText(), "");
     }
+
+    void findWholeWord()
+    {
+        Core::TextDocument document;
+
+        // FindWholeWord should take `_` into account
+        document.setText("IDOK_");
+        QVERIFY(!document.find("IDOK", Core::TextDocument::FindWholeWords));
+
+        // FindWholeWord should not take `:` into account
+        document.setText("IDOK:");
+        QVERIFY(document.find("IDOK", Core::TextDocument::FindWholeWords));
+    }
 };
 
 QTEST_MAIN(TestTextDocument)
