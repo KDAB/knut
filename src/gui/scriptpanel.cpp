@@ -29,7 +29,7 @@ constexpr char Untitled[] = "<untitled>";
 constexpr char DefaultScript[] = R"(// Description of the script
 
 function main() {
-    
+
 }
 )";
 
@@ -42,12 +42,12 @@ ScriptDialog {
 
     // Function called at startup, once the dialog is setup
     function init() {
-        
+
     }
 
     // Function called when the user click on the OK button
     onAccepted: {
-        
+
     }
 }
 )";
@@ -131,7 +131,7 @@ void ScriptPanel::setNewScript(const QString &script)
 
 bool ScriptPanel::hasScript() const
 {
-    return toPlainText().isSimpleText();
+    return !toPlainText().isEmpty();
 }
 
 void ScriptPanel::openScript()
