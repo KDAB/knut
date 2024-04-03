@@ -730,6 +730,15 @@ void LspDocument::changeContentTreeSitter(int position, int charsRemoved, int ch
 
 void LspDocument::changeContent(int position, int charsRemoved, int charsAdded)
 {
+
+    // We don't want to cause extra logging here, we're probably already in a situation where we're changing text, which
+    // has itself already been logged.
+    //
+    // Additionally, when running scripts that show progress, this could be problematic,
+    // as then logging causes a redraw.
+    // As we're not quite done with updating the text at this point, we cannot redraw yet!
+    LoggerDisabler disabler;
+
     changeContentLsp(position, charsRemoved, charsAdded);
     changeContentTreeSitter(position, charsRemoved, charsAdded);
 }

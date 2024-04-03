@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QDialog>
+#include <QJSValue>
 #include <QQmlListProperty>
 #include <QQmlPropertyMap>
 
@@ -18,6 +19,7 @@ class ScriptDialogItem : public QDialog
     Q_PROPERTY(QObject *data READ data CONSTANT)
     Q_PROPERTY(QString uiFilePath WRITE setUiFilePath READ uiFilePath NOTIFY uiFilePathChanged)
     Q_PROPERTY(bool showProgress READ showProgress WRITE setShowProgress NOTIFY showProgressChanged)
+    Q_PROPERTY(bool interactive READ isInteractive WRITE setInteractive NOTIFY interactiveChanged)
     Q_PROPERTY(QQmlListProperty<QObject> childrenData READ childrenData NOTIFY childrenDataChanged FINAL)
     Q_CLASSINFO("DefaultProperty", "childrenData")
 
@@ -37,8 +39,12 @@ public:
     // This method should be called in regular intervals to ensure visual progress.
     static void updateProgress();
 
-    Q_INVOKABLE void setProgressSteps(int numSteps);
+    bool isInteractive() const;
+    void setInteractive(bool interactive);
+
+    Q_INVOKABLE void startProgress(const QString &firstStep, int numSteps);
     Q_INVOKABLE void nextStep(const QString &title);
+    Q_INVOKABLE void runSteps(QJSValue generator);
 
 public Q_SLOTS:
     void done(int code) override;
@@ -48,9 +54,12 @@ signals:
     void childrenDataChanged();
     void uiFilePathChanged(const QString &uiFilePath);
     void showProgressChanged(bool showProgress);
+    void interactiveChanged(bool interactive);
     void conversionFinished();
 
 private:
+    void setProgressSteps(int numSteps);
+    void interactiveStep();
     void startShowingProgress();
     void initializeUiAndData();
     void setUiFile(const QString &fileName);
@@ -71,7 +80,11 @@ private:
     QProgressDialog *m_progressDialog = nullptr;
     int m_numProgressSteps = 0;
     int m_currentProgressStep = 0;
+    QString m_currentStepTitle;
     bool m_showProgress = false;
+
+    std::optional<QJSValue> m_interactiveConversion;
+    bool m_interactive = true;
 };
 
 } // namespace Core

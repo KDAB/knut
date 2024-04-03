@@ -13,6 +13,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QLineEdit>
+#include <QMessageBox>
 #include <QProgressDialog>
 #include <QPushButton>
 #include <QQmlContext>
@@ -69,6 +70,14 @@ namespace Core {
  *
  * If set to true, a progress dialog will be shown when the dialog is accepted.
  * This is useful for long-running scripts.
+ */
+
+/*!
+ * \qmlproperty bool ScriptDialog::interactive
+ * \since 1.1
+ *
+ * If set to false, runSteps will not ask for user input, the entire script will be run at once.
+ * This is especially useful for testing.
  */
 
 /*!
@@ -159,7 +168,9 @@ void ScriptDialogItem::done(int code)
     // additional `conversionFinished` signal for cleanup. This signal is only emitted once all handlers of
     // `QDialog::done` have finished.
     QDialog::done(code);
-    emit conversionFinished();
+    if (!m_interactiveConversion.has_value()) {
+        emit conversionFinished();
+    }
 }
 
 void ScriptDialogItem::setShowProgress(bool value)
@@ -170,15 +181,34 @@ void ScriptDialogItem::setShowProgress(bool value)
     }
 }
 
+bool ScriptDialogItem::isInteractive() const
+{
+    return m_interactive;
+}
+
+void ScriptDialogItem::setInteractive(bool interactive)
+{
+    if (m_interactive != interactive) {
+        m_interactive = interactive;
+        emit interactiveChanged(m_interactive);
+    }
+}
+
 /**
- * \qmlmethod ScriptDialog::setProgressSteps(int numSteps)
+ * \qmlmethod ScriptDialog::startProgress(string firstStep, int numSteps)
  * \since 1.1
  *
- * Set the number of progress steps.
+ * Start a progress bar with the given `firstStep` title and number of steps.
  *
- * This method should be called before calling `nextStep` for the first time.
- * The number of `nextStep` calls should match the number of steps set here.
+ * The number of following `nextStep` calls (or yield calls if using runSteps) should be one less than the number of
+ * steps set here.
  */
+void ScriptDialogItem::startProgress(const QString &firstStep, int numSteps)
+{
+    setProgressSteps(numSteps);
+    nextStep(firstStep);
+}
+
 void ScriptDialogItem::setProgressSteps(int numSteps)
 {
     m_numProgressSteps = numSteps;
@@ -195,7 +225,7 @@ void ScriptDialogItem::setProgressSteps(int numSteps)
  *
  * This will update the progress bar and the title of the progress dialog.
  * Make sure that the number of steps is set correctly before calling this method.
- * \sa setProgressSteps
+ * \sa startProgress
  */
 void ScriptDialogItem::nextStep(const QString &title)
 {
@@ -208,6 +238,8 @@ void ScriptDialogItem::nextStep(const QString &title)
     //
     // This is likely just caused by a script that's indicating too few progress steps.
     // So just increase the maximum.
+    m_currentStepTitle = title;
+
     if (m_currentProgressStep >= m_numProgressSteps) {
         setProgressSteps(m_numProgressSteps + 1);
     }
@@ -217,6 +249,106 @@ void ScriptDialogItem::nextStep(const QString &title)
         m_progressDialog->setValue(m_currentProgressStep);
     }
     ++m_currentProgressStep;
+}
+
+bool isGenerator(const QJSValue &generator)
+{
+    return generator.property("next").isCallable();
+}
+
+void ScriptDialogItem::interactiveStep()
+{
+    auto result = m_interactiveConversion->property("next").callWithInstance(m_interactiveConversion.value());
+    auto done = result.property("done").toBool();
+    auto nextStepTitle = result.property("value").toString();
+
+    auto finish = [this]() {
+        m_interactiveConversion.reset();
+        emit conversionFinished();
+    };
+
+    if (done) {
+        finish();
+        return;
+    }
+
+    auto continueConversion = [this, nextStepTitle]() {
+        nextStep(nextStepTitle);
+        if (m_progressDialog && m_showProgress) {
+            m_progressDialog->show();
+        }
+        interactiveStep();
+    };
+
+    if (!m_interactive) {
+        return continueConversion();
+    }
+
+    if (m_progressDialog) {
+        m_progressDialog->hide();
+    }
+
+    auto title = m_numProgressSteps > 0
+        ? QString("%1/%2 conversions done!").arg(m_currentProgressStep).arg(m_numProgressSteps)
+        : QString("A conversion step finished!");
+
+    auto message = m_currentStepTitle.isEmpty()
+        ? QString("A conversion step finished!\nContinue with %1?").arg(nextStepTitle)
+        : QString("Finished %1!\nContinue with %2?").arg(m_currentStepTitle, nextStepTitle);
+
+    auto msgBox = new QMessageBox(QMessageBox::Question, title, message, QMessageBox::Ok | QMessageBox::Abort, this);
+    msgBox->setModal(false);
+
+    connect(msgBox, &QMessageBox::accepted, this, continueConversion);
+    connect(msgBox, &QMessageBox::rejected, this, finish);
+    msgBox->show();
+}
+
+/**
+ * \qmlmethod ScriptDialog::runSteps(function generator)
+ * \since 1.1
+ *
+ * Run a script in multiple (interactive) steps.
+ * The argument to this function must be a JavaScript generator object
+ * ([See this documentation on JS
+ * Generators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator)).
+ *
+ * The generator should yield a string with the next step title,
+ * whenever the user should be able to pause the script and inspect the changes.
+ * This will behave the same as calling `nextStep`, but pauses the script, until the user continues or aborts the
+ * script.
+ * You can also mix and match between `yield` and `nextStep` calls.
+ *
+ * For the best experience, we recommend to use `startProgress` and `nextStep` to indicate the remaining progress.
+ *
+ * Example:
+ * ```javascript
+ * function *conversionSteps() {
+ *    startProgress("Adding member", 2)
+ *    document.addMember("test", "int", CppDocument.Public)
+ *
+ *    yield "Inserting include" // <--- The user can check that the member was inserted correctly
+ *    document.insertInclude("<iostream>")
+ * }
+ *
+ * function convert() {
+ *    runSteps(conversionSteps())
+ * }
+ * ```
+ */
+void ScriptDialogItem::runSteps(QJSValue generator)
+{
+    if (!isGenerator(generator)) {
+        spdlog::error("ScriptDialogItem::runSteps: Argument is not a generator!\n"
+                      "Make sure to create a generator function using function* myGenerator() { ... } and call the "
+                      "generator with e.g. runSteps(myGenerator())!\n"
+                      "See also:"
+                      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator");
+        return;
+    }
+
+    m_interactiveConversion = generator;
+    interactiveStep();
 }
 
 static bool isShowingProgress = false;

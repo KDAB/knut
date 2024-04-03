@@ -208,6 +208,9 @@ public:
     explicit LoggerObject(QString name, bool /*unused*/)
         : LoggerObject()
     {
+        if (!m_canLog)
+            return;
+
         // When we're running a script, we ideally want to show some kind of feedback.
         // As our scripts currently have to run on the GUI thread, the GUI is blocked.
         // So we need to update the progress bar to show that the script is still running.
@@ -216,8 +219,6 @@ public:
         // This has nothing to do with logging itself, but is just a good place to do it.
         ScriptDialogItem::updateProgress();
 
-        if (!m_canLog)
-            return;
         if (m_model)
             m_model->logData(name);
         log(std::move(name));

@@ -22,6 +22,7 @@ TestCase {
     }
 
     property MFCConvertDialog dialog: MFCConvertDialog {
+        interactive: false
         uiFilePath: "../scripts/mfc-deprecated-convert-dialog.ui"
     }
 }

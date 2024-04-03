@@ -15,6 +15,7 @@ import Script 1.0
 | | Name |
 |-|-|
 |QQmlPropertyMap|**[data](#data)**|
+|bool|**[interactive](#interactive)**|
 |bool|**[showProgress](#showProgress)**|
 
 ## Methods
@@ -22,7 +23,8 @@ import Script 1.0
 | | Name |
 |-|-|
 ||**[nextStep](#nextStep)**(string title)|
-||**[setProgressSteps](#setProgressSteps)**(int numSteps)|
+||**[runSteps](#runSteps)**(function generator)|
+||**[startProgress](#startProgress)**(string firstStep, int numSteps)|
 
 ## Signals
 
@@ -64,6 +66,14 @@ ScriptDialog {
 
 This read-only property contains all properties mapping the widgets.
 
+#### <a name="interactive"></a>bool **interactive**
+
+!!! note ""
+    Since: Knut 1.1
+
+If set to false, runSteps will not ask for user input, the entire script will be run at once.
+This is especially useful for testing.
+
 #### <a name="showProgress"></a>bool **showProgress**
 
 !!! note ""
@@ -84,15 +94,48 @@ Indicate a new progress step.
 This will update the progress bar and the title of the progress dialog.
 Make sure that the number of steps is set correctly before calling this method.
 
-#### <a name="setProgressSteps"></a>**setProgressSteps**(int numSteps)
+#### <a name="runSteps"></a>**runSteps**(function generator)
 
 !!! note ""
     Since: Knut 1.1
 
-Set the number of progress steps.
+Run a script in multiple (interactive) steps.
+The argument to this function must be a JavaScript generator object
+([See this documentation on JS
+Generators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator)).
 
-This method should be called before calling `nextStep` for the first time.
-The number of `nextStep` calls should match the number of steps set here.
+The generator should yield a string with the next step title,
+whenever the user should be able to pause the script and inspect the changes.
+This will behave the same as calling `nextStep`, but pauses the script, until the user continues or aborts the
+script.
+You can also mix and match between `yield` and `nextStep` calls.
+
+For the best experience, we recommend to use `startProgress` and `nextStep` to indicate the remaining progress.
+
+Example:
+```javascript
+function *conversionSteps() {
+   startProgress("Adding member", 2)
+   document.addMember("test", "int", CppDocument.Public)
+
+   yield "Inserting include" // <--- The user can check that the member was inserted correctly
+   document.insertInclude("<iostream>")
+}
+
+function convert() {
+   runSteps(conversionSteps())
+}
+```
+
+#### <a name="startProgress"></a>**startProgress**(string firstStep, int numSteps)
+
+!!! note ""
+    Since: Knut 1.1
+
+Start a progress bar with the given `firstStep` title and number of steps.
+
+The number of following `nextStep` calls (or yield calls if using runSteps) should be one less than the number of
+steps set here.
 
 ## Signal Documentation
 
