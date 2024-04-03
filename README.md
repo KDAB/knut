@@ -4,7 +4,7 @@ To compile Knut, you need:
 - a C++20 compiler (recent compilers should work)
 - Qt 6.2 at least
 
-All 3rd-party are downloaded at configure time using CMake `FetchContent`.
+All 3rd-party dependencies are set up as git submodules.
 
 ## Qt Creator compilation error on Windows
 
