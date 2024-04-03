@@ -68,7 +68,7 @@ function convertClassName(className, writer) {
 }
 
 function writeWidget(widget, writer) {
-    writer.startWidget(convertClassName(widget.className, writer), widget.id, widget.geometry);
+    writer.startWidget(convertClassName(widget.className, writer), widget);
 
     for (const [name, value] of Object.entries(widget.properties)) {
         writeProperty(name, value, writer);
@@ -82,6 +82,5 @@ function writeWidget(widget, writer) {
 }
 
 function main(dialog, writer) {
-    writer.setClassName(dialog.id);
     writeWidget(dialog, writer);
 }

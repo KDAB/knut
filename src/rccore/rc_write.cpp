@@ -154,6 +154,7 @@ void writeDialogToUi(const Widget &widget, QIODevice *device, const QString &scr
 
     if (component.isReady() && !component.isError()) {
         UiWriter writer(device);
+        writer.setClassName(widget.id);
         QMetaObject::invokeMethod(result, "runScript", Qt::DirectConnection,
                                   Q_ARG(QVariant, QVariant::fromValue(widget)),
                                   Q_ARG(QVariant, QVariant::fromValue(&writer)));

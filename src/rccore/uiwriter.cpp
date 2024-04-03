@@ -1,4 +1,5 @@
 #include "uiwriter.h"
+#include "data.h"
 
 #include <QRect>
 #include <QVariant>
@@ -70,8 +71,9 @@ void UiWriter::addCustomWidget(const QString &className, const QString &baseClas
     m_customWidgets[className] = {className, baseClassName, include, isGlobal, isContainer};
 }
 
-void UiWriter::startWidget(const QString &className, const QString &name, const QRect &geometry)
+void UiWriter::startWidget(const QString &className, const RcCore::Widget &widget)
 {
+    const auto &name = widget.id;
     const bool isQMainWindow = [className, this]() {
         if (className == "QMainWindow")
             return true;
@@ -93,6 +95,7 @@ void UiWriter::startWidget(const QString &className, const QString &name, const 
     m_widgetName[name] = count + 1;
 
     // Geometry
+    const auto &geometry = widget.geometry;
     m_writer.writeStartElement("property");
     m_writer.writeAttribute("name", "geometry");
     m_writer.writeStartElement("rect");

@@ -9,6 +9,8 @@
 
 namespace RcCore {
 
+struct Widget;
+
 class UiWriter : public QObject
 {
     Q_OBJECT
@@ -23,7 +25,7 @@ public slots:
     void addCustomWidget(const QString &className, const QString &baseClassName, const QString &header,
                          bool isContainer = false);
 
-    void startWidget(const QString &className, const QString &name, const QRect &geometry);
+    void startWidget(const QString &className, const RcCore::Widget &widget);
     void endWidget();
 
     void addProperty(const QString &name, const QVariant &value);
