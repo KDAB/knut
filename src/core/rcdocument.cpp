@@ -600,13 +600,11 @@ bool RcDocument::doLoad(const QString &fileName)
 {
     m_rcFile = RcCore::parse(fileName);
 
+    // There should always be one language in a RC file. If not, bail out.
+    if (m_rcFile.data.isEmpty())
+        return false;
+
     mergeLanguages();
-    // There's always one language in a RC file
-    Q_ASSERT(!m_rcFile.data.isEmpty());
-    m_language = languages().constFirst();
-    emit languagesChanged();
-    emit languageChanged();
-    emit dataChanged();
 
     return true;
 }
