@@ -1,7 +1,6 @@
 #include "textview.h"
 
 #include "guisettings.h"
-#include "scriptsuggestions.h"
 
 #include "core/logger.h"
 #include "core/lspdocument.h"
@@ -89,7 +88,8 @@ void TextView::setDocument(Core::TextDocument *document)
 
     connect(textEdit->verticalScrollBar(), &QScrollBar::valueChanged, this, &TextView::updateQuickActionRect);
 
-    m_quickActionButton->raise();
+    // TODO, change once we have quick actions
+    // m_quickActionButton->raise();
 }
 
 void TextView::toggleMark()
@@ -129,17 +129,6 @@ void TextView::selectToMark()
 bool TextView::hasMark() const
 {
     return m_mark.has_value();
-}
-
-void TextView::setScriptSuggestions(ScriptSuggestions *model)
-{
-    m_scriptSuggestions = model;
-
-    auto updateQuickAction = [this](Core::Document *document) {
-        m_quickActionButton->setVisible(document == m_document && m_scriptSuggestions->rowCount() > 0);
-        updateQuickActionRect();
-    };
-    connect(m_scriptSuggestions, &ScriptSuggestions::suggestionsUpdated, this, updateQuickAction);
 }
 
 bool TextView::eventFilter(QObject *obj, QEvent *event)
@@ -202,22 +191,9 @@ void TextView::updateQuickActionRect()
 
 void TextView::showQuickActionMenu()
 {
-    if (!m_scriptSuggestions || m_scriptSuggestions->rowCount() <= 0)
-        return;
-
     QMenu menu;
     menu.setToolTipsVisible(true);
-
-    for (int row = 0; row < m_scriptSuggestions->rowCount(); ++row) {
-        const auto index = m_scriptSuggestions->index(row, Core::ScriptModel::NameColumn);
-        auto action = new QAction(index.data().toString());
-        action->setToolTip(index.data(Qt::ToolTipRole).toString());
-        auto executeScript = [this, index] {
-            m_scriptSuggestions->run(index);
-        };
-        connect(action, &QAction::triggered, this, executeScript);
-        menu.addAction(action);
-    }
+    // TODO: Add actions
     menu.exec(QCursor::pos());
 }
 

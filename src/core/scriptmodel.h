@@ -23,7 +23,6 @@ public:
 
     enum Role : int {
         PathRole = Qt::UserRole,
-        ContextQueriesRole,
     };
     Q_ENUM(Role)
 

@@ -57,10 +57,8 @@ set(PROJECT_SOURCES
     runscriptwidget.ui
     scriptpanel.h
     scriptpanel.cpp
-    scriptsuggestions.cpp
-    scriptsuggestions.h
-    scriptsuggestionspanel.cpp
-    scriptsuggestionspanel.h
+    scriptlistpanel.cpp
+    scriptlistpanel.h
     shortcutmanager.h
     shortcutmanager.cpp
     shortcutsettings.h

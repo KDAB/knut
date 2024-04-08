@@ -16,9 +16,8 @@
 #include "rctoqrcdialog.h"
 #include "rctouidialog.h"
 #include "runscriptwidget.h"
+#include "scriptlistpanel.h"
 #include "scriptpanel.h"
-#include "scriptsuggestions.h"
-#include "scriptsuggestionspanel.h"
 #include "shortcutmanager.h"
 #include "shortcutsettings.h"
 #include "slintview.h"
@@ -70,10 +69,9 @@ MainWindow::MainWindow(QWidget *parent)
     , m_palette(new Palette(this))
     , m_historyPanel(new HistoryPanel(this))
     , m_scriptPanel(new ScriptPanel(this))
-    , m_scriptSuggestionsPanel(new ScriptSuggestionsPanel(this))
+    , m_scriptlistpanel(new ScriptListPanel(this))
     , m_documentPalette(new DocumentPalette(this))
     , m_shortcutManager(new ShortcutManager(this))
-    , m_scriptSuggestions(new ScriptSuggestions(this))
 {
     // Initialize the settings before anything
     GuiSettings::instance();
@@ -98,10 +96,9 @@ MainWindow::MainWindow(QWidget *parent)
     createDock(logPanel, Qt::BottomDockWidgetArea, logPanel->toolBar());
     createDock(m_historyPanel, Qt::BottomDockWidgetArea, m_historyPanel->toolBar());
     auto scriptDock = createDock(m_scriptPanel, Qt::LeftDockWidgetArea, m_scriptPanel->toolBar());
-    auto scriptSuggestionsDock =
-        createDock(m_scriptSuggestionsPanel, Qt::BottomDockWidgetArea, m_scriptSuggestionsPanel->toolBar());
-    scriptSuggestionsDock->setAllowedAreas(Qt::AllDockWidgetAreas);
-    m_scriptSuggestionsPanel->setModel(m_scriptSuggestions);
+    auto scriptListDock = createDock(m_scriptlistpanel, Qt::BottomDockWidgetArea, m_scriptlistpanel->toolBar());
+    scriptListDock->setAllowedAreas(Qt::AllDockWidgetAreas);
+    m_scriptlistpanel->setModel(Core::ScriptManager::model());
 
     // Ensure we display the script panel when a script is created
     auto showScriptPanel = [scriptDock]() {
@@ -374,7 +371,7 @@ void MainWindow::initProject(const QString &path)
         projects.removeLast();
     settings.setValue(RecentProjectKey, projects);
 
-    // Initalize tree view
+    // Initialize tree view
     auto index = m_fileModel->setRootPath(path);
     m_projectView->setRootIndex(index);
     connect(m_projectView->selectionModel(), &QItemSelectionModel::currentChanged, this, &MainWindow::openDocument);
@@ -799,8 +796,6 @@ void MainWindow::changeCurrentDocument()
     if (windowIndex == -1) {
         auto document = project->currentDocument();
         auto widget = widgetForDocument(document);
-        if (auto textView = qobject_cast<TextView *>(widget))
-            textView->setScriptSuggestions(m_scriptSuggestions);
 
         if (const auto actions = widget->actions(); !actions.isEmpty()) {
             auto toolBar = new Toolbar(widget);

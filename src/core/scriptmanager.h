@@ -6,9 +6,6 @@
 #include <functional>
 #include <vector>
 
-#include "querymatch.h"
-#include "treesitter/query.h"
-
 class QFileSystemWatcher;
 class QAbstractItemModel;
 
@@ -34,11 +31,6 @@ public:
         QString name;
         QString fileName;
         QString description;
-        // The context queries for this script.
-        // These are directly converted to Query instances from Strings in the ScriptManager.
-        // Profiling has revealed that creating Queries is actually quite expensive, so we
-        // do it once here and then reuse the same query every time.
-        treesitter::QueryList contextQueries;
     };
     using ScriptList = std::vector<Script>;
 
@@ -57,8 +49,6 @@ public:
 
 public slots:
     void runScript(const QString &fileName, bool async = true, bool log = true);
-    void runScriptInContext(const QString &fileName, const Core::QueryMatch &context, bool async = true,
-                            bool log = true);
 
 signals:
     void scriptFinished(const QVariant &result);
@@ -79,8 +69,7 @@ private:
     void addScriptsFromPath(const QString &path);
     void removeScriptsFromPath(const QString &path);
 
-    void doRunScript(const QString &fileName, const std::function<void()> &endFunc = {},
-                     const std::optional<QueryMatch> &context = {});
+    void doRunScript(const QString &fileName, const std::function<void()> &endFunc = {});
 
     void updateDirectories();
     void updateScriptDirectory(const QString &path);

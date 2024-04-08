@@ -6,17 +6,18 @@ namespace Core {
 class Document;
 }
 class QToolButton;
+class QLineEdit;
 
 namespace Gui {
 
 class IView;
 
-class ScriptSuggestionsPanel : public QTreeView
+class ScriptListPanel : public QTreeView
 {
 
     Q_OBJECT
 public:
-    explicit ScriptSuggestionsPanel(QWidget *parent = nullptr);
+    explicit ScriptListPanel(QWidget *parent = nullptr);
 
     QWidget *toolBar() const;
 
@@ -27,6 +28,7 @@ private:
     void updateRunButton();
 
     QWidget *const m_toolBar = nullptr;
+    QLineEdit *m_filter = nullptr;
     QToolButton *m_runButton = nullptr;
 };
 

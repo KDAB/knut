@@ -13,11 +13,10 @@ namespace Gui {
 class Palette;
 class HistoryPanel;
 class ScriptPanel;
-class ScriptSuggestionsPanel;
+class ScriptListPanel;
 class DocumentPalette;
 class ShortcutManager;
 class TreeSitterInspector;
-class ScriptSuggestions;
 
 namespace Ui {
     class MainWindow;
@@ -97,11 +96,10 @@ private:
     Palette *const m_palette = nullptr;
     HistoryPanel *const m_historyPanel = nullptr;
     ScriptPanel *const m_scriptPanel = nullptr;
-    ScriptSuggestionsPanel *const m_scriptSuggestionsPanel = nullptr;
+    ScriptListPanel *const m_scriptlistpanel = nullptr;
     DocumentPalette *const m_documentPalette = nullptr;
     ShortcutManager *const m_shortcutManager = nullptr;
     TreeSitterInspector *m_treeSitterInspector = nullptr;
-    ScriptSuggestions *const m_scriptSuggestions = nullptr;
 };
 
 } // namespace Gui

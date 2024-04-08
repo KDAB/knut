@@ -139,8 +139,7 @@ ScriptRunner::ScriptRunner(QObject *parent)
 
 ScriptRunner::~ScriptRunner() = default;
 
-QVariant ScriptRunner::runScript(const QString &fileName, const std::function<void()> &endCallback,
-                                 const std::optional<QueryMatch> &context)
+QVariant ScriptRunner::runScript(const QString &fileName, const std::function<void()> &endCallback)
 {
     QFileInfo fi(fileName);
 
@@ -158,12 +157,9 @@ QVariant ScriptRunner::runScript(const QString &fileName, const std::function<vo
             connect(engine, &QObject::destroyed, this, endCallback);
 
         if (fi.suffix() == "js") {
-            if (context.has_value()) {
-                spdlog::warn("ScriptRunner::runScript: context is not supported for javascript files");
-            }
             result = runJavascript(fullName, engine);
         } else {
-            result = runQml(fullName, engine, context);
+            result = runQml(fullName, engine);
         }
         // engine is deleted in runJavascript or runQml
     } else {
@@ -230,7 +226,7 @@ QVariant ScriptRunner::runJavascript(const QString &fileName, QQmlEngine *engine
     return QVariant(ErrorCode);
 }
 
-QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine, const std::optional<QueryMatch> &context)
+QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine)
 {
     auto component = new QQmlComponent(engine, engine);
     component->loadUrl(QUrl::fromLocalFile(fileName));
@@ -280,11 +276,7 @@ QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine, const
 
             // Run the run method if it exists
             if (topLevel->metaObject()->indexOfMethod("run()") != -1) {
-                if (context.has_value()) {
-                    QMetaObject::invokeMethod(topLevel, "run", Qt::DirectConnection, Q_ARG(Core::QueryMatch, *context));
-                } else {
-                    QMetaObject::invokeMethod(topLevel, "run", Qt::DirectConnection);
-                }
+                QMetaObject::invokeMethod(topLevel, "run", Qt::DirectConnection);
                 if (m_hasError)
                     return ErrorCode;
                 QVariant result = topLevel->property("failed");
