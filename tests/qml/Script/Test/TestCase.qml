@@ -55,7 +55,7 @@ QtObject {
         }
     }
 
-    function runTests() {
+    function run() {
         // Note: cannot run functions in TestCase elements
         // that lack a name.
         if (name.length === 0) {
@@ -162,7 +162,7 @@ QtObject {
             } else if (typeExp === "string" || typeExp === "boolean" ||
                        typeExp === "null" || typeExp === "undefined") {
                 if (exp instanceof act.constructor || act instanceof exp.constructor) {
-                    // to catch short annotaion VS 'new' annotation of act declaration
+                    // to catch short annotation VS 'new' annotation of act declaration
                     // e.g. var i = 1;
                     //      var j = new Number(1);
                     success = (act === exp)
@@ -190,7 +190,7 @@ QtObject {
                 success = (act.valueOf() === exp.valueOf())
             } else if (typeExp === "regexp") {
                 success = (act.source === exp.source && // the regex itself
-                           act.global === exp.global && // and its modifers (gmi) ...
+                           act.global === exp.global && // and its modifiers (gmi) ...
                            act.ignoreCase === exp.ignoreCase &&
                            act.multiline === exp.multiline)
             }
@@ -200,7 +200,7 @@ QtObject {
 
     function qtest_compareInternalObjects(act, exp) {
         var i;
-        var eq = true; // unless we can proove it
+        var eq = true; // unless we can prove it
         var aProperties = [], bProperties = []; // collection of strings
 
         // comparing constructors is more strict than using instanceof

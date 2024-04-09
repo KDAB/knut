@@ -272,20 +272,11 @@ QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine)
 
             // Start the init function if it exists.
             if (topLevel->metaObject()->indexOfMethod("init()") != -1)
-                QMetaObject::invokeMethod(topLevel, "init", Qt::QueuedConnection);
+                QMetaObject::invokeMethod(topLevel, "init", Qt::DirectConnection);
 
             // Run the run method if it exists
             if (topLevel->metaObject()->indexOfMethod("run()") != -1) {
                 QMetaObject::invokeMethod(topLevel, "run", Qt::DirectConnection);
-                if (m_hasError)
-                    return ErrorCode;
-                QVariant result = topLevel->property("failed");
-                return result;
-            }
-
-            // Run tests if any
-            if (topLevel->metaObject()->indexOfMethod("runTests()") != -1) {
-                QMetaObject::invokeMethod(topLevel, "runTests", Qt::DirectConnection);
                 if (m_hasError)
                     return ErrorCode;
                 QVariant result = topLevel->property("failed");
