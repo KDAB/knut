@@ -25,10 +25,12 @@ If you want to contribute, make sure to install the pre-commit hooks. Those are 
 
 ```
 pip install pre-commit
-pre-commit install
+pre-commit install --hook-type commit-msg
 ```
 
 At your first commit, it will download a bunch of necessary files, then all checks will be done at every commit, before hitting the CI.
+
+> **Warning**: on Windows with gerrit, you need to edit the file `.git/hooks/commit-msg.legacy` and replace the first line `#!/bin/sh` with `#!/usr/bin/env bash`
 
 # Usage
 
