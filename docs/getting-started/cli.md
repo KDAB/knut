@@ -4,23 +4,22 @@
 
 You can start knut by passing directly some options to the command line, using it in a headless way:
 ```
-knut [option]
+knut [option] [project]
 ```
 
-All availables options are documented here:
+The `project` is the directory containing the source code you want to work on. All available options are documented here:
 
 | Options | Description |
 |-|-|
-|-s, --script `<file>` | Run given script `<file>` then exit|
-|-r, --root `<directory>` | Root `<directory>` of the project|
-|-i, --input `<file>` | Open document `<file>` on startup|
-|-l, --line `<line>` | Line value to set the current cursor position in the passed file|
-|-c, --column `<column>` | Column value to set the current cursor position in the passed file|
-|--gui | Open Knut user interface|
-|--gui-script | Open the run script dialog|
-|--gui-settings | Open the settings dialog|
+|-r, --run `<file>` | Runs given script `<file>` then exit|
+|-i, --input `<file>` | Opens document `<file>` on startup|
+|-l, --line `<line>` | Sets the line in the current file, if any|
+|-c, --column `<column>` | Sets the column in the current file, if any|
+|--gui | Opens Knut user interface|
+|--gui-run | Opens the run script dialog|
+|--gui-settings | Opens the settings dialog|
 
-Wihtout any options, knut will start the uer interface.
+Without any options, knut will start the user interface.
 
 ## IDE integration
 
@@ -28,7 +27,7 @@ Using the command line interface, one can integrate with existing IDE.
 
 ### Qt Creator
 
-To add knut to Qt Creator, go to the menu `Tools`>`External`>`Configure...`, create a new tool, and fill the different fileds for a new tool.
+To add knut to Qt Creator, go to the menu `Tools`>`External`>`Configure...`, create a new tool, and fill the different fields for a new tool.
 
 ![Tool settings in Qt Creator](cli-qtcreator.png)
 

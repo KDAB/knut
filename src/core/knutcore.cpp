@@ -81,7 +81,7 @@ void KnutCore::process(const QStringList &arguments)
 
     // Run the script passed in parameter, if any
     // Exit Knut if there are no windows opened
-    const QString scriptName = parser.value("script");
+    const QString scriptName = parser.value("run");
     if (!scriptName.isEmpty()) {
         QTimer::singleShot(0, this, [scriptName]() {
             ScriptManager::instance()->runScript(scriptName);
@@ -94,11 +94,11 @@ void KnutCore::process(const QStringList &arguments)
 void KnutCore::initParser(QCommandLineParser &parser) const
 {
     parser.setApplicationDescription("Automation tool for code transformation using scripts");
-    parser.addPositionalArgument(QStringLiteral("root"), QStringLiteral("The root directory."));
+    parser.addPositionalArgument(QStringLiteral("project"), QStringLiteral("The project directory."));
     parser.addHelpOption();
     parser.addVersionOption();
 
-    parser.addOptions({{{"s", "script"}, "Runs given script <file> then exit.", "file"},
+    parser.addOptions({{{"r", "run"}, "Runs given script <file> then exit.", "file"},
                        {{"i", "input"}, "Opens document <file> on startup.", "file"},
                        {{"l", "line"}, "Line in the current file, if any.", "line"},
                        {{"c", "column"}, "Column in the current file, if any.", "column"}});

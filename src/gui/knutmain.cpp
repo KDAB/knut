@@ -7,7 +7,7 @@
 namespace Gui {
 
 KnutMain::KnutMain(QObject *parent)
-    : Core::KnutCore(false, parent)
+    : Core::KnutCore(parent)
 {
 }
 
@@ -15,9 +15,9 @@ void KnutMain::initParser(QCommandLineParser &parser) const
 {
     Core::KnutCore::initParser(parser);
     parser.addOptions({
-        {"gui", tr("Open Knut user interface")},
-        {"gui-script", tr("Open the run script dialog")},
-        {"gui-settings", tr("Open the settings dialog")},
+        {"gui", tr("Opens Knut user interface")},
+        {"gui-run", tr("Opens the run script dialog")},
+        {"gui-settings", tr("Opens the settings dialog")},
     });
 }
 
@@ -30,7 +30,7 @@ void KnutMain::doParse(const QCommandLineParser &parser) const
         return;
     }
 
-    const bool runDialog = parser.isSet("gui-script");
+    const bool runDialog = parser.isSet("gui-run");
     if (runDialog) {
         auto dialog = new RunScriptWidget;
         dialog->show();

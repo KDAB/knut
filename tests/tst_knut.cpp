@@ -17,7 +17,7 @@
         Test::LogSilencer ls;                                                                                          \
         QFileInfo fi(Test::testDataPath() + "/tst_" #name ".qml");                                                     \
         QVERIFY(fi.exists());                                                                                          \
-        QStringList arguments {"knut.exe", "-s", fi.absoluteFilePath()};                                               \
+        QStringList arguments {"knut.exe", "--run", fi.absoluteFilePath()};                                            \
         QDir dir(Test::testDataPath() + "/tst_" #name);                                                                \
         if (dir.exists())                                                                                              \
             arguments.append({dir.absolutePath()});                                                                    \
