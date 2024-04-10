@@ -79,6 +79,9 @@ void KnutCore::process(const QStringList &arguments)
         QTimer::singleShot(0, this, [scriptName]() {
             ScriptManager::instance()->runScript(scriptName);
         });
+        connect(ScriptManager::instance(), &ScriptManager::scriptFinished, qApp, &QCoreApplication::quit,
+                Qt::QueuedConnection);
+        return;
     }
 
     doParse(parser);

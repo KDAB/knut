@@ -27,7 +27,7 @@
         });                                                                                                            \
         QSignalSpy finished(Core::ScriptManager::instance(), &Core::ScriptManager::scriptFinished);                    \
         knut.process(arguments);                                                                                       \
-        QVERIFY(finished.wait());                                                                                      \
+        QVERIFY(finished.wait(60000)); /* give enough time for the script to finish */                                 \
         QCOMPARE(finished.takeFirst().at(0).toInt(), 0);                                                               \
     }
 

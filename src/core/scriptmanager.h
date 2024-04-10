@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include <QStringList>
+#include <QVariant>
 
 #include <functional>
 #include <vector>
@@ -69,7 +70,7 @@ private:
     void addScriptsFromPath(const QString &path);
     void removeScriptsFromPath(const QString &path);
 
-    void doRunScript(const QString &fileName, const std::function<void()> &endFunc = {});
+    void doRunScript(const QString &fileName, const std::function<void()> &endFunc);
 
     void updateDirectories();
     void updateScriptDirectory(const QString &path);
@@ -84,6 +85,7 @@ private:
 
     ScriptList m_scriptList;
     QStringList m_directories;
+    QVariant m_result;
 };
 
 } // namespace Core

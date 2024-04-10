@@ -75,18 +75,18 @@ void ScriptManager::runScript(const QString &fileName, bool async, bool log)
 {
     if (log)
         spdlog::debug("==> Start script {}", fileName.toStdString());
-    ScriptRunner::EndScriptFunc logEndScript;
-    if (log)
-        logEndScript = [fileName]() {
+    auto endScriptCallback = [this, log, fileName]() {
+        if (log)
             spdlog::debug("<== End script {}", fileName.toStdString());
-        };
+        emit scriptFinished(m_result);
+    };
 
     if (async)
-        QTimer::singleShot(0, this, [this, fileName, logEndScript]() {
-            doRunScript(fileName, logEndScript);
+        QTimer::singleShot(0, this, [this, fileName, endScriptCallback]() {
+            doRunScript(fileName, endScriptCallback);
         });
     else
-        doRunScript(fileName, logEndScript);
+        doRunScript(fileName, endScriptCallback);
 }
 
 void ScriptManager::addScript(const QString &fileName)
@@ -195,17 +195,16 @@ ScriptManager::ScriptList::iterator ScriptManager::removeScript(const ScriptList
 
 void ScriptManager::doRunScript(const QString &fileName, const std::function<void()> &endFunc)
 {
-    auto result = m_runner->runScript(fileName, endFunc);
+    m_result = m_runner->runScript(fileName, endFunc);
     if (m_runner->hasError()) {
         const auto errors = m_runner->errors();
         for (const auto &error : errors)
             spdlog::error("{}({}): {}", error.url().toLocalFile().toStdString(), error.line(),
                           error.description().toStdString());
     } else {
-        if (result.isValid())
-            spdlog::info("Script result is {}", result.toString().toStdString());
+        if (m_result.isValid())
+            spdlog::info("Script result is {}", m_result.toString().toStdString());
     }
-    emit scriptFinished(result);
 }
 
 void ScriptManager::updateDirectories()
