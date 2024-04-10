@@ -1,8 +1,6 @@
+#include "common/test_utils.h"
 #include "core/knutcore.h"
 #include "core/scriptmanager.h"
-
-#include "common/test_utils.h"
-#include "common/testutil.h"
 
 #include <QDir>
 #include <QFileInfo>
@@ -22,9 +20,6 @@
         if (dir.exists())                                                                                              \
             arguments.append({dir.absolutePath()});                                                                    \
         Core::KnutCore knut;                                                                                           \
-        qmlRegisterSingletonType<TestUtil>("Script.Test", 1, 0, "TestUtil", [](QQmlEngine *, QJSEngine *) {            \
-            return new TestUtil();                                                                                     \
-        });                                                                                                            \
         QSignalSpy finished(Core::ScriptManager::instance(), &Core::ScriptManager::scriptFinished);                    \
         knut.process(arguments);                                                                                       \
         QVERIFY(finished.wait(60000)); /* give enough time for the script to finish */                                 \

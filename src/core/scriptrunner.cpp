@@ -14,6 +14,7 @@
 #include "scriptitem.h"
 #include "settings.h"
 #include "symbol.h"
+#include "testutil.h"
 #include "textdocument.h"
 #include "textrange.h"
 #include "uidocument.h"
@@ -34,6 +35,7 @@
 
 namespace Core {
 
+static constexpr int NormalExitCode = 0;
 static constexpr int ErrorCode = -1;
 
 template <typename Object>
@@ -113,6 +115,11 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qRegisterMetaType<QVector<RcCore::Shortcut>>();
     qRegisterMetaType<RcCore::Action>();
     qRegisterMetaType<QVector<RcCore::Action>>();
+
+    // Script.Test
+    qmlRegisterSingletonType<TestUtil>("Script.Test", 1, 0, "TestUtil", [](QQmlEngine *, QJSEngine *) {
+        return new TestUtil();
+    });
 
     // Properties
     addProperties<FunctionArgument>(m_properties);
@@ -283,7 +290,7 @@ QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine)
                 return result;
             }
 
-            return {};
+            return NormalExitCode;
         }
     }
 

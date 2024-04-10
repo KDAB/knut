@@ -1,5 +1,7 @@
 #pragma once
 
+#include "core/testutil.h"
+
 #include <QCoreApplication>
 #include <QDebug>
 #include <QDir>
@@ -20,44 +22,17 @@ namespace Test {
 
 inline QString testDataPath()
 {
-    QString path;
-#if defined(TEST_DATA_PATH)
-    path = TEST_DATA_PATH;
-#endif
-    if (path.isEmpty() || !QDir(path).exists()) {
-        path = QCoreApplication::applicationDirPath() + "/test_data";
-    }
-    return path;
+    return Core::TestUtil::testDataPath();
 }
 
 inline bool compareFiles(const QString &file, const QString &expected, bool eolLF = true)
 {
-    QFile file1(file);
-    if (!file1.open(QIODevice::ReadOnly)) {
-        spdlog::error("compareFiles: Reading file {} failed!", file.toStdString());
-        return false;
-    }
-    QFile file2(expected);
-    if (!file2.open(QIODevice::ReadOnly)) {
-        spdlog::error("compareFiles: Reading file {} failed!", expected.toStdString());
-        return false;
-    }
+    return Core::TestUtil::compareFiles(file, expected, eolLF);
+}
 
-    auto data1 = file1.readAll();
-    auto data2 = file2.readAll();
-    if (eolLF) {
-        data1.replace("\r\n", "\n");
-        data2.replace("\r\n", "\n");
-    }
-    auto result = data1 == data2;
-
-    if (!result) {
-        spdlog::warn("Comparison of files {} and {} failed", file.toStdString(), expected.toStdString());
-        spdlog::warn("{}:\n{}", file.toStdString(), data1.toStdString());
-        spdlog::warn("{}:\n{}", expected.toStdString(), data2.toStdString());
-    }
-
-    return result;
+inline bool compareDirectories(const QString &current, const QString &expected)
+{
+    return Core::TestUtil::compareDirectories(current, expected);
 }
 
 /**

@@ -19,7 +19,8 @@ function(add_knut_test_variadic name)
 
   add_executable(${name} ${ARG_SOURCES})
 
-  target_link_libraries(${name} PRIVATE Qt${QT_VERSION_MAJOR}::Test ${ARG_LIBS})
+  target_link_libraries(${name} PRIVATE Qt${QT_VERSION_MAJOR}::Test knut-core
+                                        ${ARG_LIBS})
   target_include_directories(${name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src)
 
   add_test(${name} ${CMAKE_BINARY_DIR}/bin/${name})
@@ -36,7 +37,7 @@ add_knut_test(tst_clientbackend tst_clientbackend.cpp knut-lsp)
 
 add_knut_test(tst_client tst_client.cpp knut-lsp)
 
-add_knut_test(tst_settings tst_settings.cpp knut-core)
+add_knut_test(tst_settings tst_settings.cpp)
 
 if(KNUT_USE_STD_FORMAT)
   add_knut_test(tst_qt_std_format tst_qt_std_format.cpp)
@@ -44,24 +45,11 @@ else()
   add_knut_test(tst_qt_fmt_format tst_qt_fmt_format.cpp)
 endif()
 
-add_knut_test_variadic(
-  tst_knut
-  SOURCES
-  tst_knut.cpp
-  common/testutil.cpp
-  common/testutil.h
-  tests.qrc
-  LIBS
-  knut-core)
-file(GLOB QML_FILES ../test_data/*.qml)
-add_custom_target(
-  tst_knut_data
-  COMMENT "QML files for tests"
-  SOURCES ${QML_FILES})
+add_knut_test(tst_knut tst_knut.cpp)
 
-add_knut_test(tst_stringutils tst_stringutils.cpp knut-core)
+add_knut_test(tst_stringutils tst_stringutils.cpp)
 
-add_knut_test(tst_textdocument tst_textdocument.cpp knut-core)
+add_knut_test(tst_textdocument tst_textdocument.cpp)
 
 add_knut_test(tst_rclexer tst_rclexer.cpp knut-rccore)
 
@@ -69,17 +57,16 @@ add_knut_test(tst_rcparser tst_rcparser.cpp knut-rccore)
 
 add_knut_test(tst_rcwriter tst_rcwriter.cpp knut-rccore Qt::UiTools)
 
-add_knut_test(tst_uidocument tst_uidocument.cpp knut-core)
+add_knut_test(tst_uidocument tst_uidocument.cpp)
 
-add_knut_test(tst_cppdocument tst_cppdocument.cpp knut-core)
-add_knut_test(tst_cppdocument_clangd tst_cppdocument_clangd.cpp knut-core)
-add_knut_test(tst_cppdocument_treesitter tst_cppdocument_treesitter.cpp
-              knut-core)
+add_knut_test(tst_cppdocument tst_cppdocument.cpp)
+add_knut_test(tst_cppdocument_clangd tst_cppdocument_clangd.cpp)
+add_knut_test(tst_cppdocument_treesitter tst_cppdocument_treesitter.cpp)
 
-add_knut_test(tst_lspdocument tst_lspdocument.cpp knut-core)
+add_knut_test(tst_lspdocument tst_lspdocument.cpp)
 
-add_knut_test(tst_symbol tst_symbol.cpp knut-core)
+add_knut_test(tst_symbol tst_symbol.cpp)
 
-add_knut_test(tst_treesitter tst_treesitter.cpp knut-core knut-treesitter)
+add_knut_test(tst_treesitter tst_treesitter.cpp knut-treesitter)
 
-add_knut_test(tst_photon_treesitter tst_photon_treesitter.cpp knut-core)
+add_knut_test(tst_photon_treesitter tst_photon_treesitter.cpp)

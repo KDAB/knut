@@ -90,6 +90,9 @@ nav:
                 - Utils: API/script/utils.md
                 - QDirValueType: API/script/qdirvaluetype.md
                 - QFileInfoValueType: API/script/qfileinfovaluetype.md
+        - Script.Test Module:
+            - TestCase: API/script.test/testcase.md
+            - TestUtil: API/script.test/testutil.md
 # <--
 
 markdown_extensions:

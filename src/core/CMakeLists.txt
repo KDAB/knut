@@ -75,6 +75,8 @@ set(PROJECT_SOURCES
     string_utils.cpp
     symbol.h
     symbol.cpp
+    testutil.h
+    testutil.cpp
     textdocument.h
     textdocument.cpp
     textdocument_p.h
