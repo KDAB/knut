@@ -42,6 +42,7 @@ private slots:
         Q_INIT_RESOURCE(rccore);
     }
 
+    KNUT_TEST(photon_convert_file)
     KNUT_TEST(mfc_convert_dialog)
     KNUT_TEST(mfc_convert_dataexchange)
     KNUT_TEST(settings)
