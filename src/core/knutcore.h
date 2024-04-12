@@ -17,10 +17,19 @@ public:
     void process(const QStringList &arguments);
 
 protected:
-    explicit KnutCore(bool isTesting, QObject *parent = nullptr);
+    // Used to disambiguate the internal constructor
+    struct InternalTag
+    {
+    };
+    explicit KnutCore(InternalTag, QObject *parent = nullptr);
 
     virtual void initParser(QCommandLineParser &parser) const;
     virtual void doParse(const QCommandLineParser &parser) const;
+
+private:
+    void initialize(bool isTesting);
+
+    bool m_initialized = false;
 };
 
 } // namespace Core

@@ -45,8 +45,6 @@ else()
   add_knut_test(tst_qt_fmt_format tst_qt_fmt_format.cpp)
 endif()
 
-add_knut_test(tst_knut tst_knut.cpp)
-
 add_knut_test(tst_stringutils tst_stringutils.cpp)
 
 add_knut_test(tst_textdocument tst_textdocument.cpp)
@@ -70,3 +68,13 @@ add_knut_test(tst_symbol tst_symbol.cpp)
 add_knut_test(tst_treesitter tst_treesitter.cpp knut-treesitter)
 
 add_knut_test(tst_photon_treesitter tst_photon_treesitter.cpp)
+
+# tst_knut is the integration test for the knut executable. It invokes the knut
+# executable, instead of instantiating its own KnutCore instance. Therefore, it
+# needs to depend on the knut executable, and know the full path to the
+# executable.
+add_knut_test(tst_knut tst_knut.cpp)
+add_dependencies(tst_knut knut)
+target_compile_definitions(
+  tst_knut
+  PRIVATE KNUT_BINARY_PATH="${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}/knut")

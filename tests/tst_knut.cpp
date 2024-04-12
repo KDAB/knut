@@ -1,42 +1,36 @@
 #include "common/test_utils.h"
-#include "core/knutcore.h"
-#include "core/scriptmanager.h"
 
 #include <QDir>
 #include <QFileInfo>
+#include <QProcess>
 #include <QQmlEngine>
-
 #include <QSignalSpy>
 #include <QTest>
 
 #define KNUT_TEST(name)                                                                                                \
     void tst_##name()                                                                                                  \
     {                                                                                                                  \
-        Test::LogSilencer ls;                                                                                          \
-        QFileInfo fi(Test::testDataPath() + "/tst_" #name ".qml");                                                     \
-        QVERIFY(fi.exists());                                                                                          \
-        QStringList arguments {"knut.exe", "--run", fi.absoluteFilePath()};                                            \
-        QDir dir(Test::testDataPath() + "/tst_" #name);                                                                \
-        if (dir.exists())                                                                                              \
-            arguments.append({dir.absolutePath()});                                                                    \
-        Core::KnutCore knut;                                                                                           \
-        QSignalSpy finished(Core::ScriptManager::instance(), &Core::ScriptManager::scriptFinished);                    \
-        knut.process(arguments);                                                                                       \
-        QVERIFY(finished.wait(60000)); /* give enough time for the script to finish */                                 \
-        QCOMPARE(finished.takeFirst().at(0).toInt(), 0);                                                               \
+        run_knut_test(#name);                                                                                          \
     }
 
 class TestKnut : public QObject
 {
     Q_OBJECT
 
-private slots:
-    void initTestCase()
+private:
+    void run_knut_test(const QString &name)
     {
-        Q_INIT_RESOURCE(core);
-        Q_INIT_RESOURCE(rccore);
+        QFileInfo fi(Test::testDataPath() + QString("/tst_%1.qml").arg(name));
+        QVERIFY(fi.exists());
+        QStringList arguments {"--test", fi.absoluteFilePath()};
+        QDir dir(Test::testDataPath() + "/tst_" + name);
+        if (dir.exists())
+            arguments.append(dir.absolutePath());
+        const int failedTests = QProcess::execute(KNUT_BINARY_PATH, arguments);
+        QCOMPARE(failedTests, 0);
     }
 
+private slots:
     KNUT_TEST(photon_convert_file)
     KNUT_TEST(mfc_convert_dialog)
     KNUT_TEST(mfc_convert_dataexchange)

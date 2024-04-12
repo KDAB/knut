@@ -12,6 +12,7 @@ The `project` is the directory containing the source code you want to work on. A
 | Options | Description |
 |-|-|
 |-r, --run `<file>` | Runs given script `<file>` then exit|
+|-t, --test `<file>` | Tests given script `<file>` then exit|
 |-i, --input `<file>` | Opens document `<file>` on startup|
 |-l, --line `<line>` | Sets the line in the current file, if any|
 |-c, --column `<column>` | Sets the column in the current file, if any|

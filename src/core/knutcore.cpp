@@ -15,11 +15,14 @@
 namespace Core {
 
 KnutCore::KnutCore(QObject *parent)
-    : KnutCore(true, parent)
+    : KnutCore({}, parent)
 {
+    // If KnutCore is created directly, it means that we are in a test
+    // Just initialize all singletons here
+    initialize(true);
 }
 
-KnutCore::KnutCore(bool isTesting, QObject *parent)
+KnutCore::KnutCore(InternalTag, QObject *parent)
     : QObject(parent)
 {
 #ifdef QT_DEBUG
@@ -27,11 +30,6 @@ KnutCore::KnutCore(bool isTesting, QObject *parent)
 #endif
 
     spdlog::cfg::load_env_levels();
-
-    // Initialize some singletons
-    new Settings(isTesting, this);
-    new Project(this);
-    new ScriptManager(this);
 }
 
 void KnutCore::process(const QStringList &arguments)
@@ -40,6 +38,9 @@ void KnutCore::process(const QStringList &arguments)
     QCommandLineParser parser;
     initParser(parser);
     parser.process(arguments);
+
+    const bool isTesting = parser.isSet("test");
+    initialize(isTesting);
 
     const QStringList positionalArguments = parser.positionalArguments();
     // Set the root directory
@@ -74,13 +75,21 @@ void KnutCore::process(const QStringList &arguments)
 
     // Run the script passed in parameter, if any
     // Exit Knut if there are no windows opened
-    const QString scriptName = parser.value("run");
+    auto scriptName = parser.value("run");
+    if (scriptName.isEmpty()) {
+        scriptName = parser.value("test");
+    }
+
     if (!scriptName.isEmpty()) {
         QTimer::singleShot(0, this, [scriptName]() {
             ScriptManager::instance()->runScript(scriptName);
         });
-        connect(ScriptManager::instance(), &ScriptManager::scriptFinished, qApp, &QCoreApplication::quit,
-                Qt::QueuedConnection);
+        connect(
+            ScriptManager::instance(), &ScriptManager::scriptFinished, qApp,
+            [](const QVariant &value) {
+                qApp->exit(value.toInt());
+            },
+            Qt::QueuedConnection);
         return;
     }
 
@@ -95,6 +104,7 @@ void KnutCore::initParser(QCommandLineParser &parser) const
     parser.addVersionOption();
 
     parser.addOptions({{{"r", "run"}, "Runs given script <file> then exit.", "file"},
+                       {{"t", "test"}, "Tests given script <file> then exit.", "file"},
                        {{"i", "input"}, "Opens document <file> on startup.", "file"},
                        {{"l", "line"}, "Line in the current file, if any.", "line"},
                        {{"c", "column"}, "Column in the current file, if any.", "column"}});
@@ -103,6 +113,18 @@ void KnutCore::initParser(QCommandLineParser &parser) const
 void KnutCore::doParse(const QCommandLineParser &parser) const
 {
     Q_UNUSED(parser)
+}
+
+void KnutCore::initialize(bool isTesting)
+{
+    // Make sure we initialize only once, double initialization could happen in tests
+    // If creating a KnutCore and then processing command line arguments
+    if (m_initialized)
+        return;
+    new Settings(isTesting, this);
+    new Project(this);
+    new ScriptManager(this);
+    m_initialized = true;
 }
 
 } // namespace Core
