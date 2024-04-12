@@ -15,7 +15,6 @@ The `project` is the directory containing the source code you want to work on. A
 |-i, --input `<file>` | Opens document `<file>` on startup|
 |-l, --line `<line>` | Sets the line in the current file, if any|
 |-c, --column `<column>` | Sets the column in the current file, if any|
-|--gui | Opens Knut user interface|
 |--gui-run | Opens the run script dialog|
 |--gui-settings | Opens the settings dialog|
 
@@ -38,9 +37,9 @@ Particularly:
     - `--input %{CurrentDocument:FilePath}`
     - `--line %{CurrentDocument:Row}`
     - `--column %{CurrentDocument:Column}`
-- in Workding directory: `%{ActiveProject:NativePath}`
+- in Working directory: `%{ActiveProject:NativePath}`
 
 For example, to open the knut user interface using the same project and same file as Qt Creator, you will pass in Arguments:
 ```
---gui --root %{ActiveProject:NativePath} --input %{CurrentDocument:FilePath} --line %{CurrentDocument:Row} --column %{CurrentDocument:Column}
+--input %{CurrentDocument:FilePath} --line %{CurrentDocument:Row} --column %{CurrentDocument:Column} %{ActiveProject:NativePath}
 ```

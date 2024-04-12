@@ -15,7 +15,6 @@ void KnutMain::initParser(QCommandLineParser &parser) const
 {
     Core::KnutCore::initParser(parser);
     parser.addOptions({
-        {"gui", tr("Opens Knut user interface")},
         {"gui-run", tr("Opens the run script dialog")},
         {"gui-settings", tr("Opens the settings dialog")},
     });
@@ -23,13 +22,6 @@ void KnutMain::initParser(QCommandLineParser &parser) const
 
 void KnutMain::doParse(const QCommandLineParser &parser) const
 {
-    const bool gui = parser.isSet("gui");
-    if (gui || parser.optionNames().isEmpty()) {
-        auto ide = new MainWindow();
-        ide->show();
-        return;
-    }
-
     const bool runDialog = parser.isSet("gui-run");
     if (runDialog) {
         auto dialog = new RunScriptWidget;
@@ -43,6 +35,10 @@ void KnutMain::doParse(const QCommandLineParser &parser) const
         dialog->show();
         return;
     }
+
+    // Default case: open the main window
+    auto ide = new MainWindow();
+    ide->show();
 }
 
 } // namespace Gui
