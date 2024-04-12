@@ -8,7 +8,7 @@ TestCase {
     name: "MFC Convert Dialog"
 
     function test_conversion() {
-        let testDir = TestUtil.createTestProjectFrom(TestUtil.testDataPath + "/projects/mfc-tutorial");
+        let testDir = TestUtil.createTestProjectFrom(Dir.currentScriptPath + "/projects/mfc-tutorial");
         Project.root = testDir;
         Project.open("TutorialDlg.cpp");
 
@@ -17,7 +17,7 @@ TestCase {
         dialog.convert();
 
         Project.saveAllDocuments();
-        verify(TestUtil.compareDirectories(testDir,TestUtil.testDataPath + "/tst_knut/mfc-convert-dialog_expected"));
+        verify(TestUtil.compareDirectories(testDir,Dir.currentScriptPath + "/tst_knut/mfc-convert-dialog_expected"));
         TestUtil.removeTestProject(testDir);
     }
 

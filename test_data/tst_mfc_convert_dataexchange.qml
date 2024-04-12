@@ -8,7 +8,7 @@ TestCase {
     name: "MFC Convert DataExchange"
 
     function test_conversion() {
-        let testDir = TestUtil.createTestProjectFrom(TestUtil.testDataPath + "/tst_dataexchange/original");
+        let testDir = TestUtil.createTestProjectFrom(Dir.currentScriptPath + "/tst_dataexchange/original");
         Project.root = testDir;
         let cppfile = Project.open("DataExchange.cpp");
         let headerfile = cppfile.openHeaderSource();
@@ -19,7 +19,7 @@ TestCase {
         }, "TestClass");
 
         Project.saveAllDocuments();
-        verify(TestUtil.compareDirectories(testDir,TestUtil.testDataPath + "/tst_dataexchange/expected"));
+        verify(TestUtil.compareDirectories(testDir,Dir.currentScriptPath + "/tst_dataexchange/expected"));
         TestUtil.removeTestProject(testDir);
     }
 }

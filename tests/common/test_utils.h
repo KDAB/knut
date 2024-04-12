@@ -22,7 +22,14 @@ namespace Test {
 
 inline QString testDataPath()
 {
-    return Core::TestUtil::testDataPath();
+    QString path;
+#if defined(TEST_DATA_PATH)
+    path = TEST_DATA_PATH;
+#endif
+    if (path.isEmpty() || !QDir(path).exists()) {
+        path = QCoreApplication::applicationDirPath() + "/test_data";
+    }
+    return path;
 }
 
 inline bool compareFiles(const QString &file, const QString &expected, bool eolLF = true)

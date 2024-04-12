@@ -8,7 +8,7 @@ TestCase {
     name: "Photon Convert File"
 
     function test_conversion() {
-        let testDir = TestUtil.createTestProjectFrom(TestUtil.testDataPath + "/tst_knut/photon/source");
+        let testDir = TestUtil.createTestProjectFrom(Dir.currentScriptPath + "/tst_knut/photon/source");
         Project.root = testDir;
 
         let files = [
@@ -36,7 +36,7 @@ TestCase {
         }
 
         Project.saveAllDocuments();
-        verify(TestUtil.compareDirectories(testDir,TestUtil.testDataPath + "/tst_knut/photon/expected"));
+        verify(TestUtil.compareDirectories(testDir,Dir.currentScriptPath + "/tst_knut/photon/expected"));
         TestUtil.removeTestProject(testDir);
     }
 

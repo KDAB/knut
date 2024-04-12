@@ -146,16 +146,4 @@ bool TestUtil::compareDirectories(const QString &current, const QString &expecte
     return result;
 }
 
-QString TestUtil::testDataPath()
-{
-    QString path;
-#if defined(TEST_DATA_PATH)
-    path = TEST_DATA_PATH;
-#endif
-    if (path.isEmpty() || !QDir(path).exists()) {
-        path = QCoreApplication::applicationDirPath() + "/test_data";
-    }
-    return path;
-}
-
 } // namespace Core
