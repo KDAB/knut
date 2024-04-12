@@ -9,12 +9,12 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Tests Data
 ///////////////////////////////////////////////////////////////////////////////
-// Use a test fixture as Settings is a singleton
+// Use a test fixture for Settings, to be able to save (even if it's used in a test)
 class SettingsFixture : public Core::Settings
 {
 public:
     SettingsFixture()
-        : Settings()
+        : Settings(false)
     {
     }
 };

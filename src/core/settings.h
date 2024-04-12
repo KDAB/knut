@@ -17,7 +17,7 @@ namespace Core {
  *
  * There are 3 levels of settings:
  * - Knut default settings, stored in the settings.json file in the knut resources
- * - User settins, stored in homePath/.knut
+ * - User settings, stored in homePath/.knut
  * - Project settings, stored in projectRootPath/.knut
  *
  * Settings are read in this order, and new settings are replacing old one if it's the same path.
@@ -47,7 +47,6 @@ public:
 
     static Settings *instance();
 
-    void loadUserSettings();
     void loadProjectSettings(const QString &rootDir);
 
     void addScriptPath(const QString &path);
@@ -104,12 +103,13 @@ signals:
     void settingsSaved();
 
 protected:
-    Settings(bool isTesting = true, QObject *parent = nullptr);
+    Settings(bool isTesting, QObject *parent = nullptr);
 
 private:
     friend class KnutCore;
 
     void loadKnutSettings();
+    void loadUserSettings();
     void updatePaths(const QString &path, const std::string &json_path, bool add);
     void saveSettings();
     bool isUser() const;

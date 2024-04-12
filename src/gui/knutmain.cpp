@@ -7,7 +7,7 @@
 namespace Gui {
 
 KnutMain::KnutMain(QObject *parent)
-    : Core::KnutCore(parent)
+    : Core::KnutCore(false, parent)
 {
 }
 

@@ -29,16 +29,9 @@ KnutCore::KnutCore(bool isTesting, QObject *parent)
     spdlog::cfg::load_env_levels();
 
     // Initialize some singletons
-    auto settings = new Settings(isTesting, this);
-    settings->loadUserSettings();
-
+    new Settings(isTesting, this);
     new Project(this);
     new ScriptManager(this);
-}
-
-void KnutCore::process(const QCoreApplication &app)
-{
-    process(app.arguments());
 }
 
 void KnutCore::process(const QStringList &arguments)

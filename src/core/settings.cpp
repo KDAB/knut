@@ -68,6 +68,9 @@ Settings::Settings(bool isTesting, QObject *parent)
     m_instance = this;
 
     loadKnutSettings();
+    if (!m_isTesting) // Only load if not testing
+        loadUserSettings();
+
     m_saveTimer->callOnTimeout(this, &Settings::saveSettings);
     m_saveTimer->setSingleShot(true);
 }
@@ -243,6 +246,10 @@ void Settings::loadKnutSettings()
 
 void Settings::saveSettings()
 {
+    // Don't save settings if testing
+    if (m_isTesting)
+        return;
+
     const auto &settings = isUser() ? m_userSettings : m_projectSettings;
     const auto &filePath = isUser() ? userFilePath() : projectFilePath();
 

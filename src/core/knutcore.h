@@ -14,7 +14,6 @@ class KnutCore : public QObject
 public:
     explicit KnutCore(QObject *parent = nullptr);
 
-    void process(const QCoreApplication &app);
     void process(const QStringList &arguments);
 
 protected:
