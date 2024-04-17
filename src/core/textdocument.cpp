@@ -1170,6 +1170,7 @@ Core::RangeMark TextDocument::createRangeMark(int from, int to)
  */
 Core::RangeMark TextDocument::createRangeMark()
 {
+    LOG("TextDocument::createRangeMark");
     auto cursor = m_document->textCursor();
     int start = cursor.selectionStart();
     int end = cursor.selectionEnd();
@@ -1177,7 +1178,7 @@ Core::RangeMark TextDocument::createRangeMark()
     if (start == end)
         spdlog::warn("TextDocument::createRangeMark: Creating a range mark with an empty range.");
 
-    return createRangeMark(start, end);
+    LOG_RETURN("rangeMark", createRangeMark(start, end));
 }
 
 /**
@@ -1234,6 +1235,8 @@ bool TextDocument::find(const QString &text, int options)
  */
 bool TextDocument::findRegexp(const QString &regexp, int options)
 {
+    LOG("TextDocument::findRegexp", LOG_ARG("text", regexp), options);
+
     auto found = selectRegexpMatch(regexp, options);
     return found.has_value();
 }
@@ -1393,6 +1396,7 @@ bool TextDocument::replaceOne(const QString &before, const QString &after, int o
  */
 int TextDocument::replaceAll(const QString &before, const QString &after, int options /* = NoFindFlags */)
 {
+    LOG("TextDocument::replaceAll", LOG_ARG("text", before), after, options);
     return replaceAll(before, after, options, [](auto) {
         return true;
     });
@@ -1430,8 +1434,6 @@ int TextDocument::replaceAllInRange(const QString &before, const QString &after,
 int TextDocument::replaceAll(const QString &before, const QString &after, int options,
                              const std::function<bool(QTextCursor)> &filterAcceptsCursor)
 {
-    LOG("TextDocument::replaceAll", LOG_ARG("text", before), after, options);
-
     const bool backwards = options & FindBackward;
     const bool usesRegExp = options & FindRegexp;
     const bool preserveCase = options & PreserveCase;
@@ -1476,6 +1478,7 @@ int TextDocument::replaceAll(const QString &before, const QString &after, int op
  */
 int TextDocument::replaceAllRegexp(const QString &regexp, const QString &after, int options /* = NoFindFlags */)
 {
+    LOG("TextDocument::replaceAllRegexp", LOG_ARG("text", regexp), after, options);
     return replaceAllRegexp(regexp, after, options, [](auto) {
         return true;
     });
@@ -1495,6 +1498,7 @@ int TextDocument::replaceAllRegexp(const QString &regexp, const QString &after, 
 int TextDocument::replaceAllRegexpInRange(const QString &regexp, const QString &after, const RangeMark &range,
                                           int options /* = NoFindFlags*/)
 {
+    LOG("TextDocument::replaceAllRegexpInRange", LOG_ARG("text", regexp), after, range, options);
     if (!range.isValid()) {
         spdlog::warn("TextDocument::replaceAllRegexpInRange: Invalid range!");
         return 0;
@@ -1637,6 +1641,10 @@ void TextDocument::setLineEnding(LineEnding newLineEnding)
     emit lineEndingChanged();
 }
 
+/*!
+ * \qmlmethod TextDocument::indentationAtPosition(int pos)
+ * Returns the indentation at the given position.
+ */
 QString TextDocument::indentationAtPosition(int pos)
 {
     LOG("TextDocument::indentationAtPosition", pos);

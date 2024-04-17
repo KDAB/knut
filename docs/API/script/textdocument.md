@@ -67,6 +67,7 @@ Inherited properties: [Document properties](../script/document.md#properties)
 ||**[gotoStartOfWord](#gotoStartOfWord)**()|
 |bool |**[hasSelection](#hasSelection)**()|
 ||**[indent](#indent)**(int count)|
+||**[indentationAtPosition](#indentationAtPosition)**(int pos)|
 ||**[insert](#insert)**(string text)|
 ||**[insertAtLine](#insertAtLine)**(string text, int line = -1)|
 ||**[insertAtPosition](#insertAtPosition)**(string text, int pos)|
@@ -319,6 +320,10 @@ Returns true if the editor has a selection.
 #### <a name="indent"></a>**indent**(int count)
 
 Indents the current line `count` times. If there's a selection, indent all lines in the selection.
+
+#### <a name="indentationAtPosition"></a>**indentationAtPosition**(int pos)
+
+Returns the indentation at the given position.
 
 #### <a name="insert"></a>**insert**(string text)
 
