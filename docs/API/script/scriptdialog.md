@@ -36,7 +36,7 @@ import Script 1.0
 
 ## Detailed Description
 
-The `ScriptDialog` allows creating a scipt dialog based on a ui file. It requires creating a ui file with the same
+The `ScriptDialog` allows creating a script dialog based on a ui file. It requires creating a ui file with the same
 name as the qml script.
 
 Widget's main properties are mapped to a property inside the data property, using the same name as the `objectName`.

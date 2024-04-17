@@ -2,6 +2,7 @@
 #include "scriptdialogitem_p.h"
 
 #include "scriptrunner.h"
+#include "settings.h"
 
 #include <QAbstractItemModel>
 #include <QCheckBox>
@@ -34,7 +35,7 @@ namespace Core {
  * \ingroup Items
  * \since 1.0
  *
- * The `ScriptDialog` allows creating a scipt dialog based on a ui file. It requires creating a ui file with the same
+ * The `ScriptDialog` allows creating a script dialog based on a ui file. It requires creating a ui file with the same
  * name as the qml script.
  *
  * Widget's main properties are mapped to a property inside the data property, using the same name as the `objectName`.
@@ -183,14 +184,14 @@ void ScriptDialogItem::setShowProgress(bool value)
 
 bool ScriptDialogItem::isInteractive() const
 {
-    return m_interactive;
+    return m_interactive && !Settings::instance()->isTesting();
 }
 
 void ScriptDialogItem::setInteractive(bool interactive)
 {
     if (m_interactive != interactive) {
         m_interactive = interactive;
-        emit interactiveChanged(m_interactive);
+        emit interactiveChanged(isInteractive());
     }
 }
 
@@ -280,7 +281,7 @@ void ScriptDialogItem::interactiveStep()
         interactiveStep();
     };
 
-    if (!m_interactive) {
+    if (!isInteractive()) {
         return continueConversion();
     }
 
