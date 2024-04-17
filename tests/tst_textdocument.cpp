@@ -358,6 +358,9 @@ private slots:
                                     | Core::TextDocument::FindRegexp);
             document.replaceAll(", ([\\w ]*), ", "~~ \\1 ~~ ", Core::TextDocument::FindRegexp);
 
+            const auto rangeMark = document.createRangeMark(233, 573); // line 7 to 14
+            document.replaceAllInRange("Quisque convallis", "convallis Quisque", rangeMark);
+
             document.save();
             QVERIFY(file.compare());
         }

@@ -173,6 +173,8 @@ public slots:
     // Replace
     bool replaceOne(const QString &before, const QString &after, int options = NoFindFlags);
     int replaceAll(const QString &before, const QString &after, int options = NoFindFlags);
+    int replaceAllInRange(const QString &before, const QString &after, const Core::RangeMark &range,
+                          int options = NoFindFlags);
     int replaceAllRegexpInRange(const QString &regexp, const QString &after, const Core::RangeMark &range,
                                 int options = NoFindFlags);
     int replaceAllRegexp(const QString &regexp, const QString &after, int options = NoFindFlags);
@@ -199,9 +201,9 @@ protected:
     int position(QTextCursor::MoveOperation operation, int pos) const;
 
     int replaceAll(const QString &before, const QString &after, int options,
-                   const std::function<bool(QRegularExpressionMatch, QTextCursor)> &regexFilter);
+                   const std::function<bool(QTextCursor)> &filterAcceptsCursor);
     int replaceAllRegexp(const QString &regexp, const QString &after, int options,
-                         const std::function<bool(QRegularExpressionMatch, QTextCursor)> &regexFilter);
+                         const std::function<bool(QTextCursor)> &filterAcceptsCursor);
 
 private:
     void detectFormat(const QByteArray &data);

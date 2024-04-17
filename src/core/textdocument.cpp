@@ -25,7 +25,7 @@ static std::optional<std::pair<QRegularExpressionMatch, QTextCursor>>
 matchInBlock(const QTextBlock &block, const QRegularExpression &expr, int offset, int options)
 {
     QString text = block.text();
-    // Open Question: Why is this replacement necesary?
+    // Open Question: Why is this replacement necessary?
     text.replace(QChar::Nbsp, u' ');
     QRegularExpressionMatch match;
 
@@ -1393,13 +1393,42 @@ bool TextDocument::replaceOne(const QString &before, const QString &after, int o
  */
 int TextDocument::replaceAll(const QString &before, const QString &after, int options /* = NoFindFlags */)
 {
-    return replaceAll(before, after, options, [](auto, auto) {
+    return replaceAll(before, after, options, [](auto) {
         return true;
     });
 }
 
+// clang-format off
+/*!
+ * \qmlmethod bool TextDocument::replaceAllInRange(string before, string after, RangeMark range, int options = TextDocument.NoFindFlags)
+ * Replaces all occurrences of the string `before` with `after` in the given `range`. See the
+ * options from `replaceAll`.
+ *
+ * Returns the number of changes done in the document.
+ */
+// clang-format on
+int TextDocument::replaceAllInRange(const QString &before, const QString &after, const Core::RangeMark &range,
+                                    int options)
+{
+    LOG("TextDocument::replaceAllInRange", LOG_ARG("text", before), after, range, options);
+    if (!range.isValid()) {
+        spdlog::warn("TextDocument::replaceAllInRange: Invalid range!");
+        return 0;
+    }
+    if (range.document() != this) {
+        spdlog::warn("TextDocument::replaceAllInRange: Range is not from this document!");
+        return 0;
+    }
+
+    return replaceAll(before, after, options, [&range](auto cursor) {
+        return range.start() <= cursor.selectionStart()
+            && cursor.selectionEnd()
+            <= range.end(); // Use <= here, as the selection may be equal to the range, both values are exclusive.
+    });
+}
+
 int TextDocument::replaceAll(const QString &before, const QString &after, int options,
-                             const std::function<bool(QRegularExpressionMatch, QTextCursor)> &regexFilter)
+                             const std::function<bool(QTextCursor)> &filterAcceptsCursor)
 {
     LOG("TextDocument::replaceAll", LOG_ARG("text", before), after, options);
 
@@ -1418,15 +1447,14 @@ int TextDocument::replaceAll(const QString &before, const QString &after, int op
         auto found = m_document->textCursor();
         cursor.setPosition(found.selectionStart());
         cursor.setPosition(found.selectionEnd(), QTextCursor::KeepAnchor);
+        if (!filterAcceptsCursor(cursor)) {
+            // Result filtered, so do not replace.
+            continue;
+        }
         QString afterText = after;
         if (usesRegExp) {
             QRegularExpressionMatch match = regexp.match(selectedText());
-            if (regexFilter(match, cursor)) {
-                afterText = expandRegExpReplacement(after, match.capturedTexts());
-            } else {
-                // Result filtered, so do not replace.
-                continue;
-            }
+            afterText = expandRegExpReplacement(after, match.capturedTexts());
         } else if (preserveCase) {
             afterText = matchCaseReplacement(cursor.selectedText(), after);
         }
@@ -1448,7 +1476,7 @@ int TextDocument::replaceAll(const QString &before, const QString &after, int op
  */
 int TextDocument::replaceAllRegexp(const QString &regexp, const QString &after, int options /* = NoFindFlags */)
 {
-    return replaceAllRegexp(regexp, after, options, [](auto, auto) {
+    return replaceAllRegexp(regexp, after, options, [](auto) {
         return true;
     });
 }
@@ -1476,7 +1504,7 @@ int TextDocument::replaceAllRegexpInRange(const QString &regexp, const QString &
         return 0;
     }
 
-    return replaceAllRegexp(regexp, after, options, [&range](auto, auto cursor) {
+    return replaceAllRegexp(regexp, after, options, [&range](auto cursor) {
         return range.start() <= cursor.selectionStart()
             && cursor.selectionEnd()
             <= range.end(); // Use <= here, as the selection may be equal to the range, both values are exclusive.
@@ -1484,10 +1512,9 @@ int TextDocument::replaceAllRegexpInRange(const QString &regexp, const QString &
 }
 
 int TextDocument::replaceAllRegexp(const QString &regexp, const QString &after, int options,
-                                   const std::function<bool(QRegularExpressionMatch, QTextCursor)> &regexFilter)
+                                   const std::function<bool(QTextCursor)> &filterAcceptsCursor)
 {
-    LOG("TextDocument::replaceAllRegexp", regexp, after, options);
-    return replaceAll(regexp, after, options | FindRegexp, regexFilter);
+    return replaceAll(regexp, after, options | FindRegexp, filterAcceptsCursor);
 }
 
 static int columnAt(const QString &text, int position, int tabSize)

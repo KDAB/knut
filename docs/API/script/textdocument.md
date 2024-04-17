@@ -81,6 +81,7 @@ Inherited properties: [Document properties](../script/document.md#properties)
 ||**[replace](#replace)**([TextRange](../script/textrange.md) range, string text)|
 ||**[replace](#replace)**(int from, int to, string text)|
 |bool |**[replaceAll](#replaceAll)**(string before, string after, int options = TextDocument.NoFindFlags)|
+|bool |**[replaceAllInRange](#replaceAllInRange)**(string before, string after, [RangeMark](../script/rangemark.md) range, int options = TextDocument.NoFindFlags)|
 |bool |**[replaceAllRegexp](#replaceAllRegexp)**(string regexp, string after, int options = TextDocument.NoFindFlags)|
 |bool |**[replaceAllRegexpInRange](#replaceAllRegexpInRange)**(string regexp, string after, [RangeMark](../script/rangemark.md) range, int options = TextDocument.NoFindFlags)|
 |bool |**[replaceOne](#replaceOne)**(string before, string after, int options = TextDocument.NoFindFlags)|
@@ -394,6 +395,13 @@ If the option `TextEditor.PreserveCase` is used, it means:
 - Other occurrences are replaced with the new text as entered. If an occurrence and the new text have the same prefix
 or suffix, then the case of the prefix and/or suffix are preserved, and the other rules are applied on the rest of
 the occurrence only.
+
+Returns the number of changes done in the document.
+
+#### <a name="replaceAllInRange"></a>bool **replaceAllInRange**(string before, string after, [RangeMark](../script/rangemark.md) range, int options = TextDocument.NoFindFlags)
+
+Replaces all occurrences of the string `before` with `after` in the given `range`. See the
+options from `replaceAll`.
 
 Returns the number of changes done in the document.
 
