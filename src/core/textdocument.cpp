@@ -5,8 +5,8 @@
 #include "mark.h"
 #include "rangemark.h"
 #include "settings.h"
-#include "string_utils.h"
 #include "texteditor.h"
+#include "utils/strings.h"
 
 #include <QFile>
 #include <QKeyEvent>
@@ -1353,7 +1353,7 @@ bool TextDocument::replaceOne(const QString &before, const QString &after, int o
     const bool usesRegExp = options & FindRegexp;
     const bool preserveCase = options & PreserveCase;
 
-    auto regexp = createRegularExpression(before, options);
+    auto regexp = createRegularExpression(before, options, usesRegExp);
     if (find(before, options)) {
         cursor.beginEditBlock();
         auto found = m_document->textCursor();
@@ -1444,7 +1444,7 @@ int TextDocument::replaceAll(const QString &before, const QString &after, int op
     m_document->setTextCursor(cursor);
     cursor.beginEditBlock();
 
-    auto regexp = createRegularExpression(before, options);
+    auto regexp = createRegularExpression(before, options, usesRegExp);
     while (find(before, options)) {
         auto found = m_document->textCursor();
         cursor.setPosition(found.selectionStart());

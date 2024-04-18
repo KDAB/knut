@@ -1,7 +1,7 @@
 #pragma once
 
-#include "json.h"
 #include "notificationmessage.h"
+#include "utils/json.h"
 
 #include <type_traits>
 

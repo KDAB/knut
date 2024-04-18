@@ -1,6 +1,6 @@
 #pragma once
 
-#include "string_utils.h"
+#include "utils/strings.h"
 
 #include <QHash>
 #include <QObject>

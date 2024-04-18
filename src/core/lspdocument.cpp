@@ -2,15 +2,15 @@
 #include "lspdocument_p.h"
 
 #include "astnode.h"
-#include "json_utils.h"
 #include "logger.h"
 #include "project.h"
 #include "querymatch.h"
 #include "rangemark.h"
 #include "scriptmanager.h"
-#include "string_utils.h"
 #include "symbol.h"
 #include "textlocation.h"
+#include "utils/json.h"
+#include "utils/strings.h"
 
 #include <QFile>
 #include <QJSEngine>
@@ -307,7 +307,7 @@ Document *LspDocument::followSymbol()
 
     // Set the cursor position to the beginning of any selected text.
     // That way, calling followSymbol twice in a row causes Clangd
-    // to switch between delcaration and definition.
+    // to switch between declaration and definition.
     auto cursor = textEdit()->textCursor();
     LOG_RETURN("document", followSymbol(cursor.selectionStart()));
 }
@@ -686,7 +686,7 @@ void LspDocument::changeContentLsp(int position, int charsRemoved, int charsAdde
     if (client()->canSendDocumentChanges(Lsp::TextDocumentSyncKind::Full)
         || client()->canSendDocumentChanges(Lsp::TextDocumentSyncKind::Incremental)) {
         // TODO: We currently always send the entire document to the Language server, even
-        // if it suppports incremental changes.
+        // if it supports incremental changes.
         // Change this, so we also send incremental updates.
         //
         // This currently isn't implemented, as changeContent only gets called *after*

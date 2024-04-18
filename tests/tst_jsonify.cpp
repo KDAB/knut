@@ -1,5 +1,4 @@
-#include "core/json_utils.h"
-#include "lsp/json.h"
+#include "utils/json.h"
 
 #include <QSignalSpy>
 #include <QTest>

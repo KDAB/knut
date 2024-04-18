@@ -6,7 +6,7 @@
   SPDX-License-Identifier: MIT
 */
 
-#include "../utils/qt_std_format.h"
+#include "utils/qt_std_format.h"
 
 #include <QDebug>
 #include <QRegularExpression>

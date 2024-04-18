@@ -1,8 +1,7 @@
-#include "string_utils.h"
-
-#include "textdocument.h"
+#include "strings.h"
 
 #include <QSet>
+#include <QTextDocument>
 
 namespace Core {
 
@@ -204,12 +203,9 @@ QString expandRegExpReplacement(const QString &replaceText, const QStringList &c
     return result;
 }
 
-QRegularExpression createRegularExpression(const QString &txt, int flags)
+QRegularExpression createRegularExpression(const QString &txt, int flags, bool isRegExp)
 {
-    // Also add PreserveCase when FindCaseSensitively is used
-    flags |= (flags & TextDocument::FindCaseSensitively) ? TextDocument::PreserveCase : TextDocument::NoFindFlags;
-
-    QRegularExpression::PatternOptions options = flags & TextDocument::PreserveCase
+    QRegularExpression::PatternOptions options = (flags & QTextDocument::FindCaseSensitively)
         ? QRegularExpression::NoPatternOption
         : QRegularExpression::CaseInsensitiveOption;
 
@@ -217,7 +213,7 @@ QRegularExpression createRegularExpression(const QString &txt, int flags)
     if (txt.contains('\n'))
         options |= QRegularExpression::MultilineOption;
 
-    return QRegularExpression((flags & TextDocument::FindRegexp) ? txt : QRegularExpression::escape(txt), options);
+    return QRegularExpression(isRegExp ? txt : QRegularExpression::escape(txt), options);
 }
 
 } // namespace Migration

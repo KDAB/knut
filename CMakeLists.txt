@@ -82,7 +82,7 @@ add_subdirectory(test_data)
 
 # compile_commands.json
 # ##############################################################################
-# Ensure we have the appropriate compile_commands.json files availabe.
+# Ensure we have the appropriate compile_commands.json files available.
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -127,7 +127,6 @@ add_subdirectory(src)
 add_subdirectory(scripts)
 add_subdirectory(tools)
 add_subdirectory(tests)
-add_subdirectory(utils)
 
 file(
   GLOB

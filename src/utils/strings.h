@@ -22,6 +22,6 @@ QString expandRegExpReplacement(const QString &replaceText, const QStringList &c
  * @brief createRegularExpression
  * Create a regular expression based on options from TextDocument::FindFlags
  */
-QRegularExpression createRegularExpression(const QString &txt, int flags);
+QRegularExpression createRegularExpression(const QString &txt, int flags, bool isRegExp = true);
 
 } // namespace Core

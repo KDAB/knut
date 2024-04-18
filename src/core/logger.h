@@ -1,7 +1,5 @@
 #pragma once
 
-#include "string_utils.h"
-
 #include <QAbstractItemModel>
 #include <QCoreApplication>
 #include <QMetaEnum>

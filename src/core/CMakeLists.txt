@@ -23,7 +23,6 @@ set(PROJECT_SOURCES
     file.cpp
     fileinfo.h
     fileinfo.cpp
-    json_utils.h
     imagedocument.h
     imagedocument.cpp
     knutcore.h
@@ -71,8 +70,6 @@ set(PROJECT_SOURCES
     settings.cpp
     slintdocument.h
     slintdocument.cpp
-    string_utils.h
-    string_utils.cpp
     symbol.h
     symbol.cpp
     testutil.h
@@ -113,6 +110,7 @@ target_link_libraries(
          Qt${QT_VERSION_MAJOR}::UiTools
          knut-lsp
          knut-treesitter
-         knut-rccore)
+         knut-rccore
+         knut-utils)
 target_include_directories(${PROJECT_NAME}
                            INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/..)
