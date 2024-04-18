@@ -31,6 +31,7 @@ enum class Keywords {
     FONT,
     HTML,
     ICON,
+    IMAGE,
     MENU,
     MENUEX,
     MESSAGETABLE,

@@ -20,6 +20,7 @@ static QHash<QString, Keywords> KeywordMap = {
     {"FONT", Keywords::FONT},
     {"HTML", Keywords::HTML},
     {"ICON", Keywords::ICON},
+    {"IMAGE", Keywords::IMAGE},
     {"MENU", Keywords::MENU},
     {"MENUEX", Keywords::MENUEX},
     {"MESSAGETABLE", Keywords::MESSAGETABLE},

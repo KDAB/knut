@@ -813,6 +813,7 @@ static void readAsset(Context &context, Keywords keyword, const QString &id)
         break;
     case Keywords::BITMAP:
     case Keywords::CURSOR:
+    case Keywords::IMAGE:
     case Keywords::PNG:
         context.currentData().assets.push_back(asset);
         break;
@@ -1296,6 +1297,7 @@ static void readResource(Context &context, const std::optional<Token> &token, co
     case Keywords::BITMAP:
     case Keywords::CURSOR:
     case Keywords::ICON:
+    case Keywords::IMAGE:
     case Keywords::PNG:
         readAsset(context, keyword, id->toString());
         break;
