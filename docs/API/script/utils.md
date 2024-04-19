@@ -75,8 +75,7 @@ For persistent settings, see [Settings](settings.md).
 
 #### <a name="mktemp"></a>string **mktemp**(string pattern)
 
-Creates and returns the name of a temporory file based on a `pattern`.
-This function is copied from UtilsJsExtension::mktemp from Qt Creator.
+Creates and returns the name of a temporary file based on a `pattern`.
 
 #### <a name="runScript"></a>**runScript**(string path, bool log)
 
@@ -85,7 +84,7 @@ Runs the script given by `path`. If `log` is true, it will also log the run of t
 #### <a name="setGlobal"></a>**setGlobal**(string varName, string value)
 
 Sets the global value `varName` to `value`. A global value is a value set by a script, and
-persistent only in the current Qt Creator execution (it will disappear once closed).
+persistent only in the current Knut execution (it will disappear once closed).
 
 For persistent settings, see [Settings](settings.md).
 

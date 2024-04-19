@@ -62,7 +62,7 @@ QString Utils::getGlobal(const QString &varName)
 /*!
  * \qmlmethod Utils::setGlobal(string varName, string value)
  * Sets the global value `varName` to `value`. A global value is a value set by a script, and
- * persistent only in the current Qt Creator execution (it will disappear once closed).
+ * persistent only in the current Knut execution (it will disappear once closed).
  *
  * For persistent settings, see [Settings](settings.md).
  * \sa Settings
@@ -125,9 +125,9 @@ void Utils::sleep(int msecs)
 
 /*!
  * \qmlmethod string Utils::mktemp(string pattern)
- * Creates and returns the name of a temporory file based on a `pattern`.
- * This function is copied from UtilsJsExtension::mktemp from Qt Creator.
+ * Creates and returns the name of a temporary file based on a `pattern`.
  */
+// This function is copied from Qt Creator.
 QString Utils::mktemp(const QString &pattern)
 {
     LOG("Utils::mktemp", pattern);
