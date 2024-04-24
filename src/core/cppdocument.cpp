@@ -423,7 +423,7 @@ Core::QueryMatchList CppDocument::queryFunctionCall(const QString &functionName,
  *
  * The returned QueryMatch instances will have the following captures available:
  *
- * - `call` - The entire call expresssion
+ * - `call` - The entire call expression
  * - `name` - The name of the function (the text will be equal to functionName)
  * - `argument-list` - The entire list of arguments, including the surroundg parentheses `()`
  * - `arguments` - Each argument provided to the function call, in order, excluding any comments
@@ -746,9 +746,7 @@ Core::QueryMatch CppDocument::queryMember(const QString &className, const QStrin
     auto classQuery = queryClassDefinition(className);
 
     // clang-format off
-    auto queryMemberName = QString(R"EOF(
-        (field_identifier) @name (#eq? @name "%1")
-    )EOF").arg(memberName);
+    auto queryMemberName = QString("(field_identifier) @name");
     // handle Type, Type *, Type &, Type *&, Type &* and Type **
     auto queryString = QString(R"EOF(
         (field_declaration
@@ -758,8 +756,9 @@ Core::QueryMatch CppDocument::queryMember(const QString &className, const QStrin
                 declarator: (_ %1 )
                 declarator: %1
             ]
+            (#eq? @name "%2")
         ) @member
-    )EOF").arg(queryMemberName);
+    )EOF").arg(queryMemberName, memberName);
     // clang-format on
 
     auto matches = classQuery.queryIn("body", queryString);
@@ -779,7 +778,7 @@ Core::QueryMatch CppDocument::queryMember(const QString &className, const QStrin
 /*!
  * \qmlmethod int CppDocument::gotoBlockStart(int count)
  * Moves the cursor to the start of the block it's in, and returns the new cursor position.
- * A block is definied by {} or () or [].
+ * A block is defined by {} or () or [].
  * Does it `count` times.
  */
 int CppDocument::gotoBlockStart(int count)
@@ -798,7 +797,7 @@ int CppDocument::gotoBlockStart(int count)
 /*!
  * \qmlmethod int CppDocument::gotoBlockEnd(int count)
  * Moves the cursor to the end of the block it's in, and returns the new cursor position.
- * A block is definied by {} or () or [].
+ * A block is defined by {} or () or [].
  * Does it `count` times.
  */
 int CppDocument::gotoBlockEnd(int count)
@@ -817,7 +816,7 @@ int CppDocument::gotoBlockEnd(int count)
 /*!
  * \qmlmethod int CppDocument::selectBlockStart()
  * Selects the text from current cursor position to the start of the block, and returns the new cursor position.
- * A block is definied by {} or () or [].
+ * A block is defined by {} or () or [].
  * Does it `count` times.
  */
 int CppDocument::selectBlockStart(int count)
@@ -842,7 +841,7 @@ int CppDocument::selectBlockStart(int count)
 /*!
  * \qmlmethod int CppDocument::selectBlockEnd()
  * Selects the text from current cursor position to the end of the block, and returns the new cursor position.
- * A block is definied by {} or () or [].
+ * A block is defined by {} or () or [].
  * Does it `count` times.
  */
 int CppDocument::selectBlockEnd(int count)
@@ -868,7 +867,7 @@ int CppDocument::selectBlockEnd(int count)
  * \qmlmethod int CppDocument::selectBlockUp()
  * \since 1.1
  * Selects the text of the block the cursor is in, and returns the new cursor position.
- * A block is definied by {} or () or [].
+ * A block is defined by {} or () or [].
  * Does it `count` times.
  */
 int CppDocument::selectBlockUp(int count)

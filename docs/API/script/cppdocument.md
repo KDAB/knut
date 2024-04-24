@@ -184,13 +184,13 @@ If an empty string is provided as the `signature`, all overloads of the function
 #### <a name="gotoBlockEnd"></a>int **gotoBlockEnd**(int count)
 
 Moves the cursor to the end of the block it's in, and returns the new cursor position.
-A block is definied by {} or () or [].
+A block is defined by {} or () or [].
 Does it `count` times.
 
 #### <a name="gotoBlockStart"></a>int **gotoBlockStart**(int count)
 
 Moves the cursor to the start of the block it's in, and returns the new cursor position.
-A block is definied by {} or () or [].
+A block is defined by {} or () or [].
 Does it `count` times.
 
 #### <a name="insertCodeInMethod"></a>**insertCodeInMethod**(string methodName, string code, Position insertAt)
@@ -264,7 +264,7 @@ Returns the list of function calls to the function `functionName`, no matter how
 
 The returned QueryMatch instances will have the following captures available:
 
-- `call` - The entire call expresssion
+- `call` - The entire call expression
 - `name` - The name of the function (the text will be equal to functionName)
 - `argument-list` - The entire list of arguments, including the surroundg parentheses `()`
 - `arguments` - Each argument provided to the function call, in order, excluding any comments
@@ -343,13 +343,13 @@ The `include` string should be either `<foo.h>` or `"foo.h"`, it will returns fa
 #### <a name="selectBlockEnd"></a>int **selectBlockEnd**()
 
 Selects the text from current cursor position to the end of the block, and returns the new cursor position.
-A block is definied by {} or () or [].
+A block is defined by {} or () or [].
 Does it `count` times.
 
 #### <a name="selectBlockStart"></a>int **selectBlockStart**()
 
 Selects the text from current cursor position to the start of the block, and returns the new cursor position.
-A block is definied by {} or () or [].
+A block is defined by {} or () or [].
 Does it `count` times.
 
 #### <a name="selectBlockUp"></a>int **selectBlockUp**()
@@ -358,7 +358,7 @@ Does it `count` times.
     Since: Knut 1.1
 
 Selects the text of the block the cursor is in, and returns the new cursor position.
-A block is definied by {} or () or [].
+A block is defined by {} or () or [].
 Does it `count` times.
 
 #### <a name="toggleSection"></a>**toggleSection**()
