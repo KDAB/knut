@@ -19,9 +19,8 @@ namespace Core {
  * Returns the list of members (both data and functions) of this class.
  */
 
-ClassSymbol::ClassSymbol(QObject *parent, const QString &name, const QString &description,
-                         const QString &importLocation, Kind kind, TextRange range, TextRange selectionRange)
-    : Symbol(parent, name, description, importLocation, kind, range, selectionRange)
+ClassSymbol::ClassSymbol(QObject *parent, const QueryMatch &match, Kind kind)
+    : Symbol(parent, match, kind)
 {
 }
 
@@ -45,6 +44,11 @@ const QVector<Symbol *> &ClassSymbol::members() const
         m_members = {findMembers()};
     }
     return *m_members;
+}
+
+QString ClassSymbol::description() const
+{
+    return "Class with " + QString::number(members().size()) + " members";
 }
 
 bool operator==(const ClassSymbol &left, const ClassSymbol &right)

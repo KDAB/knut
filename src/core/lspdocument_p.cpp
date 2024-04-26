@@ -1,200 +1,12 @@
 #include "lspdocument_p.h"
 #include "lspdocument.h"
 
-#include "functionsymbol.h"
-
-#include "lsp/client.h"
-#include "lsp/lsp_utils.h"
-#include "lsp/types.h"
 #include "treesitter/languages.h"
 
 #include <kdalgorithms.h>
 #include <spdlog/spdlog.h>
 
 namespace Core {
-
-///////////////////////////////////////////////////////////////////////////////
-// LspCache
-///////////////////////////////////////////////////////////////////////////////
-LspCache::LspCache(LspDocument *document)
-    : m_document(document)
-{
-}
-
-void LspCache::clear()
-{
-    m_symbols.clear();
-    m_flags = 0;
-}
-
-const QVector<Symbol *> &LspCache::symbols()
-{
-    if (m_flags & HasSymbols)
-        return m_symbols;
-
-    if (!m_document->m_lspClient)
-        return m_symbols;
-
-    Lsp::DocumentSymbolParams params;
-    params.textDocument.uri = m_document->toUri();
-    auto result = m_document->m_lspClient->documentSymbol(std::move(params));
-    if (!result)
-        return m_symbols;
-
-    // We only supports Lsp::DocumentSymbol for now
-    if (!std::holds_alternative<std::vector<Lsp::DocumentSymbol>>(result.value())) {
-        Q_ASSERT(std::get<std::vector<Lsp::SymbolInformation>>(result.value()).empty());
-        return m_symbols;
-    }
-    const auto lspSymbols = std::get<std::vector<Lsp::DocumentSymbol>>(result.value());
-
-    // Create a recursive lambda to flatten the hierarchy
-    // Add the full symbol name (with namespaces/classes)
-    m_symbols.clear();
-    const std::function<void(const std::vector<Lsp::DocumentSymbol> &, QString)> fillSymbols =
-        [this, &fillSymbols](const std::vector<Lsp::DocumentSymbol> &lspSymbols, const QString &context) {
-            for (const auto &lspSymbol : lspSymbols) {
-                auto symbol = Symbol::makeSymbol(m_document, lspSymbol, m_document->toRange(lspSymbol.range),
-                                                 m_document->toRange(lspSymbol.selectionRange), context);
-                m_symbols.push_back(symbol);
-
-                if (lspSymbol.children) {
-                    if (lspSymbol.kind == Lsp::SymbolKind::String) // case for BEGIN_MESSAGE_MAP
-                        fillSymbols(lspSymbol.children.value(), context);
-                    else
-                        fillSymbols(lspSymbol.children.value(), symbol->name());
-                }
-            }
-        };
-    fillSymbols(lspSymbols, "");
-    m_flags |= HasSymbols;
-    return m_symbols;
-}
-
-const Core::Symbol *LspCache::inferVariable(QStringList lines, TextRange range, Symbol::Kind kind)
-{
-    static QString typePrefix("Type: ");
-    auto words = lines.first().split(' ');
-
-    if (words.size() < 2) {
-        return nullptr;
-    }
-    // Remove the `param` or `variable` prefix
-    words.removeFirst();
-    auto name = words.join(' ');
-
-    QString type;
-    for (auto line : lines) {
-        if (line.startsWith(typePrefix)) {
-            type = line.remove(0, typePrefix.size());
-            type = Lsp::Utils::removeTypeAliasInformation(type);
-        }
-    }
-
-    auto importLocation = inferImportLocation(lines);
-
-    return Symbol::makeSymbol(m_document, name, type, importLocation, kind, range, range);
-}
-
-QString LspCache::inferImportLocation(QStringList &lines)
-{
-    auto line = kdalgorithms::mutable_find_if(lines, [](const QString &line) {
-        return line.startsWith("provided by ");
-    });
-    if (line.has_result()) {
-        QString importLocation = line->remove(0, 12);
-        lines.removeOne(*line);
-        return importLocation;
-    }
-    return "";
-}
-
-const Core::Symbol *LspCache::inferMethod(QStringList lines, TextRange range, Symbol::Kind kind)
-{
-    auto words = lines.first().split(' ');
-
-    if (words.size() < 2) {
-        return nullptr;
-    }
-
-    words.removeFirst();
-    auto name = words.join(' ');
-
-    auto importLocation = inferImportLocation(lines);
-
-    return Symbol::makeSymbol(m_document, name, "" /* fill description later */, importLocation, kind, range, range);
-}
-
-const Core::Symbol *LspCache::inferGenericSymbol(QStringList lines, TextRange range)
-{
-    static const std::unordered_map<QString, Symbol::Kind> nameToSymbol {{"namespace", Symbol::Namespace},
-                                                                         {"enumerator", Symbol::Enum},
-                                                                         {"class", Symbol::Class},
-                                                                         {"struct", Symbol::Struct}};
-    auto words = lines.first().split(' ');
-
-    if (words.size() < 2) {
-        return nullptr;
-    }
-
-    auto kindIter = nameToSymbol.find(words.first());
-    if (kindIter == nameToSymbol.cend()) {
-        return nullptr;
-    }
-    auto kind = kindIter->second;
-    words.removeFirst();
-    auto name = words.join(' ');
-
-    lines.removeFirst();
-    auto importLocation = inferImportLocation(lines);
-
-    while (!lines.isEmpty() && lines.first().isEmpty()) {
-        lines.removeFirst();
-    }
-    auto description = lines.join('\n');
-
-    return Symbol::makeSymbol(m_document, name, description, importLocation, kind, range, range);
-}
-
-const Core::Symbol *LspCache::inferSymbol(const QString &hoverText, TextRange range)
-{
-    spdlog::debug("Trying to infer Symbol from Hover text:\n{}", hoverText.toStdString());
-
-    auto cached = kdalgorithms::find_if(m_inferredSymbols, [&range](const auto symbol) {
-        return symbol->range() == range;
-    });
-    if (cached) {
-        return *cached;
-    }
-
-    auto lines = hoverText.split('\n');
-    if (lines.isEmpty()) {
-        return nullptr;
-    }
-
-    auto words = lines.first().split(' ');
-    if (words.size() < 2) {
-        return nullptr;
-    }
-
-    const Symbol *result;
-    auto kind = words.first();
-    if (kind == "param" || kind == "variable") {
-        result = inferVariable(lines, range, Symbol::Variable);
-    } else if (kind == "field") {
-        result = inferVariable(lines, range, Symbol::Field);
-    } else if (kind == "instance-method") {
-        result = inferMethod(lines, range, Symbol::Method);
-    } else if (kind == "function") {
-        result = inferMethod(lines, range, Symbol::Function);
-    } else {
-        result = inferGenericSymbol(std::move(lines), range);
-    }
-
-    m_inferredSymbols.emplace_back(result);
-
-    return result;
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 // TreeSitterHelper
@@ -207,6 +19,8 @@ TreeSitterHelper::TreeSitterHelper(LspDocument *document)
 void TreeSitterHelper::clear()
 {
     m_tree = {};
+    m_symbols.clear();
+    m_flags &= ~HasSymbols;
 }
 
 treesitter::Parser &TreeSitterHelper::parser()
@@ -291,6 +105,179 @@ QVector<treesitter::Node> TreeSitterHelper::nodesInRange(const RangeMark &range)
     }
 
     return nodesInRange;
+}
+
+void TreeSitterHelper::assignSymbolContexts()
+{
+    auto contextForSymbol = [this](Symbol *symbol) {
+        auto surroundsSymbol = [&symbol](const Symbol *otherSymbol) {
+            return symbol != otherSymbol && otherSymbol->range().contains(symbol->range());
+        };
+        auto surroundingSymbols = kdalgorithms::filtered(m_symbols, surroundsSymbol);
+
+        kdalgorithms::sort_by(
+            surroundingSymbols,
+            [](const auto &symbol) {
+                return symbol->range().length();
+            },
+            kdalgorithms::descending);
+        return surroundingSymbols;
+    };
+
+    for (const auto &symbol : m_symbols | std::views::reverse) {
+        symbol->assignContext(contextForSymbol(symbol));
+    }
+}
+
+QVector<Core::Symbol *> TreeSitterHelper::functionSymbols() const
+{
+    auto functionDeclarator = R"EOF(
+            (function_declarator
+              declarator: [
+                (identifier) @selectionRange
+                (field_identifier) @selectionRange
+                (_ [(identifier) (field_identifier)] @selectionRange)
+                (_ (_ [(identifier) (field_identifier)] @selectionRange))
+              ] @name
+
+              parameters: (parameter_list
+                ; Cool trick: We can use [(type) @capture _]* to capture specific node types
+                ; and ignore all others, like comments, "," and so on.
+                [(parameter_declaration) @parameter _]*) @parameters
+
+              (trailing_return_type (_) @return)? )
+    )EOF";
+
+    auto pointerDeclarator = QString(R"EOF(
+        [%1
+        (_ "*"? @return "&"? @return "&&"? @return %1)
+        (_ ["*" "&" "&&"]? @return
+            (_ ["*" "&" "&&"]? @return %1))]
+    )EOF")
+                                 .arg(functionDeclarator);
+
+    // TODO: Add support for pointers & references
+    auto functions = m_document->query(QString(R"EOF(
+                        [; Free functions
+                        (function_definition
+                          type: (_)? @return
+                          ; If using trailing return type, we need to remove the auto type at the start
+                          (#exclude! @return placeholder_type_specifier)
+                          declarator: %2) @range
+
+                        ; Constructor/Destructors
+                        (declaration
+                          declarator: %1) @range
+
+                        ; Member functions
+                        (field_declaration
+                          type: (_)? @return
+                          ; If using trailing return type, we need to remove the auto type at the start
+                          (#exclude! @return placeholder_type_specifier)
+                          declarator: %2) @range
+
+                        ])EOF")
+                                           .arg(functionDeclarator, pointerDeclarator));
+
+    auto function_to_symbol = [this](const QueryMatch &match) {
+        auto kind = Symbol::Kind::Function;
+        if (!match.get("return").isValid()) {
+            // No return type, this is a Constructor/Destructor
+            // Clangd also assigned the Constructor kind to Destructors, so we'll do the same
+            kind = Symbol::Kind::Constructor;
+        } else if (match.get("name").text().contains("::")) {
+            // This is a bit of a guesstimate, but if the function name contains "::", it's likely a method.
+            // It may also be a member of a namespace, but this information isn't really available unless we try
+            // to resolve the original declaration.
+            kind = Symbol::Kind::Method;
+        }
+        return Symbol::makeSymbol(m_document, match, kind);
+    };
+
+    return kdalgorithms::transformed<QVector<Symbol *>>(functions, function_to_symbol);
+}
+
+QVector<Core::Symbol *> TreeSitterHelper::classSymbols() const
+{
+    auto classesAndStructs = m_document->query(QString(R"EOF(
+            (class_specifier
+              name: (_) @name @selectionRange
+              body: (field_declaration_list)) @range
+
+            (struct_specifier
+              name: (_) @name @selectionRange
+              body: (field_declaration_list)) @range
+    )EOF"));
+    auto class_to_symbol = [this](const QueryMatch &match) {
+        return Symbol::makeSymbol(m_document, match, Symbol::Kind::Class);
+    };
+
+    return kdalgorithms::transformed<QVector<Symbol *>>(classesAndStructs, class_to_symbol);
+}
+
+QVector<Core::Symbol *> TreeSitterHelper::memberSymbols() const
+{
+    auto fieldIdentifier = "(field_identifier) @name @selectionRange";
+    auto members = m_document->query(QString(R"EOF(
+                                        (field_declaration
+                                          type: (_) @type
+                                          declarator: [
+                                            %1
+                                            (_ %1) @decl_type
+                                            (_ (_ %1) @decl_type) @decl_type
+                                          ]
+                                          ; We need to filter out functions, they are already captured
+                                          ; by the functionSymbols query
+                                          (#not_is? @decl_type function_declarator)) @range)EOF")
+                                         .arg(fieldIdentifier));
+
+    auto member_to_symbol = [this](const QueryMatch &match) {
+        return Symbol::makeSymbol(m_document, match, Symbol::Kind::Field);
+    };
+
+    return kdalgorithms::transformed<QVector<Symbol *>>(members, member_to_symbol);
+}
+
+QVector<Core::Symbol *> TreeSitterHelper::enumSymbols() const
+{
+    auto enums = m_document->query(R"EOF(
+        (enum_specifier
+          name: (_) @name @selectionRange) @range
+    )EOF");
+    auto enum_to_symbol = [this](const QueryMatch &match) {
+        return Symbol::makeSymbol(m_document, match, Symbol::Kind::Enum);
+    };
+    auto result = kdalgorithms::transformed<QVector<Symbol *>>(enums, enum_to_symbol);
+
+    auto enumerators = m_document->query(R"EOF(
+        (enumerator
+          name: (_) @name @selectionRange
+          value: (_)? @value) @range
+    )EOF");
+    result.append(kdalgorithms::transformed<QVector<Symbol *>>(enumerators, enum_to_symbol));
+
+    return result;
+}
+
+const QVector<Core::Symbol *> &TreeSitterHelper::symbols()
+{
+    if (m_flags & HasSymbols)
+        return m_symbols;
+
+    m_flags |= HasSymbols;
+
+    m_symbols = classSymbols();
+    m_symbols.append(functionSymbols());
+    m_symbols.append(memberSymbols());
+    m_symbols.append(enumSymbols());
+
+    kdalgorithms::sort_by(m_symbols, [](const auto &symbol) {
+        return symbol->range().start;
+    });
+
+    assignSymbolContexts();
+
+    return m_symbols;
 }
 
 } // namespace Core

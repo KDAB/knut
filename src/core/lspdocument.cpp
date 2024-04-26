@@ -1,12 +1,13 @@
 #include "lspdocument.h"
 #include "lspdocument_p.h"
 
+#include "treesitter/predicates.h"
+
 #include "astnode.h"
 #include "logger.h"
 #include "project.h"
 #include "querymatch.h"
 #include "rangemark.h"
-#include "scriptmanager.h"
 #include "symbol.h"
 #include "textlocation.h"
 #include "utils/json.h"
@@ -41,7 +42,6 @@ LspDocument::~LspDocument() = default;
 
 LspDocument::LspDocument(Type type, QObject *parent)
     : TextDocument(type, parent)
-    , m_cache(std::make_unique<LspCache>(this))
     , m_treeSitterHelper(std::make_unique<TreeSitterHelper>(this))
 {
     connect(textEdit()->document(), &QTextDocument::contentsChange, this, &LspDocument::changeContent);
@@ -127,9 +127,7 @@ void LspDocument::deleteSymbol(const Symbol &symbol)
 Core::SymbolList LspDocument::symbols() const
 {
     LOG("LspDocument::symbols");
-    if (!checkClient())
-        return {};
-    return m_cache->symbols();
+    return m_treeSitterHelper->symbols();
 }
 
 struct RegexpTransform
@@ -164,13 +162,6 @@ const Core::Symbol *LspDocument::symbolUnderCursor() const
     const auto symbolIter = kdalgorithms::find_if(symbols, containsCursor);
     if (symbolIter) {
         return *symbolIter;
-    }
-
-    auto hover = hoverWithRange(textEdit()->textCursor().position());
-    if (hover.second) {
-        return m_cache->inferSymbol(hover.first, hover.second.value());
-    } else {
-        spdlog::warn("LspDocument::symbolUnderCursor: Cannot infer Symbol - Language Server did not return a range!");
     }
 
     return nullptr;
@@ -440,7 +431,7 @@ Symbol *LspDocument::findSymbol(const QString &name, int options) const
     if (!checkClient())
         return {};
 
-    const auto &symbols = m_cache->symbols();
+    auto symbols = this->symbols();
     const auto regexp = (options & FindRegexp) ? createRegularExpression(name, options) : QRegularExpression {};
     auto byName = [name, options, regexp](Symbol *symbol) {
         if (options & FindWholeWords)
@@ -665,7 +656,6 @@ void LspDocument::changeContentLsp(int position, int charsRemoved, int charsAdde
     Q_UNUSED(position)
     Q_UNUSED(charsRemoved)
     Q_UNUSED(charsAdded)
-    m_cache->clear();
 
     // TODO: Keep copy of previous string around, so we can find the oldEndPosition.
     // const auto document = textEdit()->document();

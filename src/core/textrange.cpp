@@ -18,6 +18,10 @@ namespace Core {
  * \qmlproperty int TextRange::end
  * This read-only property defines the end position of the range.
  */
+/*!
+ * \qmlproperty int TextRange::length
+ * This read-only property returns the length of the range (end - start)
+ */
 
 bool TextRange::contains(int pos) const
 {
@@ -27,6 +31,11 @@ bool TextRange::contains(int pos) const
 bool TextRange::contains(const TextRange &range) const
 {
     return contains(range.start) && contains(range.end);
+}
+
+int TextRange::length() const
+{
+    return end - start;
 }
 
 } // Core

@@ -80,42 +80,40 @@ namespace Core {
  * List of all references of this symbol in the current project.
  */
 
-Symbol::Symbol(QObject *parent, QString name, QString description, QString importLocation, Kind kind, TextRange range,
-               TextRange selectionRange)
+Symbol::Symbol(QObject *parent, const QueryMatch &match, Kind kind)
     : QObject(parent)
-    , m_name {std::move(name)}
-    , m_description {std::move(description)}
-    , m_importLocation {std::move(importLocation)}
+    , m_name {match.get("name").text()}
     , m_kind {kind}
-    , m_range {range}
-    , m_selectionRange {selectionRange}
+    , m_range {match.get("range").toTextRange()}
+    , m_selectionRange {match.get("selectionRange").toTextRange()}
+    , m_queryMatch {match}
 {
 }
 
-Symbol *Symbol::makeSymbol(QObject *parent, const QString &name, const QString &description,
-                           const QString &importLocation, Kind kind, TextRange range, TextRange selectionRange)
+Symbol *Symbol::makeSymbol(QObject *parent, const QueryMatch &match, Kind kind)
 {
+
     if (kind == Method || kind == Function || kind == Constructor) {
-        return new FunctionSymbol(parent, name, description, importLocation, kind, range, selectionRange);
+        return new FunctionSymbol(parent, match, kind);
     }
     if (kind == Class || kind == Struct) {
-        return new ClassSymbol(parent, name, description, importLocation, kind, range, selectionRange);
+        return new ClassSymbol(parent, match, kind);
     }
-    return new Symbol(parent, name, description, importLocation, kind, range, selectionRange);
+    return new Symbol(parent, match, kind);
 }
 
-Symbol *Symbol::makeSymbol(QObject *parent, const Lsp::DocumentSymbol &lspSymbol, TextRange range,
-                           TextRange selectionRange, const QString &context /* = ""*/)
+void Symbol::assignContext(const QVector<Symbol *> &contexts)
 {
-    const auto description = QString::fromStdString(lspSymbol.detail.value_or(""));
-    const auto kind = static_cast<Symbol::Kind>(lspSymbol.kind);
-    auto name = QString::fromStdString(lspSymbol.name);
-
-    if (!context.isEmpty())
-        name = context + "::" + name;
-
-    return makeSymbol(parent, name, description, "" /*TODO: Check description for import location*/, kind, range,
-                      selectionRange);
+    auto names = kdalgorithms::transformed<QStringList>(contexts, &Symbol::name);
+    if (!names.isEmpty()) {
+        m_name = names.join("::") + "::" + m_name;
+    }
+    auto is_class = [](const auto &symbol) {
+        return symbol->kind() == Kind::Class;
+    };
+    if (m_kind == Kind::Function && kdalgorithms::any_of(contexts, is_class)) {
+        m_kind = Kind::Method;
+    }
 }
 
 LspDocument *Symbol::document() const
@@ -175,12 +173,7 @@ QString Symbol::name() const
 
 QString Symbol::description() const
 {
-    return m_description;
-}
-
-QString Symbol::importLocation() const
-{
-    return m_importLocation;
+    return "";
 }
 
 Symbol::Kind Symbol::kind() const
@@ -228,8 +221,8 @@ void Symbol::select()
 
 bool Symbol::operator==(const Symbol &other) const
 {
-    return m_name == other.m_name && m_description == other.m_description && m_kind == other.m_kind
-        && m_range == other.m_range && m_selectionRange == other.m_selectionRange;
+    return m_name == other.m_name && m_kind == other.m_kind && m_range == other.m_range
+        && m_selectionRange == other.m_selectionRange;
 }
 
 } // namespace Core

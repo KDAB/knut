@@ -492,6 +492,26 @@ private slots:
         auto matches = cursor.allRemainingMatches();
         QCOMPARE(matches.size(), 2);
     }
+
+    void not_is_predicate()
+    {
+        auto source = readTestFile("/tst_treesitter/main.cpp");
+        treesitter::Parser parser(tree_sitter_cpp());
+        auto tree = parser.parseString(source);
+        QVERIFY(tree.has_value());
+
+        auto query = std::make_shared<treesitter::Query>(tree_sitter_cpp(), R"EOF(
+            (function_definition
+                type: (_) @type
+                (#not_is? @type primitive_type))
+        )EOF");
+
+        treesitter::QueryCursor cursor;
+        cursor.execute(query, tree->rootNode(), std::make_unique<treesitter::Predicates>(source));
+
+        auto matches = cursor.allRemainingMatches();
+        QCOMPARE(matches.size(), 1); // Only one function that returns a string, and not an int.
+    }
 };
 
 QTEST_MAIN(TestTreeSitter)

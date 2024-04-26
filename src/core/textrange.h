@@ -9,6 +9,7 @@ struct TextRange
     Q_GADGET
     Q_PROPERTY(int start MEMBER start CONSTANT)
     Q_PROPERTY(int end MEMBER end CONSTANT)
+    Q_PROPERTY(int length READ length CONSTANT)
 
 public:
     int start;
@@ -18,6 +19,7 @@ public:
 
     bool contains(int pos) const;
     bool contains(const TextRange &range) const;
+    int length() const;
 
     auto operator<=>(const TextRange &) const = default;
 };

@@ -279,6 +279,44 @@ private slots:
         QVERIFY(mark.text().isEmpty());
     }
 
+    void rangeMark_textExcept()
+    {
+        Core::TextDocument document;
+        document.load(Test::testDataPath() + "/tst_textdocument/loremipsum_lf_utf8.txt");
+
+        document.gotoLine(2);
+        document.selectEndOfLine();
+        auto mark = document.createRangeMark();
+        QCOMPARE(mark.text(), "Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
+
+        document.gotoStartOfDocument();
+        document.selectNextChar();
+        document.selectEndOfWord();
+        auto other = document.createRangeMark();
+        QCOMPARE(other.text(), "\nLorem");
+        QCOMPARE(mark.textExcept(other), " ipsum dolor sit amet, consectetur adipiscing elit.");
+        QCOMPARE(other.textExcept(mark), "\n");
+
+        document.gotoEndOfLine();
+        document.gotoPreviousWord();
+        document.gotoPreviousWord();
+        document.gotoPreviousChar();
+        document.selectNextWord();
+        document.selectNextWord();
+        other = document.createRangeMark();
+        QCOMPARE(other.text(), " elit");
+        QCOMPARE(mark.textExcept(other), "Lorem ipsum dolor sit amet, consectetur adipiscing.");
+        QCOMPARE(other.textExcept(mark), "");
+
+        document.gotoEndOfLine();
+        document.gotoPreviousWord();
+        document.selectNextLine();
+        other = document.createRangeMark();
+        QCOMPARE(other.text(), ".\nQuisque convallis ipsum ac odio aliquet tincidunt.");
+        QCOMPARE(mark.textExcept(other), "Lorem ipsum dolor sit amet, consectetur adipiscing elit");
+        QCOMPARE(other.textExcept(mark), "\nQuisque convallis ipsum ac odio aliquet tincidunt.");
+    }
+
     void updateMark()
     {
         int mark = 10;

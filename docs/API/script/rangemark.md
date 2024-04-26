@@ -26,6 +26,7 @@ import Script 1.0
 ||**[remove](#remove)**()|
 ||**[replace](#replace)**(string text)|
 ||**[select](#select)**()|
+|string |**[textExcept](#textExcept)**([RangeMark](../script/rangemark.md) other)|
 
 ## Detailed Description
 
@@ -55,7 +56,7 @@ This read-only property returns the text covered by the range.
 
 Joins the two `RangeMark` and creates a new one.
 
-The new `RangeMark` is spaning from the minimum of the start to the maximum of the end.
+The new `RangeMark` is spanning from the minimum of the start to the maximum of the end.
 
 #### <a name="remove"></a>**remove**()
 
@@ -68,3 +69,10 @@ Replaces the text defined by this range with the `text` string in the source doc
 #### <a name="select"></a>**select**()
 
 Selects the text defined by this range in the source document.
+
+#### <a name="textExcept"></a>string **textExcept**([RangeMark](../script/rangemark.md) other)
+
+Returns the text of this range without the text of the other range.
+This assumes that both ranges overlap.
+
+Otherwise, the entire text is returned.

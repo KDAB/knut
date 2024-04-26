@@ -1,5 +1,7 @@
 #pragma once
 
+#include "lsp/client.h"
+
 #include "astnode.h"
 #include "querymatch.h"
 #include "symbol.h"
@@ -97,9 +99,7 @@ private:
     void changeContentTreeSitter(int position, int charsRemoved, int charsAdded);
 
     // Language Server
-    friend LspCache;
     QPointer<Lsp::Client> m_lspClient;
-    std::unique_ptr<LspCache> m_cache;
     int m_revision = 0;
 
     // TreeSitter

@@ -17,14 +17,14 @@ class ClassSymbol : public Symbol
 
 protected:
     friend class Symbol;
-    ClassSymbol(QObject *parent, const QString &name, const QString &description, const QString &importLocation,
-                Kind kind, TextRange range, TextRange selectionRange);
+    ClassSymbol(QObject *parent, const QueryMatch &match, Kind kind);
 
     // mutable for lazy initialization
     mutable std::optional<QVector<Symbol *>> m_members;
 
 public:
     const QVector<Symbol *> &members() const;
+    QString description() const override;
 };
 bool operator==(const ClassSymbol &left, const ClassSymbol &right);
 

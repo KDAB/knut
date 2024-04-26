@@ -82,118 +82,36 @@ FunctionArgument FunctionArgument::fromHover(const QString &parameter, Document:
  * whitespace but everything else like comments.
  */
 
-FunctionSymbol::FunctionSymbol(QObject *parent, const QString &name, const QString &description,
-                               const QString &importLocation, Kind kind, TextRange range, TextRange selectionRange)
-    : Symbol(parent, name, description, importLocation, kind, range, selectionRange)
+FunctionSymbol::FunctionSymbol(QObject *parent, const QueryMatch &match, Kind kind)
+    : Symbol(parent, match, kind)
 {
-    if (m_description.isEmpty()) {
-        const auto args = arguments();
-        auto toType = [](const FunctionArgument &arg) {
-            return arg.type;
-        };
-        auto argumentTypes = kdalgorithms::transformed<QStringList>(args, toType);
-
-        m_description = QString("%1 (%2)").arg(returnType(), argumentTypes.join(", "));
-    }
 }
 
-QString FunctionSymbol::returnTypeFromDescription() const
+QString FunctionSymbol::description() const
 {
-    auto desc = m_description;
-    // TODO: Add logic to handle type-qualifiers.
-    // For now, discard type-qualifier, if found any.
-    if (desc.startsWith("static "))
-        desc.remove(0, 7);
-    desc.chop((desc.length() - desc.lastIndexOf(')') - 1));
-
-    return desc.left(desc.indexOf('(')).trimmed();
+    return signature();
 }
 
-std::optional<QString> FunctionSymbol::returnTypeFromLSP() const
+QString FunctionSymbol::signature() const
 {
-    if (auto lspdocument = document()) {
-        auto hover = lspdocument->hover(selectionRange().start);
+    const auto args = arguments();
+    auto toType = [](const FunctionArgument &arg) {
+        return arg.type;
+    };
+    auto argumentTypes = kdalgorithms::transformed<QStringList>(args, toType);
 
-        auto lines = hover.split("\n");
-        while (!lines.isEmpty()) {
-            auto line = lines.front();
-            lines.pop_front();
-
-            if (line.startsWith("→ ")) {
-                line.remove(0, 2);
-
-                return Lsp::Utils::removeTypeAliasInformation(line);
-            }
-        }
-
-        return "";
-    }
-
-    return {};
+    return QString("%1 (%2)").arg(returnType(), argumentTypes.join(", "));
 }
 
-QVector<FunctionArgument> FunctionSymbol::argumentsFromDescription() const
+QString FunctionSymbol::returnTypeFromQueryMatch() const
 {
-    int argStart = m_description.indexOf('(') + 1;
-    QString args = m_description.mid(argStart, m_description.lastIndexOf(')') - argStart);
-
-    const QStringList argsList = args.split(',', Qt::SkipEmptyParts);
-
-    QVector<FunctionArgument> arguments;
-    arguments.reserve(argsList.size());
-    for (const auto &arg : argsList) {
-        arguments.push_back(FunctionArgument {.type = arg.trimmed(), .name = ""});
-    }
-
-    return arguments;
-}
-
-std::optional<QVector<FunctionArgument>> FunctionSymbol::argumentsFromLSP() const
-{
-    if (auto lspdocument = document()) {
-        auto hover = lspdocument->hover(selectionRange().start);
-
-        spdlog::debug("FunctionSymbol::argumentsFromLSP: Hover string:\n{}", hover.toStdString());
-
-        auto lines = hover.split("\n");
-        while (!lines.isEmpty() && !lines.first().contains("Parameters:")) {
-            lines.pop_front();
-        }
-        if (!lines.isEmpty()) {
-            // We found a Parameters listing
-            lines.pop_front(); // Remove the 'Parameters:' text
-
-            QVector<Core::FunctionArgument> arguments;
-            while (!lines.isEmpty() && lines.first().startsWith("- ")) {
-                auto parameter = lines.first();
-                lines.pop_front();
-
-                // remove the "- "
-                parameter.remove(0, 2);
-
-                arguments.emplaceBack(FunctionArgument::fromHover(parameter, document()->type()));
-            }
-
-            return arguments;
-        }
-
-        // No arguments found
-        return QVector<Core::FunctionArgument>();
-    } else {
-        spdlog::warn("Symbol '{}' doesn't have an associated document!", name().toStdString());
-    }
-
-    return {};
+    return m_queryMatch.getAllJoined("return").text();
 }
 
 QString FunctionSymbol::returnType() const
 {
     if (!m_returnType.has_value()) {
-        m_returnType = returnTypeFromLSP();
-    }
-
-    if (!m_returnType.has_value()) {
-        m_returnType = std::make_optional(returnTypeFromDescription());
+        m_returnType = std::make_optional(returnTypeFromQueryMatch());
     }
 
     return m_returnType.value();
@@ -201,14 +119,25 @@ QString FunctionSymbol::returnType() const
 const QVector<FunctionArgument> &FunctionSymbol::arguments() const
 {
     if (!m_arguments.has_value()) {
-        m_arguments = argumentsFromLSP();
-    }
-
-    if (!m_arguments.has_value()) {
-        m_arguments = std::make_optional(argumentsFromDescription());
+        m_arguments = std::make_optional(argumentsFromQueryMatch());
     }
 
     return m_arguments.value();
+}
+
+QVector<FunctionArgument> FunctionSymbol::argumentsFromQueryMatch() const
+{
+    auto arguments = m_queryMatch.getAll("parameter");
+    auto to_function_arg = [this](const RangeMark &argument) {
+        auto result = document()->queryInRange(argument, "(identifier) @name");
+        auto nameRange = result.isEmpty() ? RangeMark() : result.first().get("name");
+        auto name = nameRange.text().simplified();
+        auto type = argument.textExcept(nameRange).simplified();
+
+        return FunctionArgument {.type = type, .name = name};
+    };
+
+    return kdalgorithms::transformed<QVector<FunctionArgument>>(arguments, to_function_arg);
 }
 
 bool operator==(const FunctionSymbol &left, const FunctionSymbol &right)

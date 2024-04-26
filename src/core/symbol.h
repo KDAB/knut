@@ -1,5 +1,6 @@
 #pragma once
 
+#include "querymatch.h"
 #include "textlocation.h"
 #include "textrange.h"
 
@@ -22,7 +23,6 @@ class Symbol : public QObject
     Q_PROPERTY(Core::TextRange range READ range CONSTANT)
     Q_PROPERTY(Core::TextRange selectionRange READ selectionRange CONSTANT)
     Q_PROPERTY(QVector<Core::TextLocation> references READ references CONSTANT)
-    Q_PROPERTY(QString importLocation READ importLocation CONSTANT)
 
 public:
     enum Kind {
@@ -56,24 +56,18 @@ public:
     Q_ENUM(Kind)
 
 protected:
-    Symbol(QObject *parent, QString name, QString description, QString importLocation, Kind kind, TextRange range,
-           TextRange selectionRange);
+    Symbol(QObject *parent, const QueryMatch &match, Kind kind);
 
     QString m_name;
-    QString m_description;
-    QString m_importLocation;
     Kind m_kind;
     TextRange m_range;
     TextRange m_selectionRange;
+    QueryMatch m_queryMatch;
 
     LspDocument *document() const;
 
 public:
-    static Symbol *makeSymbol(QObject *parent, const Lsp::DocumentSymbol &lspSymbol, TextRange range,
-                              TextRange selectionRange, const QString &context = "");
-
-    static Symbol *makeSymbol(QObject *parent, const QString &name, const QString &description,
-                              const QString &importLocation, Kind kind, TextRange range, TextRange selectionRange);
+    static Symbol *makeSymbol(QObject *parent, const QueryMatch &match, Kind kind);
 
     Q_INVOKABLE bool isClass() const;
     Core::ClassSymbol *toClass();
@@ -82,8 +76,7 @@ public:
     Core::FunctionSymbol *toFunction();
 
     QString name() const;
-    QString description() const;
-    QString importLocation() const;
+    virtual QString description() const;
     Kind kind() const;
     Core::TextRange range() const;
     Core::TextRange selectionRange() const;
@@ -94,7 +87,11 @@ public:
 
     bool operator==(const Symbol &) const;
 
+private:
+    void assignContext(const QVector<Symbol *> &contexts);
+
     friend class LspDocument;
+    friend class TreeSitterHelper;
 };
 
 using SymbolList = QList<Core::Symbol *>;

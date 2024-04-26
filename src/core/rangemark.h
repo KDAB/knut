@@ -4,6 +4,8 @@
 
 #include <memory>
 
+#include "textrange.h"
+
 namespace Core {
 
 class TextDocument;
@@ -42,6 +44,9 @@ public:
 
     TextDocument *document() const;
 
+    // Casting
+    TextRange toTextRange() const;
+
     // Text manipulation
     Q_INVOKABLE void select() const;
     Q_INVOKABLE void replace(const QString &text) const;
@@ -49,6 +54,7 @@ public:
 
     // Interaction with other ranges
     Q_INVOKABLE Core::RangeMark join(const Core::RangeMark &other) const;
+    Q_INVOKABLE QString textExcept(const Core::RangeMark &other) const;
 
     bool operator==(const RangeMark &other) const;
 

@@ -1342,7 +1342,7 @@ void CppDocument::deleteMethodLocal(const QString &methodName, const QString &si
         if (signature.isEmpty())
             return !isFunction || symbol->name() != methodName;
         else
-            return !isFunction || symbol->name() != methodName || symbol->description() != signature;
+            return !isFunction || symbol->name() != methodName || symbol->toFunction()->signature() != signature;
     };
 
     auto symbolList = symbols();
@@ -1442,7 +1442,7 @@ void CppDocument::deleteMethod()
         spdlog::error(
             "CppDocument::deleteMethod: Cursor is not currently within a function definition or declaration!");
     } else {
-        deleteMethod(symbol->name(), symbol->description());
+        deleteMethod(symbol->name(), symbol->toFunction()->signature());
     }
 }
 

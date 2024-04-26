@@ -77,6 +77,7 @@ private:
     PREDICATE_FILTER(like_except);
     PREDICATE_FILTER(match);
     PREDICATE_FILTER(in_message_map);
+    PREDICATE_FILTER(not_is);
 #undef PREDICATE_FILTER
 
     bool filter_eq_with(const QueryMatch &match, const QVector<std::variant<Query::Capture, QString>> &arguments,

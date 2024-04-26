@@ -37,6 +37,7 @@ Predicates::Filters Predicates::filters()
     REGISTER_FILTER(like_except);
     REGISTER_FILTER(match);
     REGISTER_FILTER(in_message_map);
+    REGISTER_FILTER(not_is);
 #undef REGISTER_FILTER
 
     return filters;
@@ -290,6 +291,31 @@ bool Predicates::filter_like_except(const QueryMatch &match, const PredicateArgu
     return filter_eq_except_with(match, arguments, QString_no_whitespace);
 }
 
+bool Predicates::filter_not_is(const QueryMatch &match, const PredicateArguments &arguments) const
+{
+    const auto matched = matchArguments(match, arguments);
+
+    auto captures = QVector<QueryMatch::Capture>();
+    auto types = QVector<QString>();
+
+    for (const auto &arg : matched) {
+        if (auto capture = std::get_if<QueryMatch::Capture>(&arg)) {
+            captures.push_back(*capture);
+        }
+        if (auto type_name = std::get_if<QString>(&arg)) {
+            types.push_back(*type_name);
+        }
+        // Unmatched captures are ignored, they are definitely not of the forbidden type.
+    }
+
+    for (const auto &capture : std::as_const(captures)) {
+        if (types.contains(capture.node.type())) {
+            return false;
+        }
+    }
+    return true;
+}
+
 std::optional<QString> Predicates::checkFilter_like(const Predicates::PredicateArguments &arguments)
 {
     return Predicates::checkFilter_eq(arguments);
@@ -322,6 +348,30 @@ std::optional<QString> Predicates::checkFilter_match(const Predicates::Predicate
     }
 
     return {};
+}
+
+std::optional<QString> Predicates::checkFilter_not_is(const Predicates::PredicateArguments &arguments)
+{
+    if (arguments.size() < 2) {
+        return "Too few arguments";
+    }
+
+    auto is_capture = [](const auto &arg) {
+        return std::holds_alternative<Query::Capture>(arg);
+    };
+
+    if (!kdalgorithms::any_of(arguments, is_capture)) {
+        return "You need to provide at least one capture";
+    }
+
+    auto is_string = [](const auto &arg) {
+        return std::holds_alternative<QString>(arg);
+    };
+    if (!kdalgorithms::any_of(arguments, is_string)) {
+        return "You need to provide at least one node type to match against";
+    }
+
+    return std::nullopt;
 }
 
 bool Predicates::filter_match(const QueryMatch &match,

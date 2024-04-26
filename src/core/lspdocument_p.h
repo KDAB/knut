@@ -3,11 +3,8 @@
 #include "rangemark.h"
 #include "symbol.h"
 
-#include "lsp/client.h"
-#include "lsp/types.h"
 #include "treesitter/node.h"
 #include "treesitter/parser.h"
-#include "treesitter/predicates.h"
 #include "treesitter/query.h"
 #include "treesitter/tree.h"
 
@@ -16,33 +13,6 @@
 namespace Core {
 
 class LspDocument;
-
-class LspCache
-{
-public:
-    explicit LspCache(LspDocument *document);
-
-    void clear();
-
-    const QVector<Core::Symbol *> &symbols();
-
-    const Core::Symbol *inferSymbol(const QString &hoverText, TextRange range);
-
-private:
-    enum Flags {
-        HasSymbols = 0x01,
-    };
-
-    QString inferImportLocation(QStringList &lines);
-    const Core::Symbol *inferVariable(QStringList lines, TextRange range, Symbol::Kind kind);
-    const Core::Symbol *inferMethod(QStringList lines, TextRange range, Symbol::Kind kind);
-    const Core::Symbol *inferGenericSymbol(QStringList lines, TextRange range);
-
-    LspDocument *const m_document;
-    QVector<Core::Symbol *> m_symbols;
-    QVector<const Core::Symbol *> m_inferredSymbols;
-    int m_flags = 0;
-};
 
 class TreeSitterHelper
 {
@@ -57,10 +27,25 @@ public:
     std::shared_ptr<treesitter::Query> constructQuery(const QString &query);
     QVector<treesitter::Node> nodesInRange(const RangeMark &range);
 
+    const QVector<Core::Symbol *> &symbols();
+
 private:
+    void assignSymbolContexts();
+
+    QVector<Core::Symbol *> functionSymbols() const;
+    QVector<Core::Symbol *> classSymbols() const;
+    QVector<Core::Symbol *> memberSymbols() const;
+    QVector<Core::Symbol *> enumSymbols() const;
+
+    enum Flags {
+        HasSymbols = 0x01,
+    };
+
     LspDocument *const m_document;
     std::optional<treesitter::Parser> m_parser;
     std::optional<treesitter::Tree> m_tree;
+    QVector<Core::Symbol *> m_symbols;
+    int m_flags = 0;
 };
 
 } // namespace Core

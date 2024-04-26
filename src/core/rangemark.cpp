@@ -126,6 +126,11 @@ TextDocument *RangeMark::document() const
     return d ? d->m_editor : nullptr;
 }
 
+TextRange RangeMark::toTextRange() const
+{
+    return {start(), end()};
+}
+
 QString RangeMark::text() const
 {
     // <= here instead of < because m_end is exclusive
@@ -173,13 +178,45 @@ void RangeMark::remove() const
  * \qmlmethod RangeMark RangeMark::join(RangeMark other)
  * Joins the two `RangeMark` and creates a new one.
  *
- * The new `RangeMark` is spaning from the minimum of the start to the maximum of the end.
+ * The new `RangeMark` is spanning from the minimum of the start to the maximum of the end.
  */
 RangeMark RangeMark::join(const RangeMark &other) const
 {
     if (!isValid() || !other.isValid() || document() != other.document())
         return {};
     return RangeMark(document(), std::min(start(), other.start()), std::max(end(), other.end()));
+}
+
+/*!
+ * \qmlmethod string RangeMark::textExcept(RangeMark other)
+ *
+ * Returns the text of this range without the text of the other range.
+ * This assumes that both ranges overlap.
+ *
+ * Otherwise, the entire text is returned.
+ */
+QString RangeMark::textExcept(const RangeMark &other) const
+{
+    if (!isValid()) {
+        spdlog::error("RangeMark::textExcept: invalid range");
+        return "";
+    }
+    if (!other.isValid()) {
+        spdlog::debug("RangeMark::textExcept: invalid other range");
+        return text();
+    }
+    if (document() != other.document()) {
+        spdlog::error("RangeMark::textExcept: different documents");
+        return text();
+    }
+
+    QString text = this->text();
+    QString result;
+    if (start() < other.start())
+        result += text.first(std::min(other.start() - start(), static_cast<int>(text.size())));
+    if (end() > other.end())
+        result += text.last(std::min(end() - other.end(), static_cast<int>(text.size())));
+    return result;
 }
 
 bool RangeMark::operator==(const RangeMark &other) const

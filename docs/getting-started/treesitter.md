@@ -153,7 +153,7 @@ Check if all arguments are "alike".
 
 In this case "alike" means the arguments are all string-equal, after all white-space is removed.
 
-This is very useful when comparing strings that might span multiple lines or may be indented/formatted differently depening on preference.
+This is very useful when comparing strings that might span multiple lines or may be indented/formatted differently depending on preference.
 E.g. `const QString&` could also be formatted as `const QString &`.
 The `like?` predicate would match both of these variations.
 
@@ -192,6 +192,19 @@ Example usage to find all member function definitions of `MyClass`
         declarator: (_) @name
             (#match? "MyClass::" @name))
     body: (compound_statement) @body)
+```
+
+### `(#not_is? [capture]+ [node_type]+)`
+Check that **none** of the captures are of any of the given node types.
+
+This is especially useful when using the wildcard operators `(_)` and `_`.
+These match any (named) node type. Combined with this predicate these can match any node type *but* the given types.
+
+Example usage to find all member functions that return any type *other* than a primitive type:
+``` treesitter
+(function_definition
+    type: (_) @type
+    (#not_is? @type primitive_type)) @function
 ```
 
 ### `(#in_message_map? [capture]+)`

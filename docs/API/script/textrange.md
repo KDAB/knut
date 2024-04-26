@@ -15,6 +15,7 @@ import Script 1.0
 | | Name |
 |-|-|
 |int|**[end](#end)**|
+|int|**[length](#length)**|
 |int|**[start](#start)**|
 
 ## Property Documentation
@@ -22,6 +23,10 @@ import Script 1.0
 #### <a name="end"></a>int **end**
 
 This read-only property defines the end position of the range.
+
+#### <a name="length"></a>int **length**
+
+This read-only property returns the length of the range (end - start)
 
 #### <a name="start"></a>int **start**
 
