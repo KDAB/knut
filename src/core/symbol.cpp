@@ -76,7 +76,6 @@ namespace Core {
 
 /*!
  * \qmlproperty array<TextLocation> Symbol::references
- * \since 1.1
  * List of all references of this symbol in the current project.
  */
 
@@ -123,7 +122,6 @@ LspDocument *Symbol::document() const
 
 /*!
  * \qmlmethod bool Symbol::isClass()
- * \since 1.1
  *
  * Returns whether this Symbol refers to a class or struct.
  */
@@ -146,7 +144,6 @@ ClassSymbol *Symbol::toClass()
 
 /*!
  * \qmlmethod bool Symbol::isFunction()
- * \since 1.1
  *
  * Returns whether this Symbol refers to a function.
  * This includes constructors and methods
@@ -208,7 +205,6 @@ QVector<Core::TextLocation> Symbol::references() const
 
 /*!
  * \qmlmethod bool Symbol::select()
- * \since 1.1
  *
  * Selects the current symbol.
  */

@@ -6,10 +6,6 @@ Refers to a single entry within the `DoDataExchange` [More...](#detailed-descrip
 import Script 1.0
 ```
 
-<table>
-<tr><td>Since:</td><td>Knut 1.1</td></tr>
-</table>
-
 ## Properties
 
 | | Name |
@@ -27,7 +23,7 @@ It contains the function, member and idc used for the entry.
 
 #### <a name="function"></a>string **function**
 
-Funciton of the data exchange, see [Standard Dialog Data Exchange
+Function of the data exchange, see [Standard Dialog Data Exchange
 Routines](https://learn.microsoft.com/en-us/cpp/mfc/reference/standard-dialog-data-exchange-routines?view=msvc-170).
 
 #### <a name="idc"></a>string **idc**

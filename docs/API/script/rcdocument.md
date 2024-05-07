@@ -56,9 +56,6 @@ This read-only property holds the list of accelerator's ids in the RC file.
 
 #### <a name="actions"></a>array<[Asset](../script/asset.md)> **actions**
 
-!!! note ""
-    Since: Knut 1.1
-
 This read-only property holds the list of actions in the RC file.
 
 #### <a name="assets"></a>array<[Asset](../script/asset.md)> **assets**
@@ -112,22 +109,13 @@ Note that the RC file may be valid, and our parser needs to be updated.
 
 #### <a name="action"></a>[ToolBar](../script/toolbar.md) **action**(string id)
 
-!!! note ""
-    Since: Knut 1.1
-
 Returns the action for the given `id`.
 
 #### <a name="actionsFromMenu"></a>array<[Action](../script/action.md)> **actionsFromMenu**(string menuId)
 
-!!! note ""
-    Since: Knut 1.1
-
 Returns all actions used in the menu `menuId`.
 
 #### <a name="actionsFromToolbar"></a>array<[Action](../script/action.md)> **actionsFromToolbar**(string toolBarId)
-
-!!! note ""
-    Since: Knut 1.1
 
 Returns all actions used in the toolbar `toolBarId`.
 
@@ -219,7 +207,7 @@ Before writing the qrc file, you first need to convert them using RcDocument::co
 #### <a name="writeDialogToUi"></a>bool **writeDialogToUi**([Widget](../script/widget.md) dialog, string fileName)
 
 Writes a ui file for the given `dialog`, to the given `fileName`. Return `true` if no issues.
-If scriptPath is not empty, use the script to convert the classes and properties. The script must hava a function:
+If scriptPath is not empty, use the script to convert the classes and properties. The script must have a function:
 ```
 function main(dialog, writer)
 ```

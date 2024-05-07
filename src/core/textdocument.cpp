@@ -1148,7 +1148,6 @@ void TextDocument::selectToMark(const Mark &mark)
 
 /**
  * \qmlmethod RangeMark TextDocument::createRangeMark(int from, int to)
- * \since 1.1
  *
  * Creates a range mark from `from` to `to`.
  * \sa RangeMark
@@ -1161,7 +1160,6 @@ Core::RangeMark TextDocument::createRangeMark(int from, int to)
 
 /**
  * \qmlmethod RangeMark TextDocument::createRangeMark()
- * \since 1.1
  *
  * Creates a range mark from the current selection.
  *
@@ -1183,7 +1181,6 @@ Core::RangeMark TextDocument::createRangeMark()
 
 /**
  * \qmlmethod TextDocument::selectRangeMark(RangeMark mark)
- * \since 1.1
  *
  * Selects the text defined by the range make `mark`.
  *
@@ -1487,7 +1484,6 @@ int TextDocument::replaceAllRegexp(const QString &regexp, const QString &after, 
 // clang-format off
 /*!
  * \qmlmethod bool TextDocument::replaceAllRegexpInRange(string regexp, string after, RangeMark range, int options = TextDocument.NoFindFlags)
- * \since 1.1
  * Replaces all occurrences of the matches for the `regexp` with `after` in the given `range`. See the options from `replaceAll`.
  *
  * The captures coming from the regexp can be used in the replacement text, using `\1`..`\n` or `$1`..`$n`.

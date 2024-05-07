@@ -28,9 +28,6 @@ import Script 1.0
 
 #### <a name="actionIds"></a>array<string> **actionIds**
 
-!!! note ""
-    Since: Knut 1.1
-
 This property holds all action ids used in the menu.
 
 #### <a name="children"></a>array<[MenuItem](../script/menuitem.md)> **children**

@@ -78,9 +78,6 @@ UI.
 
 #### <a name="references"></a>array<[TextLocation](../script/textlocation.md)> **references**
 
-!!! note ""
-    Since: Knut 1.1
-
 List of all references of this symbol in the current project.
 
 #### <a name="selectionRange"></a>[TextRange](../script/textrange.md) **selectionRange**
@@ -92,22 +89,13 @@ contained by the `range`.
 
 #### <a name="isClass"></a>bool **isClass**()
 
-!!! note ""
-    Since: Knut 1.1
-
 Returns whether this Symbol refers to a class or struct.
 
 #### <a name="isFunction"></a>bool **isFunction**()
-
-!!! note ""
-    Since: Knut 1.1
 
 Returns whether this Symbol refers to a function.
 This includes constructors and methods
 
 #### <a name="select"></a>bool **select**()
-
-!!! note ""
-    Since: Knut 1.1
 
 Selects the current symbol.

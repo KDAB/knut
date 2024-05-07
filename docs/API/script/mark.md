@@ -26,7 +26,7 @@ import Script 1.0
 
 ## Detailed Description
 
-The Mark object helps you track a logical possition in a file.
+The Mark object helps you track a logical position in a file.
 Its `line` and `column` properties will change as text are deleted or inserted before the mark.
 
 A mark is always created by a [TextDocument](textdocument.md).
@@ -34,9 +34,6 @@ A mark is always created by a [TextDocument](textdocument.md).
 ## Property Documentation
 
 #### <a name="document"></a>[TextDocument](../script/textdocument.md) **document**
-
-!!! note ""
-    Since: Knut 1.1
 
 This read-only property returns the document the mark is coming from.
 

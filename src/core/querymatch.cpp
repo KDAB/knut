@@ -17,7 +17,6 @@ namespace Core {
  * \brief Defines a capture made by a query.
  * \inqmlmodule Script
  * \ingroup LspDocument
- * \since 1.1
  * \sa QueryMatch
  */
 
@@ -40,7 +39,6 @@ QString QueryCapture::toString() const
  * \brief Contains all captures for a query match.
  * \inqmlmodule Script
  * \ingroup LspDocument
- * \since 1.1
  * \sa LspDocument::query
  *
  * The QueryMatch object allows you to get access to all the captures made by a [Tree-sitter

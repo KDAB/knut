@@ -376,7 +376,6 @@ QVector<QueryMatch> CppDocument::internalQueryFunctionCall(const QString& functi
 
 /*!
  * \qmlmethod array<QueryMatch> CppDocument::queryFunctionCall(string functionName, array<string> argumentCaptures)
- * \since 1.1
  *
  * Returns the list of function calls to the function `functionName`.
  * Only calls that have the same number of arguments as `argumentCaptures` will be returned.
@@ -417,7 +416,6 @@ Core::QueryMatchList CppDocument::queryFunctionCall(const QString &functionName,
 
 /*!
  * \qmlmethod array<QueryMatch> CppDocument::queryFunctionCall(string functionName)
- * \since 1.1
  *
  * Returns the list of function calls to the function `functionName`, no matter how many arguments they were called with.
  *
@@ -612,7 +610,6 @@ DataExchange CppDocument::mfcExtractDDX(const QString &className)
 
 /*!
  * \qmlmethod MessageMap CppDocument::mfcExtractMessageMap(string className = "")
- * \since 1.1
  *
  * Extracts information contained in the MFC MESSAGE_MAP.
  * The `className` parameter can be used to ensure the result matches to a specific class.
@@ -676,7 +673,6 @@ MessageMap CppDocument::mfcExtractMessageMap(const QString &className /* = ""*/)
 
 /*!
  * \qmlmethod array<QueryMatch> CppDocument::queryMethodDeclaration(string className, string functionName)
- * \since 1.1
  *
  * Finds the declaration of a method inside a class or struct definition.
  *
@@ -728,7 +724,6 @@ Core::QueryMatchList CppDocument::queryMethodDeclaration(const QString &classNam
 
 /*!
  * \qmlmethod QueryMatch CppDocument::queryMember(string className, string memberName)
- * \since 1.1
  *
  * Finds the member definition inside a class or struct definition.
  * Returns a QueryMatch object containing the member definition if it exists.
@@ -865,7 +860,6 @@ int CppDocument::selectBlockEnd(int count)
 
 /*!
  * \qmlmethod int CppDocument::selectBlockUp()
- * \since 1.1
  * Selects the text of the block the cursor is in, and returns the new cursor position.
  * A block is defined by {} or () or [].
  * Does it `count` times.
@@ -1126,7 +1120,6 @@ CppDocument::addMemberOrMethod(const QString &memberInfo, const QString &classNa
 
 /*!
  * \qmlmethod CppDocument::addMember(string member, string className, AccessSpecifier)
- * \since 1.1
  * Adds a new member in a specific class under the specific access specifier.
  *
  * If the class does not exist, log error can't find the class, but if the
@@ -1152,7 +1145,6 @@ bool CppDocument::addMember(const QString &member, const QString &className, Acc
 
 /*!
  * \qmlmethod CppDocument::addMethodDeclaration(string method, string className, AccessSpecifier specifier)
- * \since 1.1
  * Declares a new method in a specific class under the specific access specifier.
  *
  * If the class does not exist, log error can't find the class, but if the
@@ -1179,7 +1171,6 @@ bool CppDocument::addMethodDeclaration(const QString &method, const QString &cla
 /*!
  * \qmlmethod CppDocument::addMethodDefinition(string method, string className)
  * \qmlmethod CppDocument::addMethodDefinition(string method, string className, string body)
- * \since 1.1
  *
  * Adds a new method definition for the method declared by the given `method` for
  * class `className` in the current file.
@@ -1236,7 +1227,6 @@ bool CppDocument::addMethodDefinition(const QString &method, const QString &clas
 /*!
  * \qmlmethod CppDocument::addMethod(string declaration, string className, AccessSpecifier, string body)
  * \qmlmethod CppDocument::addMethod(string declaration, string className, AccessSpecifier)
- * \since 1.1
  *
  * Declares and defines a new method.
  * This method can be called on either the header or source file.
@@ -1367,7 +1357,6 @@ void CppDocument::deleteMethodLocal(const QString &methodName, const QString &si
 
 /*!
  * \qmlmethod void CppDocument::deleteMethod(string method, string signature)
- * \since 1.1
  *
  * Delete the method or function with the specified `method` and optional `signature`.
  * The method definition/declaration will be deleted from the current file,
@@ -1405,7 +1394,6 @@ void CppDocument::deleteMethod(const QString &method, const QString &signature)
 
 /*!
  * \qmlmethod void CppDocument::deleteMethod(string methodName)
- * \since 1.1
  *
  * Deletes a method of the specified `methodName`, without matching a specific `signature`.
  * Therefore, all overloads of the function will be deleted.
@@ -1421,7 +1409,6 @@ void CppDocument::deleteMethod(const QString &methodName)
 
 /*!
  * \qmlmethod void CppDocument::deleteMethod()
- * \since 1.1
  *
  * Deletes the method/function at the current cursor position.
  * Overloads of the function will not be deleted!

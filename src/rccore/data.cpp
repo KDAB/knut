@@ -64,7 +64,6 @@ namespace RcCore {
  */
 /*!
  * \qmlproperty array<string> ToolBar::actionIds
- * \since 1.1
  * This property holds all action ids used in the toolbar.
  */
 
@@ -152,7 +151,6 @@ namespace RcCore {
  */
 /*!
  * \qmlproperty array<string> Menu::actionIds
- * \since 1.1
  * This property holds all action ids used in the menu.
  */
 
@@ -323,7 +321,6 @@ QStringList Menu::actionIds() const
 
 /*!
  * \qmlmethod bool ToolBar::contains(string id)
- * \since 1.1
  * Returns true if the toolbar contains the given `id`
  */
 bool ToolBar::contains(const QString &id) const

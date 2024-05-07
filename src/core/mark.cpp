@@ -19,7 +19,7 @@ namespace Core {
  * \since 1.0
  * \sa TextDocument
  *
- * The Mark object helps you track a logical possition in a file.
+ * The Mark object helps you track a logical position in a file.
  * Its `line` and `column` properties will change as text are deleted or inserted before the mark.
  *
  * A mark is always created by a [TextDocument](textdocument.md).
@@ -39,7 +39,6 @@ namespace Core {
  */
 /*!
  * \qmlproperty TextDocument Mark::document
- * \since 1.1
  * This read-only property returns the document the mark is coming from.
  */
 

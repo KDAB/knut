@@ -68,16 +68,10 @@ This read-only property contains all properties mapping the widgets.
 
 #### <a name="interactive"></a>bool **interactive**
 
-!!! note ""
-    Since: Knut 1.1
-
 If set to false, runSteps will not ask for user input, the entire script will be run at once.
 This is especially useful for testing.
 
 #### <a name="showProgress"></a>bool **showProgress**
-
-!!! note ""
-    Since: Knut 1.1
 
 If set to true, a progress dialog will be shown when the dialog is accepted.
 This is useful for long-running scripts.
@@ -86,18 +80,12 @@ This is useful for long-running scripts.
 
 #### <a name="nextStep"></a>**nextStep**(string title)
 
-!!! note ""
-    Since: Knut 1.1
-
 Indicate a new progress step.
 
 This will update the progress bar and the title of the progress dialog.
 Make sure that the number of steps is set correctly before calling this method.
 
 #### <a name="runSteps"></a>**runSteps**(function generator)
-
-!!! note ""
-    Since: Knut 1.1
 
 Run a script in multiple (interactive) steps.
 The argument to this function must be a JavaScript generator object
@@ -128,9 +116,6 @@ function convert() {
 ```
 
 #### <a name="startProgress"></a>**startProgress**(string firstStep, int numSteps)
-
-!!! note ""
-    Since: Knut 1.1
 
 Start a progress bar with the given `firstStep` title and number of steps.
 

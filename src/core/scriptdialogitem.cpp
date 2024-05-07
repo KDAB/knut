@@ -67,7 +67,6 @@ namespace Core {
 
 /*!
  * \qmlproperty bool ScriptDialog::showProgress
- * \since 1.1
  *
  * If set to true, a progress dialog will be shown when the dialog is accepted.
  * This is useful for long-running scripts.
@@ -75,7 +74,6 @@ namespace Core {
 
 /*!
  * \qmlproperty bool ScriptDialog::interactive
- * \since 1.1
  *
  * If set to false, runSteps will not ask for user input, the entire script will be run at once.
  * This is especially useful for testing.
@@ -197,7 +195,6 @@ void ScriptDialogItem::setInteractive(bool interactive)
 
 /**
  * \qmlmethod ScriptDialog::startProgress(string firstStep, int numSteps)
- * \since 1.1
  *
  * Start a progress bar with the given `firstStep` title and number of steps.
  *
@@ -220,7 +217,6 @@ void ScriptDialogItem::setProgressSteps(int numSteps)
 
 /**
  * \qmlmethod ScriptDialog::nextStep(string title)
- * \since 1.1
  *
  * Indicate a new progress step.
  *
@@ -307,7 +303,6 @@ void ScriptDialogItem::interactiveStep()
 
 /**
  * \qmlmethod ScriptDialog::runSteps(function generator)
- * \since 1.1
  *
  * Run a script in multiple (interactive) steps.
  * The argument to this function must be a JavaScript generator object

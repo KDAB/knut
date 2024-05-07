@@ -29,9 +29,6 @@ It should not be used in normal scripts.
 
 #### <a name="compareDirectories"></a>**compareDirectories**(string current, string expected)
 
-!!! note ""
-    Since: Knut 1.1
-
 Compares the two directories recursively, and return true if they are the same.
 
 #### <a name="compareFiles"></a>**compareFiles**(string file, string expected, bool eolLF = true)
@@ -41,15 +38,9 @@ If `eolLF` true, compareFiles will change the EOL of files to LF for comparison.
 
 #### <a name="createTestProjectFrom"></a>**createTestProjectFrom**(string path)
 
-!!! note ""
-    Since: Knut 1.1
-
 Creates a new recursive copy of the directory at `path` with the name `path`_test_data.
 Returns the newly created directory path.
 
 #### <a name="removeTestProject"></a>**removeTestProject**(string path)
-
-!!! note ""
-    Since: Knut 1.1
 
 Removes the `path` from the disk.

@@ -34,7 +34,6 @@ namespace Core {
  */
 /*!
  * \qmlproperty array<Asset> RcDocument::actions
- * \since 1.1
  * This read-only property holds the list of actions in the RC file.
  */
 /*!
@@ -111,7 +110,6 @@ QVector<RcCore::Action> RcDocument::actions() const
 
 /*!
  * \qmlmethod ToolBar RcDocument::action(string id)
- * \since 1.1
  * Returns the action for the given `id`.
  */
 RcCore::Action RcDocument::action(const QString &id) const
@@ -132,7 +130,6 @@ RcCore::Action RcDocument::action(const QString &id) const
 
 /*!
  * \qmlmethod array<Action> RcDocument::actionsFromMenu(string menuId)
- * \since 1.1
  * Returns all actions used in the menu `menuId`.
  */
 RcCore::ActionList RcDocument::actionsFromMenu(const QString &menuId) const
@@ -153,7 +150,6 @@ RcCore::ActionList RcDocument::actionsFromMenu(const QString &menuId) const
 
 /*!
  * \qmlmethod array<Action> RcDocument::actionsFromToolbar(string toolBarId)
- * \since 1.1
  * Returns all actions used in the toolbar `toolBarId`.
  */
 RcCore::ActionList RcDocument::actionsFromToolbar(const QString &toolBarId) const
@@ -486,7 +482,7 @@ bool RcDocument::writeAssetsToQrc(const QString &fileName)
  * \qmlmethod bool RcDocument::writeDialogToUi(Widget dialog, string fileName)
  * \sa RcDocument::dialog
  * Writes a ui file for the given `dialog`, to the given `fileName`. Return `true` if no issues.
- * If scriptPath is not empty, use the script to convert the classes and properties. The script must hava a function:
+ * If scriptPath is not empty, use the script to convert the classes and properties. The script must have a function:
  * ```
  * function main(dialog, writer)
  * ```
@@ -538,7 +534,7 @@ void RcDocument::mergeAllLanguages(const QString &language)
 
     m_rcFile.mergeLanguages(m_rcFile.data.keys(), language);
     {
-        // Even if the newLanguage is set, we want to send the signals unconditionnaly
+        // Even if the newLanguage is set, we want to send the signals unconditionally
         QSignalBlocker sb(this);
         setLanguage(language);
     }
@@ -580,7 +576,7 @@ void RcDocument::mergeLanguages()
         m_rcFile.mergeLanguages(values, lang);
 
     {
-        // Even if the newLanguage is set, we want to send the signals unconditionnaly
+        // Even if the newLanguage is set, we want to send the signals unconditionally
         QSignalBlocker sb(this);
         setLanguage(languages().constFirst());
     }

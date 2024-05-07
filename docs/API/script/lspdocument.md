@@ -57,16 +57,10 @@ Follows the symbol under the cursor.
 
 #### <a name="hover"></a>string **hover**()
 
-!!! note ""
-    Since: Knut 1.1
-
 Returns information about the symbol at the current cursor position.
 The result of this call is a plain string that may be formatted in Markdown.
 
 #### <a name="query"></a>array<[QueryMatch](../script/querymatch.md)> **query**(string query)
-
-!!! note ""
-    Since: Knut 1.1
 
 Runs the given Tree-sitter `query` and returns the list of matches.
 
@@ -76,9 +70,6 @@ queries](https://tree-sitter.github.io/tree-sitter/using-parsers#pattern-matchin
 Also see: [Tree-sitter in Knut](../../getting-started/treesitter.md)
 
 #### <a name="queryFirst"></a>[QueryMatch](../script/querymatch.md) **queryFirst**(string query)
-
-!!! note ""
-    Since: Knut 1.1
 
 Runs the given Tree-sitter `query` and returns the first match.
 If no match can be found an empty match will be returned.
@@ -93,16 +84,10 @@ Also see: [Tree-sitter in Knut](../../getting-started/treesitter.md)
 
 #### <a name="queryInRange"></a>array<[QueryMatch](../script/querymatch.md)> **queryInRange**([RangeMark](../script/rangemark.md) range, string query)
 
-!!! note ""
-    Since: Knut 1.1
-
 Searches for the given `query`, but only in the provided `range`.
 
 
 #### <a name="references"></a>array<[TextLocation](../script/textlocation.md)> **references**()
-
-!!! note ""
-    Since: Knut 1.1
 
 Returns the list of references at the given position.
 
@@ -125,9 +110,6 @@ If no symbols are found, do nothing.
 Switches between the function declaration or definition.
 
 #### <a name="symbolUnderCursor"></a>[Symbol](../script/symbol.md) **symbolUnderCursor**()
-
-!!! note ""
-    Since: Knut 1.1
 
 Returns the symbol that's at the current cursor position.
 

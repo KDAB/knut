@@ -11,7 +11,6 @@ namespace Core {
  * \brief Refers to a single entry within the `DoDataExchange`
  * \inqmlmodule Script
  * \ingroup CppDocument
- * \since 1.1
  * \sa DataExchange
  *
  * A DataExchangeEntry is a single entry within the `DoDataExchange`.
@@ -20,7 +19,7 @@ namespace Core {
 
 /*!
  * \qmlproperty string DataExchangeEntry::function
- * Funciton of the data exchange, see [Standard Dialog Data Exchange
+ * Function of the data exchange, see [Standard Dialog Data Exchange
  * Routines](https://learn.microsoft.com/en-us/cpp/mfc/reference/standard-dialog-data-exchange-routines?view=msvc-170).
  */
 /*!
@@ -96,7 +95,6 @@ static QVector<DataValidationEntry> queryDDVCalls(const QueryMatch &ddxFunction)
  * \brief DataExchange entries in a MFC C++ document.
  * \inqmlmodule Script
  * \ingroup CppDocument
- * \since 1.1
  *
  * The `DataExchange` object represents the data contained in the MFC `DoDataExchange` method.
  */

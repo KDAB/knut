@@ -3,7 +3,7 @@ include(FetchContent)
 
 project(
   knut
-  VERSION 1.1
+  VERSION 1.0
   LANGUAGES CXX)
 
 # Project initialization

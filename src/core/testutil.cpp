@@ -87,7 +87,6 @@ bool TestUtil::compareFiles(const QString &file, const QString &expected, bool e
 
 /*!
  * \qmlmethod TestUtil::createTestProjectFrom(string path)
- * \since 1.1
  * Creates a new recursive copy of the directory at `path` with the name `path`_test_data.
  * Returns the newly created directory path.
  */
@@ -121,7 +120,6 @@ QString TestUtil::createTestProjectFrom(const QString &path)
 
 /*!
  * \qmlmethod TestUtil::removeTestProject(string path)
- * \since 1.1
  * Removes the `path` from the disk.
  */
 void TestUtil::removeTestProject(const QString &path)
@@ -132,7 +130,6 @@ void TestUtil::removeTestProject(const QString &path)
 
 /*!
  * \qmlmethod TestUtil::compareDirectories(string current, string expected)
- * \since 1.1
  * Compares the two directories recursively, and return true if they are the same.
  */
 bool TestUtil::compareDirectories(const QString &current, const QString &expected)

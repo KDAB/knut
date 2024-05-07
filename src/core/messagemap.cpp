@@ -13,7 +13,6 @@ namespace Core {
  * \brief Refers to a single entry within the `MessageMap`
  * \inqmlmodule Script
  * \ingroup CppDocument
- * \since 1.1
  * \sa MessageMap
  *
  * A MessageMapEntry is a single entry within the `MessageMap`.
@@ -65,7 +64,6 @@ MessageMapEntry fromMessage(const QueryMatch &match, const RangeMark &range)
  * \brief Message map in a MFC C++ document
  * \inqmlmodule Script
  * \ingroup CppDocument
- * \since 1.1
  *
  * The `MessageMap` object represents the data contained in the MFC MessageMap.
  */

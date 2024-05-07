@@ -29,9 +29,6 @@ import Script 1.0
 
 #### <a name="actionIds"></a>array<string> **actionIds**
 
-!!! note ""
-    Since: Knut 1.1
-
 This property holds all action ids used in the toolbar.
 
 #### <a name="children"></a>array<[ToolBarItem](../script/toolbaritem.md)> **children**
@@ -49,8 +46,5 @@ This property holds the id of the toolbar.
 ## Method Documentation
 
 #### <a name="contains"></a>bool **contains**(string id)
-
-!!! note ""
-    Since: Knut 1.1
 
 Returns true if the toolbar contains the given `id`

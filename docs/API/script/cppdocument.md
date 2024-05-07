@@ -66,9 +66,6 @@ Return true if the current document is a header.
 
 #### <a name="addMember"></a>**addMember**(string member, string className, AccessSpecifier)
 
-!!! note ""
-    Since: Knut 1.1
-
 Adds a new member in a specific class under the specific access specifier.
 
 If the class does not exist, log error can't find the class, but if the
@@ -82,9 +79,6 @@ The specifier can take these values:
 
 #### <a name="addMethod"></a>**addMethod**(string declaration, string className, AccessSpecifier, string body)<br/>**addMethod**(string declaration, string className, AccessSpecifier)
 
-!!! note ""
-    Since: Knut 1.1
-
 Declares and defines a new method.
 This method can be called on either the header or source file.
 It will find the corresponding header/source file and add the declaration
@@ -92,9 +86,6 @@ to the header and the definition to the source.
 
 
 #### <a name="addMethodDeclaration"></a>**addMethodDeclaration**(string method, string className, AccessSpecifier specifier)
-
-!!! note ""
-    Since: Knut 1.1
 
 Declares a new method in a specific class under the specific access specifier.
 
@@ -108,9 +99,6 @@ The specifier can take these values:
 - `CppDocument.Private`
 
 #### <a name="addMethodDefinition"></a>**addMethodDefinition**(string method, string className)<br/>**addMethodDefinition**(string method, string className, string body)
-
-!!! note ""
-    Since: Knut 1.1
 
 Adds a new method definition for the method declared by the given `method` for
 class `className` in the current file.
@@ -136,9 +124,6 @@ Returns the corresponding source or header file path.
 
 #### <a name="deleteMethod"></a>void **deleteMethod**()
 
-!!! note ""
-    Since: Knut 1.1
-
 Deletes the method/function at the current cursor position.
 Overloads of the function will not be deleted!
 
@@ -146,18 +131,12 @@ Also see: CppDocument::deleteMethod(const QString& methodName, const QString& si
 
 #### <a name="deleteMethod"></a>void **deleteMethod**(string methodName)
 
-!!! note ""
-    Since: Knut 1.1
-
 Deletes a method of the specified `methodName`, without matching a specific `signature`.
 Therefore, all overloads of the function will be deleted.
 
 Also see: CppDocument::deleteMethod(string methodName, string signature)
 
 #### <a name="deleteMethod"></a>void **deleteMethod**(string method, string signature)
-
-!!! note ""
-    Since: Knut 1.1
 
 Delete the method or function with the specified `method` and optional `signature`.
 The method definition/declaration will be deleted from the current file,
@@ -234,9 +213,6 @@ The DDX information gives the mapping between the IDC and the member variables i
 
 #### <a name="mfcExtractMessageMap"></a>[MessageMap](../script/messagemap.md) **mfcExtractMessageMap**(string className = "")
 
-!!! note ""
-    Since: Knut 1.1
-
 Extracts information contained in the MFC MESSAGE_MAP.
 The `className` parameter can be used to ensure the result matches to a specific class.
 
@@ -257,9 +233,6 @@ The returned QueryMatch instance will have the following captures available:
 
 #### <a name="queryFunctionCall"></a>array<[QueryMatch](../script/querymatch.md)> **queryFunctionCall**(string functionName)
 
-!!! note ""
-    Since: Knut 1.1
-
 Returns the list of function calls to the function `functionName`, no matter how many arguments they were called with.
 
 The returned QueryMatch instances will have the following captures available:
@@ -270,9 +243,6 @@ The returned QueryMatch instances will have the following captures available:
 - `arguments` - Each argument provided to the function call, in order, excluding any comments
 
 #### <a name="queryFunctionCall"></a>array<[QueryMatch](../script/querymatch.md)> **queryFunctionCall**(string functionName, array<string> argumentCaptures)
-
-!!! note ""
-    Since: Knut 1.1
 
 Returns the list of function calls to the function `functionName`.
 Only calls that have the same number of arguments as `argumentCaptures` will be returned.
@@ -290,9 +260,6 @@ The returned QueryMatch instances will have the following captures available:
 
 #### <a name="queryMember"></a>[QueryMatch](../script/querymatch.md) **queryMember**(string className, string memberName)
 
-!!! note ""
-    Since: Knut 1.1
-
 Finds the member definition inside a class or struct definition.
 Returns a QueryMatch object containing the member definition if it exists.
 
@@ -303,9 +270,6 @@ The returned QueryMatch instance will have the following captures available:
 - `name`: The name of the member (should be equal to memberName)
 
 #### <a name="queryMethodDeclaration"></a>array<[QueryMatch](../script/querymatch.md)> **queryMethodDeclaration**(string className, string functionName)
-
-!!! note ""
-    Since: Knut 1.1
 
 Finds the declaration of a method inside a class or struct definition.
 
@@ -353,9 +317,6 @@ A block is defined by {} or () or [].
 Does it `count` times.
 
 #### <a name="selectBlockUp"></a>int **selectBlockUp**()
-
-!!! note ""
-    Since: Knut 1.1
 
 Selects the text of the block the cursor is in, and returns the new cursor position.
 A block is defined by {} or () or [].

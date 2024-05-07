@@ -15,7 +15,6 @@ namespace Core {
  * \brief Keeps track of a range within a text document.
  * \inqmlmodule Script
  * \ingroup TextDocument
- * \since 1.1
  * \sa TextDocument
  *
  * The RangeMark object helps you track a logical range within a file.

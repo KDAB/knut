@@ -6,10 +6,6 @@ Defines a range of text in a file. [More...](#detailed-description)
 import Script 1.0
 ```
 
-<table>
-<tr><td>Since:</td><td>Knut 1.1</td></tr>
-</table>
-
 ## Properties
 
 | | Name |

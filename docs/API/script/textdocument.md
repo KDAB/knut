@@ -178,17 +178,11 @@ current position.
 
 #### <a name="createRangeMark"></a>[RangeMark](../script/rangemark.md) **createRangeMark**()
 
-!!! note ""
-    Since: Knut 1.1
-
 Creates a range mark from the current selection.
 
 Note: if there is no selection, the range mark will span an empty range!
 
 #### <a name="createRangeMark"></a>[RangeMark](../script/rangemark.md) **createRangeMark**(int from, int to)
-
-!!! note ""
-    Since: Knut 1.1
 
 Creates a range mark from `from` to `to`.
 
@@ -420,9 +414,6 @@ Returns the number of changes done in the document.
 
 #### <a name="replaceAllRegexpInRange"></a>bool **replaceAllRegexpInRange**(string regexp, string after, [RangeMark](../script/rangemark.md) range, int options = TextDocument.NoFindFlags)
 
-!!! note ""
-    Since: Knut 1.1
-
 Replaces all occurrences of the matches for the `regexp` with `after` in the given `range`. See the options from `replaceAll`.
 
 The captures coming from the regexp can be used in the replacement text, using `\1`..`\n` or `$1`..`$n`.
@@ -490,9 +481,6 @@ Selects the previous word, repeat the operation `count` times.
 Selects the range passed in parameter.
 
 #### <a name="selectRangeMark"></a>**selectRangeMark**([RangeMark](../script/rangemark.md) mark)
-
-!!! note ""
-    Since: Knut 1.1
 
 Selects the text defined by the range make `mark`.
 

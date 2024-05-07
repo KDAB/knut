@@ -145,7 +145,6 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Transforms, patterns);
 
 /*!
  * \qmlmethod Symbol LspDocument::symbolUnderCursor()
- * \since 1.1
  * Returns the symbol that's at the current cursor position.
  *
  * This function may return symbols that are not returned by the `symbols()` or `currentSymbol()` function,
@@ -169,7 +168,6 @@ const Core::Symbol *LspDocument::symbolUnderCursor() const
 
 /*!
  * \qmlmethod string LspDocument::hover()
- * \since 1.1
  *
  * Returns information about the symbol at the current cursor position.
  * The result of this call is a plain string that may be formatted in Markdown.
@@ -252,7 +250,6 @@ std::pair<QString, std::optional<TextRange>> LspDocument::hoverWithRange(
 
 /*!
  * \qmlmethod array<TextLocation> LspDocument::references()
- * \since 1.1
  * Returns the list of references at the given position.
  */
 Core::TextLocationList LspDocument::references(int position) const
@@ -559,7 +556,6 @@ Core::QueryMatchList LspDocument::query(const std::shared_ptr<treesitter::Query>
 
 /*!
  * \qmlmethod array<QueryMatch> LspDocument::query(string query)
- * \since 1.1
  * Runs the given Tree-sitter `query` and returns the list of matches.
  *
  * The query is using [Tree-sitter
@@ -576,7 +572,6 @@ Core::QueryMatchList LspDocument::query(const QString &query)
 
 /*!
  * \qmlmethod QueryMatch LspDocument::queryFirst(string query)
- * \since 1.1
  * Runs the given Tree-sitter `query` and returns the first match.
  * If no match can be found an empty match will be returned.
  *
@@ -597,7 +592,6 @@ Core::QueryMatch LspDocument::queryFirst(const QString &query)
 
 /**
  * \qmlmethod array<QueryMatch> LspDocument::queryInRange(RangeMark range, string query)
- * \since 1.1
  *
  * Searches for the given `query`, but only in the provided `range`.
  *
