@@ -23,3 +23,6 @@
 [submodule "3rdparty/tree-sitter-cpp"]
 	path = 3rdparty/tree-sitter-cpp
 	url = https://github.com/tree-sitter/tree-sitter-cpp
+[submodule "3rdparty/mfc-utils"]
+	path = 3rdparty/mfc-utils
+	url = ssh://codereview.kdab.com:29418/kdab/mfc-utils

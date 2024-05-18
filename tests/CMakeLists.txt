@@ -75,6 +75,5 @@ add_knut_test(tst_photon_treesitter tst_photon_treesitter.cpp)
 # executable.
 add_knut_test(tst_knut tst_knut.cpp)
 add_dependencies(tst_knut knut)
-target_compile_definitions(
-  tst_knut
-  PRIVATE KNUT_BINARY_PATH="${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}/knut")
+target_compile_definitions(tst_knut
+                           PRIVATE KNUT_BINARY_PATH="${KNUT_BINARY_PATH}")

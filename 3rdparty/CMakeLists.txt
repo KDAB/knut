@@ -70,3 +70,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE TreeSitter)
 # Always build tree-sitter with optimizations enabled. We shouldn't have to
 # debug it and it's performance critical.
 target_compile_options(${PROJECT_NAME} PRIVATE -O3)
+
+# mfc-utils
+# ##############################################################################
+# We don't compile it, we just need it here for the tests
+check_submodule(mfc-utils mfc-utils)

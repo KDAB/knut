@@ -65,6 +65,7 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
+find_package(QT NAMES Qt6 Qt5)
 find_package(
   Qt6
   COMPONENTS Widgets Qml Quick Test UiTools
@@ -116,7 +117,7 @@ add_custom_command(
 if(MSVC)
   add_compile_options(/W3 /WX)
 else()
-  add_compile_options(-Wall -Wextra -Werror -Wno-error=comment)
+  add_compile_options(-Wall -Wextra -Werror -Wno-comment -Wno-error=comment)
 endif()
 # Set tests here, as it was disabled before
 enable_testing()
@@ -126,7 +127,10 @@ enable_testing()
 add_subdirectory(src)
 add_subdirectory(scripts)
 add_subdirectory(tools)
+
+set(KNUT_BINARY_PATH "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}/knut")
 add_subdirectory(tests)
+add_subdirectory(3rdparty/mfc-utils/tests-scripts)
 
 file(
   GLOB
