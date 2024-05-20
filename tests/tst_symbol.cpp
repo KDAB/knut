@@ -167,6 +167,9 @@ private slots:
 
     void references()
     {
+        QSKIP("Skip test: Symbol::references is deprecated.");
+        CHECK_CLANGD;
+
         Core::KnutCore core;
         Core::Project::instance()->setRoot(Test::testDataPath() + "/projects/cpp-project");
 
