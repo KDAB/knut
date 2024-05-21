@@ -14,6 +14,7 @@
 #include <spdlog/spdlog.h>
 
 #include <QMessageBox>
+#include <QPalette>
 #include <QTextEdit>
 
 namespace Gui {
@@ -109,8 +110,10 @@ void TreeSitterInspector::changeQueryState()
         int patternCount = m_treemodel.patternCount();
         int matchCount = m_treemodel.matchCount();
 
+        const QColor col = palette().color(QPalette::ColorGroup::Normal, QPalette::Highlight);
+
         ui->queryInfo->setText(tr("<span style='color:%1'>%2 Patterns - %3 Matches - %4 Captures</span>")
-                                   .arg(patternCount == 0 || matchCount == 0 ? "yellow" : "green")
+                                   .arg(patternCount == 0 || matchCount == 0 ? col.name() : "green")
                                    .arg(patternCount)
                                    .arg(matchCount)
                                    .arg(m_treemodel.captureCount()));
