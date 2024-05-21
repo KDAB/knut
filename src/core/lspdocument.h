@@ -60,6 +60,12 @@ public:
     Symbol *currentSymbol(const std::function<bool(const Symbol &)> &filterFunc) const;
     void deleteSymbol(const Symbol &symbol);
 
+    // As per KNUT-164 and KNUT-165, these are no longer public API.
+    // They are only used internally by the editor/GUI and not available from QML/JS.
+    // As they rely on the clangd LSP, they are not reliable enough to use for scripting.
+    Core::Document *switchDeclarationDefinition();
+    Core::Document *followSymbol();
+
     QString hover(int position, std::function<void(const QString &)> asyncCallback = {}) const;
 
     int toPos(const Lsp::Position &pos) const;
@@ -68,8 +74,6 @@ public:
     Q_INVOKABLE Core::AstNode astNodeAt(int pos);
 
 public slots:
-    Core::Document *followSymbol();
-    Core::Document *switchDeclarationDefinition();
     void selectSymbol(const QString &name, int options = NoFindFlags);
 
 protected:

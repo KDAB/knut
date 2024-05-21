@@ -28,7 +28,6 @@ Inherited properties: [TextDocument properties](../script/textdocument.md#proper
 |array<[QueryMatch](../script/querymatch.md)> |**[queryInRange](#queryInRange)**([RangeMark](../script/rangemark.md) range, string query)|
 |array<[TextLocation](../script/textlocation.md)> |**[references](#references)**()|
 ||**[selectSymbol](#selectSymbol)**(string name, int options = TextDocument.NoFindFlags)|
-||**[switchDeclarationDefinition](#switchDeclarationDefinition)**()|
 |[Symbol](../script/symbol.md) |**[symbolUnderCursor](#symbolUnderCursor)**()|
 |array<[Symbol](../script/symbol.md)> |**[symbols](#symbols)**()|
 
@@ -100,14 +99,6 @@ Selects a symbol based on its `name`, using different find `options`.
 - `TextDocument.FindRegexp`: use a regexp
 
 If no symbols are found, do nothing.
-
-#### <a name="switchDeclarationDefinition"></a>**switchDeclarationDefinition**()
-
-
-!!! Warning "Experimental API"
-    The API here is still experimental, and may change in follow-up release. Use it at your own risk.
-
-Switches between the function declaration or definition.
 
 #### <a name="symbolUnderCursor"></a>[Symbol](../script/symbol.md) **symbolUnderCursor**()
 

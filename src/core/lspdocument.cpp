@@ -300,12 +300,10 @@ Document *LspDocument::followSymbol()
     LOG_RETURN("document", followSymbol(cursor.selectionStart()));
 }
 
-/**
- * At least with clangd, the "declaration" LSP call acts like followSymbol, it will:
- * - Go to the declaration, if the symbol under cursor is a use
- * - Go to the declaration, if the symbol under cursor is a definition
- * - Go to the definition, if the symbol under cursor is a declaration
- */
+// At least with clangd, the "declaration" LSP call acts like followSymbol, it will:
+// - Go to the declaration, if the symbol under cursor is a use
+// - Go to the declaration, if the symbol under cursor is a definition
+// - Go to the definition, if the symbol under cursor is a declaration
 Document *LspDocument::followSymbol(int pos)
 {
     auto cursor = textEdit()->textCursor();
@@ -364,11 +362,7 @@ Document *LspDocument::followSymbol(int pos)
     return document;
 }
 
-/*!
- * \qmlmethod LspDocument::switchDeclarationDefinition()
- * Switches between the function declaration or definition.
- * \todo
- */
+// Switches between the function declaration or definition.
 Document *LspDocument::switchDeclarationDefinition()
 {
     LOG("LspDocument::switchDeclarationDefinition");
