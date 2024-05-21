@@ -74,11 +74,6 @@ namespace Core {
  * contained by the `range`.
  */
 
-/*!
- * \qmlproperty array<TextLocation> Symbol::references
- * List of all references of this symbol in the current project.
- */
-
 Symbol::Symbol(QObject *parent, const QueryMatch &match, Kind kind)
     : QObject(parent)
     , m_name {match.get("name").text()}

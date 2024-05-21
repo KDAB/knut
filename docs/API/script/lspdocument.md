@@ -26,7 +26,6 @@ Inherited properties: [TextDocument properties](../script/textdocument.md#proper
 |array<[QueryMatch](../script/querymatch.md)> |**[query](#query)**(string query)|
 |[QueryMatch](../script/querymatch.md) |**[queryFirst](#queryFirst)**(string query)|
 |array<[QueryMatch](../script/querymatch.md)> |**[queryInRange](#queryInRange)**([RangeMark](../script/rangemark.md) range, string query)|
-|array<[TextLocation](../script/textlocation.md)> |**[references](#references)**()|
 ||**[selectSymbol](#selectSymbol)**(string name, int options = TextDocument.NoFindFlags)|
 |[Symbol](../script/symbol.md) |**[symbolUnderCursor](#symbolUnderCursor)**()|
 |array<[Symbol](../script/symbol.md)> |**[symbols](#symbols)**()|
@@ -85,10 +84,6 @@ Also see: [Tree-sitter in Knut](../../getting-started/treesitter.md)
 
 Searches for the given `query`, but only in the provided `range`.
 
-
-#### <a name="references"></a>array<[TextLocation](../script/textlocation.md)> **references**()
-
-Returns the list of references at the given position.
 
 #### <a name="selectSymbol"></a>**selectSymbol**(string name, int options = TextDocument.NoFindFlags)
 

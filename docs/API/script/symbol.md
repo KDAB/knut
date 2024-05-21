@@ -18,7 +18,6 @@ import Script 1.0
 |Kind|**[kind](#kind)**|
 |string|**[name](#name)**|
 |[TextRange](../script/textrange.md)|**[range](#range)**|
-|array<[TextLocation](../script/textlocation.md)>|**[references](#references)**|
 |[TextRange](../script/textrange.md)|**[selectionRange](#selectionRange)**|
 
 ## Methods
@@ -75,10 +74,6 @@ Return the name of this symbol.
 The range enclosing this symbol not including leading/trailing whitespace but everything else like comments. This
 information is typically used to determine if the clients cursor is inside the symbol to reveal in the symbol in the
 UI.
-
-#### <a name="references"></a>array<[TextLocation](../script/textlocation.md)> **references**
-
-List of all references of this symbol in the current project.
 
 #### <a name="selectionRange"></a>[TextRange](../script/textrange.md) **selectionRange**
 

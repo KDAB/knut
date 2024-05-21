@@ -248,10 +248,6 @@ std::pair<QString, std::optional<TextRange>> LspDocument::hoverWithRange(
     return {"", {}};
 }
 
-/*!
- * \qmlmethod array<TextLocation> LspDocument::references()
- * Returns the list of references at the given position.
- */
 Core::TextLocationList LspDocument::references(int position) const
 {
     LOG("LspDocument::references");

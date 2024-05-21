@@ -41,7 +41,6 @@ public:
     Q_INVOKABLE Core::SymbolList symbols() const;
     Q_INVOKABLE QString hover() const;
     Q_INVOKABLE const Core::Symbol *symbolUnderCursor() const;
-    Q_INVOKABLE Core::TextLocationList references(int position) const;
 
     Q_INVOKABLE Core::QueryMatchList query(const QString &query);
     Q_INVOKABLE Core::QueryMatch queryFirst(const QString &query);
@@ -60,11 +59,12 @@ public:
     Symbol *currentSymbol(const std::function<bool(const Symbol &)> &filterFunc) const;
     void deleteSymbol(const Symbol &symbol);
 
-    // As per KNUT-164 and KNUT-165, these are no longer public API.
+    // As per KUT-163, KNUT-164 and KNUT-165, these are no longer public API.
     // They are only used internally by the editor/GUI and not available from QML/JS.
     // As they rely on the clangd LSP, they are not reliable enough to use for scripting.
     Core::Document *switchDeclarationDefinition();
     Core::Document *followSymbol();
+    Core::TextLocationList references(int position) const;
 
     QString hover(int position, std::function<void(const QString &)> asyncCallback = {}) const;
 

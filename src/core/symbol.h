@@ -22,7 +22,6 @@ class Symbol : public QObject
     Q_PROPERTY(Kind kind READ kind CONSTANT)
     Q_PROPERTY(Core::TextRange range READ range CONSTANT)
     Q_PROPERTY(Core::TextRange selectionRange READ selectionRange CONSTANT)
-    Q_PROPERTY(QVector<Core::TextLocation> references READ references CONSTANT)
 
 public:
     enum Kind {
@@ -81,6 +80,9 @@ public:
     Core::TextRange range() const;
     Core::TextRange selectionRange() const;
 
+    // As per KNUT-163, these are no longer public API.
+    // They are only used internally by the editor/GUI and not available from QML/JS.
+    // As this relies on the clangd LSP, it is not reliable enough to use for scripting.
     QVector<Core::TextLocation> references() const;
 
     Q_INVOKABLE void select();
