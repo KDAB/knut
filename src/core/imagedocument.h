@@ -11,7 +11,7 @@ class ImageDocument : public Document
     Q_OBJECT
 
 public:
-    ImageDocument(QObject *parent = nullptr);
+    explicit ImageDocument(QObject *parent = nullptr);
 
     QImage image() const;
 
