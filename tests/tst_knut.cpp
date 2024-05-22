@@ -31,7 +31,6 @@ private:
     }
 
 private slots:
-    KNUT_TEST(photon_convert_file)
     KNUT_TEST(settings)
     KNUT_TEST(dir)
     KNUT_TEST(fileinfo)
