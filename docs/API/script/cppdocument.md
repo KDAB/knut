@@ -29,6 +29,7 @@ Inherited properties: [CodeDocument properties](../script/codedocument.md#proper
 ||**[addMethodDeclaration](#addMethodDeclaration)**(string method, string className, AccessSpecifier specifier)|
 ||**[addMethodDefinition](#addMethodDefinition)**(string method, string className)|
 ||**[addMethodDefinition](#addMethodDefinition)**(string method, string className, string body)|
+|void |**[changeBaseClass](#changeBaseClass)**()|
 ||**[commentSelection](#commentSelection)**()|
 |string |**[correspondingHeaderSource](#correspondingHeaderSource)**()|
 |void |**[deleteMethod](#deleteMethod)**()|
@@ -105,6 +106,13 @@ class `className` in the current file.
 The provided `body` should not include the curly braces.
 
 If no body is provided, it will default to an empty body.
+
+#### <a name="changeBaseClass"></a>void **changeBaseClass**()
+
+Convert Class Base
+
+Also see: CppDocument::changeBaseClass(const QString &className, const QString &originalClassBaseName, const QString
+&newClassBaseName)
 
 #### <a name="commentSelection"></a>**commentSelection**()
 

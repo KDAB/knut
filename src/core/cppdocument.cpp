@@ -1428,4 +1428,88 @@ void CppDocument::deleteMethod()
     }
 }
 
+void CppDocument::changeBaseClassForwardInclude(const QString &originalClassBaseName, const QString &newClassBaseName)
+{
+    replaceAllRegexp(QString("#include.s*<%1.h>").arg(originalClassBaseName),
+                     QString("#include <%1.h>").arg(newClassBaseName));
+    replaceAllRegexp(QString("#include.s*<%1>").arg(originalClassBaseName),
+                     QString("#include <%1>").arg(newClassBaseName));
+    replaceAllRegexp(QString("class %1;").arg(originalClassBaseName), QString("class %1;").arg(newClassBaseName));
+}
+
+bool CppDocument::changeBaseClassHeader(const QString &className, const QString &originalClassBaseName,
+                                        const QString &newClassBaseName)
+{
+    Q_UNUSED(className);
+    changeBaseClassForwardInclude(originalClassBaseName, newClassBaseName);
+
+    queryClassDefinition(className).get("base").replace(newClassBaseName);
+    return true;
+}
+
+bool CppDocument::changeBaseClassSource(const QString &className, const QString &originalClassBaseName,
+                                        const QString &newClassBaseName)
+{
+    Q_UNUSED(className);
+
+    changeBaseClassForwardInclude(originalClassBaseName, newClassBaseName);
+    replaceAll(QString("%1::").arg(originalClassBaseName), QString("%1::").arg(newClassBaseName));
+    const auto constructors = queryMethodDefinition(className, className);
+    for (const auto &constructor : constructors) {
+        const auto constructorRange = constructor.get("definition");
+        const auto bodyRange = constructor.get("body");
+        const auto newRange = RangeMark(this, constructorRange.start(), bodyRange.start());
+        replaceAllInRange(originalClassBaseName, newClassBaseName, newRange);
+    }
+    return true;
+}
+
+bool CppDocument::changeBaseClass(CppDocument *header, CppDocument *source, const QString &className,
+                                  const QString &newClassBaseName)
+{
+    auto result = true;
+    const QString baseClassName = header->queryClassDefinition(className).get("base").text();
+    if (baseClassName.isEmpty()) {
+        spdlog::error("CppDocument::changeBaseClass - Can't find base class name for class: '{}'",
+                      className.toStdString());
+        return false;
+    }
+    if (header) {
+        result &= header->changeBaseClassHeader(className, baseClassName, newClassBaseName);
+    } else {
+        spdlog::warn("CppDocument::changeBaseClass - Can't find header file for '{}'", baseClassName);
+        result = false;
+    }
+    if (source) {
+        result &= source->changeBaseClassSource(className, baseClassName, newClassBaseName);
+    } else {
+        spdlog::warn("CppDocument::changeBaseClass - Can't find source file for '{}'", baseClassName);
+        result = false;
+    }
+    return result;
+}
+
+/*!
+ * \qmlmethod void CppDocument::changeBaseClass()
+ *
+ * Convert Class Base
+ *
+ * Also see: CppDocument::changeBaseClass(const QString &className, const QString &originalClassBaseName, const QString
+ * &newClassBaseName)
+ */
+bool CppDocument::changeBaseClass(const QString &className, const QString &newClassBaseName)
+{
+    LOG("CppDocument::changeBaseClass");
+
+    auto header = this;
+    auto source = openHeaderSource();
+    if (!source) {
+        spdlog::warn("CppDocument::changeBaseClass - Can't find source file");
+    } else if (!isHeader()) {
+        std::swap(header, source);
+    }
+
+    return changeBaseClass(header, source, className, newClassBaseName);
+}
+
 } // namespace Core

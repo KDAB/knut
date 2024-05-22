@@ -44,6 +44,8 @@ public:
     Q_INVOKABLE Core::DataExchange mfcExtractDDX(const QString &className);
     Q_INVOKABLE Core::MessageMap mfcExtractMessageMap(const QString &className = "");
 
+    bool changeBaseClass(CppDocument *header, CppDocument *source, const QString &className,
+                         const QString &newClassBaseName);
 public slots:
     Core::CppDocument *openHeaderSource();
 
@@ -74,6 +76,8 @@ public slots:
     API_EXECUTOR void deleteMethod(const QString &method, const QString &signature);
     void deleteMethod(const QString &methodName);
 
+    bool changeBaseClass(const QString &className, const QString &newClassBaseName);
+
 private:
     QVector<Core::QueryMatch> internalQueryFunctionCall(const QString &functionName, const QString &argumentsQuery);
 
@@ -87,6 +91,11 @@ private:
 
     bool addSpecifierSection(const QString &memberInfoText, const QString &className,
                              Core::CppDocument::AccessSpecifier specifier);
+    bool changeBaseClassHeader(const QString &className, const QString &originalClassBaseName,
+                               const QString &newClassBaseName);
+    bool changeBaseClassSource(const QString &className, const QString &originalClassBaseName,
+                               const QString &newClassBaseName);
+    void changeBaseClassForwardInclude(const QString &originalClassBaseName, const QString &newClassBaseName);
 
     friend class IncludeHelper;
 };

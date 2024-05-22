@@ -2,6 +2,7 @@
 #include "rangemark_p.h"
 
 #include "mark.h"
+#include "rangemark.h"
 #include "textdocument.h"
 #include "utils/log.h"
 

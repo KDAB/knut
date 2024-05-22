@@ -319,6 +319,25 @@ private slots:
         // TODO: test overloads
         // TODO: test parameters
     }
+
+    void changeBaseClass()
+    {
+        Core::KnutCore core;
+        Core::Project::instance()->setRoot(Test::testDataPath() + "/tst_cppdocument/changeBaseClass");
+
+        Test::FileTester sourceFile(Test::testDataPath() + "/tst_cppdocument/changeBaseClass/myobject.cpp");
+        Test::FileTester headerFile(Test::testDataPath() + "/tst_cppdocument/changeBaseClass/myobject.h");
+        {
+            auto cppFile = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(sourceFile.fileName()));
+            auto hFile = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(headerFile.fileName()));
+            QVERIFY(cppFile->changeBaseClass(hFile, cppFile, "MyObject", "KPropertyPage"));
+            cppFile->save();
+            hFile->save();
+
+            QVERIFY(sourceFile.compare());
+            QVERIFY(headerFile.compare());
+        }
+    }
 };
 
 QTEST_MAIN(TestCppDocumentTreeSitter)

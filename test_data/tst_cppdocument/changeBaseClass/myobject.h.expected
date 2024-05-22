@@ -1,0 +1,20 @@
+#pragma once
+
+#include <string>
+
+#include <KPropertyPage.h>
+#include <KPropertyPage>
+
+class KPropertyPage;
+
+class MyObject : public KPropertyPage {
+public:
+    MyObject(const std::string& message);
+    MyObject(const QString &msg);
+    ~MyObject();
+    void sayMessage();
+    void sayMessage(const std::string& test);
+
+private:
+    std::string m_message;
+};

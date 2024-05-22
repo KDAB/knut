@@ -1,0 +1,23 @@
+#include "myobject.h"
+
+#include <iostream>
+
+
+MyObject::MyObject()
+    : KPropertyPage()
+{}
+
+MyObject::MyObject(const QString &msg)
+    : KPropertyPage(msg)
+{}
+
+MyObject::~MyObject()
+{
+    KPropertyPage::reset();
+}
+
+
+void MyObject::sayMessage(const std::string& test) {
+    std::cout << test << std::endl;
+    KPropertyPage::bla();
+}
