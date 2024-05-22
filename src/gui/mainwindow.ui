@@ -99,6 +99,7 @@
     <addaction name="separator"/>
     <addaction name="actionSelectBlockUp"/>
     <addaction name="actionDeleteMethod"/>
+    <addaction name="separator"/>
     <addaction name="actionTreeSitterInspector"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
