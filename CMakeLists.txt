@@ -130,6 +130,7 @@ add_subdirectory(tools)
 set(KNUT_BINARY_PATH "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}/knut")
 add_subdirectory(tests)
 add_subdirectory(3rdparty/mfc-utils/tests-scripts)
+add_subdirectory(3rdparty/photonwidgets/tests/scripts)
 
 file(
   GLOB

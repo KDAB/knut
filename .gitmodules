@@ -26,3 +26,6 @@
 [submodule "3rdparty/mfc-utils"]
 	path = 3rdparty/mfc-utils
 	url = ssh://codereview.kdab.com:29418/kdab/mfc-utils
+[submodule "3rdparty/photonwidgets"]
+	path = 3rdparty/photonwidgets
+	url = ssh://codereview.kdab.com:29418/photonwidgets
