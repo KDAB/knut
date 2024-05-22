@@ -140,7 +140,7 @@ QString RangeMark::text() const
 
 QString RangeMark::toString() const
 {
-    return QString("[%1, %2)").arg(start()).arg(end());
+    return QString("[%1, %2]").arg(start()).arg(end());
 }
 
 /*!
