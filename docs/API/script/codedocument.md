@@ -1,6 +1,6 @@
-# LspDocument
+# CodeDocument
 
-Base document object for document using LSP. [More...](#detailed-description)
+Base document object for any code that Knut can parse. [More...](#detailed-description)
 
 ```qml
 import Script 1.0
@@ -31,6 +31,15 @@ Inherited properties: [TextDocument properties](../script/textdocument.md#proper
 |array<[Symbol](../script/symbol.md)> |**[symbols](#symbols)**()|
 
 Inherited methods: [TextDocument methods](../script/textdocument.md#methods)
+
+## Detailed Description
+
+Knut uses Tree-sitter to parse the code and provide additional information about it.
+For a better user experience, the Knut GUI also uses a Language server (LSP), if available.
+For each language that Knut can work with, this class should be subclassed to provide language-specific
+functionality.
+
+This class provides the language-independent basis of integration with Tree-sitter and the LSP.
 
 ## Method Documentation
 
@@ -78,7 +87,7 @@ The query is using [Tree-sitter
 queries](https://tree-sitter.github.io/tree-sitter/using-parsers#pattern-matching-with-queries).
 
 Also see: [Tree-sitter in Knut](../../getting-started/treesitter.md)
- Core::QueryMatchList LspDocument::query(const QString &query)
+ Core::QueryMatchList CodeDocument::query(const QString &query)
 
 #### <a name="queryInRange"></a>array<[QueryMatch](../script/querymatch.md)> **queryInRange**([RangeMark](../script/rangemark.md) range, string query)
 

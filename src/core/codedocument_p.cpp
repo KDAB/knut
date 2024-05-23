@@ -1,5 +1,5 @@
-#include "lspdocument_p.h"
-#include "lspdocument.h"
+#include "codedocument_p.h"
+#include "codedocument.h"
 
 #include "treesitter/languages.h"
 
@@ -11,7 +11,7 @@ namespace Core {
 ///////////////////////////////////////////////////////////////////////////////
 // TreeSitterHelper
 ///////////////////////////////////////////////////////////////////////////////
-TreeSitterHelper::TreeSitterHelper(LspDocument *document)
+TreeSitterHelper::TreeSitterHelper(CodeDocument *document)
     : m_document(document)
 {
 }
@@ -41,7 +41,8 @@ std::optional<treesitter::Tree> &TreeSitterHelper::syntaxTree()
     if (!m_tree) {
         m_tree = parser().parseString(m_document->text());
         if (!m_tree) {
-            spdlog::warn("LspDocument::syntaxTree: Failed to parse document {}!", m_document->fileName().toStdString());
+            spdlog::warn("CodeDocument::syntaxTree: Failed to parse document {}!",
+                         m_document->fileName().toStdString());
         }
     }
     return m_tree;
@@ -53,7 +54,7 @@ std::shared_ptr<treesitter::Query> TreeSitterHelper::constructQuery(const QStrin
     try {
         tsQuery = std::make_shared<treesitter::Query>(parser().language(), query);
     } catch (treesitter::Query::Error &error) {
-        spdlog::error("LspDocument::constructQuery: Failed to parse query `{}` error: {} at: {}", query.toStdString(),
+        spdlog::error("CodeDocument::constructQuery: Failed to parse query `{}` error: {} at: {}", query.toStdString(),
                       error.description.toStdString(), error.utf8_offset);
         return {};
     }

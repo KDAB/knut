@@ -2,8 +2,8 @@
 
 #include "guisettings.h"
 
+#include "core/codedocument.h"
 #include "core/logger.h"
-#include "core/lspdocument.h"
 #include "core/mark.h"
 #include "core/scriptmodel.h"
 #include "core/textdocument.h"
@@ -137,20 +137,20 @@ bool TextView::eventFilter(QObject *obj, QEvent *event)
     if (event->type() == QEvent::Paint)
         updateMarkRect();
     if (event->type() == QEvent::ToolTip) {
-        if (const auto *lspdocument = qobject_cast<Core::LspDocument *>(m_document)) {
+        if (const auto *codedocument = qobject_cast<Core::CodeDocument *>(m_document)) {
             if (const auto *helpEvent = dynamic_cast<QHelpEvent *>(event)) {
-                auto cursor = lspdocument->textEdit()->cursorForPosition(helpEvent->pos());
+                auto cursor = codedocument->textEdit()->cursorForPosition(helpEvent->pos());
 
                 // Make the textEdit a guarded pointer, as it might have been destroyed once the hover
                 // callback returns.
-                QPointer<QPlainTextEdit> textEdit(lspdocument->textEdit());
+                QPointer<QPlainTextEdit> textEdit(codedocument->textEdit());
                 QPoint position(helpEvent->globalPos());
 
                 // Hover spams the log if it doesn't find anything.
                 // In our case, that's not a problem, so just disable the log.
                 Core::LoggerDisabler ld;
 
-                lspdocument->hover(cursor.position(), [textEdit, position](const auto &hoverText) {
+                codedocument->hover(cursor.position(), [textEdit, position](const auto &hoverText) {
                     if (!textEdit.isNull() && textEdit->isVisible()) {
                         QToolTip::showText(position, hoverText, textEdit);
                     }

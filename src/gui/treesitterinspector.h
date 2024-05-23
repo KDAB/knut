@@ -15,7 +15,7 @@ class Predicates;
 
 namespace Core {
 class Document;
-class LspDocument;
+class CodeDocument;
 }
 
 namespace Gui {
@@ -48,7 +48,7 @@ public:
 private:
     void showUnnamedChanged();
     void changeCurrentDocument(Core::Document *document);
-    void setDocument(Core::LspDocument *document);
+    void setDocument(Core::CodeDocument *document);
     void changeText();
     void changeCursor();
     void changeQuery();
@@ -71,7 +71,7 @@ private:
     TreeSitterTreeModel m_treemodel;
     QueryErrorHighlighter *m_errorHighlighter;
 
-    Core::LspDocument *m_document;
+    Core::CodeDocument *m_document;
 
     QString m_queryText;
 };

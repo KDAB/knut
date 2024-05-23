@@ -5,6 +5,10 @@ set(PROJECT_SOURCES
     astnode.cpp
     classsymbol.h
     classsymbol.cpp
+    codedocument.h
+    codedocument.cpp
+    codedocument_p.h
+    codedocument_p.cpp
     cpplanguagedata.h
     cpplanguagedata.cpp
     cppdocument.h
@@ -29,10 +33,6 @@ set(PROJECT_SOURCES
     knutcore.cpp
     logger.h
     logger.cpp
-    lspdocument.h
-    lspdocument.cpp
-    lspdocument_p.h
-    lspdocument_p.cpp
     mark_p.h
     mark.h
     mark.cpp

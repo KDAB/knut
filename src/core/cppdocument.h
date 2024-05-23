@@ -1,7 +1,7 @@
 #pragma once
 
+#include "codedocument.h"
 #include "dataexchange.h"
-#include "lspdocument.h"
 #include "messagemap.h"
 
 #ifndef Q_MOC_RUN
@@ -10,7 +10,7 @@
 
 namespace Core {
 
-class CppDocument : public LspDocument
+class CppDocument : public CodeDocument
 {
     Q_OBJECT
     Q_PROPERTY(bool isHeader READ isHeader CONSTANT)

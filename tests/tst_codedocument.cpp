@@ -1,5 +1,5 @@
+#include "core/codedocument.h"
 #include "core/knutcore.h"
-#include "core/lspdocument.h"
 #include "core/project.h"
 #include "core/querymatch.h"
 
@@ -14,11 +14,11 @@
 
 #include "common/test_utils.h"
 
-class TestLspDocument : public QObject
+class TestCodeDocument : public QObject
 {
     Q_OBJECT
 
-    void verifySymbol(Core::LspDocument *document, const Core::Symbol *symbol, const QString &name,
+    void verifySymbol(Core::CodeDocument *document, const Core::Symbol *symbol, const QString &name,
                       Core::Symbol::Kind kind, const QString &selectionText)
     {
         QVERIFY(symbol != nullptr);
@@ -28,10 +28,10 @@ class TestLspDocument : public QObject
         QCOMPARE(document->selectedText(), selectionText);
     }
 
-    void verifySwitchDeclarationDefinition(Core::LspDocument *sourcefile, Core::LspDocument *targetfile, int line,
+    void verifySwitchDeclarationDefinition(Core::CodeDocument *sourcefile, Core::CodeDocument *targetfile, int line,
                                            const QString &selectedText)
     {
-        auto result = qobject_cast<Core::LspDocument *>(sourcefile->switchDeclarationDefinition());
+        auto result = qobject_cast<Core::CodeDocument *>(sourcefile->switchDeclarationDefinition());
         QVERIFY(result);
         QCOMPARE(result, targetfile);
         auto cursor = result->textEdit()->textCursor();
@@ -50,7 +50,7 @@ private slots:
         auto project = Core::Project::instance();
         project->setRoot(Test::testDataPath() + "/projects/cpp-project");
 
-        auto cppDocument = qobject_cast<Core::LspDocument *>(project->open("myobject.cpp"));
+        auto cppDocument = qobject_cast<Core::CodeDocument *>(project->open("myobject.cpp"));
         const auto cppSymbols = cppDocument->symbols();
         QCOMPARE(cppSymbols.size(), 4);
 
@@ -73,7 +73,7 @@ private slots:
     std::cout << test << std::endl;
 })"));
 
-        auto headerDocument = qobject_cast<Core::LspDocument *>(project->open("myobject.h"));
+        auto headerDocument = qobject_cast<Core::CodeDocument *>(project->open("myobject.h"));
 
         const auto headerSymbols = headerDocument->symbols();
         QCOMPARE(headerSymbols.size(), 11);
@@ -133,7 +133,7 @@ private slots:
         auto project = Core::Project::instance();
         project->setRoot(Test::testDataPath() + "/projects/cpp-project");
 
-        const auto document = qobject_cast<Core::LspDocument *>(project->open(fileName));
+        const auto document = qobject_cast<Core::CodeDocument *>(project->open(fileName));
 
         auto cursor = document->textEdit()->textCursor();
         cursor.setPosition(document->toPos(position));
@@ -156,7 +156,7 @@ private slots:
         auto project = Core::Project::instance();
         project->setRoot(Test::testDataPath() + "/projects/cpp-project");
 
-        const auto document = qobject_cast<Core::LspDocument *>(project->open("main.cpp"));
+        const auto document = qobject_cast<Core::CodeDocument *>(project->open("main.cpp"));
 
         auto cursor = document->textEdit()->textCursor();
         cursor.setPosition(document->toPos(Lsp::Position {.line = 6 /*0-indexed*/, .character = 6}));
@@ -178,7 +178,7 @@ private slots:
         auto project = Core::Project::instance();
         project->setRoot(Test::testDataPath() + "/projects/cpp-project");
 
-        auto headerDocument = qobject_cast<Core::LspDocument *>(project->open("myobject.h"));
+        auto headerDocument = qobject_cast<Core::CodeDocument *>(project->open("myobject.h"));
 
         auto symbol = headerDocument->findSymbol("MyObject", Core::TextDocument::FindWholeWords);
         verifySymbol(headerDocument, symbol, "MyObject", Core::Symbol::Kind::Class, "MyObject");
@@ -210,32 +210,32 @@ private slots:
         auto project = Core::Project::instance();
         project->setRoot(Test::testDataPath() + "/projects/cpp-project");
 
-        auto lspdocument = qobject_cast<Core::LspDocument *>(project->open("main.cpp"));
+        auto codedocument = qobject_cast<Core::CodeDocument *>(project->open("main.cpp"));
 
         // Pre-open files, so clang has time to index them
         Core::Project::instance()->get("myobject.cpp");
 
         // Select the first use of the MyObject -> goTo declaration of the instance
-        QVERIFY(lspdocument->find("object.sayMessage()"));
+        QVERIFY(codedocument->find("object.sayMessage()"));
 
-        auto result = qobject_cast<Core::LspDocument *>(lspdocument->followSymbol());
+        auto result = qobject_cast<Core::CodeDocument *>(codedocument->followSymbol());
 
-        QCOMPARE(result, lspdocument);
-        QVERIFY(lspdocument->hasSelection());
-        auto cursor = lspdocument->textEdit()->textCursor();
+        QCOMPARE(result, codedocument);
+        QVERIFY(codedocument->hasSelection());
+        auto cursor = codedocument->textEdit()->textCursor();
         QCOMPARE(cursor.blockNumber(), 7); // lines are 0-indexed, so 7 => line 8
         QCOMPARE(cursor.selectedText(), QString("object"));
 
         // select some empty piece of code -> don't do anything
-        lspdocument->gotoStartOfLine();
-        cursor = lspdocument->textEdit()->textCursor();
-        QVERIFY(!lspdocument->followSymbol());
+        codedocument->gotoStartOfLine();
+        cursor = codedocument->textEdit()->textCursor();
+        QVERIFY(!codedocument->followSymbol());
         // The cursor should not change if followSymbol fails
-        QCOMPARE(cursor, lspdocument->textEdit()->textCursor());
+        QCOMPARE(cursor, codedocument->textEdit()->textCursor());
 
         // Select a function call -> goto Function declaration
-        QVERIFY(lspdocument->find("sayMessage()"));
-        result = qobject_cast<Core::LspDocument *>(lspdocument->followSymbol());
+        QVERIFY(codedocument->find("sayMessage()"));
+        result = qobject_cast<Core::CodeDocument *>(codedocument->followSymbol());
         QVERIFY(result);
         QVERIFY(result->fileName().endsWith("myobject.h"));
         cursor = result->textEdit()->textCursor();
@@ -243,7 +243,7 @@ private slots:
         QCOMPARE(cursor.selectedText(), QString("sayMessage"));
 
         // Selected a function declaration -> goTo function definition
-        result = qobject_cast<Core::LspDocument *>(result->followSymbol());
+        result = qobject_cast<Core::CodeDocument *>(result->followSymbol());
         QVERIFY(result);
         QVERIFY(result->fileName().endsWith("myobject.cpp"));
         cursor = result->textEdit()->textCursor();
@@ -251,7 +251,7 @@ private slots:
         QCOMPARE(cursor.selectedText(), QString("sayMessage"));
 
         // Selected a function definition -> goTo function declaration
-        result = qobject_cast<Core::LspDocument *>(result->followSymbol());
+        result = qobject_cast<Core::CodeDocument *>(result->followSymbol());
         QVERIFY(result);
         QVERIFY(result->fileName().endsWith("myobject.h"));
         cursor = result->textEdit()->textCursor();
@@ -267,9 +267,9 @@ private slots:
         auto project = Core::Project::instance();
         project->setRoot(Test::testDataPath() + "/projects/cpp-project");
 
-        auto mainfile = qobject_cast<Core::LspDocument *>(project->open("main.cpp"));
-        auto cppfile = qobject_cast<Core::LspDocument *>(project->open("myobject.cpp"));
-        auto headerfile = qobject_cast<Core::LspDocument *>(project->open("myobject.h"));
+        auto mainfile = qobject_cast<Core::CodeDocument *>(project->open("main.cpp"));
+        auto cppfile = qobject_cast<Core::CodeDocument *>(project->open("myobject.cpp"));
+        auto headerfile = qobject_cast<Core::CodeDocument *>(project->open("myobject.h"));
 
         // Cursor outside of a function - do nothing
         mainfile->gotoStartOfDocument();
@@ -302,13 +302,14 @@ private slots:
         // Regression test for KNUT-42 - LSP doesn't get notified of changes in Editor
         CHECK_CLANGD_VERSION;
 
-        Test::FileTester file(Test::testDataPath() + "/tst_lspdocument/notifyEditorChanges/section.cpp");
+        Test::FileTester file(Test::testDataPath() + "/tst_codedocument/notifyEditorChanges/section.cpp");
         {
             Core::KnutCore core;
             auto project = Core::Project::instance();
             project->setRoot(Test::testDataPath() + "/cpp-project");
 
-            auto cppFile = qobject_cast<Core::LspDocument *>(Core::Project::instance()->get(file.fileName()));
+            auto cppFile = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->get(file.fileName()));
+            QVERIFY(cppFile);
 
             const auto before = cppFile->findSymbol("Section::bar")->range();
             QCOMPARE(before.start, 326);
@@ -330,14 +331,14 @@ private slots:
         auto project = Core::Project::instance();
         project->setRoot(Test::testDataPath() + "/projects/cpp-project");
 
-        auto lspdocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->get("myobject.h"));
+        auto codedocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->get("myobject.h"));
 
-        auto symbol = lspdocument->findSymbol("MyObject");
+        auto symbol = codedocument->findSymbol("MyObject");
         QVERIFY(symbol);
 
         QAction signalled;
 
-        lspdocument->hover(symbol->selectionRange().start + 1, [&signalled](const auto &) {
+        codedocument->hover(symbol->selectionRange().start + 1, [&signalled](const auto &) {
             signalled.trigger();
         });
 
@@ -351,10 +352,10 @@ private slots:
         auto project = Core::Project::instance();
         project->setRoot(Test::testDataPath() + "/projects/cpp-project");
 
-        auto lspdocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->get("main.cpp"));
+        auto codedocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->get("main.cpp"));
 
         Test::LogCounter counter;
-        auto matches = lspdocument->query(R"EOF(
+        auto matches = codedocument->query(R"EOF(
                 (function_definition
                   type: (_) @return-type
                   declarator: (function_declarator
@@ -384,11 +385,11 @@ private slots:
         auto project = Core::Project::instance();
         project->setRoot(Test::testDataPath() + "/projects/cpp-project");
 
-        auto lspdocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->get("main.cpp"));
+        auto codedocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->get("main.cpp"));
 
         Test::LogCounter counter;
 
-        auto matches = lspdocument->query(R"EOF(
+        auto matches = codedocument->query(R"EOF(
             (function_definition
               declarator: (function_declarator
                 declarator: (identifier) @name (eq? @name "non_existent_function")))
@@ -397,7 +398,7 @@ private slots:
         // Query is correct, but returns no result, so should produce no log output.
         QCOMPARE(counter.count(), 0);
 
-        matches = lspdocument->query("invalid query");
+        matches = codedocument->query("invalid query");
         QVERIFY(matches.isEmpty());
         // Invalid query, so should produce log output.
         QCOMPARE(counter.count(), 1);
@@ -409,16 +410,16 @@ private slots:
         auto project = Core::Project::instance();
         project->setRoot(Test::testDataPath() + "/projects/cpp-project");
 
-        auto lspdocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->get("main.cpp"));
+        auto codedocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->get("main.cpp"));
 
         // Selection should include two function definitions "myFreeFunction" and "myOtherFreeFunction"
-        lspdocument->gotoLine(19);
-        lspdocument->selectNextLine(20);
-        lspdocument->selectEndOfLine();
+        codedocument->gotoLine(19);
+        codedocument->selectNextLine(20);
+        codedocument->selectEndOfLine();
 
-        auto range = lspdocument->createRangeMark();
+        auto range = codedocument->createRangeMark();
 
-        auto matches = lspdocument->queryInRange(range, R"EOF(
+        auto matches = codedocument->queryInRange(range, R"EOF(
                 (function_definition)
                       )EOF");
 
@@ -427,13 +428,13 @@ private slots:
 
     void ast()
     {
-        Test::FileTester header(Test::testDataPath() + "/tst_lspdocument/ast/header.h");
+        Test::FileTester header(Test::testDataPath() + "/tst_codedocument/ast/header.h");
 
         Core::KnutCore core;
         auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/tst_lspdocument/ast/");
+        project->setRoot(Test::testDataPath() + "/tst_codedocument/ast/");
 
-        auto document = qobject_cast<Core::LspDocument *>(Core::Project::instance()->get(header.fileName()));
+        auto document = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->get(header.fileName()));
         QVERIFY(document);
 
         document->gotoLine(6, 9);
@@ -487,5 +488,5 @@ private slots:
     }
 };
 
-QTEST_MAIN(TestLspDocument)
-#include "tst_lspdocument.moc"
+QTEST_MAIN(TestCodeDocument)
+#include "tst_codedocument.moc"

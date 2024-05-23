@@ -29,7 +29,7 @@ import Script 1.0
 The QueryMatch object allows you to get access to all the captures made by a [Tree-sitter
 query](https://tree-sitter.github.io/tree-sitter/using-parsers#pattern-matching-with-queries).
 
-Some high-level functions on LspDocument and its subclasses also return QueryMatch instances.
+Some high-level functions on CodeDocument and its subclasses also return QueryMatch instances.
 Usually these functions list which captures their matches will include.
 
 !!! note

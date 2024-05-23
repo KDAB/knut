@@ -1,8 +1,8 @@
 #include "functionsymbol.h"
 
+#include "codedocument.h"
 #include "cpplanguagedata.h"
 #include "lsp/lsp_utils.h"
-#include "lspdocument.h"
 
 #include <QRegularExpression>
 
@@ -15,7 +15,7 @@ namespace Core {
  * \qmltype FunctionArgument
  * \brief Represents an argument to be passed to the function
  * \inqmlmodule Script
- * \ingroup LspDocument
+ * \ingroup CodeDocument
  * \since 1.0
  * \todo
  * \sa FunctionSymbol
@@ -63,7 +63,7 @@ FunctionArgument FunctionArgument::fromHover(const QString &parameter, Document:
  * \qmltype FunctionSymbol
  * \brief Represents a function or a method in the current file
  * \inqmlmodule Script
- * \ingroup LspDocument
+ * \ingroup CodeDocument
  * \since 1.0
  * \todo
  */

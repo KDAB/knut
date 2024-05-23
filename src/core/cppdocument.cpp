@@ -27,7 +27,7 @@ namespace Core {
  * \inqmlmodule Script
  * \ingroup CppDocument/@first
  * \since 1.0
- * \inherits LspDocument
+ * \inherits CodeDocument
  */
 
 /*!
@@ -36,7 +36,7 @@ namespace Core {
  */
 
 CppDocument::CppDocument(QObject *parent)
-    : LspDocument(Type::Cpp, parent)
+    : CodeDocument(Type::Cpp, parent)
 {
 }
 

@@ -158,7 +158,7 @@ QStringList Project::allFilesWithExtension(const QString &extension, PathType ty
 
 /*!
  * \qmlmethod array<string> Project::allFilesWithExtensions(array<string> extensions, PathType type = RelativeToRoot)
- * Returns all files with an extenstion from `extensions` in the current project.
+ * Returns all files with an extension from `extensions` in the current project.
  * `type` defines the type of path, and can be one of those values:
  *
  * - `Project.FullPath`
@@ -266,8 +266,8 @@ Document *Project::getDocument(QString fileName, bool moveToBack)
     } else {
         doc = createDocument(fi.suffix());
         if (doc) {
-            if (auto lspDocument = qobject_cast<LspDocument *>(doc))
-                lspDocument->setLspClient(getClient(doc->type()));
+            if (auto codeDocument = qobject_cast<CodeDocument *>(doc))
+                codeDocument->setLspClient(getClient(doc->type()));
             doc->setParent(this);
             doc->load(fileName);
             m_documents.push_back(doc);

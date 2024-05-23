@@ -1,9 +1,9 @@
 #include "symbol.h"
 
 #include "classsymbol.h"
+#include "codedocument.h"
 #include "functionsymbol.h"
 #include "logger.h"
-#include "lspdocument.h"
 #include "project.h"
 
 #include <kdalgorithms.h>
@@ -15,7 +15,7 @@ namespace Core {
  * \qmltype Symbol
  * \brief Represent a symbol in the current file
  * \inqmlmodule Script
- * \ingroup LspDocument
+ * \ingroup CodeDocument
  * \since 1.0
  */
 
@@ -110,9 +110,9 @@ void Symbol::assignContext(const QVector<Symbol *> &contexts)
     }
 }
 
-LspDocument *Symbol::document() const
+CodeDocument *Symbol::document() const
 {
-    return qobject_cast<LspDocument *>(parent());
+    return qobject_cast<CodeDocument *>(parent());
 }
 
 /*!
@@ -187,8 +187,8 @@ QVector<Core::TextLocation> Symbol::references() const
 {
     LOG("Symbol::references");
 
-    if (const auto lspdocument = document()) {
-        auto references = lspdocument->references(selectionRange().start);
+    if (const auto codedocument = document()) {
+        auto references = codedocument->references(selectionRange().start);
         kdalgorithms::erase_if(references, [this](const auto &reference) {
             return reference.range == this->selectionRange();
         });
@@ -205,8 +205,8 @@ QVector<Core::TextLocation> Symbol::references() const
  */
 void Symbol::select()
 {
-    if (auto lspDocument = document()) {
-        lspDocument->selectRange(selectionRange());
+    if (auto codeDocument = document()) {
+        codeDocument->selectRange(selectionRange());
     }
 }
 

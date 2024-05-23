@@ -54,7 +54,7 @@ Additionally, you can test your queries in the bottom-left input field.
 The Tree-sitter Inspector will notify you of errors in your query and display the number of patterns, matches and captures as you type.
 Any captured nodes will also display their captures in the syntax tree view.
 
-After prototyping a query, it can easily be included in a script by calling [`query`][lspdocument-query] on any LSP capable document (e.g. C/C++).
+After prototyping a query, it can easily be included in a script by calling [`query`][codedocument-query] on any LSP capable document (e.g. C/C++).
 Together with Javascripts [Destructuring Assignment][destructuring] and [Template Literals][template-literals] this makes queries very ergonomic to use in your own scripts.
 
 Example:
@@ -224,4 +224,4 @@ Note that for most operations, using [`CppDocument::mfcExtractMessageMap`][extra
 [template-literals]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals?retiredLocale=de
 [extract-message-map]: ../API/script/cppdocument.md#mfcExtractMessageMap
 [querymatch]: ../API/script/querymatch.md
-[lspdocument-query]: ../API/script/lspdocument.md#query
+[codedocument-query]: ../API/script/codedocument.md#query

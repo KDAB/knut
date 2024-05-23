@@ -7,8 +7,8 @@
 #include "treesitter/predicates.h"
 #include "treesitter/transformation.h"
 
+#include <core/codedocument.h>
 #include <core/logger.h>
-#include <core/lspdocument.h>
 #include <core/project.h>
 
 #include <spdlog/spdlog.h>
@@ -122,7 +122,7 @@ void TreeSitterInspector::changeQueryState()
 
 void TreeSitterInspector::changeCurrentDocument(Core::Document *document)
 {
-    setDocument(qobject_cast<Core::LspDocument *>(document));
+    setDocument(qobject_cast<Core::CodeDocument *>(document));
 }
 
 void TreeSitterInspector::changeQuery()
@@ -198,7 +198,7 @@ void TreeSitterInspector::changeCursor()
     m_treemodel.setCursorPosition(position);
 }
 
-void TreeSitterInspector::setDocument(Core::LspDocument *document)
+void TreeSitterInspector::setDocument(Core::CodeDocument *document)
 {
     if (m_document) {
         m_document->disconnect(this);
@@ -206,8 +206,8 @@ void TreeSitterInspector::setDocument(Core::LspDocument *document)
 
     m_document = document;
     if (m_document) {
-        connect(m_document, &Core::LspDocument::textChanged, this, &TreeSitterInspector::changeText);
-        connect(m_document, &Core::LspDocument::positionChanged, this, &TreeSitterInspector::changeCursor);
+        connect(m_document, &Core::CodeDocument::textChanged, this, &TreeSitterInspector::changeText);
+        connect(m_document, &Core::CodeDocument::positionChanged, this, &TreeSitterInspector::changeCursor);
 
         changeCursor();
         changeText();

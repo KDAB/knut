@@ -1,5 +1,5 @@
-#include "lspdocument.h"
-#include "lspdocument_p.h"
+#include "codedocument.h"
+#include "codedocument_p.h"
 
 #include "treesitter/predicates.h"
 
@@ -30,29 +30,36 @@
 namespace Core {
 
 /*!
- * \qmltype LspDocument
- * \brief Base document object for document using LSP.
+ * \qmltype CodeDocument
+ * \brief Base document object for any code that Knut can parse.
  * \inqmlmodule Script
- * \ingroup LspDocument/@first
+ * \ingroup CodeDocument/@first
  * \since 1.0
  * \inherits TextDocument
+ *
+ * Knut uses Tree-sitter to parse the code and provide additional information about it.
+ * For a better user experience, the Knut GUI also uses a Language server (LSP), if available.
+ * For each language that Knut can work with, this class should be subclassed to provide language-specific
+ * functionality.
+ *
+ * This class provides the language-independent basis of integration with Tree-sitter and the LSP.
  */
 
-LspDocument::~LspDocument() = default;
+CodeDocument::~CodeDocument() = default;
 
-LspDocument::LspDocument(Type type, QObject *parent)
+CodeDocument::CodeDocument(Type type, QObject *parent)
     : TextDocument(type, parent)
     , m_treeSitterHelper(std::make_unique<TreeSitterHelper>(this))
 {
-    connect(textEdit()->document(), &QTextDocument::contentsChange, this, &LspDocument::changeContent);
+    connect(textEdit()->document(), &QTextDocument::contentsChange, this, &CodeDocument::changeContent);
 }
 
-void LspDocument::setLspClient(Lsp::Client *client)
+void CodeDocument::setLspClient(Lsp::Client *client)
 {
     m_lspClient = client;
 }
 
-bool LspDocument::hasLspClient() const
+bool CodeDocument::hasLspClient() const
 {
     return m_lspClient != nullptr;
 }
@@ -64,7 +71,7 @@ bool LspDocument::hasLspClient() const
  * Note that the returned `Symbol` pointer is only valid until the document
  * it originates from is deconstructed.
  */
-Symbol *LspDocument::currentSymbol(const std::function<bool(const Symbol &)> &filterFunc) const
+Symbol *CodeDocument::currentSymbol(const std::function<bool(const Symbol &)> &filterFunc) const
 {
     const int pos = textEdit()->textCursor().position();
 
@@ -80,7 +87,7 @@ Symbol *LspDocument::currentSymbol(const std::function<bool(const Symbol &)> &fi
  * Deletes the specified symbols text range, as well as leading whitespace
  * and trailing semicolon/newline character.
  */
-void LspDocument::deleteSymbol(const Symbol &symbol)
+void CodeDocument::deleteSymbol(const Symbol &symbol)
 {
     auto range = symbol.range();
 
@@ -118,15 +125,15 @@ void LspDocument::deleteSymbol(const Symbol &symbol)
 }
 
 /*!
- * \qmlmethod array<Symbol> LspDocument::symbols()
+ * \qmlmethod array<Symbol> CodeDocument::symbols()
  * Returns the list of symbols in the current document.
  *
  * Note that the returned `Symbol` pointers are only valid until the document they
  * originate from is deconstructed.
  */
-Core::SymbolList LspDocument::symbols() const
+Core::SymbolList CodeDocument::symbols() const
 {
-    LOG("LspDocument::symbols");
+    LOG("CodeDocument::symbols");
     return m_treeSitterHelper->symbols();
 }
 
@@ -144,14 +151,14 @@ struct Transforms
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Transforms, patterns);
 
 /*!
- * \qmlmethod Symbol LspDocument::symbolUnderCursor()
+ * \qmlmethod Symbol CodeDocument::symbolUnderCursor()
  * Returns the symbol that's at the current cursor position.
  *
  * This function may return symbols that are not returned by the `symbols()` or `currentSymbol()` function,
  * as these only return high-level symbols, like classes and functions, but not symbols within functions.
  * `symbolUnderCursor()` can however return these Symbols.
  */
-const Core::Symbol *LspDocument::symbolUnderCursor() const
+const Core::Symbol *CodeDocument::symbolUnderCursor() const
 {
     const auto containsCursor = [this](const Core::Symbol *symbol) {
         return symbol->selectionRange().contains(textEdit()->textCursor().position());
@@ -167,17 +174,17 @@ const Core::Symbol *LspDocument::symbolUnderCursor() const
 }
 
 /*!
- * \qmlmethod string LspDocument::hover()
+ * \qmlmethod string CodeDocument::hover()
  *
  * Returns information about the symbol at the current cursor position.
  * The result of this call is a plain string that may be formatted in Markdown.
  */
-QString LspDocument::hover() const
+QString CodeDocument::hover() const
 {
     return hover(textEdit()->textCursor().position());
 }
 
-QString LspDocument::hover(int position, std::function<void(const QString &)> asyncCallback /*  = {} */) const
+QString CodeDocument::hover(int position, std::function<void(const QString &)> asyncCallback /*  = {} */) const
 {
     if (asyncCallback) {
         return hoverWithRange(position,
@@ -190,10 +197,10 @@ QString LspDocument::hover(int position, std::function<void(const QString &)> as
     }
 }
 
-std::pair<QString, std::optional<TextRange>> LspDocument::hoverWithRange(
+std::pair<QString, std::optional<TextRange>> CodeDocument::hoverWithRange(
     int position, std::function<void(const QString &, std::optional<TextRange>)> asyncCallback /*  = {} */) const
 {
-    LOG("LspDocument::hover");
+    LOG("CodeDocument::hover");
 
     if (!checkClient())
         return {"", {}};
@@ -202,7 +209,7 @@ std::pair<QString, std::optional<TextRange>> LspDocument::hoverWithRange(
     params.textDocument.uri = toUri();
     params.position = fromPos(position);
 
-    QPointer<const LspDocument> safeThis(this);
+    QPointer<const CodeDocument> safeThis(this);
 
     auto convertResult = [safeThis](const auto &result) -> std::pair<QString, std::optional<TextRange>> {
         if (!std::holds_alternative<Lsp::Hover>(result)) {
@@ -248,9 +255,9 @@ std::pair<QString, std::optional<TextRange>> LspDocument::hoverWithRange(
     return {"", {}};
 }
 
-Core::TextLocationList LspDocument::references(int position) const
+Core::TextLocationList CodeDocument::references(int position) const
 {
-    LOG("LspDocument::references");
+    LOG("CodeDocument::references");
 
     if (!checkClient()) {
         return {};
@@ -266,26 +273,26 @@ Core::TextLocationList LspDocument::references(int position) const
         if (const auto *locations = std::get_if<std::vector<Lsp::Location>>(&value)) {
             return TextLocation::fromLsp(*locations);
         } else {
-            spdlog::warn("LspDocument::references: Language server returned unsupported references type!");
+            spdlog::warn("CodeDocument::references: Language server returned unsupported references type!");
         }
     } else {
-        spdlog::warn("LspDocument::references: LSP call to references returned nothing!");
+        spdlog::warn("CodeDocument::references: LSP call to references returned nothing!");
     }
 
     return textLocations;
 }
 
 /*!
- * \qmlmethod LspDocument::followSymbol()
+ * \qmlmethod CodeDocument::followSymbol()
  * Follows the symbol under the cursor.
  *
  * - Go to the declaration, if the symbol under cursor is a use
  * - Go to the declaration, if the symbol under cursor is a function definition
  * - Go to the definition, if the symbol under cursor is a function declaration
  */
-Document *LspDocument::followSymbol()
+Document *CodeDocument::followSymbol()
 {
-    LOG("LspDocument::followSymbol");
+    LOG("CodeDocument::followSymbol");
     if (!checkClient())
         return {};
 
@@ -300,7 +307,7 @@ Document *LspDocument::followSymbol()
 // - Go to the declaration, if the symbol under cursor is a use
 // - Go to the declaration, if the symbol under cursor is a definition
 // - Go to the definition, if the symbol under cursor is a declaration
-Document *LspDocument::followSymbol(int pos)
+Document *CodeDocument::followSymbol(int pos)
 {
     auto cursor = textEdit()->textCursor();
     cursor.setPosition(pos);
@@ -334,7 +341,7 @@ Document *LspDocument::followSymbol(int pos)
         return nullptr;
 
     if (locations.size() > 1)
-        spdlog::warn("LspDocument::followSymbol: Multiple locations returned!");
+        spdlog::warn("CodeDocument::followSymbol: Multiple locations returned!");
     // Heuristic: If multiple locations were found, use the last one.
     auto location = locations.back();
 
@@ -346,11 +353,11 @@ Document *LspDocument::followSymbol(int pos)
     auto *document = Project::instance()->open(filepath);
 
     if (document) {
-        auto *lspDocument = qobject_cast<LspDocument *>(document);
-        if (lspDocument) {
-            lspDocument->selectRange(lspDocument->toRange(location.range));
+        auto *codeDocument = qobject_cast<CodeDocument *>(document);
+        if (codeDocument) {
+            codeDocument->selectRange(codeDocument->toRange(location.range));
         } else {
-            spdlog::warn("LspDocument::followSymbol: Opened document '{}' is not an LspDocument",
+            spdlog::warn("CodeDocument::followSymbol: Opened document '{}' is not an CodeDocument",
                          document->fileName().toStdString());
         }
     }
@@ -359,9 +366,9 @@ Document *LspDocument::followSymbol(int pos)
 }
 
 // Switches between the function declaration or definition.
-Document *LspDocument::switchDeclarationDefinition()
+Document *CodeDocument::switchDeclarationDefinition()
 {
-    LOG("LspDocument::switchDeclarationDefinition");
+    LOG("CodeDocument::switchDeclarationDefinition");
     if (!checkClient())
         return {};
 
@@ -374,7 +381,7 @@ Document *LspDocument::switchDeclarationDefinition()
     });
 
     if (!currentFunction) {
-        spdlog::info("LspDocument::switchDeclarationDefinition: Cursor is currently not within a function!");
+        spdlog::info("CodeDocument::switchDeclarationDefinition: Cursor is currently not within a function!");
         return nullptr;
     }
 
@@ -382,7 +389,7 @@ Document *LspDocument::switchDeclarationDefinition()
 }
 
 /*!
- * \qmlmethod LspDocument::selectSymbol(string name, int options = TextDocument.NoFindFlags)
+ * \qmlmethod CodeDocument::selectSymbol(string name, int options = TextDocument.NoFindFlags)
  * Selects a symbol based on its `name`, using different find `options`.
  *
  * - `TextDocument.FindCaseSensitively`: match case
@@ -391,9 +398,9 @@ Document *LspDocument::switchDeclarationDefinition()
  *
  * If no symbols are found, do nothing.
  */
-void LspDocument::selectSymbol(const QString &name, int options)
+void CodeDocument::selectSymbol(const QString &name, int options)
 {
-    LOG("LspDocument::selectSymbol", LOG_ARG("text", name), options);
+    LOG("CodeDocument::selectSymbol", LOG_ARG("text", name), options);
     if (!checkClient())
         return;
 
@@ -402,7 +409,7 @@ void LspDocument::selectSymbol(const QString &name, int options)
 }
 
 /*!
- * \qmlmethod Symbol LspDocument::findSymbol(string name, int options = TextDocument.NoFindFlags)
+ * \qmlmethod Symbol CodeDocument::findSymbol(string name, int options = TextDocument.NoFindFlags)
  * Finds a symbol based on its `name`, using different find `options`.
  *
  * - `TextDocument.FindCaseSensitively`: match case
@@ -412,9 +419,9 @@ void LspDocument::selectSymbol(const QString &name, int options)
  * Note that the returned `Symbol` pointer is only valid until the document it originates
  * from is deconstructed.
  */
-Symbol *LspDocument::findSymbol(const QString &name, int options) const
+Symbol *CodeDocument::findSymbol(const QString &name, int options) const
 {
-    LOG("LspDocument::findSymbol", LOG_ARG("text", name), options);
+    LOG("CodeDocument::findSymbol", LOG_ARG("text", name), options);
     if (!checkClient())
         return {};
 
@@ -437,7 +444,7 @@ Symbol *LspDocument::findSymbol(const QString &name, int options) const
     return nullptr;
 }
 
-void LspDocument::didOpen()
+void CodeDocument::didOpen()
 {
     if (!m_lspClient)
         return;
@@ -451,7 +458,7 @@ void LspDocument::didOpen()
     m_lspClient->didOpen(std::move(params));
 }
 
-void LspDocument::didClose()
+void CodeDocument::didClose()
 {
     if (!m_lspClient)
         return;
@@ -462,17 +469,17 @@ void LspDocument::didClose()
     m_lspClient->didClose(std::move(params));
 }
 
-Lsp::Client *LspDocument::client() const
+Lsp::Client *CodeDocument::client() const
 {
     return m_lspClient;
 }
 
-std::string LspDocument::toUri() const
+std::string CodeDocument::toUri() const
 {
     return QUrl::fromLocalFile(fileName()).toString().toStdString();
 }
 
-int LspDocument::toPos(const Lsp::Position &pos) const
+int CodeDocument::toPos(const Lsp::Position &pos) const
 {
     // Internally, columns are 0-based, like in LSP
     const int blockNumber = qMin((int)pos.line, textEdit()->document()->blockCount() - 1);
@@ -485,7 +492,7 @@ int LspDocument::toPos(const Lsp::Position &pos) const
     return 0;
 }
 
-Lsp::Position LspDocument::fromPos(int pos) const
+Lsp::Position CodeDocument::fromPos(int pos) const
 {
     Lsp::Position position;
 
@@ -497,12 +504,12 @@ Lsp::Position LspDocument::fromPos(int pos) const
     return position;
 }
 
-TextRange LspDocument::toRange(const Lsp::Range &range) const
+TextRange CodeDocument::toRange(const Lsp::Range &range) const
 {
     return {toPos(range.start), toPos(range.end)};
 }
 
-std::optional<treesitter::QueryCursor> LspDocument::createQueryCursor(const std::shared_ptr<treesitter::Query> &query)
+std::optional<treesitter::QueryCursor> CodeDocument::createQueryCursor(const std::shared_ptr<treesitter::Query> &query)
 {
     const auto &tree = m_treeSitterHelper->syntaxTree();
     if (!tree || !query) {
@@ -515,7 +522,7 @@ std::optional<treesitter::QueryCursor> LspDocument::createQueryCursor(const std:
     return cursor;
 }
 
-Core::QueryMatch LspDocument::queryFirst(const std::shared_ptr<treesitter::Query> &query)
+Core::QueryMatch CodeDocument::queryFirst(const std::shared_ptr<treesitter::Query> &query)
 {
     auto cursor = createQueryCursor(query);
     if (!cursor.has_value()) {
@@ -530,7 +537,7 @@ Core::QueryMatch LspDocument::queryFirst(const std::shared_ptr<treesitter::Query
     }
 }
 
-Core::QueryMatchList LspDocument::query(const std::shared_ptr<treesitter::Query> &query)
+Core::QueryMatchList CodeDocument::query(const std::shared_ptr<treesitter::Query> &query)
 {
     auto cursor = createQueryCursor(query);
     if (!cursor.has_value()) {
@@ -545,7 +552,7 @@ Core::QueryMatchList LspDocument::query(const std::shared_ptr<treesitter::Query>
 }
 
 /*!
- * \qmlmethod array<QueryMatch> LspDocument::query(string query)
+ * \qmlmethod array<QueryMatch> CodeDocument::query(string query)
  * Runs the given Tree-sitter `query` and returns the list of matches.
  *
  * The query is using [Tree-sitter
@@ -553,15 +560,15 @@ Core::QueryMatchList LspDocument::query(const std::shared_ptr<treesitter::Query>
  *
  * Also see: [Tree-sitter in Knut](../../getting-started/treesitter.md)
  */
-Core::QueryMatchList LspDocument::query(const QString &query)
+Core::QueryMatchList CodeDocument::query(const QString &query)
 {
-    LOG("LspDocument::query", LOG_ARG("query", query));
+    LOG("CodeDocument::query", LOG_ARG("query", query));
 
     return this->query(m_treeSitterHelper->constructQuery(query));
 }
 
 /*!
- * \qmlmethod QueryMatch LspDocument::queryFirst(string query)
+ * \qmlmethod QueryMatch CodeDocument::queryFirst(string query)
  * Runs the given Tree-sitter `query` and returns the first match.
  * If no match can be found an empty match will be returned.
  *
@@ -571,38 +578,38 @@ Core::QueryMatchList LspDocument::query(const QString &query)
  * queries](https://tree-sitter.github.io/tree-sitter/using-parsers#pattern-matching-with-queries).
  *
  * Also see: [Tree-sitter in Knut](../../getting-started/treesitter.md)
- Core::QueryMatchList LspDocument::query(const QString &query)
+ Core::QueryMatchList CodeDocument::query(const QString &query)
  */
-Core::QueryMatch LspDocument::queryFirst(const QString &query)
+Core::QueryMatch CodeDocument::queryFirst(const QString &query)
 {
-    LOG("LspDocument::queryOne", LOG_ARG("query", query));
+    LOG("CodeDocument::queryOne", LOG_ARG("query", query));
 
     return this->queryFirst(m_treeSitterHelper->constructQuery(query));
 }
 
 /**
- * \qmlmethod array<QueryMatch> LspDocument::queryInRange(RangeMark range, string query)
+ * \qmlmethod array<QueryMatch> CodeDocument::queryInRange(RangeMark range, string query)
  *
  * Searches for the given `query`, but only in the provided `range`.
  *
- * \sa LspDocument::query
+ * \sa CodeDocument::query
  */
-Core::QueryMatchList LspDocument::queryInRange(const Core::RangeMark &range, const QString &query)
+Core::QueryMatchList CodeDocument::queryInRange(const Core::RangeMark &range, const QString &query)
 {
-    LOG("LspDocument::queryInRange", LOG_ARG("range", range), LOG_ARG("query", query));
+    LOG("CodeDocument::queryInRange", LOG_ARG("range", range), LOG_ARG("query", query));
 
     if (!range.isValid()) {
-        spdlog::warn("LspDocument::queryInRange: Range is not valid");
+        spdlog::warn("CodeDocument::queryInRange: Range is not valid");
         return {};
     }
 
     const auto nodes = m_treeSitterHelper->nodesInRange(range);
 
     if (nodes.isEmpty()) {
-        spdlog::warn("LspDocument::queryInRange: No nodes in range");
+        spdlog::warn("CodeDocument::queryInRange: No nodes in range");
         return {};
     }
-    spdlog::debug("LspDocument::queryInRange: Found {} nodes in range", nodes.size());
+    spdlog::debug("CodeDocument::queryInRange: Found {} nodes in range", nodes.size());
 
     auto tsQuery = m_treeSitterHelper->constructQuery(query);
     if (!tsQuery)
@@ -620,22 +627,22 @@ Core::QueryMatchList LspDocument::queryInRange(const Core::RangeMark &range, con
     return matches;
 }
 
-int LspDocument::revision() const
+int CodeDocument::revision() const
 {
     return m_revision;
 }
 
-bool LspDocument::checkClient() const
+bool CodeDocument::checkClient() const
 {
     Q_ASSERT(textEdit());
     if (!client()) {
-        spdlog::error("LspDocument {} has no LSP client - API not available", fileName().toStdString());
+        spdlog::error("CodeDocument {} has no LSP client - API not available", fileName().toStdString());
         return false;
     }
     return true;
 }
 
-void LspDocument::changeContentLsp(int position, int charsRemoved, int charsAdded)
+void CodeDocument::changeContentLsp(int position, int charsRemoved, int charsAdded)
 {
     Q_UNUSED(position)
     Q_UNUSED(charsRemoved)
@@ -689,7 +696,7 @@ void LspDocument::changeContentLsp(int position, int charsRemoved, int charsAdde
     }
 }
 
-void LspDocument::changeContentTreeSitter(int position, int charsRemoved, int charsAdded)
+void CodeDocument::changeContentTreeSitter(int position, int charsRemoved, int charsAdded)
 {
     Q_UNUSED(position)
     Q_UNUSED(charsRemoved)
@@ -702,7 +709,7 @@ void LspDocument::changeContentTreeSitter(int position, int charsRemoved, int ch
     m_treeSitterHelper->clear();
 }
 
-void LspDocument::changeContent(int position, int charsRemoved, int charsAdded)
+void CodeDocument::changeContent(int position, int charsRemoved, int charsAdded)
 {
 
     // We don't want to cause extra logging here, we're probably already in a situation where we're changing text, which
@@ -717,7 +724,7 @@ void LspDocument::changeContent(int position, int charsRemoved, int charsAdded)
     changeContentTreeSitter(position, charsRemoved, charsAdded);
 }
 
-AstNode LspDocument::astNodeAt(int pos)
+AstNode CodeDocument::astNodeAt(int pos)
 {
     const auto root = m_treeSitterHelper->syntaxTree()->rootNode();
     if (const auto node = root.descendantForRange(pos, pos); !node.isNull()) {

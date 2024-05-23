@@ -1,7 +1,7 @@
 #ifndef GUI_TRANSFORMPREVIEWDIALOG_H
 #define GUI_TRANSFORMPREVIEWDIALOG_H
 
-#include "core/lspdocument.h"
+#include "core/codedocument.h"
 
 #include <QDialog>
 
@@ -16,7 +16,7 @@ class TransformPreviewDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit TransformPreviewDialog(Core::LspDocument *document, const QString &resultText, int numberReplacements,
+    explicit TransformPreviewDialog(Core::CodeDocument *document, const QString &resultText, int numberReplacements,
                                     QWidget *parent = nullptr);
     ~TransformPreviewDialog() override;
 

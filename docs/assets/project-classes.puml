@@ -23,7 +23,7 @@ class RcDocument {
 }
 class RcCore::Data
 class ImageDocument
-class LspDocument {
+class CodeDocument {
   Lsp::Client* m_client
   TreeSitterHelper *m_treeSitterHelper
   vector<Symbol> symbols()
@@ -45,10 +45,10 @@ Document <|-- UiDocument
 Document <|-- RcDocument
 RcDocument o-- RcCore::Data
 Document <|-- ImageDocument
-TextDocument <|-- LspDocument
-LspDocument <|-- CppDocument
+TextDocument <|-- CodeDocument
+CodeDocument <|-- CppDocument
 Project o-- Lsp::Client
-LspDocument *-- Lsp::Client
+CodeDocument *-- Lsp::Client
 
 
 @enduml

@@ -1,6 +1,6 @@
 #include "mainwindow.h"
+#include "core/codedocument.h"
 #include "core/cppdocument.h"
-#include "core/lspdocument.h"
 #include "ui_mainwindow.h"
 
 #include "documentpalette.h"
@@ -506,7 +506,7 @@ void MainWindow::reloadDocuments()
 void MainWindow::followSymbol()
 {
     auto *project = Core::Project::instance();
-    auto *document = qobject_cast<Core::LspDocument *>(project->currentDocument());
+    auto *document = qobject_cast<Core::CodeDocument *>(project->currentDocument());
 
     if (document) {
         document->followSymbol();
@@ -516,7 +516,7 @@ void MainWindow::followSymbol()
 void MainWindow::switchDeclarationDefinition()
 {
     auto *project = Core::Project::instance();
-    auto *document = qobject_cast<Core::LspDocument *>(project->currentDocument());
+    auto *document = qobject_cast<Core::CodeDocument *>(project->currentDocument());
 
     if (document) {
         document->switchDeclarationDefinition();
@@ -607,13 +607,13 @@ void MainWindow::updateActions()
     ui->actionSelectToMark->setEnabled(textDocument != nullptr && textView->hasMark());
     ui->actionExecuteAPI->setEnabled(textDocument != nullptr);
 
-    auto *lspDocument = qobject_cast<Core::LspDocument *>(document);
-    const bool lspEnabled = lspDocument && lspDocument->hasLspClient();
+    auto *codeDocument = qobject_cast<Core::CodeDocument *>(document);
+    const bool lspEnabled = codeDocument && codeDocument->hasLspClient();
     ui->actionFollowSymbol->setEnabled(lspEnabled);
     ui->actionSwitchDeclDef->setEnabled(lspEnabled);
     ui->actionTreeSitterInspector->setEnabled(lspEnabled);
 
-    const bool cppEnabled = lspDocument && qobject_cast<Core::CppDocument *>(document);
+    const bool cppEnabled = codeDocument && qobject_cast<Core::CppDocument *>(document);
     ui->actionSwitchHeaderSource->setEnabled(cppEnabled);
     ui->actionCommentSelection->setEnabled(cppEnabled);
     ui->actionToggleSection->setEnabled(cppEnabled);

@@ -95,7 +95,7 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qmlRegisterType<UiDocument>("Script", 1, 0, "UiDocument");
     qmlRegisterUncreatableType<UiWidget>("Script", 1, 0, "UiWidget", "Only created by UiDocument");
     qmlRegisterType<CppDocument>("Script", 1, 0, "CppDocument");
-    qmlRegisterUncreatableType<Core::Symbol>("Script", 1, 0, "Symbol", "Only created by LspDocument");
+    qmlRegisterUncreatableType<Core::Symbol>("Script", 1, 0, "Symbol", "Only created by CodeDocument");
     qmlRegisterType<RcDocument>("Script", 1, 0, "RcDocument");
 
     // RcCore

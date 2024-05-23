@@ -1,6 +1,6 @@
 #include "querymatch.h"
 
-#include "lspdocument.h"
+#include "codedocument.h"
 #include "rangemark.h"
 #include "textdocument.h"
 
@@ -16,7 +16,7 @@ namespace Core {
  * \qmltype QueryCapture
  * \brief Defines a capture made by a query.
  * \inqmlmodule Script
- * \ingroup LspDocument
+ * \ingroup CodeDocument
  * \sa QueryMatch
  */
 
@@ -38,13 +38,13 @@ QString QueryCapture::toString() const
  * \qmltype QueryMatch
  * \brief Contains all captures for a query match.
  * \inqmlmodule Script
- * \ingroup LspDocument
- * \sa LspDocument::query
+ * \ingroup CodeDocument
+ * \sa CodeDocument::query
  *
  * The QueryMatch object allows you to get access to all the captures made by a [Tree-sitter
  * query](https://tree-sitter.github.io/tree-sitter/using-parsers#pattern-matching-with-queries).
  *
- * Some high-level functions on LspDocument and its subclasses also return QueryMatch instances.
+ * Some high-level functions on CodeDocument and its subclasses also return QueryMatch instances.
  * Usually these functions list which captures their matches will include.
  *
  * !!! note
@@ -205,7 +205,7 @@ RangeMark QueryMatch::getAllJoined(const QString &name) const
  * `);
  * let return_statements = function.queryIn("body", "(return_statement) @return");
  * ```
- * \sa LspDocument::query
+ * \sa CodeDocument::query
  */
 Core::QueryMatchList QueryMatch::queryIn(const QString &capture, const QString &query) const
 {
@@ -213,11 +213,11 @@ Core::QueryMatchList QueryMatch::queryIn(const QString &capture, const QString &
 
     const auto ranges = getAll(capture);
     for (const auto &range : ranges) {
-        auto document = qobject_cast<LspDocument *>(range.document());
+        auto document = qobject_cast<CodeDocument *>(range.document());
         if (document) {
             result.append(document->queryInRange(range, query));
         } else {
-            spdlog::warn("QueryMatch::queryIn: RangeMark is not backed by LspDocument!");
+            spdlog::warn("QueryMatch::queryIn: RangeMark is not backed by CodeDocument!");
         }
     }
 

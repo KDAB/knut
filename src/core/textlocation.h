@@ -7,16 +7,16 @@
 
 namespace Core {
 
-class LspDocument;
+class CodeDocument;
 
 struct TextLocation
 {
     Q_GADGET
-    Q_PROPERTY(Core::LspDocument *document MEMBER document CONSTANT)
+    Q_PROPERTY(Core::CodeDocument *document MEMBER document CONSTANT)
     Q_PROPERTY(Core::TextRange range MEMBER range CONSTANT)
 
 public:
-    LspDocument *document;
+    CodeDocument *document;
     TextRange range;
 
     Q_INVOKABLE QString toString() const;

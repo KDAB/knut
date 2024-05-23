@@ -10,7 +10,7 @@
 
 namespace Core {
 
-class LspDocument;
+class CodeDocument;
 class ClassSymbol;
 class FunctionSymbol;
 
@@ -63,7 +63,7 @@ protected:
     TextRange m_selectionRange;
     QueryMatch m_queryMatch;
 
-    LspDocument *document() const;
+    CodeDocument *document() const;
 
 public:
     static Symbol *makeSymbol(QObject *parent, const QueryMatch &match, Kind kind);
@@ -92,7 +92,7 @@ public:
 private:
     void assignContext(const QVector<Symbol *> &contexts);
 
-    friend class LspDocument;
+    friend class CodeDocument;
     friend class TreeSitterHelper;
 };
 

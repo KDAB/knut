@@ -1,7 +1,7 @@
 #include "astnode.h"
 
-#include "lspdocument.h"
-#include "lspdocument_p.h"
+#include "codedocument.h"
+#include "codedocument_p.h"
 #include <treesitter/node.h>
 
 #include <QDebug>
@@ -9,7 +9,7 @@
 
 namespace Core {
 
-AstNode::AstNode(const treesitter::Node &node, LspDocument *parent)
+AstNode::AstNode(const treesitter::Node &node, CodeDocument *parent)
     : m_mark(parent, node.startPosition(), node.endPosition())
     , m_type(node.type())
 {
@@ -52,9 +52,9 @@ std::optional<treesitter::Node> AstNode::node() const
     return std::nullopt;
 }
 
-LspDocument *AstNode::document() const
+CodeDocument *AstNode::document() const
 {
-    return qobject_cast<LspDocument *>(m_mark.document());
+    return qobject_cast<CodeDocument *>(m_mark.document());
 }
 
 QString AstNode::type() const

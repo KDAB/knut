@@ -28,12 +28,12 @@ class TreeSitterHelper;
 struct RegexpTransform;
 class AstNode;
 
-class LspDocument : public TextDocument
+class CodeDocument : public TextDocument
 {
     Q_OBJECT
 
 public:
-    ~LspDocument() override;
+    ~CodeDocument() override;
 
     void setLspClient(Lsp::Client *client);
 
@@ -77,7 +77,7 @@ public slots:
     void selectSymbol(const QString &name, int options = NoFindFlags);
 
 protected:
-    explicit LspDocument(Type type, QObject *parent = nullptr);
+    explicit CodeDocument(Type type, QObject *parent = nullptr);
 
     void didOpen() override;
     void didClose() override;

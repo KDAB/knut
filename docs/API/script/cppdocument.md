@@ -8,7 +8,7 @@ import Script 1.0
 
 <table>
 <tr><td>Since:</td><td>Knut 1.0</td></tr>
-<tr><td>Inherits:</td><td><a href="LspDocument.html">LspDocument</a></td></tr>
+<tr><td>Inherits:</td><td><a href="CodeDocument.html">CodeDocument</a></td></tr>
 </table>
 
 ## Properties
@@ -17,7 +17,7 @@ import Script 1.0
 |-|-|
 |bool|**[isHeader](#isHeader)**|
 
-Inherited properties: [LspDocument properties](../script/lspdocument.md#properties)
+Inherited properties: [CodeDocument properties](../script/codedocument.md#properties)
 
 ## Methods
 
@@ -54,7 +54,7 @@ Inherited properties: [LspDocument properties](../script/lspdocument.md#properti
 |int |**[selectBlockUp](#selectBlockUp)**()|
 ||**[toggleSection](#toggleSection)**()|
 
-Inherited methods: [LspDocument methods](../script/lspdocument.md#methods)
+Inherited methods: [CodeDocument methods](../script/codedocument.md#methods)
 
 ## Property Documentation
 

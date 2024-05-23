@@ -61,7 +61,7 @@ add_knut_test(tst_cppdocument tst_cppdocument.cpp)
 add_knut_test(tst_cppdocument_clangd tst_cppdocument_clangd.cpp)
 add_knut_test(tst_cppdocument_treesitter tst_cppdocument_treesitter.cpp)
 
-add_knut_test(tst_lspdocument tst_lspdocument.cpp)
+add_knut_test(tst_codedocument tst_codedocument.cpp)
 
 add_knut_test(tst_symbol tst_symbol.cpp)
 

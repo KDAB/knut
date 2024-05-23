@@ -12,12 +12,12 @@
 
 namespace Core {
 
-class LspDocument;
+class CodeDocument;
 
 class TreeSitterHelper
 {
 public:
-    explicit TreeSitterHelper(LspDocument *document);
+    explicit TreeSitterHelper(CodeDocument *document);
 
     void clear();
 
@@ -41,7 +41,7 @@ private:
         HasSymbols = 0x01,
     };
 
-    LspDocument *const m_document;
+    CodeDocument *const m_document;
     std::optional<treesitter::Parser> m_parser;
     std::optional<treesitter::Tree> m_tree;
     QVector<Core::Symbol *> m_symbols;

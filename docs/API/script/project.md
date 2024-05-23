@@ -69,7 +69,7 @@ Returns all files with the `extension` given in the current project.
 
 #### <a name="allFilesWithExtensions"></a>array<string> **allFilesWithExtensions**(array<string> extensions, PathType type = RelativeToRoot)
 
-Returns all files with an extenstion from `extensions` in the current project.
+Returns all files with an extension from `extensions` in the current project.
 `type` defines the type of path, and can be one of those values:
 
 - `Project.FullPath`

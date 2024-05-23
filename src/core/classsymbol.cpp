@@ -1,6 +1,6 @@
 #include "classsymbol.h"
 
-#include "lspdocument.h"
+#include "codedocument.h"
 #include <algorithm>
 #include <spdlog/spdlog.h>
 
@@ -10,7 +10,7 @@ namespace Core {
  * \qmltype ClassSymbol
  * \brief Represents a class in the current file
  * \inqmlmodule Script
- * \ingroup LspDocument
+ * \ingroup CodeDocument
  * \since 1.0
  * \todo
  */
@@ -26,15 +26,15 @@ ClassSymbol::ClassSymbol(QObject *parent, const QueryMatch &match, Kind kind)
 
 QVector<Symbol *> ClassSymbol::findMembers() const
 {
-    if (auto lspDocument = qobject_cast<Core::LspDocument *>(parent())) {
+    if (auto codeDocument = qobject_cast<Core::CodeDocument *>(parent())) {
         QVector<Symbol *> members;
-        for (auto &symbol : lspDocument->symbols()) {
+        for (auto &symbol : codeDocument->symbols()) {
             if (m_range.contains(symbol->range()) && m_name != symbol->name())
                 members.append(symbol);
         }
         return members;
     }
-    spdlog::warn("Parent of CppClass {} is not an LspDocument!", m_name.toStdString());
+    spdlog::warn("Parent of CppClass {} is not an CodeDocument!", m_name.toStdString());
     return {};
 }
 

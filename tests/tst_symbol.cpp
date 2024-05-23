@@ -1,7 +1,7 @@
 #include "core/classsymbol.h"
+#include "core/codedocument.h"
 #include "core/functionsymbol.h"
 #include "core/knutcore.h"
-#include "core/lspdocument.h"
 #include "core/project.h"
 #include "core/symbol.h"
 
@@ -122,10 +122,10 @@ private slots:
         Core::KnutCore core;
         Core::Project::instance()->setRoot(Test::testDataPath() + "/projects/cpp-project");
 
-        auto lspDocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->open(fileName));
-        QVERIFY(lspDocument);
+        auto codeDocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->open(fileName));
+        QVERIFY(codeDocument);
 
-        auto symbol = lspDocument->findSymbol(symbolName);
+        auto symbol = codeDocument->findSymbol(symbolName);
         QVERIFY(symbol);
         QVERIFY(symbol->isFunction());
 
@@ -146,8 +146,8 @@ private slots:
         Core::KnutCore core;
         Core::Project::instance()->setRoot(Test::testDataPath() + "/projects/cpp-project");
 
-        auto lspDocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->open("myobject.h"));
-        Core::Symbol *symbol = lspDocument->findSymbol("MyObject");
+        auto codeDocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->open("myobject.h"));
+        Core::Symbol *symbol = codeDocument->findSymbol("MyObject");
         QVERIFY(symbol);
         QCOMPARE(symbol->kind(), Core::Symbol::Class);
 
@@ -173,11 +173,11 @@ private slots:
         Core::KnutCore core;
         Core::Project::instance()->setRoot(Test::testDataPath() + "/projects/cpp-project");
 
-        auto lspDocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->open("myobject.h"));
-        QVERIFY(lspDocument);
+        auto codeDocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->open("myobject.h"));
+        QVERIFY(codeDocument);
 
         spdlog::warn("Finding symbol");
-        Core::Symbol *symbol = lspDocument->findSymbol("MyObject");
+        Core::Symbol *symbol = codeDocument->findSymbol("MyObject");
         QVERIFY(symbol);
         QCOMPARE(symbol->kind(), Core::Symbol::Class);
 
@@ -190,7 +190,7 @@ private slots:
         QCOMPARE(references.size(), 9);
         QVERIFY2(std::ranges::find_if(references, isSymbolRange) == references.cend(),
                  "Ensure the symbol range itself is not part of the result.");
-        QCOMPARE(qobject_cast<Core::LspDocument *>(Core::Project::instance()->currentDocument()), lspDocument);
+        QCOMPARE(qobject_cast<Core::CodeDocument *>(Core::Project::instance()->currentDocument()), codeDocument);
 
         spdlog::warn("Verifying document existence");
         for (const auto &reference : references) {

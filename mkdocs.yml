@@ -43,20 +43,20 @@ nav:
         - Script Module:
             - Document: API/script/document.md
             - Project: API/script/project.md
-            - CppDocument:
-                - CppDocument: API/script/cppdocument.md
-                - DataExchange: API/script/dataexchange.md
-                - DataExchangeEntry: API/script/dataexchangeentry.md
-                - MessageMap: API/script/messagemap.md
-                - MessageMapEntry: API/script/messagemapentry.md
-            - LspDocument:
-                - LspDocument: API/script/lspdocument.md
+            - CodeDocument:
+                - CodeDocument: API/script/codedocument.md
                 - ClassSymbol: API/script/classsymbol.md
                 - FunctionArgument: API/script/functionargument.md
                 - FunctionSymbol: API/script/functionsymbol.md
                 - QueryCapture: API/script/querycapture.md
                 - QueryMatch: API/script/querymatch.md
                 - Symbol: API/script/symbol.md
+            - CppDocument:
+                - CppDocument: API/script/cppdocument.md
+                - DataExchange: API/script/dataexchange.md
+                - DataExchangeEntry: API/script/dataexchangeentry.md
+                - MessageMap: API/script/messagemap.md
+                - MessageMapEntry: API/script/messagemapentry.md
             - RcDocument:
                 - RcDocument: API/script/rcdocument.md
                 - Action: API/script/action.md

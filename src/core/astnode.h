@@ -8,11 +8,11 @@ namespace treesitter {
 class Node;
 }
 
-class TestLspDocument;
+class TestCodeDocument;
 
 namespace Core {
 
-class LspDocument;
+class CodeDocument;
 
 class AstNode
 {
@@ -36,16 +36,16 @@ public:
     AstNode() = default;
 
 private:
-    explicit AstNode(const treesitter::Node &node, LspDocument *parent);
+    explicit AstNode(const treesitter::Node &node, CodeDocument *parent);
 
     std::optional<treesitter::Node> node() const;
-    LspDocument *document() const;
+    CodeDocument *document() const;
 
 private:
     RangeMark m_mark;
     QString m_type;
 
-    friend class LspDocument;
+    friend class CodeDocument;
 };
 
 using AstNodeList = QList<Core::AstNode>;

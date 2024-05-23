@@ -56,7 +56,8 @@ Tree-sitter is used by knut to parse code and extract many higher-level structur
 In the Knut GUI, use the `C++`>`Tree-sitter Inspector` widget to explore the current Tree-sitter state.
 
 !!! note
-    Tree-sitter capabilities are implemented on the LspDocument class. We expect Tree-sitter support to be available for any language that also supports the language server protocol.
+    Tree-sitter capabilities are implemented on the CodeDocument class.
+    Most code-specific scripting functions implemented by Knut are based on Tree-sitter and we expect Tree-sitter bindings to be available for almost any language.
 
 ### LSP server
 

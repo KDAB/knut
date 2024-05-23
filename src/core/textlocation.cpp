@@ -1,6 +1,6 @@
 #include "textlocation.h"
 
-#include "lspdocument.h"
+#include "codedocument.h"
 #include "project.h"
 
 namespace Core {
@@ -10,13 +10,13 @@ namespace Core {
  * \brief Defines a range of text in a file.
  * \inqmlmodule Script
  * \ingroup TextDocument
- * \sa LspDocument
+ * \sa CodeDocument
  *
- * A mark is always created by a [LspDocument](lspdocument.md).
+ * A mark is always created by a [CodeDocument](codedocument.md).
  */
 
 /*!
- * \qmlproperty LspDocument TextLocation::document
+ * \qmlproperty CodeDocument TextLocation::document
  * This read-only property contains the source document for this text location.
  */
 /*!
@@ -40,7 +40,7 @@ QVector<TextLocation> TextLocation::fromLsp(const std::vector<Lsp::Location> &lo
         }
         const auto filepath = url.toLocalFile();
 
-        if (auto *document = qobject_cast<LspDocument *>(Project::instance()->get(filepath))) {
+        if (auto *document = qobject_cast<CodeDocument *>(Project::instance()->get(filepath))) {
             const auto range = document->toRange(location.range);
 
             textLocations.emplace_back(TextLocation {.document = document, .range = range});

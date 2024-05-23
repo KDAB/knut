@@ -4,8 +4,8 @@
 #include "gui_constants.h"
 #include "mainwindow.h"
 
+#include "core/codedocument.h"
 #include "core/logger.h"
-#include "core/lspdocument.h"
 #include "core/project.h"
 #include "core/scriptmanager.h"
 #include "core/symbol.h"
@@ -95,7 +95,7 @@ private:
         QString path;
     };
 
-    // Returns the list of all files recusively, without the hidden files or directories (starting with '.')
+    // Returns the list of all files recursively, without the hidden files or directories (starting with '.')
     QVector<FileInfo> allFilesInDirectory(const QString &path)
     {
         QVector<FileInfo> result;
@@ -204,8 +204,8 @@ public:
         Core::LoggerDisabler ld;
         beginResetModel();
         m_symbols.clear();
-        if (auto lspDocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->currentDocument()))
-            m_symbols = lspDocument->symbols();
+        if (auto codeDocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->currentDocument()))
+            m_symbols = codeDocument->symbols();
         endResetModel();
     }
 
@@ -508,10 +508,10 @@ void Palette::addSymbolSelector()
         model->resetSymbols();
     };
     auto gotoSymbol = [](const QVariant &symbolName) {
-        if (auto lspDocument = qobject_cast<Core::LspDocument *>(Core::Project::instance()->currentDocument())) {
-            lspDocument->selectSymbol(symbolName.toString());
-            lspDocument->textEdit()->setFocus(Qt::OtherFocusReason);
-            lspDocument->textEdit()->centerCursor();
+        if (auto codeDocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->currentDocument())) {
+            codeDocument->selectSymbol(symbolName.toString());
+            codeDocument->textEdit()->setFocus(Qt::OtherFocusReason);
+            codeDocument->textEdit()->centerCursor();
         }
     };
     m_selectors.emplace_back("@", std::move(symbolModel), gotoSymbol, resetSymbols);
