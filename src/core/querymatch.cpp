@@ -80,10 +80,10 @@ QueryMatch::QueryMatch(TextDocument &document, const treesitter::QueryMatch &mat
 {
     const auto captures = match.captures();
     for (const auto &capture : captures) {
-        auto name = match.query()->captureAt(capture.id).name;
+        const auto name = match.query()->captureAt(capture.id).name;
 
         const auto &node = capture.node;
-        auto range = document.createRangeMark(node.startPosition(), node.endPosition());
+        const auto range = document.createRangeMark(node.startPosition(), node.endPosition());
 
         m_captures.emplace_back(QueryCapture {.name = name, .range = range});
     }

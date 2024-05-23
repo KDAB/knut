@@ -209,7 +209,7 @@ QString RangeMark::textExcept(const RangeMark &other) const
         return text();
     }
 
-    QString text = this->text();
+    const QString text = this->text();
     QString result;
     if (start() < other.start())
         result += text.first(std::min(other.start() - start(), static_cast<int>(text.size())));

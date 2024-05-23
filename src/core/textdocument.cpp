@@ -409,7 +409,7 @@ int TextDocument::columnAtPosition(int position)
 int TextDocument::positionAt(int line, int column)
 {
     LOG("TextDocument::positionAt", LOG_ARG("line", line), LOG_ARG("column", column));
-    QTextBlock block = m_document->document()->findBlockByLineNumber(line - 1);
+    const QTextBlock block = m_document->document()->findBlockByLineNumber(line - 1);
     if (!block.isValid()) {
         return -1;
     } else {
@@ -452,7 +452,7 @@ QString TextDocument::selectedText() const
 {
     LOG("TextDocument::selectedText");
     // Replace \u2029 with \n
-    QString text = m_document->textCursor().selectedText().replace(QChar(8233), "\n");
+    const QString text = m_document->textCursor().selectedText().replace(QChar(8233), "\n");
     LOG_RETURN("text", text);
 }
 
@@ -1169,9 +1169,9 @@ Core::RangeMark TextDocument::createRangeMark(int from, int to)
 Core::RangeMark TextDocument::createRangeMark()
 {
     LOG("TextDocument::createRangeMark");
-    auto cursor = m_document->textCursor();
-    int start = cursor.selectionStart();
-    int end = cursor.selectionEnd();
+    const auto cursor = m_document->textCursor();
+    const int start = cursor.selectionStart();
+    const int end = cursor.selectionEnd();
 
     if (start == end)
         spdlog::warn("TextDocument::createRangeMark: Creating a range mark with an empty range.");
@@ -1443,7 +1443,7 @@ int TextDocument::replaceAll(const QString &before, const QString &after, int op
 
     auto regexp = createRegularExpression(before, options, usesRegExp);
     while (find(before, options)) {
-        auto found = m_document->textCursor();
+        const auto found = m_document->textCursor();
         cursor.setPosition(found.selectionStart());
         cursor.setPosition(found.selectionEnd(), QTextCursor::KeepAnchor);
         if (!filterAcceptsCursor(cursor)) {

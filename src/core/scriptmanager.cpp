@@ -16,8 +16,6 @@
 #include <kdalgorithms.h>
 #include <spdlog/spdlog.h>
 
-#include "treesitter/languages.h"
-
 namespace Core {
 
 ScriptManager::ScriptManager(QObject *parent)
@@ -96,10 +94,10 @@ void ScriptManager::addScript(const QString &fileName)
         return;
 
     QTextStream stream(&file);
-    auto line = stream.readLine();
+    const auto line = stream.readLine();
     const QString description = line.startsWith("//") ? line.mid(2).simplified() : "";
 
-    QFileInfo fi(fileName);
+    const QFileInfo fi(fileName);
 
     Script script {fi.fileName(), fileName, description};
     emit aboutToAddScript(script, static_cast<int>(m_scriptList.size()));

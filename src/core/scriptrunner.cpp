@@ -148,9 +148,9 @@ ScriptRunner::~ScriptRunner() = default;
 
 QVariant ScriptRunner::runScript(const QString &fileName, const std::function<void()> &endCallback)
 {
-    QFileInfo fi(fileName);
+    const QFileInfo fi(fileName);
 
-    auto fullName = fi.absoluteFilePath();
+    const auto fullName = fi.absoluteFilePath();
 
     m_hasError = false;
 
@@ -184,7 +184,7 @@ bool ScriptRunner::isProperty(const QString &apiCall)
 
 QQmlEngine *ScriptRunner::getEngine(const QString &fileName)
 {
-    QFileInfo fi(fileName);
+    const QFileInfo fi(fileName);
 
     auto engine = new QQmlEngine(this);
     currentScriptPath = fi.absoluteFilePath();

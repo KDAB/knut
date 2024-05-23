@@ -121,7 +121,7 @@ QString ScriptDialogItem::uiFilePath() const
     // from the script path that the ScriptRunner is currently executing.
     if (m_uiFilePath.isNull()) {
         Q_ASSERT(!ScriptRunner::currentScriptPath.isEmpty());
-        QFileInfo fi(ScriptRunner::currentScriptPath);
+        const QFileInfo fi(ScriptRunner::currentScriptPath);
         m_uiFilePath = fi.absolutePath() + '/' + fi.baseName() + ".ui";
         emit const_cast<ScriptDialogItem *>(this)->uiFilePathChanged(m_uiFilePath);
     }
@@ -142,7 +142,7 @@ void ScriptDialogItem::setUiFilePath(const QString &filePath)
         // not relative to the `knut` binary.
         if (fi.isRelative()) {
             Q_ASSERT(!ScriptRunner::currentScriptPath.isEmpty());
-            QFileInfo base(ScriptRunner::currentScriptPath);
+            const QFileInfo base(ScriptRunner::currentScriptPath);
             m_uiFilePath = base.absolutePath() + "/" + filePath;
         } else {
             m_uiFilePath = filePath;
@@ -255,9 +255,9 @@ bool isGenerator(const QJSValue &generator)
 
 void ScriptDialogItem::interactiveStep()
 {
-    auto result = m_interactiveConversion->property("next").callWithInstance(m_interactiveConversion.value());
-    auto done = result.property("done").toBool();
-    auto nextStepTitle = result.property("value").toString();
+    const auto result = m_interactiveConversion->property("next").callWithInstance(m_interactiveConversion.value());
+    const auto done = result.property("done").toBool();
+    const auto nextStepTitle = result.property("value").toString();
 
     auto finish = [this]() {
         m_interactiveConversion.reset();
@@ -285,11 +285,11 @@ void ScriptDialogItem::interactiveStep()
         m_progressDialog->hide();
     }
 
-    auto title = m_numProgressSteps > 0
+    const auto title = m_numProgressSteps > 0
         ? QString("%1/%2 conversions done!").arg(m_currentProgressStep).arg(m_numProgressSteps)
         : QString("A conversion step finished!");
 
-    auto message = m_currentStepTitle.isEmpty()
+    const auto message = m_currentStepTitle.isEmpty()
         ? QString("A conversion step finished!\nContinue with %1?").arg(nextStepTitle)
         : QString("Finished %1!\nContinue with %2?").arg(m_currentStepTitle, nextStepTitle);
 

@@ -566,7 +566,7 @@ void RcDocument::mergeLanguages()
             it = languageMap.find(lang.split(';').first().toStdString());
         }
         if (it != languageMap.end()) {
-            auto newLang = QString::fromStdString(it->second.empty() ? DefaultLanguage : it->second);
+            const auto newLang = QString::fromStdString(it->second.empty() ? DefaultLanguage : it->second);
             merges[newLang].append(lang);
         }
     }
