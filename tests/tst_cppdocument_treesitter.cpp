@@ -270,7 +270,7 @@ private slots:
                                   QCOMPARE(queries.first().get("declaration").text(), text);
                               });
 
-        // TODO: test overloads (same funciton name)
+        // TODO: test overloads (same function name)
     }
 
     void queryMethodDefinition_data()
