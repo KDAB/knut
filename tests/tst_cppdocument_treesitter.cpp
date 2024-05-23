@@ -46,7 +46,7 @@ private slots:
     }
 
 private:
-    void tryInstertingBar(const QString &fileName)
+    void tryInsertingBar(const QString &fileName)
     {
         Test::FileTester fileTester(fileName);
         auto file = qobject_cast<Core::CppDocument *>(Core::Project::instance()->open(fileTester.fileName()));
@@ -91,9 +91,9 @@ private slots:
             QVERIFY(sourceFile.compare());
         }
 
-        tryInstertingBar(Test::testDataPath() + "/tst_cppdocument/insertRemoveInclude/include.h");
-        tryInstertingBar(Test::testDataPath() + "/tst_cppdocument/insertRemoveInclude/pragma.h");
-        tryInstertingBar(Test::testDataPath() + "/tst_cppdocument/insertRemoveInclude/guards.h");
+        tryInsertingBar(Test::testDataPath() + "/tst_cppdocument/insertRemoveInclude/include.h");
+        tryInsertingBar(Test::testDataPath() + "/tst_cppdocument/insertRemoveInclude/pragma.h");
+        tryInsertingBar(Test::testDataPath() + "/tst_cppdocument/insertRemoveInclude/guards.h");
     }
 
     void addMember()
