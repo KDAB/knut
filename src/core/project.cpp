@@ -271,7 +271,7 @@ Document *Project::getDocument(QString fileName, bool moveToBack)
             doc->setParent(this);
             doc->load(fileName);
             m_documents.push_back(doc);
-            Q_EMIT documentsChanged();
+            emit documentsChanged();
         } else {
             spdlog::error("Project::open {} - unknown document type", fi.suffix().toStdString());
             return nullptr;
