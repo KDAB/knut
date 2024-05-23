@@ -53,9 +53,9 @@ public:
         if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
             switch (section) {
             case 0:
-                return "Name";
+                return tr("Name");
             case 1:
-                return "Class Name";
+                return tr("Class Name");
             }
         }
         return QAbstractItemModel::headerData(section, orientation, role);
@@ -128,7 +128,7 @@ void UiView::updateView()
     if (file.open(QIODevice::ReadOnly)) {
         QWidget *widget = loader.load(&file);
         if (!widget) {
-            QMessageBox::warning(this, "Knut Ui View",
+            QMessageBox::warning(this, tr("Knut Ui View"),
                                  tr("Can't load the ui file due to some errors:\n%1").arg(loader.errorString()));
             return;
         }

@@ -193,11 +193,11 @@ QVariant TreeSitterTreeModel::headerData(int section, Qt::Orientation orientatio
     if (role == Qt::DisplayRole) {
         switch (section) {
         case 0:
-            return "Node";
+            return tr("Node");
         case 1:
-            return "Range";
+            return tr("Range");
         case 2:
-            return "Query Captures";
+            return tr("Query Captures");
         default:
             return {};
         }
