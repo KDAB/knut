@@ -50,15 +50,21 @@ inline bool compareDirectories(const QString &current, const QString &expected)
 class FileTester
 {
 public:
-    FileTester(const QString &fileName)
+    FileTester(const QString &fileName, bool removeTempFile = true)
         : m_original(fileName)
+        , m_removeTempFile(removeTempFile)
     {
         m_file = fileName;
         m_original.append(".original");
         QVERIFY(QFile::exists(m_original));
         QFile::copy(m_original, m_file);
     }
-    ~FileTester() { QFile::remove(m_file); }
+    ~FileTester()
+    {
+        if (m_removeTempFile) {
+            QFile::remove(m_file);
+        }
+    }
 
     QString fileName() const { return m_file; }
 
@@ -72,6 +78,7 @@ public:
 private:
     QString m_original;
     QString m_file;
+    bool m_removeTempFile = true;
 };
 
 // *****************************************************************************
