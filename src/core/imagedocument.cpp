@@ -1,6 +1,6 @@
 #include "imagedocument.h"
 
-#include <spdlog/spdlog.h>
+#include "utils/log.h"
 
 namespace Core {
 

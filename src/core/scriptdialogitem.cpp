@@ -3,6 +3,7 @@
 
 #include "scriptrunner.h"
 #include "settings.h"
+#include "utils/log.h"
 
 #include <QAbstractItemModel>
 #include <QCheckBox>
@@ -23,8 +24,6 @@
 #include <QToolButton>
 #include <QUiLoader>
 #include <QVBoxLayout>
-
-#include <spdlog/spdlog.h>
 
 namespace Core {
 
@@ -429,7 +428,7 @@ void ScriptDialogItem::setUiFile(const QString &fileName)
         setWindowTitle(internalWidget->windowTitle());
         createProperties(internalWidget);
     } else {
-        spdlog::error("Can't open {}", fileName.toStdString());
+        spdlog::error("Can't open {}", fileName);
     }
 }
 

@@ -3,9 +3,9 @@
 #include "codedocument.h"
 #include "rangemark.h"
 #include "textdocument.h"
+#include "utils/log.h"
 
 #include <kdalgorithms.h>
-#include <spdlog/spdlog.h>
 #include <treesitter/query.h>
 
 #include <QJSEngine>

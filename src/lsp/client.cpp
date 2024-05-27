@@ -13,8 +13,6 @@
 #include <QFileInfo>
 #include <QUrl>
 
-#include <spdlog/spdlog.h>
-
 namespace Lsp {
 
 template <typename Request>
@@ -72,7 +70,7 @@ bool Client::initialize(const QString &rootPath)
     if (!m_backend->start())
         return false;
 
-    spdlog::debug("LSP server started in: {}", rootPath.toStdString());
+    spdlog::debug("LSP server started in: {}", rootPath);
 
     InitializeRequest request;
     request.id = m_nextRequestId++;

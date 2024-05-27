@@ -1,17 +1,16 @@
 #pragma once
 
+#include "scriptdialogitem.h"
+#include "utils/log.h"
+
 #include <QAbstractItemModel>
 #include <QCoreApplication>
 #include <QMetaEnum>
 #include <QString>
 #include <QVariantList>
 
-#include <spdlog/spdlog.h>
-
 #include <concepts>
 #include <vector>
-
-#include "scriptdialogitem.h"
 
 /**
  * Create a return value, the name will depend on the type returned.

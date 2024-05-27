@@ -1,8 +1,8 @@
 #include "scriptdialogitem_p.h"
 
-#include <private/qmetaobjectbuilder_p.h>
+#include "utils/log.h"
 
-#include <spdlog/spdlog.h>
+#include <private/qmetaobjectbuilder_p.h>
 
 namespace Core {
 

@@ -11,6 +11,7 @@
 #include "slintdocument.h"
 #include "textdocument.h"
 #include "uidocument.h"
+#include "utils/log.h"
 
 #include <QDir>
 #include <QDirIterator>
@@ -18,7 +19,6 @@
 #include <QMetaEnum>
 
 #include <kdalgorithms.h>
-#include <spdlog/spdlog.h>
 
 #include <algorithm>
 #include <map>
@@ -85,7 +85,7 @@ bool Project::setRoot(const QString &newRoot)
         return true;
 
     if (m_root.isEmpty()) {
-        spdlog::info("Project::setRoot {}", dir.absolutePath().toStdString());
+        spdlog::info("Project::setRoot {}", dir.absolutePath());
     } else {
         spdlog::error("Project::setRoot - can't open a new project");
         return false;
@@ -273,7 +273,7 @@ Document *Project::getDocument(QString fileName, bool moveToBack)
             m_documents.push_back(doc);
             emit documentsChanged();
         } else {
-            spdlog::error("Project::open {} - unknown document type", fi.suffix().toStdString());
+            spdlog::error("Project::open {} - unknown document type", fi.suffix());
             return nullptr;
         }
     }

@@ -6,6 +6,7 @@
 #include "rangemark.h"
 #include "settings.h"
 #include "texteditor.h"
+#include "utils/log.h"
 #include "utils/strings.h"
 
 #include <QFile>
@@ -15,9 +16,8 @@
 #include <QSignalBlocker>
 #include <QTextBlock>
 #include <QTextStream>
-#include <private/qwidgettextcontrol_p.h>
 
-#include <spdlog/spdlog.h>
+#include <private/qwidgettextcontrol_p.h>
 
 namespace Core {
 
@@ -237,7 +237,7 @@ bool TextDocument::doSave(const QString &fileName)
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
         setErrorString(file.errorString());
-        spdlog::error("Can't save file {}: {}", fileName.toStdString(), errorString().toStdString());
+        spdlog::error("Can't save file {}: {}", fileName, errorString());
         return false;
     }
 
@@ -260,7 +260,7 @@ bool TextDocument::doLoad(const QString &fileName)
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly)) {
         setErrorString(file.errorString());
-        spdlog::warn("Can't load file {}: {}", fileName.toStdString(), errorString().toStdString());
+        spdlog::warn("Can't load file {}: {}", fileName, errorString());
         return false;
     }
 

@@ -1,8 +1,9 @@
 #include "classsymbol.h"
 
 #include "codedocument.h"
+#include "utils/log.h"
+
 #include <algorithm>
-#include <spdlog/spdlog.h>
 
 namespace Core {
 
@@ -34,7 +35,7 @@ QVector<Symbol *> ClassSymbol::findMembers() const
         }
         return members;
     }
-    spdlog::warn("Parent of CppClass {} is not an CodeDocument!", m_name.toStdString());
+    spdlog::warn("Parent of CppClass {} is not an CodeDocument!", m_name);
     return {};
 }
 

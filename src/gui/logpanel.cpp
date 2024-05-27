@@ -1,6 +1,7 @@
 #include "logpanel.h"
 
 #include "guisettings.h"
+#include "utils/log.h"
 
 #include <QComboBox>
 #include <QHBoxLayout>
@@ -13,7 +14,6 @@
 #include <QToolButton>
 
 #include <spdlog/sinks/qt_sinks.h>
-#include <spdlog/spdlog.h>
 
 #include <mutex>
 

@@ -11,6 +11,7 @@
 #include "symbol.h"
 #include "textlocation.h"
 #include "utils/json.h"
+#include "utils/log.h"
 #include "utils/strings.h"
 
 #include <QFile>
@@ -22,7 +23,6 @@
 #include <QTextStream>
 
 #include <kdalgorithms.h>
-#include <spdlog/spdlog.h>
 
 #include <algorithm>
 #include <memory>
@@ -358,7 +358,7 @@ Document *CodeDocument::followSymbol(int pos)
             codeDocument->selectRange(codeDocument->toRange(location.range));
         } else {
             spdlog::warn("CodeDocument::followSymbol: Opened document '{}' is not an CodeDocument",
-                         document->fileName().toStdString());
+                         document->fileName());
         }
     }
 
@@ -636,7 +636,7 @@ bool CodeDocument::checkClient() const
 {
     Q_ASSERT(textEdit());
     if (!client()) {
-        spdlog::error("CodeDocument {} has no LSP client - API not available", fileName().toStdString());
+        spdlog::error("CodeDocument {} has no LSP client - API not available", fileName());
         return false;
     }
     return true;
@@ -658,7 +658,7 @@ void CodeDocument::changeContentLsp(int position, int charsRemoved, int charsAdd
     // spdlog::warn("new end point: {}, {}", newEndBlock.blockNumber(), newEndPosition - newEndBlock.position());
 
     // const auto plain = document->toPlainText();
-    // spdlog::warn("added: {}", plain.sliced(position, charsAdded).toStdString());
+    // spdlog::warn("added: {}", plain.sliced(position, charsAdded));
 
     if (!checkClient()) {
         return;

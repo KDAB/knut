@@ -2,10 +2,9 @@
 
 #include "requests.h"
 #include "types.h"
+#include "utils/log.h"
 
 #include <QObject>
-
-#include <spdlog/spdlog.h>
 
 #include <string>
 
@@ -64,8 +63,8 @@ public:
 
     /**
      * ##### LSP requests #####
-     * If asyncCallback is not null, the request will be sent asynchronously and the callback called once the respone
-     * has arrive. Otherwise, the request is synchronous, and the result is returned. An empty optional means there was
+     * If asyncCallback is not null, the request will be sent asynchronously and the callback called once the response
+     * has arrived. Otherwise, the request is synchronous, and the result is returned. An empty optional means there was
      * an error.
      */
     std::optional<TextDocumentDocumentSymbolRequest::Result>

@@ -4,13 +4,13 @@
 #include "scriptmanager.h"
 #include "settings.h"
 #include "textdocument.h"
+#include "utils/log.h"
 
 #include <QApplication>
 #include <QDir>
 #include <QTimer>
 
 #include <spdlog/cfg/env.h>
-#include <spdlog/spdlog.h>
 
 namespace Core {
 
@@ -51,7 +51,7 @@ void KnutCore::process(const QStringList &arguments)
             Project::instance()->setRoot(rootDir);
         } else {
             spdlog::error("KnutCore::process - Root directory: {}, does not exist. Cannot open a new project!",
-                          pathDir.absolutePath().toStdString());
+                          pathDir.absolutePath());
         }
     }
 

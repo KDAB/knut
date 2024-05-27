@@ -20,6 +20,7 @@
 #include "uidocument.h"
 #include "userdialog.h"
 #include "utils.h"
+#include "utils/log.h"
 
 #include <QDir>
 #include <QFile>
@@ -31,7 +32,6 @@
 #include <QtQml/private/qqmlengine_p.h>
 
 #include <kdalgorithms.h>
-#include <spdlog/spdlog.h>
 
 namespace Core {
 
@@ -170,7 +170,7 @@ QVariant ScriptRunner::runScript(const QString &fileName, const std::function<vo
         }
         // engine is deleted in runJavascript or runQml
     } else {
-        spdlog::error("File {} doesn't exist", fileName.toStdString());
+        spdlog::error("File {} doesn't exist", fileName);
         return QVariant(ErrorCode);
     }
 
@@ -195,11 +195,9 @@ QQmlEngine *ScriptRunner::getEngine(const QString &fileName)
     auto logWarnings = [this](const QList<QQmlError> &warnings) {
         for (const auto &warning : warnings) {
             if (warning.description().contains("error", Qt::CaseInsensitive))
-                spdlog::error("{}({}): {}", warning.url().toLocalFile().toStdString(), warning.line(),
-                              warning.description().toStdString());
+                spdlog::error("{}({}): {}", warning.url().toLocalFile(), warning.line(), warning.description());
             else
-                spdlog::warn("{}({}): {}", warning.url().toLocalFile().toStdString(), warning.line(),
-                             warning.description().toStdString());
+                spdlog::warn("{}({}): {}", warning.url().toLocalFile(), warning.line(), warning.description());
             m_hasError = true;
         }
     };

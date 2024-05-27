@@ -1,9 +1,8 @@
 #include "lexer.h"
+#include "utils/log.h"
 
 #include <QDir>
 #include <QHash>
-
-#include <spdlog/spdlog.h>
 
 namespace RcCore {
 
@@ -254,7 +253,7 @@ std::optional<Token> Lexer::readNext()
     if (ch == '<')
         return readInclude();
 
-    spdlog::critical("{}({}): general lexer error reading next token", m_fileName.toStdString(), m_stream.line());
+    spdlog::critical("{}({}): general lexer error reading next token", m_fileName, m_stream.line());
     return {};
 }
 

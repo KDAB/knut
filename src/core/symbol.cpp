@@ -5,9 +5,9 @@
 #include "functionsymbol.h"
 #include "logger.h"
 #include "project.h"
+#include "utils/log.h"
 
 #include <kdalgorithms.h>
-#include <spdlog/spdlog.h>
 
 namespace Core {
 
@@ -132,7 +132,7 @@ ClassSymbol *Symbol::toClass()
     auto clazz = qobject_cast<ClassSymbol *>(this);
 
     if (!clazz)
-        spdlog::warn("Symbol::toClass - {} should be a `Class`.", m_name.toStdString());
+        spdlog::warn("Symbol::toClass - {} should be a `Class`.", m_name);
 
     return clazz;
 }
@@ -153,7 +153,7 @@ FunctionSymbol *Symbol::toFunction()
     auto function = qobject_cast<FunctionSymbol *>(this);
 
     if (!function)
-        spdlog::warn("Symbol::toFunction - {} should be either a method or a function.", m_name.toStdString());
+        spdlog::warn("Symbol::toFunction - {} should be either a method or a function.", m_name);
 
     return function;
 }

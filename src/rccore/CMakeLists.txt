@@ -19,11 +19,11 @@ set(PROJECT_SOURCES
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
 target_link_libraries(
   ${PROJECT_NAME}
-  spdlog::spdlog
   kdalgorithms
   Qt${QT_VERSION_MAJOR}::Core
   Qt${QT_VERSION_MAJOR}::Qml
   Qt${QT_VERSION_MAJOR}::QmlPrivate
-  Qt${QT_VERSION_MAJOR}::Gui)
+  Qt${QT_VERSION_MAJOR}::Gui
+  knut-utils)
 target_include_directories(${PROJECT_NAME}
                            INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/..)

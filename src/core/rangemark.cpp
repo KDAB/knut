@@ -3,8 +3,7 @@
 
 #include "mark.h"
 #include "textdocument.h"
-
-#include "spdlog/spdlog.h"
+#include "utils/log.h"
 
 #include <QPlainTextEdit>
 

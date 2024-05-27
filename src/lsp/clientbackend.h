@@ -1,12 +1,11 @@
 #pragma once
 
 #include "requestmessage.h"
+#include "utils/json.h"
+#include "utils/log.h"
 
 #include <QObject>
 #include <QProcess>
-
-#include <nlohmann/json.hpp>
-#include <spdlog/spdlog.h>
 
 #include <functional>
 #include <unordered_map>

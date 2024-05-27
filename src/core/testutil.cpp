@@ -1,13 +1,13 @@
 #include "testutil.h"
 
+#include "utils/log.h"
+
 #include <QDirIterator>
 #include <QFile>
 #include <QQmlEngine>
 #include <QUrl>
 
 #include <QtQml/private/qqmlengine_p.h>
-
-#include <spdlog/spdlog.h>
 
 namespace Core {
 
@@ -61,12 +61,12 @@ bool TestUtil::compareFiles(const QString &file, const QString &expected, bool e
 {
     QFile file1(file);
     if (!file1.open(QIODevice::ReadOnly)) {
-        spdlog::warn("Cannot open {} for comparison!", file.toStdString());
+        spdlog::warn("Cannot open {} for comparison!", file);
         return false;
     }
     QFile file2(expected);
     if (!file2.open(QIODevice::ReadOnly)) {
-        spdlog::warn("Cannot open {} for comparison!", expected.toStdString());
+        spdlog::warn("Cannot open {} for comparison!", expected);
         return false;
     }
 
@@ -78,9 +78,9 @@ bool TestUtil::compareFiles(const QString &file, const QString &expected, bool e
     }
     auto result = data1 == data2;
     if (!result) {
-        spdlog::warn("Comparison of {} and {} failed!", file.toStdString(), expected.toStdString());
-        spdlog::warn("Actual: {}", data1.toStdString());
-        spdlog::warn("Expected: {}", data2.toStdString());
+        spdlog::warn("Comparison of {} and {} failed!", file, expected);
+        spdlog::warn("Actual: {}", data1);
+        spdlog::warn("Expected: {}", data2);
     }
     return result;
 }
@@ -136,7 +136,7 @@ bool TestUtil::compareDirectories(const QString &current, const QString &expecte
 {
     QDir currentDir(current);
     if (!currentDir.exists()) {
-        spdlog::warn("Cannot open directory {} for comparison!", current.toStdString());
+        spdlog::warn("Cannot open directory {} for comparison!", current);
         return false;
     }
 

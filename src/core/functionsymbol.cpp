@@ -3,11 +3,11 @@
 #include "codedocument.h"
 #include "cpplanguagedata.h"
 #include "lsp/lsp_utils.h"
+#include "utils/log.h"
 
 #include <QRegularExpression>
 
 #include <kdalgorithms.h>
-#include <spdlog/spdlog.h>
 
 namespace Core {
 

@@ -2,9 +2,9 @@
 
 #include "querymatch.h"
 #include "textdocument.h"
+#include "utils/log.h"
 
 #include <kdalgorithms.h>
-#include <spdlog/spdlog.h>
 
 namespace Core {
 

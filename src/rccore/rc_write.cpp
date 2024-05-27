@@ -1,6 +1,7 @@
 #include "rcfile.h"
 
 #include "uiwriter.h"
+#include "utils/log.h"
 
 #include <QDir>
 #include <QFileInfo>
@@ -13,7 +14,6 @@
 #include <QXmlStreamWriter>
 #include <QtQml/private/qqmlengine_p.h>
 
-#include <spdlog/spdlog.h>
 namespace RcCore {
 
 //=============================================================================
@@ -119,11 +119,9 @@ static void logWarnings(const QList<QQmlError> &warnings)
 {
     for (const auto &warning : warnings) {
         if (warning.description().contains("error", Qt::CaseInsensitive))
-            spdlog::error("{}({}): {}", warning.url().toLocalFile().toStdString(), warning.line(),
-                          warning.description().toStdString());
+            spdlog::error("{}({}): {}", warning.url().toLocalFile(), warning.line(), warning.description());
         else
-            spdlog::warn("{}({}): {}", warning.url().toLocalFile().toStdString(), warning.line(),
-                         warning.description().toStdString());
+            spdlog::warn("{}({}): {}", warning.url().toLocalFile(), warning.line(), warning.description());
     }
 }
 

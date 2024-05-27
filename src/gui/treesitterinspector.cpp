@@ -6,12 +6,11 @@
 #include "treesitter/languages.h"
 #include "treesitter/predicates.h"
 #include "treesitter/transformation.h"
+#include "utils/log.h"
 
 #include <core/codedocument.h>
 #include <core/logger.h>
 #include <core/project.h>
-
-#include <spdlog/spdlog.h>
 
 #include <QMessageBox>
 #include <QPalette>

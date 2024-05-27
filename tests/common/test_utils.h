@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/testutil.h"
+#include "utils/log.h"
 
 #include <QCoreApplication>
 #include <QDebug>
@@ -12,7 +13,6 @@
 
 #include <spdlog/details/log_msg.h>
 #include <spdlog/sinks/callback_sink.h>
-#include <spdlog/spdlog.h>
 
 #include <iostream>
 #include <memory>

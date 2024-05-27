@@ -3,7 +3,7 @@
 #include <QBrush>
 #include <QColor>
 
-#include <spdlog/spdlog.h>
+#include "utils/log.h"
 
 namespace Gui {
 

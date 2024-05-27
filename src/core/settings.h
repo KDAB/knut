@@ -1,14 +1,13 @@
 #pragma once
 
 #include "document.h"
+#include "utils/json.h"
+#include "utils/log.h"
 
 #include <QObject>
 #include <QStringList>
 #include <QTimer>
 #include <QVariant>
-
-#include <nlohmann/json.hpp>
-#include <spdlog/spdlog.h>
 
 namespace Core {
 

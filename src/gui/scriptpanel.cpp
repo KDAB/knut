@@ -5,6 +5,7 @@
 #include "core/scriptmanager.h"
 #include "core/textdocument_p.h"
 #include "guisettings.h"
+#include "utils/log.h"
 
 #include <QComboBox>
 #include <QCoreApplication>
@@ -18,8 +19,6 @@
 #include <QScrollBar>
 #include <QTemporaryFile>
 #include <QToolButton>
-
-#include <spdlog/spdlog.h>
 
 namespace Gui {
 

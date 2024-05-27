@@ -1,14 +1,13 @@
 #include "document.h"
 
 #include "logger.h"
+#include "utils/log.h"
 
 #include <QApplication>
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QSignalBlocker>
 #include <QUrl>
-
-#include <spdlog/spdlog.h>
 
 namespace Core {
 

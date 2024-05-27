@@ -3,11 +3,10 @@
 
 #include "logger.h"
 #include "textdocument.h"
+#include "utils/log.h"
 
 #include <QPlainTextEdit>
 #include <QTextDocument>
-
-#include <spdlog/spdlog.h>
 
 namespace Core {
 

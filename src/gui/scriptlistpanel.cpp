@@ -4,6 +4,7 @@
 
 #include "core/scriptmanager.h"
 #include "core/scriptmodel.h"
+#include "utils/log.h"
 
 #include <QHBoxLayout>
 #include <QHeaderView>
@@ -11,8 +12,6 @@
 #include <QLineEdit>
 #include <QSortFilterProxyModel>
 #include <QToolButton>
-
-#include <spdlog/spdlog.h>
 
 namespace Gui {
 

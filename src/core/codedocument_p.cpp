@@ -2,9 +2,9 @@
 #include "codedocument.h"
 
 #include "treesitter/languages.h"
+#include "utils/log.h"
 
 #include <kdalgorithms.h>
-#include <spdlog/spdlog.h>
 
 namespace Core {
 
@@ -41,8 +41,7 @@ std::optional<treesitter::Tree> &TreeSitterHelper::syntaxTree()
     if (!m_tree) {
         m_tree = parser().parseString(m_document->text());
         if (!m_tree) {
-            spdlog::warn("CodeDocument::syntaxTree: Failed to parse document {}!",
-                         m_document->fileName().toStdString());
+            spdlog::warn("CodeDocument::syntaxTree: Failed to parse document {}!", m_document->fileName());
         }
     }
     return m_tree;
@@ -54,8 +53,8 @@ std::shared_ptr<treesitter::Query> TreeSitterHelper::constructQuery(const QStrin
     try {
         tsQuery = std::make_shared<treesitter::Query>(parser().language(), query);
     } catch (treesitter::Query::Error &error) {
-        spdlog::error("CodeDocument::constructQuery: Failed to parse query `{}` error: {} at: {}", query.toStdString(),
-                      error.description.toStdString(), error.utf8_offset);
+        spdlog::error("CodeDocument::constructQuery: Failed to parse query `{}` error: {} at: {}", query,
+                      error.description, error.utf8_offset);
         return {};
     }
     return tsQuery;

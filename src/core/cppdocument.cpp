@@ -5,6 +5,7 @@
 #include "logger.h"
 #include "project.h"
 #include "settings.h"
+#include "utils/log.h"
 
 #include <QFileInfo>
 #include <QHash>
@@ -15,7 +16,6 @@
 #include <QVariantMap>
 
 #include <kdalgorithms.h>
-#include <spdlog/spdlog.h>
 
 #include <algorithm>
 
@@ -201,8 +201,7 @@ QString CppDocument::correspondingHeaderSource() const
         if (QFile::exists(testFileName)) {
             cache[fileName()] = testFileName;
             cache[testFileName] = fileName();
-            spdlog::debug("CppDocument::correspondingHeaderSource {} => {}", fileName().toStdString(),
-                          testFileName.toStdString());
+            spdlog::debug("CppDocument::correspondingHeaderSource {} => {}", fileName(), testFileName);
             LOG_RETURN("path", testFileName);
         }
     }
@@ -231,12 +230,11 @@ QString CppDocument::correspondingHeaderSource() const
     if (!bestFileName.isEmpty()) {
         cache[fileName()] = bestFileName;
         cache[bestFileName] = fileName();
-        spdlog::debug("CppDocument::correspondingHeaderSource {} => {}", fileName().toStdString(),
-                      bestFileName.toStdString());
+        spdlog::debug("CppDocument::correspondingHeaderSource {} => {}", fileName(), bestFileName);
         LOG_RETURN("path", bestFileName);
     }
 
-    spdlog::warn("CppDocument::correspondingHeaderSource {} - not found ", fileName().toStdString());
+    spdlog::warn("CppDocument::correspondingHeaderSource {} - not found ", fileName());
     return {};
 }
 
@@ -287,14 +285,13 @@ Core::QueryMatch CppDocument::queryClassDefinition(const QString &className)
 
     auto matches = query(classDefinitionQuery);
     if (matches.isEmpty()) {
-        spdlog::warn("CppDocument::queryClassDefinition: No class named `{}` found in `{}`", className.toStdString(),
-                     fileName().toStdString());
+        spdlog::warn("CppDocument::queryClassDefinition: No class named `{}` found in `{}`", className, fileName());
         return {};
     }
 
     if (matches.size() > 1) {
-        spdlog::error("CppDocument::queryClassDefinition: Multiple classes named `{}` found in `{}`!",
-                      className.toStdString(), fileName().toStdString());
+        spdlog::error("CppDocument::queryClassDefinition: Multiple classes named `{}` found in `{}`!", className,
+                      fileName());
     }
     return matches.first();
 }
@@ -397,7 +394,7 @@ Core::QueryMatchList CppDocument::queryFunctionCall(const QString &functionName,
 
     for (const auto &argument : argumentCaptures) {
         if (kdalgorithms::value_in(argument, {"call", "name", "argument-list"}) ){
-            spdlog::warn("CppDocument::queryFunctionCall: provided capture {} is reserved!", argument.toStdString());
+            spdlog::warn("CppDocument::queryFunctionCall: provided capture {} is reserved!", argument);
         }
     }
 
@@ -450,13 +447,13 @@ bool CppDocument::insertCodeInMethod(const QString &methodName, QString code, Po
 
     auto symbol = findSymbol(methodName);
     if (!symbol) {
-        spdlog::warn("CppDocument::insertCodeInMethod: No symbol found for {}.", methodName.toStdString());
+        spdlog::warn("CppDocument::insertCodeInMethod: No symbol found for {}.", methodName);
         return false;
     }
 
     if (!symbol->isFunction()) {
         spdlog::warn("CppDocument::insertCodeInMethod: {} is not a function or a method.",
-                     symbol->name().toStdString());
+                     symbol->name());
         return false;
     }
 
@@ -464,7 +461,7 @@ bool CppDocument::insertCodeInMethod(const QString &methodName, QString code, Po
     cursor.setPosition(symbol->range().end);
     cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor);
     if (cursor.selectedText() != "}") {
-        spdlog::warn("CppDocument::insertCodeInMethod: {} is not a function definition.", symbol->name().toStdString());
+        spdlog::warn("CppDocument::insertCodeInMethod: {} is not a function definition.", symbol->name());
         return false;
     }
 
@@ -523,7 +520,7 @@ bool CppDocument::insertForwardDeclaration(const QString &forwardDeclaration)
 {
     LOG("CppDocument::insertForwardDeclaration", LOG_ARG("text", forwardDeclaration));
     if (!isHeader()) {
-        spdlog::warn("CppDocument::insertForwardDeclaration: {} - is not a header file. ", fileName().toStdString());
+        spdlog::warn("CppDocument::insertForwardDeclaration: {} - is not a header file. ", fileName());
         return false;
     }
 
@@ -531,7 +528,7 @@ bool CppDocument::insertForwardDeclaration(const QString &forwardDeclaration)
     const auto classOrStruct = QStringView(forwardDeclaration).left(spacePos);
     if (forwardDeclaration.isEmpty() || (classOrStruct != QStringLiteral("class") && classOrStruct != QStringLiteral("struct"))) {
         spdlog::warn("CppDocument::insertForwardDeclaration: {} - should start with 'class ' or 'struct '. ",
-                     forwardDeclaration.toStdString());
+                     forwardDeclaration);
         return false;
     }
 
@@ -547,7 +544,7 @@ bool CppDocument::insertForwardDeclaration(const QString &forwardDeclaration)
     QTextCursor cursor(doc);
     cursor = doc->find(result, cursor, QTextDocument::FindWholeWords);
     if (!cursor.isNull()) {
-        spdlog::warn("CppDocument::insertForwardDeclaration: '{}' - already exists in file.", forwardDeclaration.toStdString());
+        spdlog::warn("CppDocument::insertForwardDeclaration: '{}' - already exists in file.", forwardDeclaration);
         return false;
     }
 
@@ -595,12 +592,12 @@ DataExchange CppDocument::mfcExtractDDX(const QString &className)
     auto functions = queryMethodDefinition(className, "DoDataExchange");
 
     if (functions.isEmpty()) {
-        spdlog::warn("CppDocument::mfcExtractDDX: No DoDataExchange found in `{}`", fileName().toStdString());
+        spdlog::warn("CppDocument::mfcExtractDDX: No DoDataExchange found in `{}`", fileName());
         return {};
     }
 
     if (functions.size() > 1) {
-        spdlog::warn("CppDocument::mfcExtractDDX: Too many DoDataExchange methods found in `{}`", fileName().toStdString());
+        spdlog::warn("CppDocument::mfcExtractDDX: Too many DoDataExchange methods found in `{}`", fileName());
     }
 
     auto &function = functions.first();
@@ -664,7 +661,7 @@ MessageMap CppDocument::mfcExtractMessageMap(const QString &className /* = ""*/)
     // As the MessageMap query is quite complicated, this can significantly improve performance.
     auto match = queryFirst(queryString);
     if (match.isEmpty()) {
-        spdlog::warn("CppDocument::mfcExtractMessageMap: No message map found in `{}`", fileName().toStdString());
+        spdlog::warn("CppDocument::mfcExtractMessageMap: No message map found in `{}`", fileName());
         return {};
     }
 
@@ -715,8 +712,8 @@ Core::QueryMatchList CppDocument::queryMethodDeclaration(const QString &classNam
 
     auto matches = classQuery.queryIn("body", queryString);
     if (matches.isEmpty()) {
-        spdlog::warn("CppDocument::queryMethodDeclaration: No method named `{}` found in `{}`",
-                     functionName.toStdString(), fileName().toStdString());
+        spdlog::warn("CppDocument::queryMethodDeclaration: No method named `{}` found in `{}`", functionName,
+                     fileName());
     }
 
     return matches;
@@ -758,14 +755,12 @@ Core::QueryMatch CppDocument::queryMember(const QString &className, const QStrin
 
     auto matches = classQuery.queryIn("body", queryString);
     if (matches.isEmpty()) {
-        spdlog::warn("CppDocument::queryMember: No member named `{}` found in `{}`", memberName.toStdString(),
-                     fileName().toStdString());
+        spdlog::warn("CppDocument::queryMember: No member named `{}` found in `{}`", memberName, fileName());
         return {};
     }
 
     if (matches.size() > 1) {
-        spdlog::error("CppDocument::queryMember: Multiple members named `{}` found in `{}`!", memberName.toStdString(),
-                      fileName().toStdString());
+        spdlog::error("CppDocument::queryMember: Multiple members named `{}` found in `{}`!", memberName, fileName());
     }
     return matches.first();
 }
@@ -1061,12 +1056,12 @@ bool CppDocument::insertInclude(const QString &include, bool newGroup)
     auto includePos = includeHelper.includePositionForInsertion(include, newGroup);
     if (!includePos) {
         spdlog::error(R"(CppDocument::insertInclude - the include '{}' is malformed, should be '<foo.h>' or '"foo.h"')",
-                      include.toStdString());
+                      include);
         return false;
     }
 
     if (includePos->alreadyExists()) {
-        spdlog::info("CppDocument::insertInclude - the include '{}' is already included.", include.toStdString());
+        spdlog::info("CppDocument::insertInclude - the include '{}' is already included.", include);
         return true;
     }
 
@@ -1137,7 +1132,7 @@ bool CppDocument::addMember(const QString &member, const QString &className, Acc
 
     auto result = addMemberOrMethod(member, className, specifier);
     if (result == MemberOrMethodAdditionResult::ClassNotFound) {
-        spdlog::error(R"(CppDocument::addMember- Can't find class '{}')", className.toStdString());
+        spdlog::error(R"(CppDocument::addMember- Can't find class '{}')", className);
     }
 
     return true;
@@ -1162,7 +1157,7 @@ bool CppDocument::addMethodDeclaration(const QString &method, const QString &cla
 
     auto result = addMemberOrMethod(method, className, specifier);
     if (result == MemberOrMethodAdditionResult::ClassNotFound) {
-        spdlog::error(R"(CppDocument::addMethodDeclaration - Can't find class '{}')", className.toStdString());
+        spdlog::error(R"(CppDocument::addMethodDeclaration - Can't find class '{}')", className);
     }
 
     return true;
@@ -1251,13 +1246,13 @@ bool CppDocument::addMethod(const QString &declaration, const QString &className
     if (header) {
         result &= header->addMethodDeclaration(declaration, className, specifier);
     } else {
-        spdlog::error("CppDocument::addMethod - Can't find header file for '{}'", className.toStdString());
+        spdlog::error("CppDocument::addMethod - Can't find header file for '{}'", className);
     }
 
     if (source) {
         result &= source->addMethodDefinition(declaration, className, body);
     } else {
-        spdlog::error("CppDocument::addMethod - Can't find source file for '{}'", className.toStdString());
+        spdlog::error("CppDocument::addMethod - Can't find source file for '{}'", className);
     }
 
     return result;
@@ -1306,7 +1301,7 @@ bool CppDocument::removeInclude(const QString &include)
     auto line = includeHelper.includePositionForRemoval(include);
     if (!line) {
         spdlog::error(R"(CppDocument::removeInclude - the include '{}' is malformed, should be '<foo.h>' or '"foo.h"')",
-                      include.toStdString());
+                      include);
         return false;
     }
 
@@ -1349,7 +1344,7 @@ void CppDocument::deleteMethodLocal(const QString &methodName, const QString &si
     std::ranges::sort(symbolList, byRange);
 
     for (const auto &symbol : std::as_const(symbolList)) {
-        spdlog::trace("CppDocument::deleteMethodLocal: Removing symbol '{}'", symbol->name().toStdString());
+        spdlog::trace("CppDocument::deleteMethodLocal: Removing symbol '{}'", symbol->name());
 
         deleteSymbol(*symbol);
     }

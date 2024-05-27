@@ -1,7 +1,8 @@
 #include "slintview.h"
+
 #include "core/slintdocument.h"
 #include "guisettings.h"
-#include <spdlog/spdlog.h>
+#include "utils/log.h"
 
 #include <QPlainTextEdit>
 #include <QProcess>

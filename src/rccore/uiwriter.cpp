@@ -1,12 +1,12 @@
 #include "uiwriter.h"
+
 #include "data.h"
+#include "utils/log.h"
 
 #include <QRect>
 #include <QVariant>
 
 #include <kdalgorithms.h>
-
-#include <spdlog/spdlog.h>
 
 namespace RcCore {
 
@@ -64,7 +64,7 @@ void UiWriter::addCustomWidget(const QString &className, const QString &baseClas
 
     if ((!header.startsWith('<') || !header.endsWith('>')) && (!header.startsWith('"') || !header.endsWith('"'))) {
         spdlog::error(R"(UiWriter::addCustomWidget - the include '{}' is malformed, should be '<foo.h>' or '"foo.h"')",
-                      header.toStdString());
+                      header);
     }
     const bool isGlobal = header.startsWith('<');
     const auto &include = header.mid(1, header.length() - 2);

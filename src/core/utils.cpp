@@ -2,6 +2,7 @@
 
 #include "logger.h"
 #include "scriptmanager.h"
+#include "utils/log.h"
 
 #include <QApplication>
 #include <QClipboard>
@@ -9,8 +10,6 @@
 #include <QElapsedTimer>
 #include <QFileInfo>
 #include <QTemporaryFile>
-
-#include <spdlog/spdlog.h>
 
 namespace Core {
 
@@ -149,7 +148,7 @@ QString Utils::mktemp(const QString &pattern)
         return {};
     file.close();
 
-    spdlog::debug("Utils::mktemp created {}", tmp.toStdString());
+    spdlog::debug("Utils::mktemp created {}", tmp);
     return file.fileName();
 }
 

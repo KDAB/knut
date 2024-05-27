@@ -21,7 +21,7 @@ LoggerObject::~LoggerObject()
 
 void LoggerObject::log(QString &&string)
 {
-    spdlog::trace(string.toStdString());
+    spdlog::trace(string);
     m_canLog = false;
 }
 

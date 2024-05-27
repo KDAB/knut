@@ -11,6 +11,7 @@
 #include "core/rcdocument.h"
 #include "core/slintdocument.h"
 #include "core/uidocument.h"
+#include "utils/log.h"
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -18,8 +19,6 @@
 #include <QKeyEvent>
 #include <QLineEdit>
 #include <QSpinBox>
-
-#include <spdlog/spdlog.h>
 
 #include <memory>
 
@@ -276,7 +275,7 @@ void APIExecutorWidget::executeAPI(Core::Document *document, const QByteArray &n
                                              genericArgs.value(5), genericArgs.value(6), genericArgs.value(7),
                                              genericArgs.value(8), genericArgs.value(9));
     if (!success)
-        spdlog::error("Error trying to execute the function {}", name.toStdString());
+        spdlog::error("Error trying to execute the function {}", name);
 }
 
 void APIExecutorWidget::open()

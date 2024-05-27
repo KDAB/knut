@@ -4,6 +4,7 @@
 #include "scriptmodel.h"
 #include "scriptrunner.h"
 #include "settings.h"
+#include "utils/log.h"
 
 #include <QDir>
 #include <QDirIterator>
@@ -14,7 +15,6 @@
 #include <QTimer>
 
 #include <kdalgorithms.h>
-#include <spdlog/spdlog.h>
 
 namespace Core {
 
@@ -72,10 +72,10 @@ QAbstractItemModel *ScriptManager::model()
 void ScriptManager::runScript(const QString &fileName, bool async, bool log)
 {
     if (log)
-        spdlog::debug("==> Start script {}", fileName.toStdString());
+        spdlog::debug("==> Start script {}", fileName);
     auto endScriptCallback = [this, log, fileName]() {
         if (log)
-            spdlog::debug("<== End script {}", fileName.toStdString());
+            spdlog::debug("<== End script {}", fileName);
         emit scriptFinished(m_result);
     };
 
@@ -197,11 +197,10 @@ void ScriptManager::doRunScript(const QString &fileName, const std::function<voi
     if (m_runner->hasError()) {
         const auto errors = m_runner->errors();
         for (const auto &error : errors)
-            spdlog::error("{}({}): {}", error.url().toLocalFile().toStdString(), error.line(),
-                          error.description().toStdString());
+            spdlog::error("{}({}): {}", error.url().toLocalFile(), error.line(), error.description());
     } else {
         if (m_result.isValid())
-            spdlog::info("Script result is {}", m_result.toString().toStdString());
+            spdlog::info("Script result is {}", m_result.toString());
     }
 }
 

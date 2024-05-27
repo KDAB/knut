@@ -3,7 +3,7 @@
 #include "languages.h"
 
 #include "kdalgorithms.h"
-#include "spdlog/spdlog.h"
+#include "utils/log.h"
 
 #include <ranges>
 #include <set>

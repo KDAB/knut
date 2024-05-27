@@ -1,8 +1,7 @@
 #include "scriptmodel.h"
 
 #include "scriptmanager.h"
-
-#include <spdlog/spdlog.h>
+#include "utils/log.h"
 
 using ScriptManager = Core::ScriptManager;
 

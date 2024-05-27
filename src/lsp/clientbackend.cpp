@@ -79,7 +79,7 @@ ClientBackend::~ClientBackend()
 
 bool ClientBackend::start()
 {
-    m_serverLogger->trace("==> Starting LSP server {}", m_program.toStdString());
+    m_serverLogger->trace("==> Starting LSP server {}", m_program);
     m_process->start(m_program, m_arguments);
     if (m_process->waitForStarted() && m_process->state() == QProcess::Running)
         return true;
@@ -88,7 +88,7 @@ bool ClientBackend::start()
 
 void ClientBackend::readError()
 {
-    m_serverLogger->info(m_process->readAllStandardError().toStdString());
+    m_serverLogger->info(m_process->readAllStandardError());
 }
 
 void ClientBackend::readOutput()
@@ -121,14 +121,13 @@ void ClientBackend::readOutput()
 
 void ClientBackend::handleError()
 {
-    m_serverLogger->error("==> LSP server {} raises an error {}", m_program.toStdString(),
-                          m_process->errorString().toStdString());
+    m_serverLogger->error("==> LSP server {} raises an error {}", m_program, m_process->errorString());
     emit errorOccured(m_process->errorString());
 }
 
 void ClientBackend::handleFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
-    m_serverLogger->trace("==> Exiting LSP server {} with exit code {}", m_program.toStdString(), exitCode);
+    m_serverLogger->trace("==> Exiting LSP server {} with exit code {}", m_program, exitCode);
     if (exitStatus != QProcess::CrashExit)
         emit finished();
 }

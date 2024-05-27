@@ -1,8 +1,8 @@
 #include "rcdocument.h"
 
 #include "logger.h"
-
 #include "rccore/rcfile.h"
+#include "utils/log.h"
 
 #include <QBuffer>
 #include <QFile>
@@ -10,7 +10,6 @@
 #include <QWidget>
 
 #include <kdalgorithms.h>
-#include <spdlog/spdlog.h>
 
 namespace Core {
 
@@ -346,7 +345,7 @@ void RcDocument::setLanguage(const QString &language)
     LOG("RcDocument::setLanguage", language);
 
     if (!m_rcFile.data.contains(language)) {
-        spdlog::warn("RcDocument::setLanguage: language {} does not exist in the rc file.", language.toStdString());
+        spdlog::warn("RcDocument::setLanguage: language {} does not exist in the rc file.", language);
         return;
     }
 
