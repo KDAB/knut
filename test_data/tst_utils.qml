@@ -1,3 +1,13 @@
+/*
+  This file is part of Knut.
+
+  SPDX-FileCopyrightText: 2024 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+
+  SPDX-License-Identifier: GPL-3.0-only
+
+  Contact KDAB at <info@kdab.com> for commercial licensing options.
+*/
+
 import QtQuick 2.2
 import Script 1.0
 import Script.Test 1.0

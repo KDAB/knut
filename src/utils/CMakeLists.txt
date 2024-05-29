@@ -1,3 +1,13 @@
+# This file is part of Knut.
+#
+# SPDX-FileCopyrightText: 2024 Klarälvdalens Datakonsult AB, a KDAB Group
+# company <info@kdab.com>
+#
+# SPDX-License-Identifier: GPL-3.0-only
+#
+# Contact KDAB at <info@kdab.com> for commercial licensing options.
+#
+
 project(knut-utils LANGUAGES CXX)
 find_package(Qt6 REQUIRED COMPONENTS Core Gui)
 set(PROJECT_SOURCES json.h qt_fmt_helpers.h strings.h strings.cpp log.h)
