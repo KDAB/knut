@@ -21,8 +21,6 @@ set(PROJECT_SOURCES
     interfacesettings.h
     interfacesettings.cpp
     interfacesettings.ui
-    KDSignalThrottler.h
-    KDSignalThrottler.cpp
     knutmain.h
     knutmain.cpp
     knutstyle.h
