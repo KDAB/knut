@@ -3,9 +3,8 @@
 
 #include "data.h"
 
-#include <vector>
-
 #include <nlohmann/json.hpp>
+#include <vector>
 
 class SpecParser
 {

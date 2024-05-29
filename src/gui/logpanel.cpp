@@ -1,5 +1,4 @@
 #include "logpanel.h"
-
 #include "guisettings.h"
 #include "utils/log.h"
 
@@ -12,10 +11,8 @@
 #include <QSyntaxHighlighter>
 #include <QTextCharFormat>
 #include <QToolButton>
-
-#include <spdlog/sinks/qt_sinks.h>
-
 #include <mutex>
+#include <spdlog/sinks/qt_sinks.h>
 
 namespace Gui {
 

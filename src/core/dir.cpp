@@ -1,5 +1,4 @@
 #include "dir.h"
-
 #include "logger.h"
 
 #include <QVariant>

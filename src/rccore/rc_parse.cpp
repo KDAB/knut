@@ -1,6 +1,5 @@
-#include "rcfile.h"
-
 #include "lexer.h"
+#include "rcfile.h"
 #include "stream.h"
 #include "utils/log.h"
 
@@ -11,7 +10,6 @@
 #include <QHash>
 #include <QKeySequence>
 #include <QTextStream>
-
 #include <kdalgorithms.h>
 
 namespace RcCore {

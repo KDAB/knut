@@ -1,12 +1,10 @@
 #pragma once
 
-#include "../utils/json.h"
+#include "utils/json.h"
 
 #include <QDateTime>
 #include <QFileSystemWatcher>
 #include <QObject>
-
-#include <functional>
 
 namespace Core {
 

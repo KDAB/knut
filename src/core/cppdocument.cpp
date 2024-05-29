@@ -1,6 +1,5 @@
 #include "cppdocument.h"
 #include "cppdocument_p.h"
-
 #include "functionsymbol.h"
 #include "logger.h"
 #include "project.h"
@@ -14,10 +13,8 @@
 #include <QTextBlock>
 #include <QTextDocument>
 #include <QVariantMap>
-
-#include <kdalgorithms.h>
-
 #include <algorithm>
+#include <kdalgorithms.h>
 
 namespace Core {
 

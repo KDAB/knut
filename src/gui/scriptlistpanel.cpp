@@ -1,9 +1,7 @@
 #include "scriptlistpanel.h"
-
-#include "guisettings.h"
-
 #include "core/scriptmanager.h"
 #include "core/scriptmodel.h"
+#include "guisettings.h"
 #include "utils/log.h"
 
 #include <QHBoxLayout>

@@ -1,13 +1,12 @@
-#include <QTest>
-
 #include "common/test_utils.h"
-
 #include "treesitter/languages.h"
 #include "treesitter/parser.h"
 #include "treesitter/predicates.h"
 #include "treesitter/query.h"
 #include "treesitter/transformation.h"
 #include "treesitter/tree.h"
+
+#include <QTest>
 
 class TestTreeSitter : public QObject
 {

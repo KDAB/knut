@@ -1,10 +1,9 @@
 #include "textdocument.h"
-#include "textdocument_p.h"
-
 #include "logger.h"
 #include "mark.h"
 #include "rangemark.h"
 #include "settings.h"
+#include "textdocument_p.h"
 #include "texteditor.h"
 #include "utils/log.h"
 #include "utils/strings.h"
@@ -16,7 +15,6 @@
 #include <QSignalBlocker>
 #include <QTextBlock>
 #include <QTextStream>
-
 #include <private/qwidgettextcontrol_p.h>
 
 namespace Core {

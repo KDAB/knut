@@ -1,8 +1,7 @@
 #pragma once
 
-#include "lsp/client.h"
-
 #include "astnode.h"
+#include "lsp/client.h"
 #include "querymatch.h"
 #include "symbol.h"
 #include "textdocument.h"

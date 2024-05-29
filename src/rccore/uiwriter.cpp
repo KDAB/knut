@@ -1,11 +1,9 @@
 #include "uiwriter.h"
-
 #include "data.h"
 #include "utils/log.h"
 
 #include <QRect>
 #include <QVariant>
-
 #include <kdalgorithms.h>
 
 namespace RcCore {

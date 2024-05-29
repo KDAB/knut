@@ -1,6 +1,5 @@
-#include "core/uidocument.h"
-
 #include "common/test_utils.h"
+#include "core/uidocument.h"
 
 #include <QTest>
 

@@ -1,9 +1,4 @@
 #include "palette.h"
-#include "ui_palette.h"
-
-#include "gui_constants.h"
-#include "mainwindow.h"
-
 #include "core/codedocument.h"
 #include "core/logger.h"
 #include "core/project.h"
@@ -11,6 +6,9 @@
 #include "core/symbol.h"
 #include "core/textdocument.h"
 #include "core/utils.h"
+#include "gui_constants.h"
+#include "mainwindow.h"
+#include "ui_palette.h"
 
 #include <QAbstractTableModel>
 #include <QAction>
@@ -24,7 +22,6 @@
 #include <QSignalBlocker>
 #include <QSortFilterProxyModel>
 #include <QTimer>
-
 #include <algorithm>
 
 namespace Gui {

@@ -1,5 +1,4 @@
 #include "rcdocument.h"
-
 #include "logger.h"
 #include "rccore/rcfile.h"
 #include "utils/log.h"
@@ -8,7 +7,6 @@
 #include <QFile>
 #include <QUiLoader>
 #include <QWidget>
-
 #include <kdalgorithms.h>
 
 namespace Core {

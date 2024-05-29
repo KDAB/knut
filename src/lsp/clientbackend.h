@@ -6,7 +6,6 @@
 
 #include <QObject>
 #include <QProcess>
-
 #include <functional>
 #include <unordered_map>
 

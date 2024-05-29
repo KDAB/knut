@@ -1,5 +1,4 @@
-#ifndef SPECWRITER_H
-#define SPECWRITER_H
+#pragma once
 
 #include "data.h"
 
@@ -53,5 +52,3 @@ private:
     MetaData m_data;
     std::vector<MetaData::TypePtr> m_rootTypes;
 };
-
-#endif // SPECWRITER_H

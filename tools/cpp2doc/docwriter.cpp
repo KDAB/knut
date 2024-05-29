@@ -4,7 +4,6 @@
 #include <QDir>
 #include <QFile>
 #include <QTextStream>
-
 #include <algorithm>
 
 DocWriter::DocWriter(Data data)

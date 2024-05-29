@@ -1,10 +1,9 @@
 #pragma once
 
-#include <QObject>
-
-#include <memory>
-
 #include "textrange.h"
+
+#include <QObject>
+#include <memory>
 
 namespace Core {
 

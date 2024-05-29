@@ -1,12 +1,10 @@
 #include "uidocument.h"
-
 #include "logger.h"
 #include "utils/log.h"
 
 #include <QFile>
 #include <QUiLoader>
 #include <QWidget>
-
 #include <kdalgorithms.h>
 
 namespace Core {

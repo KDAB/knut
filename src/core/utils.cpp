@@ -1,5 +1,4 @@
 #include "utils.h"
-
 #include "logger.h"
 #include "scriptmanager.h"
 #include "utils/log.h"

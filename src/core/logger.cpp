@@ -1,5 +1,4 @@
 #include "logger.h"
-
 #include "scriptrunner.h"
 #include "settings.h"
 #include "textdocument_p.h"

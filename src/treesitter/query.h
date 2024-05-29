@@ -1,14 +1,12 @@
 #pragma once
 
-#include <tree_sitter/api.h>
-
 #include "node.h"
 
 #include <QByteArray>
 #include <QString>
 #include <QVector>
-
 #include <functional>
+#include <tree_sitter/api.h>
 
 struct TSLanguage;
 struct TSQuery;

@@ -5,11 +5,9 @@
 #include <QDesktopServices>
 #include <QDir>
 #include <QFileDialog>
-
+#include <algorithm>
 #include <repository.h>
 #include <theme.h>
-
-#include <algorithm>
 
 namespace Gui {
 
@@ -19,7 +17,7 @@ InterfaceSettings::InterfaceSettings(QWidget *parent)
 {
     ui->setupUi(this);
 
-    ui->styleCombo->addItems({"[Defaut]", "Fusion", "Oreo"});
+    ui->styleCombo->addItems({"[Default]", "Fusion", "Oreo"});
 
     // Help Path
     QDir dir(QCoreApplication::applicationDirPath());

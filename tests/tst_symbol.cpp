@@ -1,11 +1,10 @@
+#include "common/test_utils.h"
 #include "core/classsymbol.h"
 #include "core/codedocument.h"
 #include "core/functionsymbol.h"
 #include "core/knutcore.h"
 #include "core/project.h"
 #include "core/symbol.h"
-
-#include "common/test_utils.h"
 
 #include <QTest>
 #include <QThread>

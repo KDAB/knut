@@ -1,5 +1,4 @@
 #include "shortcutmanager.h"
-
 #include "guisettings.h"
 #include "mainwindow.h"
 

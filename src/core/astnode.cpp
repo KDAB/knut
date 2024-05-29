@@ -1,8 +1,7 @@
 #include "astnode.h"
-
 #include "codedocument.h"
 #include "codedocument_p.h"
-#include <treesitter/node.h>
+#include "treesitter/node.h"
 
 #include <QDebug>
 #include <QPlainTextEdit>

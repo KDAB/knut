@@ -1,6 +1,6 @@
-#include <QTest>
-
 #include "utils/strings.h"
+
+#include <QTest>
 
 using namespace Core;
 

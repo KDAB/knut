@@ -1,11 +1,10 @@
+#include "common/test_utils.h"
 #include "lsp/clientbackend.h"
 #include "lsp/notificationmessage_json.h"
 #include "lsp/notifications.h"
 #include "lsp/requestmessage_json.h"
 #include "lsp/requests.h"
 #include "lsp/types_json.h"
-
-#include "common/test_utils.h"
 
 #include <QSignalSpy>
 #include <QTest>

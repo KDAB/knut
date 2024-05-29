@@ -1,5 +1,4 @@
 #include "scriptrunner.h"
-
 #include "classsymbol.h"
 #include "cppdocument.h"
 #include "dir.h"
@@ -28,9 +27,7 @@
 #include <QQuickItem>
 #include <QQuickView>
 #include <QQuickWindow>
-
 #include <QtQml/private/qqmlengine_p.h>
-
 #include <kdalgorithms.h>
 
 namespace Core {

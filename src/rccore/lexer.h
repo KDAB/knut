@@ -5,7 +5,6 @@
 #include <QChar>
 #include <QString>
 #include <QVariant>
-
 #include <optional>
 #include <variant>
 

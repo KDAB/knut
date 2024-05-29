@@ -2,7 +2,6 @@
 
 #include "rangemark.h"
 #include "symbol.h"
-
 #include "treesitter/node.h"
 #include "treesitter/parser.h"
 #include "treesitter/query.h"

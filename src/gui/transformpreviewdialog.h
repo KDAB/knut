@@ -1,5 +1,4 @@
-#ifndef GUI_TRANSFORMPREVIEWDIALOG_H
-#define GUI_TRANSFORMPREVIEWDIALOG_H
+#pragma once
 
 #include "core/codedocument.h"
 
@@ -25,4 +24,3 @@ private:
 };
 
 } // namespace Gui
-#endif // GUI_TRANSFORMPREVIEWDIALOG_H

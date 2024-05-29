@@ -1,5 +1,4 @@
 #include "knutcore.h"
-
 #include "project.h"
 #include "scriptmanager.h"
 #include "settings.h"
@@ -9,7 +8,6 @@
 #include <QApplication>
 #include <QDir>
 #include <QTimer>
-
 #include <spdlog/cfg/env.h>
 
 namespace Core {

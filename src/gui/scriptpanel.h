@@ -1,6 +1,7 @@
 #pragma once
 
 #include "interfacesettings.h"
+
 #include <QPlainTextEdit>
 #include <QPoint>
 

@@ -1,17 +1,15 @@
 #include "rcfileview.h"
-#include "ui_rcfileview.h"
-
 #include "acceleratormodel.h"
 #include "assetmodel.h"
 #include "datamodel.h"
 #include "dialogmodel.h"
 #include "includemodel.h"
 #include "menumodel.h"
+#include "rccore/rcfile.h"
 #include "rcviewer_global.h"
 #include "stringmodel.h"
 #include "toolbarmodel.h"
-
-#include "rccore/rcfile.h"
+#include "ui_rcfileview.h"
 
 #include <QBuffer>
 #include <QClipboard>

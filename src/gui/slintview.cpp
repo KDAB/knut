@@ -1,5 +1,4 @@
 #include "slintview.h"
-
 #include "core/slintdocument.h"
 #include "guisettings.h"
 #include "utils/log.h"

@@ -1,5 +1,4 @@
 #include "includemodel.h"
-
 #include "rcviewer_global.h"
 
 #include <QColor>

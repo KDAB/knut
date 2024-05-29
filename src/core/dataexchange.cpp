@@ -1,5 +1,4 @@
 #include "dataexchange.h"
-
 #include "querymatch.h"
 
 #include <kdalgorithms.h>

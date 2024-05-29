@@ -1,19 +1,17 @@
 #include "optionsdialog.h"
-#include "ui_optionsdialog.h"
-
 #include "core/cppdocument_p.h"
 #include "core/project.h"
 #include "core/rcdocument.h"
 #include "core/scriptmanager.h"
 #include "core/settings.h"
 #include "core/textdocument_p.h"
+#include "ui_optionsdialog.h"
 
 #include <QApplication>
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QIntValidator>
 #include <QUrl>
-
 #include <algorithm>
 
 namespace Gui {

@@ -1,5 +1,4 @@
 #include "document.h"
-
 #include "logger.h"
 #include "utils/log.h"
 

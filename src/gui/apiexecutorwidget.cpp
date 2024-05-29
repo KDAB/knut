@@ -1,8 +1,4 @@
 #include "apiexecutorwidget.h"
-#include "ui_apiexecutorwidget.h"
-
-#include "guisettings.h"
-
 #include "core/cppdocument.h"
 #include "core/imagedocument.h"
 #include "core/logger.h"
@@ -11,6 +7,8 @@
 #include "core/rcdocument.h"
 #include "core/slintdocument.h"
 #include "core/uidocument.h"
+#include "guisettings.h"
+#include "ui_apiexecutorwidget.h"
 #include "utils/log.h"
 
 #include <QCheckBox>
@@ -19,7 +17,6 @@
 #include <QKeyEvent>
 #include <QLineEdit>
 #include <QSpinBox>
-
 #include <memory>
 
 namespace Gui {

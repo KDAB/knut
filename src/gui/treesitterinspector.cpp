@@ -1,16 +1,13 @@
 #include "treesitterinspector.h"
-#include "ui_treesitterinspector.h"
-
+#include "core/codedocument.h"
+#include "core/logger.h"
+#include "core/project.h"
 #include "transformpreviewdialog.h"
-
 #include "treesitter/languages.h"
 #include "treesitter/predicates.h"
 #include "treesitter/transformation.h"
+#include "ui_treesitterinspector.h"
 #include "utils/log.h"
-
-#include <core/codedocument.h>
-#include <core/logger.h>
-#include <core/project.h>
 
 #include <QMessageBox>
 #include <QPalette>

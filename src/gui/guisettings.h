@@ -5,7 +5,6 @@
 #include <QObject>
 #include <QPixmap>
 #include <QPointer>
-
 #include <vector>
 
 class QPlainTextEdit;

@@ -1,3 +1,4 @@
+#include "common/test_utils.h"
 #include "core/codedocument.h"
 #include "core/knutcore.h"
 #include "core/project.h"
@@ -8,11 +9,7 @@
 #include <QSignalSpy>
 #include <QTemporaryFile>
 #include <QTest>
-#include <qtestcase.h>
-
 #include <kdalgorithms.h>
-
-#include "common/test_utils.h"
 
 class TestCodeDocument : public QObject
 {

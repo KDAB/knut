@@ -1,4 +1,5 @@
 #pragma once
+
 #include "textdocument.h"
 
 namespace Core {

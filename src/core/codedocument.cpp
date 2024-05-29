@@ -1,15 +1,13 @@
 #include "codedocument.h"
-#include "codedocument_p.h"
-
-#include "treesitter/predicates.h"
-
 #include "astnode.h"
+#include "codedocument_p.h"
 #include "logger.h"
 #include "project.h"
 #include "querymatch.h"
 #include "rangemark.h"
 #include "symbol.h"
 #include "textlocation.h"
+#include "treesitter/predicates.h"
 #include "utils/json.h"
 #include "utils/log.h"
 #include "utils/strings.h"
@@ -21,10 +19,8 @@
 #include <QTextBlock>
 #include <QTextDocument>
 #include <QTextStream>
-
-#include <kdalgorithms.h>
-
 #include <algorithm>
+#include <kdalgorithms.h>
 #include <memory>
 
 namespace Core {

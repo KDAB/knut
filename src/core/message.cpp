@@ -1,8 +1,7 @@
 #include "message.h"
+#include "utils/log.h"
 
 #include <QVariant>
-
-#include "utils/log.h"
 
 namespace Core {
 

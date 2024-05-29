@@ -1,8 +1,8 @@
 #pragma once
 
-#include <QMainWindow>
-
 #include "rccore/rcfile.h"
+
+#include <QMainWindow>
 
 namespace RcUi {
 class RcFileView;

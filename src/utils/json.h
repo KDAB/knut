@@ -4,9 +4,7 @@
 #include <QMetaEnum>
 #include <QString>
 #include <QStringList>
-
 #include <nlohmann/json.hpp>
-
 #include <optional>
 #include <variant>
 

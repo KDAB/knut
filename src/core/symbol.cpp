@@ -1,5 +1,4 @@
 #include "symbol.h"
-
 #include "classsymbol.h"
 #include "codedocument.h"
 #include "functionsymbol.h"

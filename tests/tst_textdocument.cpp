@@ -1,10 +1,9 @@
+#include "common/test_utils.h"
 #include "core/knutcore.h"
 #include "core/mark.h"
 #include "core/rangemark.h"
 #include "core/textdocument.h"
 #include "core/utils.h"
-
-#include "common/test_utils.h"
 
 #include <QDir>
 #include <QFile>

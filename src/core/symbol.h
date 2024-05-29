@@ -1,10 +1,9 @@
 #pragma once
 
+#include "lsp/types.h"
 #include "querymatch.h"
 #include "textlocation.h"
 #include "textrange.h"
-
-#include "lsp/types.h"
 
 #include <QVector>
 

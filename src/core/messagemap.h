@@ -1,6 +1,7 @@
 #pragma once
 
 #include "rangemark.h"
+
 #include <QObject>
 
 namespace Core {

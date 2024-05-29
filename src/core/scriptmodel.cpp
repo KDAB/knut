@@ -1,5 +1,4 @@
 #include "scriptmodel.h"
-
 #include "scriptmanager.h"
 #include "utils/log.h"
 

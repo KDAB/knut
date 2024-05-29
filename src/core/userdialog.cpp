@@ -1,11 +1,10 @@
 #include "userdialog.h"
 
+#include <QApplication>
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QQmlEngine>
-
-#include <QApplication>
 
 namespace Core {
 

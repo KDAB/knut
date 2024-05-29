@@ -2,7 +2,6 @@
 
 #include <QString>
 #include <QStringList>
-
 #include <memory>
 #include <vector>
 

@@ -2,7 +2,6 @@
 
 #include <QString>
 #include <QStringList>
-
 #include <vector>
 
 struct Data

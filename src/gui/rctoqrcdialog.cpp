@@ -1,8 +1,7 @@
 #include "rctoqrcdialog.h"
-#include "ui_rctoqrcdialog.h"
-
 #include "core/rcdocument.h"
 #include "core/settings.h"
+#include "ui_rctoqrcdialog.h"
 
 #include <QApplication>
 #include <QFile>

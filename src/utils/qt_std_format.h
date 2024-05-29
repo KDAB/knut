@@ -13,6 +13,7 @@
 #endif
 
 #include "qt_fmt_helpers.h"
+
 #include <QDebug>
 #include <format>
 

@@ -1,12 +1,10 @@
 #include "query.h"
-
 #include "node.h"
 #include "predicates.h"
 
+#include <QStringList>
 #include <kdalgorithms.h>
 #include <tree_sitter/api.h>
-
-#include <QStringList>
 
 namespace treesitter {
 

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <QObject>
-
 #include <memory>
 
 namespace Core {

@@ -2,7 +2,6 @@
 
 #include <QObject>
 #include <QQmlListProperty>
-
 #include <vector>
 
 namespace Core {

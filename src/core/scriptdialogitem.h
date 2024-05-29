@@ -4,7 +4,6 @@
 #include <QJSValue>
 #include <QQmlListProperty>
 #include <QQmlPropertyMap>
-
 #include <vector>
 
 class QProgressDialog;

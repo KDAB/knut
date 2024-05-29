@@ -1,5 +1,4 @@
 #include "client.h"
-
 #include "clientbackend.h"
 #include "lsp_utils.h"
 #include "notificationmessage_json.h"

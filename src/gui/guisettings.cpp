@@ -1,15 +1,8 @@
 #include "guisettings.h"
-
-#include "knutstyle.h"
-
 #include "core/document.h"
 #include "core/settings.h"
 #include "core/textdocument_p.h"
-
-#include <definition.h>
-#include <repository.h>
-#include <syntaxhighlighter.h>
-#include <theme.h>
+#include "knutstyle.h"
 
 #include <QAction>
 #include <QApplication>
@@ -20,6 +13,10 @@
 #include <QStyleFactory>
 #include <QToolButton>
 #include <QWidget>
+#include <definition.h>
+#include <repository.h>
+#include <syntaxhighlighter.h>
+#include <theme.h>
 
 namespace Gui {
 

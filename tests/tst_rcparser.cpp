@@ -1,6 +1,5 @@
-#include "rccore/rcfile.h"
-
 #include "common/test_utils.h"
+#include "rccore/rcfile.h"
 
 #include <QTest>
 

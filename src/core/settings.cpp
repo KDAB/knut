@@ -1,5 +1,4 @@
 #include "settings.h"
-
 #include "logger.h"
 #include "rcdocument.h"
 #include "scriptmanager.h"
@@ -7,7 +6,6 @@
 #include <QDir>
 #include <QFile>
 #include <QTextStream>
-
 #include <optional>
 
 static std::optional<nlohmann::json> loadSettings(const QString &name, bool log = true)

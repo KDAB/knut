@@ -1,12 +1,10 @@
 #include "cppdocument_p.h"
-
 #include "cppdocument.h"
 #include "utils/log.h"
 
 #include <QPlainTextEdit>
 #include <QRegularExpression>
 #include <QTextDocument>
-
 #include <algorithm>
 
 namespace Core {

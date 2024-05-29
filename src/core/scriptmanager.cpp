@@ -1,5 +1,4 @@
 #include "scriptmanager.h"
-
 #include "logger.h"
 #include "scriptmodel.h"
 #include "scriptrunner.h"
@@ -13,7 +12,6 @@
 #include <QFileSystemWatcher>
 #include <QTextStream>
 #include <QTimer>
-
 #include <kdalgorithms.h>
 
 namespace Core {

@@ -4,7 +4,6 @@
 
 #include <QAction>
 #include <QObject>
-
 #include <variant>
 #include <vector>
 

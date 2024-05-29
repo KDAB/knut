@@ -8,7 +8,6 @@
 #include <QMetaEnum>
 #include <QString>
 #include <QVariantList>
-
 #include <concepts>
 #include <vector>
 

@@ -1,12 +1,10 @@
-#include "rcfile.h"
-
 #include "lexer.h"
+#include "rcfile.h"
 #include "utils/log.h"
 
 #include <QDir>
 #include <QHash>
 #include <QImage>
-
 #include <algorithm>
 #include <cmath>
 

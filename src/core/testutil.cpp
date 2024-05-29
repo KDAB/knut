@@ -1,12 +1,10 @@
 #include "testutil.h"
-
 #include "utils/log.h"
 
 #include <QDirIterator>
 #include <QFile>
 #include <QQmlEngine>
 #include <QUrl>
-
 #include <QtQml/private/qqmlengine_p.h>
 
 namespace Core {

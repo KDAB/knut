@@ -1,8 +1,6 @@
 #include "historypanel.h"
-
-#include "guisettings.h"
-
 #include "core/logger.h"
+#include "guisettings.h"
 
 #include <QAction>
 #include <QHBoxLayout>

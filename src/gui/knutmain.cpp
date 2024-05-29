@@ -1,5 +1,4 @@
 #include "knutmain.h"
-
 #include "mainwindow.h"
 #include "optionsdialog.h"
 #include "runscriptwidget.h"

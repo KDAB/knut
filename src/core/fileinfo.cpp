@@ -1,5 +1,4 @@
 #include "fileinfo.h"
-
 #include "logger.h"
 
 #include <QFileInfo>

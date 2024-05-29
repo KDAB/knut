@@ -1,8 +1,8 @@
 #pragma once
 
-#include <QObject>
-
 #include "rangemark.h"
+
+#include <QObject>
 
 namespace treesitter {
 class QueryMatch;

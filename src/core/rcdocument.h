@@ -1,9 +1,8 @@
 #pragma once
 
 #include "document.h"
-#include "settings.h"
-
 #include "rccore/rcfile.h"
+#include "settings.h"
 
 namespace Core {
 

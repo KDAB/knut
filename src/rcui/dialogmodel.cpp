@@ -1,5 +1,4 @@
 #include "dialogmodel.h"
-
 #include "rcviewer_global.h"
 
 #include <QColor>

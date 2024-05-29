@@ -2,7 +2,6 @@
 
 #include <QFile>
 #include <QTextStream>
-
 #include <algorithm>
 #include <unordered_set>
 

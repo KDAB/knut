@@ -1,14 +1,12 @@
 #include "querymatch.h"
-
 #include "codedocument.h"
 #include "rangemark.h"
 #include "textdocument.h"
 #include "utils/log.h"
 
+#include <QJSEngine>
 #include <kdalgorithms.h>
 #include <treesitter/query.h>
-
-#include <QJSEngine>
 
 namespace Core {
 

@@ -1,8 +1,7 @@
 #include "rctouidialog.h"
-#include "ui_rctouidialog.h"
-
 #include "core/rcdocument.h"
 #include "core/settings.h"
+#include "ui_rctouidialog.h"
 
 #include <QApplication>
 #include <QDir>

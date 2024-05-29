@@ -2,7 +2,6 @@
 
 #include <QAbstractItemModel>
 #include <QFrame>
-
 #include <functional>
 #include <memory>
 #include <vector>

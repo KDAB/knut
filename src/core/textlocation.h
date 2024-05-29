@@ -1,9 +1,9 @@
 #pragma once
 
-#include <QObject>
-
 #include "lsp/types.h"
 #include "textrange.h"
+
+#include <QObject>
 
 namespace Core {
 

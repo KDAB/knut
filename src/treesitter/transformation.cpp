@@ -1,5 +1,4 @@
 #include "transformation.h"
-
 #include "predicates.h"
 #include "tree.h"
 

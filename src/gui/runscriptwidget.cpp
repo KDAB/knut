@@ -1,13 +1,11 @@
 #include "runscriptwidget.h"
-#include "ui_runscriptwidget.h"
-
 #include "core/scriptmanager.h"
+#include "ui_runscriptwidget.h"
 
 #include <QApplication>
 #include <QCompleter>
 #include <QFileDialog>
 #include <QPushButton>
-
 #include <kdalgorithms.h>
 
 namespace Gui {

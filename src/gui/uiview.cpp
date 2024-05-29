@@ -1,5 +1,4 @@
 #include "uiview.h"
-
 #include "core/rcdocument.h"
 #include "core/uidocument.h"
 

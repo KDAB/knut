@@ -1,8 +1,7 @@
 #include "rangemark.h"
-#include "rangemark_p.h"
-
 #include "mark.h"
 #include "rangemark.h"
+#include "rangemark_p.h"
 #include "textdocument.h"
 #include "utils/log.h"
 

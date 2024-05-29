@@ -8,14 +8,13 @@
 
 #pragma once
 
-#include <type_traits>
-
 #include <QByteArray>
 #include <QDebug>
 #include <QString>
 #include <list>
 #include <map>
 #include <set>
+#include <type_traits>
 #include <unordered_map>
 #include <unordered_set>
 

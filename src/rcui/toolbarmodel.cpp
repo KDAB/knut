@@ -1,5 +1,4 @@
 #include "toolbarmodel.h"
-
 #include "rcviewer_global.h"
 
 #include <QColor>

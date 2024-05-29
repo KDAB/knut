@@ -1,12 +1,10 @@
-#ifndef TREESITTERINSPECTOR_H
-#define TREESITTERINSPECTOR_H
+#pragma once
 
+#include "treesitter/parser.h"
 #include "treesittertreemodel.h"
 
 #include <QDialog>
 #include <QSyntaxHighlighter>
-
-#include <treesitter/parser.h>
 
 namespace treesitter {
 class Transformation;
@@ -77,5 +75,3 @@ private:
 };
 
 } // namespace Gui
-
-#endif // TREESITTERINSPECTOR_H

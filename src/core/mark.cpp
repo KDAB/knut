@@ -1,7 +1,6 @@
 #include "mark.h"
-#include "mark_p.h"
-
 #include "logger.h"
+#include "mark_p.h"
 #include "textdocument.h"
 #include "utils/log.h"
 

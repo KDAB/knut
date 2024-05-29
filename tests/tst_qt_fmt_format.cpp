@@ -8,13 +8,12 @@
 
 #include "../utils/qt_fmt_format.h"
 
-#include <QDebug>
-#include <QRegularExpression>
-#include <QTest>
-
 #include <QDateTime>
+#include <QDebug>
 #include <QRect>
+#include <QRegularExpression>
 #include <QSize>
+#include <QTest>
 #include <QUuid>
 
 class QtFmtFormatTest : public QObject

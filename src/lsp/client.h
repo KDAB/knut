@@ -5,7 +5,6 @@
 #include "utils/log.h"
 
 #include <QObject>
-
 #include <string>
 
 namespace Lsp {

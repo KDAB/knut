@@ -1,5 +1,4 @@
 #include "stringmodel.h"
-
 #include "rcviewer_global.h"
 
 #include <algorithm>

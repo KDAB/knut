@@ -1,11 +1,9 @@
 #include "findwidget.h"
-#include "ui_findwidget.h"
-
-#include "guisettings.h"
-
 #include "core/logger.h"
 #include "core/project.h"
 #include "core/textdocument.h"
+#include "guisettings.h"
+#include "ui_findwidget.h"
 
 #include <QAction>
 #include <QKeySequence>

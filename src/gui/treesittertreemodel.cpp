@@ -1,9 +1,8 @@
 #include "treesittertreemodel.h"
+#include "utils/log.h"
 
 #include <QBrush>
 #include <QColor>
-
-#include "utils/log.h"
 
 namespace Gui {
 

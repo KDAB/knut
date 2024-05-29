@@ -1,15 +1,15 @@
 #include "qmlview.h"
-
 #include "core/qmldocument.h"
 #include "guisettings.h"
+
+#include <QAction>
 #include <QFile>
 #include <QLabel>
 #include <QPlainTextEdit>
-#include <QVBoxLayout>
-
-#include <QAction>
 #include <QQuickView>
 #include <QToolBar>
+#include <QVBoxLayout>
+
 namespace Gui {
 
 QmlView::QmlView(QWidget *parent)

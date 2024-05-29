@@ -5,7 +5,6 @@
 #include <QSet>
 #include <QSharedPointer>
 #include <QString>
-
 #include <functional>
 
 namespace Core {

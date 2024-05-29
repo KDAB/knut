@@ -10,12 +10,10 @@
 #include <QFileInfo>
 #include <QString>
 #include <QTest>
-
-#include <spdlog/details/log_msg.h>
-#include <spdlog/sinks/callback_sink.h>
-
 #include <iostream>
 #include <memory>
+#include <spdlog/details/log_msg.h>
+#include <spdlog/sinks/callback_sink.h>
 #include <vector>
 
 namespace Test {

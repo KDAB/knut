@@ -3,7 +3,6 @@
 #include "document.h"
 
 #include <QObject>
-
 #include <unordered_map>
 #include <vector>
 

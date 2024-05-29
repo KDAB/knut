@@ -1,6 +1,5 @@
 #include "scriptdialogitem.h"
 #include "scriptdialogitem_p.h"
-
 #include "scriptrunner.h"
 #include "settings.h"
 #include "utils/log.h"

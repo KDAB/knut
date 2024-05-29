@@ -1,11 +1,10 @@
 #pragma once
 
-#include <treesitter/node.h>
-#include <treesitter/query.h>
-#include <treesitter/tree.h>
+#include "treesitter/node.h"
+#include "treesitter/query.h"
+#include "treesitter/tree.h"
 
 #include <QAbstractItemModel>
-
 #include <memory>
 #include <optional>
 

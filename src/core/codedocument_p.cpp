@@ -1,6 +1,5 @@
 #include "codedocument_p.h"
 #include "codedocument.h"
-
 #include "treesitter/languages.h"
 #include "utils/log.h"
 

@@ -1,5 +1,4 @@
 #include "imageview.h"
-
 #include "core/imagedocument.h"
 #include "guisettings.h"
 

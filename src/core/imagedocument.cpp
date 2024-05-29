@@ -1,5 +1,4 @@
 #include "imagedocument.h"
-
 #include "utils/log.h"
 
 namespace Core {

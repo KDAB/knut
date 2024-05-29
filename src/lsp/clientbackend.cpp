@@ -1,5 +1,4 @@
 #include "clientbackend.h"
-
 #include "notificationmessage_json.h"
 #include "notifications.h"
 #include "requestmessage_json.h"
@@ -9,10 +8,8 @@
 #include <QBuffer>
 #include <QEventLoop>
 #include <QString>
-
-#include <spdlog/sinks/basic_file_sink.h>
-
 #include <ctime>
+#include <spdlog/sinks/basic_file_sink.h>
 
 using json = nlohmann::json;
 

@@ -1,12 +1,10 @@
 #include "functionsymbol.h"
-
 #include "codedocument.h"
 #include "cpplanguagedata.h"
 #include "lsp/lsp_utils.h"
 #include "utils/log.h"
 
 #include <QRegularExpression>
-
 #include <kdalgorithms.h>
 
 namespace Core {

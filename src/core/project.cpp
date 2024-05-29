@@ -1,10 +1,9 @@
 #include "project.h"
-#include "project_p.h"
-
 #include "cppdocument.h"
 #include "imagedocument.h"
 #include "logger.h"
 #include "lsp/client.h"
+#include "project_p.h"
 #include "qmldocument.h"
 #include "rcdocument.h"
 #include "settings.h"
@@ -17,10 +16,8 @@
 #include <QDirIterator>
 #include <QFileInfo>
 #include <QMetaEnum>
-
-#include <kdalgorithms.h>
-
 #include <algorithm>
+#include <kdalgorithms.h>
 #include <map>
 #include <unordered_set>
 

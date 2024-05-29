@@ -1,8 +1,7 @@
 #include "node.h"
+#include "utils/log.h"
 
 #include <kdalgorithms.h>
-
-#include "utils/log.h"
 
 namespace treesitter {
 

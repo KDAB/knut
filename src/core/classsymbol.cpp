@@ -1,5 +1,4 @@
 #include "classsymbol.h"
-
 #include "codedocument.h"
 #include "utils/log.h"
 

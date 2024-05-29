@@ -1,10 +1,9 @@
 #pragma once
 
+#include "common/test_utils.h"
 #include "core/cppdocument.h"
 #include "core/knutcore.h"
 #include "core/project.h"
-
-#include "common/test_utils.h"
 
 #include <functional>
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/mark.h"
+
 #include <QWidget>
 
 class QRubberBand;

@@ -1,9 +1,7 @@
 #include "assetmodel.h"
-
 #include "rcviewer_global.h"
 
 #include <QColor>
-
 #include <algorithm>
 
 using namespace RcCore;

@@ -1,7 +1,6 @@
 #include "transformpreviewdialog.h"
-#include "ui_transformpreviewdialog.h"
-
 #include "guisettings.h"
+#include "ui_transformpreviewdialog.h"
 
 #include <QPushButton>
 

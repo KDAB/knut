@@ -3,7 +3,6 @@
 #include <QObject>
 #include <QStringList>
 #include <QVariant>
-
 #include <functional>
 #include <vector>
 

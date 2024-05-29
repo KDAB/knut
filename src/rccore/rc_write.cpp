@@ -1,5 +1,4 @@
 #include "rcfile.h"
-
 #include "uiwriter.h"
 #include "utils/log.h"
 

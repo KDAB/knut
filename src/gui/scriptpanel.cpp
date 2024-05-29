@@ -1,5 +1,4 @@
 #include "scriptpanel.h"
-
 #include "core/logger.h"
 #include "core/project.h"
 #include "core/scriptmanager.h"

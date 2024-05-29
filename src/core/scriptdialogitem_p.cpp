@@ -1,5 +1,4 @@
 #include "scriptdialogitem_p.h"
-
 #include "utils/log.h"
 
 #include <private/qmetaobjectbuilder_p.h>

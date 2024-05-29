@@ -1,5 +1,4 @@
 #include "textlocation.h"
-
 #include "codedocument.h"
 #include "project.h"
 

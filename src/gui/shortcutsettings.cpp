@@ -1,13 +1,11 @@
 #include "shortcutsettings.h"
-#include "ui_shortcutsettings.h"
-
 #include "mainwindow.h"
 #include "shortcutmanager.h"
+#include "ui_shortcutsettings.h"
 
 #include <QAbstractTableModel>
 #include <QKeySequence>
 #include <QSortFilterProxyModel>
-
 #include <algorithm>
 #include <vector>
 

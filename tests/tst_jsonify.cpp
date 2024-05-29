@@ -2,7 +2,6 @@
 
 #include <QSignalSpy>
 #include <QTest>
-
 #include <string>
 
 using json = nlohmann::json;

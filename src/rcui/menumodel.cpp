@@ -1,5 +1,4 @@
 #include "menumodel.h"
-
 #include "rcviewer_global.h"
 
 using namespace RcCore;

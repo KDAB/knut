@@ -1,5 +1,4 @@
 #include "datamodel.h"
-
 #include "rccore/rcfile.h"
 #include "rcviewer_global.h"
 

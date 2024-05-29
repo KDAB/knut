@@ -1,6 +1,5 @@
-#include "rccore/rcfile.h"
-
 #include "common/test_utils.h"
+#include "rccore/rcfile.h"
 
 #include <QBuffer>
 #include <QFile>
@@ -23,7 +22,7 @@ private slots:
         RcFile rcFile = parse(Test::testDataPath() + "/rcfiles/2048Game/2048Game.rc");
         auto data = rcFile.data.value("LANG_ENGLISH;SUBLANG_ENGLISH_US");
 
-        // Defaut settings test
+        // Default settings test
         {
             QBuffer buffer;
             if (buffer.open(QIODevice::WriteOnly)) {

@@ -1,5 +1,4 @@
 #include "file.h"
-
 #include "logger.h"
 
 #include <QFile>

@@ -1,7 +1,6 @@
+#include "common/test_utils.h"
 #include "core/project_p.h"
 #include "core/settings.h"
-
-#include "common/test_utils.h"
 
 #include <QSignalSpy>
 #include <QTest>

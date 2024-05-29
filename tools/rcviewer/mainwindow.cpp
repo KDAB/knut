@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-
 #include "rccore/rcfile.h"
 #include "rcui/rcfileview.h"
 

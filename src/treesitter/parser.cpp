@@ -1,8 +1,7 @@
 #include "parser.h"
-
 #include "tree.h"
-#include "tree_sitter/api.h"
 
+#include <tree_sitter/api.h>
 #include <utility>
 
 namespace treesitter {

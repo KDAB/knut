@@ -1,11 +1,10 @@
 #pragma once
 
-#include <QObject>
-#include <QXmlStreamWriter>
-
 #include <QHash>
+#include <QObject>
 #include <QStack>
 #include <QVector>
+#include <QXmlStreamWriter>
 
 namespace RcCore {
 
