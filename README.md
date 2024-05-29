@@ -1,56 +1,38 @@
-# Compilation
+# Knut
 
-To compile Knut, you need:
-- a C++20 compiler (recent compilers should work)
-- Qt 6.2 at least
+Knut is an automation tool for code transformation using scripts. The main use case is for migration, but it could be used elsewhere.
 
-All 3rd-party dependencies are set up as git submodules.
+The scripts are written either in javascript or QML languages, the latter being able to display a user interface to customize some parts of the application.
+The script API is available in this documentation, and ranges from normal text transformations (find and replace) to getting contextual information based on the file language (using [TreeSitter](https://tree-sitter.github.io/tree-sitter/).
 
-## Qt Creator compilation error on Windows
+Knut can be used via a command line interface or a user interface.
 
-On Windows, if you use Qt Creator, you will have a compilation error with KSyntaxHighlighting:
+# Requirements
 
-```
-[1/183 103.8/sec] Generating index.katesyntax
-FAILED: _deps/ksyntaxhighlighting-build/data/index.katesyntax C:/dev/knut/build-knut-Desktop_Qt_5_15_2_MSVC2019_64bit-Debug/_deps/ksyntaxhighlighting-build/data/index.katesyntax
-cmd.exe /C "cd /D C:\dev\knut\build-knut-Desktop_Qt_5_15_2_MSVC2019_64bit-Debug\_deps\ksyntaxhighlighting-build\data && C:\dev\knut\build-knut-Desktop_Qt_5_15_2_MSVC2019_64bit-Debug\bin\katehighlightingindexer.exe C:/dev/knut/build-knut-Desktop_Qt_5_15_2_MSVC2019_64bit-Debug/_deps/ksyntaxhighlighting-build/data/index.katesyntax C:/dev/knut/build-knut-Desktop_Qt_5_15_2_MSVC2019_64bit-Debug/_deps/ksyntaxhighlighting-src/data/schema/language.xsd C:/dev/knut/build-knut-Desktop_Qt_5_15_2_MSVC2019_64bit-Debug/_deps/ksyntaxhighlighting-build/data/syntax-data.qrc"
-```
+Knut is using [Language Server Protocol](https://microsoft.github.io/language-server-protocol/) servers for the GUI. It is not used for the scripts, so if you are using Knut with the command line interface, you don't need it.
 
-The way to fix that is to open a console with Qt and Visual Studio setup, go to the Qt Creator build directory, and do a first compilation in command line with `ninja`.
-Or setup the Qt environment before running Qt Creator.
-
-## Contribution
-
-If you want to contribute, make sure to install the pre-commit hooks. Those are installed using [pre-commit](https://pre-commit.com/):
-
-```
-pip install pre-commit
-pre-commit install --hook-type commit-msg
-```
-
-At your first commit, it will download a bunch of necessary files, then all checks will be done at every commit, before hitting the CI.
-
-> **Warning**: on Windows with gerrit, you need to edit the file `.git/hooks/commit-msg.legacy` and replace the first line `#!/bin/sh` with `#!/usr/bin/env bash`
-
-# Usage
-
-Knut is using [Language Server Protocol](https://microsoft.github.io/language-server-protocol/) servers.
 For C++, if you are using clangd, note that some tests are disabled for clangd version < 13.
 
-# Documentation
+# Licensing
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org/).
+Knut is © Klarälvdalens Datakonsult AB (KDAB) and is licensed according to the terms of [GPL 3.0](LICENSES/GPL-3.0-only.txt).
 
-## Installation
+Contact KDAB at <info@kdab.com> to inquire about licensing options.
 
-```
-pip install mkdocs
-pip install mkdocs-material
-pip install mkdocs-build-plantuml-plugin
-```
+Knut includes different 3rd party software, you can find the list and licenses for them in the [3RDPARTY](3RDPARTY.md) document.
 
-## Commands
+# About KDAB
 
-- `mkdocs serve` - Start the live-reloading docs server.
-- `mkdocs build` - Build the documentation site.
-- `mkdocs -h` - Print help message and exit.
+Knut is written and maintained by Klarälvdalens Datakonsult AB (KDAB).
+
+The KDAB Group is the global No.1 software consultancy for Qt, C++ and OpenGL applications across desktop, embedded and mobile platforms.
+
+The KDAB Group provides consulting and mentoring for developing Qt applications from scratch and in porting from all popular and legacy frameworks to Qt. We continue to help develop parts of Qt and are one of the major contributors to the Qt Project. We can give advanced or standard training anywhere around the globe on Qt as well as C++, OpenGL, 3D and more.
+
+Please visit [https://www.kdab.com](https://www.kdab.com) to meet the people who write code like this
+
+Stay up-to-date with KDAB product announcements:
+
+* [KDAB Newsletter](https://news.kdab.com)
+* [KDAB Blogs](https://www.kdab.com/category/blogs)
+* [KDAB on Twitter](https://twitter.com/KDABQt)

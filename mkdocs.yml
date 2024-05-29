@@ -1,4 +1,10 @@
 site_name: Knut v1.0
+site_description: Knut Documentation - Automation tool for code transformation using scripts
+site_author: Klarälvdalens Datakonsult AB (KDAB)
+site_url: https://docs.kdab.com/knut/latest/
+copyright: "Copyright &copy; Klar&auml;lvdalens Datakonsult AB (KDAB)<br>Trusted Software Excellence<br><a href='https://www.kdab.com'>https://www.kdab.com/</a>"
+repo_url: https://github.com/KDAB/Knut
+repo_name: Knut
 
 theme:
   name: material
@@ -22,9 +28,6 @@ extra_css:
 
 use_directory_urls: false
 
-repo_url: https://codereview.kdab.com/admin/repos/knut
-repo_name: knut
-
 nav:
     - Home: index.md
     - Getting Started:
@@ -34,7 +37,7 @@ nav:
         - Command line interface: getting-started/cli.md
         - User interface: getting-started/gui.md
     - Contributing:
-        - Getting started: contributing/getting-started.md
+        - Getting involved: contributing/getting-involved.md
         - Architecture: contributing/architecture.md
         - Unit tests: contributing/unit-tests.md
     - Script API:
