@@ -402,9 +402,10 @@ static Widget convertSlider(const Data &data, Data::Control &control)
     Widget widget;
     widget.className = "QSlider";
 
-    if (control.styles.removeOne("TBS_VERT"))
+    if (control.styles.removeOne("TBS_VERT")) {
         widget.properties["orientation"] = "Qt::Vertical";
-    else if (control.styles.removeOne("TBS_HORZ") || true) // We want to remove the style if it exits
+        widget.properties["invertedAppearance"] = "true";
+    } else if (control.styles.removeOne("TBS_HORZ") || true) // We want to remove the style if it exits
         widget.properties["orientation"] = "Qt::Horizontal";
 
     if (control.styles.removeOne("TBS_NOTICKS"))
