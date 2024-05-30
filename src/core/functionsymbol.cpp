@@ -38,35 +38,6 @@ namespace Core {
  * Returns the name of this argument.
  */
 
-FunctionArgument FunctionArgument::fromHover(const QString &parameter, Document::Type type)
-{
-    static auto identifierRegexp = QRegularExpression(R"([a-zA-Z_][a-zA-Z0-9_]*)");
-
-    auto words = Lsp::Utils::removeTypeAliasInformation(parameter).split(" ");
-
-    bool hasName = true;
-
-    if (type == Document::Type::Cpp) {
-        // In C++, parameter names are optional, therefore we need to figure out if the parameter even has a name.
-        auto withoutKeywords = words;
-        withoutKeywords.removeIf([](const auto &word) {
-            return Cpp::keywords.contains(word);
-        });
-        hasName = withoutKeywords.size() >= 2 && identifierRegexp.match(words.last()).hasMatch()
-            && !Cpp::primitiveTypes.contains(words.last());
-    }
-
-    FunctionArgument argument;
-    if (hasName) {
-        argument.name = words.last();
-        words.pop_back();
-    }
-
-    argument.type = words.join(" ");
-
-    return argument;
-}
-
 /*!
  * \qmltype FunctionSymbol
  * \brief Represents a function or a method in the current file

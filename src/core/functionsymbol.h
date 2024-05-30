@@ -29,8 +29,6 @@ struct FunctionArgument
 public:
     QString type;
     QString name;
-
-    static FunctionArgument fromHover(const QString &parameter, Document::Type type);
 };
 bool operator==(const FunctionArgument &left, const FunctionArgument &right);
 
