@@ -9,6 +9,7 @@
 */
 
 #include "scriptdialogitem.h"
+#include "conversionprogressdialog.h"
 #include "scriptdialogitem_p.h"
 #include "scriptrunner.h"
 #include "settings.h"
@@ -25,7 +26,6 @@
 #include <QFileInfo>
 #include <QLineEdit>
 #include <QMessageBox>
-#include <QProgressDialog>
 #include <QPushButton>
 #include <QQmlContext>
 #include <QRadioButton>
@@ -218,6 +218,7 @@ void ScriptDialogItem::startProgress(const QString &firstStep, int numSteps)
 void ScriptDialogItem::setProgressSteps(int numSteps)
 {
     m_numProgressSteps = numSteps;
+
     if (m_progressDialog) {
         m_progressDialog->setMaximum(numSteps);
     }
@@ -261,36 +262,41 @@ bool isGenerator(const QJSValue &generator)
     return generator.property("next").isCallable();
 }
 
+void ScriptDialogItem::continueConversion()
+{
+    // Busy Mode: set the conversion dialog to modal mode and disable its buttons,
+    // while a conversion step is processing.
+    if (m_progressDialog) {
+        m_progressDialog->setBusyMode(true);
+    }
+    nextStep(m_nextStepTitle);
+    interactiveStep();
+    if (m_progressDialog) {
+        m_progressDialog->setBusyMode(false);
+    }
+}
+
+void ScriptDialogItem::finishConversion()
+{
+    m_interactiveConversion.reset();
+    emit conversionFinished();
+}
+
 void ScriptDialogItem::interactiveStep()
 {
     const auto result = m_interactiveConversion->property("next").callWithInstance(m_interactiveConversion.value());
     const auto done = result.property("done").toBool();
-    const auto nextStepTitle = result.property("value").toString();
+    m_nextStepTitle = result.property("value").toString();
 
-    auto finish = [this]() {
-        m_interactiveConversion.reset();
-        emit conversionFinished();
-    };
+    spdlog::info("{} done.", m_currentStepTitle);
 
     if (done) {
-        finish();
+        finishConversion();
         return;
     }
 
-    auto continueConversion = [this, nextStepTitle]() {
-        nextStep(nextStepTitle);
-        if (m_progressDialog && m_showProgress) {
-            m_progressDialog->show();
-        }
-        interactiveStep();
-    };
-
     if (!isInteractive()) {
         return continueConversion();
-    }
-
-    if (m_progressDialog) {
-        m_progressDialog->hide();
     }
 
     const auto title = m_numProgressSteps > 0
@@ -298,15 +304,14 @@ void ScriptDialogItem::interactiveStep()
         : QString("A conversion step finished!");
 
     const auto message = m_currentStepTitle.isEmpty()
-        ? QString("A conversion step finished!\nContinue with %1?").arg(nextStepTitle)
-        : QString("Finished %1!\nContinue with %2?").arg(m_currentStepTitle, nextStepTitle);
+        ? QString("A conversion step finished!\nContinue with %1?").arg(m_nextStepTitle)
+        : QString("Finished %1!\nContinue with %2?").arg(m_currentStepTitle, m_nextStepTitle);
 
-    auto msgBox = new QMessageBox(QMessageBox::Question, title, message, QMessageBox::Ok | QMessageBox::Abort, this);
-    msgBox->setModal(false);
-
-    connect(msgBox, &QMessageBox::accepted, this, continueConversion);
-    connect(msgBox, &QMessageBox::rejected, this, finish);
-    msgBox->show();
+    m_progressDialog->setLabelText(title);
+    m_progressDialog->setMessage(message);
+    m_progressDialog->setValue(m_currentProgressStep);
+    // Make sure it is displayed in front of the other widgets
+    m_progressDialog->raise();
 }
 
 /**
@@ -360,20 +365,19 @@ static bool isShowingProgress = false;
 void ScriptDialogItem::startShowingProgress()
 {
     if (!m_progressDialog) {
-        m_progressDialog = new QProgressDialog();
+        m_progressDialog = new ConversionProgressDialog();
         m_progressDialog->setModal(true);
         m_progressDialog->setWindowModality(Qt::ApplicationModal);
         m_progressDialog->setWindowTitle(windowTitle());
-        m_progressDialog->setLabelText("Converting your code...");
-        m_progressDialog->setCancelButton(nullptr);
-        m_progressDialog->setMinimumDuration(0);
-        m_progressDialog->setAutoClose(false);
-        m_progressDialog->setAutoReset(false);
         // Using min,max,value of 0 causes an undetermined progress bar
         // As we don't know how long a script may take without the script telling us, this is the default.
         m_progressDialog->setMinimum(0);
         m_progressDialog->setMaximum(m_numProgressSteps);
         m_progressDialog->setValue(m_currentProgressStep);
+        m_progressDialog->show();
+
+        connect(m_progressDialog, &ConversionProgressDialog::apply, this, &ScriptDialogItem::continueConversion);
+        connect(m_progressDialog, &ConversionProgressDialog::abort, this, &ScriptDialogItem::finishConversion);
 
         connect(this, &ScriptDialogItem::conversionFinished, m_progressDialog, [this]() {
             m_progressDialog->close();
@@ -381,7 +385,7 @@ void ScriptDialogItem::startShowingProgress()
             isShowingProgress = false;
         });
     }
-    m_progressDialog->show();
+
     isShowingProgress = true;
 
     ScriptDialogItem::updateProgress();

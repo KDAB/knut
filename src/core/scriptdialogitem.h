@@ -16,7 +16,7 @@
 #include <QQmlPropertyMap>
 #include <vector>
 
-class QProgressDialog;
+class ConversionProgressDialog;
 
 namespace Core {
 
@@ -67,6 +67,8 @@ signals:
     void conversionFinished();
 
 private:
+    void continueConversion();
+    void finishConversion();
     void setProgressSteps(int numSteps);
     void interactiveStep();
     void startShowingProgress();
@@ -85,11 +87,12 @@ private:
     // needs to be mutable for lazy-initialization
     mutable DynamicObject *m_data;
     std::vector<QObject *> m_children;
+    ConversionProgressDialog *m_progressDialog = nullptr;
 
-    QProgressDialog *m_progressDialog = nullptr;
     int m_numProgressSteps = 0;
     int m_currentProgressStep = 0;
     QString m_currentStepTitle;
+    QString m_nextStepTitle;
     bool m_showProgress = false;
 
     std::optional<QJSValue> m_interactiveConversion;

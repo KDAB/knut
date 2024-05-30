@@ -19,6 +19,9 @@ set(PROJECT_SOURCES
     codedocument.cpp
     codedocument_p.h
     codedocument_p.cpp
+    conversionprogressdialog.h
+    conversionprogressdialog.cpp
+    conversionprogressdialog.ui
     cpplanguagedata.h
     cpplanguagedata.cpp
     cppdocument.h
@@ -104,6 +107,7 @@ set(PROJECT_SOURCES
     core.qrc)
 
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
+
 target_link_libraries(
   ${PROJECT_NAME}
   PUBLIC nlohmann_json::nlohmann_json
