@@ -7,7 +7,8 @@
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build-debug",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug"
+                "CMAKE_BUILD_TYPE": "Debug",
+                "KNUT_ERROR_ON_WARN": "ON"
             }
         },
         {
@@ -36,6 +37,29 @@
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "RelWithDebInfo"
             }
+        },
+        {
+            "name": "ci",
+            "displayName": "CI build",
+            "binaryDir": "${sourceDir}/build-ci",
+            "inherits": "profile",
+            "cacheVariables": {
+                "KNUT_ERROR_ON_WARN": "ON"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "ci",
+            "configurePreset": "ci"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "ci",
+            "configurePreset": "ci",
+            "output": { "outputOnFailure": true },
+            "execution": {"noTestsAction": "error", "stopOnFailure": true}
         }
     ]
 }
