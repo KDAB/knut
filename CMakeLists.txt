@@ -75,7 +75,7 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-find_package(QT NAMES Qt6 Qt5)
+find_package(QT NAMES Qt6)
 find_package(
   Qt6
   COMPONENTS Widgets Qml Quick Test UiTools
