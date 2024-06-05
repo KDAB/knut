@@ -73,17 +73,16 @@ namespace Core {
  */
 
 /*!
- * \qmlproperty bool ScriptDialog::showProgress
- *
- * If set to true, a progress dialog will be shown when the dialog is accepted.
- * This is useful for long-running scripts.
- */
-
-/*!
  * \qmlproperty bool ScriptDialog::interactive
  *
  * If set to false, runSteps will not ask for user input, the entire script will be run at once.
  * This is especially useful for testing.
+ */
+
+/*!
+ * \qmlproperty int ScriptDialog::stepCount
+ *
+ * Number of steps to display in the progress bar.
  */
 
 /*!
@@ -158,32 +157,15 @@ void ScriptDialogItem::setUiFilePath(const QString &filePath)
     }
 }
 
-bool ScriptDialogItem::showProgress()
-{
-    return m_showProgress;
-}
-
 void ScriptDialogItem::done(int code)
 {
-    if (code == QDialog::Accepted && showProgress()) {
-        startShowingProgress();
-    }
-
     // When showing progress, the `onAccepted` handler will likely call `QCoreApplication::processEvents` multiple
     // times. This will cause other slots that are connected to `finished` to be evaluated as well. Therefore we use the
-    // additional `conversionFinished` signal for cleanup. This signal is only emitted once all handlers of
+    // additional `scriptFinished` signal for cleanup. This signal is only emitted once all handlers of
     // `QDialog::done` have finished.
     QDialog::done(code);
-    if (!m_interactiveConversion.has_value()) {
-        emit conversionFinished();
-    }
-}
-
-void ScriptDialogItem::setShowProgress(bool value)
-{
-    if (m_showProgress != value) {
-        m_showProgress = value;
-        emit showProgressChanged(m_showProgress);
+    if (!m_stepGenerator.has_value()) {
+        finishScript();
     }
 }
 
@@ -200,27 +182,44 @@ void ScriptDialogItem::setInteractive(bool interactive)
     }
 }
 
+int ScriptDialogItem::stepCount() const
+{
+    return m_stepCount;
+}
+
 /**
- * \qmlmethod ScriptDialog::startProgress(string firstStep, int numSteps)
+ * \qmlmethod ScriptDialog::setStepCount(int stepCount)
  *
- * Start a progress bar with the given `firstStep` title and number of steps.
+ * Sets the number of steps to show in the progress bar.
+ *
+ * By default the value is 0, meaning there are no steps set. This will show an indeterminate progress bar. You can use
+ * the `stepCount` property to set the number of steps too.
+ */
+void ScriptDialogItem::setStepCount(int stepCount)
+{
+    if (m_stepCount == stepCount)
+        return;
+    m_stepCount = stepCount;
+    if (m_progressDialog) {
+        m_progressDialog->setMaximum(stepCount);
+    }
+    emit stepCountChanged(m_stepCount);
+}
+
+/**
+ * \qmlmethod ScriptDialog::firstStep(string firstStep)
+ *
+ * Starts a progress bar with the given `firstStep` title.
  *
  * The number of following `nextStep` calls (or yield calls if using runSteps) should be one less than the number of
  * steps set here.
  */
-void ScriptDialogItem::startProgress(const QString &firstStep, int numSteps)
+void ScriptDialogItem::firstStep(const QString &firstStep)
 {
-    setProgressSteps(numSteps);
+    showProgressDialog();
+    m_currentStep = 0;
     nextStep(firstStep);
-}
-
-void ScriptDialogItem::setProgressSteps(int numSteps)
-{
-    m_numProgressSteps = numSteps;
-
-    if (m_progressDialog) {
-        m_progressDialog->setMaximum(numSteps);
-    }
+    updateProgress();
 }
 
 /**
@@ -245,72 +244,73 @@ void ScriptDialogItem::nextStep(const QString &title)
     // So just increase the maximum.
     m_currentStepTitle = title;
 
-    if (m_currentProgressStep >= m_numProgressSteps) {
-        setProgressSteps(m_numProgressSteps + 1);
+    if (m_stepCount != 0 && m_currentStep >= m_stepCount) {
+        setStepCount(m_stepCount + 1);
     }
 
     if (m_progressDialog) {
-        m_progressDialog->setLabelText(title);
-        m_progressDialog->setValue(m_currentProgressStep);
+        const auto title = m_stepCount == 0
+            ? m_currentStepTitle
+            : QStringLiteral("%1 (%2/%3)").arg(m_currentStepTitle).arg(m_currentStep + 1).arg(m_stepCount);
+        m_progressDialog->setTitle(title);
+        m_progressDialog->setValue(m_currentStep);
     }
-    ++m_currentProgressStep;
+    ++m_currentStep;
 }
 
-bool isGenerator(const QJSValue &generator)
+void ScriptDialogItem::continueScript()
 {
-    return generator.property("next").isCallable();
-}
-
-void ScriptDialogItem::continueConversion()
-{
-    // Busy Mode: set the conversion dialog to modal mode and disable its buttons,
-    // while a conversion step is processing.
-    if (m_progressDialog) {
-        m_progressDialog->setBusyMode(true);
-    }
+    if (m_progressDialog)
+        m_progressDialog->setReadOnly(true);
     nextStep(m_nextStepTitle);
-    interactiveStep();
-    if (m_progressDialog) {
-        m_progressDialog->setBusyMode(false);
-    }
+    runNextStep();
 }
 
-void ScriptDialogItem::finishConversion()
+void ScriptDialogItem::abortScript()
 {
-    m_interactiveConversion.reset();
-    emit conversionFinished();
+    spdlog::info("Script aborted.");
+    finishScript();
 }
 
-void ScriptDialogItem::interactiveStep()
+void ScriptDialogItem::finishScript()
 {
-    const auto result = m_interactiveConversion->property("next").callWithInstance(m_interactiveConversion.value());
+    m_stepGenerator.reset();
+    cleanupProgressDialog();
+    emit scriptFinished();
+}
+
+void ScriptDialogItem::runNextStep()
+{
+    showProgressDialog();
+
+    const auto result = m_stepGenerator->property("next").callWithInstance(m_stepGenerator.value());
     const auto done = result.property("done").toBool();
     m_nextStepTitle = result.property("value").toString();
 
     spdlog::info("{} done.", m_currentStepTitle);
 
     if (done) {
-        finishConversion();
+        finishScript();
         return;
     }
 
     if (!isInteractive()) {
-        return continueConversion();
+        continueScript();
+        return;
     }
 
-    const auto title = m_numProgressSteps > 0
-        ? QString("%1/%2 conversions done!").arg(m_currentProgressStep).arg(m_numProgressSteps)
-        : QString("A conversion step finished!");
+    const auto title = QString("%1 (DONE)").arg(m_currentStepTitle);
 
-    const auto message = m_currentStepTitle.isEmpty()
-        ? QString("A conversion step finished!\nContinue with %1?").arg(m_nextStepTitle)
-        : QString("Finished %1!\nContinue with %2?").arg(m_currentStepTitle, m_nextStepTitle);
-
-    m_progressDialog->setLabelText(title);
-    m_progressDialog->setMessage(message);
-    m_progressDialog->setValue(m_currentProgressStep);
+    m_progressDialog->setTitle(title);
+    m_progressDialog->setValue(m_currentStep);
     // Make sure it is displayed in front of the other widgets
     m_progressDialog->raise();
+    m_progressDialog->setReadOnly(false);
+}
+
+static bool isGenerator(const QJSValue &generator)
+{
+    return generator.property("next").isCallable();
 }
 
 /**
@@ -327,15 +327,17 @@ void ScriptDialogItem::interactiveStep()
  * script.
  * You can also mix and match between `yield` and `nextStep` calls.
  *
- * For the best experience, we recommend to use `startProgress` and `nextStep` to indicate the remaining progress.
+ * For the best experience, we recommend to use `setStepCount`, `firstStep` and `yield` to indicate the remaining
+ * progress.
  *
  * Example:
  * ```javascript
  * function *conversionSteps() {
- *    startProgress("Adding member", 2)
+ *    setStepCount(2)            // <--- Initialize the number of steps
+ *    firstStep("Adding member") // <--- Start the first step
  *    document.addMember("test", "int", CppDocument.Public)
  *
- *    yield "Inserting include" // <--- The user can check that the member was inserted correctly
+ *    yield "Inserting include"  // <--- The user can check that the member was inserted correctly
  *    document.insertInclude("<iostream>")
  * }
  *
@@ -355,44 +357,47 @@ void ScriptDialogItem::runSteps(QJSValue generator)
         return;
     }
 
-    m_interactiveConversion = generator;
-    interactiveStep();
+    m_stepGenerator = generator;
+    runNextStep();
 }
 
-static bool isShowingProgress = false;
-
-void ScriptDialogItem::startShowingProgress()
+void ScriptDialogItem::showProgressDialog()
 {
-    if (!m_progressDialog) {
-        m_progressDialog = new ConversionProgressDialog();
-        m_progressDialog->setModal(true);
-        m_progressDialog->setWindowModality(Qt::ApplicationModal);
-        m_progressDialog->setWindowTitle(windowTitle());
-        // Using min,max,value of 0 causes an undetermined progress bar
-        // As we don't know how long a script may take without the script telling us, this is the default.
-        m_progressDialog->setMinimum(0);
-        m_progressDialog->setMaximum(m_numProgressSteps);
-        m_progressDialog->setValue(m_currentProgressStep);
-        m_progressDialog->show();
+    // If there's no interaction or the progress bar is already displayed, do nothing
+    if (!isInteractive() || m_progressDialog)
+        return;
 
-        connect(m_progressDialog, &ConversionProgressDialog::apply, this, &ScriptDialogItem::continueConversion);
-        connect(m_progressDialog, &ConversionProgressDialog::abort, this, &ScriptDialogItem::finishConversion);
+    m_progressDialog = new ConversionProgressDialog();
+    m_progressDialog->setInteractive(m_stepGenerator.has_value());
+    m_progressDialog->setWindowTitle(windowTitle());
+    // Using min,max,value of 0 causes an undetermined progress bar
+    // As we don't know how long a script may take without the script telling us, this is the default.
+    m_progressDialog->setMinimum(0);
+    m_progressDialog->setMaximum(m_stepCount);
+    m_progressDialog->setValue(m_currentStep);
+    m_progressDialog->setReadOnly(true);
 
-        connect(this, &ScriptDialogItem::conversionFinished, m_progressDialog, [this]() {
-            m_progressDialog->close();
-            m_progressDialog->deleteLater();
-            isShowingProgress = false;
-        });
+    connect(m_progressDialog, &ConversionProgressDialog::apply, this, &ScriptDialogItem::continueScript);
+    connect(m_progressDialog, &ConversionProgressDialog::abort, this, &ScriptDialogItem::abortScript);
+
+    m_progressDialogs.push_back(m_progressDialog);
+    m_progressDialog->show();
+    updateProgress();
+}
+
+void ScriptDialogItem::cleanupProgressDialog()
+{
+    if (m_progressDialog) {
+        m_progressDialog->close();
+        m_progressDialog->deleteLater();
+        m_progressDialogs.removeAll(m_progressDialog);
+        m_progressDialog = nullptr;
     }
-
-    isShowingProgress = true;
-
-    ScriptDialogItem::updateProgress();
 }
 
 void ScriptDialogItem::updateProgress()
 {
-    if (isShowingProgress) {
+    if (!m_progressDialogs.empty()) {
         QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
     }
 }

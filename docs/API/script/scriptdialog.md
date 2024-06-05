@@ -12,15 +12,16 @@ import Script 1.0
 |-|-|
 |QQmlPropertyMap|**[data](#data)**|
 |bool|**[interactive](#interactive)**|
-|bool|**[showProgress](#showProgress)**|
+|int|**[stepCount](#stepCount)**|
 
 ## Methods
 
 | | Name |
 |-|-|
+||**[firstStep](#firstStep)**(string firstStep)|
 ||**[nextStep](#nextStep)**(string title)|
 ||**[runSteps](#runSteps)**(function generator)|
-||**[startProgress](#startProgress)**(string firstStep, int numSteps)|
+||**[setStepCount](#setStepCount)**(int stepCount)|
 
 ## Signals
 
@@ -67,12 +68,18 @@ This read-only property contains all properties mapping the widgets.
 If set to false, runSteps will not ask for user input, the entire script will be run at once.
 This is especially useful for testing.
 
-#### <a name="showProgress"></a>bool **showProgress**
+#### <a name="stepCount"></a>int **stepCount**
 
-If set to true, a progress dialog will be shown when the dialog is accepted.
-This is useful for long-running scripts.
+Number of steps to display in the progress bar.
 
 ## Method Documentation
+
+#### <a name="firstStep"></a>**firstStep**(string firstStep)
+
+Starts a progress bar with the given `firstStep` title.
+
+The number of following `nextStep` calls (or yield calls if using runSteps) should be one less than the number of
+steps set here.
 
 #### <a name="nextStep"></a>**nextStep**(string title)
 
@@ -94,15 +101,17 @@ This will behave the same as calling `nextStep`, but pauses the script, until th
 script.
 You can also mix and match between `yield` and `nextStep` calls.
 
-For the best experience, we recommend to use `startProgress` and `nextStep` to indicate the remaining progress.
+For the best experience, we recommend to use `setStepCount`, `firstStep` and `yield` to indicate the remaining
+progress.
 
 Example:
 ```javascript
 function *conversionSteps() {
-   startProgress("Adding member", 2)
+   setStepCount(2)            // <--- Initialize the number of steps
+   firstStep("Adding member") // <--- Start the first step
    document.addMember("test", "int", CppDocument.Public)
 
-   yield "Inserting include" // <--- The user can check that the member was inserted correctly
+   yield "Inserting include"  // <--- The user can check that the member was inserted correctly
    document.insertInclude("<iostream>")
 }
 
@@ -111,12 +120,12 @@ function convert() {
 }
 ```
 
-#### <a name="startProgress"></a>**startProgress**(string firstStep, int numSteps)
+#### <a name="setStepCount"></a>**setStepCount**(int stepCount)
 
-Start a progress bar with the given `firstStep` title and number of steps.
+Sets the number of steps to show in the progress bar.
 
-The number of following `nextStep` calls (or yield calls if using runSteps) should be one less than the number of
-steps set here.
+By default the value is 0, meaning there are no steps set. This will show an indeterminate progress bar. You can use
+the `stepCount` property to set the number of steps too.
 
 ## Signal Documentation
 

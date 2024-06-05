@@ -11,7 +11,7 @@
 #include "conversionprogressdialog.h"
 #include "ui_conversionprogressdialog.h"
 
-#include <QStyle>
+#include <QPushButton>
 
 ConversionProgressDialog::ConversionProgressDialog(QWidget *parent)
     : QDialog(parent)
@@ -20,18 +20,16 @@ ConversionProgressDialog::ConversionProgressDialog(QWidget *parent)
     ui->setupUi(this);
     setAttribute(Qt::WA_DeleteOnClose);
 
-    QIcon icon = style()->standardIcon(QStyle::SP_MessageBoxQuestion);
-    ui->questionIconLabel->setPixmap(icon.pixmap(32, 32));
-
+    ui->buttonBox->button(QDialogButtonBox::Yes)->setText(tr("Continue"));
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &ConversionProgressDialog::apply);
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &ConversionProgressDialog::abort);
 }
 
 ConversionProgressDialog::~ConversionProgressDialog() = default;
 
-void ConversionProgressDialog::setLabelText(const QString &label)
+void ConversionProgressDialog::setTitle(const QString &title)
 {
-    ui->progressStatusLabel->setText(label);
+    ui->progressStatusLabel->setText(title);
 }
 
 void ConversionProgressDialog::setMinimum(int minimum)
@@ -49,9 +47,11 @@ void ConversionProgressDialog::setValue(int progress)
     ui->conversionProgressBar->setValue(progress);
 }
 
-void ConversionProgressDialog::setMessage(const QString &message)
+void ConversionProgressDialog::setInteractive(bool interactive)
 {
-    ui->continueProgressLabel->setText(message);
+    ui->buttonBox->setVisible(interactive);
+    setModal(!interactive);
+    adjustSize();
 }
 
 int ConversionProgressDialog::value() const
@@ -59,8 +59,7 @@ int ConversionProgressDialog::value() const
     return ui->conversionProgressBar->value();
 }
 
-void ConversionProgressDialog::setBusyMode(bool busy)
+void ConversionProgressDialog::setReadOnly(bool readOnly)
 {
-    setModal(busy);
-    ui->buttonBox->setEnabled(!busy);
+    ui->buttonBox->setEnabled(!readOnly);
 }
