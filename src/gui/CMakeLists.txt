@@ -82,6 +82,8 @@ set(PROJECT_SOURCES
     uiview.cpp
     qmlview.h
     qmlview.cpp
+    qttsview.h
+    qttsview.cpp
     gui.qrc)
 
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})

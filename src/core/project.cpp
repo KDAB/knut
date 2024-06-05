@@ -15,6 +15,7 @@
 #include "lsp/client.h"
 #include "project_p.h"
 #include "qmldocument.h"
+#include "qttsdocument.h"
 #include "qtuidocument.h"
 #include "rcdocument.h"
 #include "settings.h"
@@ -215,6 +216,8 @@ static Document *createDocument(const QString &suffix)
         return new ImageDocument();
     case Document::Type::Slint:
         return new SlintDocument();
+    case Document::Type::QtTs:
+        return new QtTsDocument();
     case Document::Type::Qml: {
         return new QmlDocument();
     }

@@ -60,6 +60,9 @@ nav:
                 - DataExchangeEntry: API/script/dataexchangeentry.md
                 - MessageMap: API/script/messagemap.md
                 - MessageMapEntry: API/script/messagemapentry.md
+            - QtTsDocument:
+                - QtTsDocument: API/script/qttsdocument.md
+                - QtTsMessage: API/script/qttsmessage.md
             - QtUiDocument:
                 - QtUiDocument: API/script/qtuidocument.md
                 - QtUiWidget: API/script/qtuiwidget.md
