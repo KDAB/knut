@@ -16,6 +16,7 @@
 #include "core/logger.h"
 #include "core/project.h"
 #include "core/qmldocument.h"
+#include "core/qttsdocument.h"
 #include "core/qtuidocument.h"
 #include "core/rcdocument.h"
 #include "core/slintdocument.h"
@@ -31,6 +32,7 @@
 #include "optionsdialog.h"
 #include "palette.h"
 #include "qmlview.h"
+#include "qttsview.h"
 #include "rctoqrcdialog.h"
 #include "rctouidialog.h"
 #include "rcui/rcfileview.h"
@@ -755,6 +757,11 @@ static QWidget *widgetForDocument(Core::Document *document)
         auto qmlview = new QmlView();
         qmlview->setDocument(qobject_cast<Core::QmlDocument *>(document));
         return qmlview;
+    }
+    case Core::Document::Type::QtTs: {
+        auto tsView = new QtTsView();
+        tsView->setTsDocument(qobject_cast<Core::QtTsDocument *>(document));
+        return tsView;
     }
     case Core::Document::Type::Cpp:
     case Core::Document::Type::Text:

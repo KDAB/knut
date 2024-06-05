@@ -71,6 +71,8 @@ add_knut_test(tst_symbol tst_symbol.cpp)
 
 add_knut_test(tst_treesitter tst_treesitter.cpp knut-treesitter)
 
+add_knut_test(tst_qttsdocument tst_qttsdocument.cpp)
+
 # tst_knut is the integration test for the knut executable. It invokes the knut
 # executable, instead of instantiating its own KnutCore instance. Therefore, it
 # needs to depend on the knut executable, and know the full path to the

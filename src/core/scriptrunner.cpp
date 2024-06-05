@@ -18,6 +18,7 @@
 #include "mark.h"
 #include "message.h"
 #include "project.h"
+#include "qttsdocument.h"
 #include "qtuidocument.h"
 #include "rcdocument.h"
 #include "scriptdialogitem.h"
@@ -104,6 +105,8 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qmlRegisterType<CppDocument>("Script", 1, 0, "CppDocument");
     qmlRegisterUncreatableType<Core::Symbol>("Script", 1, 0, "Symbol", "Only created by CodeDocument");
     qmlRegisterType<RcDocument>("Script", 1, 0, "RcDocument");
+    qmlRegisterType<QtTsDocument>("Script", 1, 0, "QtTsDocument");
+    qmlRegisterUncreatableType<QtTsMessage>("Script", 1, 0, "QtTsMessage", "Only created by QtTsDocument");
 
     // RcCore
     qRegisterMetaType<RcCore::Asset>();
@@ -149,6 +152,8 @@ ScriptRunner::ScriptRunner(QObject *parent)
     addProperties<QtUiWidget>(m_properties);
     addProperties<CppDocument>(m_properties);
     addProperties<RcDocument>(m_properties);
+    addProperties<QtTsDocument>(m_properties);
+    addProperties<QtTsMessage>(m_properties);
 }
 
 ScriptRunner::~ScriptRunner() = default;

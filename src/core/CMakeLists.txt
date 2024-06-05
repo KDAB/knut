@@ -100,6 +100,8 @@ set(PROJECT_SOURCES
     textrange.cpp
     qtuidocument.h
     qtuidocument.cpp
+    qttsdocument.h
+    qttsdocument.cpp
     qmldocument.h
     qmldocument.cpp
     userdialog.h

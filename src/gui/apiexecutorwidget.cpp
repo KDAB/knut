@@ -14,6 +14,7 @@
 #include "core/logger.h"
 #include "core/project.h"
 #include "core/qmldocument.h"
+#include "core/qttsdocument.h"
 #include "core/qtuidocument.h"
 #include "core/rcdocument.h"
 #include "core/slintdocument.h"
@@ -70,6 +71,8 @@ static const QMetaObject *metaObjectFromType(Core::Document::Type type)
         return &Core::SlintDocument::staticMetaObject;
     case Core::Document::Type::Qml:
         return &Core::QmlDocument::staticMetaObject;
+    case Core::Document::Type::QtTs:
+        return &Core::QtTsDocument::staticMetaObject;
     }
     Q_UNREACHABLE();
 }
