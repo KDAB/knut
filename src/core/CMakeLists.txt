@@ -21,9 +21,6 @@ set(PROJECT_SOURCES
     codedocument.cpp
     codedocument_p.h
     codedocument_p.cpp
-    conversionprogressdialog.h
-    conversionprogressdialog.cpp
-    conversionprogressdialog.ui
     cppdocument.h
     cppdocument.cpp
     cppdocument_p.h
@@ -79,6 +76,9 @@ set(PROJECT_SOURCES
     scriptmanager.cpp
     scriptmodel.h
     scriptmodel.cpp
+    scriptprogressdialog.h
+    scriptprogressdialog.cpp
+    scriptprogressdialog.ui
     scriptrunner.h
     scriptrunner.cpp
     settings.h

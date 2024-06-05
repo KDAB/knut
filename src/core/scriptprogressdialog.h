@@ -13,16 +13,16 @@
 #include <QDialog>
 
 namespace Ui {
-class ConversionProgressDialog;
+class ScriptProgressDialog;
 }
 
-class ConversionProgressDialog : public QDialog
+class ScriptProgressDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit ConversionProgressDialog(QWidget *parent = nullptr);
-    ~ConversionProgressDialog() override;
+    explicit ScriptProgressDialog(QWidget *parent = nullptr);
+    ~ScriptProgressDialog() override;
 
     void setTitle(const QString &title);
     void setMinimum(int minimum);
@@ -39,5 +39,5 @@ signals:
     void abort();
 
 private:
-    std::unique_ptr<Ui::ConversionProgressDialog> ui;
+    std::unique_ptr<Ui::ScriptProgressDialog> ui;
 };

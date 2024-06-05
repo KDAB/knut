@@ -16,7 +16,7 @@
 #include <QQmlPropertyMap>
 #include <vector>
 
-class ConversionProgressDialog;
+class ScriptProgressDialog;
 
 namespace Core {
 
@@ -89,9 +89,9 @@ private:
     // needs to be mutable for lazy-initialization
     mutable DynamicObject *m_data;
     std::vector<QObject *> m_children;
-    ConversionProgressDialog *m_progressDialog = nullptr;
+    ScriptProgressDialog *m_progressDialog = nullptr;
     // Used to track existing progressDialog, in case we need to update the UI
-    static inline QVector<ConversionProgressDialog *> m_progressDialogs = {};
+    static inline QVector<ScriptProgressDialog *> m_progressDialogs = {};
 
     int m_stepCount = 0;
     int m_currentStep = 0;

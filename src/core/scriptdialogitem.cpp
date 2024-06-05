@@ -9,8 +9,8 @@
 */
 
 #include "scriptdialogitem.h"
-#include "conversionprogressdialog.h"
 #include "scriptdialogitem_p.h"
+#include "scriptprogressdialog.h"
 #include "scriptrunner.h"
 #include "settings.h"
 #include "utils/log.h"
@@ -368,7 +368,7 @@ void ScriptDialogItem::showProgressDialog()
     if (!isInteractive() || m_progressDialog)
         return;
 
-    m_progressDialog = new ConversionProgressDialog();
+    m_progressDialog = new ScriptProgressDialog();
     m_progressDialog->setInteractive(m_stepGenerator.has_value());
     m_progressDialog->setWindowTitle(windowTitle());
     // Using min,max,value of 0 causes an undetermined progress bar
@@ -378,8 +378,8 @@ void ScriptDialogItem::showProgressDialog()
     m_progressDialog->setValue(m_currentStep);
     m_progressDialog->setReadOnly(true);
 
-    connect(m_progressDialog, &ConversionProgressDialog::apply, this, &ScriptDialogItem::continueScript);
-    connect(m_progressDialog, &ConversionProgressDialog::abort, this, &ScriptDialogItem::abortScript);
+    connect(m_progressDialog, &ScriptProgressDialog::apply, this, &ScriptDialogItem::continueScript);
+    connect(m_progressDialog, &ScriptProgressDialog::abort, this, &ScriptDialogItem::abortScript);
 
     m_progressDialogs.push_back(m_progressDialog);
     m_progressDialog->show();

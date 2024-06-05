@@ -8,58 +8,58 @@
   Contact KDAB at <info@kdab.com> for commercial licensing options.
 */
 
-#include "conversionprogressdialog.h"
-#include "ui_conversionprogressdialog.h"
+#include "scriptprogressdialog.h"
+#include "ui_scriptprogressdialog.h"
 
 #include <QPushButton>
 
-ConversionProgressDialog::ConversionProgressDialog(QWidget *parent)
+ScriptProgressDialog::ScriptProgressDialog(QWidget *parent)
     : QDialog(parent)
-    , ui(new Ui::ConversionProgressDialog)
+    , ui(new Ui::ScriptProgressDialog)
 {
     ui->setupUi(this);
     setAttribute(Qt::WA_DeleteOnClose);
 
     ui->buttonBox->button(QDialogButtonBox::Yes)->setText(tr("Continue"));
-    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &ConversionProgressDialog::apply);
-    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &ConversionProgressDialog::abort);
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &ScriptProgressDialog::apply);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &ScriptProgressDialog::abort);
 }
 
-ConversionProgressDialog::~ConversionProgressDialog() = default;
+ScriptProgressDialog::~ScriptProgressDialog() = default;
 
-void ConversionProgressDialog::setTitle(const QString &title)
+void ScriptProgressDialog::setTitle(const QString &title)
 {
     ui->progressStatusLabel->setText(title);
 }
 
-void ConversionProgressDialog::setMinimum(int minimum)
+void ScriptProgressDialog::setMinimum(int minimum)
 {
     ui->conversionProgressBar->setMinimum(minimum);
 }
 
-void ConversionProgressDialog::setMaximum(int maximum)
+void ScriptProgressDialog::setMaximum(int maximum)
 {
     ui->conversionProgressBar->setMaximum(maximum);
 }
 
-void ConversionProgressDialog::setValue(int progress)
+void ScriptProgressDialog::setValue(int progress)
 {
     ui->conversionProgressBar->setValue(progress);
 }
 
-void ConversionProgressDialog::setInteractive(bool interactive)
+void ScriptProgressDialog::setInteractive(bool interactive)
 {
     ui->buttonBox->setVisible(interactive);
     setModal(!interactive);
     adjustSize();
 }
 
-int ConversionProgressDialog::value() const
+int ScriptProgressDialog::value() const
 {
     return ui->conversionProgressBar->value();
 }
 
-void ConversionProgressDialog::setReadOnly(bool readOnly)
+void ScriptProgressDialog::setReadOnly(bool readOnly)
 {
     ui->buttonBox->setEnabled(!readOnly);
 }
