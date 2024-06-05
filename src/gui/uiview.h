@@ -17,7 +17,7 @@ class QMdiArea;
 class QMdiSubWindow;
 
 namespace Core {
-class UiDocument;
+class QtUiDocument;
 }
 
 namespace Gui {
@@ -28,14 +28,14 @@ class UiView : public QSplitter
 public:
     explicit UiView(QWidget *parent = nullptr);
 
-    void setUiDocument(Core::UiDocument *document);
+    void setUiDocument(Core::QtUiDocument *document);
 
 private:
     void updateView();
 
     QTableView *m_tableView = nullptr;
     QMdiArea *m_previewArea = nullptr;
-    Core::UiDocument *m_document = nullptr;
+    Core::QtUiDocument *m_document = nullptr;
     QMdiSubWindow *m_previewWindow = nullptr;
 };
 

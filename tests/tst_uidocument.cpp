@@ -9,7 +9,7 @@
 */
 
 #include "common/test_utils.h"
-#include "core/uidocument.h"
+#include "core/qtuidocument.h"
 
 #include <QTest>
 
@@ -26,7 +26,7 @@ private slots:
 
     void load()
     {
-        Core::UiDocument document;
+        Core::QtUiDocument document;
         document.load(Test::testDataPath() + QStringLiteral("/tst_uidocument/IDD_ABCCOMPILE.ui"));
 
         const auto widgets = document.widgets();
@@ -49,7 +49,7 @@ private slots:
     {
         Test::FileTester file(Test::testDataPath() + "/tst_uidocument/IDD_LIGHTING.ui");
         {
-            Core::UiDocument document;
+            Core::QtUiDocument document;
             document.load(file.fileName());
 
             const auto widgets = document.widgets();

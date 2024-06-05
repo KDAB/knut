@@ -14,9 +14,9 @@
 #include "core/logger.h"
 #include "core/project.h"
 #include "core/qmldocument.h"
+#include "core/qtuidocument.h"
 #include "core/rcdocument.h"
 #include "core/slintdocument.h"
-#include "core/uidocument.h"
 #include "guisettings.h"
 #include "ui_apiexecutorwidget.h"
 #include "utils/log.h"
@@ -64,8 +64,8 @@ static const QMetaObject *metaObjectFromType(Core::Document::Type type)
         return &Core::RcDocument::staticMetaObject;
     case Core::Document::Type::Text:
         return &Core::TextDocument::staticMetaObject;
-    case Core::Document::Type::Ui:
-        return &Core::UiDocument::staticMetaObject;
+    case Core::Document::Type::QtUi:
+        return &Core::QtUiDocument::staticMetaObject;
     case Core::Document::Type::Slint:
         return &Core::SlintDocument::staticMetaObject;
     case Core::Document::Type::Qml:

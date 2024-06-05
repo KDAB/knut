@@ -98,8 +98,8 @@ set(PROJECT_SOURCES
     textlocation.cpp
     textrange.h
     textrange.cpp
-    uidocument.h
-    uidocument.cpp
+    qtuidocument.h
+    qtuidocument.cpp
     qmldocument.h
     qmldocument.cpp
     userdialog.h
