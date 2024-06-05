@@ -288,7 +288,7 @@ QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine)
                 window->show();
             } else if (auto dialog = qobject_cast<ScriptDialogItem *>(topLevel)) {
                 dialog->show();
-                connect(dialog, &ScriptDialogItem::conversionFinished, engine, &QObject::deleteLater);
+                connect(dialog, &ScriptDialogItem::scriptFinished, engine, &QObject::deleteLater);
             }
             // Make sure calling `Qt.quit()` in QML deletes everything
             auto cleanup = [engine, topLevel]() {

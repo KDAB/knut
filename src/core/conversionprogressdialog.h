@@ -24,12 +24,13 @@ public:
     explicit ConversionProgressDialog(QWidget *parent = nullptr);
     ~ConversionProgressDialog() override;
 
-    void setLabelText(const QString &text);
-    void setMessage(const QString &message);
+    void setTitle(const QString &title);
     void setMinimum(int minimum);
     void setMaximum(int maximum);
     void setValue(int progress);
-    void setBusyMode(bool busy);
+
+    void setInteractive(bool interactive);
+    void setReadOnly(bool readOnly);
 
     int value() const;
 

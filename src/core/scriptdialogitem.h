@@ -26,8 +26,8 @@ class ScriptDialogItem : public QDialog
 {
     Q_OBJECT
     Q_PROPERTY(QObject *data READ data CONSTANT)
+    Q_PROPERTY(int stepCount READ stepCount WRITE setStepCount NOTIFY stepCountChanged)
     Q_PROPERTY(QString uiFilePath WRITE setUiFilePath READ uiFilePath NOTIFY uiFilePathChanged)
-    Q_PROPERTY(bool showProgress READ showProgress WRITE setShowProgress NOTIFY showProgressChanged)
     Q_PROPERTY(bool interactive READ isInteractive WRITE setInteractive NOTIFY interactiveChanged)
     Q_PROPERTY(QQmlListProperty<QObject> childrenData READ childrenData NOTIFY childrenDataChanged FINAL)
     Q_CLASSINFO("DefaultProperty", "childrenData")
@@ -41,8 +41,6 @@ public:
     QString uiFilePath() const;
     void setUiFilePath(const QString &filePath);
 
-    bool showProgress();
-    void setShowProgress(bool value);
     // This method is used to redraw the application while a script is running
     // Long-running scripts will otherwise block the GUI, which may look like Knut is hung up.
     // This method should be called in regular intervals to ensure visual progress.
@@ -51,27 +49,31 @@ public:
     bool isInteractive() const;
     void setInteractive(bool interactive);
 
-    Q_INVOKABLE void startProgress(const QString &firstStep, int numSteps);
+    int stepCount() const;
+
+    Q_INVOKABLE void firstStep(const QString &firstStep);
     Q_INVOKABLE void nextStep(const QString &title);
     Q_INVOKABLE void runSteps(QJSValue generator);
 
-public Q_SLOTS:
+public slots:
+    void setStepCount(int stepCount);
     void done(int code) override;
 
 signals:
     void clicked(const QString &name);
     void childrenDataChanged();
     void uiFilePathChanged(const QString &uiFilePath);
-    void showProgressChanged(bool showProgress);
     void interactiveChanged(bool interactive);
-    void conversionFinished();
+    void stepCountChanged(int stepCount);
+    void scriptFinished();
 
 private:
-    void continueConversion();
-    void finishConversion();
-    void setProgressSteps(int numSteps);
-    void interactiveStep();
-    void startShowingProgress();
+    void continueScript();
+    void abortScript();
+    void finishScript();
+    void runNextStep();
+    void showProgressDialog();
+    void cleanupProgressDialog();
     void initializeUiAndData();
     void setUiFile(const QString &fileName);
     void createProperties(QWidget *dialogWidget);
@@ -88,14 +90,15 @@ private:
     mutable DynamicObject *m_data;
     std::vector<QObject *> m_children;
     ConversionProgressDialog *m_progressDialog = nullptr;
+    // Used to track existing progressDialog, in case we need to update the UI
+    static inline QVector<ConversionProgressDialog *> m_progressDialogs = {};
 
-    int m_numProgressSteps = 0;
-    int m_currentProgressStep = 0;
-    QString m_currentStepTitle;
+    int m_stepCount = 0;
+    int m_currentStep = 0;
+    QString m_currentStepTitle = "Initialization"; // Set a default title in case someone forgot the first step
     QString m_nextStepTitle;
-    bool m_showProgress = false;
 
-    std::optional<QJSValue> m_interactiveConversion;
+    std::optional<QJSValue> m_stepGenerator;
     bool m_interactive = true;
 };
 
