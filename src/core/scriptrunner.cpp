@@ -18,6 +18,7 @@
 #include "mark.h"
 #include "message.h"
 #include "project.h"
+#include "qtuidocument.h"
 #include "rcdocument.h"
 #include "scriptdialogitem.h"
 #include "scriptitem.h"
@@ -26,7 +27,6 @@
 #include "testutil.h"
 #include "textdocument.h"
 #include "textrange.h"
-#include "uidocument.h"
 #include "userdialog.h"
 #include "utils.h"
 #include "utils/log.h"
@@ -99,8 +99,8 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qmlRegisterType<ScriptDialogItem>("Script", 1, 0, "ScriptDialog");
     qmlRegisterType<ScriptItem>("Script", 1, 0, "Script");
     qmlRegisterType<TextDocument>("Script", 1, 0, "TextDocument");
-    qmlRegisterType<UiDocument>("Script", 1, 0, "UiDocument");
-    qmlRegisterUncreatableType<UiWidget>("Script", 1, 0, "UiWidget", "Only created by UiDocument");
+    qmlRegisterType<QtUiDocument>("Script", 1, 0, "QtUiDocument");
+    qmlRegisterUncreatableType<QtUiWidget>("Script", 1, 0, "QtUiWidget", "Only created by QtUiDocument");
     qmlRegisterType<CppDocument>("Script", 1, 0, "CppDocument");
     qmlRegisterUncreatableType<Core::Symbol>("Script", 1, 0, "Symbol", "Only created by CodeDocument");
     qmlRegisterType<RcDocument>("Script", 1, 0, "RcDocument");
@@ -145,8 +145,8 @@ ScriptRunner::ScriptRunner(QObject *parent)
     addProperties<Document>(m_properties);
     addProperties<TextDocument>(m_properties);
     addProperties<Mark>(m_properties);
-    addProperties<UiDocument>(m_properties);
-    addProperties<UiWidget>(m_properties);
+    addProperties<QtUiDocument>(m_properties);
+    addProperties<QtUiWidget>(m_properties);
     addProperties<CppDocument>(m_properties);
     addProperties<RcDocument>(m_properties);
 }

@@ -15,11 +15,11 @@
 #include "lsp/client.h"
 #include "project_p.h"
 #include "qmldocument.h"
+#include "qtuidocument.h"
 #include "rcdocument.h"
 #include "settings.h"
 #include "slintdocument.h"
 #include "textdocument.h"
-#include "uidocument.h"
 #include "utils/log.h"
 
 #include <QDir>
@@ -209,8 +209,8 @@ static Document *createDocument(const QString &suffix)
         return new TextDocument();
     case Document::Type::Rc:
         return new RcDocument();
-    case Document::Type::Ui:
-        return new UiDocument();
+    case Document::Type::QtUi:
+        return new QtUiDocument();
     case Document::Type::Image:
         return new ImageDocument();
     case Document::Type::Slint:

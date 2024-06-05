@@ -16,9 +16,9 @@
 
 namespace Core {
 
-class UiDocument;
+class QtUiDocument;
 
-class UiWidget : public QObject
+class QtUiWidget : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
@@ -26,7 +26,7 @@ class UiWidget : public QObject
     Q_PROPERTY(bool isRoot READ isRoot CONSTANT)
 
 public:
-    UiWidget(pugi::xml_node widget, bool isRoot = false, QObject *parent = nullptr);
+    QtUiWidget(pugi::xml_node widget, bool isRoot = false, QObject *parent = nullptr);
 
     QString name() const;
 
@@ -43,21 +43,21 @@ signals:
     void classNameChanged(const QString &newClassName);
 
 private:
-    friend UiDocument;
+    friend QtUiDocument;
     pugi::xml_node m_widget;
     bool m_isRoot = false;
 };
 
-class UiDocument : public Document
+class QtUiDocument : public Document
 {
     Q_OBJECT
-    Q_PROPERTY(QVector<Core::UiWidget *> widgets READ widgets NOTIFY fileNameChanged)
+    Q_PROPERTY(QVector<Core::QtUiWidget *> widgets READ widgets NOTIFY fileNameChanged)
 
 public:
-    explicit UiDocument(QObject *parent = nullptr);
+    explicit QtUiDocument(QObject *parent = nullptr);
 
-    QVector<Core::UiWidget *> widgets() const { return m_widgets; }
-    Q_INVOKABLE Core::UiWidget *findWidget(const QString &name) const;
+    QVector<Core::QtUiWidget *> widgets() const { return m_widgets; }
+    Q_INVOKABLE Core::QtUiWidget *findWidget(const QString &name) const;
 
 public slots:
     void preview() const;
@@ -67,9 +67,9 @@ protected:
     bool doLoad(const QString &fileName) override;
 
 private:
-    friend UiWidget;
+    friend QtUiWidget;
     pugi::xml_document m_document;
-    QVector<UiWidget *> m_widgets;
+    QVector<QtUiWidget *> m_widgets;
 };
 
 } // namespace Core

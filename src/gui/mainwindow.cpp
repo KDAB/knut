@@ -16,10 +16,10 @@
 #include "core/logger.h"
 #include "core/project.h"
 #include "core/qmldocument.h"
+#include "core/qtuidocument.h"
 #include "core/rcdocument.h"
 #include "core/slintdocument.h"
 #include "core/textdocument.h"
-#include "core/uidocument.h"
 #include "core/version.h"
 #include "documentpalette.h"
 #include "guisettings.h"
@@ -735,9 +735,9 @@ static QWidget *widgetForDocument(Core::Document *document)
 
         return rcview;
     }
-    case Core::Document::Type::Ui: {
+    case Core::Document::Type::QtUi: {
         auto uiview = new UiView();
-        uiview->setUiDocument(qobject_cast<Core::UiDocument *>(document));
+        uiview->setUiDocument(qobject_cast<Core::QtUiDocument *>(document));
         return uiview;
     }
     case Core::Document::Type::Image: {

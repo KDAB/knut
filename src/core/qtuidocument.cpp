@@ -8,7 +8,7 @@
   Contact KDAB at <info@kdab.com> for commercial licensing options.
 */
 
-#include "uidocument.h"
+#include "qtuidocument.h"
 #include "logger.h"
 #include "utils/log.h"
 
@@ -20,32 +20,32 @@
 namespace Core {
 
 /*!
- * \qmltype UiDocument
+ * \qmltype QtUiDocument
  * \brief Provides access to the content of a Ui file (Qt designer file).
  * \inqmlmodule Script
- * \ingroup UiDocument/@first
+ * \ingroup QtUiDocument/@first
  * \since 1.0
  */
 
 /*!
- * \qmlproperty array<UiWidget> UiDocument::widgets
+ * \qmlproperty array<QtUiWidget> QtUiDocument::widgets
  * List of all widgets in the ui file.
  */
 
-UiDocument::UiDocument(QObject *parent)
-    : Document(Type::Ui, parent)
+QtUiDocument::QtUiDocument(QObject *parent)
+    : Document(Type::QtUi, parent)
 {
 }
 
 /*!
- * \qmlmethod UiWidget UiDocument::findWidget(string name)
+ * \qmlmethod QtUiWidget QtUiDocument::findWidget(string name)
  * Returns the widget for the given `name`.
  */
-UiWidget *UiDocument::findWidget(const QString &name) const
+QtUiWidget *QtUiDocument::findWidget(const QString &name) const
 {
-    LOG("UiDocument::findWidget", name);
+    LOG("QtUiDocument::findWidget", name);
 
-    auto result = kdalgorithms::find_if(m_widgets, [name](UiWidget *widget) {
+    auto result = kdalgorithms::find_if(m_widgets, [name](QtUiWidget *widget) {
         return widget->name() == name;
     });
     if (!result)
@@ -54,12 +54,12 @@ UiWidget *UiDocument::findWidget(const QString &name) const
 }
 
 /*!
- * \qmlmethod UiDocument::preview()
+ * \qmlmethod QtUiDocument::preview()
  * Open a dialog to preview the current ui file.
  */
-void UiDocument::preview() const
+void QtUiDocument::preview() const
 {
-    LOG("UiDocument::preview");
+    LOG("QtUiDocument::preview");
 
     QUiLoader loader;
 
@@ -71,12 +71,12 @@ void UiDocument::preview() const
     }
 }
 
-bool UiDocument::doSave(const QString &fileName)
+bool QtUiDocument::doSave(const QString &fileName)
 {
     return m_document.save_file(fileName.toLatin1().constData(), "    ");
 }
 
-bool UiDocument::doLoad(const QString &fileName)
+bool QtUiDocument::doLoad(const QString &fileName)
 {
     m_widgets.clear();
     pugi::xml_parse_result result = m_document.load_file(fileName.toLatin1().constData(), pugi::parse_declaration);
@@ -91,7 +91,7 @@ bool UiDocument::doLoad(const QString &fileName)
     bool isRoot = true;
     for (const auto &node : widgets) {
         Q_ASSERT(!node.node().empty());
-        m_widgets.push_back(new UiWidget(node.node(), isRoot, this));
+        m_widgets.push_back(new QtUiWidget(node.node(), isRoot, this));
         isRoot = false;
     }
 
@@ -99,42 +99,42 @@ bool UiDocument::doLoad(const QString &fileName)
 }
 
 /*!
- * \qmltype UiWidget
+ * \qmltype QtUiWidget
  * \brief Provides access to widget attributes in the ui files.
  * \inqmlmodule Script
- * \ingroup UiDocument
+ * \ingroup QtUiDocument
  * \since 1.0
- * \sa UiDocument
+ * \sa QtUiDocument
  */
 
 /*!
- * \qmlproperty string UiWidget::name
+ * \qmlproperty string QtUiWidget::name
  * Name of the widget.
  */
 /*!
- * \qmlproperty string UiWidget::className
+ * \qmlproperty string QtUiWidget::className
  * Name of the widget's class.
  */
 /*!
- * \qmlproperty bool UiWidget::isRoot
+ * \qmlproperty bool QtUiWidget::isRoot
  * Read-only property returning `true` if the widget is the root widget.
  */
 
-UiWidget::UiWidget(pugi::xml_node widget, bool isRoot, QObject *parent)
+QtUiWidget::QtUiWidget(pugi::xml_node widget, bool isRoot, QObject *parent)
     : QObject(parent)
     , m_widget(widget)
     , m_isRoot(isRoot)
 {
 }
 
-QString UiWidget::name() const
+QString QtUiWidget::name() const
 {
     return QString::fromLatin1(m_widget.attribute("name").value());
 }
 
-void UiWidget::setName(const QString &newName)
+void QtUiWidget::setName(const QString &newName)
 {
-    LOG("UiWidget::setName", newName);
+    LOG("QtUiWidget::setName", newName);
 
     m_widget.attribute("name").set_value(newName.toLatin1().constData());
     if (m_isRoot) {
@@ -142,21 +142,21 @@ void UiWidget::setName(const QString &newName)
         auto node = m_widget.previous_sibling();
         node.text().set(newName.toLatin1().constData());
     }
-    qobject_cast<UiDocument *>(parent())->setHasChanged(true);
+    qobject_cast<QtUiDocument *>(parent())->setHasChanged(true);
     emit nameChanged(newName);
 }
 
-QString UiWidget::className() const
+QString QtUiWidget::className() const
 {
     return QString::fromLatin1(m_widget.attribute("class").value());
 }
 
-void UiWidget::setClassName(const QString &newClassName)
+void QtUiWidget::setClassName(const QString &newClassName)
 {
-    LOG("UiWidget::setClassName", newClassName);
+    LOG("QtUiWidget::setClassName", newClassName);
 
     m_widget.attribute("class").set_value(newClassName.toLatin1().constData());
-    qobject_cast<UiDocument *>(parent())->setHasChanged(true);
+    qobject_cast<QtUiDocument *>(parent())->setHasChanged(true);
     emit classNameChanged(newClassName);
 }
 

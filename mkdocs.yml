@@ -60,6 +60,9 @@ nav:
                 - DataExchangeEntry: API/script/dataexchangeentry.md
                 - MessageMap: API/script/messagemap.md
                 - MessageMapEntry: API/script/messagemapentry.md
+            - QtUiDocument:
+                - QtUiDocument: API/script/qtuidocument.md
+                - QtUiWidget: API/script/qtuiwidget.md
             - RcDocument:
                 - RcDocument: API/script/rcdocument.md
                 - Action: API/script/action.md
@@ -77,9 +80,6 @@ nav:
                 - RangeMark: API/script/rangemark.md
                 - TextLocation: API/script/textlocation.md
                 - TextRange: API/script/textrange.md
-            - UiDocument:
-                - UiDocument: API/script/uidocument.md
-                - UiWidget: API/script/uiwidget.md
             - Items:
                 - Script: API/script/script.md
                 - ScriptDialog: API/script/scriptdialog.md

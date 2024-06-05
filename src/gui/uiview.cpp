@@ -9,8 +9,8 @@
 */
 
 #include "uiview.h"
+#include "core/qtuidocument.h"
 #include "core/rcdocument.h"
-#include "core/uidocument.h"
 
 #include <QAbstractTableModel>
 #include <QFile>
@@ -27,7 +27,7 @@ namespace Gui {
 class UiModelView : public QAbstractTableModel
 {
 public:
-    UiModelView(Core::UiDocument *document)
+    UiModelView(Core::QtUiDocument *document)
         : QAbstractTableModel(document)
         , m_document(document)
     {
@@ -91,7 +91,7 @@ public:
     }
 
 private:
-    Core::UiDocument *m_document = nullptr;
+    Core::QtUiDocument *m_document = nullptr;
 };
 
 UiView::UiView(QWidget *parent)
@@ -108,7 +108,7 @@ UiView::UiView(QWidget *parent)
     m_previewArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 }
 
-void UiView::setUiDocument(Core::UiDocument *document)
+void UiView::setUiDocument(Core::QtUiDocument *document)
 {
     Q_ASSERT(document);
 
@@ -117,7 +117,7 @@ void UiView::setUiDocument(Core::UiDocument *document)
 
     m_document = document;
     if (m_document)
-        connect(m_document, &Core::UiDocument::fileUpdated, this, &UiView::updateView);
+        connect(m_document, &Core::QtUiDocument::fileUpdated, this, &UiView::updateView);
 
     updateView();
 }
