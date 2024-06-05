@@ -27,7 +27,6 @@ class ScriptDialogItem : public QDialog
     Q_OBJECT
     Q_PROPERTY(QObject *data READ data CONSTANT)
     Q_PROPERTY(int stepCount READ stepCount WRITE setStepCount NOTIFY stepCountChanged)
-    Q_PROPERTY(QString uiFilePath WRITE setUiFilePath READ uiFilePath NOTIFY uiFilePathChanged)
     Q_PROPERTY(bool interactive READ isInteractive WRITE setInteractive NOTIFY interactiveChanged)
     Q_PROPERTY(QQmlListProperty<QObject> childrenData READ childrenData NOTIFY childrenDataChanged FINAL)
     Q_CLASSINFO("DefaultProperty", "childrenData")
@@ -35,11 +34,8 @@ class ScriptDialogItem : public QDialog
 public:
     explicit ScriptDialogItem(QWidget *parent = nullptr);
 
-    QObject *data();
+    QObject *data() const;
     QQmlListProperty<QObject> childrenData();
-
-    QString uiFilePath() const;
-    void setUiFilePath(const QString &filePath);
 
     // This method is used to redraw the application while a script is running
     // Long-running scripts will otherwise block the GUI, which may look like Knut is hung up.
@@ -62,7 +58,6 @@ public slots:
 signals:
     void clicked(const QString &name);
     void childrenDataChanged();
-    void uiFilePathChanged(const QString &uiFilePath);
     void interactiveChanged(bool interactive);
     void stepCountChanged(int stepCount);
     void scriptFinished();
@@ -74,7 +69,6 @@ private:
     void runNextStep();
     void showProgressDialog();
     void cleanupProgressDialog();
-    void initializeUiAndData();
     void setUiFile(const QString &fileName);
     void createProperties(QWidget *dialogWidget);
     void changeValue(const QString &key, const QVariant &value);
@@ -85,10 +79,9 @@ private:
     static void clearChildren(QQmlListProperty<QObject> *list);
 
 private:
-    mutable QString m_uiFilePath;
-    // needs to be mutable for lazy-initialization
-    mutable DynamicObject *m_data;
+    DynamicObject *m_data;
     std::vector<QObject *> m_children;
+
     ScriptProgressDialog *m_progressDialog = nullptr;
     // Used to track existing progressDialog, in case we need to update the UI
     static inline QVector<ScriptProgressDialog *> m_progressDialogs = {};
