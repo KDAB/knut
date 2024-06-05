@@ -34,6 +34,10 @@ include(CheckSubmodule)
 
 option(USE_ASAN "use Address Sanitizer" OFF)
 option(KNUT_USE_STD_FORMAT "Use std format library for speed log library" ON)
+# It's best practice to only enable -Werror in CI & development builds.
+# We enable this option in the appropriate CMakePresets.
+# If you just want to have a working build of knut, -Werror can be very annoying, so keep it off by default.
+option(KNUT_ERROR_ON_WARN "Issue a compiler error if the compiler encounters a warning" OFF)
 
 if(USE_ASAN)
   # /MD will be used implicitly
@@ -124,10 +128,17 @@ add_custom_command(
 # Post-initialization
 # ##############################################################################
 # Need to be done *after* compiling 3rd parties
-if(MSVC)
-  add_compile_options(/W3 /WX)
-else()
-  add_compile_options(-Wall -Wextra -Werror -Wno-comment -Wno-error=comment)
+if(KNUT_ERROR_ON_WARN)
+  if(MSVC)
+    add_compile_options(/W3 /WX)
+  else()
+    add_compile_options(-Wall -Wextra -Werror -Wno-comment -Wno-error=comment)
+
+    # Workaround for a strange bug, where only in Release mode, gcc would throw a warning
+    # about TextDocumentContentChangeEventPartial::range being maybe-uninitialized.
+    # As we're not even using the Partial event, but only the Full event, we can ignore this warning.
+    add_compile_options(-Wno-error=maybe-uninitialized)
+  endif()
 endif()
 # Set tests here, as it was disabled before
 enable_testing()
