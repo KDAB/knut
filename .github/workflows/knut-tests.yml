@@ -26,8 +26,26 @@ jobs:
     steps:
       - name: Checkout sources
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
+
+
+      # Note: Once we're able to access photonwidgets and mfc-utils, this can simply be replaced by
+      # setting
+      # with:
+      #   submodules: recursive
+      # on the "Checkout sources" step
+      - name: Checkout submodules
+        run: |
+          git submodule update --init --force --depth=1 --recursive -- '3rdparty/extra-cmake-modules'
+          git submodule update --init --force --depth=1 --recursive -- '3rdparty/kdalgorithms'
+          git submodule update --init --force --depth=1 --recursive -- '3rdparty/ksyntaxhighlighting'
+          git submodule update --init --force --depth=1 --recursive -- '3rdparty/nlohmann-json'
+          git submodule update --init --force --depth=1 --recursive -- '3rdparty/pugixml'
+          git submodule update --init --force --depth=1 --recursive -- '3rdparty/spdlog'
+          git submodule update --init --force --depth=1 --recursive -- '3rdparty/tree-sitter'
+          git submodule update --init --force --depth=1 --recursive -- '3rdparty/tree-sitter-cpp'
+          # git submodule update --init --force --depth=1 --recursive -- '3rdparty/photonwidgets'
+          # git submodule update --init --force --depth=1 --recursive -- '3rdparty/mfc-utils'
+
 
       - name: Install ninja-build tool
         uses: aseprite/get-ninja@main

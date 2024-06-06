@@ -150,8 +150,16 @@ add_subdirectory(tools)
 
 set(KNUT_BINARY_PATH "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}/knut")
 add_subdirectory(tests)
-add_subdirectory(3rdparty/mfc-utils/tests-scripts)
-add_subdirectory(3rdparty/photonwidgets/tests/scripts)
+
+# mfc-utils and photonwidgets are private to KDAB, so make them optional so that non-KDABians can
+# still develop Knut.
+if (EXISTS 3rdparty/mfc-utils/tests-scripts)
+  add_subdirectory(3rdparty/mfc-utils/tests-scripts)
+endif()
+
+if (EXISTS 3rdparty/photonwidgets/tests/scripts)
+  add_subdirectory(3rdparty/photonwidgets/tests/scripts)
+endif()
 
 file(
   GLOB
