@@ -15,10 +15,15 @@
 #include "textdocument.h"
 #include "utils/log.h"
 
+#include <QAbstractItemModel>
 #include <QApplication>
 #include <QDir>
 #include <QTimer>
+#include <iostream>
+#include <nlohmann/json.hpp>
 #include <spdlog/cfg/env.h>
+
+using json = nlohmann::json;
 
 namespace Core {
 
@@ -46,6 +51,26 @@ void KnutCore::process(const QStringList &arguments)
     QCommandLineParser parser;
     initParser(parser);
     parser.process(arguments);
+
+    const bool list = parser.isSet("json-list");
+    if (list) {
+        initialize(false);
+        auto model = Core::ScriptManager::model();
+        if (model->rowCount() == 0) {
+            std::cout << "[]\n";
+        } else {
+            json outputJson;
+            for (int i = 0; i < model->rowCount(); ++i) {
+                const auto name = model->data(model->index(i, 0)).toString().toStdString();
+                const auto description = model->data(model->index(i, 1)).toString().toStdString();
+                const auto path = model->data(model->index(i, 0), Qt::UserRole).toString().toStdString(); // PathRole
+                outputJson.push_back({{"name", name}, {"description", description}, {"path", path}});
+            }
+            std::cout << outputJson.dump() << "\n";
+        }
+
+        exit(0);
+    }
 
     const bool isTesting = parser.isSet("test");
     initialize(isTesting);
@@ -115,7 +140,8 @@ void KnutCore::initParser(QCommandLineParser &parser) const
                        {{"t", "test"}, "Tests given script <file> then exit.", "file"},
                        {{"i", "input"}, "Opens document <file> on startup.", "file"},
                        {{"l", "line"}, "Line in the current file, if any.", "line"},
-                       {{"c", "column"}, "Column in the current file, if any.", "column"}});
+                       {{"c", "column"}, "Column in the current file, if any.", "column"},
+                       {"json-list", "Lists all available scripts"}});
 }
 
 void KnutCore::doParse(const QCommandLineParser &parser) const
