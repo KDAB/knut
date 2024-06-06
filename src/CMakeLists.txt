@@ -18,9 +18,9 @@ endif()
 
 add_executable(${PROJECT_NAME} MACOSX_BUNDLE WIN32 ${PROJECT_SOURCES}
                                                    ${PROJECT_ICON})
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
-                                              knut-gui)
-install(TARGETS ${PROJECT_NAME})
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets knut-gui)
+
+install(TARGETS ${PROJECT_NAME} BUNDLE DESTINATION bin)
 
 add_subdirectory(core)
 add_subdirectory(lsp)
