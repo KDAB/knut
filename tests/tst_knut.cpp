@@ -37,7 +37,18 @@ private:
         if (dir.exists())
             arguments.append(dir.absolutePath());
         const int failedTests = QProcess::execute(KNUT_BINARY_PATH, arguments);
-        QCOMPARE(failedTests, 0);
+
+        switch (failedTests) {
+        case -2:
+            QFAIL(QString("Failed to start Knut! (executable path: %1)").arg(KNUT_BINARY_PATH).toStdString().data());
+            break;
+        case -1:
+            QFAIL("Knut crashed! (exit code: -1)");
+            break;
+        default:
+            QCOMPARE(failedTests, 0);
+            break;
+        }
     }
 
 private slots:
