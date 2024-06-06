@@ -73,7 +73,10 @@
             "name": "ci",
             "configurePreset": "ci",
             "output": { "outputOnFailure": true },
-            "execution": {"noTestsAction": "error", "stopOnFailure": true}
+            "execution": {"noTestsAction": "error", "stopOnFailure": true},
+            "environment": {
+                "QT_QPA_PLATFORM": "offscreen"
+            }
         },
         {
             "name": "clazy",
