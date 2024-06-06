@@ -46,12 +46,25 @@
             "cacheVariables": {
                 "KNUT_ERROR_ON_WARN": "ON"
             }
+        },
+        {
+            "name": "clazy",
+            "displayName": "Clazy build",
+            "binaryDir": "${sourceDir}/build-clazy",
+            "inherits": "ci",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER" : "clazy"
+            }
         }
     ],
     "buildPresets": [
         {
             "name": "ci",
             "configurePreset": "ci"
+        },
+        {
+            "name": "clazy",
+            "configurePreset": "clazy"
         }
     ],
     "testPresets": [
@@ -60,6 +73,11 @@
             "configurePreset": "ci",
             "output": { "outputOnFailure": true },
             "execution": {"noTestsAction": "error", "stopOnFailure": true}
+        },
+        {
+            "name": "clazy",
+            "inherits": "ci",
+            "configurePreset": "clazy"
         }
     ]
 }

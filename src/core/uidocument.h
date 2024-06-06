@@ -21,8 +21,8 @@ class UiDocument;
 class UiWidget : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString name READ name WRITE setName)
-    Q_PROPERTY(QString className READ className WRITE setClassName)
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+    Q_PROPERTY(QString className READ className WRITE setClassName NOTIFY classNameChanged)
     Q_PROPERTY(bool isRoot READ isRoot CONSTANT)
 
 public:
@@ -37,6 +37,10 @@ public:
 public slots:
     void setName(const QString &newName);
     void setClassName(const QString &newClassName);
+
+signals:
+    void nameChanged(const QString &newName);
+    void classNameChanged(const QString &newClassName);
 
 private:
     friend UiDocument;

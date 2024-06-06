@@ -16,93 +16,96 @@
 
 namespace RcCore {
 
-static QHash<QString, Keywords> KeywordMap = {
+#define COMMA ,
+// clang-format off
+Q_GLOBAL_STATIC_WITH_ARGS(QHash<QString COMMA Keywords>, KeywordMap, {
     // Used in MENUITEM - not handled in Qt
-    {"ACCELERATORS", Keywords::ACCELERATORS},
-    {"AFX_DIALOG_LAYOUT", Keywords::AFX_DIALOG_LAYOUT},
-    {"BITMAP", Keywords::BITMAP},
-    {"CURSOR", Keywords::CURSOR},
-    {"DESIGNINFO", Keywords::DESIGNINFO},
-    {"DIALOG", Keywords::DIALOG},
-    {"DIALOGEX", Keywords::DIALOGEX},
-    {"DLGINIT", Keywords::DLGINIT},
-    {"FONT", Keywords::FONT},
-    {"HTML", Keywords::HTML},
-    {"ICON", Keywords::ICON},
-    {"IMAGE", Keywords::IMAGE},
-    {"MENU", Keywords::MENU},
-    {"MENUEX", Keywords::MENUEX},
-    {"MESSAGETABLE", Keywords::MESSAGETABLE},
-    {"PNG", Keywords::PNG},
-    {"POPUP", Keywords::POPUP},
-    {"RCDATA", Keywords::RCDATA},
-    {"REGISTRY", Keywords::REGISTRY},
-    {"STRINGTABLE", Keywords::STRINGTABLE},
-    {"TEXTINCLUDE", Keywords::TEXTINCLUDE},
-    {"TOOLBAR", Keywords::TOOLBAR},
-    {"VERSIONINFO", Keywords::VERSIONINFO},
-    {"RT_RIBBON_XML", Keywords::RT_RIBBON_XML},
-    {"PRELOAD", Keywords::IGNORE_16BITS},
-    {"LOADONCALL", Keywords::IGNORE_16BITS},
-    {"FIXED", Keywords::IGNORE_16BITS},
-    {"MOVEABLE", Keywords::IGNORE_16BITS},
-    {"DISCARDABLE", Keywords::IGNORE_16BITS},
-    {"PURE", Keywords::IGNORE_16BITS},
-    {"IMPURE", Keywords::IGNORE_16BITS},
-    {"SHARED", Keywords::IGNORE_16BITS},
-    {"NONSHARED", Keywords::IGNORE_16BITS},
-    {"BEGIN", Keywords::BEGIN},
-    {"END", Keywords::END},
-    {"SEPARATOR", Keywords::SEPARATOR},
-    {"MFT_SEPARATOR", Keywords::SEPARATOR},
-    {"BUTTON", Keywords::BUTTON},
-    {"NOT", Keywords::NOT},
-    {"CHECKED", Keywords::CHECKED},
-    {"MFS_CHECKED", Keywords::CHECKED},
-    {"GRAYED", Keywords::GRAYED},
-    {"MFS_GRAYED", Keywords::GRAYED},
-    {"MFS_DISABLED", Keywords::INACTIVE},
-    {"HELP", Keywords::HELP},
-    {"INACTIVE", Keywords::INACTIVE},
-    {"MENUBARBREAK", Keywords::MENUBARBREAK},
-    {"MFT_MENUBARBREAK", Keywords::MENUBARBREAK},
-    {"MENUBREAK", Keywords::MENUBREAK},
-    {"MFT_MENUBREAK", Keywords::MENUBREAK},
-    {"MFT_STRING", Keywords::MFTSTRING},
-    {"MFS_ENABLED", Keywords::MFSENABLED},
-    {"MFT_RIGHTJUSTIFY", Keywords::MFTRIGHTJUSTIFY},
-    {"ALT", Keywords::ALT},
-    {"ASCII", Keywords::ASCII},
-    {"NOINVERT", Keywords::NOINVERT},
-    {"SHIFT", Keywords::SHIFT},
-    {"VIRTKEY", Keywords::VIRTKEY},
-    {"CAPTION", Keywords::CAPTION},
-    {"CHARACTERISTICS", Keywords::CHARACTERISTICS},
-    {"CLASS", Keywords::CLASS},
-    {"EXSTYLE", Keywords::EXSTYLE},
-    {"LANGUAGE", Keywords::LANGUAGE},
-    {"MENUITEM", Keywords::MENUITEM},
-    {"STYLE", Keywords::STYLE},
-    {"VERSION", Keywords::VERSION},
-    {"AUTO3STATE", Keywords::AUTO3STATE},
-    {"AUTOCHECKBOX", Keywords::AUTOCHECKBOX},
-    {"AUTORADIOBUTTON", Keywords::AUTORADIOBUTTON},
-    {"CHECKBOX", Keywords::CHECKBOX},
-    {"COMBOBOX", Keywords::COMBOBOX},
-    {"CONTROL", Keywords::CONTROL},
-    {"CTEXT", Keywords::CTEXT},
-    {"DEFPUSHBUTTON", Keywords::DEFPUSHBUTTON},
-    {"EDITTEXT", Keywords::EDITTEXT},
-    {"GROUPBOX", Keywords::GROUPBOX},
-    {"LISTBOX", Keywords::LISTBOX},
-    {"LTEXT", Keywords::LTEXT},
-    {"PUSHBOX", Keywords::PUSHBOX},
-    {"PUSHBUTTON", Keywords::PUSHBUTTON},
-    {"RADIOBUTTON", Keywords::RADIOBUTTON},
-    {"RTEXT", Keywords::RTEXT},
-    {"SCROLLBAR", Keywords::SCROLLBAR},
-    {"STATE3", Keywords::STATE3},
-};
+    {"ACCELERATORS" COMMA Keywords::ACCELERATORS} COMMA
+    {"AFX_DIALOG_LAYOUT" COMMA Keywords::AFX_DIALOG_LAYOUT} COMMA
+    {"BITMAP" COMMA Keywords::BITMAP} COMMA
+    {"CURSOR" COMMA Keywords::CURSOR} COMMA
+    {"DESIGNINFO" COMMA Keywords::DESIGNINFO} COMMA
+    {"DIALOG" COMMA Keywords::DIALOG} COMMA
+    {"DIALOGEX" COMMA Keywords::DIALOGEX} COMMA
+    {"DLGINIT" COMMA Keywords::DLGINIT} COMMA
+    {"FONT" COMMA Keywords::FONT} COMMA
+    {"HTML" COMMA Keywords::HTML} COMMA
+    {"ICON" COMMA Keywords::ICON} COMMA
+    {"IMAGE" COMMA Keywords::IMAGE} COMMA
+    {"MENU" COMMA Keywords::MENU} COMMA
+    {"MENUEX" COMMA Keywords::MENUEX} COMMA
+    {"MESSAGETABLE" COMMA Keywords::MESSAGETABLE} COMMA
+    {"PNG" COMMA Keywords::PNG} COMMA
+    {"POPUP" COMMA Keywords::POPUP} COMMA
+    {"RCDATA" COMMA Keywords::RCDATA} COMMA
+    {"REGISTRY" COMMA Keywords::REGISTRY} COMMA
+    {"STRINGTABLE" COMMA Keywords::STRINGTABLE} COMMA
+    {"TEXTINCLUDE" COMMA Keywords::TEXTINCLUDE} COMMA
+    {"TOOLBAR" COMMA Keywords::TOOLBAR} COMMA
+    {"VERSIONINFO" COMMA Keywords::VERSIONINFO} COMMA
+    {"RT_RIBBON_XML" COMMA Keywords::RT_RIBBON_XML} COMMA
+    {"PRELOAD" COMMA Keywords::IGNORE_16BITS} COMMA
+    {"LOADONCALL" COMMA Keywords::IGNORE_16BITS} COMMA
+    {"FIXED" COMMA Keywords::IGNORE_16BITS} COMMA
+    {"MOVEABLE" COMMA Keywords::IGNORE_16BITS} COMMA
+    {"DISCARDABLE" COMMA Keywords::IGNORE_16BITS} COMMA
+    {"PURE" COMMA Keywords::IGNORE_16BITS} COMMA
+    {"IMPURE" COMMA Keywords::IGNORE_16BITS} COMMA
+    {"SHARED" COMMA Keywords::IGNORE_16BITS} COMMA
+    {"NONSHARED" COMMA Keywords::IGNORE_16BITS} COMMA
+    {"BEGIN" COMMA Keywords::BEGIN} COMMA
+    {"END" COMMA Keywords::END} COMMA
+    {"SEPARATOR" COMMA Keywords::SEPARATOR} COMMA
+    {"MFT_SEPARATOR" COMMA Keywords::SEPARATOR} COMMA
+    {"BUTTON" COMMA Keywords::BUTTON} COMMA
+    {"NOT" COMMA Keywords::NOT} COMMA
+    {"CHECKED" COMMA Keywords::CHECKED} COMMA
+    {"MFS_CHECKED" COMMA Keywords::CHECKED} COMMA
+    {"GRAYED" COMMA Keywords::GRAYED} COMMA
+    {"MFS_GRAYED" COMMA Keywords::GRAYED} COMMA
+    {"MFS_DISABLED" COMMA Keywords::INACTIVE} COMMA
+    {"HELP" COMMA Keywords::HELP} COMMA
+    {"INACTIVE" COMMA Keywords::INACTIVE} COMMA
+    {"MENUBARBREAK" COMMA Keywords::MENUBARBREAK} COMMA
+    {"MFT_MENUBARBREAK" COMMA Keywords::MENUBARBREAK} COMMA
+    {"MENUBREAK" COMMA Keywords::MENUBREAK} COMMA
+    {"MFT_MENUBREAK" COMMA Keywords::MENUBREAK} COMMA
+    {"MFT_STRING" COMMA Keywords::MFTSTRING} COMMA
+    {"MFS_ENABLED" COMMA Keywords::MFSENABLED} COMMA
+    {"MFT_RIGHTJUSTIFY" COMMA Keywords::MFTRIGHTJUSTIFY} COMMA
+    {"ALT" COMMA Keywords::ALT} COMMA
+    {"ASCII" COMMA Keywords::ASCII} COMMA
+    {"NOINVERT" COMMA Keywords::NOINVERT} COMMA
+    {"SHIFT" COMMA Keywords::SHIFT} COMMA
+    {"VIRTKEY" COMMA Keywords::VIRTKEY} COMMA
+    {"CAPTION" COMMA Keywords::CAPTION} COMMA
+    {"CHARACTERISTICS" COMMA Keywords::CHARACTERISTICS} COMMA
+    {"CLASS" COMMA Keywords::CLASS} COMMA
+    {"EXSTYLE" COMMA Keywords::EXSTYLE} COMMA
+    {"LANGUAGE" COMMA Keywords::LANGUAGE} COMMA
+    {"MENUITEM" COMMA Keywords::MENUITEM} COMMA
+    {"STYLE" COMMA Keywords::STYLE} COMMA
+    {"VERSION" COMMA Keywords::VERSION} COMMA
+    {"AUTO3STATE" COMMA Keywords::AUTO3STATE} COMMA
+    {"AUTOCHECKBOX" COMMA Keywords::AUTOCHECKBOX} COMMA
+    {"AUTORADIOBUTTON" COMMA Keywords::AUTORADIOBUTTON} COMMA
+    {"CHECKBOX" COMMA Keywords::CHECKBOX} COMMA
+    {"COMBOBOX" COMMA Keywords::COMBOBOX} COMMA
+    {"CONTROL" COMMA Keywords::CONTROL} COMMA
+    {"CTEXT" COMMA Keywords::CTEXT} COMMA
+    {"DEFPUSHBUTTON" COMMA Keywords::DEFPUSHBUTTON} COMMA
+    {"EDITTEXT" COMMA Keywords::EDITTEXT} COMMA
+    {"GROUPBOX" COMMA Keywords::GROUPBOX} COMMA
+    {"LISTBOX" COMMA Keywords::LISTBOX} COMMA
+    {"LTEXT" COMMA Keywords::LTEXT} COMMA
+    {"PUSHBOX" COMMA Keywords::PUSHBOX} COMMA
+    {"PUSHBUTTON" COMMA Keywords::PUSHBUTTON} COMMA
+    {"RADIOBUTTON" COMMA Keywords::RADIOBUTTON} COMMA
+    {"RTEXT" COMMA Keywords::RTEXT} COMMA
+    {"SCROLLBAR" COMMA Keywords::SCROLLBAR} COMMA
+    {"STATE3" COMMA Keywords::STATE3} COMMA
+});
+// clang-format on
 
 //=============================================================================
 // Parser::Token
@@ -112,7 +115,7 @@ QString Token::toString() const
 {
     if (data.index() == 1)
         return std::get<QString>(data);
-    return KeywordMap.key(std::get<Keywords>(data));
+    return KeywordMap->key(std::get<Keywords>(data));
 }
 
 QString Token::prettyPrint() const
@@ -129,7 +132,7 @@ QString Token::prettyPrint() const
     case Token::Integer:
         return QString::number(toInt());
     case Token::Keyword:
-        return KeywordMap.key(toKeyword());
+        return KeywordMap->key(toKeyword());
     case Token::Word:
         return toString();
     }
@@ -228,7 +231,7 @@ std::optional<Token> Lexer::peek()
 
 QList<QString> Lexer::keywords()
 {
-    return KeywordMap.keys();
+    return KeywordMap->keys();
 }
 
 std::optional<Token> Lexer::readNext()
@@ -343,7 +346,7 @@ Token Lexer::readWord()
     const QString word = readWhile([](const auto &c) {
         return c.isLetterOrNumber() || c == '_';
     });
-    if (auto it = KeywordMap.find(word); it != KeywordMap.end())
+    if (auto it = KeywordMap->find(word); it != KeywordMap->end())
         return {Token::Keyword, it.value()};
     return {Token::Word, word};
 }
