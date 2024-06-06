@@ -49,11 +49,12 @@ add_knut_test(tst_client tst_client.cpp knut-lsp)
 
 add_knut_test(tst_settings tst_settings.cpp)
 
-if(KNUT_USE_STD_FORMAT)
-  add_knut_test(tst_qt_std_format tst_qt_std_format.cpp)
-else()
-  add_knut_test(tst_qt_fmt_format tst_qt_fmt_format.cpp)
-endif()
+# tst_qt_std_format tests qt_format with std::format
+# However, std::format isn't currently well-supported by the major compilers.
+# So for now, disable this test. It can be reenabled once we can finally switch to std::format 
+# add_knut_test(tst_qt_std_format tst_qt_std_format.cpp)
+# Use the fmt library that's bundled with spdlog instead.
+add_knut_test(tst_qt_fmt_format tst_qt_fmt_format.cpp)
 
 add_knut_test(tst_stringutils tst_stringutils.cpp)
 
