@@ -45,6 +45,7 @@
             "generator": "Ninja",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+                "CMAKE_MSVC_DEBUG_INFORMATION_FORMAT": "Embedded",
                 "KNUT_ERROR_ON_WARN": "ON"
             }
         },

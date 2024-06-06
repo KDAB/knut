@@ -1,4 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
+# This enables the use of CMAKE_MSVC_DEBUG_INFORMATION_FORMAT as required by the CI preset
+cmake_policy(SET CMP0141 NEW)
+
 # This file is part of Knut.
 #
 # SPDX-FileCopyrightText: 2024 Klarälvdalens Datakonsult AB, a KDAB Group
