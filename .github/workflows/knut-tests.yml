@@ -50,6 +50,11 @@ jobs:
       - name: Install ninja-build tool
         uses: aseprite/get-ninja@main
 
+      - name: Install Qt 6
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: 6.5.* # 6.5 is the current LTS (as of 2024-06-06)
+
       - name: Make sure MSVC is found when Ninja generator is in use
         uses: ilammy/msvc-dev-cmd@v1
 
