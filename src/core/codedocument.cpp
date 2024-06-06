@@ -407,8 +407,6 @@ Document *CodeDocument::switchDeclarationDefinition()
 void CodeDocument::selectSymbol(const QString &name, int options)
 {
     LOG("CodeDocument::selectSymbol", LOG_ARG("text", name), options);
-    if (!checkClient())
-        return;
 
     if (auto symbol = findSymbol(name, options))
         selectRange(symbol->selectionRange());
@@ -428,8 +426,6 @@ void CodeDocument::selectSymbol(const QString &name, int options)
 Symbol *CodeDocument::findSymbol(const QString &name, int options) const
 {
     LOG("CodeDocument::findSymbol", LOG_ARG("text", name), options);
-    if (!checkClient())
-        return {};
 
     auto symbols = this->symbols();
     const auto regexp = (options & FindRegexp) ? createRegularExpression(name, options) : QRegularExpression {};
