@@ -59,6 +59,15 @@ private:
         std::unique_ptr<QAbstractItemModel> model;
         std::function<void(const QVariant &)> selectionFunc;
         std::function<void()> resetFunc = {};
+
+        Selector(QString prefix, std::unique_ptr<QAbstractItemModel> model,
+                 std::function<void(const QVariant &)> selectionFunc, std::function<void()> resetFunc = {})
+            : prefix(std::move(prefix))
+            , model(std::move(model))
+            , selectionFunc(std::move(selectionFunc))
+            , resetFunc(std::move(resetFunc))
+        {
+        }
     };
 
     std::unique_ptr<Ui::Palette> ui;
