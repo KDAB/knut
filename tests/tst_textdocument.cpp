@@ -20,7 +20,7 @@
 #include <QTest>
 #include <QTextStream>
 
-static const QString LoremIpsumText(R"(
+static const char *LoremIpsumText = R"(
 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 Quisque convallis ipsum ac odio aliquet tincidunt.
 
@@ -40,7 +40,7 @@ Nam pellentesque orci eu tortor lobortis suscipit.
 Vestibulum posuere mauris in dolor volutpat, porttitor imperdiet ipsum imperdiet.
 Sed sit amet augue rhoncus, convallis orci id, convallis dolor.
 Duis vestibulum erat at placerat sollicitudin.
-)");
+)";
 
 class TestTextDocument : public QObject
 {
