@@ -14,3 +14,11 @@ function(check_submodule name path)
         endif()
     endif()
 endfunction()
+
+function(check_optional_submodule name path)
+    if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${path}/.git")
+        message(WARNING
+            "The optional ${name} submodule is missing.\n"
+        )
+    endif()
+endfunction()
