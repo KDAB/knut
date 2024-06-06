@@ -334,6 +334,8 @@ private slots:
 
     void asyncHover()
     {
+        CHECK_CLANGD;
+
         Core::KnutCore core;
         auto project = Core::Project::instance();
         project->setRoot(Test::testDataPath() + "/projects/cpp-project");
