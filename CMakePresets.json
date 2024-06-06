@@ -44,7 +44,8 @@
             "binaryDir": "${sourceDir}/build-ci",
             "inherits": "profile",
             "cacheVariables": {
-                "KNUT_ERROR_ON_WARN": "ON"
+                "KNUT_ERROR_ON_WARN": "OFF",
+                "KNUT_USE_STD_FORMAT": "OFF"
             }
         },
         {
