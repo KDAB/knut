@@ -148,7 +148,7 @@ enable_testing()
 add_subdirectory(src)
 add_subdirectory(tools)
 
-set(KNUT_BINARY_PATH "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}/knut")
+set(KNUT_BINARY_PATH "$<TARGET_FILE:knut>")
 add_subdirectory(tests)
 
 # mfc-utils and photonwidgets are private to KDAB, so make them optional so that non-KDABians can
