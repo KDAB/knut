@@ -93,7 +93,7 @@ void ScriptListPanel::runScript(const QModelIndex &index)
     const auto fileName = index.data(Core::ScriptModel::PathRole).toString();
 
     if (fileName.isEmpty()) {
-        spdlog::warn("ScriptListPanel::runScript - fileName is empty");
+        WARN("ScriptListPanel::runScript - fileName is empty");
         return;
     }
 

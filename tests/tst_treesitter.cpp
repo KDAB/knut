@@ -27,7 +27,7 @@ private:
     {
         QFile mainfile(Test::testDataPath() + relativePath);
         if (!mainfile.open(QFile::ReadOnly | QFile::Text)) {
-            spdlog::warn("Couldn't open file: {}", mainfile.fileName().toStdString());
+            WARN("Couldn't open file: {}", mainfile.fileName().toStdString());
             return "";
         }
         QTextStream in(&mainfile);

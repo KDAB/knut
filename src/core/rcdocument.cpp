@@ -353,7 +353,7 @@ void RcDocument::setLanguage(const QString &language)
     LOG("RcDocument::setLanguage", language);
 
     if (!m_rcFile.data.contains(language)) {
-        spdlog::warn("RcDocument::setLanguage: language {} does not exist in the rc file.", language);
+        WARN("RcDocument::setLanguage: language {} does not exist in the rc file.", language);
         return;
     }
 

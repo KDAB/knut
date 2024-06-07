@@ -30,8 +30,7 @@ std::optional<typename Request::Result> sendRequest(ClientBackend *backend, Requ
 {
     auto checkResponse = [request](typename Request::Response response) {
         if (!response.isValid() || response.error) {
-            spdlog::warn("Response error for request {} - {}", request.method,
-                         response.error ? response.error->message : "");
+            WARN("Response error for request {} - {}", request.method, response.error ? response.error->message : "");
             return false;
         }
         return true;
@@ -47,7 +46,7 @@ std::optional<typename Request::Result> sendRequest(ClientBackend *backend, Requ
         QElapsedTimer time;
         time.start();
         auto response = backend->sendRequest(request);
-        spdlog::trace("{} ms for handling request {}", static_cast<int>(time.elapsed()), request.method);
+        TRACE("{} ms for handling request {}", static_cast<int>(time.elapsed()), request.method);
         if (checkResponse(response))
             return response.result;
     }
@@ -79,7 +78,7 @@ bool Client::initialize(const QString &rootPath)
     if (!m_backend->start())
         return false;
 
-    spdlog::debug("LSP server started in: {}", rootPath);
+    DEBUG("LSP server started in: {}", rootPath);
 
     InitializeRequest request;
     request.id = m_nextRequestId++;
@@ -250,14 +249,14 @@ void Client::setState(State newState)
 bool Client::initializeCallback(InitializeRequest::Response response)
 {
     if (!response.isValid() || response.error) {
-        spdlog::error("Error initializing the server");
+        ERROR("Error initializing the server");
         setState(Error);
         return false;
     }
 
     m_serverCapabilities = response.result->capabilities;
     m_backend->sendNotification(InitializedNotification());
-    spdlog::debug("LSP server initialized");
+    DEBUG("LSP server initialized");
     setState(Initialized);
     return true;
 }
@@ -265,13 +264,13 @@ bool Client::initializeCallback(InitializeRequest::Response response)
 bool Client::shutdownCallback(ShutdownRequest::Response response)
 {
     if (!response.isValid() || response.error) {
-        spdlog::error("Error shutting down the server");
+        ERROR("Error shutting down the server");
         setState(Error);
         return false;
     }
 
     m_backend->sendNotification(ExitNotification());
-    spdlog::debug("LSP server exited");
+    DEBUG("LSP server exited");
     setState(Shutdown);
     return true;
 }

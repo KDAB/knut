@@ -266,7 +266,7 @@ std::optional<Token> Lexer::readNext()
     if (ch == '<')
         return readInclude();
 
-    spdlog::critical("{}({}): general lexer error reading next token", m_fileName, m_stream.line());
+    CRITICAL("{}({}): general lexer error reading next token", m_fileName, m_stream.line());
     return {};
 }
 

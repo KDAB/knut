@@ -69,12 +69,12 @@ bool TestUtil::compareFiles(const QString &file, const QString &expected, bool e
 {
     QFile file1(file);
     if (!file1.open(QIODevice::ReadOnly)) {
-        spdlog::warn("Cannot open {} for comparison!", file);
+        WARN("Cannot open {} for comparison!", file);
         return false;
     }
     QFile file2(expected);
     if (!file2.open(QIODevice::ReadOnly)) {
-        spdlog::warn("Cannot open {} for comparison!", expected);
+        WARN("Cannot open {} for comparison!", expected);
         return false;
     }
 
@@ -86,9 +86,9 @@ bool TestUtil::compareFiles(const QString &file, const QString &expected, bool e
     }
     auto result = data1 == data2;
     if (!result) {
-        spdlog::warn("Comparison of {} and {} failed!", file, expected);
-        spdlog::warn("Actual: {}", data1);
-        spdlog::warn("Expected: {}", data2);
+        WARN("Comparison of {} and {} failed!", file, expected);
+        WARN("Actual: {}", data1);
+        WARN("Expected: {}", data2);
     }
     return result;
 }
@@ -144,7 +144,7 @@ bool TestUtil::compareDirectories(const QString &current, const QString &expecte
 {
     QDir currentDir(current);
     if (!currentDir.exists()) {
-        spdlog::warn("Cannot open directory {} for comparison!", current);
+        WARN("Cannot open directory {} for comparison!", current);
         return false;
     }
 

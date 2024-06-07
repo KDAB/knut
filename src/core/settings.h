@@ -69,7 +69,7 @@ public:
         try {
             return m_settings.at(nlohmann::json::json_pointer(path)).get<T>();
         } catch (...) {
-            spdlog::error("Settings::value {} - error reading", path);
+            ERROR("Settings::value {} - error reading", path);
         }
         return {};
     }
@@ -88,7 +88,7 @@ public:
                 m_projectSettings[pointer] = value;
             emit settingsChanged(QString::fromStdString(path));
         } catch (...) {
-            spdlog::error("Settings::setValue {} - error saving", path);
+            ERROR("Settings::setValue {} - error saving", path);
             return false;
         }
         m_saveTimer->start();

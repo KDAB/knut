@@ -194,13 +194,13 @@ bool Predicates::filter_eq_with(const QueryMatch &match,
         } else if (const auto *string = std::get_if<QString>(&arg)) {
             texts.emplace(textTransform(*string));
         } else if (std::holds_alternative<MissingCapture>(arg)) {
-            spdlog::warn("Predicates: #eq? - Unmatched capture!");
+            WARN("Predicates: #eq? - Unmatched capture!");
             // Insert an empty string into the set if we find an unmatched capture.
             // This likely means we have encountered a quantified capture that matched 0 times.
             // By inserting an empty string, we can check that all other things are also "empty".
             texts.emplace("");
         } else {
-            spdlog::warn("Predicates: #eq? - Impossible argument type!");
+            WARN("Predicates: #eq? - Impossible argument type!");
             return false;
         }
     }
@@ -267,7 +267,7 @@ bool Predicates::filter_eq_except_with(const QueryMatch &match,
 
             const auto idCaptures = match.capturesWithId(capture.id);
             if (idCaptures.isEmpty()) {
-                spdlog::warn("Predicates: #eq_except? - No captures");
+                WARN("Predicates: #eq_except? - No captures");
                 // Insert an empty string into the set if we find an unmatched capture.
                 // This likely means we have encountered a quantified capture that matched 0 times.
                 // So check whether the expected string is also empty
@@ -282,11 +282,11 @@ bool Predicates::filter_eq_except_with(const QueryMatch &match,
 
             return true;
         } else {
-            spdlog::warn("Predicates: #eq_except? - Expected Capture argument");
+            WARN("Predicates: #eq_except? - Expected Capture argument");
             return false;
         }
     } else {
-        spdlog::warn("Predicates: #eq_except? - Non-string expected argument");
+        WARN("Predicates: #eq_except? - Non-string expected argument");
         return false;
     }
 }
@@ -396,7 +396,7 @@ bool Predicates::filter_match(const QueryMatch &match,
     if (const auto regexString = std::get_if<QString>(&matched.first())) {
         const QRegularExpression regex(*regexString);
         if (!regex.isValid()) {
-            spdlog::warn("Predicates: #match? - Invalid regex");
+            WARN("Predicates: #match? - Invalid regex");
             return false;
         }
 
@@ -407,16 +407,16 @@ bool Predicates::filter_match(const QueryMatch &match,
                     return false;
                 }
             } else if (std::holds_alternative<MissingCapture>(argument)) {
-                spdlog::warn("Predicates: #match? - Unmatched capture argument");
+                WARN("Predicates: #match? - Unmatched capture argument");
                 return false;
             } else {
-                spdlog::warn("Predicates: #match? - Argument is not a capture");
+                WARN("Predicates: #match? - Argument is not a capture");
                 return false;
             }
         }
     } else {
 
-        spdlog::warn("Predicates: #match? - First argument is not a string");
+        WARN("Predicates: #match? - First argument is not a string");
         return false;
     }
 
@@ -451,7 +451,7 @@ void Predicates::findMessageMap() const
     }
 
     if (!m_rootNode.has_value()) {
-        spdlog::warn("Predicates::findMessageMap: No rootNode!");
+        WARN("Predicates::findMessageMap: No rootNode!");
         return;
     }
 
@@ -518,14 +518,14 @@ bool Predicates::filter_in_message_map(const QueryMatch &match, const PredicateA
                     return false;
                 }
             } else {
-                spdlog::warn("Predicate: #in_message_map? - Non-Capture Argument!");
+                WARN("Predicate: #in_message_map? - Non-Capture Argument!");
                 return false;
             }
         }
 
         return true;
     } else {
-        spdlog::warn("Predicate: #in_message_map? - No MESSAGE_MAP found!");
+        WARN("Predicate: #in_message_map? - No MESSAGE_MAP found!");
         return false;
     }
 }

@@ -82,7 +82,7 @@ bool UiDocument::doLoad(const QString &fileName)
     pugi::xml_parse_result result = m_document.load_file(fileName.toLatin1().constData(), pugi::parse_declaration);
 
     if (!result) {
-        spdlog::critical("{}({}): {}", fileName, result.offset, result.description());
+        CRITICAL("{}({}): {}", fileName, result.offset, result.description());
         return false;
     }
 
