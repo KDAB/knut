@@ -42,8 +42,9 @@
             "name": "ci",
             "displayName": "CI build",
             "binaryDir": "${sourceDir}/build-ci",
-            "inherits": "profile",
+            "generator": "Ninja",
             "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo",
                 "KNUT_ERROR_ON_WARN": "OFF",
                 "KNUT_USE_STD_FORMAT": "OFF"
             }
