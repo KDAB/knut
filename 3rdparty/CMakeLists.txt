@@ -13,7 +13,6 @@
 check_submodule(spdlog spdlog)
 # See https://github.com/gabime/spdlog/issues/1190
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-set(SPDLOG_USE_STD_FORMAT ${KNUT_USE_STD_FORMAT})
 add_subdirectory(spdlog)
 
 # nlohmann/json

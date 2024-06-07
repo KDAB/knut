@@ -33,7 +33,6 @@ include(InstallDependency)
 include(CheckSubmodule)
 
 option(USE_ASAN "use Address Sanitizer" OFF)
-option(KNUT_USE_STD_FORMAT "Use std format library for speed log library" ON)
 # It's best practice to only enable -Werror in CI & development builds.
 # We enable this option in the appropriate CMakePresets.
 # If you just want to have a working build of knut, -Werror can be very annoying, so keep it off by default.
