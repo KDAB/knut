@@ -55,7 +55,8 @@ public:
 
         std::visit(
             [this, &request](const auto &id) {
-                m_serverLogger->debug("==> Sending Request {} with id {}", request.method, id);
+                if (m_serverLogger)
+                    m_serverLogger->debug("==> Sending Request {} with id {}", request.method, id);
             },
             request.id);
         auto j = sendJsonRequest(request);
@@ -65,7 +66,8 @@ public:
     template <typename Notification>
     void sendNotification(const Notification &notification)
     {
-        m_serverLogger->debug("==> Sending Notification {}", notification.method);
+        if (m_serverLogger)
+            m_serverLogger->debug("==> Sending Notification {}", notification.method);
         sendJsonNotification(notification);
     }
 
@@ -87,12 +89,14 @@ private:
             auto response = j.get<Response>();
             std::visit(
                 [this](const auto &id) {
-                    m_serverLogger->error("<== Receiving Response id {}", id);
+                    if (m_serverLogger)
+                        m_serverLogger->error("<== Receiving Response id {}", id);
                 },
                 response.id);
             return response;
         } catch (...) {
-            m_serverLogger->error("<== Invalid response from server: {}", j.dump());
+            if (m_serverLogger)
+                m_serverLogger->error("<== Invalid response from server: {}", j.dump());
         }
         return {};
     }
