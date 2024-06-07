@@ -40,7 +40,6 @@ private slots:
 
     void load()
     {
-        Test::LogSilencer ls;
         SettingsFixture settings;
 
         // Default values
@@ -62,7 +61,6 @@ private slots:
 
     void getValue()
     {
-        Test::LogSilencer ls;
         SettingsFixture settings;
 
         settings.loadProjectSettings(Test::testDataPath() + "/tst_settings");
@@ -87,7 +85,6 @@ private slots:
     void setValue()
     {
         Test::FileTester file(Test::testDataPath() + "/tst_settings/setValue/knut.json");
-        Test::LogSilencer ls;
         SettingsFixture settings;
         QSignalSpy settingsSaved(&settings, &Core::Settings::settingsSaved);
 

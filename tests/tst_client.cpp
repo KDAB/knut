@@ -27,7 +27,6 @@ private slots:
         CHECK_CLANGD;
 
         Lsp::Client client("cpp", "clangd", {"--log=verbose", "--pretty"});
-        auto logs = Test::LogSilencers {"cpp_client", "cpp_server", "cpp_messages"};
 
         QVERIFY(client.initialize(Test::testDataPath()));
         QCOMPARE(client.state(), Lsp::Client::Initialized);
@@ -40,7 +39,6 @@ private slots:
         CHECK_CLANGD;
 
         Lsp::Client client("cpp", "clangd", {"--log=verbose", "--pretty"});
-        auto logs = Test::LogSilencers {"cpp_client", "cpp_server", "cpp_messages"};
 
         client.initialize(Test::testDataPath() + "/tst_client");
 
@@ -63,7 +61,6 @@ private slots:
         CHECK_CLANGD;
 
         Lsp::Client client("cpp", "clangd", {"--log=verbose", "--pretty"});
-        auto logs = Test::LogSilencers {"cpp_client", "cpp_server", "cpp_messages"};
 
         client.initialize(Test::testDataPath() + "/tst_client");
 
