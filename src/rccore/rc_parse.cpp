@@ -156,7 +156,7 @@ static void readDialogStatements(Context &context, Data::Dialog &dialog)
             dialog.styles = readStyles(lexer);
             break;
         default:
-            spdlog::error("{}({}): parser error on token {}", context.fileName(), context.line(), token->prettyPrint());
+            ERROR("{}({}): parser error on token {}", context.fileName(), context.line(), token->prettyPrint());
             break;
         }
     }
@@ -890,7 +890,7 @@ static Data::Accelerator readAccelerator(Context &context)
     }
     accelerator.shortcut = toShortcut(event, isAscii, modifiers);
     if (accelerator.shortcut.isEmpty()) {
-        spdlog::warn("{}({}): parser unknown accelerator {}", context.fileName(), context.line(), event);
+        WARN("{}({}): parser unknown accelerator {}", context.fileName(), context.line(), event);
     }
     return accelerator;
 }
@@ -1007,12 +1007,10 @@ static MenuItem readMenuItem(Context &context)
             case Keywords::MFSENABLED:
             case Keywords::MFTSTRING:
             case Keywords::MFTRIGHTJUSTIFY:
-                spdlog::info("{}({}): parser unused token {}", context.fileName(), context.line(),
-                             flagToken->prettyPrint());
+                INFO("{}({}): parser unused token {}", context.fileName(), context.line(), flagToken->prettyPrint());
                 break;
             default:
-                spdlog::warn("{}({}): parser unhandled token {}", context.fileName(), context.line(),
-                             flagToken->prettyPrint());
+                WARN("{}({}): parser unhandled token {}", context.fileName(), context.line(), flagToken->prettyPrint());
             }
 
             const auto type = lexer.peek()->type;
@@ -1040,7 +1038,7 @@ static void readMenuChildren(Context &context, QVector<MenuItem> &children)
             children.append(readMenuItem(context));
             break;
         default:
-            spdlog::warn("{}({}): parser unhandled token {}", context.fileName(), context.line(), token->prettyPrint());
+            WARN("{}({}): parser unhandled token {}", context.fileName(), context.line(), token->prettyPrint());
         }
         token = lexer.next();
     }
@@ -1117,7 +1115,7 @@ static void readToolBar(Context &context, const QString &id)
             break;
         }
         default:
-            spdlog::warn("{}({}): parser unhandled token {}", context.fileName(), context.line(), token->prettyPrint());
+            WARN("{}({}): parser unhandled token {}", context.fileName(), context.line(), token->prettyPrint());
         }
         lexer.skipLine();
         token = lexer.next();
@@ -1163,7 +1161,7 @@ static Data::Control readControl(Context &context, const std::optional<Token> &t
     control.type = static_cast<int>(controlType);
 
     if (!knownControls.contains(controlType)) {
-        spdlog::warn("{}({}): parser unknown control {}", context.fileName(), context.line(), token->prettyPrint());
+        WARN("{}({}): parser unknown control {}", context.fileName(), context.line(), token->prettyPrint());
         return control;
     }
 
@@ -1283,7 +1281,7 @@ static void readResource(Context &context, const std::optional<Token> &token, co
     case Keywords::MESSAGETABLE:
     case Keywords::REGISTRY:
     case Keywords::RT_RIBBON_XML:
-        spdlog::info("{}({}): parser unused token {}", context.fileName(), context.line(), token->prettyPrint());
+        INFO("{}({}): parser unused token {}", context.fileName(), context.line(), token->prettyPrint());
         lexer.skipLine();
         break;
     case Keywords::AFX_DIALOG_LAYOUT:
@@ -1323,11 +1321,11 @@ static void readResource(Context &context, const std::optional<Token> &token, co
         break;
 
     case Keywords::BEGIN:
-        spdlog::warn("{}({}): parser unhandled token {}", context.fileName(), context.line(), token->prettyPrint());
+        WARN("{}({}): parser unhandled token {}", context.fileName(), context.line(), token->prettyPrint());
         lexer.skipScope();
         break;
     default:
-        spdlog::warn("{}({}): parser unhandled token {}", context.fileName(), context.line(), token->prettyPrint());
+        WARN("{}({}): parser unhandled token {}", context.fileName(), context.line(), token->prettyPrint());
         lexer.skipLine();
         break;
     }
@@ -1349,8 +1347,8 @@ static void readDirective(Context &context, const QString &directive)
             if (fullPath.value().endsWith(".h")) {
                 QHash<int, QString> resourceMap = loadResourceFile(include.fileName);
                 if (resourceMap.isEmpty()) {
-                    spdlog::warn("{}({}): parser can't load resource file {}", context.fileName(), context.line(),
-                                 include.fileName);
+                    WARN("{}({}): parser can't load resource file {}", context.fileName(), context.line(),
+                         include.fileName);
                 } else {
                     context.rcFile.resourceMap.insert(resourceMap);
                 }
@@ -1393,15 +1391,13 @@ RcFile parse(const QString &fileName)
             case Token::Operator_Comma:
             case Token::Operator_Or:
             case Token::String:
-                spdlog::error("{}({}): parser error on token {}", context.fileName(), context.line(),
-                              token->prettyPrint());
+                ERROR("{}({}): parser error on token {}", context.fileName(), context.line(), token->prettyPrint());
                 break;
             case Token::Integer:
             case Token::Word:
                 // We can only read one integer/id/word
                 if (previousToken) {
-                    spdlog::error("{}({}): parser error on token {}", context.fileName(), context.line(),
-                                  token->prettyPrint());
+                    ERROR("{}({}): parser error on token {}", context.fileName(), context.line(), token->prettyPrint());
                 }
                 previousToken = token;
                 break;
@@ -1416,10 +1412,10 @@ RcFile parse(const QString &fileName)
             }
         }
     } catch (...) {
-        spdlog::critical("{}({}): parser general error", context.fileName(), context.line());
+        CRITICAL("{}({}): parser general error", context.fileName(), context.line());
         return {};
     }
-    spdlog::trace("{} ms for parsing {}", static_cast<int>(time.elapsed()), context.fileName());
+    TRACE("{} ms for parsing {}", static_cast<int>(time.elapsed()), context.fileName());
     rcFile.isValid = true;
     return rcFile;
 }

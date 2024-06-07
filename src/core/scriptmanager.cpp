@@ -80,10 +80,10 @@ QAbstractItemModel *ScriptManager::model()
 void ScriptManager::runScript(const QString &fileName, bool async, bool log)
 {
     if (log)
-        spdlog::debug("==> Start script {}", fileName);
+        DEBUG("==> Start script {}", fileName);
     auto endScriptCallback = [this, log, fileName]() {
         if (log)
-            spdlog::debug("<== End script {}", fileName);
+            DEBUG("<== End script {}", fileName);
         emit scriptFinished(m_result);
     };
 
@@ -205,10 +205,10 @@ void ScriptManager::doRunScript(const QString &fileName, const std::function<voi
     if (m_runner->hasError()) {
         const auto errors = m_runner->errors();
         for (const auto &error : errors)
-            spdlog::error("{}({}): {}", error.url().toLocalFile(), error.line(), error.description());
+            ERROR("{}({}): {}", error.url().toLocalFile(), error.line(), error.description());
     } else {
         if (m_result.isValid())
-            spdlog::info("Script result is {}", m_result.toString());
+            INFO("Script result is {}", m_result.toString());
     }
 }
 

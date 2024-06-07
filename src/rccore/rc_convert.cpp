@@ -31,7 +31,7 @@ static QVector<Asset> splitToolBar(const Data &data, const ToolBar &toolBar, con
     const int width = toolBar.iconSize.width();
 
     if (iconCount * width != image.width()) {
-        spdlog::warn("{}({}): asset and toolbar widths don't match for {}", data.fileName, asset.line, asset.id);
+        WARN("{}({}): asset and toolbar widths don't match for {}", data.fileName, asset.line, asset.id);
     }
 
     QVector<Asset> assets;
@@ -120,8 +120,7 @@ static void convertStyles(const Data &data, Widget &widget, Data::Control &contr
     control.styles.removeOne("WS_TABSTOP");
 
     if (!control.styles.isEmpty()) {
-        spdlog::info("{}({}): {} has unused styles {}", data.fileName, control.line, control.id,
-                     control.styles.join(", "));
+        INFO("{}({}): {} has unused styles {}", data.fileName, control.line, control.id, control.styles.join(", "));
     }
 }
 
@@ -568,7 +567,7 @@ static Widget convertControl(const Data &data, const QString &dialogId, Data::Co
     if (control.className == "MfcButton")
         return convertButton(data, control);
 
-    spdlog::warn("{}({}): unknown CONTROL {} / {}", data.fileName, control.line, control.id, control.className);
+    WARN("{}({}): unknown CONTROL {} / {}", data.fileName, control.line, control.id, control.className);
 
     Widget widget;
     widget.className = "QWidget";
@@ -621,8 +620,7 @@ static Widget convertChildWidget(const Data &data, const QString &dialogId, Data
         widget = convertControl(data, dialogId, control, useIdForPixmap);
         break;
     default:
-        spdlog::error("{}({}): unknown control type {}", data.fileName, control.line,
-                      Token {Token::Keyword, type}.toString());
+        ERROR("{}({}): unknown control type {}", data.fileName, control.line, Token {Token::Keyword, type}.toString());
     }
 
     widget.id = control.id;
@@ -708,8 +706,7 @@ Widget convertDialog(const Data &data, const Data::Dialog &d, Widget::Conversion
     }
 
     if (!dialog.styles.isEmpty()) {
-        spdlog::info("{}({}): {} has unused styles {}", data.fileName, dialog.line, dialog.id,
-                     dialog.styles.join(", "));
+        INFO("{}({}): {} has unused styles {}", data.fileName, dialog.line, dialog.id, dialog.styles.join(", "));
     }
 
     for (const auto &control : std::as_const(dialog.controls)) {
@@ -751,7 +748,7 @@ static void createActionForMenu(const Data &data, QVector<Action> &actions, QHas
     } else if (item.isAction()) {
         // We stop here in case of duplication in the menu
         if (actionIdMap.contains(item.id)) {
-            spdlog::info("{}({}): duplicate action in menu {}", data.fileName, item.line, item.id);
+            INFO("{}({}): duplicate action in menu {}", data.fileName, item.line, item.id);
             return;
         }
 
@@ -772,8 +769,7 @@ static void createActionForMenu(const Data &data, QVector<Action> &actions, QHas
 static Shortcut createShortcut(const Data &data, const Data::Accelerator &accelerator)
 {
     if (accelerator.isUnknown()) {
-        spdlog::warn("{}({}): unknown shortcut {} / {}", data.fileName, accelerator.line, accelerator.id,
-                     accelerator.shortcut);
+        WARN("{}({}): unknown shortcut {} / {}", data.fileName, accelerator.line, accelerator.id, accelerator.shortcut);
         return {accelerator.shortcut, true};
     }
     return {accelerator.shortcut};

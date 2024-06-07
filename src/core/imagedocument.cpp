@@ -26,7 +26,7 @@ QImage ImageDocument::image() const
 bool ImageDocument::doSave(const QString &fileName)
 {
     Q_UNUSED(fileName)
-    spdlog::error("ImageDocument::doSave - not implemented yet");
+    ERROR("ImageDocument::doSave - not implemented yet");
     return false;
 }
 

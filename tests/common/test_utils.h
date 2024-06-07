@@ -26,6 +26,17 @@
 #include <spdlog/sinks/callback_sink.h>
 #include <vector>
 
+// Disable completely all logging, due to an issue with spdlog
+// See here: https://github.com/gabime/spdlog/issues/3107
+#ifndef QT_DEBUG
+static const bool disableLogging = []() {
+#ifdef Q_OS_WIN
+    Log::detail::disableLogging = true;
+#endif
+    return true;
+}();
+#endif
+
 namespace Test {
 
 inline QString testDataPath()
@@ -96,6 +107,9 @@ class LogCounter
 public:
     LogCounter(spdlog::level::level_enum level = spdlog::level::err, const std::string &name = "")
     {
+        if (Log::detail::disableLogging)
+            return;
+
         m_logger = name.empty() ? spdlog::default_logger() : spdlog::get(name);
 
         if (m_logger) {
@@ -115,6 +129,9 @@ public:
 
     ~LogCounter()
     {
+        if (Log::detail::disableLogging)
+            return;
+
         if (m_logger && m_sink) {
             auto iter = std::ranges::find(m_logger->sinks(), std::dynamic_pointer_cast<spdlog::sinks::sink>(m_sink));
             if (iter != m_logger->sinks().end()) {
@@ -123,7 +140,7 @@ public:
         }
     }
 
-    int count() const { return m_count.load(); }
+    bool checkCount(int count) const { return Log::detail::disableLogging || (m_count.load() == count); }
 
 private:
     std::atomic<int> m_count;

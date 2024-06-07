@@ -245,7 +245,7 @@ bool TextDocument::doSave(const QString &fileName)
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
         setErrorString(file.errorString());
-        spdlog::error("Can't save file {}: {}", fileName, errorString());
+        ERROR("Can't save file {}: {}", fileName, errorString());
         return false;
     }
 
@@ -268,7 +268,7 @@ bool TextDocument::doLoad(const QString &fileName)
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly)) {
         setErrorString(file.errorString());
-        spdlog::warn("Can't load file {}: {}", fileName, errorString());
+        WARN("Can't load file {}: {}", fileName, errorString());
         return false;
     }
 
@@ -1128,7 +1128,7 @@ void TextDocument::gotoMark(const Mark &mark)
 {
     LOG("TextDocument::gotoMark", LOG_ARG("mark", mark));
     if (mark.document() != this) {
-        spdlog::error("Can't use a mark from another editor.");
+        ERROR("Can't use a mark from another editor.");
         return;
     }
 
@@ -1145,7 +1145,7 @@ void TextDocument::selectToMark(const Mark &mark)
 {
     LOG("TextDocument::selectToMark", LOG_ARG("mark", mark));
     if (mark.document() != this) {
-        spdlog::error("Can't use a mark from another editor.");
+        ERROR("Can't use a mark from another editor.");
         return;
     }
 
@@ -1182,7 +1182,7 @@ Core::RangeMark TextDocument::createRangeMark()
     const int end = cursor.selectionEnd();
 
     if (start == end)
-        spdlog::warn("TextDocument::createRangeMark: Creating a range mark with an empty range.");
+        WARN("TextDocument::createRangeMark: Creating a range mark with an empty range.");
 
     LOG_RETURN("rangeMark", createRangeMark(start, end));
 }
@@ -1199,7 +1199,7 @@ void TextDocument::selectRangeMark(const Core::RangeMark &mark)
     LOG("TextDocument::selectRangeMark", LOG_ARG("mark", mark));
 
     if (mark.document() != this) {
-        spdlog::error("Can't use a range mark from another editor.");
+        ERROR("Can't use a range mark from another editor.");
         return;
     }
 
@@ -1421,11 +1421,11 @@ int TextDocument::replaceAllInRange(const QString &before, const QString &after,
 {
     LOG("TextDocument::replaceAllInRange", LOG_ARG("text", before), after, range, options);
     if (!range.isValid()) {
-        spdlog::warn("TextDocument::replaceAllInRange: Invalid range!");
+        WARN("TextDocument::replaceAllInRange: Invalid range!");
         return 0;
     }
     if (range.document() != this) {
-        spdlog::warn("TextDocument::replaceAllInRange: Range is not from this document!");
+        WARN("TextDocument::replaceAllInRange: Range is not from this document!");
         return 0;
     }
 
@@ -1504,11 +1504,11 @@ int TextDocument::replaceAllRegexpInRange(const QString &regexp, const QString &
 {
     LOG("TextDocument::replaceAllRegexpInRange", LOG_ARG("text", regexp), after, range, options);
     if (!range.isValid()) {
-        spdlog::warn("TextDocument::replaceAllRegexpInRange: Invalid range!");
+        WARN("TextDocument::replaceAllRegexpInRange: Invalid range!");
         return 0;
     }
     if (range.document() != this) {
-        spdlog::warn("TextDocument::replaceAllRegexpInRange: Range is not from this document!");
+        WARN("TextDocument::replaceAllRegexpInRange: Range is not from this document!");
         return 0;
     }
 
