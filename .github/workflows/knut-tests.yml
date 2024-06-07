@@ -65,5 +65,12 @@ jobs:
       - name: Build Project
         run: cmake --build --preset=ci
 
+      - name: Output the build results as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: knut-binaries-${{ matrix.os }}-${{ github.head_ref || github.ref_name }}
+          path: build-ci/bin/
+          overwrite: true
+
       - name: Run tests
         run: ctest --preset=ci
