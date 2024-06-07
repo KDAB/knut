@@ -45,8 +45,7 @@
             "generator": "Ninja",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "RelWithDebInfo",
-                "KNUT_ERROR_ON_WARN": "ON",
-                "KNUT_USE_STD_FORMAT": "OFF"
+                "KNUT_ERROR_ON_WARN": "ON"
             }
         },
         {
