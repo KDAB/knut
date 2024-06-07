@@ -18,6 +18,7 @@
 #include <QBuffer>
 #include <QEventLoop>
 #include <QString>
+#include <QtEnvironmentVariables>
 #include <ctime>
 #include <spdlog/sinks/basic_file_sink.h>
 
@@ -51,20 +52,22 @@ ClientBackend::ClientBackend(const std::string &language, QString program, QStri
     , m_arguments(std::move(arguments))
     , m_process(new QProcess(this))
 {
-    const auto serverLogName = language + "_server";
-    m_serverLogger = spdlog::get(serverLogName);
-    if (!m_serverLogger) {
-        m_serverLogger = spdlog::basic_logger_mt(serverLogName, serverLogName + ".log", true);
-        m_serverLogger->set_level(spdlog::level::debug);
-        m_serverLogger->set_pattern("%v");
-    }
+    if (!qEnvironmentVariable("KNUT_LOG_LSP").isEmpty()) {
+        const auto serverLogName = language + "_server";
+        m_serverLogger = spdlog::get(serverLogName);
+        if (!m_serverLogger) {
+            m_serverLogger = spdlog::basic_logger_mt(serverLogName, serverLogName + ".log", true);
+            m_serverLogger->set_level(spdlog::level::debug);
+            m_serverLogger->set_pattern("%v");
+        }
 
-    const auto messageLogName = language + "_messages";
-    m_messageLogger = spdlog::get(messageLogName);
-    if (!m_messageLogger) {
-        m_messageLogger = spdlog::basic_logger_mt(messageLogName, messageLogName + ".log", true);
-        m_messageLogger->set_level(spdlog::level::info);
-        m_messageLogger->set_pattern("[LSP   - %H:%M:%S] %v");
+        const auto messageLogName = language + "_messages";
+        m_messageLogger = spdlog::get(messageLogName);
+        if (!m_messageLogger) {
+            m_messageLogger = spdlog::basic_logger_mt(messageLogName, messageLogName + ".log", true);
+            m_messageLogger->set_level(spdlog::level::info);
+            m_messageLogger->set_pattern("[LSP   - %H:%M:%S] %v");
+        }
     }
 
     connect(m_process, &QProcess::readyReadStandardError, this, &ClientBackend::readError);
@@ -86,7 +89,8 @@ ClientBackend::~ClientBackend()
 
 bool ClientBackend::start()
 {
-    m_serverLogger->trace("==> Starting LSP server {}", m_program);
+    if (m_serverLogger)
+        m_serverLogger->trace("==> Starting LSP server {}", m_program);
     m_process->start(m_program, m_arguments);
     if (m_process->waitForStarted() && m_process->state() == QProcess::Running)
         return true;
@@ -95,7 +99,8 @@ bool ClientBackend::start()
 
 void ClientBackend::readError()
 {
-    m_serverLogger->info(m_process->readAllStandardError());
+    if (m_serverLogger)
+        m_serverLogger->info(m_process->readAllStandardError());
 }
 
 void ClientBackend::readOutput()
@@ -107,7 +112,8 @@ void ClientBackend::readOutput()
         // Check if there is an error
         if (message.contains("error")) {
             auto errorString = message.at("error").at("message").get<std::string>();
-            m_serverLogger->error("<== Error response: {}", errorString);
+            if (m_serverLogger)
+                m_serverLogger->error("<== Error response: {}", errorString);
         }
 
         if (message.contains("id")) {
@@ -128,13 +134,15 @@ void ClientBackend::readOutput()
 
 void ClientBackend::handleError()
 {
-    m_serverLogger->error("==> LSP server {} raises an error {}", m_program, m_process->errorString());
+    if (m_serverLogger)
+        m_serverLogger->error("==> LSP server {} raises an error {}", m_program, m_process->errorString());
     emit errorOccured(m_process->errorString());
 }
 
 void ClientBackend::handleFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
-    m_serverLogger->trace("==> Exiting LSP server {} with exit code {}", m_program, exitCode);
+    if (m_serverLogger)
+        m_serverLogger->trace("==> Exiting LSP server {} with exit code {}", m_program, exitCode);
     if (exitStatus != QProcess::CrashExit)
         emit finished();
 }
@@ -173,8 +181,10 @@ void ClientBackend::logMessage(std::string type, const nlohmann::json &message)
         {"message", message},
         {"timestamp", std::time(nullptr)},
     };
-    m_messageLogger->info(log.dump());
-    m_messageLogger->flush();
+    if (m_messageLogger) {
+        m_messageLogger->info(log.dump());
+        m_messageLogger->flush();
+    }
 }
 
 void ClientBackend::Message::addData(const QByteArray &data)
