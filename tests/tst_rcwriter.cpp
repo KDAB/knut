@@ -28,7 +28,6 @@ private slots:
 
     void testQrc()
     {
-        Test::LogSilencer ls;
         RcFile rcFile = parse(Test::testDataPath() + "/rcfiles/2048Game/2048Game.rc");
         auto data = rcFile.data.value("LANG_ENGLISH;SUBLANG_ENGLISH_US");
 
@@ -65,7 +64,6 @@ private slots:
 
     void testConvertDialog()
     {
-        Test::LogSilencer ls;
         RcFile rcFile = parse(Test::testDataPath() + "/rcfiles/2048Game/2048Game.rc");
         auto usData = rcFile.data.value("LANG_ENGLISH;SUBLANG_ENGLISH_US");
         auto result = convertDialog(usData, usData.dialogs.first(), RcCore::Widget::AllFlags);
@@ -90,7 +88,6 @@ private slots:
 
     void testWriteDialog()
     {
-        Test::LogSilencer ls;
         RcFile rcFile = parse(Test::testDataPath() + "/rcfiles/cryEdit/CryEdit.rc");
         auto data = rcFile.data.value("LANG_ENGLISH;SUBLANG_ENGLISH_US");
 
@@ -125,7 +122,6 @@ private slots:
 
     void testConvertAction()
     {
-        Test::LogSilencer ls;
         RcFile rcFile = parse(Test::testDataPath() + "/rcfiles/2048Game/2048Game.rc");
         auto data = rcFile.data.value("LANG_ENGLISH;SUBLANG_ENGLISH_US");
 

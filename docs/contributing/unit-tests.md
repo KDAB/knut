@@ -11,16 +11,6 @@ Tests written using the QtTest module.
 There are some utility classes you can use:
 
 - `Test::testDataPath()`: returns the test data folder path
-- `Test::LogSilencers`: silence logs during the tests
-```cpp
-// Silence multiple logs
-auto ls = Test::LogSilencers {"cpp_client", "cpp_server", "cpp_messages"};
-
-// Silence the default log
-Test::LogSilencers ls;
-```
-
-
 - `Test::FileTester`: create an original file based on the original one, and compare the result with an expected one
 
 ```cpp
