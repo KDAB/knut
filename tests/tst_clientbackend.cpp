@@ -29,7 +29,7 @@ private slots:
         CHECK_CLANGD;
 
         Lsp::ClientBackend client("cpp", "clangd", {});
-        auto logs = Test::LogSilencers {"cpp_server", "cpp_messages"};
+        // auto logs = Test::LogSilencers {"cpp_server", "cpp_messages"};
 
         QSignalSpy errorOccured(&client, &Lsp::ClientBackend::errorOccured);
         QSignalSpy finished(&client, &Lsp::ClientBackend::finished);
