@@ -46,12 +46,11 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v4
 
-
-      # Note: Once we're able to access photonwidgets and mfc-utils, this can simply be replaced by
-      # setting
-      # with:
+      # Ideally, we'd simply like to replace this with:
       #   submodules: recursive
       # on the "Checkout sources" step
+      # However, this is not possible, as the secret key to access the Github repository is not available from forks.
+      # So we need to conditionally check for the secret key.
       - name: Checkout submodules
         run: |
           git submodule update --init --force --depth=1 --recursive -- '3rdparty/extra-cmake-modules'
@@ -62,9 +61,29 @@ jobs:
           git submodule update --init --force --depth=1 --recursive -- '3rdparty/spdlog'
           git submodule update --init --force --depth=1 --recursive -- '3rdparty/tree-sitter'
           git submodule update --init --force --depth=1 --recursive -- '3rdparty/tree-sitter-cpp'
-          # git submodule update --init --force --depth=1 --recursive -- '3rdparty/photonwidgets'
-          # git submodule update --init --force --depth=1 --recursive -- '3rdparty/mfc-utils'
 
+      - name: Configure SSH for connection to codereview.kdab.com (main repo only)
+        uses: shimataro/ssh-key-action@v2
+        # The GERRIT_SSH_KEY is only available in the main knut repo **after** merging a PR
+        # So only run this step if that's the case.
+        if: ${{ github.repository == 'KDAB/knut' &&  github.event_name == 'push' }}
+        with:
+          key: ${{ secrets.GERRIT_SSH_KEY }}
+          name: id_knut-github-gerrit-access
+          known_hosts: "[codereview.kdab.com]:29418 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII7rIogDqC3Za+LV37295k312ihzhH/HsSNDE6+VHQMF"
+          config: |
+            Host codereview.kdab.com
+              HostName codereview.kdab.com
+              User knut-github-gerrit-access
+              IdentityFile ~/.ssh/id_knut-github-gerrit-access
+
+      - name: Checkout private submodules (main repo only)
+        # The GERRIT_SSH_KEY is only available in the main knut repo **after** merging a PR
+        # So only run this step if that's the case.
+        if: ${{ github.repository == 'KDAB/knut' &&  github.event_name == 'push' }}
+        run: |
+          git submodule update --init --force --depth=1 --recursive -- '3rdparty/photonwidgets'
+          git submodule update --init --force --depth=1 --recursive -- '3rdparty/mfc-utils'
 
       - name: Install ninja-build tool
         uses: aseprite/get-ninja@main
