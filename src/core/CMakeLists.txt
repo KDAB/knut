@@ -10,6 +10,8 @@
 
 project(knut-core LANGUAGES CXX)
 
+configure_file(version.cpp.in ${CMAKE_CURRENT_BINARY_DIR}/version.cpp)
+
 set(PROJECT_SOURCES
     astnode.h
     astnode.cpp
@@ -104,6 +106,8 @@ set(PROJECT_SOURCES
     userdialog.cpp
     utils.h
     utils.cpp
+    version.h
+    ${CMAKE_CURRENT_BINARY_DIR}/version.cpp
     core.qrc)
 
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})

@@ -67,13 +67,11 @@ if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
     message(STATUS "GIT not found!?")
   endif()
 endif()
-add_definitions(-DKNUT_VERSION_STRING="${KNUT_VERSION_STRING}")
 
 # Generate build date for the about dialog Note: This is the simplest way to get
 # a build date out of CMake Drawbacks: The timestamp is only updated when CMake
 # is rerun. But this should sufficient for our use-case.
 string(TIMESTAMP KNUT_BUILDDATE "%Y-%m-%d")
-add_definitions(-DKNUT_BUILDDATE="${KNUT_BUILDDATE}")
 
 # Qt
 # ##############################################################################
