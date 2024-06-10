@@ -29,6 +29,9 @@ jobs:
       SCCACHE_GHA_CACHE_FROM: "sccache-${{ matrix.os }}"
 
     steps:
+      - name: Inspect Environment Variables
+        run: env
+
       - name: Checkout sources
         uses: actions/checkout@v4
 
