@@ -76,12 +76,16 @@ jobs:
       - name: Build Project
         run: cmake --build --preset=ci
 
+      - name: Run tests
+        run: ctest --preset=ci
+
+      # We only upload artifacts if building or testing has failed
+      # That way we can debug if necessary, but don't pay the 30s-60s
+      # of upload time if everything is going well.
       - name: Output the build results as an artifact
         uses: actions/upload-artifact@v4
+        if: failure()
         with:
           name: knut-binaries-${{ matrix.os }}-${{ github.head_ref || github.ref_name }}
           path: build-ci/bin/
           overwrite: true
-
-      - name: Run tests
-        run: ctest --preset=ci
