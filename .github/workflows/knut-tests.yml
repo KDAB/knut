@@ -18,15 +18,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - ubuntu-latest
-          - windows-latest
-          - macos-latest
+        include:
+          - name: Ubuntu
+            os: ubuntu-latest
+            compiler_cache_path: /home/runner/.cache/sccache
+          - name: Windows
+            os: windows-latest
+            compiler_cache_path: C:\Users\runneradmin\AppData\Local\Mozilla\sccache\cache
+          - name: MacOS
+            os: macos-latest
+            compiler_cache_path: /Users/runner/Library/Caches/Mozilla.sccache
+
     env:
       SCCACHE_CACHE_SIZE: "2G"
-      SCCACHE_GHA_ENABLED: "true"
-      SCCACHE_GHA_CACHE_TO: "sccache-${{ matrix.os }}"
-      SCCACHE_GHA_CACHE_FROM: "sccache-${{ matrix.os }}"
 
     steps:
       - name: Inspect Environment Variables
@@ -67,6 +71,30 @@ jobs:
       - name: Make sure MSVC is found when Ninja generator is in use
         uses: ilammy/msvc-dev-cmd@v1
 
+      # Note: The Compiler cache steps were adapted from the CXX-Qt repository (https://github.com/kdab/cxx-qt)
+      #
+      # We want our compiler cache to always update to the newest state.
+      # The best way for us to achieve this is to **always** update the cache after every landed commit.
+      # That way it will closely follow our development.
+      # And if a PR diverges a lot with its cache that's not a big deal, as it will be merged eventually.
+      #
+      # This is a workaround for the fact that GH doesn't support updating existing caches.
+      # See: https://github.com/azu/github-actions-overwrite-cache-example
+      #
+      # Ideally we'd like to use this:
+      # - name: "Compiler cache"
+      #   uses: actions/cache@v4
+      #   with:
+      #     update: true <------- THIS DOESN'T EXIST YET
+      #     path: ${{ matrix.compiler_cache_path }}
+      #     key: ${{ matrix.name }}_compiler_cache
+      - name: "Restore Compiler Cache"
+        id: compiler-cache-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ matrix.compiler_cache_path }}
+          key: ${{ matrix.os }}_compiler_cache
+
       - name: Run sccache-cache
         uses: mozilla-actions/sccache-action@v0.0.3
 
@@ -89,3 +117,21 @@ jobs:
           name: knut-binaries-${{ matrix.os }}-${{ github.head_ref || github.ref_name }}
           path: build-ci/bin/
           overwrite: true
+
+      # This is a workaround for the fact that GH doesn't support updating existing caches.
+      # See: https://github.com/azu/github-actions-overwrite-cache-example
+      - name: "Delete previous compiler cache"
+        # Updating th cache doesn't work from forks
+        # So update it once it's merged into the repo
+        if: ${{ steps.compiler-cache-restore.outputs.cache-hit }}
+        continue-on-error: true
+        run: |
+          gh extension install actions/gh-actions-cache
+          gh actions-cache delete "${{ matrix.os }}_compiler_cache" --confirm
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: "Save Compiler Cache"
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ matrix.compiler_cache_path }}
+          key: ${{ matrix.os }}_compiler_cache
