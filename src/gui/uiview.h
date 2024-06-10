@@ -33,8 +33,8 @@ public:
 private:
     void updateView();
 
-    QTableView *m_tableView = nullptr;
-    QMdiArea *m_previewArea = nullptr;
+    QTableView *const m_tableView;
+    QMdiArea *const m_previewArea;
     Core::QtUiDocument *m_document = nullptr;
     QMdiSubWindow *m_previewWindow = nullptr;
 };
