@@ -55,7 +55,7 @@
             "binaryDir": "${sourceDir}/build-clazy",
             "inherits": "ci",
             "cacheVariables": {
-                "CMAKE_CXX_COMPILER" : "clazy"
+                "CMAKE_CXX_COMPILER": "clazy"
             }
         }
     ],
@@ -73,8 +73,13 @@
         {
             "name": "ci",
             "configurePreset": "ci",
-            "output": { "outputOnFailure": true },
-            "execution": {"noTestsAction": "error", "stopOnFailure": true},
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true
+            },
             "environment": {
                 "QT_QPA_PLATFORM": "offscreen"
             }

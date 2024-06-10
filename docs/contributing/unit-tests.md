@@ -37,7 +37,7 @@ Test::FileTester file(Test::testDataPath() + "/cpp-project/section_original.cpp"
 ### Enabling or disabling tests
 
 Some tests can't be run without `clangd` or with a version of `clangd` older than 13.0.
-In this case, you can add some macro at the begining of the tests:
+In this case, you can add some macro at the beginning of the tests:
 
 - `CHECK_CLANGD` to skip the test if there are no `clangd`
 - `CHECK_CLANGD_VERSION` to skip the test if there are no `clangd` or an obsolete one

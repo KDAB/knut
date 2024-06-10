@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
-# This enables the use of CMAKE_MSVC_DEBUG_INFORMATION_FORMAT as required by the CI preset
+# This enables the use of CMAKE_MSVC_DEBUG_INFORMATION_FORMAT as required by the
+# CI preset
 cmake_policy(SET CMP0141 NEW)
 
 # This file is part of Knut.
@@ -36,10 +37,12 @@ include(InstallDependency)
 include(CheckSubmodule)
 
 option(USE_ASAN "use Address Sanitizer" OFF)
-# It's best practice to only enable -Werror in CI & development builds.
-# We enable this option in the appropriate CMakePresets.
-# If you just want to have a working build of knut, -Werror can be very annoying, so keep it off by default.
-option(KNUT_ERROR_ON_WARN "Issue a compiler error if the compiler encounters a warning" OFF)
+# It's best practice to only enable -Werror in CI & development builds. We
+# enable this option in the appropriate CMakePresets. If you just want to have a
+# working build of knut, -Werror can be very annoying, so keep it off by
+# default.
+option(KNUT_ERROR_ON_WARN
+       "Issue a compiler error if the compiler encounters a warning" OFF)
 
 if(USE_ASAN)
   # /MD will be used implicitly
@@ -146,13 +149,13 @@ add_subdirectory(tools)
 set(KNUT_BINARY_PATH "$<TARGET_FILE:knut>")
 add_subdirectory(tests)
 
-# mfc-utils and photonwidgets are private to KDAB, so make them optional so that non-KDABians can
-# still develop Knut.
-if (EXISTS 3rdparty/mfc-utils/tests-scripts)
+# mfc-utils and photonwidgets are private to KDAB, so make them optional so that
+# non-KDABians can still develop Knut.
+if(EXISTS 3rdparty/mfc-utils/tests-scripts)
   add_subdirectory(3rdparty/mfc-utils/tests-scripts)
 endif()
 
-if (EXISTS 3rdparty/photonwidgets/tests/scripts)
+if(EXISTS 3rdparty/photonwidgets/tests/scripts)
   add_subdirectory(3rdparty/photonwidgets/tests/scripts)
 endif()
 

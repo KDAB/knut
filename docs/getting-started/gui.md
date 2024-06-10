@@ -6,7 +6,7 @@
 
 The knut user interface is not an IDE, but rather a way to do some manual or automated transformation of the code.
 
-Options are available via the `File`>`Options...` (or `Ctrl+,`), and allows you to change the look of the appliction, as well as some settings (see [Overview](overview.md)).
+Options are available via the `File`>`Options...` (or `Ctrl+,`), and allows you to change the look of the application, as well as some settings (see [Overview](overview.md)).
 
 ![Knut Options Dialog](gui-options.png)
 
@@ -14,7 +14,7 @@ Beyond the central part, which is used to display the current document, you have
 
 1. Project panel: files in the current project
 2. Script panel: open/edit/run a script
-3. Log output: display the logs from teh application, you can change the level
+3. Log output: display the logs from the application, you can change the level
 4. History panel: history of all user actions, can be used to create a script
 
 ## Palette
@@ -26,7 +26,7 @@ Like other existing editors, knut has a palette available using the `File`>`Show
 The palette allows you to:
 - open a file from the project
 - go to a line in the current document (`:` prefix)
-- go to a specific symbol in the current docyment (`@` prefix)
+- go to a specific symbol in the current document (`@` prefix)
 - run a script (`.` prefix)
 
 ## Prototyping a script
