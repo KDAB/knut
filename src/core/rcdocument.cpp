@@ -608,6 +608,19 @@ void RcDocument::mergeLanguages()
     emit dataChanged();
 }
 
+/*!
+ * \qmlmethod string RcDocument::convertLanguageToCode(string language)
+ * Returns language code as defined by the ISO 639 for language name
+ */
+QString RcDocument::convertLanguageToCode(const QString &language)
+{
+    LOG("RcDocument::convertLanguageToCode", language);
+    if (language == DefaultLanguage) {
+        return {};
+    }
+    return RcCore::convertLanguageToCode(language);
+}
+
 bool RcDocument::doSave(const QString &fileName)
 {
     Q_UNUSED(fileName)

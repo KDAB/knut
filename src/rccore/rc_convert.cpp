@@ -18,6 +18,8 @@
 #include <algorithm>
 #include <cmath>
 
+using namespace Qt::Literals::StringLiterals;
+
 namespace RcCore {
 
 static QVector<Asset> splitToolBar(const Data &data, const ToolBar &toolBar, const Asset &asset)
@@ -856,6 +858,57 @@ QVector<Action> convertActions(const Data &data, Asset::ConversionFlags flags)
         createActionForToolBar(data, actions, actionIdMap, toolBar, flags);
 
     return actions;
+}
+
+QString convertLanguageToCode(const QString &name)
+{
+    // based on https://gist.github.com/SamantazFox/68ab776da9f7daa52a66ad8647ba836c
+    // Need to add more in the future
+    const auto langList = QStringView(name).split(';');
+    if (!langList.isEmpty()) {
+        const QStringView mainLang = langList.constFirst();
+        QStringView subLang;
+        if (langList.count() == 2) {
+            subLang = langList.constLast();
+        }
+        if (mainLang == "LANG_FRENCH"_L1) {
+            if (subLang == "SUBLANG_FRENCH_BELGIAN"_L1) {
+                return "fr_BE";
+            } else if (subLang == "SUBLANG_FRENCH_CANADIAN"_L1) {
+                return "fr_CA";
+            } else if (subLang == "SUBLANG_FRENCH_CANADIAN"_L1) {
+                return "fr_CA";
+            } else if (subLang == "SUBLANG_FRENCH"_L1) {
+                return "fr_FR";
+            } else if (subLang == "SUBLANG_FRENCH_LUXEMBOURG"_L1) {
+                return "fr_LU";
+            } else if (subLang == "SUBLANG_FRENCH_MONACO"_L1) {
+                return "fr_MC";
+            } else if (subLang == "SUBLANG_FRENCH_SWISS"_L1) {
+                return "fr_CH";
+            } else {
+                return "fr";
+            }
+        } else if (mainLang == "LANG_ENGLISH"_L1) {
+            if (subLang == "SUBLANG_ENGLISH_AUS"_L1) {
+                return "en_AU";
+            } else if (subLang == "SUBLANG_ENGLISH_BELIZE"_L1) {
+                return "en_BZ";
+            } else if (subLang == "SUBLANG_ENGLISH_CAN"_L1) {
+                return "en_CA";
+            } else if (subLang == "SUBLANG_ENGLISH_INDIA"_L1) {
+                return "en_IN";
+            } else if (subLang == "SUBLANG_ENGLISH_UK"_L1) {
+                return "en_UK";
+            } else if (subLang == "SUBLANG_ENGLISH_US"_L1) {
+                return "en_US";
+            } else if (subLang == "SUBLANG_ENGLISH_ZIMBABWE"_L1) {
+                return "en_ZW";
+            }
+        }
+    }
+    spdlog::error("Unknown language name conversion {} ", name);
+    return "en";
 }
 
 } // namespace RcCore

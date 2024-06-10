@@ -52,4 +52,6 @@ void writeAssetsToQrc(const QVector<Asset> &assets, QIODevice *device, const QSt
 
 void writeDialogToUi(const Widget &widget, QIODevice *device, const QString &scriptPath = {});
 
+QString convertLanguageToCode(const QString &name);
+
 } // namespace RcCore

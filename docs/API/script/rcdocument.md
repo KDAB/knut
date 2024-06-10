@@ -37,6 +37,7 @@ import Script 1.0
 |array<[Action](../script/action.md)> |**[actionsFromToolbar](#actionsFromToolbar)**(string toolBarId)|
 |void |**[convertActions](#convertActions)**(int flags)|
 ||**[convertAssets](#convertAssets)**(int flags)|
+|string |**[convertLanguageToCode](#convertLanguageToCode)**(string language)|
 |[Widget](../script/widget.md) |**[dialog](#dialog)**(string id, int flags, real scaleX, real scaleY)|
 |[Menu](../script/menu.md) |**[menu](#menu)**(string id)|
 |bool |**[mergeAllLanguages](#mergeAllLanguages)**(string language = "[default]")|
@@ -143,6 +144,10 @@ Convert all assets using the `flags`.
 - `RcDocument.SplitToolBar`: split toolbars strip into individual icon, one per action
 - `RcDocument.ConvertToPng`: convert BMPs to PNGs, needed if we want to also change the transparency
 - `RcDocument.AllFlags`: combination of all above
+
+#### <a name="convertLanguageToCode"></a>string **convertLanguageToCode**(string language)
+
+Returns language code as defined by the ISO 639 for language name
 
 #### <a name="dialog"></a>[Widget](../script/widget.md) **dialog**(string id, int flags, real scaleX, real scaleY)
 

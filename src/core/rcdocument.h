@@ -103,6 +103,7 @@ public slots:
     void previewDialog(const RcCore::Widget &dialog) const;
     void mergeAllLanguages(const QString &language = DefaultLanguage);
     void mergeLanguages();
+    QString convertLanguageToCode(const QString &language);
 
 signals:
     void languageChanged();
