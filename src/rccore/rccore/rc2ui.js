@@ -48,7 +48,7 @@ function writeProperty(name, value, writer) {
 }
 
 
-// Widget hanlding
+// Widget handling
 //////////////////
 function convertClassName(className, writer) {
     // This is the place to customize classes

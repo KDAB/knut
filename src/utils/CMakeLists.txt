@@ -10,7 +10,8 @@
 
 project(knut-utils LANGUAGES CXX)
 find_package(Qt6 REQUIRED COMPONENTS Core Gui)
-set(PROJECT_SOURCES json.h qt_fmt_helpers.h qt_fmt_format.h strings.h strings.cpp log.h)
+set(PROJECT_SOURCES json.h qt_fmt_helpers.h qt_fmt_format.h strings.h
+                    strings.cpp log.h)
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC nlohmann_json::nlohmann_json
