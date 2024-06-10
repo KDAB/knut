@@ -648,6 +648,9 @@ void MainWindow::updateScriptActions()
 
 void MainWindow::returnToEditor()
 {
+    if (ui->tabWidget->count() == 0)
+        return;
+
     if (ui->tabWidget->currentWidget()->hasFocus()) {
         ui->findWidget->hide();
         ui->apiExecutorWidget->hide();
