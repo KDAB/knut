@@ -8,6 +8,7 @@
   Contact KDAB at <info@kdab.com> for commercial licensing options.
 */
 
+#include "core/version.h"
 #include "gui/knutmain.h"
 
 #include <QApplication>
@@ -19,7 +20,7 @@ int main(int argc, char *argv[])
 
     QApplication::setOrganizationName("KDAB");
     QApplication::setApplicationName("knut");
-    QApplication::setApplicationVersion(KNUT_VERSION_STRING);
+    QApplication::setApplicationVersion(core::knut_version());
     QApplication::setWindowIcon(QIcon(":/gui/icons/knut-64.png"));
 
     Q_INIT_RESOURCE(core);

@@ -1,0 +1,12 @@
+#include "core/version.h"
+
+namespace core {
+    QString knut_version()
+    {
+        return "${KNUT_VERSION_STRING}";
+    }
+
+    QString knut_build_date() {
+        return "${KNUT_BUILDDATE}";
+    }
+}

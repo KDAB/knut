@@ -20,6 +20,7 @@
 #include "core/slintdocument.h"
 #include "core/textdocument.h"
 #include "core/uidocument.h"
+#include "core/version.h"
 #include "documentpalette.h"
 #include "guisettings.h"
 #include "historypanel.h"
@@ -572,7 +573,7 @@ Build date: %2<br/><br/>
 Knut name has nothing to do with Knut Irvin, nor with Knut the polar bear.<br/>
 The name Knut is coming from St Knut, which marks the end of the Christmas and holiday season in Sweden.<br/>
 See Wikipedia article: <a href="https://en.wikipedia.org/wiki/Saint_Knut%27s_Day">Saint Knut's Day</a>.)")
-                    .arg(KNUT_VERSION_STRING, KNUT_BUILDDATE);
+                    .arg(core::knut_version(), core::knut_build_date());
     QMessageBox dialog(QMessageBox::Information, tr("About Knut"), text, QMessageBox::Ok, this);
     dialog.setIconPixmap(QPixmap(":/gui/icons/knut-64.png"));
     dialog.exec();
