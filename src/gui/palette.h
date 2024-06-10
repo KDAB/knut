@@ -73,7 +73,7 @@ private:
     std::unique_ptr<Ui::Palette> ui;
     std::vector<Selector> m_selectors;
     int m_currentSelector = 0;
-    QSortFilterProxyModel *m_proxyModel = nullptr;
+    QSortFilterProxyModel *const m_proxyModel = nullptr;
 };
 
 } // namespace Gui

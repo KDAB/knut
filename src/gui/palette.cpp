@@ -314,11 +314,11 @@ public:
 Palette::Palette(QMainWindow *parent)
     : QFrame(parent, Qt::Popup)
     , ui(new Ui::Palette)
+    , m_proxyModel(new SortFilterProxyModel(this))
 {
     ui->setupUi(this);
     setFixedWidth(Constants::PaletteWidth);
 
-    m_proxyModel = new SortFilterProxyModel(this);
     m_proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
     ui->treeView->setModel(m_proxyModel);
 
