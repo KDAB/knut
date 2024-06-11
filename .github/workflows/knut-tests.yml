@@ -26,15 +26,22 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: Ubuntu
+          - name: Ubuntu (clang&clazy)
             os: ubuntu-latest
             compiler_cache_path: /home/runner/.cache/sccache
+            cmake_preset: clazy
+          - name: Ubuntu (gcc)
+            os: ubuntu-latest
+            compiler_cache_path: /home/runner/.cache/sccache
+            cmake_preset: ci
           - name: Windows
             os: windows-latest
             compiler_cache_path: C:\Users\runneradmin\AppData\Local\Mozilla\sccache\cache
+            cmake_preset: ci
           - name: MacOS
             os: macos-latest
             compiler_cache_path: /Users/runner/Library/Caches/Mozilla.sccache
+            cmake_preset: ci
 
     env:
       SCCACHE_CACHE_SIZE: "2G"
@@ -119,19 +126,37 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: ${{ matrix.compiler_cache_path }}
-          key: ${{ matrix.os }}_compiler_cache
+          key: ${{ matrix.os }}_${{ matrix.cmake_preset }}_compiler_cache
 
       - name: Run sccache-cache
         uses: mozilla-actions/sccache-action@v0.0.3
 
+      - name: Install recent clang
+        uses: KyleMayes/install-llvm-action@v2
+        if: ${{ matrix.cmake_preset == 'clazy' }}
+        with:
+          version: "17"
+          env: true
+
+      - name: Build & Install clazy
+        if: ${{ matrix.cmake_preset == 'clazy' }}
+        run: |
+          git clone --depth=1 https://github.com/KDE/clazy.git
+          cd clazy/
+          cmake -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache -DLINK_CLAZY_TO_LLVM=OFF -DCMAKE_BUILD_TYPE=Release -G Ninja -DLLVM_ROOT=${{ env.LLVM_PATH }}
+          cmake --build .
+          sudo cmake --build . --target install
+          cd ..
+          echo "CLANGXX=${{ env.LLVM_PATH }}/bin/clang++" >> $GITHUB_ENV
+
       - name: Configure project
-        run: cmake -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache --preset=ci
+        run: cmake -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache --preset=${{ matrix.cmake_preset }}
 
       - name: Build Project
-        run: cmake --build --preset=ci
+        run: cmake --build --preset=${{ matrix.cmake_preset }}
 
       - name: Run tests
-        run: ctest --preset=ci
+        run: ctest --preset=${{ matrix.cmake_preset }}
 
       # We only upload artifacts if building or testing has failed
       # That way we can debug if necessary, but don't pay the 30s-60s
@@ -141,7 +166,7 @@ jobs:
         if: failure()
         with:
           name: knut-binaries-${{ matrix.os }}-${{ github.head_ref || github.ref_name }}
-          path: build-ci/bin/
+          path: build-${{ matrix.cmake_preset }}/bin/
           overwrite: true
 
       # This is a workaround for the fact that GH doesn't support updating existing caches.
@@ -153,7 +178,7 @@ jobs:
         continue-on-error: true
         run: |
           gh extension install actions/gh-actions-cache
-          gh actions-cache delete "${{ matrix.os }}_compiler_cache" --confirm
+          gh actions-cache delete "${{ matrix.os }}_${{ matrix.cmake_preset }}_compiler_cache" --confirm
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: "Save Compiler Cache"
@@ -163,4 +188,4 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         with:
           path: ${{ matrix.compiler_cache_path }}
-          key: ${{ matrix.os }}_compiler_cache
+          key: ${{ matrix.os }}_${{ matrix.cmake_preset }}_compiler_cache
