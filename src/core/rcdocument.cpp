@@ -314,6 +314,22 @@ QStringList RcDocument::stringIds() const
     return {};
 }
 
+/*!
+ * \qmlmethod array<String> RcDocument::stringsForLanguage(string language)
+ * Returns translated string for specific `language`.
+ */
+QList<RcCore::String> RcDocument::stringsForLanguage(const QString &language) const
+{
+    LOG("RcDocument::stringsForLanguage", language);
+    if (m_rcFile.isValid && m_rcFile.data.contains(language)) {
+        const RcCore::Data data = const_cast<RcCore::RcFile *>(&m_rcFile)->data[language];
+        const auto &strings = data.strings;
+        return strings.values();
+    } else {
+        return {};
+    }
+}
+
 QList<RcCore::String> RcDocument::strings() const
 {
     if (isDataValid()) {

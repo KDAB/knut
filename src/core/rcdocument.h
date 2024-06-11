@@ -83,6 +83,8 @@ public:
     QStringList toolbarIds() const;
     QStringList stringIds() const;
 
+    Q_INVOKABLE QList<RcCore::String> stringsForLanguage(const QString &language) const;
+
     QList<RcCore::String> strings() const;
     Q_INVOKABLE QString string(const QString &id) const;
 

@@ -42,6 +42,7 @@ import Script 1.0
 |bool |**[mergeAllLanguages](#mergeAllLanguages)**(string language = "[default]")|
 |bool |**[mergeLanguages](#mergeLanguages)**()|
 |bool |**[previewDialog](#previewDialog)**([Widget](../script/widget.md) dialog)|
+|array<[String](../script/string.md)> |**[stringsForLanguage](#stringsForLanguage)**(string language)|
 |string |**[text](#text)**(string id)|
 |[ToolBar](../script/toolbar.md) |**[toolBar](#toolBar)**(string id)|
 |bool |**[writeAssetsToImage](#writeAssetsToImage)**(int flags)|
@@ -175,6 +176,10 @@ resulting language they will be merged together.
 #### <a name="previewDialog"></a>bool **previewDialog**([Widget](../script/widget.md) dialog)
 
 Preview the result of the conversion RC->UI
+
+#### <a name="stringsForLanguage"></a>array<[String](../script/string.md)> **stringsForLanguage**(string language)
+
+Returns translated string for specific `language`.
 
 #### <a name="text"></a>string **text**(string id)
 
