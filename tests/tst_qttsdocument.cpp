@@ -88,6 +88,12 @@ private slots:
                 }
             }
         }
+        {
+            Core::QtTsDocument document;
+            document.load(Test::testDataPath() + QStringLiteral("/tst_qttsdocument/sourcelanguage.ts"));
+            QCOMPARE(document.language(), "EN_us");
+            QCOMPARE(document.sourceLanguage(), "FR_fr");
+        }
     }
 
     void add_messages()

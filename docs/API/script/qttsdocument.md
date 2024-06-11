@@ -16,6 +16,7 @@ import Script 1.0
 |-|-|
 |string|**[language](#language)**|
 |array<QtUiMessage>|**[messages](#messages)**|
+|string|**[sourceLanguage](#sourceLanguage)**|
 
 ## Methods
 
@@ -23,6 +24,7 @@ import Script 1.0
 |-|-|
 ||**[addMessage](#addMessage)**(string context, string location, string source, string translation)|
 ||**[setLanguage](#setLanguage)**(string lang)|
+||**[setSourceLanguage](#setSourceLanguage)**(string lang)|
 
 ## Property Documentation
 
@@ -34,6 +36,10 @@ Return language name.
 
 List of all translations in the ts file.
 
+#### <a name="sourceLanguage"></a>string **sourceLanguage**
+
+Return source language name.
+
 ## Method Documentation
 
 #### <a name="addMessage"></a>**addMessage**(string context, string location, string source, string translation)
@@ -43,3 +49,7 @@ Add a new source text, its translation located in location within the given cont
 #### <a name="setLanguage"></a>**setLanguage**(string lang)
 
 Change language.
+
+#### <a name="setSourceLanguage"></a>**setSourceLanguage**(string lang)
+
+Change source language.

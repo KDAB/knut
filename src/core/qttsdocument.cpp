@@ -37,6 +37,11 @@ namespace Core {
  * Return language name.
  */
 
+/*!
+ * \qmlproperty string QtTsDocument::sourceLanguage
+ * Return source language name.
+ */
+
 QtTsDocument::QtTsDocument(QObject *parent)
     : TextDocument(Type::QtTs, parent)
 {
@@ -49,9 +54,24 @@ QtTsDocument::QtTsDocument(QObject *parent)
 void QtTsDocument::setLanguage(const QString &lang)
 {
     LOG("QtTsDocument::setLanguage", lang);
-    m_language = lang;
+    auto ts = m_document.select_node("TS");
+    ts.node().attribute("language").set_value(lang.toLatin1().constData());
+
     setHasChanged(true);
     Q_EMIT languageChanged();
+}
+
+/*!
+ * \qmlmethod QtTsDocument::setSourceLanguage(string lang)
+ * Change source language.
+ */
+void QtTsDocument::setSourceLanguage(const QString &lang)
+{
+    LOG("QtTsDocument::setSourceLanguage", lang);
+    auto ts = m_document.select_node("TS");
+    ts.node().attribute("sourcelanguage").set_value(lang.toLatin1().constData());
+    setHasChanged(true);
+    Q_EMIT sourceLanguageChanged();
 }
 
 void QtTsDocument::addMessage(pugi::xml_node contextChild, const QString &context, const QString &location,
@@ -136,7 +156,6 @@ bool QtTsDocument::doLoad(const QString &fileName)
         spdlog::critical("invalid file {}", fileName);
         return false;
     }
-    m_language = ts.first().node().attribute("language").value();
 
     const auto contexts = m_document.select_nodes("//context");
     for (const auto &node : contexts) {
@@ -152,9 +171,16 @@ bool QtTsDocument::doLoad(const QString &fileName)
     return true;
 }
 
+QString QtTsDocument::sourceLanguage() const
+{
+    const auto ts = m_document.select_node("TS");
+    return QString::fromLatin1(ts.node().attribute("sourcelanguage").value());
+}
+
 QString QtTsDocument::language() const
 {
-    return m_language;
+    const auto ts = m_document.select_node("TS");
+    return QString::fromLatin1(ts.node().attribute("language").value());
 }
 
 QVector<QtTsMessage *> QtTsDocument::messages() const
