@@ -88,7 +88,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="tabPosition">
-      <enum>QTabWidget::East</enum>
+      <enum>QTabWidget::TabPosition::East</enum>
      </property>
      <property name="currentIndex">
       <number>0</number>
@@ -121,6 +121,9 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="rootIsDecorated">
+          <bool>false</bool>
+         </property>
          <column>
           <property name="text">
            <string notr="true">1</string>
@@ -129,7 +132,11 @@
         </widget>
        </item>
        <item>
-        <widget class="QTreeView" name="contentView"/>
+        <widget class="QTreeView" name="contentView">
+         <property name="rootIsDecorated">
+          <bool>false</bool>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QLineEdit" name="contentFilter">
