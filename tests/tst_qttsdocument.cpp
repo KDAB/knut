@@ -129,6 +129,34 @@ private slots:
             }
         }
     }
+
+    void createFromEmptyFile()
+    {
+        Core::QtTsDocument document;
+        QVERIFY(document.language().isEmpty());
+        QCOMPARE(document.messages().count(), 0);
+
+        const QString language = "FR_fr";
+        document.setLanguage(language);
+        QCOMPARE(document.language(), language);
+
+        const QString sourceLanguage = "en_US";
+        document.setSourceLanguage(sourceLanguage);
+        QCOMPARE(document.sourceLanguage(), sourceLanguage);
+
+        // Add new context
+        {
+            document.addMessage("context_new", "new_loc", "original", "translated");
+            QCOMPARE(document.messages().count(), 1);
+            {
+                const auto message = document.messages().at(0);
+                QCOMPARE(message->fileName(), "new_loc");
+                QCOMPARE(message->source(), "original");
+                QCOMPARE(message->translation(), "translated");
+                QCOMPARE(message->context(), "context_new");
+            }
+        }
+    }
 };
 
 QTEST_MAIN(TestQtTsDocument)

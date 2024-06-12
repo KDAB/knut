@@ -47,6 +47,15 @@ QtTsDocument::QtTsDocument(QObject *parent)
 {
 }
 
+void QtTsDocument::initializeXml()
+{
+    auto ts = m_document.select_node("TS");
+    if (ts.node().empty()) {
+        pugi::xml_node ts = m_document.append_child("TS");
+        ts.append_attribute("version").set_value("2.1");
+    }
+}
+
 /*!
  * \qmlmethod QtTsDocument::setLanguage(string lang)
  * Change language.
@@ -54,8 +63,14 @@ QtTsDocument::QtTsDocument(QObject *parent)
 void QtTsDocument::setLanguage(const QString &lang)
 {
     LOG("QtTsDocument::setLanguage", lang);
+    initializeXml();
     auto ts = m_document.select_node("TS");
-    ts.node().attribute("language").set_value(lang.toLatin1().constData());
+    const auto attributeName = "language";
+    if (ts.node().attribute(attributeName).empty()) {
+        ts.node().append_attribute(attributeName).set_value(lang.toLatin1().constData());
+    } else {
+        ts.node().attribute(attributeName).set_value(lang.toLatin1().constData());
+    }
 
     setHasChanged(true);
     Q_EMIT languageChanged();
@@ -68,8 +83,14 @@ void QtTsDocument::setLanguage(const QString &lang)
 void QtTsDocument::setSourceLanguage(const QString &lang)
 {
     LOG("QtTsDocument::setSourceLanguage", lang);
+    initializeXml();
     auto ts = m_document.select_node("TS");
-    ts.node().attribute("sourcelanguage").set_value(lang.toLatin1().constData());
+    const auto attributeName = "sourcelanguage";
+    if (ts.node().attribute(attributeName).empty()) {
+        ts.node().append_attribute(attributeName).set_value(lang.toLatin1().constData());
+    } else {
+        ts.node().attribute(attributeName).set_value(lang.toLatin1().constData());
+    }
     setHasChanged(true);
     Q_EMIT sourceLanguageChanged();
 }
@@ -109,6 +130,7 @@ void QtTsDocument::addMessage(const QString &context, const QString &fileName, c
         spdlog::error(R"(Location or context or source is empty)");
     }
 
+    initializeXml();
     auto isContext = [context](const auto &data) {
         return context == data->context();
     };
