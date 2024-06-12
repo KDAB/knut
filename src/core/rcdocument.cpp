@@ -330,6 +330,24 @@ QList<RcCore::String> RcDocument::stringsForLanguage(const QString &language) co
     }
 }
 
+/*!
+ * \qmlmethod string RcDocument::stringForLanguage(string language, string id)
+ * Return the string for the given `id` in language `language`.
+ */
+QString RcDocument::stringForLanguage(const QString &language, const QString &id) const
+{
+    LOG("RcDocument::stringForLanguage", language, id);
+
+    if (m_rcFile.isValid && m_rcFile.data.contains(language)) {
+        const RcCore::Data data = const_cast<RcCore::RcFile *>(&m_rcFile)->data[language];
+        const auto &strings = data.strings;
+        return strings.value(id).text;
+    } else {
+        spdlog::warn("RcDocument::stringForLanguage: language {} does not exist in the rc file.", language);
+        return {};
+    }
+}
+
 QList<RcCore::String> RcDocument::strings() const
 {
     if (isDataValid()) {
