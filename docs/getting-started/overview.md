@@ -81,7 +81,7 @@ Some settings (like Text Editor Behavior) are only per project.
         "json": "text_type",
         "rc": "rc_type",
         "rc2": "rc_type",
-        "ui": "ui_type",
+        "ui": "qtui_type",
         "png": "image_type",
         "bmp": "image_type",
         "jpg": "image_type",
