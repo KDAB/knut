@@ -107,9 +107,9 @@ Document::ConflictResolution Document::resolveConflictsOnSave() const
 {
     const QFileInfo fi(m_fileName);
     const auto result = QMessageBox::question(
-        QApplication::activeWindow(), "File changed externally",
-        QString("%1\n\nThe file has unsaved changes inside this editor and has been changed externally.\n"
-                "Do you want to overwrite the changes on the disk?")
+        QApplication::activeWindow(), tr("File changed externally"),
+        tr("%1\n\nThe file has unsaved changes inside this editor and has been changed externally.\n"
+           "Do you want to overwrite the changes on the disk?")
             .arg(fi.fileName()));
     return result == QMessageBox::Yes ? Core::Document::OverwriteDiskChanges : Core::Document::KeepDiskChanges;
 };
