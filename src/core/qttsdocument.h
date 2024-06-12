@@ -85,6 +85,7 @@ private:
     friend QtTsMessage;
     void addMessage(pugi::xml_node contextChild, const QString &context, const QString &location, const QString &source,
                     const QString &translation, const QString &comment = QString());
+    void initializeXml();
     pugi::xml_document m_document;
 
     QVector<QtTsMessage *> m_messages;
