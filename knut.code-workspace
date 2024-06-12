@@ -8,51 +8,6 @@
         "C_Cpp.intelliSenseEngine": "disabled",
         "clangd.arguments": [
             "-header-insertion=never"
-        ],
-        "gerrit.changesViews": [
-            {
-                "title": "Dashboard",
-                "panels": [
-                    {
-                        "title": "Outgoing Reviews",
-                        "refreshInterval": 0,
-                        "defaultCollapsed": false,
-                        "initialFetchCount": 25,
-                        "extraEntriesFetchCount": 25,
-                        "filters": [
-                            "project:knut",
-                            "is:open",
-                            "owner:self"
-                        ]
-                    },
-                    {
-                        "title": "Incoming Reviews",
-                        "refreshInterval": 0,
-                        "defaultCollapsed": false,
-                        "initialFetchCount": 25,
-                        "extraEntriesFetchCount": 25,
-                        "filters": [
-                            "project:knut",
-                            "is:open",
-                            "-owner:self",
-                            "reviewer:self"
-                        ]
-                    },
-                    {
-                        "title": "Other Reviews",
-                        "refreshInterval": 0,
-                        "defaultCollapsed": false,
-                        "initialFetchCount": 25,
-                        "extraEntriesFetchCount": 25,
-                        "filters": [
-                            "project:knut",
-                            "is:open",
-                            "-owner:self",
-                            "-reviewer:self"
-                        ]
-                    }
-                ]
-            }
         ]
     },
     "launch": {
