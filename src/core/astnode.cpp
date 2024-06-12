@@ -51,7 +51,7 @@ bool AstNode::isValid() const
 std::optional<treesitter::Node> AstNode::node() const
 {
     if (!isValid()) {
-        qWarning() << "AstNode is invalid";
+        spdlog::warn("AstNode is invalid");
         return std::nullopt;
     }
 
