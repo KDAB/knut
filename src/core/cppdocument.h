@@ -54,8 +54,12 @@ public:
     Q_INVOKABLE Core::DataExchange mfcExtractDDX(const QString &className);
     Q_INVOKABLE Core::MessageMap mfcExtractMessageMap(const QString &className = "");
 
+    Q_INVOKABLE QStringList keywords() const;
+    Q_INVOKABLE QStringList primitiveTypes() const;
+
     bool changeBaseClass(CppDocument *header, CppDocument *source, const QString &className,
                          const QString &newClassBaseName);
+
 public slots:
     Core::CppDocument *openHeaderSource();
 

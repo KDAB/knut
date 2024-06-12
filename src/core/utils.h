@@ -52,6 +52,10 @@ public slots:
 
     static void copyToClipboard(const QString &text);
 
+    static QStringList cppKeywords();
+
+    static QStringList cppPrimitiveTypes();
+
 private:
     static QHash<QString, QString> m_globals;
 };

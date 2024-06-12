@@ -24,8 +24,6 @@ set(PROJECT_SOURCES
     conversionprogressdialog.h
     conversionprogressdialog.cpp
     conversionprogressdialog.ui
-    cpplanguagedata.h
-    cpplanguagedata.cpp
     cppdocument.h
     cppdocument.cpp
     cppdocument_p.h

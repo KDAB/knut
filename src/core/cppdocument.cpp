@@ -14,6 +14,7 @@
 #include "logger.h"
 #include "project.h"
 #include "settings.h"
+#include "utils.h"
 #include "utils/log.h"
 
 #include <QFileInfo>
@@ -1517,6 +1518,28 @@ bool CppDocument::changeBaseClass(const QString &className, const QString &newCl
     }
 
     return changeBaseClass(header, source, className, newClassBaseName);
+}
+
+/*!
+ * \qmlmethod QStringList CppDocument::keywords()
+ * Returns a list of cpp keywords
+ *
+ * See: Utils::cppKeywords()
+ */
+QStringList CppDocument::keywords() const
+{
+    return Utils::cppKeywords();
+}
+
+/*!
+ * \qmlmethod QStringList CppDocument::primitiveTypes()
+ * Returns a list of cpp primitive types
+ *
+ * See Utils::cppPrimitiveTypes()
+ */
+QStringList CppDocument::primitiveTypes() const
+{
+    return Utils::cppPrimitiveTypes();
 }
 
 } // namespace Core

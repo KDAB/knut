@@ -17,6 +17,8 @@ import Script 1.0
 ||**[addScriptPath](#addScriptPath)**(string path, bool projectOnly)|
 |string |**[convertCase](#convertCase)**(string str, Case from, Case to)|
 |string |**[copyToClipboard](#copyToClipboard)**(string text)|
+|string |**[cppKeywords](#cppKeywords)**()|
+|string |**[cppPrimitiveTypes](#cppPrimitiveTypes)**()|
 |string |**[getEnv](#getEnv)**(string varName)|
 |string |**[getGlobal](#getGlobal)**(string varName)|
 |string |**[mktemp](#mktemp)**(string pattern)|
@@ -61,6 +63,14 @@ The different cases are:
 #### <a name="copyToClipboard"></a>string **copyToClipboard**(string text)
 
 Copy the text to the clipboard
+
+#### <a name="cppKeywords"></a>string **cppKeywords**()
+
+Returns a list of cpp keywords.
+
+#### <a name="cppPrimitiveTypes"></a>string **cppPrimitiveTypes**()
+
+Returns a list of cpp primitive types
 
 #### <a name="getEnv"></a>string **getEnv**(string varName)
 

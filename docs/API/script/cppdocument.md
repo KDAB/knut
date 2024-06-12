@@ -40,9 +40,11 @@ Inherited properties: [CodeDocument properties](../script/codedocument.md#proper
 ||**[insertCodeInMethod](#insertCodeInMethod)**(string methodName, string code, Position insertAt)|
 ||**[insertForwardDeclaration](#insertForwardDeclaration)**(string forwardDeclaration)|
 ||**[insertInclude](#insertInclude)**(string include, bool newGroup = false)|
+|QStringList |**[keywords](#keywords)**()|
 |[DataExchange](../script/dataexchange.md) |**[mfcExtractDDX](#mfcExtractDDX)**(string className)|
 |[MessageMap](../script/messagemap.md) |**[mfcExtractMessageMap](#mfcExtractMessageMap)**(string className = "")|
 |[CppDocument](../script/cppdocument.md) |**[openHeaderSource](#openHeaderSource)**()|
+|QStringList |**[primitiveTypes](#primitiveTypes)**()|
 |[QueryMatch](../script/querymatch.md) |**[queryClassDefinition](#queryClassDefinition)**(string className)|
 |array<[QueryMatch](../script/querymatch.md)> |**[queryFunctionCall](#queryFunctionCall)**(string functionName)|
 |array<[QueryMatch](../script/querymatch.md)> |**[queryFunctionCall](#queryFunctionCall)**(string functionName, array<string> argumentCaptures)|
@@ -213,6 +215,12 @@ in the file.
 
 If `newGroup` is true, it will insert the include at the end, with a new line separating the other includes.
 
+#### <a name="keywords"></a>QStringList **keywords**()
+
+Returns a list of cpp keywords
+
+See: Utils::cppKeywords()
+
 #### <a name="mfcExtractDDX"></a>[DataExchange](../script/dataexchange.md) **mfcExtractDDX**(string className)
 
 Extracts the DDX information from a MFC class.
@@ -228,6 +236,12 @@ The `className` parameter can be used to ensure the result matches to a specific
 
 Opens the corresponding source or header files, the current document is the new file.
 If no files have been found, it's a no-op.
+
+#### <a name="primitiveTypes"></a>QStringList **primitiveTypes**()
+
+Returns a list of cpp primitive types
+
+See Utils::cppPrimitiveTypes()
 
 #### <a name="queryClassDefinition"></a>[QueryMatch](../script/querymatch.md) **queryClassDefinition**(string className)
 
