@@ -363,7 +363,7 @@ void MainWindow::showEvent(QShowEvent *event)
 
 void MainWindow::openProject()
 {
-    auto path = QFileDialog::getExistingDirectory(this, "Open project", QDir::currentPath());
+    auto path = QFileDialog::getExistingDirectory(this, tr("Open project"), QDir::currentPath());
     if (!path.isEmpty()) {
         Core::Project::instance()->setRoot(path);
         initProject(path);
