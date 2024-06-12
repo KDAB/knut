@@ -13,7 +13,7 @@
 
 #include <QTest>
 
-class TestUiDocument : public QObject
+class TestQtUiDocument : public QObject
 {
     Q_OBJECT
 
@@ -27,7 +27,7 @@ private slots:
     void load()
     {
         Core::QtUiDocument document;
-        document.load(Test::testDataPath() + QStringLiteral("/tst_uidocument/IDD_ABCCOMPILE.ui"));
+        document.load(Test::testDataPath() + QStringLiteral("/tst_qtuidocument/IDD_ABCCOMPILE.ui"));
 
         const auto widgets = document.widgets();
         QCOMPARE(widgets.count(), 21);
@@ -47,7 +47,7 @@ private slots:
 
     void save()
     {
-        Test::FileTester file(Test::testDataPath() + "/tst_uidocument/IDD_LIGHTING.ui");
+        Test::FileTester file(Test::testDataPath() + "/tst_qtuidocument/IDD_LIGHTING.ui");
         {
             Core::QtUiDocument document;
             document.load(file.fileName());
@@ -70,5 +70,5 @@ private slots:
     }
 };
 
-QTEST_MAIN(TestUiDocument)
-#include "tst_uidocument.moc"
+QTEST_MAIN(TestQtUiDocument)
+#include "tst_qtuidocument.moc"
