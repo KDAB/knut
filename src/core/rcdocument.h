@@ -84,6 +84,7 @@ public:
     QStringList stringIds() const;
 
     Q_INVOKABLE QList<RcCore::String> stringsForLanguage(const QString &language) const;
+    Q_INVOKABLE QString stringForLanguage(const QString &language, const QString &id) const;
 
     QList<RcCore::String> strings() const;
     Q_INVOKABLE QString string(const QString &id) const;
