@@ -191,4 +191,117 @@ void Utils::copyToClipboard(const QString &text)
     clipboard->setText(text);
 }
 
+/*!
+ * \qmlmethod string Utils::cppKeywords()
+ * Returns a list of cpp keywords.
+ */
+// Source: https://en.cppreference.com/w/cpp/keyword
+// As of August 2022
+//
+// Added a 'readonly' (C++ attribute) keyword:
+// Source: https://learn.microsoft.com/en-us/cpp/windows/attributes/readonly-cpp?view=msvc-170
+// Prohibits assignment to a data member.
+// Applies to Interface method.
+// The readonly C++ attribute has the same functionality as the readonly MIDL attribute.
+QStringList Utils::cppKeywords()
+{
+    return QStringList {"alignas",
+                        "alignof",
+                        "and",
+                        "and_eq",
+                        "asm",
+                        "atomic_cancel",
+                        "atomic_commit",
+                        "atomic_noexcept",
+                        "auto",
+                        "bitand",
+                        "bitor",
+                        "bool",
+                        "break",
+                        "case",
+                        "catch",
+                        "class",
+                        "compl",
+                        "concept",
+                        "const",
+                        "consteval",
+                        "constexpr",
+                        "constinit",
+                        "const_cast",
+                        "continue",
+                        "co_await",
+                        "co_return",
+                        "co_yield",
+                        "decltype",
+                        "default",
+                        "delete",
+                        "do",
+                        "dynamic_cast",
+                        "else",
+                        "enum",
+                        "explicit",
+                        "export",
+                        "extern",
+                        "false",
+                        "for",
+                        "friend",
+                        "goto",
+                        "if",
+                        "inline",
+                        "mutable",
+                        "namespace",
+                        "new",
+                        "noexcept",
+                        "not",
+                        "not_eq",
+                        "nullptr",
+                        "operator",
+                        "or",
+                        "or_eq",
+                        "private",
+                        "protected",
+                        "public",
+                        "readonly",
+                        "reflexpr",
+                        "register",
+                        "reinterpret_cast",
+                        "requires",
+                        "return",
+                        "signed",
+                        "sizeof",
+                        "static",
+                        "static_assert",
+                        "static_cast",
+                        "struct",
+                        "switch",
+                        "synchronized",
+                        "template",
+                        "this",
+                        "thread_local",
+                        "throw",
+                        "true",
+                        "try",
+                        "typedef",
+                        "typeid",
+                        "typename",
+                        "union",
+                        "unsigned",
+                        "using",
+                        "virtual",
+                        "volatile",
+                        "while",
+                        "xor",
+                        "xor_eq"};
+}
+
+/*!
+ * \qmlmethod string Utils::cppPrimitiveTypes()
+ * Returns a list of cpp primitive types
+ */
+QStringList Utils::cppPrimitiveTypes()
+{
+    return QStringList {"int",  "long",    "short",    "void",     "float",  "double",
+                        "char", "char8_t", "char16_t", "char32_t", "wchar_t"};
+}
+
 } // namespace Core

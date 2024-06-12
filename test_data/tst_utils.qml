@@ -65,4 +65,15 @@ TestCase {
         compare(Utils.convertCase("TO_TITLE_CASE_WITH_AN_EXCEPTION", Utils.UpperCase, Utils.TitleCase), "To Title Case With an Exception")
     }
 
+    function test_cppKeywords() {
+        var keywords = Utils.cppKeywords()
+        verify(keywords.length > 0)
+        verify(keywords.includes("delete"))
+    }
+
+    function test_cppPrimitiveTypes() {
+        var primitiveTypes = Utils.cppPrimitiveTypes()
+        verify(primitiveTypes.length > 0)
+        verify(primitiveTypes.includes("wchar_t"))
+    }
 }

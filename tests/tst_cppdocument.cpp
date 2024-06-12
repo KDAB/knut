@@ -13,6 +13,7 @@
 #include "core/cppdocument.h"
 #include "core/knutcore.h"
 #include "core/project.h"
+#include "core/utils.h"
 
 #include <QFileInfo>
 #include <QPlainTextEdit>
@@ -316,6 +317,26 @@ private slots:
             header->save();
         });
         QVERIFY(headerFile.compare());
+    }
+
+    void keywords()
+    {
+        Test::testCppDocument("projects/cpp-project", "main.cpp", [](auto *document) {
+            const QStringList keywords = document->keywords();
+            QVERIFY(keywords.count() > 0);
+            QVERIFY(keywords.contains("delete"));
+            QCOMPARE(keywords, Core::Utils::cppKeywords());
+        });
+    }
+
+    void primitiveTypes()
+    {
+        Test::testCppDocument("projects/cpp-project", "main.cpp", [](auto *document) {
+            const QStringList primitiveTypes = document->primitiveTypes();
+            QVERIFY(primitiveTypes.count() > 0);
+            QVERIFY(primitiveTypes.contains("wchar_t"));
+            QCOMPARE(primitiveTypes, Core::Utils::cppPrimitiveTypes());
+        });
     }
 };
 
