@@ -273,13 +273,14 @@ struct Data
     QVector<AcceleratorTable> acceleratorTables;
     QVector<Menu> menus;
     QVector<ToolBar> toolBars;
-    QVector<DialogData> dialogData;
+    QVector<DialogData> dialogDataList;
     QVector<Dialog> dialogs;
 
     // Accessors
     const Asset *asset(const QString &id) const;
     const ToolBar *toolBar(const QString &id) const;
     const Dialog *dialog(const QString &id) const;
+    const DialogData *dialogData(const QString &id) const;
     const Menu *menu(const QString &id) const;
     const AcceleratorTable *acceleratorTable(const QString &id) const;
 };

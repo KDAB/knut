@@ -959,7 +959,7 @@ static void readDialogInit(Context &context, const QString &id)
     }
     lexer.next(); // END
 
-    context.currentData().dialogData.push_back(dialogData);
+    context.currentData().dialogDataList.push_back(dialogData);
 }
 
 static MenuItem readMenuItem(Context &context)
