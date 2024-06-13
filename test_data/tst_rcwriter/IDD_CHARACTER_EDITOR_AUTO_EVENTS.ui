@@ -2,6 +2,9 @@
 <ui version="4.0">
     <class>IDD_CHARACTER_EDITOR_AUTO_EVENTS</class>
     <widget class="QDialog" name="IDD_CHARACTER_EDITOR_AUTO_EVENTS">
+        <property name="ID_String" stdset="0">
+            <string>IDD_CHARACTER_EDITOR_AUTO_EVENTS</string>
+        </property>
         <property name="geometry">
             <rect>
                 <x>0</x>
@@ -14,6 +17,9 @@
             <string>Auto Populate Events</string>
         </property>
         <widget class="QPushButton" name="IDOK">
+            <property name="ID_String" stdset="0">
+                <string>IDOK</string>
+            </property>
             <property name="geometry">
                 <rect>
                     <x>19</x>
@@ -30,6 +36,9 @@
             </property>
         </widget>
         <widget class="QPushButton" name="IDC_GENERATE_EVENTS">
+            <property name="ID_String" stdset="0">
+                <string>IDC_GENERATE_EVENTS</string>
+            </property>
             <property name="geometry">
                 <rect>
                     <x>351</x>
@@ -43,6 +52,9 @@
             </property>
         </widget>
         <widget class="QGroupBox" name="IDC_STATIC">
+            <property name="ID_String" stdset="0">
+                <string>IDC_STATIC</string>
+            </property>
             <property name="geometry">
                 <rect>
                     <x>10</x>
@@ -55,6 +67,9 @@
                 <string>Audio</string>
             </property>
             <widget class="QLabel" name="IDC_STATIC2">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_STATIC</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>254</x>
@@ -68,6 +83,9 @@
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC3">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_STATIC</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>26</x>
@@ -81,6 +99,9 @@
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC4">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_STATIC</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>192</x>
@@ -94,6 +115,9 @@
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC5">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_STATIC</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>171</x>
@@ -107,6 +131,9 @@
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC6">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_STATIC</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>114</x>
@@ -120,6 +147,9 @@
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC7">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_STATIC</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>26</x>
@@ -133,6 +163,9 @@
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC8">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_STATIC</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>26</x>
@@ -146,6 +179,9 @@
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_FOLEYS_CHECK">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_FOLEYS_CHECK</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>26</x>
@@ -159,6 +195,9 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_FOLEY_DELAY_TXT">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_FOLEY_DELAY_TXT</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>404</x>
@@ -172,6 +211,9 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_FOOTSTEP_HEIGHT">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_FOOTSTEP_HEIGHT</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>404</x>
@@ -185,6 +227,9 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_LEFT_FOOT_EVENT">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_LEFT_FOOT_EVENT</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>110</x>
@@ -198,6 +243,9 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_RIGHT_FOOT_EVENT">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_RIGHT_FOOT_EVENT</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>110</x>
@@ -211,6 +259,9 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_FOLEY_EVENT">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_FOLEY_EVENT</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>110</x>
@@ -224,6 +275,9 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_LEFT_FOOT_PARAM">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_LEFT_FOOT_PARAM</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>401</x>
@@ -237,6 +291,9 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_RIGHT_FOOT_PARAM">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_RIGHT_FOOT_PARAM</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>401</x>
@@ -250,6 +307,9 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_FOLEY_PARAM">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_FOLEY_PARAM</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>401</x>
@@ -263,6 +323,9 @@
                 </property>
             </widget>
             <widget class="QComboBox" name="IDC_LEFT_BONE_COMBO">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_LEFT_BONE_COMBO</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>248</x>
@@ -279,6 +342,9 @@
                 </property>
             </widget>
             <widget class="QComboBox" name="IDC_RIGHT_BONE_COMBO">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_RIGHT_BONE_COMBO</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>248</x>
@@ -295,6 +361,9 @@
                 </property>
             </widget>
             <widget class="QComboBox" name="IDC_FOLEY_BONE_COMBO">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_FOLEY_BONE_COMBO</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>248</x>
@@ -311,6 +380,9 @@
                 </property>
             </widget>
             <widget class="QSlider" name="IDC_FOLEY_DELAY_SLIDER">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_FOLEY_DELAY_SLIDER</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>251</x>
@@ -327,6 +399,9 @@
                 </property>
             </widget>
             <widget class="QSlider" name="IDC_FOOT_HEIGHT_SLIDER">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_FOOT_HEIGHT_SLIDER</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>251</x>

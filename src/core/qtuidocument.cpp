@@ -119,6 +119,10 @@ bool QtUiDocument::doLoad(const QString &fileName)
  * \qmlproperty bool QtUiWidget::isRoot
  * Read-only property returning `true` if the widget is the root widget.
  */
+/*!
+ * \qmlproperty bool QtUiWidget::id
+ * Read-only property returning the id of the widget (property ID_String).
+ */
 
 QtUiWidget::QtUiWidget(pugi::xml_node widget, bool isRoot, QObject *parent)
     : QObject(parent)
@@ -149,6 +153,11 @@ void QtUiWidget::setName(const QString &newName)
 QString QtUiWidget::className() const
 {
     return QString::fromLatin1(m_widget.attribute("class").value());
+}
+
+QString QtUiWidget::id() const
+{
+    return QString::fromLatin1(m_widget.select_node("property[@name='ID_String']/string").node().text().as_string());
 }
 
 void QtUiWidget::setClassName(const QString &newClassName)

@@ -2,6 +2,9 @@
 <ui version="4.0">
     <class>IDD_ABCCOMPILE</class>
     <widget class="QDialog" name="IDD_ABCCOMPILE">
+        <property name="ID_String" stdset="0">
+            <string>IDD_ABCCOMPILE</string>
+        </property>
         <property name="geometry">
             <rect>
                 <x>0</x>
@@ -14,6 +17,9 @@
             <string>Compile Alembic</string>
         </property>
         <widget class="QPushButton" name="IDOK">
+            <property name="ID_String" stdset="0">
+                <string>IDOK</string>
+            </property>
             <property name="geometry">
                 <rect>
                     <x>258</x>
@@ -30,6 +36,9 @@
             </property>
         </widget>
         <widget class="QPushButton" name="IDCANCEL">
+            <property name="ID_String" stdset="0">
+                <string>IDCANCEL</string>
+            </property>
             <property name="geometry">
                 <rect>
                     <x>342</x>
@@ -43,6 +52,9 @@
             </property>
         </widget>
         <widget class="QCheckBox" name="IDC_PLAYBACKFROMMEMORY">
+            <property name="ID_String" stdset="0">
+                <string>IDC_PLAYBACKFROMMEMORY</string>
+            </property>
             <property name="geometry">
                 <rect>
                     <x>24</x>
@@ -56,6 +68,9 @@
             </property>
         </widget>
         <widget class="QGroupBox" name="IDC_STATIC">
+            <property name="ID_String" stdset="0">
+                <string>IDC_STATIC</string>
+            </property>
             <property name="geometry">
                 <rect>
                     <x>12</x>
@@ -68,6 +83,9 @@
                 <string>Compilation Settings</string>
             </property>
             <widget class="QRadioButton" name="IDC_RADIO_YUP">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_RADIO_YUP</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>12</x>
@@ -81,6 +99,9 @@
                 </property>
             </widget>
             <widget class="QRadioButton" name="IDC_RADIO_ZUP">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_RADIO_ZUP</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>90</x>
@@ -95,6 +116,9 @@
             </widget>
         </widget>
         <widget class="QGroupBox" name="IDC_STATIC2">
+            <property name="ID_String" stdset="0">
+                <string>IDC_STATIC</string>
+            </property>
             <property name="geometry">
                 <rect>
                     <x>12</x>
@@ -108,6 +132,9 @@
             </property>
         </widget>
         <widget class="QGroupBox" name="IDC_STATIC3">
+            <property name="ID_String" stdset="0">
+                <string>IDC_STATIC</string>
+            </property>
             <property name="geometry">
                 <rect>
                     <x>10</x>
@@ -120,6 +147,9 @@
                 <string>Preset</string>
             </property>
             <widget class="QComboBox" name="IDC_PRESET">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_PRESET</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>9</x>
@@ -131,6 +161,9 @@
             </widget>
         </widget>
         <widget class="QGroupBox" name="IDC_STATIC4">
+            <property name="ID_String" stdset="0">
+                <string>IDC_STATIC</string>
+            </property>
             <property name="geometry">
                 <rect>
                     <x>219</x>
@@ -143,6 +176,9 @@
                 <string>Compression Settings</string>
             </property>
             <widget class="QLabel" name="IDC_STATIC5">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_STATIC</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>12</x>
@@ -156,6 +192,9 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_INDEXFRAMEDISTANCE">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_INDEXFRAMEDISTANCE</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>144</x>
@@ -169,6 +208,9 @@
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC6">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_STATIC</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>12</x>
@@ -182,6 +224,9 @@
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC7">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_STATIC</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>12</x>
@@ -195,6 +240,9 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_PRECISION">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_PRECISION</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>114</x>
@@ -208,6 +256,9 @@
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC8">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_STATIC</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>12</x>
@@ -221,6 +272,9 @@
                 </property>
             </widget>
             <widget class="QComboBox" name="IDC_BLOCKCOMPRESSION">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_BLOCKCOMPRESSION</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>114</x>
@@ -231,6 +285,9 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_UV_MAX">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_UV_MAX</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>114</x>
@@ -244,6 +301,9 @@
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_MESHPREDICTION">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_MESHPREDICTION</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>12</x>
@@ -257,6 +317,9 @@
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_USEBFRAMES">
+                <property name="ID_String" stdset="0">
+                    <string>IDC_USEBFRAMES</string>
+                </property>
                 <property name="geometry">
                     <rect>
                         <x>12</x>

@@ -15,6 +15,7 @@ import Script 1.0
 | | Name |
 |-|-|
 |string|**[className](#className)**|
+|bool|**[id](#id)**|
 |bool|**[isRoot](#isRoot)**|
 |string|**[name](#name)**|
 
@@ -23,6 +24,10 @@ import Script 1.0
 #### <a name="className"></a>string **className**
 
 Name of the widget's class.
+
+#### <a name="id"></a>bool **id**
+
+Read-only property returning the id of the widget (property ID_String).
 
 #### <a name="isRoot"></a>bool **isRoot**
 
