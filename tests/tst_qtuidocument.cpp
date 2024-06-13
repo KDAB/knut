@@ -72,7 +72,7 @@ private slots:
     void idProperty()
     {
         {
-            // Test with ID_String property set
+            // Test with idString property set
             Core::QtUiDocument document;
             document.load(Test::testDataPath() + QStringLiteral("/tst_qtuidocument/TutorialDlg.ui"));
 
@@ -86,7 +86,7 @@ private slots:
         }
 
         {
-            // Test without ID_String property set
+            // Test without idString property set
             Core::QtUiDocument document;
             document.load(Test::testDataPath() + QStringLiteral("/tst_qtuidocument/IDD_ABCCOMPILE.ui"));
 

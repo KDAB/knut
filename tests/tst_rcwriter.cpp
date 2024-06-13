@@ -48,7 +48,7 @@ private slots:
 
         // Don't add if asset does not exist, don't use aliases
         {
-            QFile buffer(QLatin1String("test.qrc"));
+            QFile buffer;
             if (buffer.open(QIODevice::WriteOnly)) {
                 auto assets = convertAssets(data);
                 writeAssetsToQrc(assets, &buffer, Test::testDataPath() + "/rcfiles/2048Game/2048Game.qrc");
@@ -109,6 +109,12 @@ private slots:
             if (buffer.open(QIODevice::ReadOnly)) {
                 if (dialogIds.contains(dialog.id)) {
                     QFile file(Test::testDataPath() + QStringLiteral("/tst_rcwriter/%1.ui").arg(dialog.id));
+                    // Uncomment to regenerate the expected files
+                    // {
+                    //     file.open(QIODevice::WriteOnly);
+                    //     file.write(buffer.data());
+                    //     file.close();
+                    // }
                     file.open(QIODevice::ReadOnly);
                     QCOMPARE(buffer.readAll(), file.readAll());
                 } else {

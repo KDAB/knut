@@ -2,8 +2,8 @@
 <ui version="4.0">
     <class>CTutorialDlg</class>
     <widget class="QDialog" name="CTutorialDlg">
-        <property name="ID_String" stdset="0">
-            <string>IDD_UPDATEGUI_DIALOG</string>
+        <property name="idString" stdset="0">
+            <string notr="true">IDD_UPDATEGUI_DIALOG</string>
         </property>
         <property name="geometry">
             <rect>
@@ -17,8 +17,8 @@
             <string>Application Update GUI Elements</string>
         </property>
         <widget class="QPushButton" name="btn_add">
-            <property name="ID_String" stdset="0">
-                <string>ID_BTN_ADD</string>
+            <property name="idString" stdset="0">
+                <string notr="true">ID_BTN_ADD</string>
             </property>
             <property name="geometry">
                 <rect>
@@ -36,8 +36,8 @@
             </property>
         </widget>
         <widget class="QPushButton" name="cancel_button">
-            <property name="ID_String" stdset="0">
-                <string>IDCANCEL</string>
+            <property name="idString" stdset="0">
+                <string notr="true">IDCANCEL</string>
             </property>
             <property name="geometry">
                 <rect>
@@ -52,8 +52,8 @@
             </property>
         </widget>
         <widget class="QLabel" name="static1">
-            <property name="ID_String" stdset="0">
-                <string>IDC_STATIC</string>
+            <property name="idString" stdset="0">
+                <string notr="true">IDC_STATIC</string>
             </property>
             <property name="geometry">
                 <rect>
@@ -68,8 +68,8 @@
             </property>
         </widget>
         <widget class="QLabel" name="echo_area">
-            <property name="ID_String" stdset="0">
-                <string>IDC_ECHO_AREA</string>
+            <property name="idString" stdset="0">
+                <string notr="true">IDC_ECHO_AREA</string>
             </property>
             <property name="geometry">
                 <rect>
@@ -93,8 +93,8 @@
             </property>
         </widget>
         <widget class="QSlider" name="v_slider_bar">
-            <property name="ID_String" stdset="0">
-                <string>IDC_V_SLIDER_BAR</string>
+            <property name="idString" stdset="0">
+                <string notr="true">IDC_V_SLIDER_BAR</string>
             </property>
             <property name="geometry">
                 <rect>
@@ -115,8 +115,8 @@
             </property>
         </widget>
         <widget class="QSlider" name="h_slider_bar">
-            <property name="ID_String" stdset="0">
-                <string>IDC_H_SLIDER_BAR</string>
+            <property name="idString" stdset="0">
+                <string notr="true">IDC_H_SLIDER_BAR</string>
             </property>
             <property name="geometry">
                 <rect>
@@ -134,8 +134,8 @@
             </property>
         </widget>
         <widget class="QLabel" name="static2">
-            <property name="ID_String" stdset="0">
-                <string>IDC_STATIC</string>
+            <property name="idString" stdset="0">
+                <string notr="true">IDC_STATIC</string>
             </property>
             <property name="geometry">
                 <rect>
@@ -150,8 +150,8 @@
             </property>
         </widget>
         <widget class="QLabel" name="static3">
-            <property name="ID_String" stdset="0">
-                <string>IDC_STATIC</string>
+            <property name="idString" stdset="0">
+                <string notr="true">IDC_STATIC</string>
             </property>
             <property name="geometry">
                 <rect>
@@ -166,8 +166,8 @@
             </property>
         </widget>
         <widget class="QLabel" name="v_slider_echo">
-            <property name="ID_String" stdset="0">
-                <string>IDC_V_SLIDER_ECHO</string>
+            <property name="idString" stdset="0">
+                <string notr="true">IDC_V_SLIDER_ECHO</string>
             </property>
             <property name="geometry">
                 <rect>
@@ -194,8 +194,8 @@
             </property>
         </widget>
         <widget class="QLabel" name="h_slider_echo">
-            <property name="ID_String" stdset="0">
-                <string>IDC_H_SLIDER_ECHO</string>
+            <property name="idString" stdset="0">
+                <string notr="true">IDC_H_SLIDER_ECHO</string>
             </property>
             <property name="geometry">
                 <rect>
@@ -222,8 +222,8 @@
             </property>
         </widget>
         <widget class="QLabel" name="timerecho">
-            <property name="ID_String" stdset="0">
-                <string>IDC_TIMERECHO</string>
+            <property name="idString" stdset="0">
+                <string notr="true">IDC_TIMERECHO</string>
             </property>
             <property name="geometry">
                 <rect>
@@ -247,8 +247,8 @@
             </property>
         </widget>
         <widget class="QLabel" name="mouseecho">
-            <property name="ID_String" stdset="0">
-                <string>IDC_MOUSEECHO</string>
+            <property name="idString" stdset="0">
+                <string notr="true">IDC_MOUSEECHO</string>
             </property>
             <property name="geometry">
                 <rect>
@@ -272,8 +272,8 @@
             </property>
         </widget>
         <widget class="QLabel" name="static4">
-            <property name="ID_String" stdset="0">
-                <string>IDC_STATIC</string>
+            <property name="idString" stdset="0">
+                <string notr="true">IDC_STATIC</string>
             </property>
             <property name="geometry">
                 <rect>
@@ -288,8 +288,8 @@
             </property>
         </widget>
         <widget class="QLabel" name="static5">
-            <property name="ID_String" stdset="0">
-                <string>IDC_STATIC</string>
+            <property name="idString" stdset="0">
+                <string notr="true">IDC_STATIC</string>
             </property>
             <property name="geometry">
                 <rect>
@@ -304,8 +304,8 @@
             </property>
         </widget>
         <widget class="QCheckBox" name="timer_control_sliders">
-            <property name="ID_String" stdset="0">
-                <string>IDC_TIMER_CONTROL_SLIDERS</string>
+            <property name="idString" stdset="0">
+                <string notr="true">IDC_TIMER_CONTROL_SLIDERS</string>
             </property>
             <property name="geometry">
                 <rect>

@@ -104,9 +104,12 @@ void UiWriter::startWidget(const QString &className, const RcCore::Widget &widge
 
     // Add the ID as a property
     m_writer.writeStartElement("property");
-    m_writer.writeAttribute("name", "ID_String");
+    m_writer.writeAttribute("name", "idString");
     m_writer.writeAttribute("stdset", "0");
-    m_writer.writeTextElement("string", name);
+    m_writer.writeStartElement("string");
+    m_writer.writeAttribute("notr", "true");
+    m_writer.writeCharacters(name);
+    m_writer.writeEndElement();
     m_writer.writeEndElement();
 
     // Geometry
