@@ -47,6 +47,7 @@ signals:
     void sourceChanged();
     void translationChanged();
     void commentChanged();
+    void fileUpdated();
 
 private:
     friend QtTsDocument;
@@ -54,7 +55,7 @@ private:
     pugi::xml_node m_message;
 };
 
-class QtTsDocument : public TextDocument
+class QtTsDocument : public Document
 {
     Q_OBJECT
     Q_PROPERTY(QString language READ language WRITE setLanguage NOTIFY languageChanged)

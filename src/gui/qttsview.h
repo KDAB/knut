@@ -10,14 +10,14 @@
 
 #pragma once
 
-#include "textview.h"
+#include <QTableView>
 
 namespace Core {
 class QtTsDocument;
 }
 
 namespace Gui {
-class QtTsView : public TextView
+class QtTsView : public QTableView
 {
     Q_OBJECT
 public:
@@ -26,6 +26,7 @@ public:
     void setTsDocument(Core::QtTsDocument *document);
 
 private:
+    void updateView();
     Core::QtTsDocument *m_document = nullptr;
 };
 }

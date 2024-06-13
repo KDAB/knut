@@ -43,7 +43,7 @@ namespace Core {
  */
 
 QtTsDocument::QtTsDocument(QObject *parent)
-    : TextDocument(Type::QtTs, parent)
+    : Document(Type::QtTs, parent)
 {
 }
 
@@ -74,6 +74,7 @@ void QtTsDocument::setLanguage(const QString &lang)
 
     setHasChanged(true);
     Q_EMIT languageChanged();
+    Q_EMIT fileUpdated();
 }
 
 /*!
@@ -93,6 +94,7 @@ void QtTsDocument::setSourceLanguage(const QString &lang)
     }
     setHasChanged(true);
     Q_EMIT sourceLanguageChanged();
+    Q_EMIT fileUpdated();
 }
 
 void QtTsDocument::addMessage(pugi::xml_node contextChild, const QString &context, const QString &location,
@@ -156,6 +158,7 @@ void QtTsDocument::addMessage(const QString &context, const QString &fileName, c
     }
     // m_document.save_file("foo.xml"); // Debug create foo.xml
     Q_EMIT messagesChanged();
+    Q_EMIT fileUpdated();
 }
 
 bool QtTsDocument::doSave(const QString &fileName)
