@@ -8,7 +8,7 @@
   Contact KDAB at <info@kdab.com> for commercial licensing options.
 */
 
-#include "uiview.h"
+#include "qtuiview.h"
 #include "core/qtuidocument.h"
 #include "core/rcdocument.h"
 
@@ -24,10 +24,10 @@
 
 namespace Gui {
 
-class UiModelView : public QAbstractTableModel
+class QtUiModelView : public QAbstractTableModel
 {
 public:
-    UiModelView(Core::QtUiDocument *document)
+    QtUiModelView(Core::QtUiDocument *document)
         : QAbstractTableModel(document)
         , m_document(document)
     {
@@ -94,7 +94,7 @@ private:
     Core::QtUiDocument *m_document = nullptr;
 };
 
-UiView::UiView(QWidget *parent)
+QtUiView::QtUiView(QWidget *parent)
     : QSplitter(parent)
     , m_tableView(new QTableView(this))
     , m_previewArea(new QMdiArea(this))
@@ -108,7 +108,7 @@ UiView::UiView(QWidget *parent)
     m_previewArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 }
 
-void UiView::setUiDocument(Core::QtUiDocument *document)
+void QtUiView::setUiDocument(Core::QtUiDocument *document)
 {
     Q_ASSERT(document);
 
@@ -117,17 +117,17 @@ void UiView::setUiDocument(Core::QtUiDocument *document)
 
     m_document = document;
     if (m_document)
-        connect(m_document, &Core::QtUiDocument::fileUpdated, this, &UiView::updateView);
+        connect(m_document, &Core::QtUiDocument::fileUpdated, this, &QtUiView::updateView);
 
     updateView();
 }
 
-void UiView::updateView()
+void QtUiView::updateView()
 {
     delete m_tableView->model();
     m_previewArea->removeSubWindow(m_previewWindow);
 
-    m_tableView->setModel(new UiModelView(m_document));
+    m_tableView->setModel(new QtUiModelView(m_document));
     m_tableView->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
     m_tableView->setMinimumWidth(m_tableView->horizontalHeader()->sectionSize(0)
                                  + m_tableView->horizontalHeader()->sectionSize(1) + 2 * m_tableView->frameWidth());

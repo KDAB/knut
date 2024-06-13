@@ -22,11 +22,11 @@ class QtUiDocument;
 
 namespace Gui {
 
-class UiView : public QSplitter
+class QtUiView : public QSplitter
 {
     Q_OBJECT
 public:
-    explicit UiView(QWidget *parent = nullptr);
+    explicit QtUiView(QWidget *parent = nullptr);
 
     void setUiDocument(Core::QtUiDocument *document);
 

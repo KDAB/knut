@@ -33,6 +33,7 @@
 #include "palette.h"
 #include "qmlview.h"
 #include "qttsview.h"
+#include "qtuiview.h"
 #include "rctoqrcdialog.h"
 #include "rctouidialog.h"
 #include "rcui/rcfileview.h"
@@ -46,7 +47,6 @@
 #include "toolbar.h"
 #include "treesitterinspector.h"
 #include "ui_mainwindow.h"
-#include "uiview.h"
 
 #include <QApplication>
 #include <QDir>
@@ -741,7 +741,7 @@ static QWidget *widgetForDocument(Core::Document *document)
         return rcview;
     }
     case Core::Document::Type::QtUi: {
-        auto uiview = new UiView();
+        auto uiview = new QtUiView();
         uiview->setUiDocument(qobject_cast<Core::QtUiDocument *>(document));
         return uiview;
     }
