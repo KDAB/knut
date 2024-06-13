@@ -78,8 +78,8 @@ set(PROJECT_SOURCES
     textview.cpp
     toolbar.h
     toolbar.cpp
-    uiview.h
-    uiview.cpp
+    qtuiview.h
+    qtuiview.cpp
     qmlview.h
     qmlview.cpp
     qttsview.h
