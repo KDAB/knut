@@ -68,6 +68,36 @@ private slots:
             QVERIFY(file.compare());
         }
     }
+
+    void idProperty()
+    {
+        {
+            // Test with ID_String property set
+            Core::QtUiDocument document;
+            document.load(Test::testDataPath() + QStringLiteral("/tst_qtuidocument/TutorialDlg.ui"));
+
+            const auto widgets = document.widgets();
+            auto rootWidget = widgets.first();
+            QCOMPARE(rootWidget->name(), "CTutorialDlg");
+            QCOMPARE(rootWidget->id(), "IDD_UPDATEGUI_DIALOG");
+
+            auto widget = document.findWidget("btn_add");
+            QCOMPARE(widget->id(), "ID_BTN_ADD");
+        }
+
+        {
+            // Test without ID_String property set
+            Core::QtUiDocument document;
+            document.load(Test::testDataPath() + QStringLiteral("/tst_qtuidocument/IDD_ABCCOMPILE.ui"));
+
+            const auto widgets = document.widgets();
+            auto rootWidget = widgets.first();
+            QVERIFY(rootWidget->id().isEmpty());
+
+            auto widget = document.findWidget("IDC_PLAYBACKFROMMEMORY");
+            QVERIFY(widget->id().isEmpty());
+        }
+    }
 };
 
 QTEST_MAIN(TestQtUiDocument)

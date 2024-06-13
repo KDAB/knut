@@ -23,6 +23,7 @@ class QtUiWidget : public QObject
     Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString className READ className WRITE setClassName NOTIFY classNameChanged)
+    Q_PROPERTY(QString id READ id CONSTANT)
     Q_PROPERTY(bool isRoot READ isRoot CONSTANT)
 
 public:
@@ -31,6 +32,8 @@ public:
     QString name() const;
 
     QString className() const;
+
+    QString id() const;
 
     bool isRoot() const { return m_isRoot; }
 

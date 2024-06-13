@@ -2,6 +2,9 @@
 <ui version="4.0">
     <class>IDD_PANEL_DISPLAY_STEREO</class>
     <widget class="QWidget" name="IDD_PANEL_DISPLAY_STEREO">
+        <property name="ID_String" stdset="0">
+            <string>IDD_PANEL_DISPLAY_STEREO</string>
+        </property>
         <property name="geometry">
             <rect>
                 <x>0</x>
@@ -11,6 +14,9 @@
             </rect>
         </property>
         <widget class="QLineEdit" name="IDC_STEREO_EYEDIST_EDIT">
+            <property name="ID_String" stdset="0">
+                <string>IDC_STEREO_EYEDIST_EDIT</string>
+            </property>
             <property name="geometry">
                 <rect>
                     <x>141</x>
@@ -24,6 +30,9 @@
             </property>
         </widget>
         <widget class="QLineEdit" name="IDC_STEREO_SCREENDIST_EDIT">
+            <property name="ID_String" stdset="0">
+                <string>IDC_STEREO_SCREENDIST_EDIT</string>
+            </property>
             <property name="geometry">
                 <rect>
                     <x>141</x>
@@ -37,6 +46,9 @@
             </property>
         </widget>
         <widget class="QLabel" name="IDC_STATIC">
+            <property name="ID_String" stdset="0">
+                <string>IDC_STATIC</string>
+            </property>
             <property name="geometry">
                 <rect>
                     <x>13</x>
@@ -50,6 +62,9 @@
             </property>
         </widget>
         <widget class="QLabel" name="IDC_STATIC2">
+            <property name="ID_String" stdset="0">
+                <string>IDC_STATIC</string>
+            </property>
             <property name="geometry">
                 <rect>
                     <x>13</x>
@@ -63,6 +78,9 @@
             </property>
         </widget>
         <widget class="QLabel" name="IDC_STATIC3">
+            <property name="ID_String" stdset="0">
+                <string>IDC_STATIC</string>
+            </property>
             <property name="geometry">
                 <rect>
                     <x>13</x>
@@ -76,6 +94,9 @@
             </property>
         </widget>
         <widget class="QLabel" name="IDC_STATIC4">
+            <property name="ID_String" stdset="0">
+                <string>IDC_STATIC</string>
+            </property>
             <property name="geometry">
                 <rect>
                     <x>13</x>
@@ -89,6 +110,9 @@
             </property>
         </widget>
         <widget class="QRadioButton" name="IDC_STEREO_FLIPEYES_RADIO">
+            <property name="ID_String" stdset="0">
+                <string>IDC_STEREO_FLIPEYES_RADIO</string>
+            </property>
             <property name="geometry">
                 <rect>
                     <x>13</x>
@@ -102,6 +126,9 @@
             </property>
         </widget>
         <widget class="QRadioButton" name="IDC_STEREO_FLIPEYES_RADIO2">
+            <property name="ID_String" stdset="0">
+                <string>IDC_STEREO_FLIPEYES_RADIO2</string>
+            </property>
             <property name="geometry">
                 <rect>
                     <x>91</x>
@@ -115,6 +142,9 @@
             </property>
         </widget>
         <widget class="QLabel" name="IDC_STATIC5">
+            <property name="ID_String" stdset="0">
+                <string>IDC_STATIC</string>
+            </property>
             <property name="geometry">
                 <rect>
                     <x>13</x>
@@ -128,6 +158,9 @@
             </property>
         </widget>
         <widget class="QComboBox" name="IDC_STEREO_MODE_COMBO">
+            <property name="ID_String" stdset="0">
+                <string>IDC_STEREO_MODE_COMBO</string>
+            </property>
             <property name="geometry">
                 <rect>
                     <x>13</x>
@@ -153,6 +186,9 @@
             </item>
         </widget>
         <widget class="QComboBox" name="IDC_STEREO_OUTPUT_COMBO">
+            <property name="ID_String" stdset="0">
+                <string>IDC_STEREO_OUTPUT_COMBO</string>
+            </property>
             <property name="geometry">
                 <rect>
                     <x>13</x>
@@ -203,6 +239,9 @@
             </item>
         </widget>
         <widget class="QSlider" name="IDC_STEREO_EYEDIST_SLIDER">
+            <property name="ID_String" stdset="0">
+                <string>IDC_STEREO_EYEDIST_SLIDER</string>
+            </property>
             <property name="geometry">
                 <rect>
                     <x>13</x>
@@ -219,6 +258,9 @@
             </property>
         </widget>
         <widget class="QSlider" name="IDC_STEREO_SCREENDIST_SLIDER">
+            <property name="ID_String" stdset="0">
+                <string>IDC_STEREO_SCREENDIST_SLIDER</string>
+            </property>
             <property name="geometry">
                 <rect>
                     <x>13</x>
