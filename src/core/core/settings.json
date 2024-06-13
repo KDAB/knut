@@ -62,5 +62,8 @@
     },
     "json_paths": [
         ":/scripts/json/"
-    ]
+    ],
+    "logs": {
+        "saveToFile": false
+    }
 }

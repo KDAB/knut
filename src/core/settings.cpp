@@ -15,6 +15,7 @@
 
 #include <QDir>
 #include <QFile>
+#include <QStandardPaths>
 #include <QTextStream>
 #include <optional>
 
@@ -222,6 +223,7 @@ bool Settings::setValue(QString path, const QVariant &value)
         spdlog::error("Settings::setValue {} in {} - value type not handled", value.toString(), path);
         return false;
     }
+
     emit settingsChanged(path);
     // Asynchronous save
     m_saveTimer->start();
@@ -236,6 +238,16 @@ QString Settings::userFilePath() const
 QString Settings::projectFilePath() const
 {
     return m_projectPath + '/' + SettingsName;
+}
+
+QString Settings::logFilePath() const
+{
+    // Create QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) directory if it does not exist.
+    const QDir dir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
+    if (!dir.exists())
+        QDir().mkdir(dir.path());
+
+    return QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/knut.log";
 }
 
 bool Settings::isTesting() const
