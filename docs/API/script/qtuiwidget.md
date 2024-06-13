@@ -27,7 +27,7 @@ Name of the widget's class.
 
 #### <a name="id"></a>bool **id**
 
-Read-only property returning the id of the widget (property ID_String).
+Read-only property returning the id of the widget (property idString).
 
 #### <a name="isRoot"></a>bool **isRoot**
 

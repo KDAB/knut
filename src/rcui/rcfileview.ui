@@ -126,7 +126,7 @@
          </property>
          <column>
           <property name="text">
-           <string notr="true">1</string>
+           <string notr="true">ID1</string>
           </property>
          </column>
         </widget>
