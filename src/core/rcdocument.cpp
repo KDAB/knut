@@ -370,6 +370,66 @@ QString RcDocument::string(const QString &id) const
     return {};
 }
 
+std::optional<RcCore::Data::Control> findControlWithId(const RcCore::Data::Dialog *dialog, const QString &id)
+{
+    const auto controls = dialog->controls;
+    auto isSameId = [id](const auto &control) {
+        return control.id == id;
+    };
+    auto result = kdalgorithms::find_if(controls, isSameId);
+    if (!result)
+        return {};
+    return *result;
+}
+
+QString extractStringForDialog(const RcCore::Data::Dialog *dialog, const QString &id)
+{
+    if (dialog) {
+        const auto control = findControlWithId(dialog, id);
+        if (!control) {
+            spdlog::warn("RcDocument::stringForDialogAndLanguage: control from id {} does not exist in the rc file.",
+                         id);
+            return {};
+        }
+        return control.value().text;
+    } else {
+        spdlog::warn("RcDocument::stringForDialogAndLanguage: id {} does not exist in the rc file.", id);
+        return {};
+    }
+}
+
+/*!
+ * \qmlmethod string RcDocument::stringForDialogAndLanguage(string language, string dialogId, string id)
+ * Return the string for the given `language`, `dialogid` and id.
+ */
+QString RcDocument::stringForDialogAndLanguage(const QString &language, const QString dialogId, const QString &id) const
+{
+    LOG("RcDocument::stringForDialogAndLanguage", language, dialogId, id);
+
+    if (m_rcFile.isValid && m_rcFile.data.contains(language)) {
+        const RcCore::Data data = const_cast<RcCore::RcFile *>(&m_rcFile)->data[language];
+        const auto dialog = data.dialog(dialogId);
+        return extractStringForDialog(dialog, id);
+    } else {
+        spdlog::warn("RcDocument::stringForDialogAndLanguage: language {} does not exist in the rc file.", language);
+        return {};
+    }
+}
+
+/*!
+ * \qmlmethod string RcDocument::stringForDialog(string dialogId, string id)
+ * Return the string for the given `dialogid` and id.
+ */
+QString RcDocument::stringForDialog(const QString dialogId, const QString &id) const
+{
+    LOG("RcDocument::stringForDialog", dialogId, id);
+    if (isDataValid()) {
+        const auto dialog = data().dialog(dialogId);
+        return extractStringForDialog(dialog, id);
+    }
+    return {};
+}
+
 const RcCore::Data &RcDocument::data() const
 {
     Q_ASSERT(m_rcFile.data.contains(m_language));

@@ -89,6 +89,10 @@ public:
     QList<RcCore::String> strings() const;
     Q_INVOKABLE QString string(const QString &id) const;
 
+    Q_INVOKABLE QString stringForDialogAndLanguage(const QString &language, const QString dialogId,
+                                                   const QString &id) const;
+    Q_INVOKABLE QString stringForDialog(const QString dialogId, const QString &id) const;
+
     QString language() const;
     void setLanguage(const QString &language);
     QStringList languages() const;
