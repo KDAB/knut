@@ -44,6 +44,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     initializeScriptPathSettings();
     initializeScriptBehaviorSettings();
     initializeRcSettings();
+    initializeSaveToLogFileSetting();
 
     updateScriptPaths();
 }
@@ -56,6 +57,13 @@ void OptionsDialog::addSettings(QWidget *widget)
 
 OptionsDialog::~OptionsDialog() = default;
 
+void OptionsDialog::initializeSaveToLogFileSetting()
+{
+    // Save Logs to file
+    ui->saveLogsToFile->setChecked(Core::Settings::instance()->value<bool>(Core::Settings::SaveLogsToFile));
+    connect(ui->saveLogsToFile, &QCheckBox::toggled, this, &OptionsDialog::changeSaveLogsToFileSetting);
+}
+
 void OptionsDialog::initializeScriptPathSettings()
 {
     // User and project paths settings
@@ -63,8 +71,14 @@ void OptionsDialog::initializeScriptPathSettings()
     ui->openUserButton->setDisabled(ui->userPath->text().isEmpty());
     ui->projectPath->setText(Core::Settings::instance()->projectFilePath());
     ui->openProjectButton->setDisabled(ui->projectPath->text().isEmpty());
+
+    const QString logFilePath = Core::Settings::instance()->logFilePath();
+    ui->logFilePath->setText(logFilePath);
+    ui->openLogFileButton->setEnabled(QFileInfo::exists(logFilePath));
+
     connect(ui->openUserButton, &QPushButton::clicked, this, &OptionsDialog::openUserSettings);
     connect(ui->openProjectButton, &QPushButton::clicked, this, &OptionsDialog::openProjectSettings);
+    connect(ui->openLogFileButton, &QPushButton::clicked, this, &OptionsDialog::openLogFile);
 
     // Script paths settings
     connect(ui->addButton, &QPushButton::clicked, this, &OptionsDialog::addScriptPath);
@@ -206,6 +220,11 @@ void OptionsDialog::openProjectSettings()
     QDesktopServices::openUrl(QUrl::fromLocalFile(ui->projectPath->text()));
 }
 
+void OptionsDialog::openLogFile()
+{
+    QDesktopServices::openUrl(QUrl::fromLocalFile(ui->logFilePath->text()));
+}
+
 void OptionsDialog::addScriptPath()
 {
     const QString scriptPath = QFileDialog::getExistingDirectory(this, tr("Add Script Path"), QDir::currentPath());
@@ -228,6 +247,11 @@ void OptionsDialog::updateScriptPaths()
     std::ranges::sort(scriptPaths);
     ui->scriptPathList->clear();
     ui->scriptPathList->addItems(scriptPaths);
+}
+
+void OptionsDialog::changeSaveLogsToFileSetting()
+{
+    SET_DEFAULT_VALUE(SaveLogsToFile, ui->saveLogsToFile->checkState() == Qt::Checked);
 }
 
 void OptionsDialog::changeToggleSectionSetting()

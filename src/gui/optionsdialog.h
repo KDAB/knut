@@ -30,12 +30,14 @@ public:
     void addSettings(QWidget *widget);
 
 private:
+    void initializeSaveToLogFileSetting();
     void initializeScriptPathSettings();
     void initializeScriptBehaviorSettings();
     void initializeRcSettings();
 
     void openUserSettings();
     void openProjectSettings();
+    void openLogFile();
 
     void addScriptPath();
     void removeScriptPath();
@@ -46,6 +48,7 @@ private:
     void changeAssetColorsSetting();
     void changeDialogFlagsSetting();
     void changeLanguageMap();
+    void changeSaveLogsToFileSetting();
 
     void changePage();
 

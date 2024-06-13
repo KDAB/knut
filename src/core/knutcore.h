@@ -38,6 +38,7 @@ protected:
 
 private:
     void initialize(bool isTesting);
+    void initializeMultiSinkLogger();
 
     bool m_initialized = false;
 };

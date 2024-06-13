@@ -13,7 +13,6 @@
 #include "scriptmanager.h"
 #include "settings.h"
 #include "textdocument.h"
-#include "utils/log.h"
 
 #include <QAbstractItemModel>
 #include <QApplication>
@@ -22,6 +21,7 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include <spdlog/cfg/env.h>
+#include <spdlog/sinks/rotating_file_sink.h>
 
 using json = nlohmann::json;
 
@@ -158,7 +158,24 @@ void KnutCore::initialize(bool isTesting)
     new Settings(isTesting, this);
     new Project(this);
     new ScriptManager(this);
+    if (Core::Settings::instance()->value<bool>(Core::Settings::SaveLogsToFile))
+        initializeMultiSinkLogger();
     m_initialized = true;
+}
+
+void KnutCore::initializeMultiSinkLogger()
+{
+    // Define fileLogger arguments (make it clear)
+    constexpr int max_files = 5;
+    constexpr bool rotate_on_open = true;
+
+    // Create a default Knut logger that save the logs to file.
+    auto fileSink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(
+        Core::Settings::instance()->logFilePath().toStdString(), SIZE_MAX, max_files, rotate_on_open);
+    auto logger = spdlog::default_logger();
+    logger->sinks().push_back(fileSink);
+    // auto flush when "info" or higher message is logged.
+    spdlog::flush_on(spdlog::level::info);
 }
 
 } // namespace Core
