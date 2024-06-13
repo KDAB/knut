@@ -43,6 +43,8 @@ import Script 1.0
 |bool |**[mergeAllLanguages](#mergeAllLanguages)**(string language = "[default]")|
 |bool |**[mergeLanguages](#mergeLanguages)**()|
 |bool |**[previewDialog](#previewDialog)**([Widget](../script/widget.md) dialog)|
+|string |**[stringForDialog](#stringForDialog)**(string dialogId, string id)|
+|string |**[stringForDialogAndLanguage](#stringForDialogAndLanguage)**(string language, string dialogId, string id)|
 |string |**[stringForLanguage](#stringForLanguage)**(string language, string id)|
 |array<[String](../script/string.md)> |**[stringsForLanguage](#stringsForLanguage)**(string language)|
 |string |**[text](#text)**(string id)|
@@ -182,6 +184,14 @@ resulting language they will be merged together.
 #### <a name="previewDialog"></a>bool **previewDialog**([Widget](../script/widget.md) dialog)
 
 Preview the result of the conversion RC->UI
+
+#### <a name="stringForDialog"></a>string **stringForDialog**(string dialogId, string id)
+
+Return the string for the given `dialogid` and id.
+
+#### <a name="stringForDialogAndLanguage"></a>string **stringForDialogAndLanguage**(string language, string dialogId, string id)
+
+Return the string for the given `language`, `dialogid` and id.
 
 #### <a name="stringForLanguage"></a>string **stringForLanguage**(string language, string id)
 
