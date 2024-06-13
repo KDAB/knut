@@ -262,6 +262,11 @@ const Data::Dialog *Data::dialog(const QString &id) const
     return findById(dialogs, id);
 }
 
+const Data::DialogData *Data::dialogData(const QString &id) const
+{
+    return findById(dialogDataList, id);
+}
+
 const Menu *Data::menu(const QString &id) const
 {
     return findById(menus, id);

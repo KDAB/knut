@@ -47,8 +47,8 @@ private slots:
         QCOMPARE(usData.strings.size(), 1);
         QCOMPARE(usData.strings.value(QLatin1String("IDS_ABOUTBOX")).text, "&About dialog...");
 
-        QCOMPARE(usData.dialogData.size(), 1);
-        const auto &inits = usData.dialogData.first().values.value("IDC_COMBO1");
+        QCOMPARE(usData.dialogDataList.size(), 1);
+        const auto &inits = usData.dialogDataList.first().values.value("IDC_COMBO1");
         QCOMPARE(inits.size(), 2);
         QCOMPARE(inits.at(0), "Test");
         QCOMPARE(inits.at(1), "Hello World");

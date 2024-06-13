@@ -212,10 +212,10 @@ static Widget convertComboBox(const Data &data, const QString &dialogId, Data::C
     }
 
     // Initialize the values if they exists
-    const auto it = std::ranges::find_if(data.dialogData, [dialogId](const auto &dialogData) {
+    const auto it = std::ranges::find_if(data.dialogDataList, [dialogId](const auto &dialogData) {
         return dialogData.id == dialogId;
     });
-    if (it != data.dialogData.cend()) {
+    if (it != data.dialogDataList.cend()) {
         const auto &values = it->values.value(control.id);
         if (!values.isEmpty())
             widget.properties["text"] = values;

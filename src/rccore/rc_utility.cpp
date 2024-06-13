@@ -26,7 +26,7 @@ void RcFile::mergeLanguages(const QStringList &languages, const QString &newLang
             continue;
         newData.acceleratorTables.append(d.acceleratorTables);
         newData.assets.append(d.assets);
-        newData.dialogData.append(d.dialogData);
+        newData.dialogDataList.append(d.dialogDataList);
         newData.dialogs.append(d.dialogs);
         newData.icons.append(d.icons);
         newData.menus.append(d.menus);
