@@ -53,7 +53,7 @@ namespace Core {
 bool MarkPrivate::checkEditor() const
 {
     if (!m_editor) {
-        ERROR("Mark::checkEditor - document does not exist anymore");
+        spdlog::error("Mark::checkEditor - document does not exist anymore");
         return false;
     }
     return true;

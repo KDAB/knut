@@ -44,7 +44,7 @@ QVector<Symbol *> ClassSymbol::findMembers() const
         }
         return members;
     }
-    WARN("Parent of CppClass {} is not an CodeDocument!", m_name);
+    spdlog::warn("Parent of CppClass {} is not an CodeDocument!", m_name);
     return {};
 }
 

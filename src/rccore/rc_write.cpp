@@ -128,9 +128,9 @@ static void logWarnings(const QList<QQmlError> &warnings)
 {
     for (const auto &warning : warnings) {
         if (warning.description().contains("error", Qt::CaseInsensitive))
-            ERROR("{}({}): {}", warning.url().toLocalFile(), warning.line(), warning.description());
+            spdlog::error("{}({}): {}", warning.url().toLocalFile(), warning.line(), warning.description());
         else
-            WARN("{}({}): {}", warning.url().toLocalFile(), warning.line(), warning.description());
+            spdlog::warn("{}({}): {}", warning.url().toLocalFile(), warning.line(), warning.description());
     }
 }
 

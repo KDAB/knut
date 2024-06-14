@@ -157,7 +157,7 @@ QString Utils::mktemp(const QString &pattern)
         return {};
     file.close();
 
-    DEBUG("Utils::mktemp created {}", tmp);
+    spdlog::debug("Utils::mktemp created {}", tmp);
     return file.fileName();
 }
 

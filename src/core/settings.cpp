@@ -28,15 +28,15 @@ static std::optional<nlohmann::json> loadSettings(const QString &name, bool log 
         try {
             auto settings = nlohmann::json::parse(file.readAll().constData());
             if (log)
-                DEBUG("Settings::loadSettings {}", name);
+                spdlog::debug("Settings::loadSettings {}", name);
             return settings;
         } catch (...) {
             if (log)
-                ERROR("Settings::loadSettings {}", name);
+                spdlog::error("Settings::loadSettings {}", name);
         }
     } else {
         if (log)
-            DEBUG("Settings::loadSettings {} - file can't be read", name);
+            spdlog::debug("Settings::loadSettings {} - file can't be read", name);
         return "{}"_json;
     }
     return {};
@@ -167,9 +167,9 @@ QVariant Settings::value(QString path, const QVariant &defaultValue) const
                 return QStringList();
             }
         }
-        ERROR("Settings::value {} - can't convert", path);
+        spdlog::error("Settings::value {} - can't convert", path);
     } catch (...) {
-        INFO("Settings::value {} - accessing non-existing value", path);
+        spdlog::info("Settings::value {} - accessing non-existing value", path);
     }
     return defaultValue;
 }
@@ -183,7 +183,7 @@ bool Settings::setValue(QString path, const QVariant &value)
     LOG("Settings::setValue", path, value);
 
     if (value.isNull()) {
-        ERROR("Settings::setValue {} in {} - value is null", value.toString(), path);
+        spdlog::error("Settings::setValue {} in {} - value is null", value.toString(), path);
         return false;
     }
 
@@ -219,7 +219,7 @@ bool Settings::setValue(QString path, const QVariant &value)
         m_projectSettings[jsonPath] = value.toStringList();
         break;
     default:
-        ERROR("Settings::setValue {} in {} - value type not handled", value.toString(), path);
+        spdlog::error("Settings::setValue {} in {} - value type not handled", value.toString(), path);
         return false;
     }
     emit settingsChanged(path);
@@ -261,7 +261,7 @@ void Settings::saveSettings()
 
     QFile file(filePath);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-        ERROR("Settings::saveSettings {}", filePath);
+        spdlog::error("Settings::saveSettings {}", filePath);
         return;
     }
 

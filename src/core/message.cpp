@@ -42,7 +42,7 @@ Message::~Message() = default;
  */
 void Message::error(const QString &text)
 {
-    ERROR("{}", text);
+    spdlog::error("{}", text);
 }
 
 /*!
@@ -51,7 +51,7 @@ void Message::error(const QString &text)
  */
 void Message::log(const QString &text)
 {
-    INFO("{}", text);
+    spdlog::info("{}", text);
 }
 
 /*!
@@ -60,7 +60,7 @@ void Message::log(const QString &text)
  */
 void Message::debug(const QString &text)
 {
-    DEBUG("{}", text);
+    spdlog::debug("{}", text);
 }
 
 /*!
@@ -69,7 +69,7 @@ void Message::debug(const QString &text)
  */
 void Message::warning(const QString &text)
 {
-    WARN("{}", text);
+    spdlog::warn("{}", text);
 }
 
 } // namespace Core

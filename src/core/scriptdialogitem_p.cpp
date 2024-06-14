@@ -73,7 +73,7 @@ int DynamicObject::qt_metacall(QMetaObject::Call call, int id, void **argv)
         if (m_dataChangedCallback)
             m_dataChangedCallback(property.name, property.variant);
     } else {
-        WARN("DynamicObject::qt_metacall: id {} not handled.", id);
+        spdlog::warn("DynamicObject::qt_metacall: id {} not handled.", id);
     }
 
     return -1;

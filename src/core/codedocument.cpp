@@ -233,8 +233,8 @@ std::pair<QString, std::optional<TextRange>> CodeDocument::hoverWithRange(
         if (const auto *content = std::get_if<Lsp::MarkupContent>(&hover.contents)) {
             return {QString::fromStdString(content->value), range};
         } else {
-            WARN("LSP returned deprecated MarkedString type which is unsupported by Knut\n - Consider updating "
-                 "your LSP server");
+            spdlog::warn("LSP returned deprecated MarkedString type which is unsupported by Knut\n - Consider updating "
+                         "your LSP server");
             return {"", {}};
         }
     };
@@ -252,7 +252,7 @@ std::pair<QString, std::optional<TextRange>> CodeDocument::hoverWithRange(
             // a Tooltip is requested.
             // See: TextView::eventFilter.
             if (!std::holds_alternative<Lsp::Hover>(result.value())) {
-                DEBUG("LSP server returned no result for Hover");
+                spdlog::debug("LSP server returned no result for Hover");
             }
             return convertResult(result.value());
         }
@@ -279,10 +279,10 @@ Core::TextLocationList CodeDocument::references(int position) const
         if (const auto *locations = std::get_if<std::vector<Lsp::Location>>(&value)) {
             return TextLocation::fromLsp(*locations);
         } else {
-            WARN("CodeDocument::references: Language server returned unsupported references type!");
+            spdlog::warn("CodeDocument::references: Language server returned unsupported references type!");
         }
     } else {
-        WARN("CodeDocument::references: LSP call to references returned nothing!");
+        spdlog::warn("CodeDocument::references: LSP call to references returned nothing!");
     }
 
     return textLocations;
@@ -347,7 +347,7 @@ Document *CodeDocument::followSymbol(int pos)
         return nullptr;
 
     if (locations.size() > 1)
-        WARN("CodeDocument::followSymbol: Multiple locations returned!");
+        spdlog::warn("CodeDocument::followSymbol: Multiple locations returned!");
     // Heuristic: If multiple locations were found, use the last one.
     auto location = locations.back();
 
@@ -363,7 +363,8 @@ Document *CodeDocument::followSymbol(int pos)
         if (codeDocument) {
             codeDocument->selectRange(codeDocument->toRange(location.range));
         } else {
-            WARN("CodeDocument::followSymbol: Opened document '{}' is not an CodeDocument", document->fileName());
+            spdlog::warn("CodeDocument::followSymbol: Opened document '{}' is not an CodeDocument",
+                         document->fileName());
         }
     }
 
@@ -386,7 +387,7 @@ Document *CodeDocument::switchDeclarationDefinition()
     });
 
     if (!currentFunction) {
-        INFO("CodeDocument::switchDeclarationDefinition: Cursor is currently not within a function!");
+        spdlog::info("CodeDocument::switchDeclarationDefinition: Cursor is currently not within a function!");
         return nullptr;
     }
 
@@ -600,17 +601,17 @@ Core::QueryMatchList CodeDocument::queryInRange(const Core::RangeMark &range, co
     LOG("CodeDocument::queryInRange", LOG_ARG("range", range), LOG_ARG("query", query));
 
     if (!range.isValid()) {
-        WARN("CodeDocument::queryInRange: Range is not valid");
+        spdlog::warn("CodeDocument::queryInRange: Range is not valid");
         return {};
     }
 
     const auto nodes = m_treeSitterHelper->nodesInRange(range);
 
     if (nodes.isEmpty()) {
-        WARN("CodeDocument::queryInRange: No nodes in range");
+        spdlog::warn("CodeDocument::queryInRange: No nodes in range");
         return {};
     }
-    DEBUG("CodeDocument::queryInRange: Found {} nodes in range", nodes.size());
+    spdlog::debug("CodeDocument::queryInRange: Found {} nodes in range", nodes.size());
 
     auto tsQuery = m_treeSitterHelper->constructQuery(query);
     if (!tsQuery)
@@ -637,7 +638,7 @@ bool CodeDocument::checkClient() const
 {
     Q_ASSERT(textEdit());
     if (!client()) {
-        ERROR("CodeDocument {} has no LSP client - API not available", fileName());
+        spdlog::error("CodeDocument {} has no LSP client - API not available", fileName());
         return false;
     }
     return true;
@@ -652,14 +653,14 @@ void CodeDocument::changeContentLsp(int position, int charsRemoved, int charsAdd
     // TODO: Keep copy of previous string around, so we can find the oldEndPosition.
     // const auto document = textEdit()->document();
     // const auto startblock = document->findBlock(position);
-    // WARN("start point: {}, {}", startblock.blockNumber(), position - startblock.position());
+    // spdlog::warn("start point: {}, {}", startblock.blockNumber(), position - startblock.position());
 
     // const auto newEndPosition = position + charsAdded;
     // const auto newEndBlock = document->findBlock(newEndPosition);
-    // WARN("new end point: {}, {}", newEndBlock.blockNumber(), newEndPosition - newEndBlock.position());
+    // spdlog::warn("new end point: {}, {}", newEndBlock.blockNumber(), newEndPosition - newEndBlock.position());
 
     // const auto plain = document->toPlainText();
-    // WARN("added: {}", plain.sliced(position, charsAdded));
+    // spdlog::warn("added: {}", plain.sliced(position, charsAdded));
 
     if (!checkClient()) {
         return;
@@ -693,7 +694,7 @@ void CodeDocument::changeContentLsp(int position, int charsRemoved, int charsAdd
 
         client()->didChange(std::move(params));
     } else {
-        ERROR("LSP server does not support Document changes!");
+        spdlog::error("LSP server does not support Document changes!");
     }
 }
 
