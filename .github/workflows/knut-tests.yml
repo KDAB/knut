@@ -12,6 +12,10 @@ on:
     branches:
       - main
 
+# Cancel any previous runs for the same pull request
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
 jobs:
   pre_commit:
     runs-on: ubuntu-latest
