@@ -27,6 +27,11 @@ namespace Gui {
 class QtUiModelView : public QAbstractTableModel
 {
 public:
+    enum QtUiColumn {
+        Name = 0,
+        ClassName,
+    };
+
     QtUiModelView(Core::QtUiDocument *document)
         : QAbstractTableModel(document)
         , m_document(document)
@@ -49,9 +54,9 @@ public:
         if (role == Qt::DisplayRole || role == Qt::EditRole) {
             auto widget = m_document->widgets().at(index.row());
             switch (index.column()) {
-            case 0:
+            case QtUiColumn::Name:
                 return widget->name();
-            case 1:
+            case QtUiColumn::ClassName:
                 return widget->className();
             }
         }
@@ -61,9 +66,9 @@ public:
     {
         if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
             switch (section) {
-            case 0:
+            case QtUiColumn::Name:
                 return tr("Name");
-            case 1:
+            case QtUiColumn::ClassName:
                 return tr("Class Name");
             }
         }
@@ -76,10 +81,10 @@ public:
             return false;
         auto widget = m_document->widgets().at(index.row());
         switch (index.column()) {
-        case 0:
+        case QtUiColumn::Name:
             widget->setName(value.toString());
             break;
-        case 1:
+        case QtUiColumn::ClassName:
             widget->setClassName(value.toString());
             break;
         }
@@ -129,8 +134,9 @@ void QtUiView::updateView()
 
     m_tableView->setModel(new QtUiModelView(m_document));
     m_tableView->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
-    m_tableView->setMinimumWidth(m_tableView->horizontalHeader()->sectionSize(0)
-                                 + m_tableView->horizontalHeader()->sectionSize(1) + 2 * m_tableView->frameWidth());
+    m_tableView->setMinimumWidth(m_tableView->horizontalHeader()->sectionSize(QtUiModelView::QtUiColumn::Name)
+                                 + m_tableView->horizontalHeader()->sectionSize(QtUiModelView::QtUiColumn::ClassName)
+                                 + 2 * m_tableView->frameWidth());
 
     QUiLoader loader;
     QFile file(m_document->fileName());
