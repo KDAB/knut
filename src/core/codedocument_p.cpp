@@ -50,7 +50,7 @@ std::optional<treesitter::Tree> &TreeSitterHelper::syntaxTree()
     if (!m_tree) {
         m_tree = parser().parseString(m_document->text());
         if (!m_tree) {
-            WARN("CodeDocument::syntaxTree: Failed to parse document {}!", m_document->fileName());
+            spdlog::warn("CodeDocument::syntaxTree: Failed to parse document {}!", m_document->fileName());
         }
     }
     return m_tree;
@@ -62,8 +62,8 @@ std::shared_ptr<treesitter::Query> TreeSitterHelper::constructQuery(const QStrin
     try {
         tsQuery = std::make_shared<treesitter::Query>(parser().language(), query);
     } catch (treesitter::Query::Error &error) {
-        ERROR("CodeDocument::constructQuery: Failed to parse query `{}` error: {} at: {}", query, error.description,
-              error.utf8_offset);
+        spdlog::error("CodeDocument::constructQuery: Failed to parse query `{}` error: {} at: {}", query,
+                      error.description, error.utf8_offset);
         return {};
     }
     return tsQuery;

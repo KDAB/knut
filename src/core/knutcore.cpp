@@ -58,8 +58,8 @@ void KnutCore::process(const QStringList &arguments)
         if (pathDir.exists()) {
             Project::instance()->setRoot(rootDir);
         } else {
-            ERROR("KnutCore::process - Root directory: {}, does not exist. Cannot open a new project!",
-                  pathDir.absolutePath());
+            spdlog::error("KnutCore::process - Root directory: {}, does not exist. Cannot open a new project!",
+                          pathDir.absolutePath());
         }
     }
 
@@ -125,12 +125,6 @@ void KnutCore::doParse(const QCommandLineParser &parser) const
 
 void KnutCore::initialize(bool isTesting)
 {
-    // Disable all logging in test mode, due to an issue with spdlog
-    // See here: https://github.com/gabime/spdlog/issues/3107
-#ifdef Q_OS_WIN
-    Log::detail::disableLogging = isTesting;
-#endif
-
     // Make sure we initialize only once, double initialization could happen in tests
     // If creating a KnutCore and then processing command line arguments
     if (m_initialized)

@@ -185,7 +185,7 @@ private slots:
         auto codeDocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->open("myobject.h"));
         QVERIFY(codeDocument);
 
-        WARN("Finding symbol");
+        spdlog::warn("Finding symbol");
         Core::Symbol *symbol = codeDocument->findSymbol("MyObject");
         QVERIFY(symbol);
         QCOMPARE(symbol->kind(), Core::Symbol::Class);
@@ -194,19 +194,19 @@ private slots:
             return loc.range == symbol->selectionRange();
         };
 
-        WARN("Finding references");
+        spdlog::warn("Finding references");
         const auto references = symbol->references();
         QCOMPARE(references.size(), 9);
         QVERIFY2(std::ranges::find_if(references, isSymbolRange) == references.cend(),
                  "Ensure the symbol range itself is not part of the result.");
         QCOMPARE(qobject_cast<Core::CodeDocument *>(Core::Project::instance()->currentDocument()), codeDocument);
 
-        WARN("Verifying document existence");
+        spdlog::warn("Verifying document existence");
         for (const auto &reference : references) {
             QVERIFY(reference.document);
         }
 
-        WARN("Counting documents");
+        spdlog::warn("Counting documents");
         QCOMPARE(std::ranges::count_if(references,
                                        [](const auto &location) {
                                            return location.document->fileName().endsWith("main.cpp");

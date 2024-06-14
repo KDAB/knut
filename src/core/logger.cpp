@@ -30,7 +30,7 @@ LoggerObject::~LoggerObject()
 
 void LoggerObject::log(QString &&string)
 {
-    TRACE(string);
+    spdlog::trace(string);
     m_canLog = false;
 }
 
@@ -231,7 +231,7 @@ LoggerDisabler::LoggerDisabler(bool silenceAll)
     , m_silenceAll(silenceAll)
 {
     LoggerObject::m_canLog = false;
-    if (m_silenceAll && !Log::detail::disableLogging) {
+    if (m_silenceAll) {
         m_level = spdlog::default_logger()->level();
         spdlog::default_logger()->set_level(spdlog::level::off);
     }
@@ -240,7 +240,7 @@ LoggerDisabler::LoggerDisabler(bool silenceAll)
 LoggerDisabler::~LoggerDisabler()
 {
     LoggerObject::m_canLog = m_originalCanLog;
-    if (m_silenceAll && !Log::detail::disableLogging)
+    if (m_silenceAll)
         spdlog::default_logger()->set_level(m_level);
 }
 

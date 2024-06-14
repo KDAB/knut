@@ -146,6 +146,9 @@ void UiView::updateView()
         m_previewWindow = m_previewArea->addSubWindow(widget, Qt::CustomizeWindowHint);
         m_previewWindow->setVisible(true);
     }
+
+    qDebug() << m_previewArea->subWindowList().count();
+    qDebug() << m_previewWindow->geometry();
 }
 
 } // namespace Gui

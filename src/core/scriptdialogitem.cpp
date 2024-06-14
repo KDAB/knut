@@ -140,7 +140,7 @@ QString ScriptDialogItem::uiFilePath() const
 void ScriptDialogItem::setUiFilePath(const QString &filePath)
 {
     if (!m_uiFilePath.isNull()) {
-        ERROR("ScriptDialog::uiFilePath should only be set once");
+        spdlog::error("ScriptDialog::uiFilePath should only be set once");
         return;
     }
 
@@ -288,7 +288,7 @@ void ScriptDialogItem::interactiveStep()
     const auto done = result.property("done").toBool();
     m_nextStepTitle = result.property("value").toString();
 
-    INFO("{} done.", m_currentStepTitle);
+    spdlog::info("{} done.", m_currentStepTitle);
 
     if (done) {
         finishConversion();
@@ -348,11 +348,11 @@ void ScriptDialogItem::interactiveStep()
 void ScriptDialogItem::runSteps(QJSValue generator)
 {
     if (!isGenerator(generator)) {
-        ERROR("ScriptDialogItem::runSteps: Argument is not a generator!\n"
-              "Make sure to create a generator function using function* myGenerator() { ... } and call the "
-              "generator with e.g. runSteps(myGenerator())!\n"
-              "See also:"
-              "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator");
+        spdlog::error("ScriptDialogItem::runSteps: Argument is not a generator!\n"
+                      "Make sure to create a generator function using function* myGenerator() { ... } and call the "
+                      "generator with e.g. runSteps(myGenerator())!\n"
+                      "See also:"
+                      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator");
         return;
     }
 
@@ -441,7 +441,7 @@ void ScriptDialogItem::setUiFile(const QString &fileName)
         setWindowTitle(internalWidget->windowTitle());
         createProperties(internalWidget);
     } else {
-        ERROR("Can't open {}", fileName);
+        spdlog::error("Can't open {}", fileName);
     }
 }
 

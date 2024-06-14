@@ -67,7 +67,7 @@ SlintView::~SlintView()
 void SlintView::runSlint()
 {
     if (m_process && m_process->state() == QProcess::Running) {
-        WARN("Slint-viewer process is already running");
+        spdlog::warn("Slint-viewer process is already running");
         return;
     }
 

@@ -92,9 +92,9 @@ bool Project::setRoot(const QString &newRoot)
         return true;
 
     if (m_root.isEmpty()) {
-        INFO("Project::setRoot {}", dir.absolutePath());
+        spdlog::info("Project::setRoot {}", dir.absolutePath());
     } else {
-        ERROR("Project::setRoot - can't open a new project");
+        spdlog::error("Project::setRoot - can't open a new project");
         return false;
     }
 
@@ -280,7 +280,7 @@ Document *Project::getDocument(QString fileName, bool moveToBack)
             m_documents.push_back(doc);
             emit documentsChanged();
         } else {
-            ERROR("Project::open {} - unknown document type", fi.suffix());
+            spdlog::error("Project::open {} - unknown document type", fi.suffix());
             return nullptr;
         }
     }

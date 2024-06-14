@@ -147,7 +147,7 @@ bool Document::load(const QString &fileName)
 {
     LOG("Document::load", fileName);
     if (fileName.isEmpty()) {
-        WARN("Document::load - fileName is empty");
+        spdlog::warn("Document::load - fileName is empty");
         return false;
     }
     if (m_fileName == fileName)
@@ -183,7 +183,7 @@ bool Document::saveAs(const QString &fileName)
 {
     LOG("Document::saveAs", fileName);
     if (fileName.isEmpty()) {
-        ERROR("Document::saveAs - fileName is empty");
+        spdlog::error("Document::saveAs - fileName is empty");
         return false;
     }
 

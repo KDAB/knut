@@ -225,7 +225,7 @@ Core::QueryMatchList QueryMatch::queryIn(const QString &capture, const QString &
         if (document) {
             result.append(document->queryInRange(range, query));
         } else {
-            WARN("QueryMatch::queryIn: RangeMark is not backed by CodeDocument!");
+            spdlog::warn("QueryMatch::queryIn: RangeMark is not backed by CodeDocument!");
         }
     }
 

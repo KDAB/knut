@@ -71,7 +71,8 @@ void UiWriter::addCustomWidget(const QString &className, const QString &baseClas
         return;
 
     if ((!header.startsWith('<') || !header.endsWith('>')) && (!header.startsWith('"') || !header.endsWith('"'))) {
-        ERROR(R"(UiWriter::addCustomWidget - the include '{}' is malformed, should be '<foo.h>' or '"foo.h"')", header);
+        spdlog::error(R"(UiWriter::addCustomWidget - the include '{}' is malformed, should be '<foo.h>' or '"foo.h"')",
+                      header);
     }
     const bool isGlobal = header.startsWith('<');
     const auto &include = header.mid(1, header.length() - 2);
@@ -176,7 +177,7 @@ void UiWriter::addProperty(const QString &name, const QVariant &value)
         break;
     }
     default:
-        ERROR(R"(UiWriter::addProperty - unknown {} type)", value.typeName());
+        spdlog::error(R"(UiWriter::addProperty - unknown {} type)", value.typeName());
         break;
     }
 }

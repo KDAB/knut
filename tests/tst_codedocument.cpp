@@ -373,7 +373,7 @@ private slots:
                       . ((parameter_declaration) @param ","?)*)))
                       )EOF");
 
-        QVERIFY(counter.checkCount(0));
+        QCOMPARE(counter.count(), 0);
 
         QCOMPARE(matches.size(), 1);
         auto match = matches[0];
@@ -405,12 +405,12 @@ private slots:
         )EOF");
         QVERIFY(matches.isEmpty());
         // Query is correct, but returns no result, so should produce no log output.
-        QVERIFY(counter.checkCount(0));
+        QCOMPARE(counter.count(), 0);
 
         matches = codedocument->query("invalid query");
         QVERIFY(matches.isEmpty());
         // Invalid query, so should produce log output.
-        QVERIFY(counter.checkCount(1));
+        QCOMPARE(counter.count(), 1);
     }
 
     void queryInRange()

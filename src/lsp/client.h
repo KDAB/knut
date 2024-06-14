@@ -115,7 +115,7 @@ private:
                        std::function<void(typename Request::Result)> asyncCallback)
     {
         if (!(this->*canSend)()) {
-            ERROR("{} not supported by LSP server", name);
+            spdlog::error("{} not supported by LSP server", name);
             return {};
         }
 

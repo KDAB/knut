@@ -8,7 +8,6 @@
   Contact KDAB at <info@kdab.com> for commercial licensing options.
 */
 
-#include "common/test_utils.h"
 #include "utils/json.h"
 
 #include <QSignalSpy>

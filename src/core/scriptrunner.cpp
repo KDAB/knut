@@ -177,7 +177,7 @@ QVariant ScriptRunner::runScript(const QString &fileName, const std::function<vo
         }
         // engine is deleted in runJavascript or runQml
     } else {
-        ERROR("File {} doesn't exist", fileName);
+        spdlog::error("File {} doesn't exist", fileName);
         return QVariant(ErrorCode);
     }
 
@@ -202,9 +202,9 @@ QQmlEngine *ScriptRunner::getEngine(const QString &fileName)
     auto logWarnings = [this](const QList<QQmlError> &warnings) {
         for (const auto &warning : warnings) {
             if (warning.description().contains("error", Qt::CaseInsensitive))
-                ERROR("{}({}): {}", warning.url().toLocalFile(), warning.line(), warning.description());
+                spdlog::error("{}({}): {}", warning.url().toLocalFile(), warning.line(), warning.description());
             else
-                WARN("{}({}): {}", warning.url().toLocalFile(), warning.line(), warning.description());
+                spdlog::warn("{}({}): {}", warning.url().toLocalFile(), warning.line(), warning.description());
             m_hasError = true;
         }
     };
