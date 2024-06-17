@@ -21,6 +21,52 @@ Contact KDAB at <info@kdab.com> to inquire about licensing options.
 
 Knut includes different 3rd party software, you can find the list and licenses for them in the [3RDPARTY](3RDPARTY.md) document.
 
+# Building
+
+To build Knut, you will need an up-to-date C++ & Qt toolchain.
+This includes:
+- A recent C++ compiler (GCC 11+, Clang 15+, MSVC 19.40+)
+- [CMake](https://cmake.org) 3.15+
+- An installation of [Qt 6](https://www.qt.io/download-open-source)
+- (optional: [Ninja build system](https://ninja-build.org/))
+
+## Download Knut
+
+To clone the code, simply run:
+```bash
+git clone https://github.com/KDAB/knut.git && cd knut
+```
+
+If you are a member of KDAB and have access to our private repositories, you may then simply run:
+```bash
+git submodule update --init --recursive
+```
+To download all dependencies.
+
+If you are a contributor outside KDAB, you will need to download all submodules in the `3rdparty/` folder, without the private dependencies in the `3rdparty-kdab/` folder.
+```bash
+git submodule update --init --recursive -- 3rdparty/*
+```
+
+## Running CMake
+
+After that you can build Knut with CMake via one of the presets.
+E.g.:
+```bash
+cmake --preset=release
+cmake --build --preset=release
+```
+Take a look at `CMakePreset.json` for a list of available presets.
+
+## Running Knut
+
+After building with CMake, run the knut binary from the bin folder within your build directory.
+
+e.g.:
+```bash
+./build-release/bin/knut
+```
+
 # About KDAB
 
 Knut is written and maintained by Klarälvdalens Datakonsult AB (KDAB).
