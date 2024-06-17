@@ -91,6 +91,7 @@ find_package(
 # 3rdparty
 # ##############################################################################
 add_subdirectory(3rdparty)
+add_subdirectory(3rdparty-kdab)
 
 # test_data
 # ##############################################################################
@@ -151,12 +152,12 @@ add_subdirectory(tests)
 
 # mfc-utils and photonwidgets are private to KDAB, so make them optional so that
 # non-KDABians can still develop Knut.
-if(EXISTS 3rdparty/mfc-utils/tests-scripts)
-  add_subdirectory(3rdparty/mfc-utils/tests-scripts)
+if(EXISTS 3rdparty-kdab/mfc-utils/tests-scripts)
+  add_subdirectory(3rdparty-kdab/mfc-utils/tests-scripts)
 endif()
 
-if(EXISTS 3rdparty/photonwidgets/tests/scripts)
-  add_subdirectory(3rdparty/photonwidgets/tests/scripts)
+if(EXISTS 3rdparty-kdab/photonwidgets/tests/scripts)
+  add_subdirectory(3rdparty-kdab/photonwidgets/tests/scripts)
 endif()
 
 file(

@@ -61,6 +61,22 @@
     ],
     "buildPresets": [
         {
+            "name": "debug",
+            "configurePreset": "debug"
+        },
+        {
+            "name": "debug-asan",
+            "configurePreset": "debug-asan"
+        },
+        {
+            "name": "profile",
+            "configurePreset": "profile"
+        },
+        {
+            "name": "release",
+            "configurePreset": "release"
+        },
+        {
             "name": "ci",
             "configurePreset": "ci"
         },
