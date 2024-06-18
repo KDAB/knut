@@ -8,11 +8,16 @@
     "foobar": {
         "foo": "bar"
     },
-    "lsp" : [
-        {
-            "type": "cpp_type",
-            "program": "notclangd",
-            "arguments": ["foo", "bar"]
-        }
-    ]
+    "lsp": {
+        "servers": [
+            {
+                "type": "cpp_type",
+                "program": "notclangd",
+                "arguments": [
+                    "foo",
+                    "bar"
+                ]
+            }
+        ]
+    }
 }

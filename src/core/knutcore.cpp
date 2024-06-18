@@ -11,7 +11,6 @@
 #include "knutcore.h"
 #include "project.h"
 #include "scriptmanager.h"
-#include "settings.h"
 #include "textdocument.h"
 
 #include <QAbstractItemModel>
@@ -32,7 +31,7 @@ KnutCore::KnutCore(QObject *parent)
 {
     // If KnutCore is created directly, it means that we are in a test
     // Just initialize all singletons here
-    initialize(true);
+    initialize(Settings::Mode::Test);
 }
 
 KnutCore::KnutCore(InternalTag, QObject *parent)
@@ -54,7 +53,7 @@ void KnutCore::process(const QStringList &arguments)
 
     const bool list = parser.isSet("json-list");
     if (list) {
-        initialize(false);
+        initialize(Settings::Mode::Cli);
         auto model = Core::ScriptManager::model();
         if (model->rowCount() == 0) {
             std::cout << "[]\n";
@@ -72,8 +71,15 @@ void KnutCore::process(const QStringList &arguments)
         exit(0);
     }
 
-    const bool isTesting = parser.isSet("test");
-    initialize(isTesting);
+    Settings::Mode mode;
+    if (parser.isSet("test"))
+        mode = Settings::Mode::Test;
+    else if (parser.isSet("run"))
+        mode = Settings::Mode::Cli;
+    else
+        mode = Settings::Mode::Gui;
+
+    initialize(mode);
 
     const QStringList positionalArguments = parser.positionalArguments();
     // Set the root directory
@@ -149,13 +155,13 @@ void KnutCore::doParse(const QCommandLineParser &parser) const
     Q_UNUSED(parser)
 }
 
-void KnutCore::initialize(bool isTesting)
+void KnutCore::initialize(Settings::Mode mode)
 {
     // Make sure we initialize only once, double initialization could happen in tests
     // If creating a KnutCore and then processing command line arguments
     if (m_initialized)
         return;
-    new Settings(isTesting, this);
+    new Settings(mode, this);
     new Project(this);
     new ScriptManager(this);
     if (Core::Settings::instance()->value<bool>(Core::Settings::SaveLogsToFile))

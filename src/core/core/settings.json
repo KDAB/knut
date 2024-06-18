@@ -1,11 +1,14 @@
 {
-    "lsp": [
-        {
-            "type": "cpp_type",
-            "program": "clangd",
-            "arguments": []
-        }
-    ],
+    "lsp": {
+        "enabled": true,
+        "servers": [
+            {
+                "type": "cpp_type",
+                "program": "clangd",
+                "arguments": []
+            }
+        ]
+    },
     "rc": {
         "dialog_flags": [
             "UpdateGeometry",

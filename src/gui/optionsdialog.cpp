@@ -10,7 +10,6 @@
 
 #include "optionsdialog.h"
 #include "core/cppdocument_p.h"
-#include "core/project.h"
 #include "core/rcdocument.h"
 #include "core/scriptmanager.h"
 #include "core/settings.h"
@@ -45,6 +44,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     initializeScriptBehaviorSettings();
     initializeRcSettings();
     initializeSaveToLogFileSetting();
+    initializeEnableLSPSetting();
 
     updateScriptPaths();
 }
@@ -62,6 +62,13 @@ void OptionsDialog::initializeSaveToLogFileSetting()
     // Save Logs to file
     ui->saveLogsToFile->setChecked(Core::Settings::instance()->value<bool>(Core::Settings::SaveLogsToFile));
     connect(ui->saveLogsToFile, &QCheckBox::toggled, this, &OptionsDialog::changeSaveLogsToFileSetting);
+}
+
+void OptionsDialog::initializeEnableLSPSetting()
+{
+    // Enable LSP when running in Gui mode
+    ui->enableLSP->setChecked(Core::Settings::instance()->value<bool>(Core::Settings::EnableLSP));
+    connect(ui->enableLSP, &QCheckBox::toggled, this, &OptionsDialog::changeEnableLSPSetting);
 }
 
 void OptionsDialog::initializeScriptPathSettings()
@@ -252,6 +259,11 @@ void OptionsDialog::updateScriptPaths()
 void OptionsDialog::changeSaveLogsToFileSetting()
 {
     SET_DEFAULT_VALUE(SaveLogsToFile, ui->saveLogsToFile->checkState() == Qt::Checked);
+}
+
+void OptionsDialog::changeEnableLSPSetting()
+{
+    SET_DEFAULT_VALUE(EnableLSP, ui->enableLSP->checkState() == Qt::Checked);
 }
 
 void OptionsDialog::changeToggleSectionSetting()

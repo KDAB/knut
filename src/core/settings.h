@@ -39,8 +39,9 @@ class Settings : public QObject
     Q_PROPERTY(bool isTesting READ isTesting CONSTANT)
 
 public:
+    static inline constexpr char EnableLSP[] = "/lsp/enabled";
     static inline constexpr char MimeTypes[] = "/mime_types";
-    static inline constexpr char LspServers[] = "/lsp";
+    static inline constexpr char LspServers[] = "/lsp/servers";
     static inline constexpr char RcDialogFlags[] = "/rc/dialog_flags";
     static inline constexpr char RcDialogScaleX[] = "/rc/dialog_scalex";
     static inline constexpr char RcDialogScaleY[] = "/rc/dialog_scaley";
@@ -104,6 +105,7 @@ public:
     QString logFilePath() const;
 
     bool isTesting() const;
+    bool hasLsp() const;
 
 public slots:
     bool setValue(QString path, const QVariant &value);
@@ -114,7 +116,13 @@ signals:
     void settingsSaved();
 
 protected:
-    Settings(bool isTesting, QObject *parent = nullptr);
+    enum class Mode {
+        Test,
+        Cli,
+        Gui,
+    };
+
+    Settings(Mode mode, QObject *parent = nullptr);
 
 private:
     friend class KnutCore;
@@ -132,7 +140,7 @@ private:
     nlohmann::json m_projectSettings;
     QString m_projectPath;
     QTimer *m_saveTimer = nullptr;
-    bool m_isTesting = true;
+    Mode m_mode = Mode::Test;
 };
 
 } // namespace Core

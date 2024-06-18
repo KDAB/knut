@@ -23,7 +23,7 @@ class SettingsFixture : public Core::Settings
 {
 public:
     SettingsFixture()
-        : Settings(false)
+        : Settings(Core::Settings::Mode::Cli) // Not Testing
     {
     }
 };
@@ -45,14 +45,14 @@ private slots:
         // Default values
         QCOMPARE(settings.hasValue("/lsp"), true);
         QCOMPARE(settings.hasValue("lsp"), true);
-        const auto lspServers = settings.value<std::vector<Core::LspServer>>("/lsp");
+        const auto lspServers = settings.value<std::vector<Core::LspServer>>("/lsp/servers");
         QCOMPARE(lspServers.size(), 1);
         QCOMPARE(lspServers.front().program, "clangd");
         QCOMPARE(lspServers.front().arguments.size(), 0);
 
         // Load settings
         settings.loadProjectSettings(Test::testDataPath() + "/tst_settings");
-        const auto newServers = settings.value<std::vector<Core::LspServer>>("/lsp");
+        const auto newServers = settings.value<std::vector<Core::LspServer>>("/lsp/servers");
         QCOMPARE(settings.hasValue("/foobar/foo"), true);
         Core::LspServer testData = {Core::Document::Type::Cpp, "notclangd", {"foo", "bar"}};
         QCOMPARE(newServers.front().program, testData.program);
