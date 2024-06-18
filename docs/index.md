@@ -28,3 +28,4 @@ Stay up-to-date with KDAB product announcements:
 * [KDAB Newsletter](https://news.kdab.com)
 * [KDAB Blogs](https://www.kdab.com/category/blogs)
 * [KDAB on Twitter](https://twitter.com/KDABQt)
+* [KDAB on YouTube](https://www.youtube.com/@KDABtv)
