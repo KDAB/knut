@@ -277,6 +277,11 @@ const Data::AcceleratorTable *Data::acceleratorTable(const QString &id) const
     return findById(acceleratorTables, id);
 }
 
+const Ribbon *Data::ribbon(const QString &id) const
+{
+    return findById(ribbons, id);
+}
+
 bool operator==(const Widget &left, const Widget &right)
 {
     return left.id == right.id;

@@ -125,6 +125,17 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qRegisterMetaType<QVector<RcCore::Shortcut>>();
     qRegisterMetaType<RcCore::Action>();
     qRegisterMetaType<QVector<RcCore::Action>>();
+    qRegisterMetaType<RcCore::RibbonElement>();
+    qRegisterMetaType<QVector<RcCore::RibbonElement>>();
+    qRegisterMetaType<RcCore::RibbonPanel>();
+    qRegisterMetaType<QVector<RcCore::RibbonPanel>>();
+    qRegisterMetaType<RcCore::RibbonCategory>();
+    qRegisterMetaType<QVector<RcCore::RibbonCategory>>();
+    qRegisterMetaType<RcCore::RibbonContext>();
+    qRegisterMetaType<QVector<RcCore::RibbonContext>>();
+    qRegisterMetaType<RcCore::RibbonMenu>();
+    qRegisterMetaType<RcCore::Ribbon>();
+    qRegisterMetaType<QVector<RcCore::Ribbon>>();
 
     // Script.Test
     qmlRegisterSingletonType<TestUtil>("Script.Test", 1, 0, "TestUtil", [](QQmlEngine *, QJSEngine *) {

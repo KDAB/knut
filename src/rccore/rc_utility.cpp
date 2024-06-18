@@ -32,6 +32,7 @@ void RcFile::mergeLanguages(const QStringList &languages, const QString &newLang
         newData.menus.append(d.menus);
         newData.strings.insert(d.strings);
         newData.toolBars.append(d.toolBars);
+        newData.ribbons.append(d.ribbons);
     }
 
     for (const auto &lang : languages)

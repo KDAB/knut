@@ -830,6 +830,25 @@ static void readAsset(Context &context, Keywords keyword, const QString &id)
     }
 }
 
+static void readRibbon(Context &context, const QString &id)
+{
+    //    nameID KEYWORD filename
+    LEXER_FROM_CONTEXT;
+
+    Ribbon ribbon;
+    ribbon.line = lexer.line();
+    ribbon.id = id;
+
+    const auto fileName = lexer.next()->toString().replace("\\\\", "/");
+    if (const auto fullPath = computeFilePath(lexer.fileName(), fileName)) {
+        ribbon.fileName = fullPath.value();
+    } else {
+        ribbon.fileName = fileName;
+    }
+
+    context.currentData().ribbons.push_back(ribbon);
+}
+
 static void readStringTable(Context &context)
 {
     //    STRINGTABLE
@@ -1282,7 +1301,6 @@ static void readResource(Context &context, const std::optional<Token> &token, co
     case Keywords::HTML:
     case Keywords::MESSAGETABLE:
     case Keywords::REGISTRY:
-    case Keywords::RT_RIBBON_XML:
         spdlog::info("{}({}): parser unused token {}", context.fileName(), context.line(), token->prettyPrint());
         lexer.skipLine();
         break;
@@ -1294,6 +1312,9 @@ static void readResource(Context &context, const std::optional<Token> &token, co
         lexer.skipScope();
         break;
 
+    case Keywords::RT_RIBBON_XML:
+        readRibbon(context, id->toString());
+        break;
     case Keywords::ACCELERATORS:
         readAccelerators(context, id->toString());
         break;

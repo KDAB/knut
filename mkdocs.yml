@@ -72,6 +72,12 @@ nav:
                 - Asset: API/script/asset.md
                 - Menu: API/script/menu.md
                 - MenuItem: API/script/menuitem.md
+                - Ribbon: API/script/ribbon.md
+                - RibbonCategory: API/script/ribboncategory.md
+                - RibbonContext: API/script/ribboncontext.md
+                - RibbonElement: API/script/ribbonelement.md
+                - RibbonMenu: API/script/ribbonmenu.md
+                - RibbonPanel: API/script/ribbonpanel.md
                 - Shortcut: API/script/shortcut.md
                 - String: API/script/string.md
                 - ToolBar: API/script/toolbar.md

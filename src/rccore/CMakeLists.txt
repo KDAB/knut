@@ -20,6 +20,8 @@ set(PROJECT_SOURCES
     rc_parse.cpp
     rc_utility.cpp
     rc_write.cpp
+    ribbon.h
+    ribbon.cpp
     stream.h
     stream.cpp
     uiwriter.h
@@ -34,6 +36,7 @@ target_link_libraries(
   Qt${QT_VERSION_MAJOR}::Qml
   Qt${QT_VERSION_MAJOR}::QmlPrivate
   Qt${QT_VERSION_MAJOR}::Gui
-  knut-utils)
+  knut-utils
+  pugixml::pugixml)
 target_include_directories(${PROJECT_NAME}
                            INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/..)

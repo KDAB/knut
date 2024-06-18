@@ -32,6 +32,7 @@ class RcDocument : public Document
     Q_PROPERTY(QStringList stringIds READ stringIds NOTIFY dataChanged)
     Q_PROPERTY(QString language READ language WRITE setLanguage NOTIFY languageChanged)
     Q_PROPERTY(QStringList languages READ languages NOTIFY languagesChanged)
+    Q_PROPERTY(QStringList ribbonIds READ ribbonIds NOTIFY dataChanged)
 
 public:
     enum ConversionFlag {
@@ -77,11 +78,14 @@ public:
     QVector<RcCore::Menu> menus() const;
     Q_INVOKABLE RcCore::Menu menu(const QString &id) const;
 
+    Q_INVOKABLE RcCore::Ribbon ribbon(const QString &id) const;
+
     QStringList dialogIds() const;
     QStringList menuIds() const;
     QStringList acceleratorIds() const;
     QStringList toolbarIds() const;
     QStringList stringIds() const;
+    QStringList ribbonIds() const;
 
     Q_INVOKABLE QList<RcCore::String> stringsForLanguage(const QString &language) const;
     Q_INVOKABLE QString stringForLanguage(const QString &language, const QString &id) const;
