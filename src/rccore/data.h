@@ -10,6 +10,8 @@
 
 #pragma once
 
+#include "ribbon.h"
+
 #include <QByteArray>
 #include <QHash>
 #include <QRect>
@@ -275,6 +277,7 @@ struct Data
     QVector<ToolBar> toolBars;
     QVector<DialogData> dialogDataList;
     QVector<Dialog> dialogs;
+    QVector<Ribbon> ribbons;
 
     // Accessors
     const Asset *asset(const QString &id) const;
@@ -283,6 +286,7 @@ struct Data
     const DialogData *dialogData(const QString &id) const;
     const Menu *menu(const QString &id) const;
     const AcceleratorTable *acceleratorTable(const QString &id) const;
+    const Ribbon *ribbon(const QString &id) const;
 };
 
 } // namespace RcCore

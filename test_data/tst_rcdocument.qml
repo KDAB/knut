@@ -103,4 +103,32 @@ TestCase {
         compare(actionPrevPane.statusTip, "Display program information, version number and copyright");
         compare(actionPrevPane.shortcuts.length, 0);
     }
+
+    property var rcDocument: RcDocument {
+        fileName: Dir.currentScriptPath + "/rcfiles/ribbon/RibbonApplication.rc"
+        Component.onCompleted: mergeAllLanguages()
+    }
+    function test_ribbon() {
+        verify(rcDocument.valid)
+
+        let ribbon = rcDocument.ribbon("IDR_RIBBON");
+        verify(ribbon.menu.recentFiles);
+        compare(ribbon.menu.name, "File");
+        compare(ribbon.menu.elements.length, 9);
+        let newButton = ribbon.menu.elements[1];
+        compare(newButton.type, "Button");
+        compare(newButton.id, "ID_FILE_NEW");
+
+        compare(ribbon.categories.length, 2);
+        let homeCategory = ribbon.categories[0];
+        compare(homeCategory.name, "Home");
+
+        compare(homeCategory.panels.length, 5);
+        let findPanel = homeCategory.panels[3];
+        compare(findPanel.name, "Find/Replace");
+        compare(findPanel.keys, "F");
+        compare(findPanel.elements.length, 4);
+
+        compare(ribbon.contexts.length, 1);
+    }
 }

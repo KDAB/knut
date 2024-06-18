@@ -242,6 +242,23 @@ RcCore::Menu RcDocument::menu(const QString &id) const
     return {};
 }
 
+/*!
+ * \qmlmethod Menu RcDocument::ribbon(string id)
+ * Returns the ribbon for the given `id`.
+ */
+RcCore::Ribbon RcDocument::ribbon(const QString &id) const
+{
+    LOG("RcDocument::ribbon", id);
+
+    if (isDataValid()) {
+        if (auto ribbon = data().ribbon(id)) {
+            const_cast<RcCore::Ribbon *>(ribbon)->load();
+            return *ribbon;
+        }
+    }
+    return {};
+}
+
 QStringList RcDocument::dialogIds() const
 {
     LOG("RcDocument::dialogIds");
@@ -311,6 +328,22 @@ QStringList RcDocument::stringIds() const
     LOG("RcDocument::stringIds");
     if (isDataValid())
         return data().strings.keys();
+    return {};
+}
+
+QStringList RcDocument::ribbonIds() const
+{
+    LOG("RcDocument::ribbonIds");
+    if (isDataValid()) {
+        const auto &ribbons = data().ribbons;
+        QStringList result;
+        result.reserve(ribbons.size());
+        std::ranges::transform(ribbons, std::back_inserter(result), [](const auto &ribbon) {
+            return ribbon.id;
+        });
+        result.sort();
+        return result;
+    }
     return {};
 }
 

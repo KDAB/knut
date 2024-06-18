@@ -144,11 +144,49 @@ private slots:
 
     void testRibbon()
     {
-        RcFile rcFile = parse(Test::testDataPath() + "/rcfiles/ribbonexample/RibbonExample.rc");
+        RcFile rcFile = parse(Test::testDataPath() + "/rcfiles/ribbon/RibbonApplication.rc");
         QCOMPARE(rcFile.isValid, true);
 
         auto data = rcFile.data.value(en_US);
-        QVERIFY(data.strings.contains("IDP_OLE_INIT_FAILED"));
+        QCOMPARE(data.ribbons.first().id, "IDR_RIBBON");
+
+        auto ribbon = data.ribbon("IDR_RIBBON");
+        QVERIFY(const_cast<Ribbon *>(ribbon)->load());
+
+        QVERIFY(ribbon->menu.recentFiles);
+        QCOMPARE(ribbon->menu.name, "File");
+        QCOMPARE(ribbon->menu.smallImage, "IDB_FILESMALL");
+        QCOMPARE(ribbon->menu.largeImage, "IDB_FILELARGE");
+        QCOMPARE(ribbon->menu.elements.size(), 9);
+        const auto &newButton = ribbon->menu.elements[1];
+        QCOMPARE(newButton.type, "Button");
+        QCOMPARE(newButton.id, "ID_FILE_NEW");
+        QCOMPARE(newButton.text, "&New");
+        QCOMPARE(newButton.largeIndex, 0);
+        QCOMPARE(newButton.smallIndex, 0);
+
+        QCOMPARE(ribbon->categories.size(), 2);
+        const auto &homeCategory = ribbon->categories[0];
+        QCOMPARE(homeCategory.name, "Home");
+        QCOMPARE(homeCategory.keys, "H");
+        QCOMPARE(homeCategory.smallImage, "IDB_WRITESMALL");
+        QCOMPARE(homeCategory.largeImage, "IDB_WRITELARGE");
+
+        QCOMPARE(homeCategory.panels.size(), 5);
+        const auto &findPanel = homeCategory.panels[3];
+        QCOMPARE(findPanel.name, "Find/Replace");
+        QCOMPARE(findPanel.keys, "F");
+        QCOMPARE(findPanel.elements.size(), 4);
+        const auto &findButton = findPanel.elements[0];
+        QCOMPARE(findButton.id, "ID_EDIT_FIND");
+        const auto &separator = findPanel.elements[1];
+        QVERIFY(separator.isSeparator());
+
+        QCOMPARE(ribbon->contexts.size(), 1);
+        const auto &context = ribbon->contexts[0];
+        QCOMPARE(context.id, "ID_CONTEXT2");
+        QCOMPARE(context.text, "Context1");
+        QCOMPARE(context.categories.size(), 1);
     }
 };
 
