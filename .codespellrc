@@ -1,0 +1,3 @@
+[codespell]
+skip = ./build-*,.git,./3rdparty,./3rdparty-kdab,./test_data,./tests/tst_textdocument.cpp,./tools/spec2cpp/specification-*
+interactive = 3
