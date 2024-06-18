@@ -79,7 +79,8 @@ bool QtUiDocument::doSave(const QString &fileName)
 bool QtUiDocument::doLoad(const QString &fileName)
 {
     m_widgets.clear();
-    pugi::xml_parse_result result = m_document.load_file(fileName.toLatin1().constData(), pugi::parse_declaration);
+    pugi::xml_parse_result result =
+        m_document.load_file(fileName.toLatin1().constData(), pugi::parse_default | pugi::parse_declaration);
 
     if (!result) {
         spdlog::critical("{}({}): {}", fileName, result.offset, result.description());
