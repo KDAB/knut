@@ -32,9 +32,7 @@ jobs:
         # Delete the ref to avoid keeping history.
         git update-ref -d refs/heads/gh-pages
         rm -rf *
-        # We want the documentation in a subfolder, so we can add a landing page or similar
-        mkdir -p docs/latest/
-        mv ../site/* docs/latest/
+        mv ../site/* .
         git add .
         git commit -m "Deploy $GITHUB_SHA to gh-pages"
         git push --force
