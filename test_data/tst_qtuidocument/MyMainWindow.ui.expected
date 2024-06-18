@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<ui version="4.0">
+    <class>MyMainWindow</class>
+    <widget class="QMainWindow" name="MyMainWindow">
+        <widget class="QWidget" name="centralwidget">
+            <widget class="QPushButton" name="button">
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>10</y>
+                        <width>100</width>
+                        <height>50</height>
+                    </rect>
+                </property>
+            </widget>
+        </widget>
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>200</width>
+                <height>200</height>
+            </rect>
+        </property>
+        <property name="windowTitle">
+            <string>My MainWindow</string>
+        </property>
+    </widget>
+    <resources />
+    <connections />
+    <customwidgets>
+        <customwidget>
+            <class>MyFrame</class>
+            <extends>QFrame</extends>
+            <header>MyFrame.h</header>
+            <container>1</container>
+        </customwidget>
+    </customwidgets>
+</ui>

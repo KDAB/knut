@@ -23,7 +23,6 @@ class QtUiWidget : public QObject
     Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString className READ className WRITE setClassName NOTIFY classNameChanged)
-    Q_PROPERTY(QString id READ id CONSTANT)
     Q_PROPERTY(bool isRoot READ isRoot CONSTANT)
 
 public:
@@ -33,9 +32,11 @@ public:
 
     QString className() const;
 
-    QString id() const;
-
     bool isRoot() const { return m_isRoot; }
+
+    Q_INVOKABLE QVariant getProperty(const QString &name) const;
+    Q_INVOKABLE void addProperty(const QString &name, const QVariant &value,
+                                 const QHash<QString, QString> &attributes = {});
 
 public slots:
     void setName(const QString &newName);
@@ -45,8 +46,11 @@ signals:
     void nameChanged(const QString &newName);
     void classNameChanged(const QString &newClassName);
 
-private:
+protected:
     friend QtUiDocument;
+    pugi::xml_node xmlNode() const;
+
+private:
     pugi::xml_node m_widget;
     bool m_isRoot = false;
 };
@@ -54,7 +58,7 @@ private:
 class QtUiDocument : public Document
 {
     Q_OBJECT
-    Q_PROPERTY(QVector<Core::QtUiWidget *> widgets READ widgets NOTIFY fileNameChanged)
+    Q_PROPERTY(QVector<Core::QtUiWidget *> widgets READ widgets NOTIFY widgetsChanged)
 
 public:
     explicit QtUiDocument(QObject *parent = nullptr);
@@ -62,14 +66,24 @@ public:
     QVector<Core::QtUiWidget *> widgets() const { return m_widgets; }
     Q_INVOKABLE Core::QtUiWidget *findWidget(const QString &name) const;
 
+    Q_INVOKABLE Core::QtUiWidget *addWidget(const QString &className, const QString &name,
+                                            Core::QtUiWidget *parent = nullptr);
+    Q_INVOKABLE void addCustomWidget(const QString &className, const QString &baseClassName, const QString &header,
+                                     bool isContainer = false);
+
 public slots:
     void preview() const;
+
+signals:
+    void widgetsChanged();
 
 protected:
     bool doSave(const QString &fileName) override;
     bool doLoad(const QString &fileName) override;
 
 private:
+    void initializeXml();
+
     friend QtUiWidget;
     pugi::xml_document m_document;
     QVector<QtUiWidget *> m_widgets;

@@ -10,6 +10,7 @@
 
 #include "common/test_utils.h"
 #include "core/qtuidocument.h"
+#include "core/utils.h"
 
 #include <QTest>
 
@@ -69,7 +70,53 @@ private slots:
         }
     }
 
-    void idProperty()
+    void createFiles()
+    {
+        {
+            Core::QtUiDocument document;
+
+            auto root = document.addWidget("QDialog", "MyDialog");
+            root->addProperty("geometry", QRect(0, 0, 200, 200));
+            root->addProperty("windowTitle", "My Dialog");
+            root->addProperty("idString", "IDD_MYDIALOG", {{"notr", "true"}});
+
+            auto button = document.addWidget("QPushButton", "button", root);
+            button->addProperty("geometry", QRect(10, 10, 100, 50));
+            button->addProperty("text", "Click me");
+            button->addProperty("default", true);
+
+            auto button2 = document.addWidget("MyPushButton", "myButton", root);
+            button2->addProperty("geometry", QRect(10, 100, 100, 50));
+            button2->addProperty("text", "Click me 2");
+
+            document.addCustomWidget("MyPushButton", "QPushButton", "<MyPushButton.h>");
+
+            document.saveAs(Test::testDataPath() + QStringLiteral("/tst_qtuidocument/MyDialog.ui"));
+        }
+        QVERIFY(Test::compareFiles(Test::testDataPath() + QStringLiteral("/tst_qtuidocument/MyDialog.ui"),
+                                   Test::testDataPath() + QStringLiteral("/tst_qtuidocument/MyDialog.ui.expected")));
+        QFile::remove(Test::testDataPath() + QStringLiteral("/tst_qtuidocument/MyDialog.ui"));
+
+        {
+            Core::QtUiDocument document;
+
+            auto root = document.addWidget("QMainWindow", "MyMainWindow");
+            root->addProperty("geometry", QRect(0, 0, 200, 200));
+            root->addProperty("windowTitle", "My MainWindow");
+
+            auto button = document.addWidget("QPushButton", "button", root);
+            button->addProperty("geometry", QRect(10, 10, 100, 50));
+            document.addCustomWidget("MyFrame", "QFrame", "\"MyFrame.h\"", true);
+
+            document.saveAs(Test::testDataPath() + QStringLiteral("/tst_qtuidocument/MyMainWindow.ui"));
+        }
+        QVERIFY(
+            Test::compareFiles(Test::testDataPath() + QStringLiteral("/tst_qtuidocument/MyMainWindow.ui"),
+                               Test::testDataPath() + QStringLiteral("/tst_qtuidocument/MyMainWindow.ui.expected")));
+        QFile::remove(Test::testDataPath() + QStringLiteral("/tst_qtuidocument/MyMainWindow.ui"));
+    }
+
+    void readProperty()
     {
         {
             // Test with idString property set
@@ -79,10 +126,14 @@ private slots:
             const auto widgets = document.widgets();
             auto rootWidget = widgets.first();
             QCOMPARE(rootWidget->name(), "CTutorialDlg");
-            QCOMPARE(rootWidget->id(), "IDD_UPDATEGUI_DIALOG");
+            QCOMPARE(rootWidget->getProperty("idString").toString(), "IDD_UPDATEGUI_DIALOG");
+            const QRect geometry(0, 0, 480, 330);
+            QCOMPARE(rootWidget->getProperty("geometry").toRect(), geometry);
 
             auto widget = document.findWidget("btn_add");
-            QCOMPARE(widget->id(), "ID_BTN_ADD");
+            QCOMPARE(widget->getProperty("idString").toString(), "ID_BTN_ADD");
+            QCOMPARE(widget->getProperty("text").toString(), "Click to Add");
+            QCOMPARE(widget->getProperty("default").toBool(), true);
         }
 
         {
@@ -92,10 +143,10 @@ private slots:
 
             const auto widgets = document.widgets();
             auto rootWidget = widgets.first();
-            QVERIFY(rootWidget->id().isEmpty());
+            QVERIFY(rootWidget->getProperty("idString").isNull());
 
             auto widget = document.findWidget("IDC_PLAYBACKFROMMEMORY");
-            QVERIFY(widget->id().isEmpty());
+            QVERIFY(widget->getProperty("idString").isNull());
         }
     }
 };
