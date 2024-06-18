@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<ui version="4.0">
+    <class>MyDialog</class>
+    <widget class="QDialog" name="MyDialog">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>200</width>
+                <height>200</height>
+            </rect>
+        </property>
+        <property name="windowTitle">
+            <string>My Dialog</string>
+        </property>
+        <property name="idString">
+            <string notr="true">IDD_MYDIALOG</string>
+        </property>
+        <widget class="QPushButton" name="button">
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>10</y>
+                    <width>100</width>
+                    <height>50</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Click me</string>
+            </property>
+            <property name="default">
+                <bool>true</bool>
+            </property>
+        </widget>
+        <widget class="MyPushButton" name="myButton">
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>100</y>
+                    <width>100</width>
+                    <height>50</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Click me 2</string>
+            </property>
+        </widget>
+    </widget>
+    <resources />
+    <connections />
+    <customwidgets>
+        <customwidget>
+            <class>MyPushButton</class>
+            <extends>QPushButton</extends>
+            <header location="global">MyPushButton.h</header>
+        </customwidget>
+    </customwidgets>
+</ui>
