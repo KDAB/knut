@@ -11,8 +11,6 @@ on:
 
 jobs:
   mkdocs:
-    # Ensure that the tag was from the main branch and not a backport
-    if: github.event.base_ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
