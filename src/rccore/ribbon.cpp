@@ -50,6 +50,10 @@ namespace RcCore {
  * \qmlproperty array<RibbonElement> RibbonElement::elements
  * This property holds the children of this item, for creating menus.
  */
+/*!
+ * \qmlproperty bool RibbonElement::isSeparator
+ * This property returns `true` if the element is a separator.
+ */
 
 /*!
  * \qmltype RibbonPanel
@@ -60,15 +64,15 @@ namespace RcCore {
  * \sa Ribbon
  */
 /*!
- * \qmlproperty string RibbonPanel::name
- * This property holds the name(text) of the panel.
+ * \qmlproperty string RibbonPanel::text
+ * This property holds the text title of the panel.
  */
 /*!
- * \qmlproperty string RibbonElement::keys
+ * \qmlproperty string RibbonPanel::keys
  * This property holds the keys of the panel.
  */
 /*!
- * \qmlproperty array<RibbonElement> RibbonElement::elements
+ * \qmlproperty array<RibbonElement> RibbonPanel::elements
  * This property holds the children elements of this panel.
  */
 
@@ -81,8 +85,8 @@ namespace RcCore {
  * \sa Ribbon
  */
 /*!
- * \qmlproperty string RibbonCategory::name
- * This property holds the name(text) of the category.
+ * \qmlproperty string RibbonCategory::text
+ * This property holds the text title of the category.
  */
 /*!
  * \qmlproperty string RibbonCategory::keys
@@ -110,7 +114,7 @@ namespace RcCore {
  * \sa Ribbon
  */
 /*!
- * \qmlproperty string RibbonElement::id
+ * \qmlproperty string RibbonContext::id
  * This property holds the id of the context.
  */
 /*!
@@ -131,8 +135,8 @@ namespace RcCore {
  * \sa Ribbon
  */
 /*!
- * \qmlproperty string RibbonMenu::name
- * This property holds the name(text) of the menu.
+ * \qmlproperty string RibbonMenu::text
+ * This property holds the text label of the menu.
  */
 /*!
  * \qmlproperty string RibbonMenu::smallImage
@@ -143,12 +147,12 @@ namespace RcCore {
  * This property holds the image resource for large icons.
  */
 /*!
- * \qmlproperty array<RibbonElement> RibbonContext::elements
+ * \qmlproperty array<RibbonElement> RibbonMenu::elements
  * This property holds the children elements of this menu.
  */
 /*!
- * \qmlproperty bool RibbonMenu::recentFiles
- * This property is true if the menu shows recent files.
+ * \qmlproperty string RibbonMenu::recentFilesText
+ * This property holds the text for the recent files menu.
  */
 
 /*!
@@ -158,6 +162,15 @@ namespace RcCore {
  * \ingroup RcDocument
  * \since 1.0
  * \sa RcFile
+ *
+ * A ribbon is made of multiple items:
+ *
+ * - a file menu, top/left, which displays a popup menu when clicking (see RibbonMenu)
+ * - multiple categories displayed as tabs
+ *     - each with multiple panels (displayed as group of actions)
+ *     - each panel contains multiple elements (displayed as buttons, separators...)
+ * - multiple contexts, a context showing another tab with it's name in the titlebar
+ *     - each context contains multiple categories
  */
 /*!
  * \qmlproperty RibbonMenu Ribbon::menu
@@ -200,18 +213,18 @@ static RibbonElement readElement(pugi::xml_node node)
 static RibbonMenu readMenu(pugi::xml_node node)
 {
     RibbonMenu menu;
-    menu.name = node.child("NAME").text().as_string();
+    menu.text = node.child("NAME").text().as_string();
     menu.smallImage = node.select_node("IMAGE_SMALL/ID/NAME").node().text().as_string();
     menu.largeImage = node.select_node("IMAGE_LARGE/ID/NAME").node().text().as_string();
     menu.elements = readItems<RibbonElement>(node.child("ELEMENTS"), readElement);
-    menu.recentFiles = !node.child("RECENT_FILE_LIST").empty();
+    menu.recentFilesText = node.select_node("RECENT_FILE_LIST/LABEL").node().text().as_string();
     return menu;
 }
 
 static RibbonPanel readPanel(pugi::xml_node node)
 {
     RibbonPanel panel;
-    panel.name = node.child("NAME").text().as_string();
+    panel.text = node.child("NAME").text().as_string();
     panel.keys = node.child("KEYS").text().as_string();
     panel.elements = readItems<RibbonElement>(node.child("ELEMENTS"), readElement);
     return panel;
@@ -220,7 +233,7 @@ static RibbonPanel readPanel(pugi::xml_node node)
 static RibbonCategory readCategory(pugi::xml_node node)
 {
     RibbonCategory category;
-    category.name = node.child("NAME").text().as_string();
+    category.text = node.child("NAME").text().as_string();
     category.keys = node.child("KEYS").text().as_string();
     category.smallImage = node.select_node("IMAGE_SMALL/ID/NAME").node().text().as_string();
     category.largeImage = node.select_node("IMAGE_LARGE/ID/NAME").node().text().as_string();

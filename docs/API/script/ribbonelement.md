@@ -15,10 +15,8 @@ import Script 1.0
 | | Name |
 |-|-|
 |array<[RibbonElement](../script/ribbonelement.md)>|**[elements](#elements)**|
-|array<[RibbonElement](../script/ribbonelement.md)>|**[elements](#elements)**|
 |string|**[id](#id)**|
-|string|**[id](#id)**|
-|string|**[keys](#keys)**|
+|bool|**[isSeparator](#isSeparator)**|
 |string|**[keys](#keys)**|
 |int|**[largeIndex](#largeIndex)**|
 |int|**[smallIndex](#smallIndex)**|
@@ -31,25 +29,17 @@ import Script 1.0
 
 This property holds the children of this item, for creating menus.
 
-#### <a name="elements"></a>array<[RibbonElement](../script/ribbonelement.md)> **elements**
-
-This property holds the children elements of this panel.
-
 #### <a name="id"></a>string **id**
 
 This property holds the id of the element item.
 
-#### <a name="id"></a>string **id**
+#### <a name="isSeparator"></a>bool **isSeparator**
 
-This property holds the id of the context.
+This property returns `true` if the element is a separator.
 
 #### <a name="keys"></a>string **keys**
 
 This property holds the keys of the element item.
-
-#### <a name="keys"></a>string **keys**
-
-This property holds the keys of the panel.
 
 #### <a name="largeIndex"></a>int **largeIndex**
 

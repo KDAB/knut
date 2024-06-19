@@ -15,7 +15,7 @@ import Script 1.0
 | | Name |
 |-|-|
 |array<[RibbonCategory](../script/ribboncategory.md)>|**[categories](#categories)**|
-|array<[RibbonElement](../script/ribbonelement.md)>|**[elements](#elements)**|
+|string|**[id](#id)**|
 |string|**[text](#text)**|
 
 ## Property Documentation
@@ -24,9 +24,9 @@ import Script 1.0
 
 This property holds the children categories of this context.
 
-#### <a name="elements"></a>array<[RibbonElement](../script/ribbonelement.md)> **elements**
+#### <a name="id"></a>string **id**
 
-This property holds the children elements of this menu.
+This property holds the id of the context.
 
 #### <a name="text"></a>string **text**
 

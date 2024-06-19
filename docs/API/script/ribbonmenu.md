@@ -14,25 +14,30 @@ import Script 1.0
 
 | | Name |
 |-|-|
+|array<[RibbonElement](../script/ribbonelement.md)>|**[elements](#elements)**|
 |string|**[largeImage](#largeImage)**|
-|string|**[name](#name)**|
-|bool|**[recentFiles](#recentFiles)**|
+|string|**[recentFilesText](#recentFilesText)**|
 |string|**[smallImage](#smallImage)**|
+|string|**[text](#text)**|
 
 ## Property Documentation
+
+#### <a name="elements"></a>array<[RibbonElement](../script/ribbonelement.md)> **elements**
+
+This property holds the children elements of this menu.
 
 #### <a name="largeImage"></a>string **largeImage**
 
 This property holds the image resource for large icons.
 
-#### <a name="name"></a>string **name**
+#### <a name="recentFilesText"></a>string **recentFilesText**
 
-This property holds the name(text) of the menu.
-
-#### <a name="recentFiles"></a>bool **recentFiles**
-
-This property is true if the menu shows recent files.
+This property holds the text for the recent files menu.
 
 #### <a name="smallImage"></a>string **smallImage**
 
 This property holds the image resource for small icons.
+
+#### <a name="text"></a>string **text**
+
+This property holds the text label of the menu.
