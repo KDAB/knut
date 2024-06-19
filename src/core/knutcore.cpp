@@ -51,8 +51,8 @@ void KnutCore::process(const QStringList &arguments)
     initParser(parser);
     parser.process(arguments);
 
-    const bool list = parser.isSet("json-list");
-    if (list) {
+    const bool jsonList = parser.isSet("json-list");
+    if (jsonList) {
         initialize(Settings::Mode::Cli);
         auto model = Core::ScriptManager::model();
         if (model->rowCount() == 0) {
@@ -68,6 +68,13 @@ void KnutCore::process(const QStringList &arguments)
             std::cout << outputJson.dump() << "\n";
         }
 
+        exit(0);
+    }
+
+    const bool jsonSettings = parser.isSet("json-settings");
+    if (jsonSettings) {
+        initialize(Settings::Mode::Cli);
+        std::cout << Core::Settings::instance()->dumpJson() << "\n";
         exit(0);
     }
 
@@ -147,7 +154,8 @@ void KnutCore::initParser(QCommandLineParser &parser) const
                        {{"i", "input"}, "Opens document <file> on startup.", "file"},
                        {{"l", "line"}, "Line in the current file, if any.", "line"},
                        {{"c", "column"}, "Column in the current file, if any.", "column"},
-                       {"json-list", "Lists all available scripts"}});
+                       {"json-list", "Returns the list of all available scripts as a JSON file"},
+                       {"json-settings", "Returns the settings as a JSON file"}});
 }
 
 void KnutCore::doParse(const QCommandLineParser &parser) const

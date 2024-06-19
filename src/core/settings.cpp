@@ -302,6 +302,11 @@ void Settings::removeScriptPath(const QString &path)
     updatePaths(path, ScriptPaths, false);
 }
 
+std::string Settings::dumpJson() const
+{
+    return m_settings.dump();
+}
+
 void Settings::updatePaths(const QString &path, const std::string &json_path, bool add)
 {
     const auto pathPointer = nlohmann::json::json_pointer(json_path);
