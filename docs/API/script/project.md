@@ -85,10 +85,12 @@ Get the document for the given `fileName`. If the document is not opened yet, op
 exists, returns the same instance, a document can't be open twice. If the fileName is relative, use the root path as
 the base.
 
+*Note:* this command does not change the current document.
+
 #### <a name="open"></a>[Document](../script/document.md) **open**(string fileName)
 
-Opens a document for the given `fileName`. If the document already exists, returns the same instance, a document
-can't be open twice. If the fileName is relative, use the root path as the base.
+Opens a document for the given `fileName` and make it current. If the document already exists, returns the same
+instance, a document can't be open twice. If the fileName is relative, use the root path as the base.
 
 #### <a name="openPrevious"></a>**openPrevious**(int index)
 

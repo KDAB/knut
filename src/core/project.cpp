@@ -299,6 +299,8 @@ Document *Project::getDocument(QString fileName, bool moveToBack)
  * Get the document for the given `fileName`. If the document is not opened yet, open it. If the document already
  * exists, returns the same instance, a document can't be open twice. If the fileName is relative, use the root path as
  * the base.
+ *
+ * *Note:* this command does not change the current document.
  */
 Document *Project::get(const QString &fileName)
 {
@@ -309,8 +311,8 @@ Document *Project::get(const QString &fileName)
 
 /*!
  * \qmlmethod Document Project::open(string fileName)
- * Opens a document for the given `fileName`. If the document already exists, returns the same instance, a document
- * can't be open twice. If the fileName is relative, use the root path as the base.
+ * Opens a document for the given `fileName` and make it current. If the document already exists, returns the same
+ * instance, a document can't be open twice. If the fileName is relative, use the root path as the base.
  */
 Document *Project::open(const QString &fileName)
 {
