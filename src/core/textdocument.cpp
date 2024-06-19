@@ -971,9 +971,9 @@ void TextDocument::replace(const TextRange &range, const QString &text)
 void TextDocument::deleteLine(int line)
 {
     if (line == -1)
-        LOG("TextDocument::removeLine");
+        LOG("TextDocument::deleteLine");
     else
-        LOG("TextDocument::removeLine", LOG_ARG("line", line));
+        LOG("TextDocument::deleteLine", LOG_ARG("line", line));
 
     QTextCursor cursor = m_document->textCursor();
     if (line > 0) {
