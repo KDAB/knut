@@ -153,8 +153,8 @@ private slots:
         auto ribbon = data.ribbon("IDR_RIBBON");
         QVERIFY(const_cast<Ribbon *>(ribbon)->load());
 
-        QVERIFY(ribbon->menu.recentFiles);
-        QCOMPARE(ribbon->menu.name, "File");
+        QCOMPARE(ribbon->menu.recentFilesText, "Recent Documents");
+        QCOMPARE(ribbon->menu.text, "File");
         QCOMPARE(ribbon->menu.smallImage, "IDB_FILESMALL");
         QCOMPARE(ribbon->menu.largeImage, "IDB_FILELARGE");
         QCOMPARE(ribbon->menu.elements.size(), 9);
@@ -167,14 +167,14 @@ private slots:
 
         QCOMPARE(ribbon->categories.size(), 2);
         const auto &homeCategory = ribbon->categories[0];
-        QCOMPARE(homeCategory.name, "Home");
+        QCOMPARE(homeCategory.text, "Home");
         QCOMPARE(homeCategory.keys, "H");
         QCOMPARE(homeCategory.smallImage, "IDB_WRITESMALL");
         QCOMPARE(homeCategory.largeImage, "IDB_WRITELARGE");
 
         QCOMPARE(homeCategory.panels.size(), 5);
         const auto &findPanel = homeCategory.panels[3];
-        QCOMPARE(findPanel.name, "Find/Replace");
+        QCOMPARE(findPanel.text, "Find/Replace");
         QCOMPARE(findPanel.keys, "F");
         QCOMPARE(findPanel.elements.size(), 4);
         const auto &findButton = findPanel.elements[0];

@@ -14,10 +14,20 @@ import Script 1.0
 
 | | Name |
 |-|-|
-|string|**[name](#name)**|
+|array<[RibbonElement](../script/ribbonelement.md)>|**[elements](#elements)**|
+|string|**[keys](#keys)**|
+|string|**[text](#text)**|
 
 ## Property Documentation
 
-#### <a name="name"></a>string **name**
+#### <a name="elements"></a>array<[RibbonElement](../script/ribbonelement.md)> **elements**
 
-This property holds the name(text) of the panel.
+This property holds the children elements of this panel.
+
+#### <a name="keys"></a>string **keys**
+
+This property holds the keys of the panel.
+
+#### <a name="text"></a>string **text**
+
+This property holds the text title of the panel.

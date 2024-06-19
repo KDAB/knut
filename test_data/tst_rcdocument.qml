@@ -112,8 +112,8 @@ TestCase {
         verify(rcDocument.valid)
 
         let ribbon = rcDocument.ribbon("IDR_RIBBON");
-        verify(ribbon.menu.recentFiles);
-        compare(ribbon.menu.name, "File");
+        compare(ribbon.menu.recentFilesText, "Recent Documents");
+        compare(ribbon.menu.text, "File");
         compare(ribbon.menu.elements.length, 9);
         let newButton = ribbon.menu.elements[1];
         compare(newButton.type, "Button");
@@ -121,13 +121,15 @@ TestCase {
 
         compare(ribbon.categories.length, 2);
         let homeCategory = ribbon.categories[0];
-        compare(homeCategory.name, "Home");
+        compare(homeCategory.text, "Home");
 
         compare(homeCategory.panels.length, 5);
         let findPanel = homeCategory.panels[3];
-        compare(findPanel.name, "Find/Replace");
+        compare(findPanel.text, "Find/Replace");
         compare(findPanel.keys, "F");
         compare(findPanel.elements.length, 4);
+        let separator = findPanel.elements[1];
+        verify(separator.isSeparator);
 
         compare(ribbon.contexts.length, 1);
     }

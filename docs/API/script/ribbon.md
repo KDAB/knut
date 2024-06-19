@@ -18,6 +18,17 @@ import Script 1.0
 |array<[RibbonContext](../script/ribboncontext.md)>|**[contexts](#contexts)**|
 |[RibbonMenu](../script/ribbonmenu.md)|**[menu](#menu)**|
 
+## Detailed Description
+
+A ribbon is made of multiple items:
+
+- a file menu, top/left, which displays a popup menu when clicking (see RibbonMenu)
+- multiple categories displayed as tabs
+    - each with multiple panels (displayed as group of actions)
+    - each panel contains multiple elements (displayed as buttons, separators...)
+- multiple contexts, a context showing another tab with it's name in the titlebar
+    - each context contains multiple categories
+
 ## Property Documentation
 
 #### <a name="categories"></a>array<[RibbonCategory](../script/ribboncategory.md)> **categories**

@@ -25,6 +25,7 @@ struct RibbonElement
     Q_PROPERTY(int smallIndex MEMBER smallIndex)
     Q_PROPERTY(int largeIndex MEMBER largeIndex)
     Q_PROPERTY(QVector<RcCore::RibbonElement> elements MEMBER elements)
+    Q_PROPERTY(bool isSeparator READ isSeparator)
 
 public:
     QString type;
@@ -42,12 +43,12 @@ bool operator==(const RibbonElement &lhs, const RibbonElement &rhs);
 struct RibbonPanel
 {
     Q_GADGET
-    Q_PROPERTY(QString name MEMBER name)
+    Q_PROPERTY(QString text MEMBER text)
     Q_PROPERTY(QString keys MEMBER keys)
     Q_PROPERTY(QVector<RcCore::RibbonElement> elements MEMBER elements)
 
 public:
-    QString name;
+    QString text;
     QString keys;
     QVector<RibbonElement> elements;
 
@@ -57,14 +58,14 @@ public:
 struct RibbonCategory
 {
     Q_GADGET
-    Q_PROPERTY(QString name MEMBER name)
+    Q_PROPERTY(QString text MEMBER text)
     Q_PROPERTY(QString keys MEMBER keys)
     Q_PROPERTY(QString smallImage MEMBER smallImage)
     Q_PROPERTY(QString largeImage MEMBER largeImage)
     Q_PROPERTY(QVector<RcCore::RibbonPanel> panels MEMBER panels)
 
 public:
-    QString name;
+    QString text;
     QString keys;
     QString smallImage;
     QString largeImage;
@@ -91,17 +92,17 @@ public:
 struct RibbonMenu
 {
     Q_GADGET
-    Q_PROPERTY(QString name MEMBER name)
+    Q_PROPERTY(QString text MEMBER text)
     Q_PROPERTY(QString smallImage MEMBER smallImage)
     Q_PROPERTY(QString largeImage MEMBER largeImage)
     Q_PROPERTY(QVector<RcCore::RibbonElement> elements MEMBER elements)
-    Q_PROPERTY(bool recentFiles MEMBER recentFiles)
+    Q_PROPERTY(QString recentFilesText MEMBER recentFilesText)
 public:
-    QString name;
+    QString text;
     QString smallImage;
     QString largeImage;
     QVector<RibbonElement> elements;
-    bool recentFiles = false;
+    QString recentFilesText;
 
     bool operator==(const RibbonMenu &other) const = default;
 };
