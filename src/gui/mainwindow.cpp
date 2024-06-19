@@ -13,6 +13,7 @@
 #include "core/cppdocument.h"
 #include "core/document.h"
 #include "core/imagedocument.h"
+#include "core/jsondocument.h"
 #include "core/logger.h"
 #include "core/project.h"
 #include "core/qmldocument.h"
@@ -766,6 +767,7 @@ static QWidget *widgetForDocument(Core::Document *document)
         tsView->setTsDocument(qobject_cast<Core::QtTsDocument *>(document));
         return tsView;
     }
+    case Core::Document::Type::Json:
     case Core::Document::Type::Cpp:
     case Core::Document::Type::Text:
     default: {

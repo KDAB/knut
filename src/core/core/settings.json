@@ -37,7 +37,7 @@
         "h": "cpp_type",
         "hpp": "cpp_type",
         "txt": "text_type",
-        "json": "text_type",
+        "json": "json_type",
         "rc": "rc_type",
         "rc2": "rc_type",
         "ui": "qtui_type",
