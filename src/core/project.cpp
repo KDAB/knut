@@ -11,6 +11,7 @@
 #include "project.h"
 #include "cppdocument.h"
 #include "imagedocument.h"
+#include "jsondocument.h"
 #include "logger.h"
 #include "lsp/client.h"
 #include "project_p.h"
@@ -218,9 +219,10 @@ static Document *createDocument(const QString &suffix)
         return new SlintDocument();
     case Document::Type::QtTs:
         return new QtTsDocument();
-    case Document::Type::Qml: {
+    case Document::Type::Qml:
         return new QmlDocument();
-    }
+    case Document::Type::Json:
+        return new JsonDocument();
     default:
         return new TextDocument();
     }
