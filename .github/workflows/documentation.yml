@@ -1,0 +1,38 @@
+name: Update documentation
+
+# TODO: We may only want to do this for tagged releases in the future
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - docs/**
+      - mkdocs.yml
+
+jobs:
+  mkdocs:
+    # Ensure that the tag was from the main branch and not a backport
+    if: github.event.base_ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Install mkdocs
+      run: |
+        pip install --user mkdocs
+        pip install --user mkdocs-material
+    - name: Deploy GitHub Pages
+      run: |
+        mkdocs build
+        git worktree add gh-pages gh-pages
+        git config user.name "Deploy from CI"
+        git config user.email ""
+        cd gh-pages
+        # Delete the ref to avoid keeping history.
+        git update-ref -d refs/heads/gh-pages
+        rm -rf *
+        mv ../site/* .
+        git add .
+        git commit -m "Deploy $GITHUB_SHA to gh-pages"
+        git push --force
