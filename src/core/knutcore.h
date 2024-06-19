@@ -10,6 +10,8 @@
 
 #pragma once
 
+#include "settings.h"
+
 #include <QCommandLineParser>
 #include <QObject>
 
@@ -37,7 +39,7 @@ protected:
     virtual void doParse(const QCommandLineParser &parser) const;
 
 private:
-    void initialize(bool isTesting);
+    void initialize(Settings::Mode mode);
     void initializeMultiSinkLogger();
 
     bool m_initialized = false;

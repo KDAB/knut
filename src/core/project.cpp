@@ -230,6 +230,10 @@ static Document *createDocument(const QString &suffix)
 
 Lsp::Client *Project::getClient(Document::Type type)
 {
+    // Check if we use LSP
+    if (!Settings::instance()->hasLsp())
+        return nullptr;
+
     static auto lspServers = Settings::instance()->value<std::vector<LspServer>>(Settings::LspServers);
 
     auto cit = m_lspClients.find(type);

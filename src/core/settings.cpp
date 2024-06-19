@@ -68,16 +68,16 @@ static constexpr char SettingsName[] = "knut.json";
  * Returns true if Knut is currently in a test, and false otherwise
  */
 
-Settings::Settings(bool isTesting, QObject *parent)
+Settings::Settings(Mode mode, QObject *parent)
     : QObject(parent)
     , m_saveTimer(new QTimer(this))
-    , m_isTesting(isTesting)
+    , m_mode(mode)
 {
     Q_ASSERT(m_instance == nullptr);
     m_instance = this;
 
     loadKnutSettings();
-    if (!m_isTesting) // Only load if not testing
+    if (!isTesting()) // Only load if not testing
         loadUserSettings();
 
     m_saveTimer->callOnTimeout(this, &Settings::saveSettings);
@@ -252,7 +252,12 @@ QString Settings::logFilePath() const
 
 bool Settings::isTesting() const
 {
-    return m_isTesting;
+    return (m_mode == Mode::Test);
+}
+
+bool Settings::hasLsp() const
+{
+    return m_mode == Mode::Test || (m_mode == Mode::Gui && DEFAULT_VALUE(bool, EnableLSP));
 }
 
 void Settings::loadKnutSettings()
@@ -265,7 +270,7 @@ void Settings::loadKnutSettings()
 void Settings::saveSettings()
 {
     // Don't save settings if testing
-    if (m_isTesting)
+    if (isTesting())
         return;
 
     const auto &settings = isUser() ? m_userSettings : m_projectSettings;

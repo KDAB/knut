@@ -14,68 +14,10 @@
    <string>Options Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_4">
-   <item row="3" column="0" colspan="2">
+   <item row="4" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
       <set>QDialogButtonBox::Close</set>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0" rowspan="3">
-    <widget class="QListWidget" name="listWidget">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>150</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>150</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="currentRow">
-      <number>-1</number>
-     </property>
-     <item>
-      <property name="text">
-       <string>General</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Script Paths</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Script Behavior</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Rc Files</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QLabel" name="title">
-     <property name="text">
-      <string>Script Paths</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </item>
@@ -157,7 +99,7 @@
         </widget>
        </item>
        <item row="1" column="0">
-        <widget class="QGroupBox" name="GeneralLogsGroupBox">
+        <widget class="QGroupBox" name="generalLogsGroupBox">
          <property name="title">
           <string>Logs</string>
          </property>
@@ -187,6 +129,22 @@
         </widget>
        </item>
        <item row="2" column="0">
+        <widget class="QGroupBox" name="generaLSPGroupBox">
+         <property name="title">
+          <string>Language Server Protocol</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_10">
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="enableLSP">
+            <property name="text">
+             <string>Enable LSP (requires a restart of the application)</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="3" column="0">
         <spacer name="verticalSpacer_2">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -194,7 +152,7 @@
          <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
-           <height>220</height>
+           <height>40</height>
           </size>
          </property>
         </spacer>
@@ -668,6 +626,64 @@
        </item>
       </layout>
      </widget>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLabel" name="title">
+     <property name="text">
+      <string>Script Paths</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" rowspan="3">
+    <widget class="QListWidget" name="listWidget">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>150</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>150</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="currentRow">
+      <number>-1</number>
+     </property>
+     <item>
+      <property name="text">
+       <string>General</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Script Paths</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Script Behavior</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Rc Files</string>
+      </property>
+     </item>
     </widget>
    </item>
   </layout>

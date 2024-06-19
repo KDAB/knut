@@ -30,6 +30,7 @@ public:
     void addSettings(QWidget *widget);
 
 private:
+    void initializeEnableLSPSetting();
     void initializeSaveToLogFileSetting();
     void initializeScriptPathSettings();
     void initializeScriptBehaviorSettings();
@@ -48,6 +49,7 @@ private:
     void changeAssetColorsSetting();
     void changeDialogFlagsSetting();
     void changeLanguageMap();
+    void changeEnableLSPSetting();
     void changeSaveLogsToFileSetting();
 
     void changePage();
