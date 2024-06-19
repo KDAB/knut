@@ -63,6 +63,8 @@ public:
     void addScriptPath(const QString &path);
     void removeScriptPath(const QString &path);
 
+    [[nodiscard]] std::string dumpJson() const;
+
     template <typename T>
     T value(std::string path) const
     {
