@@ -178,6 +178,17 @@ private slots:
         existingMessageMap(cppdocument);
     }
 
+    void mfcExtractMessageMapWithNamespace()
+    {
+        Core::KnutCore core;
+        auto project = Core::Project::instance();
+        project->setRoot(Test::testDataPath() + "/tst_cppdocument/message_map");
+
+        auto cppdocument =
+            qobject_cast<Core::CppDocument *>(Core::Project::instance()->get("TutorialDialogWithNamespace.cpp"));
+        existingMessageMap(cppdocument);
+    }
+
     void deleteMessageMap()
     {
         Test::FileTester file(Test::testDataPath() + "/tst_cppdocument/message_map/TutorialDlg.cpp");
