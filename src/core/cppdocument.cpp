@@ -624,44 +624,48 @@ MessageMap CppDocument::mfcExtractMessageMap(const QString &className /* = ""*/)
     auto checkClassName = className.isEmpty() ? "" : QString("(#eq? @class \"%1\")").arg(className);
 
     // clang-format off
-    auto queryString = QString(R"EOF(
-        (translation_unit
-        ; Assumption: the MESSAGE_MAP is always top-level
+    const auto messageMapQueryString = QString(R"EOF(
+        ; Search for BEGIN_MESSAGE_MAP
+        (expression_statement
+            (call_expression
+                function: (identifier) @begin_ident
+                (#eq? @begin_ident "BEGIN_MESSAGE_MAP")
+                arguments: (argument_list
+                        (identifier) @class
+                        %1 ; If a class name is given, check if the captured class name matches
+                        (identifier) @superclass)) @begin)
 
-            ; Group to make sure the nodes are actually siblings
-            (
+        ; Followed by one or more entries
+        [
+        (expression_statement
+            (call_expression
+                function: (identifier) @message-name
+                arguments: (argument_list
+                    [(_)* @parameter ","]*
+                    (#exclude! @parameter comment))
+        ))@message
+        (_)
+        ]*
 
-                ; Search for BEGIN_MESSAGE_MAP
-                (expression_statement
-                    (call_expression
-                        function: (identifier) @begin_ident
-                        (#eq? @begin_ident "BEGIN_MESSAGE_MAP")
-                        arguments: (argument_list
-                             (identifier) @class
-                             %1 ; If a class name is given, check if the captured class name matches
-                             (identifier) @superclass)) @begin)
-
-                ; Followed by one or more entries
-                [
-                (expression_statement
-                    (call_expression
-                        function: (identifier) @message-name
-                        arguments: (argument_list
-                            [(_)* @parameter ","]*
-                            (#exclude! @parameter comment))
-                ))@message
-                (_)
-                ]*
-
-                ; Ending with END_MESSAGE_MAP
-                (expression_statement
-                    (call_expression
-                        function: (identifier) @end_ident
-                        (#eq? @end_ident "END_MESSAGE_MAP")) @end)
-            )
-
-        )
+        ; Ending with END_MESSAGE_MAP
+        (expression_statement
+            (call_expression
+                function: (identifier) @end_ident
+                (#eq? @end_ident "END_MESSAGE_MAP")) @end)
     )EOF").arg(checkClassName);
+    // clang-format on
+
+    // clang-format off
+    // Assumption: the MESSAGE_MAP is either top-level or in a namespace
+    // Parenthesis (around %1) are used to make sure nodes are siblings
+    const auto queryString = QString(R"EOF(
+        (translation_unit
+            [
+                (namespace_definition (_ ( %1 ) ) )
+                ( %1 )
+            ]
+        )
+    )EOF").arg(messageMapQueryString);
     // clang-format on
 
     // We assume there is at most one MessageMap per file.
