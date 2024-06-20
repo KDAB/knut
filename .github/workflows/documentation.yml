@@ -20,6 +20,7 @@ jobs:
       run: |
         pip install --user mkdocs
         pip install --user mkdocs-material
+        pip install --user mkdocs-build-plantuml-plugin
     - name: Deploy GitHub Pages
       run: |
         mkdocs build
