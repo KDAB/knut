@@ -14,4 +14,5 @@ struct TSLanguage;
 
 extern "C" {
 TSLanguage *tree_sitter_cpp();
+TSLanguage *tree_sitter_qmljs();
 }

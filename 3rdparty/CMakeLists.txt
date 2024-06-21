@@ -79,3 +79,15 @@ target_link_libraries(${PROJECT_NAME} PRIVATE TreeSitter)
 # Always build tree-sitter with optimizations enabled. We shouldn't have to
 # debug it and it's performance critical.
 target_compile_options(${PROJECT_NAME} PRIVATE -O3)
+
+# TreeSitterQmlJs
+# ##############################################################################
+check_submodule(tree-sitter-qmljs tree-sitter-qmljs)
+project(TreeSitterQmlJs LANGUAGES C)
+
+add_library(${PROJECT_NAME} STATIC tree-sitter-qmljs/src/parser.c
+                                   tree-sitter-qmljs/src/scanner.c)
+target_link_libraries(${PROJECT_NAME} PRIVATE TreeSitter)
+# Always build tree-sitter with optimizations enabled. We shouldn't have to
+# debug it and it's performance critical.
+target_compile_options(${PROJECT_NAME} PRIVATE -O3)

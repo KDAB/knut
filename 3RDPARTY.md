@@ -54,6 +54,12 @@ C++ grammar for tree-sitter.<br>
 [Home page](https://github.com/tree-sitter/tree-sitter-cpp)<br>
 [MIT licensed](LICENSES/MIT.txt)
 
+### tree-sitter-qmljs
+
+QML grammar for the tree-sitter parsing library.<br>
+[Home page](https://github.com/yuja/tree-sitter-qmljs)<br>
+[MIT licensed](LICENSES/MIT.txt)
+
 ## Build-time / CI tests 3rdparty
 
 These dependencies are only used during build or other CI purposes like running tests.
