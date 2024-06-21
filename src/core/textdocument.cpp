@@ -1358,7 +1358,7 @@ bool TextDocument::replaceOne(const QString &before, const QString &after, int o
     const bool usesRegExp = options & FindRegexp;
     const bool preserveCase = options & PreserveCase;
 
-    auto regexp = createRegularExpression(before, options, usesRegExp);
+    auto regexp = Utils::createRegularExpression(before, options, usesRegExp);
     if (find(before, options)) {
         cursor.beginEditBlock();
         auto found = m_document->textCursor();
@@ -1367,9 +1367,9 @@ bool TextDocument::replaceOne(const QString &before, const QString &after, int o
         QString afterText = after;
         if (usesRegExp) {
             QRegularExpressionMatch match = regexp.match(selectedText());
-            afterText = expandRegExpReplacement(after, match.capturedTexts());
+            afterText = Utils::expandRegExpReplacement(after, match.capturedTexts());
         } else if (preserveCase) {
-            afterText = matchCaseReplacement(cursor.selectedText(), after);
+            afterText = Utils::matchCaseReplacement(cursor.selectedText(), after);
         }
         cursor.insertText(afterText);
         cursor.endEditBlock();
@@ -1449,7 +1449,7 @@ int TextDocument::replaceAll(const QString &before, const QString &after, int op
     m_document->setTextCursor(cursor);
     cursor.beginEditBlock();
 
-    auto regexp = createRegularExpression(before, options, usesRegExp);
+    auto regexp = Utils::createRegularExpression(before, options, usesRegExp);
     while (find(before, options)) {
         const auto found = m_document->textCursor();
         cursor.setPosition(found.selectionStart());
@@ -1461,9 +1461,9 @@ int TextDocument::replaceAll(const QString &before, const QString &after, int op
         QString afterText = after;
         if (usesRegExp) {
             QRegularExpressionMatch match = regexp.match(selectedText());
-            afterText = expandRegExpReplacement(after, match.capturedTexts());
+            afterText = Utils::expandRegExpReplacement(after, match.capturedTexts());
         } else if (preserveCase) {
-            afterText = matchCaseReplacement(cursor.selectedText(), after);
+            afterText = Utils::matchCaseReplacement(cursor.selectedText(), after);
         }
         cursor.insertText(afterText);
         ++count;

@@ -177,7 +177,7 @@ QString Utils::mktemp(const QString &pattern)
 QString Utils::convertCase(const QString &str, Case from, Case to)
 {
     LOG("Utils::convertCase", str, from, to);
-    return Core::convertCase(str, static_cast<::Core::Case>(from), static_cast<::Core::Case>(to));
+    return ::Utils::convertCase(str, static_cast<::Utils::Case>(from), static_cast<::Utils::Case>(to));
 }
 
 /*!
