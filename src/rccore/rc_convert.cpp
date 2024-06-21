@@ -96,22 +96,37 @@ QVector<Asset> convertAssets(const Data &data, Asset::ConversionFlags flags)
 //=============================================================================
 // Dialog conversion
 //=============================================================================
+static void convertFrame(Widget &widget, Data::Control &control)
+{
+    if (control.styles.removeOne("WS_EX_CLIENTEDGE")) {
+        widget.properties["frameShape"] = "QFrame::Panel";
+        widget.properties["frameShadow"] = "QFrame::Sunken";
+        widget.properties["lineWidth"] = 2;
+    }
+    if (control.styles.removeOne("WS_EX_STATICEDGE")) {
+        widget.properties["frameShape"] = "QFrame::Panel";
+        widget.properties["frameShadow"] = "QFrame::Sunken";
+    }
+    if (control.styles.removeOne("WS_EX_DLGMODALFRAME")) {
+        widget.properties["frameShape"] = "QFrame::Panel";
+        widget.properties["frameShadow"] = "QFrame::Raiseds";
+    }
+    if (control.styles.removeOne("WS_BORDER")) {
+        widget.properties["frameShape"] = "QFrame::Box";
+    }
+    if (control.styles.removeOne("SS_BLACKFRAME")) {
+        widget.properties["frameShape"] = "QFrame::Box";
+    }
+    if (control.styles.removeOne("SS_SUNKEN")) {
+        widget.properties["frameShape"] = "QFrame::Panel";
+        widget.properties["frameShadow"] = "QFrame::Sunken";
+    }
+}
 
 static void convertStyles(const Data &data, Widget &widget, Data::Control &control, bool isFrame = false)
 {
     if (isFrame) {
-        if (control.styles.removeOne("WS_EX_CLIENTEDGE")) {
-            widget.properties["frame"] = "ClientEdge";
-        }
-        if (control.styles.removeOne("WS_EX_STATICEDGE")) {
-            widget.properties["frame"] = "StaticEdge";
-        }
-        if (control.styles.removeOne("WS_EX_DLGMODALFRAME")) {
-            widget.properties["frame"] = "ModalFrame";
-        }
-        if (control.styles.removeOne("WS_BORDER")) {
-            widget.properties["frame"] = "Border";
-        }
+        convertFrame(widget, control);
     }
 
     if (control.styles.removeOne("WS_DISABLED")) {
@@ -241,13 +256,6 @@ static Widget convertLabel(const Data &data, Data::Control &control, bool useIdF
     if (control.styles.removeOne("SS_CENTER") || control.styles.removeOne("SS_CENTERIMAGE")
         || control.type == static_cast<int>(Keywords::CTEXT))
         widget.properties["alignment"] = "Qt::AlignHCenter";
-
-    if (control.styles.removeOne("SS_SUNKEN")) {
-        widget.properties["frame"] = "Sunken";
-    }
-
-    if (control.styles.removeOne("SS_BLACKFRAME"))
-        widget.properties["frame"] = "BlackFrame";
 
     if (control.styles.removeOne("SS_REALSIZECONTROL"))
         widget.properties["scaledContents"] = true;
