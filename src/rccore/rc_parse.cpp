@@ -1144,7 +1144,7 @@ static void readToolBar(Context &context, const QString &id)
     context.currentData().toolBars.push_back(toolBar);
 }
 
-static Data::Control readControl(Context &context, const std::optional<Token> &token)
+static Data::Control readControl(Context &context, const std::optional<Token> &token, QHash<QString, int> &idCounter)
 {
     //  AUTO3STATE text, id, x, y, width, height [, style [, extended-style]]
     //	AUTOCHECKBOX text, id, x, y, width, height [, style [, extended-style]]
@@ -1201,7 +1201,13 @@ static Data::Control readControl(Context &context, const std::optional<Token> &t
         lexer.skipComma();
     }
 
-    control.id = toId(lexer.next(), context);
+    // Ensure we don't have duplicate IDs, it's a mess to handle later on. It should only increment ID_STATIC, but just
+    // in case we do that for all ids.
+    QString id = toId(lexer.next(), context);
+    idCounter[id]++;
+    if (idCounter[id] > 1)
+        id += '_' % QString::number(idCounter[id]);
+    control.id = id;
     lexer.skipComma();
 
     // CONTROL has styles before geometry
@@ -1271,8 +1277,9 @@ static void readDialog(Context &context, const QString &id)
 
     lexer.next(); // BEGIN
     auto token = lexer.next();
+    QHash<QString, int> idCounter;
     while (token->toKeyword() != Keywords::END) {
-        dialog.controls.push_back(readControl(context, token));
+        dialog.controls.push_back(readControl(context, token, idCounter));
         token = lexer.next();
     }
 
