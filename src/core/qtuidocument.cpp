@@ -11,6 +11,7 @@
 #include "qtuidocument.h"
 #include "logger.h"
 #include "utils/log.h"
+#include "utils/qtuiwriter.h"
 
 #include <QFile>
 #include <QUiLoader>
@@ -35,6 +36,8 @@ QtUiDocument::QtUiDocument(QObject *parent)
     : Document(Type::QtUi, parent)
 {
 }
+
+QtUiDocument::~QtUiDocument() = default;
 
 /*!
  * \qmlmethod QtUiWidget QtUiDocument::findWidget(string name)
@@ -67,27 +70,9 @@ Core::QtUiWidget *QtUiDocument::addWidget(const QString &className, const QStrin
         return nullptr;
     }
 
-    initializeXml();
+    const auto node = uiWriter()->addWidget(className, name, parent ? parent->xmlNode() : pugi::xml_node {});
 
-    auto uiNode = m_document.child("ui");
-    pugi::xml_node widget =
-        parent ? parent->xmlNode().append_child("widget") : uiNode.insert_child_after("widget", uiNode.child("class"));
-    widget.append_attribute("class").set_value(className.toLatin1().constData());
-    widget.append_attribute("name").set_value(name.toLatin1().constData());
-
-    if (parent == nullptr) {
-        // Also change the <class> tag
-        auto node = widget.previous_sibling();
-        node.text().set(name.toLatin1().constData());
-    }
-
-    if (className == "QMainWindow") {
-        auto centralWidget = widget.append_child("widget");
-        centralWidget.append_attribute("class").set_value("QWidget");
-        centralWidget.append_attribute("name").set_value("centralwidget");
-    }
-
-    QtUiWidget *newWidget = new QtUiWidget(widget, parent == nullptr, this);
+    QtUiWidget *newWidget = new QtUiWidget(node, parent == nullptr, this);
     m_widgets.push_back(newWidget);
     setHasChanged(true);
     emit widgetsChanged();
@@ -110,35 +95,23 @@ void QtUiDocument::addCustomWidget(const QString &className, const QString &base
 {
     LOG("QtUiDocument::addCustomWidget", className, baseClassName, header, isContainer);
 
-    const auto customPath = "customwidget[@class='" % className % "']";
-    auto customNode = m_document.select_node(customPath.toLatin1().constData()).node();
-    if (!customNode.empty()) {
+    const auto result = uiWriter()->addCustomWidget(className, baseClassName, header, isContainer);
+
+    switch (result) {
+    case Utils::QtUiWriter::Success:
+        setHasChanged(true);
+        return;
+    case Utils::QtUiWriter::AlreadyExists:
         spdlog::info(R"(QtUiDocument::addCustomWidget - the custom widget '{}' already exists)", className);
         return;
-    }
-
-    if ((!header.startsWith('<') || !header.endsWith('>')) && (!header.startsWith('"') || !header.endsWith('"'))) {
+    case Utils::QtUiWriter::InvalidHeader:
         spdlog::error(
             R"(QtUiDocument::addCustomWidget - the include '{}' is malformed, should be '<foo.h>' or '"foo.h"')",
             header);
         return;
+    case Utils::QtUiWriter::InvalidProperty:
+        Q_UNREACHABLE();
     }
-    const bool isGlobal = header.startsWith('<');
-    const auto &include = header.mid(1, header.length() - 2);
-
-    auto customWidgets = m_document.select_node("ui/customwidgets").node();
-    if (customWidgets.empty())
-        customWidgets = m_document.child("ui").append_child("customwidgets");
-
-    customNode = customWidgets.append_child("customwidget");
-    customNode.append_child("class").text().set(className.toLatin1().constData());
-    customNode.append_child("extends").text().set(baseClassName.toLatin1().constData());
-    auto headerNode = customNode.append_child("header");
-    headerNode.text().set(include.toLatin1().constData());
-    if (isGlobal)
-        headerNode.append_attribute("location").set_value("global");
-    if (isContainer)
-        customNode.append_child("container").text().set("1");
 }
 
 /*!
@@ -188,16 +161,11 @@ bool QtUiDocument::doLoad(const QString &fileName)
     return true;
 }
 
-void QtUiDocument::initializeXml()
+Utils::QtUiWriter *QtUiDocument::uiWriter()
 {
-    auto ui = m_document.select_node("ui");
-    if (ui.node().empty()) {
-        pugi::xml_node uiNode = m_document.append_child("ui");
-        uiNode.append_attribute("version").set_value("4.0");
-        uiNode.append_child("class");
-        uiNode.append_child("resources");
-        uiNode.append_child("connections");
-    }
+    if (!m_writer)
+        m_writer = std::make_unique<Utils::QtUiWriter>(m_document);
+    return m_writer.get();
 }
 
 /*!
@@ -237,12 +205,10 @@ void QtUiWidget::setName(const QString &newName)
 {
     LOG("QtUiWidget::setName", newName);
 
-    m_widget.attribute("name").set_value(newName.toLatin1().constData());
-    if (m_isRoot) {
-        // Also change the <class> tag
-        auto node = m_widget.previous_sibling();
-        node.text().set(newName.toLatin1().constData());
-    }
+    if (newName == name())
+        return;
+
+    qobject_cast<QtUiDocument *>(parent())->uiWriter()->setWidgetName(m_widget, newName, m_isRoot);
     qobject_cast<QtUiDocument *>(parent())->setHasChanged(true);
     emit nameChanged(newName);
 }
@@ -256,7 +222,10 @@ void QtUiWidget::setClassName(const QString &newClassName)
 {
     LOG("QtUiWidget::setClassName", newClassName);
 
-    m_widget.attribute("class").set_value(newClassName.toLatin1().constData());
+    if (newClassName == className())
+        return;
+
+    qobject_cast<QtUiDocument *>(parent())->uiWriter()->setWidgetClassName(m_widget, newClassName);
     qobject_cast<QtUiDocument *>(parent())->setHasChanged(true);
     emit classNameChanged(newClassName);
 }
@@ -308,72 +277,24 @@ void QtUiWidget::addProperty(const QString &name, const QVariant &value, const Q
 {
     LOG("QtUiWidget::addProperty", name, value);
 
-    // Special case for stringlist
-    if (static_cast<QMetaType::Type>(value.typeId()) == QMetaType::QStringList) {
-        const auto values = value.toStringList();
-        for (const auto &text : values) {
-            auto valueNode = m_widget.append_child("item").append_child("property");
-            valueNode.append_attribute("name").set_value(name.toLatin1().constData());
-            valueNode.append_child("string").text().set(text.toLatin1().constData());
-        }
+    const auto result =
+        qobject_cast<QtUiDocument *>(parent())->uiWriter()->addWidgetProperty(m_widget, name, value, attributes);
+
+    switch (result) {
+    case Utils::QtUiWriter::Success:
+        qobject_cast<QtUiDocument *>(parent())->setHasChanged(true);
         return;
-    }
-
-    auto propertyNode = m_widget.append_child("property");
-    propertyNode.append_attribute("name").set_value(name.toLatin1().constData());
-
-    pugi::xml_node dataNode;
-    switch (static_cast<QMetaType::Type>(value.typeId())) {
-    case QMetaType::QRect:
-        dataNode = propertyNode.append_child("rect");
-        dataNode.append_child("x").text().set(value.toRect().x());
-        dataNode.append_child("y").text().set(value.toRect().y());
-        dataNode.append_child("width").text().set(value.toRect().width());
-        dataNode.append_child("height").text().set(value.toRect().height());
-        break;
-    case QMetaType::Bool:
-        dataNode = propertyNode.append_child("bool");
-        dataNode.text().set(value.toBool());
-        break;
-    case QMetaType::Int:
-        dataNode = propertyNode.append_child("number");
-        dataNode.text().set(value.toInt());
-        break;
-    case QMetaType::QString: {
-        const auto text = value.toString();
-        if (name.compare("alignment") == 0) {
-            dataNode = propertyNode.append_child("set");
-        } else {
-            // Good enough for now, may need update for corner cases
-            if (text.contains("::") && !text.contains(' '))
-                dataNode = propertyNode.append_child("enum");
-            else
-                dataNode = propertyNode.append_child("string");
-        }
-        dataNode.text().set(text.toLatin1().constData());
-        break;
-    }
-    case QMetaType::QStringList: {
-        break;
-    }
-    default:
+    case Utils::QtUiWriter::InvalidProperty:
         spdlog::error(R"(QtUiWidget::addProperty - unknown {} type)", value.typeName());
         return;
+    case Utils::QtUiWriter::AlreadyExists:
+    case Utils::QtUiWriter::InvalidHeader:
+        Q_UNREACHABLE();
     }
-
-    for (const auto &attribute : attributes.asKeyValueRange()) {
-        dataNode.append_attribute(attribute.first.toLatin1().constData())
-            .set_value(attribute.second.toLatin1().constData());
-    }
-
-    // Document has changed
-    qobject_cast<QtUiDocument *>(parent())->setHasChanged(true);
 }
 
 pugi::xml_node QtUiWidget::xmlNode() const
 {
-    if (className() == "QMainWindow")
-        return m_widget.child("widget");
     return m_widget;
 }
 

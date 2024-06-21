@@ -14,6 +14,10 @@
 
 #include <pugixml.hpp>
 
+namespace Utils {
+class QtUiWriter;
+}
+
 namespace Core {
 
 class QtUiDocument;
@@ -62,6 +66,7 @@ class QtUiDocument : public Document
 
 public:
     explicit QtUiDocument(QObject *parent = nullptr);
+    ~QtUiDocument() override;
 
     QVector<Core::QtUiWidget *> widgets() const { return m_widgets; }
     Q_INVOKABLE Core::QtUiWidget *findWidget(const QString &name) const;
@@ -82,10 +87,11 @@ protected:
     bool doLoad(const QString &fileName) override;
 
 private:
-    void initializeXml();
+    Utils::QtUiWriter *uiWriter();
 
     friend QtUiWidget;
     pugi::xml_document m_document;
+    std::unique_ptr<Utils::QtUiWriter> m_writer;
     QVector<QtUiWidget *> m_widgets;
 };
 
