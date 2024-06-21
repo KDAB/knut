@@ -108,7 +108,7 @@ public slots:
     void convertActions(int flags = DEFAULT_VALUE(ConversionFlags, RcAssetFlags));
     bool writeAssetsToImage(int flags = DEFAULT_VALUE(ConversionFlags, RcAssetColors));
     bool writeAssetsToQrc(const QString &fileName);
-    bool writeDialogToUi(const RcCore::Widget &dialog, const QString &fileName, const QString &scriptPath = {});
+    bool writeDialogToUi(const RcCore::Widget &dialog, const QString &fileName);
     void previewDialog(const RcCore::Widget &dialog) const;
     void mergeAllLanguages(const QString &language = DefaultLanguage);
     void mergeLanguages();

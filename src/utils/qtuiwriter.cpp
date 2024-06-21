@@ -12,6 +12,7 @@
 
 #include <QRect>
 #include <QVariant>
+#include <sstream>
 
 namespace Utils {
 
@@ -170,6 +171,13 @@ QtUiWriter::Status QtUiWriter::setWidgetClassName(pugi::xml_node widget, const Q
 {
     widget.attribute("class").set_value(className.toLatin1().constData());
     return Success;
+}
+
+QString QtUiWriter::dump() const
+{
+    std::ostringstream ss;
+    m_document.save(ss, "    ");
+    return QString::fromStdString(ss.str());
 }
 
 // Create the basic skeleton of a Qt Designer UI file

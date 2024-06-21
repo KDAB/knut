@@ -9,19 +9,16 @@
 */
 
 #include "rcfile.h"
-#include "uiwriter.h"
 #include "utils/log.h"
+#include "utils/qtuiwriter.h"
 
 #include <QDir>
 #include <QFileInfo>
 #include <QHash>
 #include <QIODevice>
 #include <QImage>
-#include <QQmlComponent>
-#include <QQmlEngine>
 #include <QSet>
 #include <QXmlStreamWriter>
-#include <QtQml/private/qqmlengine_p.h>
 
 namespace RcCore {
 
@@ -124,48 +121,33 @@ void writeAssetsToQrc(const QVector<Asset> &assets, QIODevice *device, const QSt
 //=============================================================================
 // Dialog writing
 //=============================================================================
-static void logWarnings(const QList<QQmlError> &warnings)
+static void writeWidget(Utils::QtUiWriter &writer, const Widget &widget, pugi::xml_node parent = {})
 {
-    for (const auto &warning : warnings) {
-        if (warning.description().contains("error", Qt::CaseInsensitive))
-            spdlog::error("{}({}): {}", warning.url().toLocalFile(), warning.line(), warning.description());
+    auto widgetNode = writer.addWidget(widget.className, widget.id, parent);
+
+    writer.addWidgetProperty(widgetNode, "mfc_id", widget.id, {{"notr", "true"}});
+    writer.addWidgetProperty(widgetNode, "geometry", widget.geometry);
+
+    for (const auto &property : widget.properties.asKeyValueRange()) {
+        const auto &propertyName = property.first;
+        if (propertyName == "text")
+            writer.addWidgetProperty(widgetNode, property.first, property.second, {{"comment", widget.id}});
         else
-            spdlog::warn("{}({}): {}", warning.url().toLocalFile(), warning.line(), warning.description());
+            writer.addWidgetProperty(widgetNode, property.first, property.second);
     }
+
+    for (const auto &child : widget.children)
+        writeWidget(writer, child, widgetNode);
 }
 
-QString createConversionScript(const QString &scriptPath)
+void writeDialogToUi(const Widget &widget, QIODevice *device)
 {
-    ;
-    const auto path = scriptPath.isEmpty() ? "qrc:/rccore/rc2ui.js"
-                                           : QUrl::fromLocalFile((QFileInfo(scriptPath).absoluteFilePath())).toString();
-    return QStringLiteral("import QtQml 2.12\n"
-                          "import \"%1\" as MyScript\n"
-                          "QtObject { function runScript(dialog, writer) {"
-                          "MyScript.main(dialog, writer);"
-                          "}}")
-        .arg(path);
-}
+    pugi::xml_document doc;
+    Utils::QtUiWriter writer(doc);
 
-void writeDialogToUi(const Widget &widget, QIODevice *device, const QString &scriptPath)
-{
-    const QString script = createConversionScript(scriptPath);
+    writeWidget(writer, widget);
 
-    QQmlEngine engine;
-    QObject::connect(&engine, &QQmlEngine::warnings, logWarnings);
-    engine.setOutputWarningsToStandardError(false);
-
-    QQmlComponent component(&engine);
-    component.setData(script.toLatin1(), {});
-    auto *result = qobject_cast<QObject *>(component.create());
-
-    if (component.isReady() && !component.isError()) {
-        UiWriter writer(device);
-        writer.setClassName(widget.id);
-        QMetaObject::invokeMethod(result, "runScript", Qt::DirectConnection,
-                                  Q_ARG(QVariant, QVariant::fromValue(widget)),
-                                  Q_ARG(QVariant, QVariant::fromValue(&writer)));
-    }
+    device->write(writer.dump().toUtf8());
 }
 
 } // namespace RcCore

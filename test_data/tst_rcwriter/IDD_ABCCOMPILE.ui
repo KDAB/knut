@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <ui version="4.0">
     <class>IDD_ABCCOMPILE</class>
     <widget class="QDialog" name="IDD_ABCCOMPILE">
-        <property name="idString" stdset="0">
+        <property name="mfc_id">
             <string notr="true">IDD_ABCCOMPILE</string>
         </property>
         <property name="geometry">
@@ -17,7 +17,7 @@
             <string>Compile Alembic</string>
         </property>
         <widget class="QPushButton" name="IDOK">
-            <property name="idString" stdset="0">
+            <property name="mfc_id">
                 <string notr="true">IDOK</string>
             </property>
             <property name="geometry">
@@ -36,7 +36,7 @@
             </property>
         </widget>
         <widget class="QPushButton" name="IDCANCEL">
-            <property name="idString" stdset="0">
+            <property name="mfc_id">
                 <string notr="true">IDCANCEL</string>
             </property>
             <property name="geometry">
@@ -52,7 +52,7 @@
             </property>
         </widget>
         <widget class="QCheckBox" name="IDC_PLAYBACKFROMMEMORY">
-            <property name="idString" stdset="0">
+            <property name="mfc_id">
                 <string notr="true">IDC_PLAYBACKFROMMEMORY</string>
             </property>
             <property name="geometry">
@@ -68,7 +68,7 @@
             </property>
         </widget>
         <widget class="QGroupBox" name="IDC_STATIC">
-            <property name="idString" stdset="0">
+            <property name="mfc_id">
                 <string notr="true">IDC_STATIC</string>
             </property>
             <property name="geometry">
@@ -83,7 +83,7 @@
                 <string>Compilation Settings</string>
             </property>
             <widget class="QRadioButton" name="IDC_RADIO_YUP">
-                <property name="idString" stdset="0">
+                <property name="mfc_id">
                     <string notr="true">IDC_RADIO_YUP</string>
                 </property>
                 <property name="geometry">
@@ -99,7 +99,7 @@
                 </property>
             </widget>
             <widget class="QRadioButton" name="IDC_RADIO_ZUP">
-                <property name="idString" stdset="0">
+                <property name="mfc_id">
                     <string notr="true">IDC_RADIO_ZUP</string>
                 </property>
                 <property name="geometry">
@@ -115,8 +115,8 @@
                 </property>
             </widget>
         </widget>
-        <widget class="QGroupBox" name="IDC_STATIC2">
-            <property name="idString" stdset="0">
+        <widget class="QGroupBox" name="IDC_STATIC">
+            <property name="mfc_id">
                 <string notr="true">IDC_STATIC</string>
             </property>
             <property name="geometry">
@@ -131,8 +131,8 @@
                 <string>Runtime Settings</string>
             </property>
         </widget>
-        <widget class="QGroupBox" name="IDC_STATIC3">
-            <property name="idString" stdset="0">
+        <widget class="QGroupBox" name="IDC_STATIC">
+            <property name="mfc_id">
                 <string notr="true">IDC_STATIC</string>
             </property>
             <property name="geometry">
@@ -147,7 +147,7 @@
                 <string>Preset</string>
             </property>
             <widget class="QComboBox" name="IDC_PRESET">
-                <property name="idString" stdset="0">
+                <property name="mfc_id">
                     <string notr="true">IDC_PRESET</string>
                 </property>
                 <property name="geometry">
@@ -160,8 +160,8 @@
                 </property>
             </widget>
         </widget>
-        <widget class="QGroupBox" name="IDC_STATIC4">
-            <property name="idString" stdset="0">
+        <widget class="QGroupBox" name="IDC_STATIC">
+            <property name="mfc_id">
                 <string notr="true">IDC_STATIC</string>
             </property>
             <property name="geometry">
@@ -175,8 +175,8 @@
             <property name="title">
                 <string>Compression Settings</string>
             </property>
-            <widget class="QLabel" name="IDC_STATIC5">
-                <property name="idString" stdset="0">
+            <widget class="QLabel" name="IDC_STATIC">
+                <property name="mfc_id">
                     <string notr="true">IDC_STATIC</string>
                 </property>
                 <property name="geometry">
@@ -192,7 +192,7 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_INDEXFRAMEDISTANCE">
-                <property name="idString" stdset="0">
+                <property name="mfc_id">
                     <string notr="true">IDC_INDEXFRAMEDISTANCE</string>
                 </property>
                 <property name="geometry">
@@ -207,8 +207,8 @@
                     <set>Qt::AlignLeft|Qt::AlignVCenter</set>
                 </property>
             </widget>
-            <widget class="QLabel" name="IDC_STATIC6">
-                <property name="idString" stdset="0">
+            <widget class="QLabel" name="IDC_STATIC">
+                <property name="mfc_id">
                     <string notr="true">IDC_STATIC</string>
                 </property>
                 <property name="geometry">
@@ -223,8 +223,8 @@
                     <string comment="IDC_STATIC">Precision (mm):</string>
                 </property>
             </widget>
-            <widget class="QLabel" name="IDC_STATIC7">
-                <property name="idString" stdset="0">
+            <widget class="QLabel" name="IDC_STATIC">
+                <property name="mfc_id">
                     <string notr="true">IDC_STATIC</string>
                 </property>
                 <property name="geometry">
@@ -240,7 +240,7 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_PRECISION">
-                <property name="idString" stdset="0">
+                <property name="mfc_id">
                     <string notr="true">IDC_PRECISION</string>
                 </property>
                 <property name="geometry">
@@ -255,8 +255,8 @@
                     <set>Qt::AlignLeft|Qt::AlignVCenter</set>
                 </property>
             </widget>
-            <widget class="QLabel" name="IDC_STATIC8">
-                <property name="idString" stdset="0">
+            <widget class="QLabel" name="IDC_STATIC">
+                <property name="mfc_id">
                     <string notr="true">IDC_STATIC</string>
                 </property>
                 <property name="geometry">
@@ -272,7 +272,7 @@
                 </property>
             </widget>
             <widget class="QComboBox" name="IDC_BLOCKCOMPRESSION">
-                <property name="idString" stdset="0">
+                <property name="mfc_id">
                     <string notr="true">IDC_BLOCKCOMPRESSION</string>
                 </property>
                 <property name="geometry">
@@ -285,7 +285,7 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_UV_MAX">
-                <property name="idString" stdset="0">
+                <property name="mfc_id">
                     <string notr="true">IDC_UV_MAX</string>
                 </property>
                 <property name="geometry">
@@ -301,7 +301,7 @@
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_MESHPREDICTION">
-                <property name="idString" stdset="0">
+                <property name="mfc_id">
                     <string notr="true">IDC_MESHPREDICTION</string>
                 </property>
                 <property name="geometry">
@@ -317,7 +317,7 @@
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_USEBFRAMES">
-                <property name="idString" stdset="0">
+                <property name="mfc_id">
                     <string notr="true">IDC_USEBFRAMES</string>
                 </property>
                 <property name="geometry">
@@ -334,6 +334,6 @@
             </widget>
         </widget>
     </widget>
-    <resources/>
-    <connections/>
+    <resources />
+    <connections />
 </ui>
