@@ -50,7 +50,7 @@ void writeAssetsToImage(const QVector<Asset> &assets, Asset::TransparentColors c
 
 void writeAssetsToQrc(const QVector<Asset> &assets, QIODevice *device, const QString &fileName);
 
-void writeDialogToUi(const Widget &widget, QIODevice *device, const QString &scriptPath = {});
+void writeDialogToUi(const Widget &widget, QIODevice *device);
 
 QString convertLanguageToCode(const QString &name);
 

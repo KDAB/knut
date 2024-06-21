@@ -237,8 +237,3 @@ Before writing the qrc file, you first need to convert them using RcDocument::co
 #### <a name="writeDialogToUi"></a>bool **writeDialogToUi**([Widget](../script/widget.md) dialog, string fileName)
 
 Writes a ui file for the given `dialog`, to the given `fileName`. Return `true` if no issues.
-If scriptPath is not empty, use the script to convert the classes and properties. The script must have a function:
-```
-function main(dialog, writer)
-```
-where `dialog` is the dialog to convert, and `writer` is the UiWriter used.

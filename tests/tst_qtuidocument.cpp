@@ -19,11 +19,7 @@ class TestQtUiDocument : public QObject
     Q_OBJECT
 
 private slots:
-    void initTestCase()
-    {
-        Q_INIT_RESOURCE(core);
-        Q_INIT_RESOURCE(rccore);
-    }
+    void initTestCase() { Q_INIT_RESOURCE(core); }
 
     void load()
     {

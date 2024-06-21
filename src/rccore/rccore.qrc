@@ -1,5 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>rccore/rc2ui.js</file>
-    </qresource>
-</RCC>

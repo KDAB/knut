@@ -33,6 +33,8 @@ public:
     Status setWidgetName(pugi::xml_node widget, const QString &name, bool isRoot = false);
     Status setWidgetClassName(pugi::xml_node widget, const QString &className);
 
+    QString dump() const;
+
 private:
     void initializeXml();
 

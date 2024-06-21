@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <ui version="4.0">
     <class>IDD_PANEL_TERRAIN_MODIFY</class>
     <widget class="QWidget" name="IDD_PANEL_TERRAIN_MODIFY">
-        <property name="idString" stdset="0">
+        <property name="mfc_id">
             <string notr="true">IDD_PANEL_TERRAIN_MODIFY</string>
         </property>
         <property name="geometry">
@@ -14,7 +14,7 @@
             </rect>
         </property>
         <widget class="QCheckBox" name="IDC_REPOSITION_OBJECTS">
-            <property name="idString" stdset="0">
+            <property name="mfc_id">
                 <string notr="true">IDC_REPOSITION_OBJECTS</string>
             </property>
             <property name="geometry">
@@ -30,7 +30,7 @@
             </property>
         </widget>
         <widget class="QCheckBox" name="IDC_REPOSITION_VEGETATION">
-            <property name="idString" stdset="0">
+            <property name="mfc_id">
                 <string notr="true">IDC_REPOSITION_VEGETATION</string>
             </property>
             <property name="geometry">
@@ -46,7 +46,7 @@
             </property>
         </widget>
         <widget class="QGroupBox" name="IDC_STATIC2">
-            <property name="idString" stdset="0">
+            <property name="mfc_id">
                 <string notr="true">IDC_STATIC2</string>
             </property>
             <property name="geometry">
@@ -61,7 +61,7 @@
                 <string>Noise Settings</string>
             </property>
             <widget class="QLabel" name="IDC_STATIC">
-                <property name="idString" stdset="0">
+                <property name="mfc_id">
                     <string notr="true">IDC_STATIC</string>
                 </property>
                 <property name="geometry">
@@ -76,8 +76,8 @@
                     <string comment="IDC_STATIC">Scale:</string>
                 </property>
             </widget>
-            <widget class="QLabel" name="IDC_STATIC2">
-                <property name="idString" stdset="0">
+            <widget class="QLabel" name="IDC_STATIC">
+                <property name="mfc_id">
                     <string notr="true">IDC_STATIC</string>
                 </property>
                 <property name="geometry">
@@ -93,7 +93,7 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_NOISE_SCALE">
-                <property name="idString" stdset="0">
+                <property name="mfc_id">
                     <string notr="true">IDC_NOISE_SCALE</string>
                 </property>
                 <property name="geometry">
@@ -109,7 +109,7 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_NOISE_FREQ">
-                <property name="idString" stdset="0">
+                <property name="mfc_id">
                     <string notr="true">IDC_NOISE_FREQ</string>
                 </property>
                 <property name="geometry">
@@ -125,7 +125,7 @@
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_BRUSH_NOISE">
-                <property name="idString" stdset="0">
+                <property name="mfc_id">
                     <string notr="true">IDC_BRUSH_NOISE</string>
                 </property>
                 <property name="geometry">
@@ -141,7 +141,7 @@
                 </property>
             </widget>
             <widget class="QSlider" name="IDC_NOISE_SCALE_SLIDER">
-                <property name="idString" stdset="0">
+                <property name="mfc_id">
                     <string notr="true">IDC_NOISE_SCALE_SLIDER</string>
                 </property>
                 <property name="geometry">
@@ -160,7 +160,7 @@
                 </property>
             </widget>
             <widget class="QSlider" name="IDC_NOISE_FREQ_SLIDER">
-                <property name="idString" stdset="0">
+                <property name="mfc_id">
                     <string notr="true">IDC_NOISE_FREQ_SLIDER</string>
                 </property>
                 <property name="geometry">
@@ -180,7 +180,7 @@
             </widget>
         </widget>
         <widget class="QGroupBox" name="IDC_STATIC1">
-            <property name="idString" stdset="0">
+            <property name="mfc_id">
                 <string notr="true">IDC_STATIC1</string>
             </property>
             <property name="geometry">
@@ -194,8 +194,8 @@
             <property name="title">
                 <string>Brush Settings</string>
             </property>
-            <widget class="QLabel" name="IDC_STATIC3">
-                <property name="idString" stdset="0">
+            <widget class="QLabel" name="IDC_STATIC">
+                <property name="mfc_id">
                     <string notr="true">IDC_STATIC</string>
                 </property>
                 <property name="geometry">
@@ -210,8 +210,8 @@
                     <string comment="IDC_STATIC">Type:</string>
                 </property>
             </widget>
-            <widget class="QLabel" name="IDC_STATIC4">
-                <property name="idString" stdset="0">
+            <widget class="QLabel" name="IDC_STATIC">
+                <property name="mfc_id">
                     <string notr="true">IDC_STATIC</string>
                 </property>
                 <property name="geometry">
@@ -226,8 +226,8 @@
                     <string comment="IDC_STATIC">Height:</string>
                 </property>
             </widget>
-            <widget class="QLabel" name="IDC_STATIC5">
-                <property name="idString" stdset="0">
+            <widget class="QLabel" name="IDC_STATIC">
+                <property name="mfc_id">
                     <string notr="true">IDC_STATIC</string>
                 </property>
                 <property name="geometry">
@@ -242,8 +242,8 @@
                     <string comment="IDC_STATIC">Hardness:</string>
                 </property>
             </widget>
-            <widget class="QLabel" name="IDC_STATIC6">
-                <property name="idString" stdset="0">
+            <widget class="QLabel" name="IDC_STATIC">
+                <property name="mfc_id">
                     <string notr="true">IDC_STATIC</string>
                 </property>
                 <property name="geometry">
@@ -258,8 +258,8 @@
                     <string comment="IDC_STATIC">Inside Radius:</string>
                 </property>
             </widget>
-            <widget class="QLabel" name="IDC_STATIC7">
-                <property name="idString" stdset="0">
+            <widget class="QLabel" name="IDC_STATIC">
+                <property name="mfc_id">
                     <string notr="true">IDC_STATIC</string>
                 </property>
                 <property name="geometry">
@@ -275,7 +275,7 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_BRUSH_RADIUS">
-                <property name="idString" stdset="0">
+                <property name="mfc_id">
                     <string notr="true">IDC_BRUSH_RADIUS</string>
                 </property>
                 <property name="geometry">
@@ -291,7 +291,7 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_BRUSH_HEIGHT">
-                <property name="idString" stdset="0">
+                <property name="mfc_id">
                     <string notr="true">IDC_BRUSH_HEIGHT</string>
                 </property>
                 <property name="geometry">
@@ -307,7 +307,7 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_BRUSH_HARDNESS">
-                <property name="idString" stdset="0">
+                <property name="mfc_id">
                     <string notr="true">IDC_BRUSH_HARDNESS</string>
                 </property>
                 <property name="geometry">
@@ -323,7 +323,7 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_BRUSH_RADIUS2">
-                <property name="idString" stdset="0">
+                <property name="mfc_id">
                     <string notr="true">IDC_BRUSH_RADIUS2</string>
                 </property>
                 <property name="geometry">
@@ -339,7 +339,7 @@
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_SYNC_RADIUS">
-                <property name="idString" stdset="0">
+                <property name="mfc_id">
                     <string notr="true">IDC_SYNC_RADIUS</string>
                 </property>
                 <property name="geometry">
@@ -355,7 +355,7 @@
                 </property>
             </widget>
             <widget class="QComboBox" name="IDC_BRUSH_TYPE">
-                <property name="idString" stdset="0">
+                <property name="mfc_id">
                     <string notr="true">IDC_BRUSH_TYPE</string>
                 </property>
                 <property name="geometry">
@@ -368,7 +368,7 @@
                 </property>
             </widget>
             <widget class="QSlider" name="IDC_BRUSH_RADIUS_SLIDER">
-                <property name="idString" stdset="0">
+                <property name="mfc_id">
                     <string notr="true">IDC_BRUSH_RADIUS_SLIDER</string>
                 </property>
                 <property name="geometry">
@@ -387,7 +387,7 @@
                 </property>
             </widget>
             <widget class="QSlider" name="IDC_BRUSH_HEIGHT_SLIDER">
-                <property name="idString" stdset="0">
+                <property name="mfc_id">
                     <string notr="true">IDC_BRUSH_HEIGHT_SLIDER</string>
                 </property>
                 <property name="geometry">
@@ -406,7 +406,7 @@
                 </property>
             </widget>
             <widget class="QSlider" name="IDC_BRUSH_HARDNESS_SLIDER">
-                <property name="idString" stdset="0">
+                <property name="mfc_id">
                     <string notr="true">IDC_BRUSH_HARDNESS_SLIDER</string>
                 </property>
                 <property name="geometry">
@@ -425,7 +425,7 @@
                 </property>
             </widget>
             <widget class="QSlider" name="IDC_BRUSH_RADIUS_SLIDER2">
-                <property name="idString" stdset="0">
+                <property name="mfc_id">
                     <string notr="true">IDC_BRUSH_RADIUS_SLIDER2</string>
                 </property>
                 <property name="geometry">
@@ -444,7 +444,7 @@
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_BRUSH_PREVIEW">
-                <property name="idString" stdset="0">
+                <property name="mfc_id">
                     <string notr="true">IDC_BRUSH_PREVIEW</string>
                 </property>
                 <property name="geometry">
@@ -461,6 +461,6 @@
             </widget>
         </widget>
     </widget>
-    <resources/>
-    <connections/>
+    <resources />
+    <connections />
 </ui>

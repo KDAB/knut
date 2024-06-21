@@ -24,8 +24,6 @@ class TestRcwriter : public QObject
     Q_OBJECT
 
 private slots:
-    void initTestCase() { Q_INIT_RESOURCE(rccore); }
-
     void testQrc()
     {
         RcFile rcFile = parse(Test::testDataPath() + "/rcfiles/2048Game/2048Game.rc");
