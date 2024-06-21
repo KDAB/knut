@@ -5,10 +5,19 @@
         }
     ],
     "settings": {
-        "C_Cpp.intelliSenseEngine": "disabled",
         "clangd.arguments": [
             "-header-insertion=never"
-        ]
+        ],
+        "files.associations": {
+            "memory": "cpp",
+            "iosfwd": "cpp",
+            "array": "cpp",
+            "ranges": "cpp",
+            "span": "cpp",
+            "vector": "cpp",
+            "xstring": "cpp",
+            "xutility": "cpp"
+        }
     },
     "launch": {
         "configurations": [
@@ -39,9 +48,7 @@
         "recommendations": [
             "ms-vscode.cpptools",
             "ms-vscode.cmake-tools",
-            "twxs.cmake",
-            "llvm-vs-code-extensions.vscode-clangd",
-            "mhutchie.git-graph"
+            "twxs.cmake"
         ]
     }
 }
