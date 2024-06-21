@@ -16,7 +16,7 @@
 #include "textdocument_p.h"
 #include "texteditor.h"
 #include "utils/log.h"
-#include "utils/strings.h"
+#include "utils/string_helper.h"
 
 #include <QFile>
 #include <QKeyEvent>

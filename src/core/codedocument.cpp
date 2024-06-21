@@ -20,7 +20,7 @@
 #include "treesitter/predicates.h"
 #include "utils/json.h"
 #include "utils/log.h"
-#include "utils/strings.h"
+#include "utils/string_helper.h"
 
 #include <QFile>
 #include <QJSEngine>
