@@ -61,9 +61,9 @@
                 <string comment="IDC_STATIC">Stereo Mode:</string>
             </property>
         </widget>
-        <widget class="QLabel" name="IDC_STATIC">
+        <widget class="QLabel" name="IDC_STATIC_2">
             <property name="mfc_id">
-                <string notr="true">IDC_STATIC</string>
+                <string notr="true">IDC_STATIC_2</string>
             </property>
             <property name="geometry">
                 <rect>
@@ -74,12 +74,12 @@
                 </rect>
             </property>
             <property name="text">
-                <string comment="IDC_STATIC">Stereo Output:</string>
+                <string comment="IDC_STATIC_2">Stereo Output:</string>
             </property>
         </widget>
-        <widget class="QLabel" name="IDC_STATIC">
+        <widget class="QLabel" name="IDC_STATIC_3">
             <property name="mfc_id">
-                <string notr="true">IDC_STATIC</string>
+                <string notr="true">IDC_STATIC_3</string>
             </property>
             <property name="geometry">
                 <rect>
@@ -90,12 +90,12 @@
                 </rect>
             </property>
             <property name="text">
-                <string comment="IDC_STATIC">Stereo Eye Dist:</string>
+                <string comment="IDC_STATIC_3">Stereo Eye Dist:</string>
             </property>
         </widget>
-        <widget class="QLabel" name="IDC_STATIC">
+        <widget class="QLabel" name="IDC_STATIC_5">
             <property name="mfc_id">
-                <string notr="true">IDC_STATIC</string>
+                <string notr="true">IDC_STATIC_5</string>
             </property>
             <property name="geometry">
                 <rect>
@@ -106,7 +106,7 @@
                 </rect>
             </property>
             <property name="text">
-                <string comment="IDC_STATIC">Stereo Flip Eyes:</string>
+                <string comment="IDC_STATIC_5">Stereo Flip Eyes:</string>
             </property>
         </widget>
         <widget class="QRadioButton" name="IDC_STEREO_FLIPEYES_RADIO">
@@ -141,9 +141,9 @@
                 <string comment="IDC_STEREO_FLIPEYES_RADIO2">flip</string>
             </property>
         </widget>
-        <widget class="QLabel" name="IDC_STATIC">
+        <widget class="QLabel" name="IDC_STATIC_4">
             <property name="mfc_id">
-                <string notr="true">IDC_STATIC</string>
+                <string notr="true">IDC_STATIC_4</string>
             </property>
             <property name="geometry">
                 <rect>
@@ -154,7 +154,7 @@
                 </rect>
             </property>
             <property name="text">
-                <string comment="IDC_STATIC">Stereo Screen Dist:</string>
+                <string comment="IDC_STATIC_4">Stereo Screen Dist:</string>
             </property>
         </widget>
         <widget class="QComboBox" name="IDC_STEREO_MODE_COMBO">
