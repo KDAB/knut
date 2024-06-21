@@ -8,7 +8,7 @@
   Contact KDAB at <info@kdab.com> for commercial licensing options.
 */
 
-#include "utils/strings.h"
+#include "utils/string_helper.h"
 
 #include <QTest>
 

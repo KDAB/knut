@@ -62,7 +62,7 @@ For example:
 #include "codedocument.h"
 #include "astnode.h"
 #include "treesitter/predicates.h"
-#include "utils/strings.h"
+#include "utils/string_helper.h"
 
 #include <QFile>
 #include <QTextStream>

@@ -16,8 +16,8 @@ set(PROJECT_SOURCES
     qtuiwriter.cpp
     qt_fmt_helpers.h
     qt_fmt_format.h
-    strings.h
-    strings.cpp
+    string_helper.h
+    string_helper.cpp
     log.h)
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
 

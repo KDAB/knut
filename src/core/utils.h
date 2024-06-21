@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include "utils/strings.h"
+#include "utils/string_helper.h"
 
 #include <QHash>
 #include <QObject>
