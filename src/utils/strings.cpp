@@ -13,7 +13,7 @@
 #include <QSet>
 #include <QTextDocument>
 
-namespace Core {
+namespace Utils {
 
 static QString nextWordInString(const QString &str, QString::const_iterator &i, Case c)
 {

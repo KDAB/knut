@@ -13,7 +13,7 @@
 #include <QRegularExpression>
 #include <QString>
 
-namespace Core {
+namespace Utils {
 
 enum class Case {
     CamelCase,

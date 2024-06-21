@@ -428,7 +428,7 @@ Symbol *CodeDocument::findSymbol(const QString &name, int options) const
     LOG("CodeDocument::findSymbol", LOG_ARG("text", name), options);
 
     auto symbols = this->symbols();
-    const auto regexp = (options & FindRegexp) ? createRegularExpression(name, options) : QRegularExpression {};
+    const auto regexp = (options & FindRegexp) ? Utils::createRegularExpression(name, options) : QRegularExpression {};
     auto byName = [name, options, regexp](Symbol *symbol) {
         if (options & FindWholeWords)
             return symbol->name().compare(name,

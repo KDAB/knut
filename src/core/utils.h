@@ -23,12 +23,12 @@ class Utils : public QObject
 
 public:
     enum Case {
-        CamelCase = static_cast<int>(::Core::Case::CamelCase),
-        PascalCase = static_cast<int>(::Core::Case::PascalCase),
-        SnakeCase = static_cast<int>(::Core::Case::SnakeCase),
-        UpperCase = static_cast<int>(::Core::Case::UpperCase),
-        KebabCase = static_cast<int>(::Core::Case::KebabCase),
-        TitleCase = static_cast<int>(::Core::Case::TitleCase),
+        CamelCase = static_cast<int>(::Utils::Case::CamelCase),
+        PascalCase = static_cast<int>(::Utils::Case::PascalCase),
+        SnakeCase = static_cast<int>(::Utils::Case::SnakeCase),
+        UpperCase = static_cast<int>(::Utils::Case::UpperCase),
+        KebabCase = static_cast<int>(::Utils::Case::KebabCase),
+        TitleCase = static_cast<int>(::Utils::Case::TitleCase),
     };
     Q_ENUM(Case)
 
@@ -48,7 +48,7 @@ public slots:
 
     static QString mktemp(const QString &pattern);
 
-    static QString convertCase(const QString &str, Core::Utils::Case from, Core::Utils::Case to);
+    static QString convertCase(const QString &str, Case from, Case to);
 
     static void copyToClipboard(const QString &text);
 
