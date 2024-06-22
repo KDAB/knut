@@ -27,7 +27,7 @@ public:
     int line() const;
 
     QChar next();
-    QChar peek();
+    QChar peek() const;
 
     QString content() const;
 

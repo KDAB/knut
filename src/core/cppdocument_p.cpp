@@ -82,13 +82,13 @@ IncludeHelper::Includes::const_iterator IncludeHelper::findInclude(const Include
 
 IncludeHelper::IncludeGroups::const_iterator IncludeHelper::findBestIncludeGroup(const Include &include) const
 {
-    auto itEnd = m_includeGroups.cend();
+    const auto itEnd = m_includeGroups.cend();
     int commonLength = 0;
     auto bestIt = itEnd;
     for (auto it = m_includeGroups.cbegin(); it != itEnd; ++it) {
         if (!(it->scope & include.scope))
             continue;
-        int prefixLength = getCommonPrefix(it->prefix, include.name).length();
+        const int prefixLength = getCommonPrefix(it->prefix, include.name).length();
         if (commonLength <= prefixLength) {
             bestIt = it;
             commonLength = prefixLength;
@@ -112,7 +112,7 @@ IncludeHelper::IncludePosition IncludeHelper::findBestFirstIncludeLine() const
     }
 
     const auto &match = result.first();
-    auto codeStart = match.get("value");
+    const auto codeStart = match.get("value");
 
     int line;
     int col;

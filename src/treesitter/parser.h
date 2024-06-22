@@ -34,7 +34,7 @@ public:
 
     void swap(Parser &other) noexcept;
 
-    std::optional<Tree> parseString(const QString &text, const Tree *old_tree = nullptr);
+    std::optional<Tree> parseString(const QString &text, const Tree *old_tree = nullptr) const;
 
     const TSLanguage *language() const;
 
