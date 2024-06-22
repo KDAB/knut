@@ -72,7 +72,7 @@ private:
     void command_##NAME(QueryMatch &match, const PredicateArguments &arguments) const;                                 \
     static std::optional<QString> checkCommand_##NAME(const PredicateArguments &arguments);
 
-    PREDICATE_COMMAND(exclude);
+    PREDICATE_COMMAND(exclude)
 #undef PREDCIATE_COMMAND
 
     // ################## Filters #########################

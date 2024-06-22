@@ -61,7 +61,7 @@ Predicates::Commands Predicates::commands()
     commands.commandFunctions[#NAME "!"] = &Predicates::command_##NAME;                                                \
     commands.checkFunctions[#NAME "!"] = &Predicates::checkCommand_##NAME;
 
-    REGISTER_COMMAND(exclude);
+    REGISTER_COMMAND(exclude)
 #undef REGISTER_COMMAND
     return commands;
 }

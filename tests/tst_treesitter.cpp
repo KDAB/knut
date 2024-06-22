@@ -55,7 +55,7 @@ private slots:
     }
 
 #define VERIFY_PREDICATE_ERROR(queryString)                                                                            \
-    QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), queryString));
+    QVERIFY_THROWS_EXCEPTION(Error, treesitter::Query(tree_sitter_cpp(), queryString))
 
     void querySyntaxError()
     {
