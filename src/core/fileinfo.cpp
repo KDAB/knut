@@ -20,7 +20,6 @@ namespace Core {
  * \brief Singleton with methods to handle file information.
  * \inqmlmodule Script
  * \ingroup Utilities
- * \since 1.0
  *
  * The `FileInfo` singleton implements most of the static methods from `QFileInfo`, check
  * [QFileInfo](https://doc.qt.io/qt-5/qfileinfo.html) documentation.

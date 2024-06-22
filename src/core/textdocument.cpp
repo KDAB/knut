@@ -68,7 +68,6 @@ matchInBlock(const QTextBlock &block, const QRegularExpression &expr, int offset
  * \brief Document object for text files.
  * \inqmlmodule Script
  * \ingroup TextDocument/@first
- * \since 1.0
  * \inherits Document
  */
 /*!

@@ -25,7 +25,6 @@ namespace Core {
  * \brief Represent a symbol in the current file
  * \inqmlmodule Script
  * \ingroup CodeDocument
- * \since 1.0
  */
 
 /*!

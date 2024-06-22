@@ -6,10 +6,6 @@ Singleton with methods to display different messages to the user. [More...](#det
 import Script 1.0
 ```
 
-<table>
-<tr><td>Since:</td><td>Knut 1.0</td></tr>
-</table>
-
 ## Methods
 
 | | Name |

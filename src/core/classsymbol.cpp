@@ -21,7 +21,6 @@ namespace Core {
  * \brief Represents a class in the current file
  * \inqmlmodule Script
  * \ingroup CodeDocument
- * \since 1.0
  * \todo
  */
 /*!

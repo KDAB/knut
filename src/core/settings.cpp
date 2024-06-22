@@ -52,7 +52,6 @@ static constexpr char SettingsName[] = "knut.json";
  * \brief Singleton for accessing and editing persistent settings.
  * \inqmlmodule Script
  * \ingroup Utilities
- * \since 1.0
  *
  * The settings are stored in a json file, and could be:
  *

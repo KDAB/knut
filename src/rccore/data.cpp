@@ -18,7 +18,6 @@ namespace RcCore {
  * \brief Description of a RC file asset.
  * \inqmlmodule Script
  * \ingroup RcDocument
- * \since 1.0
  * \sa RcFile
  */
 /*!
@@ -40,7 +39,6 @@ namespace RcCore {
  * \brief Description of a RC file toolbar item.
  * \inqmlmodule Script
  * \ingroup RcDocument
- * \since 1.0
  * \sa RcFile
  */
 /*!
@@ -57,7 +55,6 @@ namespace RcCore {
  * \brief Description of a RC file toolbar.
  * \inqmlmodule Script
  * \ingroup RcDocument
- * \since 1.0
  * \sa RcFile
  */
 /*!
@@ -82,7 +79,6 @@ namespace RcCore {
  * \brief Description of a RC file widget.
  * \inqmlmodule Script
  * \ingroup RcDocument
- * \since 1.0
  * \sa RcFile
  */
 /*!
@@ -115,7 +111,6 @@ namespace RcCore {
  * \brief Description of a RC file menu item.
  * \inqmlmodule Script
  * \ingroup RcDocument
- * \since 1.0
  * \sa RcFile
  */
 /*!
@@ -148,7 +143,6 @@ namespace RcCore {
  * \brief Description of a RC file menu.
  * \inqmlmodule Script
  * \ingroup RcDocument
- * \since 1.0
  * \sa RcFile
  */
 /*!
@@ -169,7 +163,6 @@ namespace RcCore {
  * \brief Description of a RC file shortcut.
  * \inqmlmodule Script
  * \ingroup RcDocument
- * \since 1.0
  * \sa RcFile
  */
 /*!
@@ -186,7 +179,6 @@ namespace RcCore {
  * \brief Description of a RC file action.
  * \inqmlmodule Script
  * \ingroup RcDocument
- * \since 1.0
  * \sa RcFile
  */
 /*!
@@ -219,7 +211,6 @@ namespace RcCore {
  * \brief Description of a RC file string.
  * \inqmlmodule Script
  * \ingroup RcDocument
- * \since 1.0
  * \sa RcFile
  */
 /*!

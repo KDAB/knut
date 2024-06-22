@@ -6,10 +6,6 @@ The ribbon description (not everything is read yet). [More...](#detailed-descrip
 import Script 1.0
 ```
 
-<table>
-<tr><td>Since:</td><td>Knut 1.0</td></tr>
-</table>
-
 ## Properties
 
 | | Name |

@@ -6,10 +6,6 @@ A menu showing when clicking on the left/top icon in the ribbon. [More...](#deta
 import Script 1.0
 ```
 
-<table>
-<tr><td>Since:</td><td>Knut 1.0</td></tr>
-</table>
-
 ## Properties
 
 | | Name |

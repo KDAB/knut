@@ -6,7 +6,6 @@ import Script.Test 1.0
  * \qmltype TestCase
  * \brief Provides a way to create unit tests as script.
  * \inqmlmodule Script.Test
- * \since 1.0
  * Run unit tests as a script, and returns the number of failed tests.
  */
 

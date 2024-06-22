@@ -18,7 +18,6 @@ namespace Core {
  * \inqmlmodule Script
  * \ingroup Utilities/@last
  * \sa Dir
- * \since 1.0
  *
  * The `QDirValueType` is a wrapper around the `QDir` C++ class, check [QDir](https://doc.qt.io/qt-5/qdir.html)
  * documentation. It can only be created using [Dir](dir.md) singleton.

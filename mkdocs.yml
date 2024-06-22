@@ -1,7 +1,7 @@
-site_name: Knut v1.0
+site_name: Knut - Code transformation via scripts
 site_description: Knut Documentation - Automation tool for code transformation using scripts
 site_author: Klarälvdalens Datakonsult AB (KDAB)
-site_url: https://docs.kdab.com/knut/latest/
+site_url: https://kdab.github.io/knut/
 copyright: "Copyright &copy; Klar&auml;lvdalens Datakonsult AB (KDAB)<br>Trusted Software Excellence<br><a href='https://www.kdab.com'>https://www.kdab.com/</a>"
 repo_url: https://github.com/KDAB/Knut
 repo_name: Knut

@@ -6,10 +6,6 @@ Provides access to the content of a RC file (MFC resource file). [More...](#deta
 import Script 1.0
 ```
 
-<table>
-<tr><td>Since:</td><td>Knut 1.0</td></tr>
-</table>
-
 ## Properties
 
 | | Name |

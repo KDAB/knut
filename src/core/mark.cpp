@@ -24,7 +24,6 @@ namespace Core {
  * \brief Keeps track of a position in a text document.
  * \inqmlmodule Script
  * \ingroup TextDocument
- * \since 1.0
  * \sa TextDocument
  *
  * The Mark object helps you track a logical position in a file.

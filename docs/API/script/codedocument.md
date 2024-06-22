@@ -6,11 +6,6 @@ Base document object for any code that Knut can parse. [More...](#detailed-descr
 import Script 1.0
 ```
 
-<table>
-<tr><td>Since:</td><td>Knut 1.0</td></tr>
-<tr><td>Inherits:</td><td><a href="TextDocument.html">TextDocument</a></td></tr>
-</table>
-
 ## Properties
 
 

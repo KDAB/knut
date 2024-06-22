@@ -41,7 +41,6 @@ namespace Core {
  * \brief QML Item for writing visual scripts.
  * \inqmlmodule Script
  * \ingroup Items
- * \since 1.0
  *
  * The `ScriptDialog` allows creating a script dialog based on a ui file. It requires creating a ui file with the same
  * name as the qml script.

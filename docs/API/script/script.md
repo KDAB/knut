@@ -6,10 +6,6 @@ Script object for writing non visual scripts. [More...](#detailed-description)
 import Script 1.0
 ```
 
-<table>
-<tr><td>Since:</td><td>Knut 1.0</td></tr>
-</table>
-
 ## Detailed Description
 
 The `Script` is the base class for all creatable items in QML. It is needed as a `QtObject`

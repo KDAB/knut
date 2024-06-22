@@ -40,7 +40,6 @@ namespace Core {
  * \brief Base document object for any code that Knut can parse.
  * \inqmlmodule Script
  * \ingroup CodeDocument/@first
- * \since 1.0
  * \inherits TextDocument
  *
  * Knut uses Tree-sitter to parse the code and provide additional information about it.

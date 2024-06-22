@@ -10,10 +10,6 @@ Represents a function or a method in the current file [More...](#detailed-descri
 import Script 1.0
 ```
 
-<table>
-<tr><td>Since:</td><td>Knut 1.0</td></tr>
-</table>
-
 ## Properties
 
 | | Name |

@@ -6,11 +6,6 @@ Document object for text files. [More...](#detailed-description)
 import Script 1.0
 ```
 
-<table>
-<tr><td>Since:</td><td>Knut 1.0</td></tr>
-<tr><td>Inherits:</td><td><a href="Document.html">Document</a></td></tr>
-</table>
-
 ## Properties
 
 | | Name |
