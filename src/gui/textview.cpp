@@ -16,12 +16,10 @@
 #include "core/textdocument.h"
 #include "guisettings.h"
 
-#include <QAction>
 #include <QEvent>
 #include <QMenu>
 #include <QPainter>
 #include <QPlainTextEdit>
-#include <QRubberBand>
 #include <QScrollBar>
 #include <QTextDocument>
 #include <QToolButton>

@@ -13,8 +13,6 @@
 #include "core/testutil.h"
 #include "utils/log.h"
 
-#include <QCoreApplication>
-#include <QDebug>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>

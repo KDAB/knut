@@ -13,7 +13,6 @@
 #include "codedocument_p.h"
 #include "treesitter/node.h"
 
-#include <QDebug>
 #include <QPlainTextEdit>
 
 namespace Core {

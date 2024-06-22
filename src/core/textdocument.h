@@ -18,7 +18,6 @@
 #include <QRegularExpressionMatch>
 #include <QTextCursor>
 #include <QTextDocument>
-#include <memory>
 
 class QPlainTextEdit;
 

@@ -12,8 +12,6 @@
 #include "codedocument.h"
 #include "utils/log.h"
 
-#include <algorithm>
-
 namespace Core {
 
 /*!

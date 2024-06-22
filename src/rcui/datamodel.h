@@ -11,7 +11,6 @@
 #pragma once
 
 #include <QAbstractItemModel>
-#include <QStringList>
 
 namespace RcCore {
 struct RcFile;

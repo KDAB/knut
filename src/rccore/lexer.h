@@ -12,7 +12,6 @@
 
 #include "stream.h"
 
-#include <QChar>
 #include <QString>
 #include <QVariant>
 #include <optional>

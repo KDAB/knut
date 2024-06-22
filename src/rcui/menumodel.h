@@ -13,7 +13,6 @@
 #include "rccore/data.h"
 
 #include <QAbstractItemModel>
-#include <QHash>
 
 namespace RcUi {
 

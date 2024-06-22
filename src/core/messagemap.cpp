@@ -12,7 +12,6 @@
 
 #include "querymatch.h"
 #include "textdocument.h"
-#include "utils/log.h"
 
 #include <kdalgorithms.h>
 

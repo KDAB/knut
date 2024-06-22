@@ -14,7 +14,6 @@
 
 #include <QObject>
 #include <unordered_map>
-#include <vector>
 
 namespace Lsp {
 class Client;

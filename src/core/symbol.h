@@ -10,7 +10,6 @@
 
 #pragma once
 
-#include "lsp/types.h"
 #include "querymatch.h"
 #include "textlocation.h"
 #include "textrange.h"
