@@ -183,8 +183,8 @@ template <typename T, typename Func>
 QVector<T> readItems(pugi::xml_node node, Func readFunc)
 {
     QVector<T> collection;
-    for (const auto &node : node.children())
-        collection.push_back(readFunc(node));
+    for (const auto &childNode : node.children())
+        collection.push_back(readFunc(childNode));
     return collection;
 }
 

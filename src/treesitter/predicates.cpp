@@ -318,12 +318,10 @@ bool Predicates::filter_not_is(const QueryMatch &match, const PredicateArguments
         // Unmatched captures are ignored, they are definitely not of the forbidden type.
     }
 
-    for (const auto &capture : std::as_const(captures)) {
-        if (types.contains(capture.node.type())) {
-            return false;
-        }
-    }
-    return true;
+    auto containsType = [&types](const auto &capture) {
+        return types.contains(capture.node.type());
+    };
+    return std::ranges::none_of(captures, containsType);
 }
 
 std::optional<QString> Predicates::checkFilter_like(const Predicates::PredicateArguments &arguments)

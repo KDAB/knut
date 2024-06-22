@@ -81,8 +81,8 @@ class TestJsonify : public QObject
 {
     Q_OBJECT
 
-    TestStruct m_test;
-    TestStruct m_test2;
+    TestStruct m_test = {};
+    TestStruct m_test2 = {};
 
 private slots:
     void initTestCase()
@@ -109,7 +109,6 @@ private slots:
     void serialize()
     {
         json j = m_test;
-        j.dump();
 
         QCOMPARE(
             j.dump(),
@@ -121,7 +120,6 @@ private slots:
         QCOMPARE(std::get<QString>(value), QString("test"));
 
         json j2 = m_test2;
-        j2.dump();
 
         QCOMPARE(
             j2.dump(),

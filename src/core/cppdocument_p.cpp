@@ -151,9 +151,9 @@ void IncludeHelper::computeIncludes()
     auto processGroup = [this](IncludeGroup &group) {
         group.prefix = m_includes.at(group.first).name;
         for (int i = group.first; i <= group.last; ++i) {
-            const auto &include = m_includes.at(i);
-            group.scope |= include.scope;
-            group.prefix = getCommonPrefix(group.prefix, include.name).toString();
+            const auto &[name, scope, line] = m_includes.at(i);
+            group.scope |= scope;
+            group.prefix = getCommonPrefix(group.prefix, name).toString();
         }
     };
     for (auto &group : m_includeGroups)
