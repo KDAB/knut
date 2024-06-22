@@ -17,7 +17,6 @@
 #include "utils/log.h"
 
 #include <QComboBox>
-#include <QCoreApplication>
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QFileInfo>

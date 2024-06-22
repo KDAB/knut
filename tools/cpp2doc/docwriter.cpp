@@ -10,7 +10,6 @@
 
 #include "docwriter.h"
 
-#include <QDebug>
 #include <QDir>
 #include <QFile>
 #include <QTextStream>

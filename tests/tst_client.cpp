@@ -10,7 +10,6 @@
 
 #include "common/test_utils.h"
 #include "lsp/client.h"
-#include "lsp/notifications.h"
 #include "lsp/requests.h"
 
 #include <QFile>

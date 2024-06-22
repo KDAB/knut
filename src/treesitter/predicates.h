@@ -12,7 +12,6 @@
 
 #include "node.h"
 #include "query.h"
-#include "tree.h"
 
 #include <QString>
 

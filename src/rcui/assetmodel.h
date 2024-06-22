@@ -13,7 +13,6 @@
 #include "rccore/data.h"
 
 #include <QAbstractTableModel>
-#include <QHash>
 
 namespace RcUi {
 

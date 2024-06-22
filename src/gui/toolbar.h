@@ -10,7 +10,6 @@
 
 #pragma once
 
-#include <QFrame>
 #include <QToolBar>
 
 namespace Gui {

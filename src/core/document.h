@@ -13,7 +13,6 @@
 #include "utils/json.h"
 
 #include <QDateTime>
-#include <QFileSystemWatcher>
 #include <QObject>
 
 namespace Core {

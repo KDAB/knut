@@ -13,7 +13,6 @@
 #include "stream.h"
 #include "utils/log.h"
 
-#include <QDir>
 #include <QElapsedTimer>
 #include <QFile>
 #include <QFileInfo>
