@@ -45,7 +45,7 @@ QChar Stream::next()
     return ch;
 }
 
-QChar Stream::peek()
+QChar Stream::peek() const
 {
     if (atEnd())
         return {};

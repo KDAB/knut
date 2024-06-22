@@ -46,7 +46,7 @@ void Parser::swap(Parser &other) noexcept
     std::swap(m_parser, other.m_parser);
 }
 
-std::optional<Tree> Parser::parseString(const QString &text, const Tree *old_tree)
+std::optional<Tree> Parser::parseString(const QString &text, const Tree *old_tree) const
 {
     auto tree =
         ts_parser_parse_string_encoding(m_parser, old_tree ? old_tree->m_tree : nullptr, (const char *)text.constData(),

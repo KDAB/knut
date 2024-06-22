@@ -88,7 +88,7 @@ const QString &Project::root() const
 bool Project::setRoot(const QString &newRoot)
 {
     LOG("Project::setRoot", newRoot);
-    QDir dir(newRoot);
+    const QDir dir(newRoot);
     if (m_root == dir.absolutePath())
         return true;
 

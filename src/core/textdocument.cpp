@@ -44,8 +44,8 @@ matchInBlock(const QTextBlock &block, const QRegularExpression &expr, int offset
     }
 
     if (offset >= 0 && offset <= text.size()) {
-        auto matchStart = (options & TextDocument::FindBackward) ? text.lastIndexOf(expr, offset, &match)
-                                                                 : text.indexOf(expr, offset, &match);
+        const auto matchStart = (options & TextDocument::FindBackward) ? text.lastIndexOf(expr, offset, &match)
+                                                                       : text.indexOf(expr, offset, &match);
         if (matchStart == -1)
             return {};
 
@@ -358,7 +358,7 @@ void TextDocument::setPosition(int newPosition)
 void TextDocument::convertPosition(int pos, int *line, int *column) const
 {
     Q_ASSERT(line && column);
-    QTextBlock block = m_document->document()->findBlock(pos);
+    const QTextBlock block = m_document->document()->findBlock(pos);
     if (!block.isValid()) {
         (*line) = -1;
         (*column) = -1;
@@ -483,7 +483,7 @@ QPlainTextEdit *TextDocument::textEdit() const
  */
 QString TextDocument::tab() const
 {
-    auto settings = Settings::instance()->value<TabSettings>(Settings::Tab);
+    const auto settings = Settings::instance()->value<TabSettings>(Settings::Tab);
     if (settings.insertSpaces)
         return QString(settings.tabSize, ' ');
     return QStringLiteral("\t");
@@ -1241,7 +1241,7 @@ bool TextDocument::findRegexp(const QString &regexp, int options)
 {
     LOG("TextDocument::findRegexp", LOG_ARG("text", regexp), options);
 
-    auto found = selectRegexpMatch(regexp, options);
+    const auto found = selectRegexpMatch(regexp, options);
     return found.has_value();
 }
 
@@ -1265,7 +1265,7 @@ auto TextDocument::selectRegexpMatch(
     else
         expression.setPatternOptions(expression.patternOptions() | QRegularExpression::CaseInsensitiveOption);
 
-    QTextCursor startCursor = m_document->textCursor();
+    const QTextCursor startCursor = m_document->textCursor();
     QTextBlock block = startCursor.block();
     int blockOffset = startCursor.positionInBlock();
 
@@ -1311,17 +1311,17 @@ QString TextDocument::match(const QString &regexp, int options)
     LOG("TextDocument::match", regexp, options);
 
     QString captureGroup;
-    auto result = selectRegexpMatch(regexp, options,
-                                    [&captureGroup](const auto &expression, const auto &match, const auto &cursor) {
-                                        Q_UNUSED(cursor);
-                                        for (auto name : expression.namedCaptureGroups()) {
-                                            if (!name.isEmpty() && match.hasCaptured(name)) {
-                                                captureGroup = name;
-                                                return true;
-                                            }
-                                        }
-                                        return false;
-                                    });
+    const auto result = selectRegexpMatch(
+        regexp, options, [&captureGroup](const auto &expression, const auto &match, const auto &cursor) {
+            Q_UNUSED(cursor)
+            for (const auto &name : expression.namedCaptureGroups()) {
+                if (!name.isEmpty() && match.hasCaptured(name)) {
+                    captureGroup = name;
+                    return true;
+                }
+            }
+            return false;
+        });
 
     LOG_RETURN("group", result.has_value() ? captureGroup : QString(""));
 }
@@ -1357,15 +1357,15 @@ bool TextDocument::replaceOne(const QString &before, const QString &after, int o
     const bool usesRegExp = options & FindRegexp;
     const bool preserveCase = options & PreserveCase;
 
-    auto regexp = Utils::createRegularExpression(before, options, usesRegExp);
+    const auto regexp = Utils::createRegularExpression(before, options, usesRegExp);
     if (find(before, options)) {
         cursor.beginEditBlock();
-        auto found = m_document->textCursor();
+        const auto found = m_document->textCursor();
         cursor.setPosition(found.selectionStart());
         cursor.setPosition(found.selectionEnd(), QTextCursor::KeepAnchor);
         QString afterText = after;
         if (usesRegExp) {
-            QRegularExpressionMatch match = regexp.match(selectedText());
+            const QRegularExpressionMatch match = regexp.match(selectedText());
             afterText = Utils::expandRegExpReplacement(after, match.capturedTexts());
         } else if (preserveCase) {
             afterText = Utils::matchCaseReplacement(cursor.selectedText(), after);
@@ -1448,7 +1448,7 @@ int TextDocument::replaceAll(const QString &before, const QString &after, int op
     m_document->setTextCursor(cursor);
     cursor.beginEditBlock();
 
-    auto regexp = Utils::createRegularExpression(before, options, usesRegExp);
+    const auto regexp = Utils::createRegularExpression(before, options, usesRegExp);
     while (find(before, options)) {
         const auto found = m_document->textCursor();
         cursor.setPosition(found.selectionStart());
@@ -1654,7 +1654,7 @@ QString TextDocument::indentationAtPosition(int pos)
     auto cursor = m_document->textCursor();
     cursor.setPosition(pos);
     cursor.movePosition(QTextCursor::StartOfLine);
-    QString line = cursor.block().text();
+    const QString line = cursor.block().text();
     static QRegularExpression nonSpaces("\\S");
     return line.left(line.indexOf(nonSpaces));
 }
