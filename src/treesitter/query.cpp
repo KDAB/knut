@@ -147,7 +147,7 @@ Query::Capture Query::captureAt(uint32_t index) const
 QueryMatch::QueryMatch(const TSQueryMatch &match, std::shared_ptr<Query> query)
     : m_id(match.id)
     , m_pattern_index(match.pattern_index)
-    , m_query(query)
+    , m_query(std::move(query))
 {
     // It seems advancing the query cursor may delete the captures of the last match.
     // Therefore copy the captures into a member of the QueryMatch, so we actually own them.
@@ -237,8 +237,7 @@ void QueryCursor::swap(QueryCursor &other) noexcept
     std::swap(m_cursor, other.m_cursor);
 }
 
-void QueryCursor::execute(const std::shared_ptr<Query> &query, const Node &node,
-                          std::unique_ptr<Predicates> &&predicates)
+void QueryCursor::execute(std::shared_ptr<Query> query, const Node &node, std::unique_ptr<Predicates> &&predicates)
 {
     m_predicates = std::move(predicates);
     if (m_predicates) {
@@ -250,7 +249,7 @@ void QueryCursor::execute(const std::shared_ptr<Query> &query, const Node &node,
 
 void QueryCursor::setProgressCallback(std::function<void()> callback)
 {
-    m_progressCallback = callback;
+    m_progressCallback = std::move(callback);
 }
 
 std::optional<QueryMatch> QueryCursor::nextMatch()

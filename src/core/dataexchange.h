@@ -65,7 +65,7 @@ struct DataExchange
 
 private:
     friend class CppDocument;
-    DataExchange(const QString &_className, const QueryMatch &ddxFunction);
+    DataExchange(QString _className, const QueryMatch &ddxFunction);
 
 public:
     DataExchange() = default;

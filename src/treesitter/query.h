@@ -137,7 +137,7 @@ public:
 
     void swap(QueryCursor &other) noexcept;
 
-    void execute(const std::shared_ptr<Query> &query, const Node &node, std::unique_ptr<Predicates> &&predicates);
+    void execute(std::shared_ptr<Query> query, const Node &node, std::unique_ptr<Predicates> &&predicates);
 
     std::optional<QueryMatch> nextMatch();
 

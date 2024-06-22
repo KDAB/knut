@@ -685,7 +685,7 @@ void CodeDocument::changeContentLsp(int position, int charsRemoved, int charsAdd
         Lsp::TextDocumentContentChangeEventFull event {};
         event.text = text().toStdString();
 
-        events.push_back(std::move(event));
+        events.emplace_back(std::move(event));
 
         Lsp::DidChangeTextDocumentParams params;
         params.textDocument = document;

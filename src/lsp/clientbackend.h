@@ -101,9 +101,9 @@ private:
         return {};
     }
 
-    void sendAsyncJsonRequest(nlohmann::json jsonRequest);
-    nlohmann::json sendJsonRequest(nlohmann::json jsonRequest);
-    void sendJsonNotification(nlohmann::json jsonNotification);
+    void sendAsyncJsonRequest(const nlohmann::json &jsonRequest);
+    nlohmann::json sendJsonRequest(const nlohmann::json &jsonRequest);
+    void sendJsonNotification(const nlohmann::json &jsonNotification);
 
     void logMessage(std::string type, const nlohmann::json &message);
 
