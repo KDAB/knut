@@ -35,7 +35,7 @@ public:
 
     // Run a script
     using EndScriptFunc = std::function<void()>;
-    QVariant runScript(const QString &filePath, const EndScriptFunc &endCallback = {});
+    QVariant runScript(const QString &fileName, const EndScriptFunc &endCallback = {});
 
     bool hasError() const { return m_hasError; }
     QList<QQmlError> errors() const { return m_errors; }

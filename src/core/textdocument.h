@@ -176,7 +176,7 @@ public slots:
     // Find
     bool find(const QString &text, int options = NoFindFlags);
     bool findRegexp(const QString &regexp, int options = NoFindFlags);
-    QString match(QString expr, int options = NoFindFlags);
+    QString match(const QString &regexp, int options = NoFindFlags);
 
     // Replace
     bool replaceOne(const QString &before, const QString &after, int options = NoFindFlags);
@@ -221,8 +221,8 @@ private:
 
     auto selectRegexpMatch(
         QString regexp, int options,
-        std::function<bool(const QRegularExpression &, const QRegularExpressionMatch &, const QTextCursor &)>
-            selectionFunction = [](const auto &, const auto &, const auto &) {
+        const std::function<bool(const QRegularExpression &, const QRegularExpressionMatch &, const QTextCursor &)>
+            &selectionFunction = [](const auto &, const auto &, const auto &) {
                 return true;
             }) -> std::optional<std::pair<QRegularExpressionMatch, QTextCursor>>;
 

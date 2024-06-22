@@ -49,7 +49,7 @@ public:
 
     Q_INVOKABLE void firstStep(const QString &firstStep);
     Q_INVOKABLE void nextStep(const QString &title);
-    Q_INVOKABLE void runSteps(QJSValue generator);
+    Q_INVOKABLE void runSteps(const QJSValue &generator);
 
 public slots:
     void setStepCount(int stepCount);

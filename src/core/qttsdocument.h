@@ -26,7 +26,7 @@ class QtTsMessage : public QObject
     Q_PROPERTY(QString comment READ comment WRITE setComment NOTIFY commentChanged)
     Q_PROPERTY(QString context READ context CONSTANT)
 public:
-    explicit QtTsMessage(const QString &context, pugi::xml_node message, QObject *parent = nullptr);
+    explicit QtTsMessage(QString context, pugi::xml_node message, QObject *parent = nullptr);
 
     QString fileName() const;
     void setFileName(const QString &name);

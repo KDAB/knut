@@ -18,8 +18,8 @@
 #include <functional>
 
 namespace Test {
-void testCppDocument(const QString &projectRoot, const QString &documentPath,
-                     std::function<void(Core::CppDocument *)> test)
+inline void testCppDocument(const QString &projectRoot, const QString &documentPath,
+                            const std::function<void(Core::CppDocument *)> &test)
 {
     Core::KnutCore core;
     const auto rootFullPath = Test::testDataPath() + "/" + projectRoot;
