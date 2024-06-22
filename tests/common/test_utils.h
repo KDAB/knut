@@ -28,6 +28,18 @@
 
 namespace Test {
 
+inline QString examplesPath()
+{
+    QString path;
+#if defined(EXAMPLES_PATH)
+    path = EXAMPLES_PATH;
+#endif
+    if (path.isEmpty() || !QDir(path).exists()) {
+        path = QCoreApplication::applicationDirPath() + "/examples";
+    }
+    return path;
+}
+
 inline QString testDataPath()
 {
     QString path;
