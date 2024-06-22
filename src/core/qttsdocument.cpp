@@ -24,7 +24,6 @@ namespace Core {
  * \brief Provides access to the content of a Ts file (Qt linguist).
  * \inqmlmodule Script
  * \ingroup QtTsDocument/@first
- * \since 1.0
  */
 
 /*!
@@ -219,7 +218,6 @@ QVector<QtTsMessage *> QtTsDocument::messages() const
  * \brief Provides access to message.
  * \inqmlmodule Script
  * \ingroup QtTsDocument
- * \since 1.0
  * \sa QtTsDocument
  */
 

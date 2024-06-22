@@ -6,10 +6,6 @@ Provides a way to create unit tests as script. [More...](#detailed-description)
 import Script.Test 1.0
 ```
 
-<table>
-<tr><td>Since:</td><td>Knut 1.0</td></tr>
-</table>
-
 ## Properties
 
 | | Name |

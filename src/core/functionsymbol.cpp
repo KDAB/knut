@@ -23,7 +23,6 @@ namespace Core {
  * \brief Represents an argument to be passed to the function
  * \inqmlmodule Script
  * \ingroup CodeDocument
- * \since 1.0
  * \todo
  * \sa FunctionSymbol
  */
@@ -42,7 +41,6 @@ namespace Core {
  * \brief Represents a function or a method in the current file
  * \inqmlmodule Script
  * \ingroup CodeDocument
- * \since 1.0
  * \todo
  */
 

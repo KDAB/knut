@@ -6,10 +6,6 @@ Wrapper around the `QFileInfo` class. [More...](#detailed-description)
 import Script 1.0
 ```
 
-<table>
-<tr><td>Since:</td><td>Knut 1.0</td></tr>
-</table>
-
 ## Properties
 
 | | Name |

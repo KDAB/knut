@@ -6,11 +6,6 @@ Document object for a C++ file (source or header) [More...](#detailed-descriptio
 import Script 1.0
 ```
 
-<table>
-<tr><td>Since:</td><td>Knut 1.0</td></tr>
-<tr><td>Inherits:</td><td><a href="CodeDocument.html">CodeDocument</a></td></tr>
-</table>
-
 ## Properties
 
 | | Name |

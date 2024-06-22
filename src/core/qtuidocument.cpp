@@ -24,7 +24,6 @@ namespace Core {
  * \brief Provides access to the content of a Ui file (Qt designer file).
  * \inqmlmodule Script
  * \ingroup QtUiDocument/@first
- * \since 1.0
  */
 
 /*!
@@ -104,7 +103,6 @@ bool QtUiDocument::doLoad(const QString &fileName)
  * \brief Provides access to widget attributes in the ui files.
  * \inqmlmodule Script
  * \ingroup QtUiDocument
- * \since 1.0
  * \sa QtUiDocument
  */
 

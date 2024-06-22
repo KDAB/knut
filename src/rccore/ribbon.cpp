@@ -19,7 +19,6 @@ namespace RcCore {
  * \brief An item in the ribbon (button, separator...).
  * \inqmlmodule Script
  * \ingroup RcDocument
- * \since 1.0
  * \sa Ribbon
  */
 /*!
@@ -60,7 +59,6 @@ namespace RcCore {
  * \brief An panel (group of elements) in the ribbon.
  * \inqmlmodule Script
  * \ingroup RcDocument
- * \since 1.0
  * \sa Ribbon
  */
 /*!
@@ -81,7 +79,6 @@ namespace RcCore {
  * \brief A tab (made of panels) in the ribbon.
  * \inqmlmodule Script
  * \ingroup RcDocument
- * \since 1.0
  * \sa Ribbon
  */
 /*!
@@ -110,7 +107,6 @@ namespace RcCore {
  * \brief A context (tabs with a title) in the ribbon.
  * \inqmlmodule Script
  * \ingroup RcDocument
- * \since 1.0
  * \sa Ribbon
  */
 /*!
@@ -131,7 +127,6 @@ namespace RcCore {
  * \brief A menu showing when clicking on the left/top icon in the ribbon.
  * \inqmlmodule Script
  * \ingroup RcDocument
- * \since 1.0
  * \sa Ribbon
  */
 /*!
@@ -160,7 +155,6 @@ namespace RcCore {
  * \brief The ribbon description (not everything is read yet).
  * \inqmlmodule Script
  * \ingroup RcDocument
- * \since 1.0
  * \sa RcFile
  *
  * A ribbon is made of multiple items:

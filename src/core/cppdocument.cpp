@@ -34,7 +34,6 @@ namespace Core {
  * \brief Document object for a C++ file (source or header)
  * \inqmlmodule Script
  * \ingroup CppDocument/@first
- * \since 1.0
  * \inherits CodeDocument
  */
 

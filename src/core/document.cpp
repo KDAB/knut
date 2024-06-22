@@ -24,7 +24,6 @@ namespace Core {
  * \qmltype Document
  * \brief Base class for all documents
  * \inqmlmodule Script
- * \since 1.0
  *
  * The `Document` class is the base class for all documents.
  * A document is a file loaded by Knut and that can be used in script (either to get data or to edit).

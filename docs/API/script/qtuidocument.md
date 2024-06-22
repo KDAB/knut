@@ -6,10 +6,6 @@ Provides access to the content of a Ui file (Qt designer file). [More...](#detai
 import Script 1.0
 ```
 
-<table>
-<tr><td>Since:</td><td>Knut 1.0</td></tr>
-</table>
-
 ## Properties
 
 | | Name |
