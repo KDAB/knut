@@ -120,8 +120,8 @@ static QVector<DataValidationEntry> queryDDVCalls(const QueryMatch &ddxFunction)
  * \qmlproperty RangeMark DataExchange::range
  * The entire range of the `DoDataExchange` method.
  */
-DataExchange::DataExchange(const QString &_className, const QueryMatch &ddxFunction)
-    : className(_className)
+DataExchange::DataExchange(QString _className, const QueryMatch &ddxFunction)
+    : className(std::move(_className))
     , range(ddxFunction.get("definition"))
 {
     entries = queryDDXCalls(ddxFunction);

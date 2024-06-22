@@ -21,7 +21,7 @@ Transformation::Transformation(QString source, Parser &&parser, std::shared_ptr<
                                QString transformationTarget)
     : m_source(std::move(source))
     , m_parser(std::move(parser))
-    , m_query(query)
+    , m_query(std::move(query))
     , m_to(std::move(transformationTarget))
 {
 }

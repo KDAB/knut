@@ -147,30 +147,30 @@ void ClientBackend::handleFinished(int exitCode, QProcess::ExitStatus exitStatus
         emit finished();
 }
 
-void ClientBackend::sendAsyncJsonRequest(nlohmann::json jsonRequest)
+void ClientBackend::sendAsyncJsonRequest(const nlohmann::json &jsonRequest)
 {
     logMessage("send-request", jsonRequest);
-    const auto message = toMessage(std::move(jsonRequest));
+    const auto message = toMessage(jsonRequest);
     m_process->write(message);
 }
 
-nlohmann::json ClientBackend::sendJsonRequest(nlohmann::json jsonRequest)
+nlohmann::json ClientBackend::sendJsonRequest(const nlohmann::json &jsonRequest)
 {
     // Wait for the response to be emitted using the QEventLoop trick
     QEventLoop loop;
     connect(this, &ClientBackend::responseEmitted, &loop, [&loop]() {
         loop.exit();
     });
-    sendAsyncJsonRequest(std::move(jsonRequest));
+    sendAsyncJsonRequest(jsonRequest);
     loop.exec(QEventLoop::ExcludeUserInputEvents);
 
     return m_response;
 }
 
-void ClientBackend::sendJsonNotification(nlohmann::json jsonNotification)
+void ClientBackend::sendJsonNotification(const nlohmann::json &jsonNotification)
 {
     logMessage("send-notification", jsonNotification);
-    const auto message = toMessage(std::move(jsonNotification));
+    const auto message = toMessage(jsonNotification);
     m_process->write(message);
 }
 
