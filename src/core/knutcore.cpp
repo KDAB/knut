@@ -91,7 +91,7 @@ void KnutCore::process(const QStringList &arguments)
     const QStringList positionalArguments = parser.positionalArguments();
     // Set the root directory
     if (!positionalArguments.isEmpty()) {
-        const QString rootDir = positionalArguments.at(0);
+        const QString &rootDir = positionalArguments.at(0);
         const QDir pathDir(rootDir);
         if (pathDir.exists()) {
             Project::instance()->setRoot(rootDir);

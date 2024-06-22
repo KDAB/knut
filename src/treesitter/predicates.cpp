@@ -91,7 +91,7 @@ Predicates::Predicates(QString source)
 void Predicates::executeCommands(QueryMatch &match) const
 {
     const auto patterns = match.query()->patterns();
-    const auto pattern = patterns.at(match.patternIndex());
+    const auto &pattern = patterns.at(match.patternIndex());
 
     for (const auto &predicate : pattern.predicates) {
         const auto commands = Predicates::commands();
@@ -106,7 +106,7 @@ void Predicates::executeCommands(QueryMatch &match) const
 bool Predicates::filterMatch(const QueryMatch &match) const
 {
     const auto patterns = match.query()->patterns();
-    const auto pattern = patterns.at(match.patternIndex());
+    const auto &pattern = patterns.at(match.patternIndex());
 
     for (const auto &predicate : pattern.predicates) {
         const auto filters = Predicates::filters();

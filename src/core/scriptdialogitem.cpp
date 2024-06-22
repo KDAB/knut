@@ -306,7 +306,7 @@ static bool isGenerator(const QJSValue &generator)
  * }
  * ```
  */
-void ScriptDialogItem::runSteps(QJSValue generator)
+void ScriptDialogItem::runSteps(const QJSValue &generator)
 {
     if (!isGenerator(generator)) {
         spdlog::error("ScriptDialogItem::runSteps: Argument is not a generator!\n"

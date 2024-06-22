@@ -434,7 +434,8 @@ QString extractStringForDialog(const RcCore::Data::Dialog *dialog, const QString
  * \qmlmethod string RcDocument::stringForDialogAndLanguage(string language, string dialogId, string id)
  * Return the string for the given `language`, `dialogid` and id.
  */
-QString RcDocument::stringForDialogAndLanguage(const QString &language, const QString dialogId, const QString &id) const
+QString RcDocument::stringForDialogAndLanguage(const QString &language, const QString &dialogId,
+                                               const QString &id) const
 {
     LOG("RcDocument::stringForDialogAndLanguage", language, dialogId, id);
 
@@ -452,7 +453,7 @@ QString RcDocument::stringForDialogAndLanguage(const QString &language, const QS
  * \qmlmethod string RcDocument::stringForDialog(string dialogId, string id)
  * Return the string for the given `dialogid` and id.
  */
-QString RcDocument::stringForDialog(const QString dialogId, const QString &id) const
+QString RcDocument::stringForDialog(const QString &dialogId, const QString &id) const
 {
     LOG("RcDocument::stringForDialog", dialogId, id);
     if (isDataValid()) {

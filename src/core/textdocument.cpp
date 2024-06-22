@@ -1247,8 +1247,8 @@ bool TextDocument::findRegexp(const QString &regexp, int options)
 
 auto TextDocument::selectRegexpMatch(
     QString regexp, int options,
-    std::function<bool(const QRegularExpression &, const QRegularExpressionMatch &, const QTextCursor &)>
-        selectionFunction) -> std::optional<std::pair<QRegularExpressionMatch, QTextCursor>>
+    const std::function<bool(const QRegularExpression &, const QRegularExpressionMatch &, const QTextCursor &)>
+        &selectionFunction) -> std::optional<std::pair<QRegularExpressionMatch, QTextCursor>>
 {
     unselect();
 
@@ -1306,7 +1306,7 @@ auto TextDocument::selectRegexpMatch(
  *
  * Selects the match and returns the named group if a match is found.
  */
-QString TextDocument::match(QString regexp, int options)
+QString TextDocument::match(const QString &regexp, int options)
 {
     LOG("TextDocument::match", regexp, options);
 

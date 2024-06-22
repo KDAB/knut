@@ -246,9 +246,9 @@ QVector<QtTsMessage *> QtTsDocument::messages() const
  * Define comment.
  */
 
-QtTsMessage::QtTsMessage(const QString &context, pugi::xml_node message, QObject *parent)
+QtTsMessage::QtTsMessage(QString context, pugi::xml_node message, QObject *parent)
     : QObject(parent)
-    , m_context(context)
+    , m_context(std::move(context))
     , m_message(message)
 {
 }
