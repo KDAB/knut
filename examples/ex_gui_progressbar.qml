@@ -5,8 +5,7 @@ import Script 1.0
 ScriptDialog {
     id: root
 
-    // Function called when the user click on the OK button
-    onAccepted: {
+    function showProgress() {
         // 1) Defines the number of steps in the script
         // This can be done using the `stepCount` property of ScriptDialog
         // Note: if you don't set the step count, a moving scrollbar will be displayed
@@ -33,5 +32,17 @@ ScriptDialog {
         nextStep("Step 5...");
         Message.log("Step 5 is in progress, cooking something good...");
         Utils.sleep(1000);
+    }
+
+    // Function called when the user click on the OK button
+    onAccepted: {
+        showProgress();
+    }
+
+    // This is to test the script automatically, to be used with `knut --test ex-gui-interactive.qml`
+    // It will run the script automatically without interaction
+    function test() {
+        showProgress();
+        close();
     }
 }

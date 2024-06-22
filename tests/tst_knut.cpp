@@ -23,19 +23,19 @@
         run_knut_test(#name);                                                                                          \
     }
 
+#define KNUT_EXAMPLE(name)                                                                                             \
+    void tst_##name()                                                                                                  \
+    {                                                                                                                  \
+        run_knut_example(#name);                                                                                       \
+    }
+
 class TestKnut : public QObject
 {
     Q_OBJECT
 
 private:
-    void run_knut_test(const QString &name)
+    void run_knut(const QStringList &arguments)
     {
-        QFileInfo fi(Test::testDataPath() + QString("/tst_%1.qml").arg(name));
-        QVERIFY(fi.exists());
-        QStringList arguments {"--test", fi.absoluteFilePath()};
-        QDir dir(Test::testDataPath() + "/tst_" + name);
-        if (dir.exists())
-            arguments.append(dir.absolutePath());
         const int failedTests = QProcess::execute(KNUT_BINARY_PATH, arguments);
 
         switch (failedTests) {
@@ -51,6 +51,25 @@ private:
         }
     }
 
+    void run_knut_test(const QString &name)
+    {
+        QFileInfo fi(Test::testDataPath() + QString("/tst_%1.qml").arg(name));
+        QVERIFY(fi.exists());
+        QStringList arguments {"--test", fi.absoluteFilePath()};
+        QDir dir(Test::testDataPath() + "/tst_" + name);
+        if (dir.exists())
+            arguments.append(dir.absolutePath());
+        run_knut(arguments);
+    }
+
+    void run_knut_example(const QString &name)
+    {
+        QFileInfo fi(Test::examplesPath() + QString("/%1.qml").arg(name));
+        QVERIFY(fi.exists());
+        QStringList arguments {"--test", fi.absoluteFilePath()};
+        run_knut(arguments);
+    }
+
 private slots:
     KNUT_TEST(settings)
     KNUT_TEST(dir)
@@ -58,6 +77,9 @@ private slots:
     KNUT_TEST(utils)
     KNUT_TEST(rcdocument)
     KNUT_TEST(project)
+
+    KNUT_EXAMPLE(ex_gui_interactive)
+    KNUT_EXAMPLE(ex_gui_progressbar)
 };
 
 QTEST_MAIN(TestKnut)

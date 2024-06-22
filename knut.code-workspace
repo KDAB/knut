@@ -16,7 +16,8 @@
             "span": "cpp",
             "vector": "cpp",
             "xstring": "cpp",
-            "xutility": "cpp"
+            "xutility": "cpp",
+            "*.moc": "cpp"
         }
     },
     "launch": {
