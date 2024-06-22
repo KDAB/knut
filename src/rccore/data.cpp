@@ -336,11 +336,10 @@ QStringList Menu::actionIds() const
  */
 bool ToolBar::contains(const QString &id) const
 {
-    for (const auto &child : children) {
-        if (child.id == id)
-            return true;
-    }
-    return false;
+    auto isSame = [id](const ToolBarItem &item) {
+        return item.id == id;
+    };
+    return std::ranges::any_of(children, isSame);
 }
 
 QStringList ToolBar::actionIds() const

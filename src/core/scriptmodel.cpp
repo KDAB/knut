@@ -82,10 +82,9 @@ QVariant ScriptModel::headerData(int section, Qt::Orientation orientation, int r
         return QAbstractTableModel::headerData(section, orientation, role);
     }
 
-    switch (role) {
-    case Qt::DisplayRole:
+    if (role == Qt::DisplayRole) {
         return columnHeaderDisplayData(section);
-    default:
+    } else {
         return QAbstractTableModel::headerData(section, orientation, role);
     }
 }

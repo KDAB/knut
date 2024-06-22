@@ -50,8 +50,8 @@ void QtTsDocument::initializeXml()
 {
     auto ts = m_document.select_node("TS");
     if (ts.node().empty()) {
-        pugi::xml_node ts = m_document.append_child("TS");
-        ts.append_attribute("version").set_value("2.1");
+        pugi::xml_node tsNode = m_document.append_child("TS");
+        tsNode.append_attribute("version").set_value("2.1");
     }
 }
 
