@@ -15,10 +15,16 @@ cmake_policy(SET CMP0141 NEW)
 
 include(FetchContent)
 
+# file(READ ...) would insert the trailing newline character at the end of the
+# file into the version, so use file(STRINGS ...) instead.
+file(STRINGS version.txt KNUT_VERSION_FILE)
+list(GET KNUT_VERSION_FILE 0 KNUT_VERSION)
+
 project(
   knut
-  VERSION 1.0
+  VERSION "${KNUT_VERSION}"
   LANGUAGES CXX)
+message(STATUS "Knut version: ${PROJECT_VERSION}")
 
 # Project initialization
 # ##############################################################################
@@ -53,7 +59,6 @@ endif()
 
 # Project version
 # ##############################################################################
-add_definitions(-DKNUT_VERSION="${PROJECT_VERSION}")
 set(KNUT_VERSION_STRING "${PROJECT_VERSION}")
 
 if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
