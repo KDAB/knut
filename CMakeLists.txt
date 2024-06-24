@@ -175,7 +175,7 @@ file(
   docs/contributing/*.md
   docs/getting-started/*.md)
 add_custom_target(
-  docs ALL
+  docs
   cpp2doc
   COMMENT "Update documentation"
   SOURCES ${DOCS_FILES})
