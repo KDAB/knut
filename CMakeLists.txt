@@ -153,11 +153,11 @@ add_subdirectory(tests)
 
 # mfc-utils and photonwidgets are private to KDAB, so make them optional so that
 # non-KDABians can still develop Knut.
-if(EXISTS 3rdparty-kdab/mfc-utils/tests-scripts)
+if(EXISTS ${CMAKE_SOURCE_DIR}/3rdparty-kdab/mfc-utils/tests-scripts)
   add_subdirectory(3rdparty-kdab/mfc-utils/tests-scripts)
 endif()
 
-if(EXISTS 3rdparty-kdab/photonwidgets/tests/scripts)
+if(EXISTS ${CMAKE_SOURCE_DIR}/3rdparty-kdab/photonwidgets/tests/scripts)
   add_subdirectory(3rdparty-kdab/photonwidgets/tests/scripts)
 endif()
 
