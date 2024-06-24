@@ -54,6 +54,15 @@ set(BUILD_TESTING OFF)
 check_submodule(ksyntaxhighlighting ksyntaxhighlighting)
 add_subdirectory(ksyntaxhighlighting)
 
+# * Enable optimizations even in debug mode (in a portable way)
+function(enable_optimizations target)
+  if(MSVC)
+    target_compile_options(${target} PRIVATE /O3)
+  else()
+    target_compile_options(${target} PRIVATE -O3)
+  endif()
+endfunction()
+
 # TreeSitter
 # ##############################################################################
 check_submodule(tree-sitter tree-sitter)
@@ -63,7 +72,7 @@ add_library(${PROJECT_NAME} STATIC tree-sitter/lib/src/lib.c)
 target_include_directories(${PROJECT_NAME} PUBLIC tree-sitter/lib/include)
 # Always build tree-sitter with optimizations enabled. We shouldn't have to
 # debug it and it's performance critical.
-target_compile_options(${PROJECT_NAME} PRIVATE -O3)
+enable_optimizations(${PROJECT_NAME})
 
 # TreeSitterCpp
 # ##############################################################################
@@ -78,7 +87,7 @@ add_library(${PROJECT_NAME} STATIC tree-sitter-cpp/src/parser.c
 target_link_libraries(${PROJECT_NAME} PRIVATE TreeSitter)
 # Always build tree-sitter with optimizations enabled. We shouldn't have to
 # debug it and it's performance critical.
-target_compile_options(${PROJECT_NAME} PRIVATE -O3)
+enable_optimizations(${PROJECT_NAME})
 
 # TreeSitterQmlJs
 # ##############################################################################
@@ -90,4 +99,4 @@ add_library(${PROJECT_NAME} STATIC tree-sitter-qmljs/src/parser.c
 target_link_libraries(${PROJECT_NAME} PRIVATE TreeSitter)
 # Always build tree-sitter with optimizations enabled. We shouldn't have to
 # debug it and it's performance critical.
-target_compile_options(${PROJECT_NAME} PRIVATE -O3)
+enable_optimizations(${PROJECT_NAME})
