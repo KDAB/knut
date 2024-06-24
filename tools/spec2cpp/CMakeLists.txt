@@ -20,6 +20,6 @@ set(PROJECT_SOURCES data.h spec2cpp.cpp specparser.h specparser.cpp
 
 qt_add_resources(PROJECT_SOURCES spec2cpp.qrc)
 
-add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
+add_executable(${PROJECT_NAME} EXCLUDE_FROM_ALL ${PROJECT_SOURCES})
 target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json
                                               Qt${QT_VERSION_MAJOR}::Core)
