@@ -80,6 +80,7 @@ private slots:
 
     KNUT_EXAMPLE(ex_gui_interactive)
     KNUT_EXAMPLE(ex_gui_progressbar)
+    KNUT_EXAMPLE(ex_script_dialog)
 };
 
 QTEST_MAIN(TestKnut)
