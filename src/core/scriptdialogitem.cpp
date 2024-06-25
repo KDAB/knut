@@ -403,7 +403,7 @@ void ScriptDialogItem::createProperties(QWidget *dialogWidget)
                 emit clicked(pushButton->objectName());
             });
         } else if (auto toolButton = qobject_cast<QToolButton *>(widget)) {
-            connect(pushButton, &QToolButton::clicked, this, [this, toolButton]() {
+            connect(toolButton, &QToolButton::clicked, this, [this, toolButton]() {
                 emit clicked(toolButton->objectName());
             });
         } else if (auto lineEdit = qobject_cast<QLineEdit *>(widget)) {
