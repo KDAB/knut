@@ -35,8 +35,7 @@ void TreeSitterHelper::clear()
 treesitter::Parser &TreeSitterHelper::parser()
 {
     if (!m_parser) {
-        // TODO: Make language configurable
-        m_parser = treesitter::Parser(tree_sitter_cpp());
+        m_parser = treesitter::Parser(treesitter::Parser::getLanguage(m_document->type()));
     }
 
     // Regarding const-ness:

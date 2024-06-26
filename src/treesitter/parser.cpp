@@ -10,6 +10,7 @@
 
 #include "parser.h"
 #include "tree.h"
+#include "treesitter/languages.h"
 
 #include <tree_sitter/api.h>
 #include <utility>
@@ -62,4 +63,15 @@ const TSLanguage *Parser::language() const
     return ts_parser_language(m_parser);
 }
 
+TSLanguage *Parser::getLanguage(Core::Document::Type type)
+{
+    switch (type) {
+    case Core::Document::Type::Qml:
+        return tree_sitter_qmljs();
+    case Core::Document::Type::Cpp:
+        return tree_sitter_cpp();
+    default:
+        Q_UNREACHABLE();
+    }
+}
 }

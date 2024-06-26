@@ -622,7 +622,7 @@ void MainWindow::updateActions()
     const bool lspEnabled = codeDocument && codeDocument->hasLspClient();
     ui->actionFollowSymbol->setEnabled(lspEnabled);
     ui->actionSwitchDeclDef->setEnabled(lspEnabled);
-    ui->actionTreeSitterInspector->setEnabled(lspEnabled);
+    ui->actionTreeSitterInspector->setEnabled(codeDocument != nullptr);
 
     const bool cppEnabled = codeDocument && qobject_cast<Core::CppDocument *>(document);
     ui->actionSwitchHeaderSource->setEnabled(cppEnabled);
