@@ -80,7 +80,7 @@ void QueryErrorHighlighter::setUtf8Position(int position)
 TreeSitterInspector::TreeSitterInspector(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::TreeSitterInspector)
-    , m_parser(tree_sitter_cpp())
+    , m_parser(nullptr)
     , m_errorHighlighter(nullptr)
     , m_document(nullptr)
 {
@@ -149,7 +149,8 @@ void TreeSitterInspector::changeQuery()
     }
 
     try {
-        auto query = std::make_shared<treesitter::Query>(tree_sitter_cpp(), ui->query->toPlainText());
+        auto lang = treesitter::Parser::getLanguage(m_document->type());
+        auto query = std::make_shared<treesitter::Query>(lang, ui->query->toPlainText());
         m_treemodel.setQuery(query, makePredicates());
         m_errorHighlighter->setUtf8Position(-1);
 
@@ -211,6 +212,7 @@ void TreeSitterInspector::setDocument(Core::CodeDocument *document)
     }
 
     m_document = document;
+    m_parser = treesitter::Parser::getLanguage(document->type());
     if (m_document) {
         connect(m_document, &Core::CodeDocument::textChanged, this, &TreeSitterInspector::changeText);
         connect(m_document, &Core::CodeDocument::positionChanged, this, &TreeSitterInspector::changeCursor);
@@ -281,8 +283,9 @@ void TreeSitterInspector::prepareTransformation(
     }
 
     try {
-        auto query = std::make_shared<treesitter::Query>(tree_sitter_cpp(), m_queryText);
-        treesitter::Parser parser(tree_sitter_cpp());
+        auto lang = treesitter::Parser::getLanguage(m_document->type());
+        auto query = std::make_shared<treesitter::Query>(lang, m_queryText);
+        treesitter::Parser parser(lang);
 
         treesitter::Transformation transformation(m_document->text(), std::move(parser), query,
                                                   ui->target->toPlainText());

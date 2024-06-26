@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include "core/document.h"
 #include <QString>
 
 struct TSParser;
@@ -37,6 +38,8 @@ public:
     std::optional<Tree> parseString(const QString &text, const Tree *old_tree = nullptr) const;
 
     const TSLanguage *language() const;
+
+    static TSLanguage *getLanguage(Core::Document::Type type);
 
 private:
     TSParser *m_parser;

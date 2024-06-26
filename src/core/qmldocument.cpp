@@ -13,8 +13,9 @@
 namespace Core {
 
 QmlDocument::QmlDocument(QObject *parent)
-    : TextDocument(Type::Qml, parent)
+    : CodeDocument(Type::Qml, parent)
 {
 }
 
+QmlDocument::~QmlDocument() = default;
 }
