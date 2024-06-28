@@ -37,3 +37,8 @@ repos:
     hooks:
     - id: codespell
       exclude: ^(tests/tst_textdocument.cpp)
+  - repo: https://github.com/fsfe/reuse-tool
+    rev: v3.1.0a1
+    hooks:
+    - id: reuse
+      args: [--suppress-deprecation]

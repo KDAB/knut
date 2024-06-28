@@ -1,3 +1,9 @@
+#
+# SPDX-FileCopyrightText: 2021 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
 # Submodule handling
 function(check_submodule name path)
     if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${path}/.git")
