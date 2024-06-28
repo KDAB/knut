@@ -1,9 +1,11 @@
 /*
-  This file is part of KDToolBox.
+  This file is part of Knut.
 
   SPDX-FileCopyrightText: 2024 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 
   SPDX-License-Identifier: MIT
+
+  Contact KDAB at <info@kdab.com> for commercial licensing options.
 */
 #pragma once
 

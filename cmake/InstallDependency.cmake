@@ -1,3 +1,9 @@
+#
+# SPDX-FileCopyrightText: 2023 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
 set(INTERNAL_DEPENDENCIES_PREFIX "${CMAKE_BINARY_DIR}/_deps/prefix")
 list(PREPEND CMAKE_PREFIX_PATH "${INTERNAL_DEPENDENCIES_PREFIX}")
 

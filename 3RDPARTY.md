@@ -64,7 +64,7 @@ QML grammar for the tree-sitter parsing library.<br/>
 
 Icons used inside the GUI application (not including the Knut icon itself).<br\>
 [Home page](https://pictogrammers.com/library/mdi/)<br/>
-[MIT licensed](LICENSES/Apache-License-2.0.txt.txt)
+[MIT licensed](LICENSES/Apache-2.0.txt)
 
 ## Build-time / CI tests 3rdparty
 
