@@ -1,0 +1,20 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: knut
+Upstream-Contact: <info@kdab.com>
+Source: https://github.com/KDAB/knut/
+
+#misc config files
+Files: .pre-commit-config.yaml .codespellrc .clangd .clazy .gitattributes .github/workflows/documentation.yml .gitignore .gitmodules
+Copyright: 2024 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+License: BSD-3-Clause
+
+#misc documentation
+Files: *.md
+Copyright: 2024 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+License: GPL-3.0-only
+
+#misc source code
+Files: *.json
+Copyright: 2024 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+License: GPL-2.0-only OR GPL-3.0-only
+
