@@ -16,7 +16,7 @@ using namespace RcCore;
 
 namespace {
 const char *DataTypeStr[] = {
-    "Dialogs", "Menus", "ToolBars", "Accelerators", "Assets", "Icons", "Strings", "Includes",
+    "Dialogs", "Menus", "ToolBars", "Accelerators", "Assets", "Icons", "Strings", "Includes", "Ribbons",
 };
 }
 
@@ -73,6 +73,7 @@ int DataModel::rowCount(const QModelIndex &parent) const
         case IconData:
         case StringData:
         case IncludeData:
+        case RibbonData:
             return 0;
         }
     }
@@ -125,6 +126,7 @@ QVariant DataModel::data(const QModelIndex &index, int role) const
         case IconData:
         case StringData:
         case IncludeData:
+        case RibbonData:
         case NoData:
             return -1;
         }
@@ -149,6 +151,8 @@ QVariant DataModel::data(const QModelIndex &index, int role) const
             return data.strings.isEmpty();
         case IncludeData:
             return m_rcFile.includes.isEmpty();
+        case RibbonData:
+            return data.ribbons.isEmpty();
         case NoData:
             break;
         }
