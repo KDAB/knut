@@ -1,0 +1,23 @@
+{
+    "answer": 42,
+    "pi": 3.14,
+    "enabled": true,
+    "foo": "bar",
+    "colors": ["red", "green", "blue"],
+    "numbers": [1, 2, 3],
+    "foobar": {
+        "foo": "bar"
+    },
+    "lsp": {
+        "servers": [
+            {
+                "type": "cpp_type",
+                "program": "notclangd",
+                "arguments": [
+                    "foo",
+                    "bar"
+                ]
+            }
+        ]
+    }
+}

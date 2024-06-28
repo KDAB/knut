@@ -11,7 +11,7 @@
 #pragma once
 
 #include "document.h"
-#include "utils/json.h"
+#include "utils/json_helper.h"
 #include "utils/log.h"
 
 #include <QJSValue>
@@ -101,8 +101,8 @@ public:
         return true;
     }
 
-    Q_INVOKABLE bool hasValue(QString path) const;
-    Q_INVOKABLE QVariant value(QString path, const QVariant &defaultValue = {}) const;
+    Q_INVOKABLE bool hasValue(const QString &path) const;
+    Q_INVOKABLE QVariant value(const QString &path, const QVariant &defaultValue = {}) const;
 
     QString userFilePath() const;
     QString projectFilePath() const;
@@ -112,7 +112,7 @@ public:
     bool hasLsp() const;
 
 public slots:
-    bool setValue(QString path, const QJSValue &value);
+    bool setValue(const QString &path, const QJSValue &value);
 
 signals:
     void settingsLoaded();
@@ -135,8 +135,9 @@ private:
     void loadUserSettings();
     void updatePaths(const QString &path, const std::string &json_path, bool add);
     void saveSettings();
-    bool isUser() const;
     void saveOnExit();
+    bool isUser() const;
+    void triggerLog(const Utils::LoadJsonStatus &loadJsonStatus, const QString &fileName, const QString &caller);
 
     inline static Settings *m_instance = nullptr;
 
