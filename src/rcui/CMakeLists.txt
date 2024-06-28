@@ -20,7 +20,9 @@ set(PROJECT_SOURCES
     acceleratormodel.cpp
     acceleratormodel.h
     assetmodel.cpp
+    ribbonmodel.cpp
     assetmodel.h
+    ribbonmodel.h
     datamodel.cpp
     datamodel.h
     dialogmodel.cpp
