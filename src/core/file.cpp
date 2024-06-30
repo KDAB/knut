@@ -23,7 +23,7 @@ namespace Core {
  * \ingroup Utilities
  *
  * The `File` singleton implements most of the static methods from `QFile`, check
- * [QFile](https://doc.qt.io/qt-5/qfile.html) documentation.
+ * [QFile](https://doc.qt.io/qt-6/qfile.html) documentation.
  */
 
 File::File(QObject *parent)

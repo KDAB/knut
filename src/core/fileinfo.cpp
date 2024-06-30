@@ -22,7 +22,7 @@ namespace Core {
  * \ingroup Utilities
  *
  * The `FileInfo` singleton implements most of the static methods from `QFileInfo`, check
- * [QFileInfo](https://doc.qt.io/qt-5/qfileinfo.html) documentation.
+ * [QFileInfo](https://doc.qt.io/qt-6/qfileinfo.html) documentation.
  */
 
 FileInfo::FileInfo(QObject *parent)
