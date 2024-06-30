@@ -10,7 +10,7 @@ import Script
 
 | | Name |
 |-|-|
-|array<[QtUiWidget](../script/qtuiwidget.md)>|**[widgets](#widgets)**|
+|array&lt;[QtUiWidget](../script/qtuiwidget.md)>|**[widgets](#widgets)**|
 
 ## Methods
 
@@ -23,7 +23,7 @@ import Script
 
 ## Property Documentation
 
-#### <a name="widgets"></a>array<[QtUiWidget](../script/qtuiwidget.md)> **widgets**
+#### <a name="widgets"></a>array&lt;[QtUiWidget](../script/qtuiwidget.md)> **widgets**
 
 List of all widgets in the ui file.
 

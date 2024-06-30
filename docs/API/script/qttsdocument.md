@@ -11,7 +11,7 @@ import Script
 | | Name |
 |-|-|
 |string|**[language](#language)**|
-|array<QtUiMessage>|**[messages](#messages)**|
+|array&lt;QtUiMessage>|**[messages](#messages)**|
 |string|**[sourceLanguage](#sourceLanguage)**|
 
 ## Methods
@@ -28,7 +28,7 @@ import Script
 
 Return language name.
 
-#### <a name="messages"></a>array<QtUiMessage> **messages**
+#### <a name="messages"></a>array&lt;QtUiMessage> **messages**
 
 List of all translations in the ts file.
 
