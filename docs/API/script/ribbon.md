@@ -10,8 +10,8 @@ import Script
 
 | | Name |
 |-|-|
-|array<[RibbonCategory](../script/ribboncategory.md)>|**[categories](#categories)**|
-|array<[RibbonContext](../script/ribboncontext.md)>|**[contexts](#contexts)**|
+|array&lt;[RibbonCategory](../script/ribboncategory.md)>|**[categories](#categories)**|
+|array&lt;[RibbonContext](../script/ribboncontext.md)>|**[contexts](#contexts)**|
 |[RibbonMenu](../script/ribbonmenu.md)|**[menu](#menu)**|
 
 ## Detailed Description
@@ -27,11 +27,11 @@ A ribbon is made of multiple items:
 
 ## Property Documentation
 
-#### <a name="categories"></a>array<[RibbonCategory](../script/ribboncategory.md)> **categories**
+#### <a name="categories"></a>array&lt;[RibbonCategory](../script/ribboncategory.md)> **categories**
 
 This property holds the children categories of this ribbon.
 
-#### <a name="contexts"></a>array<[RibbonContext](../script/ribboncontext.md)> **contexts**
+#### <a name="contexts"></a>array&lt;[RibbonContext](../script/ribboncontext.md)> **contexts**
 
 This property holds the children contexts of this ribbon.
 

@@ -10,8 +10,8 @@ import Script
 
 | | Name |
 |-|-|
-|array<string>|**[actionIds](#actionIds)**|
-|array<[MenuItem](../script/menuitem.md)>|**[children](#children)**|
+|array&lt;string>|**[actionIds](#actionIds)**|
+|array&lt;[MenuItem](../script/menuitem.md)>|**[children](#children)**|
 |string|**[id](#id)**|
 
 ## Methods
@@ -22,11 +22,11 @@ import Script
 
 ## Property Documentation
 
-#### <a name="actionIds"></a>array<string> **actionIds**
+#### <a name="actionIds"></a>array&lt;string> **actionIds**
 
 This property holds all action ids used in the menu.
 
-#### <a name="children"></a>array<[MenuItem](../script/menuitem.md)> **children**
+#### <a name="children"></a>array&lt;[MenuItem](../script/menuitem.md)> **children**
 
 This property holds the list of menu items inside the menu.
 

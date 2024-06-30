@@ -10,7 +10,7 @@ import Script
 
 | | Name |
 |-|-|
-|array<[QueryCapture](../script/querycapture.md)>|**[captures](#captures)**|
+|array&lt;[QueryCapture](../script/querycapture.md)>|**[captures](#captures)**|
 |bool|**[isEmpty](#isEmpty)**|
 
 ## Methods
@@ -22,7 +22,7 @@ import Script
 |vector<[RangeMark](../script/rangemark.md)> |**[getAllInRange](#getAllInRange)**(string name, [RangeMark](../script/rangemark.md) range)|
 |[RangeMark](../script/rangemark.md) |**[getAllJoined](#getAllJoined)**(string name)|
 |[RangeMark](../script/rangemark.md) |**[getInRange](#getInRange)**(string name, [RangeMark](../script/rangemark.md) range)|
-|array<[QueryMatch](../script/querymatch.md)> |**[queryIn](#queryIn)**(capture, query)|
+|array&lt;[QueryMatch](../script/querymatch.md)> |**[queryIn](#queryIn)**(capture, query)|
 
 ## Detailed Description
 
@@ -47,7 +47,7 @@ https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Dest
 
 ## Property Documentation
 
-#### <a name="captures"></a>array<[QueryCapture](../script/querycapture.md)> **captures**
+#### <a name="captures"></a>array&lt;[QueryCapture](../script/querycapture.md)> **captures**
 
 List of all the captures in the current document.
 
@@ -95,7 +95,7 @@ Returns a smallest range that contains all captures for the given `name`.
 
 Returns the range covered by the first capture with the given `name` in the given `range`.
 
-#### <a name="queryIn"></a>array<[QueryMatch](../script/querymatch.md)> **queryIn**(capture, query)
+#### <a name="queryIn"></a>array&lt;[QueryMatch](../script/querymatch.md)> **queryIn**(capture, query)
 
 Executes the treesitter `query` on all nodes that were captured under the `capture` name.
 

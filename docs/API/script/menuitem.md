@@ -10,7 +10,7 @@ import Script
 
 | | Name |
 |-|-|
-|array<[MenuItem](../script/menuitem.md)>|**[children](#children)**|
+|array&lt;[MenuItem](../script/menuitem.md)>|**[children](#children)**|
 |string|**[id](#id)**|
 |bool|**[isAction](#isAction)**|
 |bool|**[isSeparator](#isSeparator)**|
@@ -19,7 +19,7 @@ import Script
 
 ## Property Documentation
 
-#### <a name="children"></a>array<[MenuItem](../script/menuitem.md)> **children**
+#### <a name="children"></a>array&lt;[MenuItem](../script/menuitem.md)> **children**
 
 This property holds the children of the menu item, in case this one is another level of menu.
 

@@ -41,11 +41,11 @@ Inherited properties: [CodeDocument properties](../script/codedocument.md#proper
 |[CppDocument](../script/cppdocument.md) |**[openHeaderSource](#openHeaderSource)**()|
 |QStringList |**[primitiveTypes](#primitiveTypes)**()|
 |[QueryMatch](../script/querymatch.md) |**[queryClassDefinition](#queryClassDefinition)**(string className)|
-|array<[QueryMatch](../script/querymatch.md)> |**[queryFunctionCall](#queryFunctionCall)**(string functionName)|
-|array<[QueryMatch](../script/querymatch.md)> |**[queryFunctionCall](#queryFunctionCall)**(string functionName, array<string> argumentCaptures)|
+|array&lt;[QueryMatch](../script/querymatch.md)> |**[queryFunctionCall](#queryFunctionCall)**(string functionName)|
+|array&lt;[QueryMatch](../script/querymatch.md)> |**[queryFunctionCall](#queryFunctionCall)**(string functionName, array&lt;string> argumentCaptures)|
 |[QueryMatch](../script/querymatch.md) |**[queryMember](#queryMember)**(string className, string memberName)|
-|array<[QueryMatch](../script/querymatch.md)> |**[queryMethodDeclaration](#queryMethodDeclaration)**(string className, string functionName)|
-|array<[QueryMatch](../script/querymatch.md)> |**[queryMethodDefinition](#queryMethodDefinition)**(string scope, string methodName)|
+|array&lt;[QueryMatch](../script/querymatch.md)> |**[queryMethodDeclaration](#queryMethodDeclaration)**(string className, string functionName)|
+|array&lt;[QueryMatch](../script/querymatch.md)> |**[queryMethodDefinition](#queryMethodDefinition)**(string scope, string methodName)|
 ||**[removeInclude](#removeInclude)**(string include)|
 |int |**[selectBlockEnd](#selectBlockEnd)**()|
 |int |**[selectBlockStart](#selectBlockStart)**()|
@@ -248,7 +248,7 @@ The returned QueryMatch instance will have the following captures available:
 - `base` - The list of base classes/structs, if any
 - `body` - The body of the class or struct definition (including curly-braces)
 
-#### <a name="queryFunctionCall"></a>array<[QueryMatch](../script/querymatch.md)> **queryFunctionCall**(string functionName)
+#### <a name="queryFunctionCall"></a>array&lt;[QueryMatch](../script/querymatch.md)> **queryFunctionCall**(string functionName)
 
 Returns the list of function calls to the function `functionName`, no matter how many arguments they were called with.
 
@@ -259,7 +259,7 @@ The returned QueryMatch instances will have the following captures available:
 - `argument-list` - The entire list of arguments, including the surroundg parentheses `()`
 - `arguments` - Each argument provided to the function call, in order, excluding any comments
 
-#### <a name="queryFunctionCall"></a>array<[QueryMatch](../script/querymatch.md)> **queryFunctionCall**(string functionName, array<string> argumentCaptures)
+#### <a name="queryFunctionCall"></a>array&lt;[QueryMatch](../script/querymatch.md)> **queryFunctionCall**(string functionName, array&lt;string> argumentCaptures)
 
 Returns the list of function calls to the function `functionName`.
 Only calls that have the same number of arguments as `argumentCaptures` will be returned.
@@ -286,7 +286,7 @@ The returned QueryMatch instance will have the following captures available:
 - `type`: The type of the member, without `const` or any reference/pointer specifiers (i.e. `&`/`*`)
 - `name`: The name of the member (should be equal to memberName)
 
-#### <a name="queryMethodDeclaration"></a>array<[QueryMatch](../script/querymatch.md)> **queryMethodDeclaration**(string className, string functionName)
+#### <a name="queryMethodDeclaration"></a>array&lt;[QueryMatch](../script/querymatch.md)> **queryMethodDeclaration**(string className, string functionName)
 
 Finds the declaration of a method inside a class or struct definition.
 
@@ -299,7 +299,7 @@ The returned QueryMatch instances contain the following captures:
 - `function`: The function declaration, without the return type
 - `name`: The name of the function
 
-#### <a name="queryMethodDefinition"></a>array<[QueryMatch](../script/querymatch.md)> **queryMethodDefinition**(string scope, string methodName)
+#### <a name="queryMethodDefinition"></a>array&lt;[QueryMatch](../script/querymatch.md)> **queryMethodDefinition**(string scope, string methodName)
 
 Returns the list of methods definitions matching the given name and scope.
 `scope` may be either a class name, a namespace or empty.

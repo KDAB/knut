@@ -10,7 +10,7 @@ import Script
 
 | | Name |
 |-|-|
-|array<[Widget](../script/widget.md)>|**[children](#children)**|
+|array&lt;[Widget](../script/widget.md)>|**[children](#children)**|
 |string|**[className](#className)**|
 |rect|**[geometry](#geometry)**|
 |string|**[id](#id)**|
@@ -18,7 +18,7 @@ import Script
 
 ## Property Documentation
 
-#### <a name="children"></a>array<[Widget](../script/widget.md)> **children**
+#### <a name="children"></a>array&lt;[Widget](../script/widget.md)> **children**
 
 This property holds the list of children of the current widget.
 

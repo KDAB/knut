@@ -11,16 +11,16 @@ import Script
 | | Name |
 |-|-|
 |string|**[currentDocument](#currentDocument)**|
-|array<string>|**[documents](#documents)**|
+|array&lt;string>|**[documents](#documents)**|
 |string|**[root](#root)**|
 
 ## Methods
 
 | | Name |
 |-|-|
-|array<string> |**[allFiles](#allFiles)**(PathType type = RelativeToRoot)|
-|array<string> |**[allFilesWithExtension](#allFilesWithExtension)**(string extension, PathType type = RelativeToRoot)|
-|array<string> |**[allFilesWithExtensions](#allFilesWithExtensions)**(array<string> extensions, PathType type = RelativeToRoot)|
+|array&lt;string> |**[allFiles](#allFiles)**(PathType type = RelativeToRoot)|
+|array&lt;string> |**[allFilesWithExtension](#allFilesWithExtension)**(string extension, PathType type = RelativeToRoot)|
+|array&lt;string> |**[allFilesWithExtensions](#allFilesWithExtensions)**(array&lt;string> extensions, PathType type = RelativeToRoot)|
 ||**[closeAll](#closeAll)**()|
 |[Document](../script/document.md) |**[get](#get)**(string fileName)|
 |[Document](../script/document.md) |**[open](#open)**(string fileName)|
@@ -37,7 +37,7 @@ The `Project` object is not meant to open multiple projects, but only open one.
 
 Current document opened in the project.
 
-#### <a name="documents"></a>array<string> **documents**
+#### <a name="documents"></a>array&lt;string> **documents**
 
 Return all documents opened in the project.
 
@@ -47,7 +47,7 @@ Current root path of the project, this can be set only once.
 
 ## Method Documentation
 
-#### <a name="allFiles"></a>array<string> **allFiles**(PathType type = RelativeToRoot)
+#### <a name="allFiles"></a>array&lt;string> **allFiles**(PathType type = RelativeToRoot)
 
 Returns all files in the current project.
 `type` defines the type of path, and can be one of those values:
@@ -55,7 +55,7 @@ Returns all files in the current project.
 - `Project.FullPath`
 - `Project.RelativeToRoot`
 
-#### <a name="allFilesWithExtension"></a>array<string> **allFilesWithExtension**(string extension, PathType type = RelativeToRoot)
+#### <a name="allFilesWithExtension"></a>array&lt;string> **allFilesWithExtension**(string extension, PathType type = RelativeToRoot)
 
 Returns all files with the `extension` given in the current project.
 `type` defines the type of path, and can be one of those values:
@@ -63,7 +63,7 @@ Returns all files with the `extension` given in the current project.
 - `Project.FullPath`
 - `Project.RelativeToRoot`
 
-#### <a name="allFilesWithExtensions"></a>array<string> **allFilesWithExtensions**(array<string> extensions, PathType type = RelativeToRoot)
+#### <a name="allFilesWithExtensions"></a>array&lt;string> **allFilesWithExtensions**(array&lt;string> extensions, PathType type = RelativeToRoot)
 
 Returns all files with an extension from `extensions` in the current project.
 `type` defines the type of path, and can be one of those values:
