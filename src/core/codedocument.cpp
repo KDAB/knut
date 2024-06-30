@@ -206,7 +206,7 @@ QString CodeDocument::hover(int position, std::function<void(const QString &)> a
 std::pair<QString, std::optional<TextRange>> CodeDocument::hoverWithRange(
     int position, std::function<void(const QString &, std::optional<TextRange>)> asyncCallback /*  = {} */) const
 {
-    LOG("CodeDocument::hover");
+    spdlog::debug("CodeDocument::hover");
 
     if (!checkClient())
         return {"", {}};
@@ -263,7 +263,7 @@ std::pair<QString, std::optional<TextRange>> CodeDocument::hoverWithRange(
 
 Core::TextLocationList CodeDocument::references(int position) const
 {
-    LOG("CodeDocument::references");
+    spdlog::debug("CodeDocument::references");
 
     if (!checkClient()) {
         return {};
@@ -288,17 +288,10 @@ Core::TextLocationList CodeDocument::references(int position) const
     return textLocations;
 }
 
-/*!
- * \qmlmethod CodeDocument::followSymbol()
- * Follows the symbol under the cursor.
- *
- * - Go to the declaration, if the symbol under cursor is a use
- * - Go to the declaration, if the symbol under cursor is a function definition
- * - Go to the definition, if the symbol under cursor is a function declaration
- */
+// Follows the symbol under the cursor.
 Document *CodeDocument::followSymbol()
 {
-    LOG("CodeDocument::followSymbol");
+    spdlog::debug("CodeDocument::followSymbol");
     if (!checkClient())
         return {};
 
@@ -306,7 +299,7 @@ Document *CodeDocument::followSymbol()
     // That way, calling followSymbol twice in a row causes Clangd
     // to switch between declaration and definition.
     auto cursor = textEdit()->textCursor();
-    LOG_RETURN("document", followSymbol(cursor.selectionStart()));
+    return followSymbol(cursor.selectionStart());
 }
 
 // At least with clangd, the "declaration" LSP call acts like followSymbol, it will:
@@ -373,7 +366,7 @@ Document *CodeDocument::followSymbol(int pos)
 // Switches between the function declaration or definition.
 Document *CodeDocument::switchDeclarationDefinition()
 {
-    LOG("CodeDocument::switchDeclarationDefinition");
+    spdlog::debug("CodeDocument::switchDeclarationDefinition");
     if (!checkClient())
         return {};
 
@@ -390,7 +383,7 @@ Document *CodeDocument::switchDeclarationDefinition()
         return nullptr;
     }
 
-    LOG_RETURN("document", followSymbol((*currentFunction)->selectionRange().start));
+    return followSymbol((*currentFunction)->selectionRange().start);
 }
 
 /*!
