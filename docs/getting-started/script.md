@@ -28,7 +28,7 @@ QML scripts are written using the `Script` item.
 
 ```qml
 // Script description
-import Script 1.0
+import Script
 
 Script {
     function init() {
@@ -51,7 +51,7 @@ For example, here is a small ui file named `my-script.ui`
 The script using this ui file will be called `my-script.qml`:
 ```qml
 // Script description
-import Script 1.0
+import Script
 
 ScriptDialog {
     function init() {
@@ -84,7 +84,7 @@ Here is the list of supported widgets for your dialogs, and how to access them f
 |`QDoubleSpinBox`|Value (double) via `data.objectName`|
 |`QComboBox`|Text via `data.objectName`, the list of values is available via `data.objectNameModel`|
 
-A note about `QComboBox`: if the combobox is editable, it will use the list of values as input data for completion.
+A note about `QComboBox`: if the combo box is editable, it will use the list of values as input data for completion.
 
 ### Alternative: using QtQuick
 
@@ -92,10 +92,10 @@ You can also use directly QtQuick and QtQcuick.Controls if you want, for example
 
 ```qml
 // Script description
-import QtQuick 2.12
-import QtQuick.Controls 2.12
-import QtQuick.Layouts 1.11
-import Script 1.0
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import Script
 
 ApplicationWindow {
     width: 300

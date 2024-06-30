@@ -3,7 +3,7 @@
 QML Item for writing visual scripts. [More...](#detailed-description)
 
 ```qml
-import Script 1.0
+import Script
 ```
 
 ## Properties
@@ -41,7 +41,7 @@ Buttons (`QPushButton` or `QToolButton`) `clicked` signal is mapped to the `clic
 button `objectName` as parameter. `QDialogButtonBox` `accepted` or `rejected` signals are automatically connected.
 
 ```qml
-import Script 1.0
+import Script
 
 ScriptDialog {
     property string text1: data.lineEdit

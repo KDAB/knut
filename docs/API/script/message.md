@@ -3,7 +3,7 @@
 Singleton with methods to display different messages to the user. [More...](#detailed-description)
 
 ```qml
-import Script 1.0
+import Script
 ```
 
 ## Methods

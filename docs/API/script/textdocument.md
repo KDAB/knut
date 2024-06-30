@@ -3,7 +3,7 @@
 Document object for text files. [More...](#detailed-description)
 
 ```qml
-import Script 1.0
+import Script
 ```
 
 ## Properties

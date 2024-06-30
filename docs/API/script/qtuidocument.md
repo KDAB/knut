@@ -3,7 +3,7 @@
 Provides access to the content of a Ui file (Qt designer file). [More...](#detailed-description)
 
 ```qml
-import Script 1.0
+import Script
 ```
 
 ## Properties

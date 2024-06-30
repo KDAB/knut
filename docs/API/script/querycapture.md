@@ -3,7 +3,7 @@
 Defines a capture made by a query. [More...](#detailed-description)
 
 ```qml
-import Script 1.0
+import Script
 ```
 
 ## Properties

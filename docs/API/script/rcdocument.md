@@ -3,7 +3,7 @@
 Provides access to the content of a RC file (MFC resource file). [More...](#detailed-description)
 
 ```qml
-import Script 1.0
+import Script
 ```
 
 ## Properties

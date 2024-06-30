@@ -7,7 +7,7 @@
 Represents a class in the current file [More...](#detailed-description)
 
 ```qml
-import Script 1.0
+import Script
 ```
 
 ## Properties

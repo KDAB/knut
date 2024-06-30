@@ -3,7 +3,7 @@
 A menu showing when clicking on the left/top icon in the ribbon. [More...](#detailed-description)
 
 ```qml
-import Script 1.0
+import Script
 ```
 
 ## Properties

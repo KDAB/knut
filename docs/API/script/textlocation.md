@@ -3,7 +3,7 @@
 Defines a range of text in a file. [More...](#detailed-description)
 
 ```qml
-import Script 1.0
+import Script
 ```
 
 ## Properties

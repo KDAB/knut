@@ -1,6 +1,6 @@
 // Example of an interactive GUI script
 
-import Script 1.0
+import Script
 
 ScriptDialog {
     id: root

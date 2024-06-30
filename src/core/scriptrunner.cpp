@@ -235,8 +235,8 @@ QVariant ScriptRunner::runJavascript(const QString &fileName, QQmlEngine *engine
 {
     const QString text =
         QStringLiteral(
-            "import QtQml 2.12\n"
-            "import Script 1.0\n"
+            "import QtQml\n"
+            "import Script\n"
             "import \"%1\" as MyScript\n"
             "QtObject { property var _scriptResult; Component.onCompleted : _scriptResult = MyScript.main() }")
             .arg(QUrl::fromLocalFile(fileName).toString());

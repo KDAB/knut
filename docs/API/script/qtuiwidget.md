@@ -3,7 +3,7 @@
 Provides access to widget attributes in the ui files. [More...](#detailed-description)
 
 ```qml
-import Script 1.0
+import Script
 ```
 
 ## Properties

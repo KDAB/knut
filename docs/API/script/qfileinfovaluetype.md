@@ -3,7 +3,7 @@
 Wrapper around the `QFileInfo` class. [More...](#detailed-description)
 
 ```qml
-import Script 1.0
+import Script
 ```
 
 ## Properties

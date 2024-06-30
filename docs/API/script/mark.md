@@ -3,7 +3,7 @@
 Keeps track of a position in a text document. [More...](#detailed-description)
 
 ```qml
-import Script 1.0
+import Script
 ```
 
 ## Properties

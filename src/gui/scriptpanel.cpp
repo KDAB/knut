@@ -42,7 +42,7 @@ function main() {
 
 constexpr char DefaultScriptDialog[] = R"(// Description of the script
 
-import Script 1.0
+import Script
 
 ScriptDialog {
     id: root

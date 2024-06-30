@@ -58,8 +58,8 @@ Each line will run a file from the `test_data` directory, for example the first 
 A QML test is using the module `Script.Test` and the item `TestCase`. Each function will be called automatically and returns true or false, depending of the test results.
 
 ```qml
-import Script 1.0
-import Script.Test 1.0
+import Script
+import Script.Test
 
 TestCase {
     name: "FileInfo"

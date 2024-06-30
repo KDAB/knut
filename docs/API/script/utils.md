@@ -3,7 +3,7 @@
 Singleton with utility methods. [More...](#detailed-description)
 
 ```qml
-import Script 1.0
+import Script
 ```
 
 ## Methods
