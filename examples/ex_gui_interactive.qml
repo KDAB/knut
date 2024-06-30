@@ -1,4 +1,13 @@
 // Example of an interactive GUI script
+/*
+  This file is part of Knut.
+
+  SPDX-FileCopyrightText: 2024 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+
+  SPDX-License-Identifier: BSD-3-Clause
+
+  Contact KDAB at <info@kdab.com> for commercial licensing options.
+*/
 
 import Script
 

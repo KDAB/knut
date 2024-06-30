@@ -1,6 +1,15 @@
 // Example script with all the different widgets managed by ScriptDialog showing how to set/get data
+/*
+  This file is part of Knut.
 
-import Script 1.0
+  SPDX-FileCopyrightText: 2024 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+
+  SPDX-License-Identifier: BSD-3-Clause
+
+  Contact KDAB at <info@kdab.com> for commercial licensing options.
+*/
+
+import Script
 
 ScriptDialog {
     id: root
