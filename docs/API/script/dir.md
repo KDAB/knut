@@ -37,7 +37,7 @@ import Script
 
 ## Detailed Description
 
-The `Dir` singleton implements most of the static methods from `QDir`, check [QDir](https://doc.qt.io/qt-5/qdir.html)
+The `Dir` singleton implements most of the static methods from `QDir`, check [QDir](https://doc.qt.io/qt-6/qdir.html)
 documentation.
 
 ## Property Documentation
