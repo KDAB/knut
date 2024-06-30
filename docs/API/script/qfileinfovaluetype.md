@@ -49,7 +49,7 @@ import Script
 ## Detailed Description
 
 The `QFileInfoValueType` is a wrapper around the `QFileInfo` C++ class, check
-[QFileInfo](https://doc.qt.io/qt-5/qfileinfo.html) documentation. It can only be created using
+[QFileInfo](https://doc.qt.io/qt-6/qfileinfo.html) documentation. It can only be created using
 [FileInfo](fileinfo.md].
 
 ## Property Documentation

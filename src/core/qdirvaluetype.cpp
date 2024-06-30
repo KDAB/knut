@@ -19,7 +19,7 @@ namespace Core {
  * \ingroup Utilities/@last
  * \sa Dir
  *
- * The `QDirValueType` is a wrapper around the `QDir` C++ class, check [QDir](https://doc.qt.io/qt-5/qdir.html)
+ * The `QDirValueType` is a wrapper around the `QDir` C++ class, check [QDir](https://doc.qt.io/qt-6/qdir.html)
  * documentation. It can only be created using [Dir](dir.md) singleton.
  */
 
