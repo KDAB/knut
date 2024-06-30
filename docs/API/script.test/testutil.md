@@ -3,7 +3,7 @@
 Provides utility methods useful for testing. [More...](#detailed-description)
 
 ```qml
-import Script.Test 1.0
+import Script.Test
 ```
 
 ## Methods

@@ -123,7 +123,7 @@ static constexpr char TypeFile[] = R"(# %1
 %2 [More...](#detailed-description)
 
 ```qml
-import %3 1.0
+import %3
 ```
 )";
 

@@ -3,7 +3,7 @@
 Singleton with methods to handle directories. [More...](#detailed-description)
 
 ```qml
-import Script 1.0
+import Script
 ```
 
 ## Properties

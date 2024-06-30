@@ -3,7 +3,7 @@
 Description of a RC file widget. [More...](#detailed-description)
 
 ```qml
-import Script 1.0
+import Script
 ```
 
 ## Properties

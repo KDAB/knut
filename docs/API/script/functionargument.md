@@ -7,7 +7,7 @@
 Represents an argument to be passed to the function [More...](#detailed-description)
 
 ```qml
-import Script 1.0
+import Script
 ```
 
 ## Properties

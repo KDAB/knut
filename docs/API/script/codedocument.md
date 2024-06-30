@@ -3,7 +3,7 @@
 Base document object for any code that Knut can parse. [More...](#detailed-description)
 
 ```qml
-import Script 1.0
+import Script
 ```
 
 ## Properties

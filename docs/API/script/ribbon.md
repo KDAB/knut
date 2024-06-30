@@ -3,7 +3,7 @@
 The ribbon description (not everything is read yet). [More...](#detailed-description)
 
 ```qml
-import Script 1.0
+import Script
 ```
 
 ## Properties

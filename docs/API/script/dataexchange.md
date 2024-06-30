@@ -3,7 +3,7 @@
 DataExchange entries in a MFC C++ document. [More...](#detailed-description)
 
 ```qml
-import Script 1.0
+import Script
 ```
 
 ## Properties

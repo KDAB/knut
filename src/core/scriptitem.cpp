@@ -22,7 +22,7 @@ namespace Core {
  * can't have any children in QML. It can be used as the basis for non visual QML scripts:
  *
  * ```qml
- * import Script 1.0
+ * import Script
  *
  * Script {
  * // ...

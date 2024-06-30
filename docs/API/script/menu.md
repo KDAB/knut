@@ -3,7 +3,7 @@
 Description of a RC file menu. [More...](#detailed-description)
 
 ```qml
-import Script 1.0
+import Script
 ```
 
 ## Properties

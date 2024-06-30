@@ -3,7 +3,7 @@
 Document object for a C++ file (source or header) [More...](#detailed-description)
 
 ```qml
-import Script 1.0
+import Script
 ```
 
 ## Properties

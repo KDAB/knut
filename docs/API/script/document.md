@@ -3,7 +3,7 @@
 Base class for all documents [More...](#detailed-description)
 
 ```qml
-import Script 1.0
+import Script
 ```
 
 ## Properties

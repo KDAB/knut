@@ -3,7 +3,7 @@
 Provides a way to create unit tests as script. [More...](#detailed-description)
 
 ```qml
-import Script.Test 1.0
+import Script.Test
 ```
 
 ## Properties

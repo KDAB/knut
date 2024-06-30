@@ -3,7 +3,7 @@
 Singleton for accessing and editing persistent settings. [More...](#detailed-description)
 
 ```qml
-import Script 1.0
+import Script
 ```
 
 ## Properties
