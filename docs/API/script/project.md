@@ -24,7 +24,7 @@ import Script
 ||**[closeAll](#closeAll)**()|
 |[Document](../script/document.md) |**[get](#get)**(string fileName)|
 |[Document](../script/document.md) |**[open](#open)**(string fileName)|
-||**[openPrevious](#openPrevious)**(int index)|
+||**[openPrevious](#openPrevious)**(int index = 1)|
 ||**[saveAllDocuments](#saveAllDocuments)**()|
 
 ## Detailed Description
@@ -77,18 +77,23 @@ Close all documents. If the document has some changes, save the changes.
 
 #### <a name="get"></a>[Document](../script/document.md) **get**(string fileName)
 
-Get the document for the given `fileName`. If the document is not opened yet, open it. If the document already
-exists, returns the same instance, a document can't be open twice. If the fileName is relative, use the root path as
-the base.
+Gets the document for the given `fileName`. If the document is not opened yet, open it. If the document
+is already opened, returns the same instance, a document can't be open twice. If the fileName is relative, use the
+root path as the base.
 
-*Note:* this command does not change the current document.
+If the document does not exist, creates a new document (but don't save it yet).
+
+!!! note
+    This command does not change the current document.
 
 #### <a name="open"></a>[Document](../script/document.md) **open**(string fileName)
 
-Opens a document for the given `fileName` and make it current. If the document already exists, returns the same
-instance, a document can't be open twice. If the fileName is relative, use the root path as the base.
+Opens or creates a document for the given `fileName` and make it current. If the document is already opened, returns
+the same instance, a document can't be open twice. If the fileName is relative, use the root path as the base.
 
-#### <a name="openPrevious"></a>**openPrevious**(int index)
+ If the document does not exist, creates a new document (but don't save it yet).
+
+#### <a name="openPrevious"></a>**openPrevious**(int index = 1)
 
 Open a previously opened document. `index` is the position of this document in the last opened document.
 
