@@ -54,6 +54,7 @@ namespace Core {
  */
 /*!
  * \qmlproperty string Document::errorString
+ * Returns the error string if an error occurred while loading the document, otherwise returns an empty string.
  */
 /*!
  * \qmlproperty bool Document::hasChanged

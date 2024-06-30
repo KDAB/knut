@@ -34,6 +34,8 @@ A document is a file loaded by Knut and that can be used in script (either to ge
 
 #### <a name="errorString"></a>string **errorString**
 
+Returns the error string if an error occurred while loading the document, otherwise returns an empty string.
+
 #### <a name="exists"></a>bool **exists**
 
 Returns true if the document is a file on the disk, otherwise returns false.
