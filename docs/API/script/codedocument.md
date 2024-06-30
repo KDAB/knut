@@ -17,12 +17,12 @@ Inherited properties: [TextDocument properties](../script/textdocument.md#proper
 |-|-|
 |[Symbol](../script/symbol.md) |**[findSymbol](#findSymbol)**(string name, int options = TextDocument.NoFindFlags)|
 |string |**[hover](#hover)**()|
-|array<[QueryMatch](../script/querymatch.md)> |**[query](#query)**(string query)|
+|array&lt;[QueryMatch](../script/querymatch.md)> |**[query](#query)**(string query)|
 |[QueryMatch](../script/querymatch.md) |**[queryFirst](#queryFirst)**(string query)|
-|array<[QueryMatch](../script/querymatch.md)> |**[queryInRange](#queryInRange)**([RangeMark](../script/rangemark.md) range, string query)|
+|array&lt;[QueryMatch](../script/querymatch.md)> |**[queryInRange](#queryInRange)**([RangeMark](../script/rangemark.md) range, string query)|
 ||**[selectSymbol](#selectSymbol)**(string name, int options = TextDocument.NoFindFlags)|
 |[Symbol](../script/symbol.md) |**[symbolUnderCursor](#symbolUnderCursor)**()|
-|array<[Symbol](../script/symbol.md)> |**[symbols](#symbols)**()|
+|array&lt;[Symbol](../script/symbol.md)> |**[symbols](#symbols)**()|
 
 Inherited methods: [TextDocument methods](../script/textdocument.md#methods)
 
@@ -53,7 +53,7 @@ from is deconstructed.
 Returns information about the symbol at the current cursor position.
 The result of this call is a plain string that may be formatted in Markdown.
 
-#### <a name="query"></a>array<[QueryMatch](../script/querymatch.md)> **query**(string query)
+#### <a name="query"></a>array&lt;[QueryMatch](../script/querymatch.md)> **query**(string query)
 
 Runs the given Tree-sitter `query` and returns the list of matches.
 
@@ -75,7 +75,7 @@ queries](https://tree-sitter.github.io/tree-sitter/using-parsers#pattern-matchin
 Also see: [Tree-sitter in Knut](../../getting-started/treesitter.md)
  Core::QueryMatchList CodeDocument::query(const QString &query)
 
-#### <a name="queryInRange"></a>array<[QueryMatch](../script/querymatch.md)> **queryInRange**([RangeMark](../script/rangemark.md) range, string query)
+#### <a name="queryInRange"></a>array&lt;[QueryMatch](../script/querymatch.md)> **queryInRange**([RangeMark](../script/rangemark.md) range, string query)
 
 Searches for the given `query`, but only in the provided `range`.
 
@@ -98,7 +98,7 @@ This function may return symbols that are not returned by the `symbols()` or `cu
 as these only return high-level symbols, like classes and functions, but not symbols within functions.
 `symbolUnderCursor()` can however return these Symbols.
 
-#### <a name="symbols"></a>array<[Symbol](../script/symbol.md)> **symbols**()
+#### <a name="symbols"></a>array&lt;[Symbol](../script/symbol.md)> **symbols**()
 
 Returns the list of symbols in the current document.
 

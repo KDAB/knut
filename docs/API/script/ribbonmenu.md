@@ -10,7 +10,7 @@ import Script
 
 | | Name |
 |-|-|
-|array<[RibbonElement](../script/ribbonelement.md)>|**[elements](#elements)**|
+|array&lt;[RibbonElement](../script/ribbonelement.md)>|**[elements](#elements)**|
 |string|**[largeImage](#largeImage)**|
 |string|**[recentFilesText](#recentFilesText)**|
 |string|**[smallImage](#smallImage)**|
@@ -18,7 +18,7 @@ import Script
 
 ## Property Documentation
 
-#### <a name="elements"></a>array<[RibbonElement](../script/ribbonelement.md)> **elements**
+#### <a name="elements"></a>array&lt;[RibbonElement](../script/ribbonelement.md)> **elements**
 
 This property holds the children elements of this menu.
 

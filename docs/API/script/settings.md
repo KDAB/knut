@@ -28,7 +28,7 @@ The settings are stored in a json file, and could be:
 - int
 - double
 - string
-- array<string>
+- array&lt;string>
 
 ## Property Documentation
 

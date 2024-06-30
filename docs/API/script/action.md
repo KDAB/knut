@@ -13,7 +13,7 @@ import Script
 |bool|**[checked](#checked)**|
 |string|**[iconPath](#iconPath)**|
 |string|**[id](#id)**|
-|array<[Shortcut](../script/shortcut.md)>|**[shortcuts](#shortcuts)**|
+|array&lt;[Shortcut](../script/shortcut.md)>|**[shortcuts](#shortcuts)**|
 |string|**[statusTip](#statusTip)**|
 |string|**[toolTip](#toolTip)**|
 
@@ -31,7 +31,7 @@ This property holds the fileName for the icon of the action.
 
 This property holds the id of the action.
 
-#### <a name="shortcuts"></a>array<[Shortcut](../script/shortcut.md)> **shortcuts**
+#### <a name="shortcuts"></a>array&lt;[Shortcut](../script/shortcut.md)> **shortcuts**
 
 This property holds all the shortcuts associated with the action.
 
