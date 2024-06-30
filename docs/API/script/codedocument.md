@@ -16,7 +16,6 @@ Inherited properties: [TextDocument properties](../script/textdocument.md#proper
 | | Name |
 |-|-|
 |[Symbol](../script/symbol.md) |**[findSymbol](#findSymbol)**(string name, int options = TextDocument.NoFindFlags)|
-||**[followSymbol](#followSymbol)**()|
 |string |**[hover](#hover)**()|
 |array<[QueryMatch](../script/querymatch.md)> |**[query](#query)**(string query)|
 |[QueryMatch](../script/querymatch.md) |**[queryFirst](#queryFirst)**(string query)|
@@ -48,14 +47,6 @@ Finds a symbol based on its `name`, using different find `options`.
 
 Note that the returned `Symbol` pointer is only valid until the document it originates
 from is deconstructed.
-
-#### <a name="followSymbol"></a>**followSymbol**()
-
-Follows the symbol under the cursor.
-
-- Go to the declaration, if the symbol under cursor is a use
-- Go to the declaration, if the symbol under cursor is a function definition
-- Go to the definition, if the symbol under cursor is a function declaration
 
 #### <a name="hover"></a>string **hover**()
 
