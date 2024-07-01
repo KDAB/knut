@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include "document.h"
 #include "rangemark.h"
 #include "symbol.h"
 #include "treesitter/node.h"
@@ -26,6 +27,12 @@ class CodeDocument;
 class TreeSitterHelper
 {
 public:
+    using SymbolQueryFunction = std::function<QList<Core::Symbol *>(CodeDocument *const)>;
+
+    SymbolQueryFunction querySymbols = [](CodeDocument *const) -> QList<Core::Symbol *> {
+        return {};
+    };
+
     explicit TreeSitterHelper(CodeDocument *document);
 
     void clear();
@@ -41,11 +48,6 @@ public:
 
 private:
     void assignSymbolContexts();
-
-    QList<Core::Symbol *> functionSymbols() const;
-    QList<Core::Symbol *> classSymbols() const;
-    QList<Core::Symbol *> memberSymbols() const;
-    QList<Core::Symbol *> enumSymbols() const;
 
     enum Flags {
         HasSymbols = 0x01,

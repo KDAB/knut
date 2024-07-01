@@ -9,6 +9,7 @@
 */
 
 #include "cppdocument.h"
+#include "codedocument_p.h"
 #include "cppdocument_p.h"
 #include "functionsymbol.h"
 #include "logger.h"
@@ -26,6 +27,146 @@
 #include <QVariantMap>
 #include <algorithm>
 #include <kdalgorithms.h>
+
+namespace {
+using namespace Core;
+
+auto queryFunctionSymbols(CodeDocument *const document) -> QList<Core::Symbol *>
+{
+    auto functionDeclarator = R"EOF(
+            (function_declarator
+              declarator: [
+                (identifier) @selectionRange
+                (field_identifier) @selectionRange
+                (_ [(identifier) (field_identifier)] @selectionRange)
+                (_ (_ [(identifier) (field_identifier)] @selectionRange))
+              ] @name
+
+              parameters: (parameter_list
+                ; Cool trick: We can use [(type) @capture _]* to capture specific node types
+                ; and ignore all others, like comments, "," and so on.
+                [(parameter_declaration) @parameter _]*) @parameters
+
+              (trailing_return_type (_) @return)? )
+    )EOF";
+
+    auto pointerDeclarator = QString(R"EOF(
+        [%1
+        (_ "*"? @return "&"? @return "&&"? @return %1)
+        (_ ["*" "&" "&&"]? @return
+            (_ ["*" "&" "&&"]? @return %1))]
+    )EOF")
+                                 .arg(functionDeclarator);
+
+    // TODO: Add support for pointers & references
+    auto functions = document->query(QString(R"EOF(
+                        [; Free functions
+                        (function_definition
+                          type: (_)? @return
+                          ; If using trailing return type, we need to remove the auto type at the start
+                          (#exclude! @return placeholder_type_specifier)
+                          declarator: %2) @range
+
+                        ; Constructor/Destructors
+                        (declaration
+                          declarator: %1) @range
+
+                        ; Member functions
+                        (field_declaration
+                          type: (_)? @return
+                          ; If using trailing return type, we need to remove the auto type at the start
+                          (#exclude! @return placeholder_type_specifier)
+                          declarator: %2) @range
+
+                        ])EOF")
+                                         .arg(functionDeclarator, pointerDeclarator));
+
+    auto function_to_symbol = [document](const QueryMatch &match) {
+        auto kind = Symbol::Kind::Function;
+        if (!match.get("return").isValid()) {
+            // No return type, this is a Constructor/Destructor
+            // Clangd also assigned the Constructor kind to Destructors, so we'll do the same
+            kind = Symbol::Kind::Constructor;
+        } else if (match.get("name").text().contains("::")) {
+            // This is a bit of a guesstimate, but if the function name contains "::", it's likely a method.
+            // It may also be a member of a namespace, but this information isn't really available unless we try
+            // to resolve the original declaration.
+            kind = Symbol::Kind::Method;
+        }
+        return Symbol::makeSymbol(document, match, kind);
+    };
+
+    return kdalgorithms::transformed<QList<Symbol *>>(functions, function_to_symbol);
+}
+auto queryClassSymbols(CodeDocument *const document) -> QList<Core::Symbol *>
+{
+    auto classesAndStructs = document->query(QString(R"EOF(
+            (class_specifier
+              name: (_) @name @selectionRange
+              body: (field_declaration_list)) @range
+
+            (struct_specifier
+              name: (_) @name @selectionRange
+              body: (field_declaration_list)) @range
+    )EOF"));
+    auto class_to_symbol = [document](const QueryMatch &match) {
+        return Symbol::makeSymbol(document, match, Symbol::Kind::Class);
+    };
+
+    return kdalgorithms::transformed<QList<Symbol *>>(classesAndStructs, class_to_symbol);
+}
+auto queryMemberSymbols(CodeDocument *const document) -> QList<Core::Symbol *>
+{
+    auto fieldIdentifier = "(field_identifier) @name @selectionRange";
+    auto members = document->query(QString(R"EOF(
+                                        (field_declaration
+                                          type: (_) @type
+                                          declarator: [
+                                            %1
+                                            (_ %1) @decl_type
+                                            (_ (_ %1) @decl_type) @decl_type
+                                          ]
+                                          ; We need to filter out functions, they are already captured
+                                          ; by the functionSymbols query
+                                          (#not_is? @decl_type function_declarator)) @range)EOF")
+                                       .arg(fieldIdentifier));
+
+    auto member_to_symbol = [document](const QueryMatch &match) {
+        return Symbol::makeSymbol(document, match, Symbol::Kind::Field);
+    };
+
+    return kdalgorithms::transformed<QList<Symbol *>>(members, member_to_symbol);
+}
+auto queryEnumSymbols(CodeDocument *const document) -> QList<Core::Symbol *>
+{
+    auto enums = document->query(R"EOF(
+        (enum_specifier
+          name: (_) @name @selectionRange) @range
+    )EOF");
+    auto enum_to_symbol = [document](const QueryMatch &match) {
+        return Symbol::makeSymbol(document, match, Symbol::Kind::Enum);
+    };
+    auto result = kdalgorithms::transformed<QList<Symbol *>>(enums, enum_to_symbol);
+
+    auto enumerators = document->query(R"EOF(
+        (enumerator
+          name: (_) @name @selectionRange
+          value: (_)? @value) @range
+    )EOF");
+    result.append(kdalgorithms::transformed<QList<Symbol *>>(enumerators, enum_to_symbol));
+
+    return result;
+}
+auto queryAllSymbols(CodeDocument *const document) -> QList<Core::Symbol *>
+{
+    auto symbols = ::queryClassSymbols(document);
+    symbols.append(::queryFunctionSymbols(document));
+    symbols.append(::queryMemberSymbols(document));
+    symbols.append(::queryEnumSymbols(document));
+    return symbols;
+}
+
+}
 
 namespace Core {
 
@@ -45,8 +186,9 @@ namespace Core {
 CppDocument::CppDocument(QObject *parent)
     : CodeDocument(Type::Cpp, parent)
 {
+    // setup symbol query functions specific to c++
+    helper()->querySymbols = ::queryAllSymbols;
 }
-
 CppDocument::~CppDocument() = default;
 
 static bool isHeaderSuffix(const QString &suffix)

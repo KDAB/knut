@@ -13,6 +13,7 @@
 #include "codedocument.h"
 #include "dataexchange.h"
 #include "messagemap.h"
+#include "symbol.h"
 
 #ifndef Q_MOC_RUN
 #define API_EXECUTOR
