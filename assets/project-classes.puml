@@ -1,0 +1,54 @@
+@startuml
+class Project {
+  vector<Document*> m_documents
+  hash<type, Lsp::CLient*> m_lspClients
+  bool setRoot(string)
+  Document* open(string)
+  Document* get(string)
+}
+abstract class Document {
+  bool load(string)
+  bool save()
+  bool saveAs(string)
+  void close()
+}
+class TextDocument {
+  QPlainTextEdit m_document
+  string text()
+  string currentLine()
+}
+class UiDocument
+class RcDocument {
+  RcCore::Data m_data
+}
+class RcCore::Data
+class ImageDocument
+class CodeDocument {
+  Lsp::Client* m_client
+  TreeSitterHelper *m_treeSitterHelper
+  vector<Symbol> symbols()
+  vector<QueryMatch> query(string)
+}
+class CppDocument {
+  bool isHeader()
+  CppDocument* openHeaderSource()
+}
+class Lsp::Client {
+  void openProject(string)
+  void closeProject(string)
+  Result documentSymbol(...)
+}
+
+Project o-- Document
+Document <|-- TextDocument
+Document <|-- UiDocument
+Document <|-- RcDocument
+RcDocument o-- RcCore::Data
+Document <|-- ImageDocument
+TextDocument <|-- CodeDocument
+CodeDocument <|-- CppDocument
+Project o-- Lsp::Client
+CodeDocument *-- Lsp::Client
+
+
+@enduml

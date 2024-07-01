@@ -1,0 +1,20 @@
+@startuml
+node knut #palegreen;line:green;text:green
+node gui #aliceblue;line:blue;text:blue
+node rcui #aliceblue;line:blue;text:blue
+node rccore #aliceblue;line:blue;text:blue
+node core #aliceblue;line:blue;text:blue
+node lsp #aliceblue;line:blue;text:blue
+node treesittercpp as "treesitter (C++)" #aliceblue;line:blue;text:blue
+storage treesitter as "treesitter" #pink;line:red;line.bold;text:red
+storage clangd #pink;line:red;line.bold;text:red
+knut -->> gui
+gui -->> rcui
+gui -->> core
+rcui -->> rccore
+core -->> lsp
+core -->> rccore
+core -->> treesittercpp
+treesittercpp --> treesitter
+lsp --> clangd
+@enduml

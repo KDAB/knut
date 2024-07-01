@@ -1,0 +1,34 @@
+@startuml
+folder project {
+  file source.cpp {
+    card cppAPI[
+      C++ File API
+    ]
+  }
+  file source.h {
+    card hAPI[
+      C++ File API
+    ]
+  }
+  file source.ui {
+    card uiAPI[
+      UI File API
+    ]
+  }
+  card projectAPI[
+    Project API
+  ]
+}
+
+file script [
+  script
+  ----
+  Use Project, C++
+  and UI APIs
+]
+
+projectAPI<--script
+cppAPI<--script
+hAPI<--script
+uiAPI<--script
+@enduml

@@ -1,0 +1,2 @@
+CHECKS level0,level1,no-qproperty-without-notify,no-non-pod-global-static
+SKIP /test_data/|/build-*/
