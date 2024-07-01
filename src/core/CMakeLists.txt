@@ -119,14 +119,14 @@ target_link_libraries(
   PUBLIC nlohmann_json::nlohmann_json
          pugixml::pugixml
          kdalgorithms
-         Qt${QT_VERSION_MAJOR}::Core
-         Qt${QT_VERSION_MAJOR}::CorePrivate
-         Qt${QT_VERSION_MAJOR}::Qml
-         Qt${QT_VERSION_MAJOR}::QmlPrivate
-         Qt${QT_VERSION_MAJOR}::Quick
-         Qt${QT_VERSION_MAJOR}::Widgets
-         Qt${QT_VERSION_MAJOR}::WidgetsPrivate
-         Qt${QT_VERSION_MAJOR}::UiTools
+         Qt::Core
+         Qt::CorePrivate
+         Qt::Qml
+         Qt::QmlPrivate
+         Qt::Quick
+         Qt::Widgets
+         Qt::WidgetsPrivate
+         Qt::UiTools
          knut-lsp
          knut-treesitter
          knut-rccore
