@@ -21,4 +21,4 @@ set(PROJECT_SOURCES data.h cpp2doc.cpp sourceparser.h sourceparser.cpp
                     docwriter.h docwriter.cpp)
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Core)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt::Core)

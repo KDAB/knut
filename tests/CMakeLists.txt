@@ -29,8 +29,7 @@ function(add_knut_test_variadic name)
 
   add_executable(${name} ${ARG_SOURCES})
 
-  target_link_libraries(${name} PRIVATE Qt${QT_VERSION_MAJOR}::Test knut-core
-                                        ${ARG_LIBS})
+  target_link_libraries(${name} PRIVATE Qt::Test knut-core ${ARG_LIBS})
   target_include_directories(${name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src)
 
   add_test(${name} ${CMAKE_BINARY_DIR}/bin/${name})
