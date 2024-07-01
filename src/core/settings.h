@@ -11,7 +11,7 @@
 #pragma once
 
 #include "document.h"
-#include "utils/json.h"
+// #include "utils/json.h"
 #include "utils/log.h"
 
 #include <QObject>
@@ -99,8 +99,8 @@ public:
         return true;
     }
 
-    Q_INVOKABLE bool hasValue(QString path) const;
-    Q_INVOKABLE QVariant value(QString path, const QVariant &defaultValue = {}) const;
+    Q_INVOKABLE bool hasValue(const QString &path) const;
+    Q_INVOKABLE QVariant value(const QString &path, const QVariant &defaultValue = {}) const;
 
     QString userFilePath() const;
     QString projectFilePath() const;
@@ -110,7 +110,7 @@ public:
     bool hasLsp() const;
 
 public slots:
-    bool setValue(QString path, const QVariant &value);
+    bool setValue(const QString &path, const QVariant &value);
 
 signals:
     void settingsLoaded();

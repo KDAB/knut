@@ -41,6 +41,8 @@ set(PROJECT_SOURCES
     imagedocument.cpp
     jsondocument.h
     jsondocument.cpp
+    jsonutilities.h
+    jsonutilities.cpp
     knutcore.h
     knutcore.cpp
     logger.h
