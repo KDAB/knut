@@ -139,7 +139,8 @@ void TreeSitterHelper::assignSymbolContexts()
 
 QVector<Core::Symbol *> TreeSitterHelper::functionSymbols() const
 {
-    auto functionDeclarator = R"EOF(
+    if (m_document->type() == Document::Type::Cpp) {
+        auto functionDeclarator = R"EOF(
             (function_declarator
               declarator: [
                 (identifier) @selectionRange
@@ -156,16 +157,16 @@ QVector<Core::Symbol *> TreeSitterHelper::functionSymbols() const
               (trailing_return_type (_) @return)? )
     )EOF";
 
-    auto pointerDeclarator = QString(R"EOF(
+        auto pointerDeclarator = QString(R"EOF(
         [%1
         (_ "*"? @return "&"? @return "&&"? @return %1)
         (_ ["*" "&" "&&"]? @return
             (_ ["*" "&" "&&"]? @return %1))]
     )EOF")
-                                 .arg(functionDeclarator);
+                                     .arg(functionDeclarator);
 
-    // TODO: Add support for pointers & references
-    auto functions = m_document->query(QString(R"EOF(
+        // TODO: Add support for pointers & references
+        auto functions = m_document->query(QString(R"EOF(
                         [; Free functions
                         (function_definition
                           type: (_)? @return
@@ -185,29 +186,55 @@ QVector<Core::Symbol *> TreeSitterHelper::functionSymbols() const
                           declarator: %2) @range
 
                         ])EOF")
-                                           .arg(functionDeclarator, pointerDeclarator));
+                                               .arg(functionDeclarator, pointerDeclarator));
 
-    auto function_to_symbol = [this](const QueryMatch &match) {
-        auto kind = Symbol::Kind::Function;
-        if (!match.get("return").isValid()) {
-            // No return type, this is a Constructor/Destructor
-            // Clangd also assigned the Constructor kind to Destructors, so we'll do the same
-            kind = Symbol::Kind::Constructor;
-        } else if (match.get("name").text().contains("::")) {
-            // This is a bit of a guesstimate, but if the function name contains "::", it's likely a method.
-            // It may also be a member of a namespace, but this information isn't really available unless we try
-            // to resolve the original declaration.
-            kind = Symbol::Kind::Method;
-        }
-        return Symbol::makeSymbol(m_document, match, kind);
-    };
+        auto function_to_symbol = [this](const QueryMatch &match) {
+            auto kind = Symbol::Kind::Function;
+            if (!match.get("return").isValid()) {
+                // No return type, this is a Constructor/Destructor
+                // Clangd also assigned the Constructor kind to Destructors, so we'll do the same
+                kind = Symbol::Kind::Constructor;
+            } else if (match.get("name").text().contains("::")) {
+                // This is a bit of a guesstimate, but if the function name contains "::", it's likely a method.
+                // It may also be a member of a namespace, but this information isn't really available unless we try
+                // to resolve the original declaration.
+                kind = Symbol::Kind::Method;
+            }
+            return Symbol::makeSymbol(m_document, match, kind);
+        };
 
-    return kdalgorithms::transformed<QVector<Symbol *>>(functions, function_to_symbol);
+        return kdalgorithms::transformed<QVector<Symbol *>>(functions, function_to_symbol);
+    } else if (m_document->type() == Document::Type::Qml) {
+        auto functions = m_document->query(QString(R"EOF((function_declaration 
+        name:(_) @name @selectionRange
+        parameters: (_) @parameters
+        body: (_) @body
+        ) @range)EOF"));
+
+        auto function_to_symbol = [this](const QueryMatch &match) {
+            auto kind = Symbol::Kind::Function;
+            if (!match.get("return").isValid()) {
+                // No return type, this is a Constructor/Destructor
+                // Clangd also assigned the Constructor kind to Destructors, so we'll do the same
+                kind = Symbol::Kind::Constructor;
+            } else if (match.get("name").text().contains("::")) {
+                // This is a bit of a guesstimate, but if the function name contains "::", it's likely a method.
+                // It may also be a member of a namespace, but this information isn't really available unless we try
+                // to resolve the original declaration.
+                kind = Symbol::Kind::Method;
+            }
+            return Symbol::makeSymbol(m_document, match, kind);
+        };
+
+        return kdalgorithms::transformed<QVector<Symbol *>>(functions, function_to_symbol);
+    }
+    return {};
 }
 
 QVector<Core::Symbol *> TreeSitterHelper::classSymbols() const
 {
-    auto classesAndStructs = m_document->query(QString(R"EOF(
+    if (m_document->type() == Document::Type::Cpp) {
+        auto classesAndStructs = m_document->query(QString(R"EOF(
             (class_specifier
               name: (_) @name @selectionRange
               body: (field_declaration_list)) @range
@@ -216,17 +243,30 @@ QVector<Core::Symbol *> TreeSitterHelper::classSymbols() const
               name: (_) @name @selectionRange
               body: (field_declaration_list)) @range
     )EOF"));
-    auto class_to_symbol = [this](const QueryMatch &match) {
-        return Symbol::makeSymbol(m_document, match, Symbol::Kind::Class);
-    };
+        auto class_to_symbol = [this](const QueryMatch &match) {
+            return Symbol::makeSymbol(m_document, match, Symbol::Kind::Class);
+        };
 
-    return kdalgorithms::transformed<QVector<Symbol *>>(classesAndStructs, class_to_symbol);
+        return kdalgorithms::transformed<QVector<Symbol *>>(classesAndStructs, class_to_symbol);
+    } else if (m_document->type() == Document::Type::Qml) {
+        auto uiObjectDefinitions = m_document->query(QString(
+            R"EOF(
+                (ui_object_definition type_name : (_) @name @selectionRange) @range
+            )EOF"));
+        auto objectsToSymbol = [this](const QueryMatch &match) {
+            return Symbol::makeSymbol(m_document, match, Symbol::Kind::Class);
+        };
+        return kdalgorithms::transformed<QVector<Symbol *>>(uiObjectDefinitions, objectsToSymbol);
+    }
+
+    return {};
 }
 
 QVector<Core::Symbol *> TreeSitterHelper::memberSymbols() const
 {
-    auto fieldIdentifier = "(field_identifier) @name @selectionRange";
-    auto members = m_document->query(QString(R"EOF(
+    if (m_document->type() == Document::Type::Cpp) {
+        auto fieldIdentifier = "(field_identifier) @name @selectionRange";
+        auto members = m_document->query(QString(R"EOF(
                                         (field_declaration
                                           type: (_) @type
                                           declarator: [
@@ -237,34 +277,52 @@ QVector<Core::Symbol *> TreeSitterHelper::memberSymbols() const
                                           ; We need to filter out functions, they are already captured
                                           ; by the functionSymbols query
                                           (#not_is? @decl_type function_declarator)) @range)EOF")
-                                         .arg(fieldIdentifier));
+                                             .arg(fieldIdentifier));
 
-    auto member_to_symbol = [this](const QueryMatch &match) {
-        return Symbol::makeSymbol(m_document, match, Symbol::Kind::Field);
-    };
+        auto member_to_symbol = [this](const QueryMatch &match) {
+            return Symbol::makeSymbol(m_document, match, Symbol::Kind::Field);
+        };
 
-    return kdalgorithms::transformed<QVector<Symbol *>>(members, member_to_symbol);
+        return kdalgorithms::transformed<QVector<Symbol *>>(members, member_to_symbol);
+    } else if (m_document->type() == Document::Type::Qml) {
+        //    auto fieldIdentifier = "(field_identifier) @name @selectionRange";
+        auto members = m_document->query(QString(R"EOF(
+        (ui_binding 
+        name: (_) @name @selectionRange
+        value: (expression_statement(_)@type) 
+        @value) @range)EOF"));
+
+        auto member_to_symbol = [this](const QueryMatch &match) {
+            return Symbol::makeSymbol(m_document, match, Symbol::Kind::Field);
+        };
+
+        return kdalgorithms::transformed<QVector<Symbol *>>(members, member_to_symbol);
+    }
+    return {};
 }
 
 QVector<Core::Symbol *> TreeSitterHelper::enumSymbols() const
 {
-    auto enums = m_document->query(R"EOF(
+    if (m_document->type() == Document::Type::Cpp) {
+        auto enums = m_document->query(R"EOF(
         (enum_specifier
           name: (_) @name @selectionRange) @range
     )EOF");
-    auto enum_to_symbol = [this](const QueryMatch &match) {
-        return Symbol::makeSymbol(m_document, match, Symbol::Kind::Enum);
-    };
-    auto result = kdalgorithms::transformed<QVector<Symbol *>>(enums, enum_to_symbol);
+        auto enum_to_symbol = [this](const QueryMatch &match) {
+            return Symbol::makeSymbol(m_document, match, Symbol::Kind::Enum);
+        };
+        auto result = kdalgorithms::transformed<QVector<Symbol *>>(enums, enum_to_symbol);
 
-    auto enumerators = m_document->query(R"EOF(
+        auto enumerators = m_document->query(R"EOF(
         (enumerator
           name: (_) @name @selectionRange
           value: (_)? @value) @range
     )EOF");
-    result.append(kdalgorithms::transformed<QVector<Symbol *>>(enumerators, enum_to_symbol));
+        result.append(kdalgorithms::transformed<QVector<Symbol *>>(enumerators, enum_to_symbol));
 
-    return result;
+        return result;
+    }
+    return {};
 }
 
 const QVector<Core::Symbol *> &TreeSitterHelper::symbols()
