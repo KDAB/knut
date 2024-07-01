@@ -28,9 +28,9 @@ import Script
 |string |**[at](#at)**(int pos)|
 |bool |**[cd](#cd)**(string dirName)|
 |bool |**[cdUp](#cdUp)**()|
-|array<string> |**[entryList](#entryList)**(int filters, int sort)|
-|array<string> |**[entryList](#entryList)**(string nameFilter, int filters, int sort)|
-|array<string> |**[entryList](#entryList)**(array<string> nameFilters, int filters, int sort)|
+|array&lt;string> |**[entryList](#entryList)**(int filters, int sort)|
+|array&lt;string> |**[entryList](#entryList)**(string nameFilter, int filters, int sort)|
+|array&lt;string> |**[entryList](#entryList)**(array&lt;string> nameFilters, int filters, int sort)|
 |bool |**[fileExists](#fileExists)**(string name)|
 |bool |**[makeAbsolute](#makeAbsolute)**()|
 |bool |**[mkdir](#mkdir)**(string dirName)|
@@ -43,7 +43,7 @@ import Script
 
 ## Detailed Description
 
-The `QDirValueType` is a wrapper around the `QDir` C++ class, check [QDir](https://doc.qt.io/qt-5/qdir.html)
+The `QDirValueType` is a wrapper around the `QDir` C++ class, check [QDir](https://doc.qt.io/qt-6/qdir.html)
 documentation. It can only be created using [Dir](dir.md) singleton.
 
 ## Property Documentation
@@ -76,7 +76,7 @@ documentation. It can only be created using [Dir](dir.md) singleton.
 
 #### <a name="cdUp"></a>bool **cdUp**()
 
-#### <a name="entryList"></a>array<string> **entryList**(int filters, int sort)<br/>array<string> **entryList**(string nameFilter, int filters, int sort)<br/>array<string> **entryList**(array<string> nameFilters, int filters, int sort)
+#### <a name="entryList"></a>array&lt;string> **entryList**(int filters, int sort)<br/>array&lt;string> **entryList**(string nameFilter, int filters, int sort)<br/>array&lt;string> **entryList**(array&lt;string> nameFilters, int filters, int sort)
 
 `filters` is a combination of (default is `Dir.NoFilter`):
 

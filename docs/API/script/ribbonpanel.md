@@ -10,13 +10,13 @@ import Script
 
 | | Name |
 |-|-|
-|array<[RibbonElement](../script/ribbonelement.md)>|**[elements](#elements)**|
+|array&lt;[RibbonElement](../script/ribbonelement.md)>|**[elements](#elements)**|
 |string|**[keys](#keys)**|
 |string|**[text](#text)**|
 
 ## Property Documentation
 
-#### <a name="elements"></a>array<[RibbonElement](../script/ribbonelement.md)> **elements**
+#### <a name="elements"></a>array&lt;[RibbonElement](../script/ribbonelement.md)> **elements**
 
 This property holds the children elements of this panel.
 

@@ -14,7 +14,7 @@ import Script
 |double |**[getDouble](#getDouble)**(string title, string label, real value = 0.0, int decimals = 1, real step = 1.0, real min = -2147483647.0, real max = 2147483647.0)|
 |string |**[getExistingDirectory](#getExistingDirectory)**(string caption, string dir = "")|
 |int |**[getInt](#getInt)**(string title, string label, int value = 0, int step = 1, int min = -2147483647, int max = 2147483647)|
-|string |**[getItem](#getItem)**(string title, string label, array<string> items, int current = 0, bool editable = false)|
+|string |**[getItem](#getItem)**(string title, string label, array&lt;string> items, int current = 0, bool editable = false)|
 |string |**[getOpenFileName](#getOpenFileName)**(string caption, string dir = "", string filters = "")|
 |string |**[getSaveFileName](#getSaveFileName)**(string caption, string dir = "", string filters = "")|
 |string |**[getText](#getText)**(string title, string label, string text = "")|
@@ -26,13 +26,13 @@ import Script
 The `UserDialog` singleton provides methods to display common dialog that could be used in
 scripts. If the user cancel the dialog, it will return a null value you can test directly:
 
-````
-var s = UserDialog.getText("Get text", "Value")
+```js
+let s = UserDialog.getText("Get text", "Value")
 if (s !== null)
     Message.log("Text: " + s)
 else
     Message.log("Cancelled")
-````
+```
 
 ## Method Documentation
 
@@ -63,7 +63,7 @@ The dialog's caption is set to `title`, the `label` is displayed and the initial
 `value`. `min` and `max` are the minimum and maximum values the user may choose.
 `step` is the amount by which the values change when incrementing or decrementing the value.
 
-#### <a name="getItem"></a>string **getItem**(string title, string label, array<string> items, int current = 0, bool editable = false)
+#### <a name="getItem"></a>string **getItem**(string title, string label, array&lt;string> items, int current = 0, bool editable = false)
 
 Returns a string selected among a pre-defined list. Returns `null` if the user cancel.
 

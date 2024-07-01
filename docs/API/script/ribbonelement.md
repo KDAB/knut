@@ -10,7 +10,7 @@ import Script
 
 | | Name |
 |-|-|
-|array<[RibbonElement](../script/ribbonelement.md)>|**[elements](#elements)**|
+|array&lt;[RibbonElement](../script/ribbonelement.md)>|**[elements](#elements)**|
 |string|**[id](#id)**|
 |bool|**[isSeparator](#isSeparator)**|
 |string|**[keys](#keys)**|
@@ -21,7 +21,7 @@ import Script
 
 ## Property Documentation
 
-#### <a name="elements"></a>array<[RibbonElement](../script/ribbonelement.md)> **elements**
+#### <a name="elements"></a>array&lt;[RibbonElement](../script/ribbonelement.md)> **elements**
 
 This property holds the children of this item, for creating menus.
 

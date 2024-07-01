@@ -10,18 +10,18 @@ import Script
 
 | | Name |
 |-|-|
-|array<string>|**[acceleratorIds](#acceleratorIds)**|
-|array<[Asset](../script/asset.md)>|**[actions](#actions)**|
-|array<[Asset](../script/asset.md)>|**[assets](#assets)**|
-|array<string>|**[dialogIds](#dialogIds)**|
+|array&lt;string>|**[acceleratorIds](#acceleratorIds)**|
+|array&lt;[Asset](../script/asset.md)>|**[actions](#actions)**|
+|array&lt;[Asset](../script/asset.md)>|**[assets](#assets)**|
+|array&lt;string>|**[dialogIds](#dialogIds)**|
 |string|**[language](#language)**|
-|array<string>|**[languages](#languages)**|
-|array<string>|**[menuIds](#menuIds)**|
-|array<[Menu](../script/menu.md)>|**[menus](#menus)**|
-|array<string>|**[stringIds](#stringIds)**|
-|array<string>|**[strings](#strings)**|
-|array<string>|**[toolbarIds](#toolbarIds)**|
-|array<[ToolBar](../script/toolbar.md)>|**[toolbars](#toolbars)**|
+|array&lt;string>|**[languages](#languages)**|
+|array&lt;string>|**[menuIds](#menuIds)**|
+|array&lt;[Menu](../script/menu.md)>|**[menus](#menus)**|
+|array&lt;string>|**[stringIds](#stringIds)**|
+|array&lt;string>|**[strings](#strings)**|
+|array&lt;string>|**[toolbarIds](#toolbarIds)**|
+|array&lt;[ToolBar](../script/toolbar.md)>|**[toolbars](#toolbars)**|
 |bool|**[valid](#valid)**|
 
 ## Methods
@@ -29,8 +29,8 @@ import Script
 | | Name |
 |-|-|
 |[ToolBar](../script/toolbar.md) |**[action](#action)**(string id)|
-|array<[Action](../script/action.md)> |**[actionsFromMenu](#actionsFromMenu)**(string menuId)|
-|array<[Action](../script/action.md)> |**[actionsFromToolbar](#actionsFromToolbar)**(string toolBarId)|
+|array&lt;[Action](../script/action.md)> |**[actionsFromMenu](#actionsFromMenu)**(string menuId)|
+|array&lt;[Action](../script/action.md)> |**[actionsFromToolbar](#actionsFromToolbar)**(string toolBarId)|
 |void |**[convertActions](#convertActions)**(int flags)|
 ||**[convertAssets](#convertAssets)**(int flags)|
 |string |**[convertLanguageToCode](#convertLanguageToCode)**(string language)|
@@ -43,7 +43,7 @@ import Script
 |string |**[stringForDialog](#stringForDialog)**(string dialogId, string id)|
 |string |**[stringForDialogAndLanguage](#stringForDialogAndLanguage)**(string language, string dialogId, string id)|
 |string |**[stringForLanguage](#stringForLanguage)**(string language, string id)|
-|array<[String](../script/string.md)> |**[stringsForLanguage](#stringsForLanguage)**(string language)|
+|array&lt;[String](../script/string.md)> |**[stringsForLanguage](#stringsForLanguage)**(string language)|
 |string |**[text](#text)**(string id)|
 |[ToolBar](../script/toolbar.md) |**[toolBar](#toolBar)**(string id)|
 |bool |**[writeAssetsToImage](#writeAssetsToImage)**(int flags)|
@@ -52,19 +52,19 @@ import Script
 
 ## Property Documentation
 
-#### <a name="acceleratorIds"></a>array<string> **acceleratorIds**
+#### <a name="acceleratorIds"></a>array&lt;string> **acceleratorIds**
 
 This read-only property holds the list of accelerator's ids in the RC file.
 
-#### <a name="actions"></a>array<[Asset](../script/asset.md)> **actions**
+#### <a name="actions"></a>array&lt;[Asset](../script/asset.md)> **actions**
 
 This read-only property holds the list of actions in the RC file.
 
-#### <a name="assets"></a>array<[Asset](../script/asset.md)> **assets**
+#### <a name="assets"></a>array&lt;[Asset](../script/asset.md)> **assets**
 
 This read-only property holds the list of assets in the RC file.
 
-#### <a name="dialogIds"></a>array<string> **dialogIds**
+#### <a name="dialogIds"></a>array&lt;string> **dialogIds**
 
 This read-only property holds the list of dialog's ids in the RC file.
 
@@ -73,31 +73,31 @@ This read-only property holds the list of dialog's ids in the RC file.
 This property holds the current language used for the data in the RC file. All other properties or method will work
 on the data for this specific language.
 
-#### <a name="languages"></a>array<string> **languages**
+#### <a name="languages"></a>array&lt;string> **languages**
 
 This read-only property holds the list of languages available in the file.
 
-#### <a name="menuIds"></a>array<string> **menuIds**
+#### <a name="menuIds"></a>array&lt;string> **menuIds**
 
 This read-only property holds the list of menu's ids in the RC file.
 
-#### <a name="menus"></a>array<[Menu](../script/menu.md)> **menus**
+#### <a name="menus"></a>array&lt;[Menu](../script/menu.md)> **menus**
 
 This read-only property holds the list of menus in the RC file.
 
-#### <a name="stringIds"></a>array<string> **stringIds**
+#### <a name="stringIds"></a>array&lt;string> **stringIds**
 
 This read-only property holds the list of string's ids in the RC file.
 
-#### <a name="strings"></a>array<string> **strings**
+#### <a name="strings"></a>array&lt;string> **strings**
 
 This read-only property holds the list of strings in the RC file.
 
-#### <a name="toolbarIds"></a>array<string> **toolbarIds**
+#### <a name="toolbarIds"></a>array&lt;string> **toolbarIds**
 
 This read-only property holds the list of toolbar's ids in the RC file.
 
-#### <a name="toolbars"></a>array<[ToolBar](../script/toolbar.md)> **toolbars**
+#### <a name="toolbars"></a>array&lt;[ToolBar](../script/toolbar.md)> **toolbars**
 
 This read-only property holds the list of toolbars in the RC file.
 
@@ -113,11 +113,11 @@ Note that the RC file may be valid, and our parser needs to be updated.
 
 Returns the action for the given `id`.
 
-#### <a name="actionsFromMenu"></a>array<[Action](../script/action.md)> **actionsFromMenu**(string menuId)
+#### <a name="actionsFromMenu"></a>array&lt;[Action](../script/action.md)> **actionsFromMenu**(string menuId)
 
 Returns all actions used in the menu `menuId`.
 
-#### <a name="actionsFromToolbar"></a>array<[Action](../script/action.md)> **actionsFromToolbar**(string toolBarId)
+#### <a name="actionsFromToolbar"></a>array&lt;[Action](../script/action.md)> **actionsFromToolbar**(string toolBarId)
 
 Returns all actions used in the toolbar `toolBarId`.
 
@@ -198,7 +198,7 @@ Return the string for the given `language`, `dialogid` and id.
 
 Return the string for the given `id` in language `language`.
 
-#### <a name="stringsForLanguage"></a>array<[String](../script/string.md)> **stringsForLanguage**(string language)
+#### <a name="stringsForLanguage"></a>array&lt;[String](../script/string.md)> **stringsForLanguage**(string language)
 
 Returns translated string for specific `language`.
 

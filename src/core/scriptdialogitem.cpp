@@ -45,9 +45,15 @@ namespace Core {
  * The `ScriptDialog` allows creating a script dialog based on a ui file. It requires creating a ui file with the same
  * name as the qml script.
  *
- * Widget's main properties are mapped to a property inside the data property, using the same name as the `objectName`.
- * Buttons (`QPushButton` or `QToolButton`) `clicked` signal is mapped to the `clicked` signal of this class, with the
- * button `objectName` as parameter. `QDialogButtonBox` `accepted` or `rejected` signals are automatically connected.
+ * Inside the dialog, all widget's main property is mapped to a property inside the data property, using the same
+ * name as the `objectName`. For example, the text of a `QLineEdit` with `objectName` set to `lineEdit` will be mapped
+ * to `data.lineEdit`.
+ *
+ * Buttons (`QPushButton` or `QToolButton`) `clicked` signal is available through the `onClikced` signal handler, with
+ * the button `objectName` as parameter.
+ *
+ * `QDialogButtonBox` `accepted` or `rejected` signals are
+ * automatically connected and available through the `onAccepted` and `onRejected` signal handlers.
  *
  * ```qml
  * import Script
@@ -63,41 +69,47 @@ namespace Core {
  *         if (name == "pushButton" || name == "toolButton")
  *             console.log(name)
  *     }
+ *     onAccepted: {
+ *         console.log("Accepted")
+ *     }
+ *     onRejected: {
+ *         console.log("Rejected")
+ *     }
  * }
  * ```
  */
 
 /*!
- * \qmlproperty QQmlPropertyMap ScriptDialog::data
+ * \qmlproperty var ScriptDialog::data
  * This read-only property contains all properties mapping the widgets.
+ *
+ * Use `data.objectName` to access the main property of a widget (the text for a `QLineEdit` for example).
  */
 
 /*!
  * \qmlproperty bool ScriptDialog::interactive
- *
- * If set to false, runSteps will not ask for user input, the entire script will be run at once.
+ * If set to false, `runSteps` will not ask for user input, the entire script will be run at once.
  * This is especially useful for testing.
  */
 
 /*!
  * \qmlproperty int ScriptDialog::stepCount
- *
  * Number of steps to display in the progress bar.
  */
 
 /*!
- * \qmlsignal ScriptDialog::clicked(string name)
+ * \qmlsignal ScriptDialog::onClicked(string name)
  * This handler is called when a button is cliked, the `name` is the name of the button.
  */
 
 /*!
- * \qmlsignal ScriptDialog::accepted()
+ * \qmlsignal ScriptDialog::onAccepted()
  * This handler is called when a button with an accept role from a `QDialogButtonBox` is pressed (usually the OK
  * button).
  */
 
 /*!
- * \qmlsignal ScriptDialog::rejected()
+ * \qmlsignal ScriptDialog::onRejected()
  * This handler is called when a button with a reject role from a `QDialogButtonBox` is pressed (usually the Cancel
  * button).
  */
@@ -185,7 +197,7 @@ void ScriptDialogItem::firstStep(const QString &firstStep)
 /**
  * \qmlmethod ScriptDialog::nextStep(string title)
  *
- * Indicate a new progress step.
+ * Changes the progression to a new progress step.
  *
  * This will update the progress bar and the title of the progress dialog.
  * Make sure that the number of steps is set correctly before calling this method.
@@ -276,15 +288,16 @@ static bool isGenerator(const QJSValue &generator)
 /**
  * \qmlmethod ScriptDialog::runSteps(function generator)
  *
- * Run a script in multiple (interactive) steps.
+ * Runs a script in multiple (interactive) steps.
+ *
  * The argument to this function must be a JavaScript generator object
  * ([See this documentation on JS
  * Generators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator)).
  *
- * The generator should yield a string with the next step title,
- * whenever the user should be able to pause the script and inspect the changes.
- * This will behave the same as calling `nextStep`, but pauses the script, until the user continues or aborts the
- * script.
+ * The generator should yield a string with the next step title, whenever the user should be able to pause the script
+ * and inspect the changes. This will behave the same as calling `nextStep`, but pauses the script, until the user
+ * continues or aborts the script.
+ *
  * You can also mix and match between `yield` and `nextStep` calls.
  *
  * For the best experience, we recommend to use `setStepCount`, `firstStep` and `yield` to indicate the remaining

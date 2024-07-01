@@ -10,8 +10,8 @@ import Script
 
 | | Name |
 |-|-|
-|array<string>|**[actionIds](#actionIds)**|
-|array<[ToolBarItem](../script/toolbaritem.md)>|**[children](#children)**|
+|array&lt;string>|**[actionIds](#actionIds)**|
+|array&lt;[ToolBarItem](../script/toolbaritem.md)>|**[children](#children)**|
 |size|**[iconSize](#iconSize)**|
 |string|**[id](#id)**|
 
@@ -23,11 +23,11 @@ import Script
 
 ## Property Documentation
 
-#### <a name="actionIds"></a>array<string> **actionIds**
+#### <a name="actionIds"></a>array&lt;string> **actionIds**
 
 This property holds all action ids used in the toolbar.
 
-#### <a name="children"></a>array<[ToolBarItem](../script/toolbaritem.md)> **children**
+#### <a name="children"></a>array&lt;[ToolBarItem](../script/toolbaritem.md)> **children**
 
 This property holds the list of toolbar items inside in the toolbar.
 

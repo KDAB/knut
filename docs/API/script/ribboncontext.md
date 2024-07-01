@@ -10,13 +10,13 @@ import Script
 
 | | Name |
 |-|-|
-|array<[RibbonCategory](../script/ribboncategory.md)>|**[categories](#categories)**|
+|array&lt;[RibbonCategory](../script/ribboncategory.md)>|**[categories](#categories)**|
 |string|**[id](#id)**|
 |string|**[text](#text)**|
 
 ## Property Documentation
 
-#### <a name="categories"></a>array<[RibbonCategory](../script/ribboncategory.md)> **categories**
+#### <a name="categories"></a>array&lt;[RibbonCategory](../script/ribboncategory.md)> **categories**
 
 This property holds the children categories of this context.
 

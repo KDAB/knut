@@ -29,7 +29,7 @@ import Script
 |[QDirValueType](../script/qdirvaluetype.md) |**[home](#home)**()|
 |bool |**[isAbsolutePath](#isAbsolutePath)**(string path)|
 |bool |**[isRelativePath](#isRelativePath)**(string path)|
-|bool |**[match](#match)**(array<string> filters, string fileName)|
+|bool |**[match](#match)**(array&lt;string> filters, string fileName)|
 |bool |**[match](#match)**(string filter, string fileName)|
 |[QDirValueType](../script/qdirvaluetype.md) |**[root](#root)**()|
 |[QDirValueType](../script/qdirvaluetype.md) |**[temp](#temp)**()|
@@ -37,7 +37,7 @@ import Script
 
 ## Detailed Description
 
-The `Dir` singleton implements most of the static methods from `QDir`, check [QDir](https://doc.qt.io/qt-5/qdir.html)
+The `Dir` singleton implements most of the static methods from `QDir`, check [QDir](https://doc.qt.io/qt-6/qdir.html)
 documentation.
 
 ## Property Documentation
@@ -72,7 +72,7 @@ documentation.
 
 #### <a name="isRelativePath"></a>bool **isRelativePath**(string path)
 
-#### <a name="match"></a>bool **match**(array<string> filters, string fileName)<br/>bool **match**(string filter, string fileName)
+#### <a name="match"></a>bool **match**(array&lt;string> filters, string fileName)<br/>bool **match**(string filter, string fileName)
 
 #### <a name="root"></a>[QDirValueType](../script/qdirvaluetype.md) **root**()
 

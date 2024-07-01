@@ -12,7 +12,7 @@ import Script
 |-|-|
 |string|**[keys](#keys)**|
 |string|**[largeImage](#largeImage)**|
-|array<[RibbonPanel](../script/ribbonpanel.md)>|**[panels](#panels)**|
+|array&lt;[RibbonPanel](../script/ribbonpanel.md)>|**[panels](#panels)**|
 |string|**[smallImage](#smallImage)**|
 |string|**[text](#text)**|
 
@@ -26,7 +26,7 @@ This property holds the keys of the category.
 
 This property holds the image resource for large icons.
 
-#### <a name="panels"></a>array<[RibbonPanel](../script/ribbonpanel.md)> **panels**
+#### <a name="panels"></a>array&lt;[RibbonPanel](../script/ribbonpanel.md)> **panels**
 
 This property holds the children panels of this category.
 
