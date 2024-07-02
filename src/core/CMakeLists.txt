@@ -43,6 +43,8 @@ set(PROJECT_SOURCES
     jsondocument.cpp
     knutcore.h
     knutcore.cpp
+    lsp_utils.h
+    lsp_utils.cpp
     logger.h
     logger.cpp
     mark_p.h
