@@ -126,6 +126,19 @@ private slots:
         }
     }
 
+    void changeTranslation()
+    {
+        Core::QtTsDocument document;
+        document.load(Test::testDataPath() + QStringLiteral("/tst_qttsdocument/language_translation.ts"));
+        const auto messages = document.messages();
+        for (const auto &message : messages) {
+            message->setTranslation("new translation");
+        }
+        for (const auto &message : messages) {
+            QCOMPARE(message->translation(), "new translation");
+        }
+    }
+
     void createFromEmptyFile()
     {
         Core::QtTsDocument document;
