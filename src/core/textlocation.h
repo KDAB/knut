@@ -10,7 +10,6 @@
 
 #pragma once
 
-#include "lsp/types.h"
 #include "textrange.h"
 
 #include <QObject>
@@ -32,8 +31,6 @@ public:
     Q_INVOKABLE QString toString() const;
 
     auto operator<=>(const TextLocation &) const = default;
-
-    static QList<TextLocation> fromLsp(const std::vector<Lsp::Location> &locations);
 };
 
 using TextLocationList = QList<Core::TextLocation>;

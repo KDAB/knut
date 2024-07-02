@@ -10,7 +10,6 @@
 
 #include "client.h"
 #include "clientbackend.h"
-#include "lsp_utils.h"
 #include "notificationmessage_json.h"
 #include "notifications.h"
 #include "requestmessage_json.h"
@@ -23,6 +22,11 @@
 #include <QUrl>
 
 namespace Lsp {
+
+static DocumentUri toDocumentUri(const QString &localFile)
+{
+    return QUrl::fromLocalFile(localFile).toString().toStdString();
+}
 
 template <typename Request>
 std::optional<typename Request::Result> sendRequest(ClientBackend *backend, Request request,
@@ -132,8 +136,8 @@ bool Client::initialize(const QString &rootPath)
     QFileInfo fi(rootPath);
     if (fi.exists()) {
         request.params.rootPath = QDir::toNativeSeparators(rootPath).toStdString();
-        request.params.rootUri = Utils::toDocumentUri(rootPath);
-        std::vector<WorkspaceFolder> wsf = {{Utils::toDocumentUri(rootPath), fi.baseName().toStdString()}};
+        request.params.rootUri = toDocumentUri(rootPath);
+        std::vector<WorkspaceFolder> wsf = {{toDocumentUri(rootPath), fi.baseName().toStdString()}};
         request.params.workspaceFolders = wsf;
     }
 
@@ -156,7 +160,7 @@ void Client::openProject(const QString &rootPath)
         return;
 
     WorkspaceDidChangeWorkspaceFoldersNotification notification;
-    notification.params.event.added.push_back({Utils::toDocumentUri(rootPath), fi.baseName().toStdString()});
+    notification.params.event.added.push_back({toDocumentUri(rootPath), fi.baseName().toStdString()});
     m_backend->sendNotification(notification);
 }
 
@@ -168,7 +172,7 @@ void Client::closeProject(const QString &rootPath)
         return;
 
     WorkspaceDidChangeWorkspaceFoldersNotification notification;
-    notification.params.event.removed.push_back({Utils::toDocumentUri(rootPath), fi.baseName().toStdString()});
+    notification.params.event.removed.push_back({toDocumentUri(rootPath), fi.baseName().toStdString()});
     m_backend->sendNotification(notification);
 }
 

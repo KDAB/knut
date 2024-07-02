@@ -77,9 +77,6 @@ public:
 
     QString hover(int position, std::function<void(const QString &)> asyncCallback = {}) const;
 
-    int toPos(const Lsp::Position &pos) const;
-    TextRange toRange(const Lsp::Range &range) const;
-
     Q_INVOKABLE Core::AstNode astNodeAt(int pos);
 
 public slots:
@@ -93,7 +90,6 @@ protected:
 
     Lsp::Client *client() const;
     std::string toUri() const;
-    Lsp::Position fromPos(int pos) const;
 
     int revision() const;
 
