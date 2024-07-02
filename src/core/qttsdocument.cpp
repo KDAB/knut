@@ -297,10 +297,11 @@ QString QtTsMessage::translation() const
     return QString::fromUtf8(m_message.child("translation").text().as_string());
 }
 
-void QtTsMessage::setTranslation(const QString &translate)
+void QtTsMessage::setTranslation(const QString &translation)
 {
-    LOG("QtTsMessage::setTranslation", translate);
-    m_message.child("translation").set_value(translate.toUtf8().constData());
+    LOG("QtTsMessage::setTranslation", translation);
+    m_message.child("translation").remove_attribute("type");
+    m_message.child("translation").text().set(translation.toUtf8().constData());
     qobject_cast<QtTsDocument *>(parent())->setHasChanged(true);
     Q_EMIT translationChanged();
 }
