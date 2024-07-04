@@ -33,7 +33,7 @@ public:
 
     auto operator<=>(const TextLocation &) const = default;
 
-    static QVector<TextLocation> fromLsp(const std::vector<Lsp::Location> &locations);
+    static QList<TextLocation> fromLsp(const std::vector<Lsp::Location> &locations);
 };
 
 using TextLocationList = QList<Core::TextLocation>;

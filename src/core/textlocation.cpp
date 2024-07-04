@@ -38,9 +38,9 @@ QString TextLocation::toString() const
     return QString("{'%1', %2}").arg(document->fileName(), range.toString());
 }
 
-QVector<TextLocation> TextLocation::fromLsp(const std::vector<Lsp::Location> &locations)
+QList<TextLocation> TextLocation::fromLsp(const std::vector<Lsp::Location> &locations)
 {
-    QVector<Core::TextLocation> textLocations;
+    QList<Core::TextLocation> textLocations;
 
     for (const auto &location : locations) {
         const auto url = QUrl::fromEncoded(QByteArray::fromStdString(location.uri));

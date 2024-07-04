@@ -136,7 +136,7 @@ private:
     {
         auto messageMap = cppdocument->mfcExtractMessageMap("CTutorialDlg");
 
-        const QVector<std::pair<QString, QStringList>> expectedEntries = {
+        const QList<std::pair<QString, QStringList>> expectedEntries = {
             {"ON_WM_PAINT", {}},
             {"ON_WM_HSCROLL", {}},
             {"ON_WM_VSCROLL", {}},

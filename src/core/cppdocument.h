@@ -93,7 +93,7 @@ public slots:
     bool changeBaseClass(const QString &className, const QString &newClassBaseName);
 
 private:
-    QVector<Core::QueryMatch> internalQueryFunctionCall(const QString &functionName, const QString &argumentsQuery);
+    QList<Core::QueryMatch> internalQueryFunctionCall(const QString &functionName, const QString &argumentsQuery);
 
     enum class MemberOrMethodAdditionResult { Success, ClassNotFound };
     MemberOrMethodAdditionResult addMemberOrMethod(const QString &memberInfo, const QString &className,

@@ -110,32 +110,32 @@ ScriptRunner::ScriptRunner(QObject *parent)
 
     // RcCore
     qRegisterMetaType<RcCore::Asset>();
-    qRegisterMetaType<QVector<RcCore::Asset>>();
+    qRegisterMetaType<QList<RcCore::Asset>>();
     qRegisterMetaType<RcCore::ToolBarItem>();
-    qRegisterMetaType<QVector<RcCore::ToolBarItem>>();
+    qRegisterMetaType<QList<RcCore::ToolBarItem>>();
     qRegisterMetaType<RcCore::ToolBar>();
-    qRegisterMetaType<QVector<RcCore::ToolBar>>();
+    qRegisterMetaType<QList<RcCore::ToolBar>>();
     qRegisterMetaType<RcCore::Widget>();
-    qRegisterMetaType<QVector<RcCore::Widget>>();
+    qRegisterMetaType<QList<RcCore::Widget>>();
     qRegisterMetaType<RcCore::MenuItem>();
-    qRegisterMetaType<QVector<RcCore::MenuItem>>();
+    qRegisterMetaType<QList<RcCore::MenuItem>>();
     qRegisterMetaType<RcCore::Menu>();
-    qRegisterMetaType<QVector<RcCore::Menu>>();
+    qRegisterMetaType<QList<RcCore::Menu>>();
     qRegisterMetaType<RcCore::Shortcut>();
-    qRegisterMetaType<QVector<RcCore::Shortcut>>();
+    qRegisterMetaType<QList<RcCore::Shortcut>>();
     qRegisterMetaType<RcCore::Action>();
-    qRegisterMetaType<QVector<RcCore::Action>>();
+    qRegisterMetaType<QList<RcCore::Action>>();
     qRegisterMetaType<RcCore::RibbonElement>();
-    qRegisterMetaType<QVector<RcCore::RibbonElement>>();
+    qRegisterMetaType<QList<RcCore::RibbonElement>>();
     qRegisterMetaType<RcCore::RibbonPanel>();
-    qRegisterMetaType<QVector<RcCore::RibbonPanel>>();
+    qRegisterMetaType<QList<RcCore::RibbonPanel>>();
     qRegisterMetaType<RcCore::RibbonCategory>();
-    qRegisterMetaType<QVector<RcCore::RibbonCategory>>();
+    qRegisterMetaType<QList<RcCore::RibbonCategory>>();
     qRegisterMetaType<RcCore::RibbonContext>();
-    qRegisterMetaType<QVector<RcCore::RibbonContext>>();
+    qRegisterMetaType<QList<RcCore::RibbonContext>>();
     qRegisterMetaType<RcCore::RibbonMenu>();
     qRegisterMetaType<RcCore::Ribbon>();
-    qRegisterMetaType<QVector<RcCore::Ribbon>>();
+    qRegisterMetaType<QList<RcCore::Ribbon>>();
 
     // Script.Test
     qmlRegisterSingletonType<TestUtil>("Script.Test", 1, 0, "TestUtil", [](QQmlEngine *, QJSEngine *) {

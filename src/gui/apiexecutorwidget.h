@@ -63,7 +63,7 @@ private:
     void createArgumentField(const QByteArray &name, const QMetaType &type);
 
     std::unique_ptr<Ui::APIExecutorWidget> ui;
-    QVector<ArgumentField> m_argumentFields;
+    QList<ArgumentField> m_argumentFields;
     QMap<QString, ApiInfo> m_apis;
 };
 

@@ -228,7 +228,7 @@ bool operator==(const ToolBarItem &left, const ToolBarItem &right)
 }
 
 template <typename T>
-const T *findById(const QVector<T> &collection, const QString &id)
+const T *findById(const QList<T> &collection, const QString &id)
 {
     auto it = std::find_if(collection.cbegin(), collection.cend(), [id](const auto &data) {
         return data.id == id;

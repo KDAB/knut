@@ -18,7 +18,7 @@ using namespace RcCore;
 
 namespace RcUi {
 
-RibbonModel::RibbonModel(const QVector<Ribbon> &ribbons, QObject *parent)
+RibbonModel::RibbonModel(const QList<Ribbon> &ribbons, QObject *parent)
     : QAbstractTableModel(parent)
     , m_ribbons(ribbons)
 {

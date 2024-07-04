@@ -84,7 +84,7 @@ private:
 
     ScriptProgressDialog *m_progressDialog = nullptr;
     // Used to track existing progressDialog, in case we need to update the UI
-    static inline QVector<ScriptProgressDialog *> m_progressDialogs = {};
+    static inline QList<ScriptProgressDialog *> m_progressDialogs = {};
 
     int m_stepCount = 0;
     int m_currentStep = 0;

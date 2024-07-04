@@ -90,7 +90,7 @@ QString FunctionSymbol::returnType() const
 
     return m_returnType.value();
 }
-const QVector<FunctionArgument> &FunctionSymbol::arguments() const
+const QList<FunctionArgument> &FunctionSymbol::arguments() const
 {
     if (!m_arguments.has_value()) {
         m_arguments = std::make_optional(argumentsFromQueryMatch());
@@ -99,7 +99,7 @@ const QVector<FunctionArgument> &FunctionSymbol::arguments() const
     return m_arguments.value();
 }
 
-QVector<FunctionArgument> FunctionSymbol::argumentsFromQueryMatch() const
+QList<FunctionArgument> FunctionSymbol::argumentsFromQueryMatch() const
 {
     auto arguments = m_queryMatch.getAll("parameter");
     auto to_function_arg = [this](const RangeMark &argument) {
@@ -111,7 +111,7 @@ QVector<FunctionArgument> FunctionSymbol::argumentsFromQueryMatch() const
         return FunctionArgument {.type = type, .name = name};
     };
 
-    return kdalgorithms::transformed<QVector<FunctionArgument>>(arguments, to_function_arg);
+    return kdalgorithms::transformed<QList<FunctionArgument>>(arguments, to_function_arg);
 }
 
 bool operator==(const FunctionSymbol &left, const FunctionSymbol &right)

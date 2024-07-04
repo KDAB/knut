@@ -62,13 +62,13 @@ private:
 class QtUiDocument : public Document
 {
     Q_OBJECT
-    Q_PROPERTY(QVector<Core::QtUiWidget *> widgets READ widgets NOTIFY widgetsChanged)
+    Q_PROPERTY(QList<Core::QtUiWidget *> widgets READ widgets NOTIFY widgetsChanged)
 
 public:
     explicit QtUiDocument(QObject *parent = nullptr);
     ~QtUiDocument() override;
 
-    QVector<Core::QtUiWidget *> widgets() const { return m_widgets; }
+    QList<Core::QtUiWidget *> widgets() const { return m_widgets; }
     Q_INVOKABLE Core::QtUiWidget *findWidget(const QString &name) const;
 
     Q_INVOKABLE Core::QtUiWidget *addWidget(const QString &className, const QString &name,
@@ -92,7 +92,7 @@ private:
     friend QtUiWidget;
     pugi::xml_document m_document;
     std::unique_ptr<Utils::QtUiWriter> m_writer;
-    QVector<QtUiWidget *> m_widgets;
+    QList<QtUiWidget *> m_widgets;
 };
 
 } // namespace Core

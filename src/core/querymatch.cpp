@@ -97,7 +97,7 @@ QueryMatch::QueryMatch(TextDocument &document, const treesitter::QueryMatch &mat
     }
 }
 
-const QVector<QueryCapture> &QueryMatch::captures() const
+const QList<QueryCapture> &QueryMatch::captures() const
 {
     return m_captures;
 }
