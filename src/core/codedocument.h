@@ -60,7 +60,7 @@ public:
     // It turns out that constructing Query instances is relatively expensive.
     // Therefore it's better to construct them once and reuse them.
     // So allow this for outside users.
-    QVector<Core::QueryMatch> query(const std::shared_ptr<treesitter::Query> &query);
+    QList<Core::QueryMatch> query(const std::shared_ptr<treesitter::Query> &query);
     Core::QueryMatch queryFirst(const std::shared_ptr<treesitter::Query> &query);
 
     bool hasLspClient() const;

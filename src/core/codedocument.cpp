@@ -620,10 +620,10 @@ Core::QueryMatchList CodeDocument::queryInRange(const Core::RangeMark &range, co
     Core::QueryMatchList matches;
     for (const treesitter::Node &node : nodes) {
         cursor.execute(tsQuery, node, std::make_unique<treesitter::Predicates>(text()));
-        matches.append(kdalgorithms::transformed<QVector<QueryMatch>>(cursor.allRemainingMatches(),
-                                                                      [this](const treesitter::QueryMatch &match) {
-                                                                          return QueryMatch(*this, match);
-                                                                      }));
+        matches.append(kdalgorithms::transformed<QList<QueryMatch>>(cursor.allRemainingMatches(),
+                                                                    [this](const treesitter::QueryMatch &match) {
+                                                                        return QueryMatch(*this, match);
+                                                                    }));
     }
     return matches;
 }

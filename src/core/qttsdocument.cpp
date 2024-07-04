@@ -208,7 +208,7 @@ QString QtTsDocument::language() const
     return QString::fromLatin1(ts.node().attribute("language").value());
 }
 
-QVector<QtTsMessage *> QtTsDocument::messages() const
+QList<QtTsMessage *> QtTsDocument::messages() const
 {
     return m_messages;
 }

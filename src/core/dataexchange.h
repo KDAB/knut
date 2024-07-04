@@ -58,8 +58,8 @@ struct DataExchange
     Q_GADGET
 
     Q_PROPERTY(QString className MEMBER className)
-    Q_PROPERTY(QVector<Core::DataExchangeEntry> entries MEMBER entries FINAL)
-    Q_PROPERTY(QVector<Core::DataValidationEntry> validators MEMBER validators FINAL)
+    Q_PROPERTY(QList<Core::DataExchangeEntry> entries MEMBER entries FINAL)
+    Q_PROPERTY(QList<Core::DataValidationEntry> validators MEMBER validators FINAL)
     Q_PROPERTY(Core::RangeMark range MEMBER range)
     Q_PROPERTY(bool isValid READ isValid FINAL)
 
@@ -75,8 +75,8 @@ public:
     Q_INVOKABLE QString toString() const;
 
     QString className;
-    QVector<DataExchangeEntry> entries;
-    QVector<DataValidationEntry> validators;
+    QList<DataExchangeEntry> entries;
+    QList<DataValidationEntry> validators;
     RangeMark range;
 };
 

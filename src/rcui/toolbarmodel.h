@@ -34,7 +34,7 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 
 private:
-    const QVector<RcCore::ToolBarItem> m_items;
+    const QList<RcCore::ToolBarItem> m_items;
 };
 
 } // namespace RcUi

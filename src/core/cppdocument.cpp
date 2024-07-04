@@ -364,7 +364,7 @@ Core::QueryMatchList CppDocument::queryMethodDefinition(const QString &scope, co
     return query(queryString);
 }
 
-QVector<QueryMatch> CppDocument::internalQueryFunctionCall(const QString& functionName, const QString& argumentsQuery)
+QList<QueryMatch> CppDocument::internalQueryFunctionCall(const QString& functionName, const QString& argumentsQuery)
 {
     const auto queryString = QString(R"EOF(
                 (call_expression
@@ -910,9 +910,9 @@ int CppDocument::moveBlock(int startPos, QTextCursor::MoveOperation direction)
 
     // Set the characters delimiter that increment or decrement the counter when iterating
     auto incCounterChar =
-        direction == QTextCursor::NextCharacter ? QVector<QChar> {'(', '{', '['} : QVector<QChar> {')', '}', ']'};
+        direction == QTextCursor::NextCharacter ? QList<QChar> {'(', '{', '['} : QList<QChar> {')', '}', ']'};
     auto decCounterChar =
-        direction == QTextCursor::PreviousCharacter ? QVector<QChar> {'(', '{', '['} : QVector<QChar> {')', '}', ']'};
+        direction == QTextCursor::PreviousCharacter ? QList<QChar> {'(', '{', '['} : QList<QChar> {')', '}', ']'};
 
     // If the character next is a special one, go inside the block
     if (incCounterChar.contains(currentChar))

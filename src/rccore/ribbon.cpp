@@ -180,9 +180,9 @@ namespace RcCore {
  */
 
 template <typename T, typename Func>
-QVector<T> readItems(pugi::xml_node node, Func readFunc)
+QList<T> readItems(pugi::xml_node node, Func readFunc)
 {
-    QVector<T> collection;
+    QList<T> collection;
     for (const auto &childNode : node.children())
         collection.push_back(readFunc(childNode));
     return collection;

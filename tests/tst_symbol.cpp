@@ -36,7 +36,7 @@ class TestSymbol : public QObject
     {
         QString name;
         QString returnType;
-        QVector<Core::FunctionArgument> arguments;
+        QList<Core::FunctionArgument> arguments;
         Core::TextRange range;
 
         bool isNull() { return name.isEmpty(); }

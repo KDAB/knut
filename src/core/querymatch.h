@@ -40,7 +40,7 @@ class QueryMatch
 {
     Q_GADGET
 
-    Q_PROPERTY(QVector<QueryCapture> captures READ captures CONSTANT FINAL)
+    Q_PROPERTY(QList<QueryCapture> captures READ captures CONSTANT FINAL)
     Q_PROPERTY(bool isEmpty READ isEmpty CONSTANT FINAL)
 
 public:
@@ -48,7 +48,7 @@ public:
     QueryMatch() = default;
     QueryMatch(TextDocument &document, const treesitter::QueryMatch &match);
 
-    const QVector<QueryCapture> &captures() const;
+    const QList<QueryCapture> &captures() const;
     bool isEmpty() const;
 
     // Access to captures
@@ -75,7 +75,7 @@ public:
     Q_INVOKABLE QString toString() const;
 
 private:
-    QVector<QueryCapture> m_captures;
+    QList<QueryCapture> m_captures;
 };
 
 using QueryMatchList = QList<Core::QueryMatch>;

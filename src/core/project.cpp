@@ -255,7 +255,7 @@ Lsp::Client *Project::getClient(Document::Type type)
     return nullptr;
 }
 
-const QVector<Document *> &Project::documents() const
+const QList<Document *> &Project::documents() const
 {
     return m_documents;
 }

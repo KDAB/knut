@@ -14,7 +14,7 @@
 #include "textlocation.h"
 #include "textrange.h"
 
-#include <QVector>
+#include <QList>
 
 namespace Core {
 
@@ -91,14 +91,14 @@ public:
     // As per KNUT-163, these are no longer public API.
     // They are only used internally by the editor/GUI and not available from QML/JS.
     // As this relies on the clangd LSP, it is not reliable enough to use for scripting.
-    QVector<Core::TextLocation> references() const;
+    QList<Core::TextLocation> references() const;
 
     Q_INVOKABLE void select();
 
     bool operator==(const Symbol &) const;
 
 private:
-    void assignContext(const QVector<Symbol *> &contexts);
+    void assignContext(const QList<Symbol *> &contexts);
 
     friend class CodeDocument;
     friend class TreeSitterHelper;
@@ -109,4 +109,4 @@ using SymbolList = QList<Core::Symbol *>;
 } // namespace Core
 
 Q_DECLARE_METATYPE(Core::Symbol)
-Q_DECLARE_METATYPE(QVector<Core::Symbol *>)
+Q_DECLARE_METATYPE(QList<Core::Symbol *>)
