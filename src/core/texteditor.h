@@ -34,7 +34,7 @@ private:
 private:
     friend class Gutter;
 
-    Gutter *m_gutter;
+    Gutter *const m_gutter;
     int m_currentLine = -1;
 };
 
