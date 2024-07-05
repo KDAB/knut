@@ -53,8 +53,10 @@ QJSValue UserDialog::getOpenFileName(const QString &caption, const QString &dir,
 {
     LOG("UserDialog::getOpenFileName", caption, dir, filters);
     const QString s = QFileDialog::getOpenFileName(dialogParent(), caption, dir, filters);
-    if (!s.isEmpty())
+    if (!s.isEmpty()) {
+        spdlog::debug("UserDialog::getOpenFileName returns {}", s);
         return s;
+    }
     return QJSValue(QJSValue::NullValue);
 }
 
@@ -69,8 +71,10 @@ QJSValue UserDialog::getSaveFileName(const QString &caption, const QString &dir,
 {
     LOG("UserDialog::getSaveFileName", caption, dir, filters);
     const QString s = QFileDialog::getSaveFileName(dialogParent(), caption, dir, filters);
-    if (!s.isEmpty())
+    if (!s.isEmpty()) {
+        spdlog::debug("UserDialog::getSaveFileName returns {}", s);
         return s;
+    }
     return QJSValue(QJSValue::NullValue);
 }
 
@@ -84,8 +88,10 @@ QJSValue UserDialog::getExistingDirectory(const QString &caption, const QString 
 {
     LOG("UserDialog::getExistingDirectory", caption, dir);
     const QString s = QFileDialog::getExistingDirectory(dialogParent(), caption, dir);
-    if (!s.isEmpty())
+    if (!s.isEmpty()) {
+        spdlog::debug("UserDialog::getExistingDirectory returns {}", s);
         return s;
+    }
     return QJSValue(QJSValue::NullValue);
 }
 
@@ -105,8 +111,10 @@ QJSValue UserDialog::getItem(const QString &title, const QString &label, const Q
     LOG("UserDialog::getItem", title, label, items, current, editable);
     bool ok;
     const QString ret = QInputDialog::getItem(dialogParent(), title, label, items, current, editable, &ok);
-    if (ok)
+    if (ok) {
+        spdlog::debug("UserDialog::getItem returns {}", ret);
         return ret;
+    }
     return QJSValue(QJSValue::NullValue);
 }
 
@@ -128,8 +136,10 @@ QJSValue UserDialog::getDouble(const QString &title, const QString &label, doubl
     bool ok;
     const double ret =
         QInputDialog::getDouble(dialogParent(), title, label, value, min, max, decimals, &ok, Qt::WindowFlags(), step);
-    if (ok)
+    if (ok) {
+        spdlog::debug("UserDialog::getDouble returns {}", ret);
         return ret;
+    }
     return QJSValue(QJSValue::NullValue);
 }
 
@@ -148,8 +158,10 @@ QJSValue UserDialog::getInt(const QString &title, const QString &label, int valu
     LOG("UserDialog::getInt", title, label, value, step, min, max);
     bool ok;
     const int ret = QInputDialog::getInt(dialogParent(), title, label, value, min, max, step, &ok);
-    if (ok)
+    if (ok) {
+        spdlog::debug("UserDialog::getInt returns {}", ret);
         return ret;
+    }
     return QJSValue(QJSValue::NullValue);
 }
 
@@ -165,8 +177,10 @@ QJSValue UserDialog::getText(const QString &title, const QString &label, const Q
     LOG("UserDialog::getText", title, label, text);
     bool ok;
     const QString ret = QInputDialog::getText(dialogParent(), title, label, QLineEdit::Normal, text, &ok);
-    if (ok)
+    if (ok) {
+        spdlog::debug("UserDialog::getText returns {}", ret);
         return ret;
+    }
     return QJSValue(QJSValue::NullValue);
 }
 
