@@ -1,0 +1,16 @@
+mkdocs.yml text eol=lf
+docs/API/**/*.md text eol=lf
+test_data/tst_textdocument/loremipsum_lf_utf8.txt text eol=lf
+test_data/tst_textdocument/loremipsum_crlf_ansi.txt text eol=crlf
+test_data/tst_textdocument/loremipsum_crlf_utf8.txt text eol=crlf
+test_data/tst_textdocument/loremipsum_crlf_utf8bom.txt text eol=crlf
+test_data/tst_rcwriter/IDD_CHARPANEL_ANIMATION.ui text eol=lf
+test_data/tst_rcwriter/IDD_LIGHTING.ui text eol=lf
+test_data/tst_rcwriter/IDD_PANEL_DISPLAY_STEREO.ui text eol=lf
+test_data/tst_rcwriter/IDD_PANEL_TERRAIN_MODIFY.ui text eol=lf
+test_data/tst_rcwriter/IDD_ABCCOMPILE.ui text eol=lf
+test_data/tst_rcwriter/IDD_CHARACTER_EDITOR_AUTO_EVENTS.ui text eol=lf
+test_data/tst_rcwriter/qrc_expected_default.qrc text eol=lf
+test_data/tst_rcwriter/qrc_expected_noalias_onlyexist.qrc text eol=lf
+test_data/tst_settings/setValue/knut_expected.json text eol=lf
+test_data/tst_settings/setValue/knut_original.json text eol=lf

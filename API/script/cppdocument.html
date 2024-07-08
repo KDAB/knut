@@ -1,0 +1,2826 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Knut Documentation - Automation tool for code transformation using scripts">
+      
+      
+        <meta name="author" content="Klarälvdalens Datakonsult AB (KDAB)">
+      
+      
+        <link rel="canonical" href="https://kdab.github.io/knut/API/script/cppdocument.html">
+      
+      
+        <link rel="prev" href="symbol.html">
+      
+      
+        <link rel="next" href="dataexchange.html">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.28">
+    
+    
+      
+        <title>CppDocument - Knut - Code transformation via scripts</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.6543a935.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="kdab" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#cppdocument" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../index.html" title="Knut - Code transformation via scripts" class="md-header__button md-logo" aria-label="Knut - Code transformation via scripts" data-md-component="logo">
+      
+  <img src="../../assets/transparentWhiteKDAB.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Knut - Code transformation via scripts
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              CppDocument
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="kdab" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/KDAB/Knut" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Knut
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../index.html" class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/overview.html" class="md-tabs__link">
+          
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../contributing/getting-involved.html" class="md-tabs__link">
+          
+  
+  Contributing
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="document.html" class="md-tabs__link">
+          
+  
+  Script API
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="Knut - Code transformation via scripts" class="md-nav__button md-logo" aria-label="Knut - Code transformation via scripts" data-md-component="logo">
+      
+  <img src="../../assets/transparentWhiteKDAB.svg" alt="logo">
+
+    </a>
+    Knut - Code transformation via scripts
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/KDAB/Knut" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Knut
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../index.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Getting Started
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Getting Started
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/overview.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/script.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Writing a script
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/treesitter.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Syntax tree queries
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/cli.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Command line interface
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/gui.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    User interface
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Contributing
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Contributing
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/getting-involved.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Getting involved
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/architecture.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Architecture
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/unit-tests.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Unit tests
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Script API
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Script API
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4_1" id="__nav_4_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Script Module
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_1">
+            <span class="md-nav__icon md-icon"></span>
+            Script Module
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="document.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Document
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="project.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Project
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_3" id="__nav_4_1_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    CodeDocument
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_3">
+            <span class="md-nav__icon md-icon"></span>
+            CodeDocument
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="codedocument.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CodeDocument
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="classsymbol.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ClassSymbol
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="functionargument.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FunctionArgument
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="functionsymbol.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FunctionSymbol
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="querycapture.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    QueryCapture
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="querymatch.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    QueryMatch
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="symbol.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Symbol
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_4" id="__nav_4_1_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    CppDocument
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_1_4">
+            <span class="md-nav__icon md-icon"></span>
+            CppDocument
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    CppDocument
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="cppdocument.html" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    CppDocument
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      Properties
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Methods
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#property-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Property Documentation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#method-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method Documentation
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="dataexchange.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DataExchange
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="dataexchangeentry.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DataExchangeEntry
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="messagemap.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MessageMap
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="messagemapentry.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MessageMapEntry
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_5" id="__nav_4_1_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    QtTsDocument
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_5">
+            <span class="md-nav__icon md-icon"></span>
+            QtTsDocument
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="qttsdocument.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    QtTsDocument
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="qttsmessage.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    QtTsMessage
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_6" id="__nav_4_1_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    QtUiDocument
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_6">
+            <span class="md-nav__icon md-icon"></span>
+            QtUiDocument
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="qtuidocument.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    QtUiDocument
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="qtuiwidget.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    QtUiWidget
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_7" id="__nav_4_1_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    RcDocument
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_7">
+            <span class="md-nav__icon md-icon"></span>
+            RcDocument
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="rcdocument.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RcDocument
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="action.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Action
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="asset.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Asset
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="menu.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Menu
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="menuitem.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MenuItem
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ribbon.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ribbon
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ribboncategory.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RibbonCategory
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ribboncontext.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RibbonContext
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ribbonelement.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RibbonElement
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ribbonmenu.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RibbonMenu
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ribbonpanel.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RibbonPanel
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="shortcut.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Shortcut
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="string.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    String
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="toolbar.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ToolBar
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="toolbaritem.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ToolBarItem
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="widget.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Widget
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_8" id="__nav_4_1_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    TextDocument
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_8">
+            <span class="md-nav__icon md-icon"></span>
+            TextDocument
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="textdocument.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TextDocument
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mark.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mark
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="rangemark.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RangeMark
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="textlocation.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TextLocation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="textrange.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TextRange
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_9" id="__nav_4_1_9_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Items
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_9">
+            <span class="md-nav__icon md-icon"></span>
+            Items
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="script.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Script
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="scriptdialog.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ScriptDialog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_10" id="__nav_4_1_10_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Utilities
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_10">
+            <span class="md-nav__icon md-icon"></span>
+            Utilities
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="dir.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Dir
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="file.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    File
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="fileinfo.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FileInfo
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="message.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Message
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="settings.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Settings
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="userdialog.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    UserDialog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="utils.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Utils
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="qdirvaluetype.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    QDirValueType
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="qfileinfovaluetype.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    QFileInfoValueType
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Script.Test Module
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            Script.Test Module
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../script.test/testcase.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TestCase
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../script.test/testutil.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TestUtil
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      Properties
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Methods
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#property-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Property Documentation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#method-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method Documentation
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="cppdocument">CppDocument<a class="headerlink" href="#cppdocument" title="Permanent link">#</a></h1>
+<p>Document object for a C++ file (source or header) <a href="#detailed-description">More...</a></p>
+<div class="highlight"><pre><span></span><code><span class="kr">import</span> <span class="nx">Script</span>
+</code></pre></div>
+<h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bool</td>
+<td><strong><a href="#isHeader">isHeader</a></strong></td>
+</tr>
+</tbody>
+</table>
+<p>Inherited properties: <a href="codedocument.html#properties">CodeDocument properties</a></p>
+<h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><strong><a href="#addMember">addMember</a></strong>(string member, string className, AccessSpecifier)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#addMethod">addMethod</a></strong>(string declaration, string className, AccessSpecifier, string body)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#addMethod">addMethod</a></strong>(string declaration, string className, AccessSpecifier)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#addMethodDeclaration">addMethodDeclaration</a></strong>(string method, string className, AccessSpecifier specifier)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#addMethodDefinition">addMethodDefinition</a></strong>(string method, string className)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#addMethodDefinition">addMethodDefinition</a></strong>(string method, string className, string body)</td>
+</tr>
+<tr>
+<td>void</td>
+<td><strong><a href="#changeBaseClass">changeBaseClass</a></strong>()</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#commentSelection">commentSelection</a></strong>()</td>
+</tr>
+<tr>
+<td>string</td>
+<td><strong><a href="#correspondingHeaderSource">correspondingHeaderSource</a></strong>()</td>
+</tr>
+<tr>
+<td>void</td>
+<td><strong><a href="#deleteMethod">deleteMethod</a></strong>()</td>
+</tr>
+<tr>
+<td>void</td>
+<td><strong><a href="#deleteMethod">deleteMethod</a></strong>(string methodName)</td>
+</tr>
+<tr>
+<td>void</td>
+<td><strong><a href="#deleteMethod">deleteMethod</a></strong>(string method, string signature)</td>
+</tr>
+<tr>
+<td>int</td>
+<td><strong><a href="#gotoBlockEnd">gotoBlockEnd</a></strong>(int count)</td>
+</tr>
+<tr>
+<td>int</td>
+<td><strong><a href="#gotoBlockStart">gotoBlockStart</a></strong>(int count)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#insertCodeInMethod">insertCodeInMethod</a></strong>(string methodName, string code, Position insertAt)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#insertForwardDeclaration">insertForwardDeclaration</a></strong>(string forwardDeclaration)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#insertInclude">insertInclude</a></strong>(string include, bool newGroup = false)</td>
+</tr>
+<tr>
+<td>QStringList</td>
+<td><strong><a href="#keywords">keywords</a></strong>()</td>
+</tr>
+<tr>
+<td><a href="dataexchange.html">DataExchange</a></td>
+<td><strong><a href="#mfcExtractDDX">mfcExtractDDX</a></strong>(string className)</td>
+</tr>
+<tr>
+<td><a href="messagemap.html">MessageMap</a></td>
+<td><strong><a href="#mfcExtractMessageMap">mfcExtractMessageMap</a></strong>(string className = "")</td>
+</tr>
+<tr>
+<td><a href="cppdocument.html">CppDocument</a></td>
+<td><strong><a href="#openHeaderSource">openHeaderSource</a></strong>()</td>
+</tr>
+<tr>
+<td>QStringList</td>
+<td><strong><a href="#primitiveTypes">primitiveTypes</a></strong>()</td>
+</tr>
+<tr>
+<td><a href="querymatch.html">QueryMatch</a></td>
+<td><strong><a href="#queryClassDefinition">queryClassDefinition</a></strong>(string className)</td>
+</tr>
+<tr>
+<td>array&lt;<a href="querymatch.html">QueryMatch</a>&gt;</td>
+<td><strong><a href="#queryFunctionCall">queryFunctionCall</a></strong>(string functionName)</td>
+</tr>
+<tr>
+<td>array&lt;<a href="querymatch.html">QueryMatch</a>&gt;</td>
+<td><strong><a href="#queryFunctionCall">queryFunctionCall</a></strong>(string functionName, array&lt;string&gt; argumentCaptures)</td>
+</tr>
+<tr>
+<td><a href="querymatch.html">QueryMatch</a></td>
+<td><strong><a href="#queryMember">queryMember</a></strong>(string className, string memberName)</td>
+</tr>
+<tr>
+<td>array&lt;<a href="querymatch.html">QueryMatch</a>&gt;</td>
+<td><strong><a href="#queryMethodDeclaration">queryMethodDeclaration</a></strong>(string className, string functionName)</td>
+</tr>
+<tr>
+<td>array&lt;<a href="querymatch.html">QueryMatch</a>&gt;</td>
+<td><strong><a href="#queryMethodDefinition">queryMethodDefinition</a></strong>(string scope, string methodName)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#removeInclude">removeInclude</a></strong>(string include)</td>
+</tr>
+<tr>
+<td>int</td>
+<td><strong><a href="#selectBlockEnd">selectBlockEnd</a></strong>()</td>
+</tr>
+<tr>
+<td>int</td>
+<td><strong><a href="#selectBlockStart">selectBlockStart</a></strong>()</td>
+</tr>
+<tr>
+<td>int</td>
+<td><strong><a href="#selectBlockUp">selectBlockUp</a></strong>()</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#toggleSection">toggleSection</a></strong>()</td>
+</tr>
+</tbody>
+</table>
+<p>Inherited methods: <a href="codedocument.html#methods">CodeDocument methods</a></p>
+<h2 id="property-documentation">Property Documentation<a class="headerlink" href="#property-documentation" title="Permanent link">#</a></h2>
+<h4 id="bool-isheader"><a name="isHeader"></a>bool <strong>isHeader</strong><a class="headerlink" href="#bool-isheader" title="Permanent link">#</a></h4>
+<p>Return true if the current document is a header.</p>
+<h2 id="method-documentation">Method Documentation<a class="headerlink" href="#method-documentation" title="Permanent link">#</a></h2>
+<h4 id="addmemberstring-member-string-classname-accessspecifier"><a name="addMember"></a><strong>addMember</strong>(string member, string className, AccessSpecifier)<a class="headerlink" href="#addmemberstring-member-string-classname-accessspecifier" title="Permanent link">#</a></h4>
+<p>Adds a new member in a specific class under the specific access specifier.</p>
+<p>If the class does not exist, log error can't find the class, but if the
+specifier is valid but does not exist in the class, we will add that specifier in the end of the
+class and add the member under it.
+The specifier can take these values:</p>
+<ul>
+<li><code>CppDocument.Public</code></li>
+<li><code>CppDocument.Protected</code></li>
+<li><code>CppDocument.Private</code></li>
+</ul>
+<h4 id="addmethodstring-declaration-string-classname-accessspecifier-string-bodyaddmethodstring-declaration-string-classname-accessspecifier"><a name="addMethod"></a><strong>addMethod</strong>(string declaration, string className, AccessSpecifier, string body)<br/><strong>addMethod</strong>(string declaration, string className, AccessSpecifier)<a class="headerlink" href="#addmethodstring-declaration-string-classname-accessspecifier-string-bodyaddmethodstring-declaration-string-classname-accessspecifier" title="Permanent link">#</a></h4>
+<p>Declares and defines a new method.
+This method can be called on either the header or source file.
+It will find the corresponding header/source file and add the declaration
+to the header and the definition to the source.</p>
+<h4 id="addmethoddeclarationstring-method-string-classname-accessspecifier-specifier"><a name="addMethodDeclaration"></a><strong>addMethodDeclaration</strong>(string method, string className, AccessSpecifier specifier)<a class="headerlink" href="#addmethoddeclarationstring-method-string-classname-accessspecifier-specifier" title="Permanent link">#</a></h4>
+<p>Declares a new method in a specific class under the specific access specifier.</p>
+<p>If the class does not exist, log error can't find the class, but if the
+specifier is valid but does not exist in the class, we will add that specifier in the end of the
+class and declare the method under it.
+The specifier can take these values:</p>
+<ul>
+<li><code>CppDocument.Public</code></li>
+<li><code>CppDocument.Protected</code></li>
+<li><code>CppDocument.Private</code></li>
+</ul>
+<h4 id="addmethoddefinitionstring-method-string-classnameaddmethoddefinitionstring-method-string-classname-string-body"><a name="addMethodDefinition"></a><strong>addMethodDefinition</strong>(string method, string className)<br/><strong>addMethodDefinition</strong>(string method, string className, string body)<a class="headerlink" href="#addmethoddefinitionstring-method-string-classnameaddmethoddefinitionstring-method-string-classname-string-body" title="Permanent link">#</a></h4>
+<p>Adds a new method definition for the method declared by the given <code>method</code> for
+class <code>className</code> in the current file.
+The provided <code>body</code> should not include the curly braces.</p>
+<p>If no body is provided, it will default to an empty body.</p>
+<h4 id="void-changebaseclass"><a name="changeBaseClass"></a>void <strong>changeBaseClass</strong>()<a class="headerlink" href="#void-changebaseclass" title="Permanent link">#</a></h4>
+<p>Convert Class Base</p>
+<p>Also see: CppDocument::changeBaseClass(const QString &amp;className, const QString &amp;originalClassBaseName, const QString
+&amp;newClassBaseName)</p>
+<h4 id="commentselection"><a name="commentSelection"></a><strong>commentSelection</strong>()<a class="headerlink" href="#commentselection" title="Permanent link">#</a></h4>
+<p>Comments the selected lines (or current line if there's no selection) in current document.</p>
+<ul>
+<li>If there's no selection, current line is commented using <code>//</code>.</li>
+<li>If there's a valid selection and the start and end position of the selection are before any text of the lines,
+  all of the selected lines are commented using <code>//</code>.</li>
+<li>If there's a valid selection and the start and/or end position of the selection are between any text of the
+  lines, all of the selected lines are commented using multi-line comment.</li>
+<li>If selection or position is invalid or out of range, or the position is on an empty line, the document remains
+  unchanged.</li>
+</ul>
+<h4 id="string-correspondingheadersource"><a name="correspondingHeaderSource"></a>string <strong>correspondingHeaderSource</strong>()<a class="headerlink" href="#string-correspondingheadersource" title="Permanent link">#</a></h4>
+<p>Returns the corresponding source or header file path.</p>
+<h4 id="void-deletemethod"><a name="deleteMethod"></a>void <strong>deleteMethod</strong>()<a class="headerlink" href="#void-deletemethod" title="Permanent link">#</a></h4>
+<p>Deletes the method/function at the current cursor position.
+Overloads of the function will not be deleted!</p>
+<p>Also see: CppDocument::deleteMethod(const QString&amp; methodName, const QString&amp; signature)</p>
+<h4 id="void-deletemethodstring-methodname"><a name="deleteMethod"></a>void <strong>deleteMethod</strong>(string methodName)<a class="headerlink" href="#void-deletemethodstring-methodname" title="Permanent link">#</a></h4>
+<p>Deletes a method of the specified <code>methodName</code>, without matching a specific <code>signature</code>.
+Therefore, all overloads of the function will be deleted.</p>
+<p>Also see: CppDocument::deleteMethod(string methodName, string signature)</p>
+<h4 id="void-deletemethodstring-method-string-signature"><a name="deleteMethod"></a>void <strong>deleteMethod</strong>(string method, string signature)<a class="headerlink" href="#void-deletemethodstring-method-string-signature" title="Permanent link">#</a></h4>
+<p>Delete the method or function with the specified <code>method</code> and optional <code>signature</code>.
+The method definition/declaration will be deleted from the current file,
+as well as the corresponding header/source file.
+References to the method will not be deleted.</p>
+<p>The <code>method</code> must be fully qualified, i.e. "<Namespaces>::<Class>::<Method>".</p>
+<p>The <code>signature</code> must be in the form: "<return type> (<first parameter type>, <second parameter type>, &lt;...&gt;)".
+i.e. for a function with the following declaration:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">myFunction</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">QString</span><span class="o">&amp;</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">b</span><span class="p">);</span>
+</code></pre></div>
+<p>The <code>signature</code> would be:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">QString</span><span class="o">&amp;</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">)</span>
+</code></pre></div>
+<p>If an empty string is provided as the <code>signature</code>, all overloads of the function are deleted as well.</p>
+<h4 id="int-gotoblockendint-count"><a name="gotoBlockEnd"></a>int <strong>gotoBlockEnd</strong>(int count)<a class="headerlink" href="#int-gotoblockendint-count" title="Permanent link">#</a></h4>
+<p>Moves the cursor to the end of the block it's in, and returns the new cursor position.
+A block is defined by {} or () or [].
+Does it <code>count</code> times.</p>
+<h4 id="int-gotoblockstartint-count"><a name="gotoBlockStart"></a>int <strong>gotoBlockStart</strong>(int count)<a class="headerlink" href="#int-gotoblockstartint-count" title="Permanent link">#</a></h4>
+<p>Moves the cursor to the start of the block it's in, and returns the new cursor position.
+A block is defined by {} or () or [].
+Does it <code>count</code> times.</p>
+<h4 id="insertcodeinmethodstring-methodname-string-code-position-insertat"><a name="insertCodeInMethod"></a><strong>insertCodeInMethod</strong>(string methodName, string code, Position insertAt)<a class="headerlink" href="#insertcodeinmethodstring-methodname-string-code-position-insertat" title="Permanent link">#</a></h4>
+<p>Provides a fast way to add some code in an existing method definition. Does nothing if the method does not exist in
+the current document.</p>
+<p>This method will find a method in the current file with name matching with <code>methodName</code>. If the method exists in the
+current document, then it will insert the supplied <code>code</code> either at the beginning of the method, or at the end of the
+method, depending on the <code>insertAt</code> argument.</p>
+<h4 id="insertforwarddeclarationstring-forwarddeclaration"><a name="insertForwardDeclaration"></a><strong>insertForwardDeclaration</strong>(string forwardDeclaration)<a class="headerlink" href="#insertforwarddeclarationstring-forwarddeclaration" title="Permanent link">#</a></h4>
+<p>Inserts the forward declaration <code>forwardDeclaration</code> into the current file.
+The method will check if the file is a header file, and also that the forward declaration starts with 'class ' or
+'struct '. Fully qualified the forward declaration to add namespaces: <code>class Foo::Bar::FooBar</code> will result in:</p>
+<div class="highlight"><pre><span></span><code><span class="k">namespace</span><span class="w"> </span><span class="nn">Foo</span><span class="w"> </span><span class="p">{</span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">Bar</span><span class="w"> </span><span class="p">{</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FooBar</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h4 id="insertincludestring-include-bool-newgroup-false"><a name="insertInclude"></a><strong>insertInclude</strong>(string include, bool newGroup = false)<a class="headerlink" href="#insertincludestring-include-bool-newgroup-false" title="Permanent link">#</a></h4>
+<p>Inserts a new include line in the file. If the include is already in, do nothing (and returns true).</p>
+<p>The <code>include</code> string should be either <code>&lt;foo.h&gt;</code> or <code>"foo.h"</code>, it will returns false otherwise.
+The method will try to find the best group of includes to insert into, a group of includes being consecutive includes
+in the file.</p>
+<p>If <code>newGroup</code> is true, it will insert the include at the end, with a new line separating the other includes.</p>
+<h4 id="qstringlist-keywords"><a name="keywords"></a>QStringList <strong>keywords</strong>()<a class="headerlink" href="#qstringlist-keywords" title="Permanent link">#</a></h4>
+<p>Returns a list of cpp keywords</p>
+<p>See: Utils::cppKeywords()</p>
+<h4 id="dataexchange-mfcextractddxstring-classname"><a name="mfcExtractDDX"></a><a href="dataexchange.html">DataExchange</a> <strong>mfcExtractDDX</strong>(string className)<a class="headerlink" href="#dataexchange-mfcextractddxstring-classname" title="Permanent link">#</a></h4>
+<p>Extracts the DDX information from a MFC class.</p>
+<p>The DDX information gives the mapping between the IDC and the member variables in the class.</p>
+<h4 id="messagemap-mfcextractmessagemapstring-classname"><a name="mfcExtractMessageMap"></a><a href="messagemap.html">MessageMap</a> <strong>mfcExtractMessageMap</strong>(string className = "")<a class="headerlink" href="#messagemap-mfcextractmessagemapstring-classname" title="Permanent link">#</a></h4>
+<p>Extracts information contained in the MFC MESSAGE_MAP.
+The <code>className</code> parameter can be used to ensure the result matches to a specific class.</p>
+<h4 id="cppdocument-openheadersource"><a name="openHeaderSource"></a><a href="cppdocument.html">CppDocument</a> <strong>openHeaderSource</strong>()<a class="headerlink" href="#cppdocument-openheadersource" title="Permanent link">#</a></h4>
+<p>Opens the corresponding source or header files, the current document is the new file.
+If no files have been found, it's a no-op.</p>
+<h4 id="qstringlist-primitivetypes"><a name="primitiveTypes"></a>QStringList <strong>primitiveTypes</strong>()<a class="headerlink" href="#qstringlist-primitivetypes" title="Permanent link">#</a></h4>
+<p>Returns a list of cpp primitive types</p>
+<p>See Utils::cppPrimitiveTypes()</p>
+<h4 id="querymatch-queryclassdefinitionstring-classname"><a name="queryClassDefinition"></a><a href="querymatch.html">QueryMatch</a> <strong>queryClassDefinition</strong>(string className)<a class="headerlink" href="#querymatch-queryclassdefinitionstring-classname" title="Permanent link">#</a></h4>
+<p>Returns the class or struct definition matching the given <code>className</code>.</p>
+<p>The returned QueryMatch instance will have the following captures available:</p>
+<ul>
+<li><code>name</code> - The name of the class or struct</li>
+<li><code>base</code> - The list of base classes/structs, if any</li>
+<li><code>body</code> - The body of the class or struct definition (including curly-braces)</li>
+</ul>
+<h4 id="arrayquerymatch-queryfunctioncallstring-functionname"><a name="queryFunctionCall"></a>array&lt;<a href="querymatch.html">QueryMatch</a>&gt; <strong>queryFunctionCall</strong>(string functionName)<a class="headerlink" href="#arrayquerymatch-queryfunctioncallstring-functionname" title="Permanent link">#</a></h4>
+<p>Returns the list of function calls to the function <code>functionName</code>, no matter how many arguments they were called with.</p>
+<p>The returned QueryMatch instances will have the following captures available:</p>
+<ul>
+<li><code>call</code> - The entire call expression</li>
+<li><code>name</code> - The name of the function (the text will be equal to functionName)</li>
+<li><code>argument-list</code> - The entire list of arguments, including the surroundg parentheses <code>()</code></li>
+<li><code>arguments</code> - Each argument provided to the function call, in order, excluding any comments</li>
+</ul>
+<h4 id="arrayquerymatch-queryfunctioncallstring-functionname-arraystring-argumentcaptures"><a name="queryFunctionCall"></a>array&lt;<a href="querymatch.html">QueryMatch</a>&gt; <strong>queryFunctionCall</strong>(string functionName, array&lt;string&gt; argumentCaptures)<a class="headerlink" href="#arrayquerymatch-queryfunctioncallstring-functionname-arraystring-argumentcaptures" title="Permanent link">#</a></h4>
+<p>Returns the list of function calls to the function <code>functionName</code>.
+Only calls that have the same number of arguments as <code>argumentCaptures</code> will be returned.</p>
+<p>The <code>argumentCaptures</code> list is a list of names that will be used to capture the arguments of the function call.
+E.g. <code>queryFunctionCall("foo", ["first", "second"])</code> will return a list of calls to <code>foo</code> with two arguments,
+where the first argument will be captured in the <code>first</code> capture, and the second in the <code>second</code> capture.</p>
+<p>The returned QueryMatch instances will have the following captures available:</p>
+<ul>
+<li><code>call</code> - The entire call expression</li>
+<li><code>name</code> - The name of the function (the text will be equal to functionName)</li>
+<li><code>argument-list</code> - The entire list of arguments, including the surroundg parentheses <code>()</code></li>
+<li>a capture for every argument in <code>argumentCaptures</code></li>
+</ul>
+<h4 id="querymatch-querymemberstring-classname-string-membername"><a name="queryMember"></a><a href="querymatch.html">QueryMatch</a> <strong>queryMember</strong>(string className, string memberName)<a class="headerlink" href="#querymatch-querymemberstring-classname-string-membername" title="Permanent link">#</a></h4>
+<p>Finds the member definition inside a class or struct definition.
+Returns a QueryMatch object containing the member definition if it exists.</p>
+<p>The returned QueryMatch instance will have the following captures available:</p>
+<ul>
+<li><code>member</code>: The full definition of the member</li>
+<li><code>type</code>: The type of the member, without <code>const</code> or any reference/pointer specifiers (i.e. <code>&amp;</code>/<code>*</code>)</li>
+<li><code>name</code>: The name of the member (should be equal to memberName)</li>
+</ul>
+<h4 id="arrayquerymatch-querymethoddeclarationstring-classname-string-functionname"><a name="queryMethodDeclaration"></a>array&lt;<a href="querymatch.html">QueryMatch</a>&gt; <strong>queryMethodDeclaration</strong>(string className, string functionName)<a class="headerlink" href="#arrayquerymatch-querymethoddeclarationstring-classname-string-functionname" title="Permanent link">#</a></h4>
+<p>Finds the declaration of a method inside a class or struct definition.</p>
+<p>Returns a list of QueryMatch objects containing the declaration.
+A warning will be logged if no declarations are found.</p>
+<p>The returned QueryMatch instances contain the following captures:</p>
+<ul>
+<li><code>declaration</code>: The full declaration of the method</li>
+<li><code>function</code>: The function declaration, without the return type</li>
+<li><code>name</code>: The name of the function</li>
+</ul>
+<h4 id="arrayquerymatch-querymethoddefinitionstring-scope-string-methodname"><a name="queryMethodDefinition"></a>array&lt;<a href="querymatch.html">QueryMatch</a>&gt; <strong>queryMethodDefinition</strong>(string scope, string methodName)<a class="headerlink" href="#arrayquerymatch-querymethoddefinitionstring-scope-string-methodname" title="Permanent link">#</a></h4>
+<p>Returns the list of methods definitions matching the given name and scope.
+<code>scope</code> may be either a class name, a namespace or empty.</p>
+<p>Every QueryMatch returned by this function will have the following captures available:</p>
+<ul>
+<li><code>scope</code> - The scope of the method (if any is provided)</li>
+<li><code>name</code> - The name of the function</li>
+<li><code>definition</code> - The entire method definition</li>
+<li><code>parameter-list</code> - The list of parameters</li>
+<li><code>parameters</code> - One capture per parameter, containing the type and name of the parameter, excluding comments!</li>
+<li><code>body</code> - The body of the method (including curly-braces)</li>
+</ul>
+<p>Please note that the return type is not available, as TreeSitter is not able to parse it easily.</p>
+<h4 id="removeincludestring-include"><a name="removeInclude"></a><strong>removeInclude</strong>(string include)<a class="headerlink" href="#removeincludestring-include" title="Permanent link">#</a></h4>
+<p>Remove <code>include</code> from the file. If the include is not in the file, do nothing (and returns true).</p>
+<p>The <code>include</code> string should be either <code>&lt;foo.h&gt;</code> or <code>"foo.h"</code>, it will returns false otherwise.</p>
+<h4 id="int-selectblockend"><a name="selectBlockEnd"></a>int <strong>selectBlockEnd</strong>()<a class="headerlink" href="#int-selectblockend" title="Permanent link">#</a></h4>
+<p>Selects the text from current cursor position to the end of the block, and returns the new cursor position.
+A block is defined by {} or () or [].
+Does it <code>count</code> times.</p>
+<h4 id="int-selectblockstart"><a name="selectBlockStart"></a>int <strong>selectBlockStart</strong>()<a class="headerlink" href="#int-selectblockstart" title="Permanent link">#</a></h4>
+<p>Selects the text from current cursor position to the start of the block, and returns the new cursor position.
+A block is defined by {} or () or [].
+Does it <code>count</code> times.</p>
+<h4 id="int-selectblockup"><a name="selectBlockUp"></a>int <strong>selectBlockUp</strong>()<a class="headerlink" href="#int-selectblockup" title="Permanent link">#</a></h4>
+<p>Selects the text of the block the cursor is in, and returns the new cursor position.
+A block is defined by {} or () or [].
+Does it <code>count</code> times.</p>
+<h4 id="togglesection"><a name="toggleSection"></a><strong>toggleSection</strong>()<a class="headerlink" href="#togglesection" title="Permanent link">#</a></h4>
+<p>Comments out a section of the code using <code>#ifdef</code> / <code>#endif</code>. The variable used is defined by the settings.
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;toggle_section&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;tag&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;KDAB_TEMPORARILY_REMOVED&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;debug&quot;</span><span class="p">:</span><span class="w"> </span><span class="nt">&quot;qDebug(\&quot;%1 is commented out\&quot;)&quot;</span>
+<span class="w">    </span><span class="nt">&quot;return_values&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;BOOL&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;false&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<code>debug</code> is the debug line to show, if empty it won't show anything. <code>return_values</code> gives a mapping for the value
+returned by the function. In this example, if the returned type is <code>BOOL</code>, it will return <code>false</code>. If text is
+selected, it comment out the lines of the selected text. Otherwise, it will comment the function the cursor is in. In
+the latter case, if the function is already commented, it will remove the commented section.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; Klar&auml;lvdalens Datakonsult AB (KDAB)<br>Trusted Software Excellence<br><a href='https://www.kdab.com'>https://www.kdab.com/</a>
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.top", "navigation.tabs", "navigation.tabs.sticky"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.fe8b6f2b.min.js"></script>
+      
+    
+  </body>
+</html>

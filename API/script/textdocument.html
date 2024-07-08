@@ -1,0 +1,3040 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Knut Documentation - Automation tool for code transformation using scripts">
+      
+      
+        <meta name="author" content="Klarälvdalens Datakonsult AB (KDAB)">
+      
+      
+        <link rel="canonical" href="https://kdab.github.io/knut/API/script/textdocument.html">
+      
+      
+        <link rel="prev" href="widget.html">
+      
+      
+        <link rel="next" href="mark.html">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.28">
+    
+    
+      
+        <title>TextDocument - Knut - Code transformation via scripts</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.6543a935.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="kdab" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#textdocument" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../index.html" title="Knut - Code transformation via scripts" class="md-header__button md-logo" aria-label="Knut - Code transformation via scripts" data-md-component="logo">
+      
+  <img src="../../assets/transparentWhiteKDAB.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Knut - Code transformation via scripts
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              TextDocument
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="kdab" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/KDAB/Knut" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Knut
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../index.html" class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/overview.html" class="md-tabs__link">
+          
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../contributing/getting-involved.html" class="md-tabs__link">
+          
+  
+  Contributing
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="document.html" class="md-tabs__link">
+          
+  
+  Script API
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="Knut - Code transformation via scripts" class="md-nav__button md-logo" aria-label="Knut - Code transformation via scripts" data-md-component="logo">
+      
+  <img src="../../assets/transparentWhiteKDAB.svg" alt="logo">
+
+    </a>
+    Knut - Code transformation via scripts
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/KDAB/Knut" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Knut
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../index.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Getting Started
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Getting Started
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/overview.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/script.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Writing a script
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/treesitter.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Syntax tree queries
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/cli.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Command line interface
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/gui.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    User interface
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Contributing
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Contributing
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/getting-involved.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Getting involved
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/architecture.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Architecture
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/unit-tests.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Unit tests
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Script API
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Script API
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4_1" id="__nav_4_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Script Module
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_1">
+            <span class="md-nav__icon md-icon"></span>
+            Script Module
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="document.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Document
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="project.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Project
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_3" id="__nav_4_1_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    CodeDocument
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_3">
+            <span class="md-nav__icon md-icon"></span>
+            CodeDocument
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="codedocument.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CodeDocument
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="classsymbol.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ClassSymbol
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="functionargument.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FunctionArgument
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="functionsymbol.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FunctionSymbol
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="querycapture.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    QueryCapture
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="querymatch.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    QueryMatch
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="symbol.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Symbol
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_4" id="__nav_4_1_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    CppDocument
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_4">
+            <span class="md-nav__icon md-icon"></span>
+            CppDocument
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="cppdocument.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CppDocument
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="dataexchange.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DataExchange
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="dataexchangeentry.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DataExchangeEntry
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="messagemap.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MessageMap
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="messagemapentry.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MessageMapEntry
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_5" id="__nav_4_1_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    QtTsDocument
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_5">
+            <span class="md-nav__icon md-icon"></span>
+            QtTsDocument
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="qttsdocument.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    QtTsDocument
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="qttsmessage.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    QtTsMessage
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_6" id="__nav_4_1_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    QtUiDocument
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_6">
+            <span class="md-nav__icon md-icon"></span>
+            QtUiDocument
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="qtuidocument.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    QtUiDocument
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="qtuiwidget.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    QtUiWidget
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_7" id="__nav_4_1_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    RcDocument
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_7">
+            <span class="md-nav__icon md-icon"></span>
+            RcDocument
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="rcdocument.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RcDocument
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="action.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Action
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="asset.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Asset
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="menu.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Menu
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="menuitem.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MenuItem
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ribbon.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ribbon
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ribboncategory.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RibbonCategory
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ribboncontext.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RibbonContext
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ribbonelement.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RibbonElement
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ribbonmenu.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RibbonMenu
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ribbonpanel.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RibbonPanel
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="shortcut.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Shortcut
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="string.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    String
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="toolbar.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ToolBar
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="toolbaritem.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ToolBarItem
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="widget.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Widget
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_8" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_8" id="__nav_4_1_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    TextDocument
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_1_8">
+            <span class="md-nav__icon md-icon"></span>
+            TextDocument
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    TextDocument
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="textdocument.html" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    TextDocument
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      Properties
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Methods
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#property-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Property Documentation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#method-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method Documentation
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mark.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mark
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="rangemark.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RangeMark
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="textlocation.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TextLocation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="textrange.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TextRange
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_9" id="__nav_4_1_9_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Items
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_9">
+            <span class="md-nav__icon md-icon"></span>
+            Items
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="script.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Script
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="scriptdialog.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ScriptDialog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_10" id="__nav_4_1_10_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Utilities
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_10">
+            <span class="md-nav__icon md-icon"></span>
+            Utilities
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="dir.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Dir
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="file.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    File
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="fileinfo.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FileInfo
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="message.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Message
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="settings.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Settings
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="userdialog.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    UserDialog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="utils.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Utils
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="qdirvaluetype.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    QDirValueType
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="qfileinfovaluetype.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    QFileInfoValueType
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Script.Test Module
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            Script.Test Module
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../script.test/testcase.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TestCase
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../script.test/testutil.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TestUtil
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      Properties
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Methods
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#property-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Property Documentation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#method-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method Documentation
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="textdocument">TextDocument<a class="headerlink" href="#textdocument" title="Permanent link">#</a></h1>
+<p>Document object for text files. <a href="#detailed-description">More...</a></p>
+<div class="highlight"><pre><span></span><code><span class="kr">import</span> <span class="nx">Script</span>
+</code></pre></div>
+<h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>int</td>
+<td><strong><a href="#column">column</a></strong></td>
+</tr>
+<tr>
+<td>string</td>
+<td><strong><a href="#currentLine">currentLine</a></strong></td>
+</tr>
+<tr>
+<td>string</td>
+<td><strong><a href="#currentWord">currentWord</a></strong></td>
+</tr>
+<tr>
+<td>int</td>
+<td><strong><a href="#line">line</a></strong></td>
+</tr>
+<tr>
+<td>int</td>
+<td><strong><a href="#lineCount">lineCount</a></strong></td>
+</tr>
+<tr>
+<td>LineEnding</td>
+<td><strong><a href="#lineEnding">lineEnding</a></strong></td>
+</tr>
+<tr>
+<td>int</td>
+<td><strong><a href="#position">position</a></strong></td>
+</tr>
+<tr>
+<td>string</td>
+<td><strong><a href="#selectedText">selectedText</a></strong></td>
+</tr>
+<tr>
+<td>int</td>
+<td><strong><a href="#selectionEnd">selectionEnd</a></strong></td>
+</tr>
+<tr>
+<td>int</td>
+<td><strong><a href="#selectionStart">selectionStart</a></strong></td>
+</tr>
+<tr>
+<td>string</td>
+<td><strong><a href="#text">text</a></strong></td>
+</tr>
+</tbody>
+</table>
+<p>Inherited properties: <a href="document.html#properties">Document properties</a></p>
+<h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><strong><a href="#columnAtPosition">columnAtPosition</a></strong>(int position)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#copy">copy</a></strong>()</td>
+</tr>
+<tr>
+<td><a href="mark.html">Mark</a></td>
+<td><strong><a href="#createMark">createMark</a></strong>(int pos = -1)</td>
+</tr>
+<tr>
+<td><a href="rangemark.html">RangeMark</a></td>
+<td><strong><a href="#createRangeMark">createRangeMark</a></strong>()</td>
+</tr>
+<tr>
+<td><a href="rangemark.html">RangeMark</a></td>
+<td><strong><a href="#createRangeMark">createRangeMark</a></strong>(int from, int to)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#cut">cut</a></strong>()</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#deleteEndOfLine">deleteEndOfLine</a></strong>()</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#deleteEndOfWord">deleteEndOfWord</a></strong>()</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#deleteLine">deleteLine</a></strong>(int line = -1)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#deleteNextCharacter">deleteNextCharacter</a></strong>(int count = 1)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#deletePreviousCharacter">deletePreviousCharacter</a></strong>(int count = 1)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#deleteRange">deleteRange</a></strong>(<a href="textrange.html">TextRange</a> range)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#deleteRegion">deleteRegion</a></strong>(int from, int to)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#deleteSelection">deleteSelection</a></strong>()</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#deleteStartOfLine">deleteStartOfLine</a></strong>()</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#deleteStartOfWord">deleteStartOfWord</a></strong>()</td>
+</tr>
+<tr>
+<td>bool</td>
+<td><strong><a href="#find">find</a></strong>(string text, int options = TextDocument.NoFindFlags)</td>
+</tr>
+<tr>
+<td>bool</td>
+<td><strong><a href="#findRegexp">findRegexp</a></strong>(string regexp, int options = TextDocument.NoFindFlags)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#gotoEndOfDocument">gotoEndOfDocument</a></strong>()</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#gotoEndOfLine">gotoEndOfLine</a></strong>()</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#gotoEndOfWord">gotoEndOfWord</a></strong>()</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#gotoLine">gotoLine</a></strong>(int line, int column = 1)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#gotoMark">gotoMark</a></strong>(<a href="mark.html">Mark</a> mark)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#gotoNextChar">gotoNextChar</a></strong>(int count = 1)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#gotoNextLine">gotoNextLine</a></strong>(int count = 1)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#gotoNextWord">gotoNextWord</a></strong>(int count = 1)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#gotoPreviousChar">gotoPreviousChar</a></strong>(int count = 1)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#gotoPreviousLine">gotoPreviousLine</a></strong>(int count = 1)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#gotoPreviousWord">gotoPreviousWord</a></strong>(int count = 1)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#gotoStartOfDocument">gotoStartOfDocument</a></strong>()</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#gotoStartOfLine">gotoStartOfLine</a></strong>()</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#gotoStartOfWord">gotoStartOfWord</a></strong>()</td>
+</tr>
+<tr>
+<td>bool</td>
+<td><strong><a href="#hasSelection">hasSelection</a></strong>()</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#indent">indent</a></strong>(int count)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#indentationAtPosition">indentationAtPosition</a></strong>(int pos)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#insert">insert</a></strong>(string text)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#insertAtLine">insertAtLine</a></strong>(string text, int line = -1)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#insertAtPosition">insertAtPosition</a></strong>(string text, int pos)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#lineAtPosition">lineAtPosition</a></strong>(int position)</td>
+</tr>
+<tr>
+<td>bool</td>
+<td><strong><a href="#match">match</a></strong>(string regexp, int options = TextDocument.NoFindFlags)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#paste">paste</a></strong>()</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#positionAt">positionAt</a></strong>(int line, int col)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#redo">redo</a></strong>(int count)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#remove">remove</a></strong>(int length)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#removeIndent">removeIndent</a></strong>(int count)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#replace">replace</a></strong>(int length, string text)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#replace">replace</a></strong>(<a href="textrange.html">TextRange</a> range, string text)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#replace">replace</a></strong>(int from, int to, string text)</td>
+</tr>
+<tr>
+<td>bool</td>
+<td><strong><a href="#replaceAll">replaceAll</a></strong>(string before, string after, int options = TextDocument.NoFindFlags)</td>
+</tr>
+<tr>
+<td>bool</td>
+<td><strong><a href="#replaceAllInRange">replaceAllInRange</a></strong>(string before, string after, <a href="rangemark.html">RangeMark</a> range, int options = TextDocument.NoFindFlags)</td>
+</tr>
+<tr>
+<td>bool</td>
+<td><strong><a href="#replaceAllRegexp">replaceAllRegexp</a></strong>(string regexp, string after, int options = TextDocument.NoFindFlags)</td>
+</tr>
+<tr>
+<td>bool</td>
+<td><strong><a href="#replaceAllRegexpInRange">replaceAllRegexpInRange</a></strong>(string regexp, string after, <a href="rangemark.html">RangeMark</a> range, int options = TextDocument.NoFindFlags)</td>
+</tr>
+<tr>
+<td>bool</td>
+<td><strong><a href="#replaceOne">replaceOne</a></strong>(string before, string after, int options = TextDocument.NoFindFlags)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#selectAll">selectAll</a></strong>()</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#selectEndOfLine">selectEndOfLine</a></strong>()</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#selectEndOfWord">selectEndOfWord</a></strong>()</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#selectNextChar">selectNextChar</a></strong>(int count = 1)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#selectNextLine">selectNextLine</a></strong>(int count = 1)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#selectNextWord">selectNextWord</a></strong>(int count = 1)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#selectPreviousChar">selectPreviousChar</a></strong>(int count = 1)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#selectPreviousLine">selectPreviousLine</a></strong>(int count = 1)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#selectPreviousWord">selectPreviousWord</a></strong>(int count = 1)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#selectRange">selectRange</a></strong>(<a href="textrange.html">TextRange</a> range)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#selectRangeMark">selectRangeMark</a></strong>(<a href="rangemark.html">RangeMark</a> mark)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#selectRegion">selectRegion</a></strong>(int from, int to)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#selectStartOfLine">selectStartOfLine</a></strong>(int count = 1)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#selectStartOfWord">selectStartOfWord</a></strong>()</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#selectTo">selectTo</a></strong>(int pos)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#selectToMark">selectToMark</a></strong>(<a href="mark.html">Mark</a> mark)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#undo">undo</a></strong>(int count)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong><a href="#unselect">unselect</a></strong>()</td>
+</tr>
+</tbody>
+</table>
+<p>Inherited methods: <a href="document.html#methods">Document methods</a></p>
+<h2 id="property-documentation">Property Documentation<a class="headerlink" href="#property-documentation" title="Permanent link">#</a></h2>
+<h4 id="int-column"><a name="column"></a>int <strong>column</strong><a class="headerlink" href="#int-column" title="Permanent link">#</a></h4>
+<p>This read-only property holds the column of the cursor position.
+Be careful the column is 1-based, so the column before the first character is 1.</p>
+<h4 id="string-currentline"><a name="currentLine"></a>string <strong>currentLine</strong><a class="headerlink" href="#string-currentline" title="Permanent link">#</a></h4>
+<p>This read-only property return the line under the current position.</p>
+<h4 id="string-currentword"><a name="currentWord"></a>string <strong>currentWord</strong><a class="headerlink" href="#string-currentword" title="Permanent link">#</a></h4>
+<p>This read-only property return the word under the current position.</p>
+<h4 id="int-line"><a name="line"></a>int <strong>line</strong><a class="headerlink" href="#int-line" title="Permanent link">#</a></h4>
+<p>This read-only property holds the line of the cursor position.
+Be careful the line is 1-based, so the first line of the document is 1,</p>
+<h4 id="int-linecount"><a name="lineCount"></a>int <strong>lineCount</strong><a class="headerlink" href="#int-linecount" title="Permanent link">#</a></h4>
+<p>This read-only property holds the number of lines in the document.</p>
+<h4 id="lineending-lineending"><a name="lineEnding"></a>LineEnding <strong>lineEnding</strong><a class="headerlink" href="#lineending-lineending" title="Permanent link">#</a></h4>
+<p>This property holds the line ending for the document. It can be one of those choices:</p>
+<ul>
+<li><code>TextDocument.LFLineEnding</code>: '\n' character</li>
+<li><code>TextDocument.CRLFLineEnding</code>: '\r\n' characters</li>
+<li><code>TextDocument.NativeLineEnding</code>: LF on Linux and Mac, CRLF on Windows</li>
+</ul>
+<p>Native is the default for new documents.</p>
+<h4 id="int-position"><a name="position"></a>int <strong>position</strong><a class="headerlink" href="#int-position" title="Permanent link">#</a></h4>
+<p>This property holds the absolute position of the cursor inside the text document.</p>
+<h4 id="string-selectedtext"><a name="selectedText"></a>string <strong>selectedText</strong><a class="headerlink" href="#string-selectedtext" title="Permanent link">#</a></h4>
+<p>This property holds the selected text of the document.</p>
+<h4 id="int-selectionend"><a name="selectionEnd"></a>int <strong>selectionEnd</strong><a class="headerlink" href="#int-selectionend" title="Permanent link">#</a></h4>
+<p>This property holds the end of the selection or position if the cursor doesn't have a selection.</p>
+<h4 id="int-selectionstart"><a name="selectionStart"></a>int <strong>selectionStart</strong><a class="headerlink" href="#int-selectionstart" title="Permanent link">#</a></h4>
+<p>This property holds the start of the selection or position if the cursor doesn't have a selection.</p>
+<h4 id="string-text"><a name="text"></a>string <strong>text</strong><a class="headerlink" href="#string-text" title="Permanent link">#</a></h4>
+<p>This property holds the text of the document.</p>
+<h2 id="method-documentation">Method Documentation<a class="headerlink" href="#method-documentation" title="Permanent link">#</a></h2>
+<h4 id="columnatpositionint-position"><a name="columnAtPosition"></a><strong>columnAtPosition</strong>(int position)<a class="headerlink" href="#columnatpositionint-position" title="Permanent link">#</a></h4>
+<p>Returns the column number for the given text cursor <code>position</code>. Or -1 if position is invalid</p>
+<h4 id="copy"><a name="copy"></a><strong>copy</strong>()<a class="headerlink" href="#copy" title="Permanent link">#</a></h4>
+<p>Copies the selected text.</p>
+<h4 id="mark-createmarkint-pos-1"><a name="createMark"></a><a href="mark.html">Mark</a> <strong>createMark</strong>(int pos = -1)<a class="headerlink" href="#mark-createmarkint-pos-1" title="Permanent link">#</a></h4>
+<p>Creates a mark at the given position <code>pos</code>. If <code>pos</code> is -1, it will create a mark at the
+current position.</p>
+<h4 id="rangemark-createrangemark"><a name="createRangeMark"></a><a href="rangemark.html">RangeMark</a> <strong>createRangeMark</strong>()<a class="headerlink" href="#rangemark-createrangemark" title="Permanent link">#</a></h4>
+<p>Creates a range mark from the current selection.</p>
+<p>Note: if there is no selection, the range mark will span an empty range!</p>
+<h4 id="rangemark-createrangemarkint-from-int-to"><a name="createRangeMark"></a><a href="rangemark.html">RangeMark</a> <strong>createRangeMark</strong>(int from, int to)<a class="headerlink" href="#rangemark-createrangemarkint-from-int-to" title="Permanent link">#</a></h4>
+<p>Creates a range mark from <code>from</code> to <code>to</code>.</p>
+<h4 id="cut"><a name="cut"></a><strong>cut</strong>()<a class="headerlink" href="#cut" title="Permanent link">#</a></h4>
+<p>Cuts the selected text.</p>
+<h4 id="deleteendofline"><a name="deleteEndOfLine"></a><strong>deleteEndOfLine</strong>()<a class="headerlink" href="#deleteendofline" title="Permanent link">#</a></h4>
+<p>Deletes from the cursor position to the end of the line.</p>
+<h4 id="deleteendofword"><a name="deleteEndOfWord"></a><strong>deleteEndOfWord</strong>()<a class="headerlink" href="#deleteendofword" title="Permanent link">#</a></h4>
+<p>Deletes from the cursor position to the end of the word.</p>
+<h4 id="deletelineint-line-1"><a name="deleteLine"></a><strong>deleteLine</strong>(int line = -1)<a class="headerlink" href="#deletelineint-line-1" title="Permanent link">#</a></h4>
+<p>Remove a the line <code>line</code>. If <code>line</code> is -1, remove the current line. <code>line</code> is 1-based.</p>
+<h4 id="deletenextcharacterint-count-1"><a name="deleteNextCharacter"></a><strong>deleteNextCharacter</strong>(int count = 1)<a class="headerlink" href="#deletenextcharacterint-count-1" title="Permanent link">#</a></h4>
+<p>Deletes the next <code>count</code> characters.</p>
+<h4 id="deletepreviouscharacterint-count-1"><a name="deletePreviousCharacter"></a><strong>deletePreviousCharacter</strong>(int count = 1)<a class="headerlink" href="#deletepreviouscharacterint-count-1" title="Permanent link">#</a></h4>
+<p>Deletes the previous <code>count</code> characters.</p>
+<h4 id="deleterangetextrange-range"><a name="deleteRange"></a><strong>deleteRange</strong>(<a href="textrange.html">TextRange</a> range)<a class="headerlink" href="#deleterangetextrange-range" title="Permanent link">#</a></h4>
+<p>Deletes the range passed in parameter.</p>
+<h4 id="deleteregionint-from-int-to"><a name="deleteRegion"></a><strong>deleteRegion</strong>(int from, int to)<a class="headerlink" href="#deleteregionint-from-int-to" title="Permanent link">#</a></h4>
+<p>Deletes the text between <code>from</code> and <code>to</code> positions.</p>
+<h4 id="deleteselection"><a name="deleteSelection"></a><strong>deleteSelection</strong>()<a class="headerlink" href="#deleteselection" title="Permanent link">#</a></h4>
+<p>Deletes the current selection, does nothing if no text is selected.</p>
+<h4 id="deletestartofline"><a name="deleteStartOfLine"></a><strong>deleteStartOfLine</strong>()<a class="headerlink" href="#deletestartofline" title="Permanent link">#</a></h4>
+<p>Deletes from the cursor position to the start of the line.</p>
+<h4 id="deletestartofword"><a name="deleteStartOfWord"></a><strong>deleteStartOfWord</strong>()<a class="headerlink" href="#deletestartofword" title="Permanent link">#</a></h4>
+<p>Deletes from the cursor position to the start of the word.</p>
+<h4 id="bool-findstring-text-int-options-textdocumentnofindflags"><a name="find"></a>bool <strong>find</strong>(string text, int options = TextDocument.NoFindFlags)<a class="headerlink" href="#bool-findstring-text-int-options-textdocumentnofindflags" title="Permanent link">#</a></h4>
+<p>Searches the string <code>text</code> in the editor. Options could be a combination of:</p>
+<ul>
+<li><code>TextDocument.FindBackward</code>: search backward</li>
+<li><code>TextDocument.FindCaseSensitively</code>: match case</li>
+<li><code>TextDocument.FindWholeWords</code>: match only complete words</li>
+<li><code>TextDocument.FindRegexp</code>: use a regexp, equivalent to calling <code>findRegexp</code></li>
+</ul>
+<p>Selects the match and returns <code>true</code> if a match is found.</p>
+<h4 id="bool-findregexpstring-regexp-int-options-textdocumentnofindflags"><a name="findRegexp"></a>bool <strong>findRegexp</strong>(string regexp, int options = TextDocument.NoFindFlags)<a class="headerlink" href="#bool-findregexpstring-regexp-int-options-textdocumentnofindflags" title="Permanent link">#</a></h4>
+<p>Searches the string <code>regexp</code> in the editor using a regular expression. Options could be a combination of:</p>
+<ul>
+<li><code>TextDocument.FindBackward</code>: search backward</li>
+<li><code>TextDocument.FindCaseSensitively</code>: match case</li>
+<li><code>TextDocument.FindWholeWords</code>: match only complete words</li>
+</ul>
+<p>Selects the match and returns <code>true</code> if a match is found.</p>
+<h4 id="gotoendofdocument"><a name="gotoEndOfDocument"></a><strong>gotoEndOfDocument</strong>()<a class="headerlink" href="#gotoendofdocument" title="Permanent link">#</a></h4>
+<p>Goes to the document end.</p>
+<h4 id="gotoendofline"><a name="gotoEndOfLine"></a><strong>gotoEndOfLine</strong>()<a class="headerlink" href="#gotoendofline" title="Permanent link">#</a></h4>
+<p>Goes to the end of the line.</p>
+<h4 id="gotoendofword"><a name="gotoEndOfWord"></a><strong>gotoEndOfWord</strong>()<a class="headerlink" href="#gotoendofword" title="Permanent link">#</a></h4>
+<p>Goes to the end of the word under the cursor.</p>
+<h4 id="gotolineint-line-int-column-1"><a name="gotoLine"></a><strong>gotoLine</strong>(int line, int column = 1)<a class="headerlink" href="#gotolineint-line-int-column-1" title="Permanent link">#</a></h4>
+<p>Goes to the given <code>line</code> and <code>column</code> in the editor. Lines and columns are 1-based.</p>
+<h4 id="gotomarkmark-mark"><a name="gotoMark"></a><strong>gotoMark</strong>(<a href="mark.html">Mark</a> mark)<a class="headerlink" href="#gotomarkmark-mark" title="Permanent link">#</a></h4>
+<p>Goes to the given <code>mark</code>.</p>
+<h4 id="gotonextcharint-count-1"><a name="gotoNextChar"></a><strong>gotoNextChar</strong>(int count = 1)<a class="headerlink" href="#gotonextcharint-count-1" title="Permanent link">#</a></h4>
+<p>Goes to the next character, repeat the operation <code>count</code> times.</p>
+<h4 id="gotonextlineint-count-1"><a name="gotoNextLine"></a><strong>gotoNextLine</strong>(int count = 1)<a class="headerlink" href="#gotonextlineint-count-1" title="Permanent link">#</a></h4>
+<p>Goes to the next line, repeat the operation <code>count</code> times.</p>
+<h4 id="gotonextwordint-count-1"><a name="gotoNextWord"></a><strong>gotoNextWord</strong>(int count = 1)<a class="headerlink" href="#gotonextwordint-count-1" title="Permanent link">#</a></h4>
+<p>Goes to the next word, repeat the operation <code>count</code> times.</p>
+<h4 id="gotopreviouscharint-count-1"><a name="gotoPreviousChar"></a><strong>gotoPreviousChar</strong>(int count = 1)<a class="headerlink" href="#gotopreviouscharint-count-1" title="Permanent link">#</a></h4>
+<p>Goes to the previous character, repeat the operation <code>count</code> times.</p>
+<h4 id="gotopreviouslineint-count-1"><a name="gotoPreviousLine"></a><strong>gotoPreviousLine</strong>(int count = 1)<a class="headerlink" href="#gotopreviouslineint-count-1" title="Permanent link">#</a></h4>
+<p>Goes to the previous line, repeat the operation <code>count</code> times.</p>
+<h4 id="gotopreviouswordint-count-1"><a name="gotoPreviousWord"></a><strong>gotoPreviousWord</strong>(int count = 1)<a class="headerlink" href="#gotopreviouswordint-count-1" title="Permanent link">#</a></h4>
+<p>Goes to the previous word, repeat the operation <code>count</code> times.</p>
+<h4 id="gotostartofdocument"><a name="gotoStartOfDocument"></a><strong>gotoStartOfDocument</strong>()<a class="headerlink" href="#gotostartofdocument" title="Permanent link">#</a></h4>
+<p>Goes to the document start.</p>
+<h4 id="gotostartofline"><a name="gotoStartOfLine"></a><strong>gotoStartOfLine</strong>()<a class="headerlink" href="#gotostartofline" title="Permanent link">#</a></h4>
+<p>Goes to the start of the line.</p>
+<h4 id="gotostartofword"><a name="gotoStartOfWord"></a><strong>gotoStartOfWord</strong>()<a class="headerlink" href="#gotostartofword" title="Permanent link">#</a></h4>
+<p>Goes to the start of the word under the cursor.</p>
+<h4 id="bool-hasselection"><a name="hasSelection"></a>bool <strong>hasSelection</strong>()<a class="headerlink" href="#bool-hasselection" title="Permanent link">#</a></h4>
+<p>Returns true if the editor has a selection.</p>
+<h4 id="indentint-count"><a name="indent"></a><strong>indent</strong>(int count)<a class="headerlink" href="#indentint-count" title="Permanent link">#</a></h4>
+<p>Indents the current line <code>count</code> times. If there's a selection, indent all lines in the selection.</p>
+<h4 id="indentationatpositionint-pos"><a name="indentationAtPosition"></a><strong>indentationAtPosition</strong>(int pos)<a class="headerlink" href="#indentationatpositionint-pos" title="Permanent link">#</a></h4>
+<p>Returns the indentation at the given position.</p>
+<h4 id="insertstring-text"><a name="insert"></a><strong>insert</strong>(string text)<a class="headerlink" href="#insertstring-text" title="Permanent link">#</a></h4>
+<p>Inserts the string <code>text</code> at the current position. If some text is selected it will be replaced.</p>
+<h4 id="insertatlinestring-text-int-line-1"><a name="insertAtLine"></a><strong>insertAtLine</strong>(string text, int line = -1)<a class="headerlink" href="#insertatlinestring-text-int-line-1" title="Permanent link">#</a></h4>
+<p>Inserts the string <code>text</code> at <code>line</code>. If <code>line</code> is -1, insert the text at the current position. <code>line</code> is 1-based.</p>
+<h4 id="insertatpositionstring-text-int-pos"><a name="insertAtPosition"></a><strong>insertAtPosition</strong>(string text, int pos)<a class="headerlink" href="#insertatpositionstring-text-int-pos" title="Permanent link">#</a></h4>
+<p>Inserts the string <code>text</code> at <code>pos</code>.</p>
+<h4 id="lineatpositionint-position"><a name="lineAtPosition"></a><strong>lineAtPosition</strong>(int position)<a class="headerlink" href="#lineatpositionint-position" title="Permanent link">#</a></h4>
+<p>Returns the line number for the given text cursor <code>position</code>. Or -1 if position is invalid</p>
+<h4 id="bool-matchstring-regexp-int-options-textdocumentnofindflags"><a name="match"></a>bool <strong>match</strong>(string regexp, int options = TextDocument.NoFindFlags)<a class="headerlink" href="#bool-matchstring-regexp-int-options-textdocumentnofindflags" title="Permanent link">#</a></h4>
+<p>Searches the string <code>regexp</code> in the editor using a regular expression. Options could be a combination of:</p>
+<ul>
+<li><code>TextDocument.FindBackward</code>: search backward</li>
+<li><code>TextDocument.FindCaseSensitively</code>: match case</li>
+<li><code>TextDocument.FindWholeWords</code>: match only complete words</li>
+</ul>
+<p>Selects the match and returns the named group if a match is found.</p>
+<h4 id="paste"><a name="paste"></a><strong>paste</strong>()<a class="headerlink" href="#paste" title="Permanent link">#</a></h4>
+<p>Pastes text in the clipboard.</p>
+<h4 id="positionatint-line-int-col"><a name="positionAt"></a><strong>positionAt</strong>(int line, int col)<a class="headerlink" href="#positionatint-line-int-col" title="Permanent link">#</a></h4>
+<p>Returns the text cursor position for the given <code>line</code> number and <code>column</code> number. Or -1 if position was not found</p>
+<h4 id="redoint-count"><a name="redo"></a><strong>redo</strong>(int count)<a class="headerlink" href="#redoint-count" title="Permanent link">#</a></h4>
+<p>Redo <code>count</code> times the last actions.</p>
+<h4 id="removeint-length"><a name="remove"></a><strong>remove</strong>(int length)<a class="headerlink" href="#removeint-length" title="Permanent link">#</a></h4>
+<p>Remove <code>length</code> character from the current position.</p>
+<h4 id="removeindentint-count"><a name="removeIndent"></a><strong>removeIndent</strong>(int count)<a class="headerlink" href="#removeindentint-count" title="Permanent link">#</a></h4>
+<p>Indents the current line <code>count</code> times. If there's a selection, indent all lines in the selection.</p>
+<h4 id="replaceint-length-string-text"><a name="replace"></a><strong>replace</strong>(int length, string text)<a class="headerlink" href="#replaceint-length-string-text" title="Permanent link">#</a></h4>
+<p>Replaces <code>length</code> characters from the current position with the string <code>text</code>.</p>
+<h4 id="replacetextrange-range-string-text"><a name="replace"></a><strong>replace</strong>(<a href="textrange.html">TextRange</a> range, string text)<a class="headerlink" href="#replacetextrange-range-string-text" title="Permanent link">#</a></h4>
+<p>Replaces the text in the range <code>range</code> with the string <code>text</code>.</p>
+<h4 id="replaceint-from-int-to-string-text"><a name="replace"></a><strong>replace</strong>(int from, int to, string text)<a class="headerlink" href="#replaceint-from-int-to-string-text" title="Permanent link">#</a></h4>
+<p>Replaces the text from <code>from</code> to <code>to</code> with the string <code>text</code>.</p>
+<h4 id="bool-replaceallstring-before-string-after-int-options-textdocumentnofindflags"><a name="replaceAll"></a>bool <strong>replaceAll</strong>(string before, string after, int options = TextDocument.NoFindFlags)<a class="headerlink" href="#bool-replaceallstring-before-string-after-int-options-textdocumentnofindflags" title="Permanent link">#</a></h4>
+<p>Replaces all occurrences of the string <code>before</code> with <code>after</code>. Options could be a combination of:</p>
+<ul>
+<li><code>TextDocument.FindCaseSensitively</code>: match case</li>
+<li><code>TextDocument.FindWholeWords</code>: match only complete words</li>
+<li><code>TextDocument.FindRegexp</code>: use a regexp, equivalent to calling <code>findRegexp</code></li>
+<li><code>TextDocument.PreserveCase</code>: preserve case when replacing</li>
+</ul>
+<p>If the option <code>TextEditor.PreserveCase</code> is used, it means:</p>
+<ul>
+<li>All upper-case occurrences are replaced with the upper-case new text.</li>
+<li>All lower-case occurrences are replaced with the lower-case new text.</li>
+<li>Capitalized occurrences are replaced with the capitalized new text.</li>
+<li>Other occurrences are replaced with the new text as entered. If an occurrence and the new text have the same prefix
+or suffix, then the case of the prefix and/or suffix are preserved, and the other rules are applied on the rest of
+the occurrence only.</li>
+</ul>
+<p>Returns the number of changes done in the document.</p>
+<h4 id="bool-replaceallinrangestring-before-string-after-rangemark-range-int-options-textdocumentnofindflags"><a name="replaceAllInRange"></a>bool <strong>replaceAllInRange</strong>(string before, string after, <a href="rangemark.html">RangeMark</a> range, int options = TextDocument.NoFindFlags)<a class="headerlink" href="#bool-replaceallinrangestring-before-string-after-rangemark-range-int-options-textdocumentnofindflags" title="Permanent link">#</a></h4>
+<p>Replaces all occurrences of the string <code>before</code> with <code>after</code> in the given <code>range</code>. See the
+options from <code>replaceAll</code>.</p>
+<p>Returns the number of changes done in the document.</p>
+<h4 id="bool-replaceallregexpstring-regexp-string-after-int-options-textdocumentnofindflags"><a name="replaceAllRegexp"></a>bool <strong>replaceAllRegexp</strong>(string regexp, string after, int options = TextDocument.NoFindFlags)<a class="headerlink" href="#bool-replaceallregexpstring-regexp-string-after-int-options-textdocumentnofindflags" title="Permanent link">#</a></h4>
+<p>Replaces all occurrences of the matches for the <code>regexp</code> with <code>after</code>. See the options from <code>replaceAll</code>.</p>
+<p>The captures coming from the regexp can be used in the replacement text, using <code>\1</code>..<code>\n</code> or <code>$1</code>..<code>$n</code>.</p>
+<p>Returns the number of changes done in the document.</p>
+<h4 id="bool-replaceallregexpinrangestring-regexp-string-after-rangemark-range-int-options-textdocumentnofindflags"><a name="replaceAllRegexpInRange"></a>bool <strong>replaceAllRegexpInRange</strong>(string regexp, string after, <a href="rangemark.html">RangeMark</a> range, int options = TextDocument.NoFindFlags)<a class="headerlink" href="#bool-replaceallregexpinrangestring-regexp-string-after-rangemark-range-int-options-textdocumentnofindflags" title="Permanent link">#</a></h4>
+<p>Replaces all occurrences of the matches for the <code>regexp</code> with <code>after</code> in the given <code>range</code>. See the options from <code>replaceAll</code>.</p>
+<p>The captures coming from the regexp can be used in the replacement text, using <code>\1</code>..<code>\n</code> or <code>$1</code>..<code>$n</code>.</p>
+<p>Returns the number of changes done in the document.</p>
+<h4 id="bool-replaceonestring-before-string-after-int-options-textdocumentnofindflags"><a name="replaceOne"></a>bool <strong>replaceOne</strong>(string before, string after, int options = TextDocument.NoFindFlags)<a class="headerlink" href="#bool-replaceonestring-before-string-after-int-options-textdocumentnofindflags" title="Permanent link">#</a></h4>
+<p>Replaces one occurrence of the string <code>before</code> with <code>after</code>. Options could be a combination of:</p>
+<ul>
+<li><code>TextDocument.FindCaseSensitively</code>: match case</li>
+<li><code>TextDocument.FindWholeWords</code>: match only complete words</li>
+<li><code>TextDocument.FindRegexp</code>: use a regexp, equivalent to calling <code>findRegexp</code></li>
+<li><code>TextDocument.PreserveCase</code>: preserve case when replacing</li>
+</ul>
+<p>If the option <code>TextEditor.PreserveCase</code> is used, it means:</p>
+<ul>
+<li>All upper-case occurrences are replaced with the upper-case new text.</li>
+<li>All lower-case occurrences are replaced with the lower-case new text.</li>
+<li>Capitalized occurrences are replaced with the capitalized new text.</li>
+<li>Other occurrences are replaced with the new text as entered. If an occurrence and the new text have the same prefix
+or suffix, then the case of the prefix and/or suffix are preserved, and the other rules are applied on the rest of
+the occurrence only.</li>
+</ul>
+<p>Returns true if a change occurs in the document..</p>
+<h4 id="selectall"><a name="selectAll"></a><strong>selectAll</strong>()<a class="headerlink" href="#selectall" title="Permanent link">#</a></h4>
+<p>Selects all the text.</p>
+<h4 id="selectendofline"><a name="selectEndOfLine"></a><strong>selectEndOfLine</strong>()<a class="headerlink" href="#selectendofline" title="Permanent link">#</a></h4>
+<p>Selects the text from the current position to the end of the line.</p>
+<h4 id="selectendofword"><a name="selectEndOfWord"></a><strong>selectEndOfWord</strong>()<a class="headerlink" href="#selectendofword" title="Permanent link">#</a></h4>
+<p>Selects the text from the current position to the end of the word.</p>
+<h4 id="selectnextcharint-count-1"><a name="selectNextChar"></a><strong>selectNextChar</strong>(int count = 1)<a class="headerlink" href="#selectnextcharint-count-1" title="Permanent link">#</a></h4>
+<p>Selects the next character, repeat the operation <code>count</code> times.</p>
+<h4 id="selectnextlineint-count-1"><a name="selectNextLine"></a><strong>selectNextLine</strong>(int count = 1)<a class="headerlink" href="#selectnextlineint-count-1" title="Permanent link">#</a></h4>
+<p>Selects the next line, repeat the operation <code>count</code> times.</p>
+<h4 id="selectnextwordint-count-1"><a name="selectNextWord"></a><strong>selectNextWord</strong>(int count = 1)<a class="headerlink" href="#selectnextwordint-count-1" title="Permanent link">#</a></h4>
+<p>Selects the next word, repeat the operation <code>count</code> times.</p>
+<h4 id="selectpreviouscharint-count-1"><a name="selectPreviousChar"></a><strong>selectPreviousChar</strong>(int count = 1)<a class="headerlink" href="#selectpreviouscharint-count-1" title="Permanent link">#</a></h4>
+<p>Selects the previous character, repeat the operation <code>count</code> times.</p>
+<h4 id="selectpreviouslineint-count-1"><a name="selectPreviousLine"></a><strong>selectPreviousLine</strong>(int count = 1)<a class="headerlink" href="#selectpreviouslineint-count-1" title="Permanent link">#</a></h4>
+<p>Selects the previous line, repeat the operation <code>count</code> times.</p>
+<h4 id="selectpreviouswordint-count-1"><a name="selectPreviousWord"></a><strong>selectPreviousWord</strong>(int count = 1)<a class="headerlink" href="#selectpreviouswordint-count-1" title="Permanent link">#</a></h4>
+<p>Selects the previous word, repeat the operation <code>count</code> times.</p>
+<h4 id="selectrangetextrange-range"><a name="selectRange"></a><strong>selectRange</strong>(<a href="textrange.html">TextRange</a> range)<a class="headerlink" href="#selectrangetextrange-range" title="Permanent link">#</a></h4>
+<p>Selects the range passed in parameter.</p>
+<h4 id="selectrangemarkrangemark-mark"><a name="selectRangeMark"></a><strong>selectRangeMark</strong>(<a href="rangemark.html">RangeMark</a> mark)<a class="headerlink" href="#selectrangemarkrangemark-mark" title="Permanent link">#</a></h4>
+<p>Selects the text defined by the range make <code>mark</code>.</p>
+<h4 id="selectregionint-from-int-to"><a name="selectRegion"></a><strong>selectRegion</strong>(int from, int to)<a class="headerlink" href="#selectregionint-from-int-to" title="Permanent link">#</a></h4>
+<p>Selects the text between <code>from</code> and <code>to</code> positions.</p>
+<h4 id="selectstartoflineint-count-1"><a name="selectStartOfLine"></a><strong>selectStartOfLine</strong>(int count = 1)<a class="headerlink" href="#selectstartoflineint-count-1" title="Permanent link">#</a></h4>
+<p>Selects the text from the current position to the start of the line.</p>
+<h4 id="selectstartofword"><a name="selectStartOfWord"></a><strong>selectStartOfWord</strong>()<a class="headerlink" href="#selectstartofword" title="Permanent link">#</a></h4>
+<p>Selects the text from the current position to the start of the word.</p>
+<h4 id="selecttoint-pos"><a name="selectTo"></a><strong>selectTo</strong>(int pos)<a class="headerlink" href="#selecttoint-pos" title="Permanent link">#</a></h4>
+<p>Selects the text from the current position to <code>pos</code>.</p>
+<h4 id="selecttomarkmark-mark"><a name="selectToMark"></a><strong>selectToMark</strong>(<a href="mark.html">Mark</a> mark)<a class="headerlink" href="#selecttomarkmark-mark" title="Permanent link">#</a></h4>
+<p>Selects the text from the cursor position to the <code>mark</code>.</p>
+<h4 id="undoint-count"><a name="undo"></a><strong>undo</strong>(int count)<a class="headerlink" href="#undoint-count" title="Permanent link">#</a></h4>
+<p>Undo <code>count</code> times the last actions.</p>
+<h4 id="unselect"><a name="unselect"></a><strong>unselect</strong>()<a class="headerlink" href="#unselect" title="Permanent link">#</a></h4>
+<p>Clears the current selection.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; Klar&auml;lvdalens Datakonsult AB (KDAB)<br>Trusted Software Excellence<br><a href='https://www.kdab.com'>https://www.kdab.com/</a>
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.top", "navigation.tabs", "navigation.tabs.sticky"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.fe8b6f2b.min.js"></script>
+      
+    
+  </body>
+</html>

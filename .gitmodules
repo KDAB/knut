@@ -1,0 +1,31 @@
+[submodule "3rdparty/spdlog"]
+	path = 3rdparty/spdlog
+	url = https://github.com/gabime/spdlog.git
+[submodule "3rdparty/nlohmann-json"]
+	path = 3rdparty/nlohmann-json
+	url = https://github.com/nlohmann/json
+[submodule "3rdparty/pugixml"]
+	path = 3rdparty/pugixml
+	url = https://github.com/zeux/pugixml.git
+[submodule "3rdparty/kdalgorithms"]
+	path = 3rdparty/kdalgorithms
+	url = https://github.com/KDAB/KDAlgorithms
+[submodule "3rdparty/ksyntaxhighlighting"]
+	path = 3rdparty/ksyntaxhighlighting
+	url = https://github.com/KDE/syntax-highlighting.git
+	ignore = dirty
+[submodule "3rdparty/extra-cmake-modules"]
+	path = 3rdparty/extra-cmake-modules
+	url = https://github.com/KDE/extra-cmake-modules
+[submodule "3rdparty/tree-sitter"]
+	path = 3rdparty/tree-sitter
+	url = https://github.com/tree-sitter/tree-sitter.git
+[submodule "3rdparty/tree-sitter-cpp"]
+	path = 3rdparty/tree-sitter-cpp
+	url = https://github.com/tree-sitter/tree-sitter-cpp
+[submodule "3rdparty/mfc-utils"]
+	path = 3rdparty/mfc-utils
+	url = ssh://codereview.kdab.com:29418/kdab/mfc-utils
+[submodule "3rdparty/photonwidgets"]
+	path = 3rdparty/photonwidgets
+	url = ssh://codereview.kdab.com:29418/photonwidgets
