@@ -33,6 +33,7 @@ function(add_knut_test_variadic name)
   target_include_directories(${name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src)
 
   add_test(${name} ${CMAKE_BINARY_DIR}/bin/${name})
+  set_property(TEST ${name} PROPERTY ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
 endfunction()
 
 # * Create a test, with one source and arbitrary libs
