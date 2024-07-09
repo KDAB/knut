@@ -2,7 +2,7 @@
 <ui version="4.0">
     <class>IDD_CHARACTER_EDITOR_AUTO_EVENTS</class>
     <widget class="QDialog" name="IDD_CHARACTER_EDITOR_AUTO_EVENTS">
-        <property name="mfc_id">
+        <property name="mfc_id" stdset="0">
             <string notr="true">IDD_CHARACTER_EDITOR_AUTO_EVENTS</string>
         </property>
         <property name="geometry">
@@ -17,7 +17,7 @@
             <string>Auto Populate Events</string>
         </property>
         <widget class="QPushButton" name="IDOK">
-            <property name="mfc_id">
+            <property name="mfc_id" stdset="0">
                 <string notr="true">IDOK</string>
             </property>
             <property name="geometry">
@@ -36,7 +36,7 @@
             </property>
         </widget>
         <widget class="QPushButton" name="IDC_GENERATE_EVENTS">
-            <property name="mfc_id">
+            <property name="mfc_id" stdset="0">
                 <string notr="true">IDC_GENERATE_EVENTS</string>
             </property>
             <property name="geometry">
@@ -52,7 +52,7 @@
             </property>
         </widget>
         <widget class="QGroupBox" name="IDC_STATIC_3">
-            <property name="mfc_id">
+            <property name="mfc_id" stdset="0">
                 <string notr="true">IDC_STATIC_3</string>
             </property>
             <property name="geometry">
@@ -67,7 +67,7 @@
                 <string>Audio</string>
             </property>
             <widget class="QLabel" name="IDC_STATIC_6">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_STATIC_6</string>
                 </property>
                 <property name="geometry">
@@ -83,7 +83,7 @@
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC_7">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_STATIC_7</string>
                 </property>
                 <property name="geometry">
@@ -99,7 +99,7 @@
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC_4">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_STATIC_4</string>
                 </property>
                 <property name="geometry">
@@ -115,7 +115,7 @@
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC_8">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_STATIC_8</string>
                 </property>
                 <property name="geometry">
@@ -131,7 +131,7 @@
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC_5">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_STATIC_5</string>
                 </property>
                 <property name="geometry">
@@ -147,7 +147,7 @@
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_STATIC</string>
                 </property>
                 <property name="geometry">
@@ -163,7 +163,7 @@
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC_2">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_STATIC_2</string>
                 </property>
                 <property name="geometry">
@@ -179,7 +179,7 @@
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_FOLEYS_CHECK">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_FOLEYS_CHECK</string>
                 </property>
                 <property name="geometry">
@@ -195,7 +195,7 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_FOLEY_DELAY_TXT">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_FOLEY_DELAY_TXT</string>
                 </property>
                 <property name="geometry">
@@ -211,7 +211,7 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_FOOTSTEP_HEIGHT">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_FOOTSTEP_HEIGHT</string>
                 </property>
                 <property name="geometry">
@@ -227,7 +227,7 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_LEFT_FOOT_EVENT">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_LEFT_FOOT_EVENT</string>
                 </property>
                 <property name="geometry">
@@ -243,7 +243,7 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_RIGHT_FOOT_EVENT">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_RIGHT_FOOT_EVENT</string>
                 </property>
                 <property name="geometry">
@@ -259,7 +259,7 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_FOLEY_EVENT">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_FOLEY_EVENT</string>
                 </property>
                 <property name="geometry">
@@ -275,7 +275,7 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_LEFT_FOOT_PARAM">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_LEFT_FOOT_PARAM</string>
                 </property>
                 <property name="geometry">
@@ -291,7 +291,7 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_RIGHT_FOOT_PARAM">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_RIGHT_FOOT_PARAM</string>
                 </property>
                 <property name="geometry">
@@ -307,7 +307,7 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_FOLEY_PARAM">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_FOLEY_PARAM</string>
                 </property>
                 <property name="geometry">
@@ -323,7 +323,7 @@
                 </property>
             </widget>
             <widget class="QComboBox" name="IDC_LEFT_BONE_COMBO">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_LEFT_BONE_COMBO</string>
                 </property>
                 <property name="geometry">
@@ -342,7 +342,7 @@
                 </property>
             </widget>
             <widget class="QComboBox" name="IDC_RIGHT_BONE_COMBO">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_RIGHT_BONE_COMBO</string>
                 </property>
                 <property name="geometry">
@@ -361,7 +361,7 @@
                 </property>
             </widget>
             <widget class="QComboBox" name="IDC_FOLEY_BONE_COMBO">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_FOLEY_BONE_COMBO</string>
                 </property>
                 <property name="geometry">
@@ -380,7 +380,7 @@
                 </property>
             </widget>
             <widget class="QSlider" name="IDC_FOLEY_DELAY_SLIDER">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_FOLEY_DELAY_SLIDER</string>
                 </property>
                 <property name="geometry">
@@ -399,7 +399,7 @@
                 </property>
             </widget>
             <widget class="QSlider" name="IDC_FOOT_HEIGHT_SLIDER">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_FOOT_HEIGHT_SLIDER</string>
                 </property>
                 <property name="geometry">

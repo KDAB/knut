@@ -85,7 +85,7 @@ QtUiWriter::Status QtUiWriter::addCustomWidget(const QString &className, const Q
 }
 
 QtUiWriter::Status QtUiWriter::addWidgetProperty(pugi::xml_node widget, const QString &name, const QVariant &value,
-                                                 const QHash<QString, QString> &attributes)
+                                                 const QHash<QString, QString> &attributes, bool userProperty)
 {
     // Special case for stringlist
     if (static_cast<QMetaType::Type>(value.typeId()) == QMetaType::QStringList) {
@@ -98,9 +98,12 @@ QtUiWriter::Status QtUiWriter::addWidgetProperty(pugi::xml_node widget, const QS
         return Success;
     }
 
-    auto createPropertyNode = [&widget, name]() {
+    auto createPropertyNode = [&widget, name, userProperty]() {
         auto propertyNode = widget.append_child("property");
         propertyNode.append_attribute("name").set_value(name.toLatin1().constData());
+        if (userProperty) {
+            propertyNode.append_attribute("stdset").set_value("0");
+        }
         return propertyNode;
     };
 
