@@ -22,7 +22,7 @@ namespace Core {
 /*!
  * \qmltype Mark
  * \brief Keeps track of a position in a text document.
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup TextDocument
  * \sa TextDocument
  *

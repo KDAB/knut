@@ -42,7 +42,7 @@ function main() {
 
 constexpr char DefaultScriptDialog[] = R"(// Description of the script
 
-import Script
+import Knut
 
 ScriptDialog {
     id: root
@@ -185,7 +185,7 @@ void ScriptPanel::newScriptDialog()
 
 void ScriptPanel::saveScript()
 {
-    const bool isQml = toPlainText().contains("import Script");
+    const bool isQml = toPlainText().contains("import Knut");
 
     if (m_fileName.isEmpty()) {
         m_fileName = QFileDialog::getSaveFileName(this, tr("Save Script"), "",
@@ -260,7 +260,7 @@ void ScriptPanel::runScript()
         return;
     }
 
-    const QString extension = find("import Script") ? "qml" : "js";
+    const QString extension = find("import Knut") ? "qml" : "js";
 
     QTemporaryFile file("script_XXXXXX." + extension);
     if (file.open()) {

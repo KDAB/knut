@@ -25,7 +25,7 @@ struct RcFile
     bool isValid = false;
 
     // Global data
-    QVector<Data::Include> includes;
+    QList<Data::Include> includes;
     QHash<int, QString> resourceMap;
 
     // Data by languages
@@ -38,17 +38,17 @@ struct RcFile
 RcFile parse(const QString &fileName);
 
 // Conversion methods
-QVector<Asset> convertAssets(const Data &data, Asset::ConversionFlags flags = Asset::AllFlags);
+QList<Asset> convertAssets(const Data &data, Asset::ConversionFlags flags = Asset::AllFlags);
 
 Widget convertDialog(const Data &data, const Data::Dialog &dialog,
                      Widget::ConversionFlags flags = Widget::UpdateGeometry, double scaleX = 1.5, double scaleY = 1.65);
 
-QVector<Action> convertActions(const Data &data, Asset::ConversionFlags flags = Asset::AllFlags);
+QList<Action> convertActions(const Data &data, Asset::ConversionFlags flags = Asset::AllFlags);
 
 // Write methods
-void writeAssetsToImage(const QVector<Asset> &assets, Asset::TransparentColors colors = Asset::AllColors);
+void writeAssetsToImage(const QList<Asset> &assets, Asset::TransparentColors colors = Asset::AllColors);
 
-void writeAssetsToQrc(const QVector<Asset> &assets, QIODevice *device, const QString &fileName);
+void writeAssetsToQrc(const QList<Asset> &assets, QIODevice *device, const QString &fileName);
 
 void writeDialogToUi(const Widget &widget, QIODevice *device);
 

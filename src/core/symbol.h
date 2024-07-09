@@ -14,7 +14,7 @@
 #include "textlocation.h"
 #include "textrange.h"
 
-#include <QVector>
+#include <QList>
 
 namespace Core {
 
@@ -32,33 +32,34 @@ class Symbol : public QObject
     Q_PROPERTY(Core::TextRange selectionRange READ selectionRange CONSTANT)
 
 public:
+    // Follow the LSP SymbolKind enum
     enum Kind {
-        File = static_cast<int>(Lsp::SymbolKind::File),
-        Module = static_cast<int>(Lsp::SymbolKind::Module),
-        Namespace = static_cast<int>(Lsp::SymbolKind::Namespace),
-        Package = static_cast<int>(Lsp::SymbolKind::Package),
-        Class = static_cast<int>(Lsp::SymbolKind::Class),
-        Method = static_cast<int>(Lsp::SymbolKind::Method),
-        Property = static_cast<int>(Lsp::SymbolKind::Property),
-        Field = static_cast<int>(Lsp::SymbolKind::Field),
-        Constructor = static_cast<int>(Lsp::SymbolKind::Constructor),
-        Enum = static_cast<int>(Lsp::SymbolKind::Enum),
-        Interface = static_cast<int>(Lsp::SymbolKind::Interface),
-        Function = static_cast<int>(Lsp::SymbolKind::Function),
-        Variable = static_cast<int>(Lsp::SymbolKind::Variable),
-        Constant = static_cast<int>(Lsp::SymbolKind::Constant),
-        String = static_cast<int>(Lsp::SymbolKind::String),
-        Number = static_cast<int>(Lsp::SymbolKind::Number),
-        Boolean = static_cast<int>(Lsp::SymbolKind::Boolean),
-        Array = static_cast<int>(Lsp::SymbolKind::Array),
-        Object = static_cast<int>(Lsp::SymbolKind::Object),
-        Key = static_cast<int>(Lsp::SymbolKind::Key),
-        Null = static_cast<int>(Lsp::SymbolKind::Null),
-        EnumMember = static_cast<int>(Lsp::SymbolKind::EnumMember),
-        Struct = static_cast<int>(Lsp::SymbolKind::Struct),
-        Event = static_cast<int>(Lsp::SymbolKind::Event),
-        Operator = static_cast<int>(Lsp::SymbolKind::Operator),
-        TypeParameter = static_cast<int>(Lsp::SymbolKind::TypeParameter),
+        File = 1,
+        Module = 2,
+        Namespace = 3,
+        Package = 4,
+        Class = 5,
+        Method = 6,
+        Property = 7,
+        Field = 8,
+        Constructor = 9,
+        Enum = 10,
+        Interface = 11,
+        Function = 12,
+        Variable = 13,
+        Constant = 14,
+        String = 15,
+        Number = 16,
+        Boolean = 17,
+        Array = 18,
+        Object = 19,
+        Key = 20,
+        Null = 21,
+        EnumMember = 22,
+        Struct = 23,
+        Event = 24,
+        Operator = 25,
+        TypeParameter = 26,
     };
     Q_ENUM(Kind)
 
@@ -91,14 +92,14 @@ public:
     // As per KNUT-163, these are no longer public API.
     // They are only used internally by the editor/GUI and not available from QML/JS.
     // As this relies on the clangd LSP, it is not reliable enough to use for scripting.
-    QVector<Core::TextLocation> references() const;
+    QList<Core::TextLocation> references() const;
 
     Q_INVOKABLE void select();
 
     bool operator==(const Symbol &) const;
 
 private:
-    void assignContext(const QVector<Symbol *> &contexts);
+    void assignContext(const QList<Symbol *> &contexts);
 
     friend class CodeDocument;
     friend class TreeSitterHelper;
@@ -109,4 +110,4 @@ using SymbolList = QList<Core::Symbol *>;
 } // namespace Core
 
 Q_DECLARE_METATYPE(Core::Symbol)
-Q_DECLARE_METATYPE(QVector<Core::Symbol *>)
+Q_DECLARE_METATYPE(QList<Core::Symbol *>)

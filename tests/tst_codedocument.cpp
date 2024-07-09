@@ -11,6 +11,7 @@
 #include "common/test_utils.h"
 #include "core/codedocument.h"
 #include "core/knutcore.h"
+#include "core/lsp_utils.h"
 #include "core/project.h"
 #include "core/querymatch.h"
 
@@ -143,7 +144,7 @@ private slots:
         const auto document = qobject_cast<Core::CodeDocument *>(project->open(fileName));
 
         auto cursor = document->textEdit()->textCursor();
-        cursor.setPosition(document->toPos(position));
+        cursor.setPosition(Core::Utils::lspToPos(*document, position));
         document->textEdit()->setTextCursor(cursor);
 
         auto actual = document->symbolUnderCursor();
@@ -166,7 +167,7 @@ private slots:
         const auto document = qobject_cast<Core::CodeDocument *>(project->open("main.cpp"));
 
         auto cursor = document->textEdit()->textCursor();
-        cursor.setPosition(document->toPos(Lsp::Position {.line = 6 /*0-indexed*/, .character = 6}));
+        cursor.setPosition(Core::Utils::lspToPos(*document, Lsp::Position {.line = 6 /*0-indexed*/, .character = 6}));
         document->textEdit()->setTextCursor(cursor);
 
         auto symbol1 = document->symbolUnderCursor();

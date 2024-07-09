@@ -28,7 +28,7 @@ QML scripts are written using the `Script` item.
 
 ```qml
 // Script description
-import Script
+import Knut
 
 Script {
     function init() {
@@ -51,7 +51,7 @@ For example, here is a small ui file named `my-script.ui`
 The script using this ui file will be called `my-script.qml`:
 ```qml
 // Script description
-import Script
+import Knut
 
 ScriptDialog {
     function init() {
@@ -95,7 +95,7 @@ You can also use directly QtQuick and QtQcuick.Controls if you want, for example
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import Script
+import Knut
 
 ApplicationWindow {
     width: 300

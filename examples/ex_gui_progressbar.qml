@@ -9,7 +9,7 @@
   Contact KDAB at <info@kdab.com> for commercial licensing options.
 */
 
-import Script
+import Knut
 
 ScriptDialog {
     id: root

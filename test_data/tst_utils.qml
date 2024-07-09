@@ -9,8 +9,8 @@
 */
 
 import QtQuick
-import Script
-import Script.Test
+import Knut
+import Knut.Test
 
 TestCase {
     name: "Utils"

@@ -103,9 +103,9 @@ private:
     };
 
     // Returns the list of all files recursively, without the hidden files or directories (starting with '.')
-    QVector<FileInfo> allFilesInDirectory(const QString &path)
+    QList<FileInfo> allFilesInDirectory(const QString &path)
     {
-        QVector<FileInfo> result;
+        QList<FileInfo> result;
         QDir dir(path);
         const auto fiList = dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
         for (const auto &fi : fiList) {
@@ -118,7 +118,7 @@ private:
         }
         return result;
     }
-    QVector<FileInfo> m_files;
+    QList<FileInfo> m_files;
 };
 
 //=============================================================================
@@ -217,7 +217,7 @@ public:
     }
 
 private:
-    QVector<Core::Symbol *> m_symbols;
+    QList<Core::Symbol *> m_symbols;
 };
 
 //=============================================================================

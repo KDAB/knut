@@ -36,8 +36,8 @@ public:
     ~PainterPen() { m_painter->setPen(m_oldPen); }
 
 private:
-    QPainter *m_painter;
-    QPen m_oldPen;
+    QPainter *const m_painter;
+    const QPen m_oldPen;
 };
 
 static bool isPanel(const QWidget *widget)
