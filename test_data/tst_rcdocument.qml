@@ -10,7 +10,7 @@
 
 import QtQuick
 import Knut
-import Knut.Test
+import QtTest
 
 TestCase {
     name: "RcDocument"

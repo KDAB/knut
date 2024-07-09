@@ -89,8 +89,6 @@ set(PROJECT_SOURCES
     slintdocument.cpp
     symbol.h
     symbol.cpp
-    testutil.h
-    testutil.cpp
     textdocument.h
     textdocument.cpp
     textdocument_p.h

@@ -25,7 +25,6 @@
 #include "scriptitem.h"
 #include "settings.h"
 #include "symbol.h"
-#include "testutil.h"
 #include "textdocument.h"
 #include "textrange.h"
 #include "userdialog.h"
@@ -136,11 +135,6 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qRegisterMetaType<RcCore::RibbonMenu>();
     qRegisterMetaType<RcCore::Ribbon>();
     qRegisterMetaType<QList<RcCore::Ribbon>>();
-
-    // Knut.Test
-    qmlRegisterSingletonType<TestUtil>("Knut.Test", 1, 0, "TestUtil", [](QQmlEngine *, QJSEngine *) {
-        return new TestUtil();
-    });
 
     // Properties
     addProperties<FunctionArgument>(m_properties);
