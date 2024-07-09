@@ -263,8 +263,8 @@ QVariant QtUiWidget::getProperty(const QString &name) const
 }
 
 /*!
- * \qmlmethod QtUiWidget::addProperty(string name, var value, object attributes = {})
- * Adds a new property with the given `name`, `value` and `attributes`.
+ * \qmlmethod QtUiWidget::addProperty(string name, var value, object attributes = {}, bool userProperty = false)
+ * Adds a new property with the given `name`, `value`, `attributes` and `userProperty`.
  *
  * Attributes is a has<string, string> object, where the key is the attribute name and the value is the attribute value.
  * For example:
@@ -272,13 +272,15 @@ QVariant QtUiWidget::getProperty(const QString &name) const
  * ```
  * widget.setProperty("text", "My text", { "comment": "some comment for translation" });
  * ```
+ * Set userProperty to true if you doesn't want to generate property.
  */
-void QtUiWidget::addProperty(const QString &name, const QVariant &value, const QHash<QString, QString> &attributes)
+void QtUiWidget::addProperty(const QString &name, const QVariant &value, const QHash<QString, QString> &attributes,
+                             bool userProperty)
 {
     LOG("QtUiWidget::addProperty", name, value);
 
-    const auto result =
-        qobject_cast<QtUiDocument *>(parent())->uiWriter()->addWidgetProperty(m_widget, name, value, attributes);
+    const auto result = qobject_cast<QtUiDocument *>(parent())->uiWriter()->addWidgetProperty(m_widget, name, value,
+                                                                                              attributes, userProperty);
 
     switch (result) {
     case Utils::QtUiWriter::Success:

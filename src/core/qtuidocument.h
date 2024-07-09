@@ -40,7 +40,7 @@ public:
 
     Q_INVOKABLE QVariant getProperty(const QString &name) const;
     Q_INVOKABLE void addProperty(const QString &name, const QVariant &value,
-                                 const QHash<QString, QString> &attributes = {});
+                                 const QHash<QString, QString> &attributes = {}, bool userProperty = false);
 
 public slots:
     void setName(const QString &newName);

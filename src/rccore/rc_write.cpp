@@ -125,7 +125,7 @@ static void writeWidget(Utils::QtUiWriter &writer, const Widget &widget, pugi::x
 {
     auto widgetNode = writer.addWidget(widget.className, widget.id, parent);
 
-    writer.addWidgetProperty(widgetNode, "mfc_id", widget.id, {{"notr", "true"}});
+    writer.addWidgetProperty(widgetNode, "mfc_id", widget.id, {{"notr", "true"}}, true);
     writer.addWidgetProperty(widgetNode, "geometry", widget.geometry);
 
     for (const auto &property : widget.properties.asKeyValueRange()) {
