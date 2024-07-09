@@ -15,7 +15,7 @@ namespace Core {
 /*!
  * \qmltype QDirValueType
  * \brief Wrapper around the `QDir` class.
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup Utilities/@last
  * \sa Dir
  *

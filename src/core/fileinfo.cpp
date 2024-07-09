@@ -18,7 +18,7 @@ namespace Core {
 /*!
  * \qmltype FileInfo
  * \brief Singleton with methods to handle file information.
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup Utilities
  *
  * The `FileInfo` singleton implements most of the static methods from `QFileInfo`, check

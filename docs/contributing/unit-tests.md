@@ -55,11 +55,11 @@ KNUT_TEST(dir)
 
 Each line will run a file from the `test_data` directory, for example the first one is looking for a `tst_settings.qml` file.
 
-A QML test is using the module `Script.Test` and the item `TestCase`. Each function will be called automatically and returns true or false, depending of the test results.
+A QML test is using the module `Knut.Test` and the item `TestCase`. Each function will be called automatically and returns true or false, depending of the test results.
 
 ```qml
-import Script
-import Script.Test
+import Knut
+import Knut.Test
 
 TestCase {
     name: "FileInfo"

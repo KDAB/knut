@@ -17,7 +17,7 @@ namespace Core {
 /*!
  * \qmltype TextLocation
  * \brief Defines a range of text in a file.
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup TextDocument
  * \sa CodeDocument
  *

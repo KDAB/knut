@@ -20,7 +20,7 @@ namespace Core {
 /*!
  * \qmltype MessageMapEntry
  * \brief Refers to a single entry within the `MessageMap`
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup CppDocument
  * \sa MessageMap
  *
@@ -71,7 +71,7 @@ MessageMapEntry fromMessage(const QueryMatch &match, const RangeMark &range)
 /*!
  * \qmltype MessageMap
  * \brief Message map in a MFC C++ document
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup CppDocument
  *
  * The `MessageMap` object represents the data contained in the MFC MessageMap.

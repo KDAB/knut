@@ -16,7 +16,7 @@ namespace RcCore {
 /*!
  * \qmltype Asset
  * \brief Description of a RC file asset.
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup RcDocument
  * \sa RcFile
  */
@@ -37,7 +37,7 @@ namespace RcCore {
 /*!
  * \qmltype ToolBarItem
  * \brief Description of a RC file toolbar item.
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup RcDocument
  * \sa RcFile
  */
@@ -53,7 +53,7 @@ namespace RcCore {
 /*!
  * \qmltype ToolBar
  * \brief Description of a RC file toolbar.
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup RcDocument
  * \sa RcFile
  */
@@ -77,7 +77,7 @@ namespace RcCore {
 /*!
  * \qmltype Widget
  * \brief Description of a RC file widget.
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup RcDocument
  * \sa RcFile
  */
@@ -109,7 +109,7 @@ namespace RcCore {
 /*!
  * \qmltype MenuItem
  * \brief Description of a RC file menu item.
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup RcDocument
  * \sa RcFile
  */
@@ -141,7 +141,7 @@ namespace RcCore {
 /*!
  * \qmltype Menu
  * \brief Description of a RC file menu.
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup RcDocument
  * \sa RcFile
  */
@@ -161,7 +161,7 @@ namespace RcCore {
 /*!
  * \qmltype Shortcut
  * \brief Description of a RC file shortcut.
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup RcDocument
  * \sa RcFile
  */
@@ -177,7 +177,7 @@ namespace RcCore {
 /*!
  * \qmltype Action
  * \brief Description of a RC file action.
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup RcDocument
  * \sa RcFile
  */
@@ -209,7 +209,7 @@ namespace RcCore {
 /*!
  * \qmltype String
  * \brief Description of a RC file string.
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup RcDocument
  * \sa RcFile
  */
