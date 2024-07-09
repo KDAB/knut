@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>core/settings.json</file>
-        <file>qml/Script/Test/qmldir</file>
-        <file>qml/Script/Test/TestCase.qml</file>
+        <file>qml/Knut/Test/qmldir</file>
+        <file>qml/Knut/Test/TestCase.qml</file>
     </qresource>
 </RCC>

@@ -39,7 +39,7 @@ namespace Core {
 /*!
  * \qmltype ScriptDialog
  * \brief QML Item for writing visual scripts.
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup Items
  *
  * The `ScriptDialog` allows creating a script dialog based on a ui file. It requires creating a ui file with the same
@@ -56,7 +56,7 @@ namespace Core {
  * automatically connected and available through the `onAccepted` and `onRejected` signal handlers.
  *
  * ```qml
- * import Script
+ * import Knut
  *
  * ScriptDialog {
  *     property string text1: data.lineEdit

@@ -59,7 +59,7 @@ void addProperties(QSet<QString> &properties)
 ScriptRunner::ScriptRunner(QObject *parent)
     : QObject(parent)
 {
-    // Script objects registrations
+    // Knut objects registrations
     qRegisterMetaType<FunctionArgument>();
     qRegisterMetaType<ClassSymbol>();
     qRegisterMetaType<FunctionSymbol>();
@@ -68,45 +68,45 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qRegisterMetaType<Symbol>();
     qRegisterMetaType<TextRange>();
 
-    // Script
-    qmlRegisterSingletonType<Dir>("Script", 1, 0, "Dir", [](QQmlEngine *engine, QJSEngine *) {
+    // Knut QML module
+    qmlRegisterSingletonType<Dir>("Knut", 1, 0, "Dir", [](QQmlEngine *engine, QJSEngine *) {
         return new Dir(engine->property("scriptPath").toString());
     });
-    qmlRegisterSingletonType<FileInfo>("Script", 1, 0, "FileInfo", [](QQmlEngine *, QJSEngine *) {
+    qmlRegisterSingletonType<FileInfo>("Knut", 1, 0, "FileInfo", [](QQmlEngine *, QJSEngine *) {
         return new FileInfo();
     });
-    qmlRegisterSingletonType<File>("Script", 1, 0, "File", [](QQmlEngine *, QJSEngine *) {
+    qmlRegisterSingletonType<File>("Knut", 1, 0, "File", [](QQmlEngine *, QJSEngine *) {
         return new File();
     });
-    qmlRegisterSingletonType<Message>("Script", 1, 0, "Message", [](QQmlEngine *, QJSEngine *) {
+    qmlRegisterSingletonType<Message>("Knut", 1, 0, "Message", [](QQmlEngine *, QJSEngine *) {
         return new Message();
     });
-    qmlRegisterSingletonType<Utils>("Script", 1, 0, "Utils", [](QQmlEngine *, QJSEngine *) {
+    qmlRegisterSingletonType<Utils>("Knut", 1, 0, "Utils", [](QQmlEngine *, QJSEngine *) {
         return new Utils();
     });
-    qmlRegisterSingletonType<UserDialog>("Script", 1, 0, "UserDialog", [](QQmlEngine *, QJSEngine *) {
+    qmlRegisterSingletonType<UserDialog>("Knut", 1, 0, "UserDialog", [](QQmlEngine *, QJSEngine *) {
         return new UserDialog();
     });
-    qmlRegisterSingletonType<Project>("Script", 1, 0, "Project", [](QQmlEngine *engine, QJSEngine *) {
+    qmlRegisterSingletonType<Project>("Knut", 1, 0, "Project", [](QQmlEngine *engine, QJSEngine *) {
         engine->setObjectOwnership(Project::instance(), QQmlEngine::CppOwnership);
         return Project::instance();
     });
-    qmlRegisterSingletonType<Settings>("Script", 1, 0, "Settings", [](QQmlEngine *engine, QJSEngine *) {
+    qmlRegisterSingletonType<Settings>("Knut", 1, 0, "Settings", [](QQmlEngine *engine, QJSEngine *) {
         engine->setObjectOwnership(Settings::instance(), QQmlEngine::CppOwnership);
         return Settings::instance();
     });
 
-    qmlRegisterUncreatableType<Document>("Script", 1, 0, "Document", "Abstract class");
-    qmlRegisterType<ScriptDialogItem>("Script", 1, 0, "ScriptDialog");
-    qmlRegisterType<ScriptItem>("Script", 1, 0, "Script");
-    qmlRegisterType<TextDocument>("Script", 1, 0, "TextDocument");
-    qmlRegisterType<QtUiDocument>("Script", 1, 0, "QtUiDocument");
-    qmlRegisterUncreatableType<QtUiWidget>("Script", 1, 0, "QtUiWidget", "Only created by QtUiDocument");
-    qmlRegisterType<CppDocument>("Script", 1, 0, "CppDocument");
-    qmlRegisterUncreatableType<Core::Symbol>("Script", 1, 0, "Symbol", "Only created by CodeDocument");
-    qmlRegisterType<RcDocument>("Script", 1, 0, "RcDocument");
-    qmlRegisterType<QtTsDocument>("Script", 1, 0, "QtTsDocument");
-    qmlRegisterUncreatableType<QtTsMessage>("Script", 1, 0, "QtTsMessage", "Only created by QtTsDocument");
+    qmlRegisterUncreatableType<Document>("Knut", 1, 0, "Document", "Abstract class");
+    qmlRegisterType<ScriptDialogItem>("Knut", 1, 0, "ScriptDialog");
+    qmlRegisterType<ScriptItem>("Knut", 1, 0, "Script");
+    qmlRegisterType<TextDocument>("Knut", 1, 0, "TextDocument");
+    qmlRegisterType<QtUiDocument>("Knut", 1, 0, "QtUiDocument");
+    qmlRegisterUncreatableType<QtUiWidget>("Knut", 1, 0, "QtUiWidget", "Only created by QtUiDocument");
+    qmlRegisterType<CppDocument>("Knut", 1, 0, "CppDocument");
+    qmlRegisterUncreatableType<Core::Symbol>("Knut", 1, 0, "Symbol", "Only created by CodeDocument");
+    qmlRegisterType<RcDocument>("Knut", 1, 0, "RcDocument");
+    qmlRegisterType<QtTsDocument>("Knut", 1, 0, "QtTsDocument");
+    qmlRegisterUncreatableType<QtTsMessage>("Knut", 1, 0, "QtTsMessage", "Only created by QtTsDocument");
 
     // RcCore
     qRegisterMetaType<RcCore::Asset>();
@@ -137,8 +137,8 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qRegisterMetaType<RcCore::Ribbon>();
     qRegisterMetaType<QList<RcCore::Ribbon>>();
 
-    // Script.Test
-    qmlRegisterSingletonType<TestUtil>("Script.Test", 1, 0, "TestUtil", [](QQmlEngine *, QJSEngine *) {
+    // Knut.Test
+    qmlRegisterSingletonType<TestUtil>("Knut.Test", 1, 0, "TestUtil", [](QQmlEngine *, QJSEngine *) {
         return new TestUtil();
     });
 
@@ -236,7 +236,7 @@ QVariant ScriptRunner::runJavascript(const QString &fileName, QQmlEngine *engine
     const QString text =
         QStringLiteral(
             "import QtQml\n"
-            "import Script\n"
+            "import Knut\n"
             "import \"%1\" as MyScript\n"
             "QtObject { property var _scriptResult; Component.onCompleted : _scriptResult = MyScript.main() }")
             .arg(QUrl::fromLocalFile(fileName).toString());

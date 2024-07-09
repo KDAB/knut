@@ -15,7 +15,7 @@ namespace Core {
 /*!
  * \qmltype TextRange
  * \brief Defines a range of text in a text document
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup TextDocument
  * \sa TextDocument
  */

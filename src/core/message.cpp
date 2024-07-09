@@ -18,7 +18,7 @@ namespace Core {
 /*!
  * \qmltype Message
  * \brief Singleton with methods to display different messages to the user.
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup Utilities
  *
  * The `message` property in QML can be used to display different messages to the user, via logs.

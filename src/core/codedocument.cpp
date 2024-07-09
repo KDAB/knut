@@ -39,7 +39,7 @@ namespace Core {
 /*!
  * \qmltype CodeDocument
  * \brief Base document object for any code that Knut can parse.
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup CodeDocument/@first
  * \inherits TextDocument
  *

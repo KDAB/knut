@@ -23,7 +23,7 @@ namespace Core {
 /*!
  * \qmltype QueryCapture
  * \brief Defines a capture made by a query.
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup CodeDocument
  * \sa QueryMatch
  */
@@ -45,7 +45,7 @@ QString QueryCapture::toString() const
 /*!
  * \qmltype QueryMatch
  * \brief Contains all captures for a query match.
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup CodeDocument
  * \sa CodeDocument::query
  *

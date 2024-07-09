@@ -23,7 +23,7 @@ namespace Core {
 /*!
  * \qmltype Symbol
  * \brief Represent a symbol in the current file
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup CodeDocument
  */
 
