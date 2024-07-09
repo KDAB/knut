@@ -4,7 +4,7 @@
     <widget class="QMainWindow" name="IDD_LIGHTING">
         <widget class="QWidget" name="centralwidget">
             <widget class="QPushButton" name="IDC_LIGHTING_IMPORT_BTN">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_LIGHTING_IMPORT_BTN</string>
                 </property>
                 <property name="geometry">
@@ -20,7 +20,7 @@
                 </property>
             </widget>
             <widget class="QPushButton" name="IDC_LIGHTING_EXPORT_BTN">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_LIGHTING_EXPORT_BTN</string>
                 </property>
                 <property name="geometry">
@@ -36,7 +36,7 @@
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_FORCE_SKY_UPDATE">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_FORCE_SKY_UPDATE</string>
                 </property>
                 <property name="geometry">
@@ -52,7 +52,7 @@
                 </property>
             </widget>
             <widget class="QGroupBox" name="IDC_STATIC_24">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_STATIC_24</string>
                 </property>
                 <property name="geometry">
@@ -67,7 +67,7 @@
                     <string>Light Type</string>
                 </property>
                 <widget class="QRadioButton" name="IDC_LIGHTING_TYPE_PRECISE">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_LIGHTING_TYPE_PRECISE</string>
                     </property>
                     <property name="geometry">
@@ -83,7 +83,7 @@
                     </property>
                 </widget>
                 <widget class="QRadioButton" name="IDC_LIGHTING_TYPE_DYNAMIC_SUN">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_LIGHTING_TYPE_DYNAMIC_SUN</string>
                     </property>
                     <property name="geometry">
@@ -100,7 +100,7 @@
                 </widget>
             </widget>
             <widget class="QGroupBox" name="IDC_STATIC_25">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_STATIC_25</string>
                 </property>
                 <property name="geometry">
@@ -115,7 +115,7 @@
                     <string>Time of Day</string>
                 </property>
                 <widget class="QLabel" name="IDC_STATIC_26">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_STATIC_26</string>
                     </property>
                     <property name="geometry">
@@ -131,7 +131,7 @@
                     </property>
                 </widget>
                 <widget class="QLineEdit" name="IDC_TIME_OF_DAY_EDIT">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_TIME_OF_DAY_EDIT</string>
                     </property>
                     <property name="geometry">
@@ -147,7 +147,7 @@
                     </property>
                 </widget>
                 <widget class="QSlider" name="IDC_LIGHTING_TIME_OF_DAY">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_LIGHTING_TIME_OF_DAY</string>
                     </property>
                     <property name="geometry">
@@ -167,7 +167,7 @@
                 </widget>
             </widget>
             <widget class="QGroupBox" name="IDC_STATIC">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_STATIC</string>
                 </property>
                 <property name="geometry">
@@ -182,7 +182,7 @@
                     <string>Sun Settings</string>
                 </property>
                 <widget class="QLineEdit" name="IDC_LIGHTING_SUNDIR_EDIT">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_LIGHTING_SUNDIR_EDIT</string>
                     </property>
                     <property name="geometry">
@@ -198,7 +198,7 @@
                     </property>
                 </widget>
                 <widget class="QLineEdit" name="IDC_LIGHTING_POLE_EDIT">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_LIGHTING_POLE_EDIT</string>
                     </property>
                     <property name="geometry">
@@ -214,7 +214,7 @@
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_3">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_STATIC_3</string>
                     </property>
                     <property name="geometry">
@@ -233,7 +233,7 @@
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_2">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_STATIC_2</string>
                     </property>
                     <property name="geometry">
@@ -252,7 +252,7 @@
                     </property>
                 </widget>
                 <widget class="QSlider" name="IDC_SUNMAPLONGITUDE">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_SUNMAPLONGITUDE</string>
                     </property>
                     <property name="geometry">
@@ -271,7 +271,7 @@
                     </property>
                 </widget>
                 <widget class="QSlider" name="IDC_SUN_DIRECTION">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_SUN_DIRECTION</string>
                     </property>
                     <property name="geometry">
@@ -291,7 +291,7 @@
                 </widget>
             </widget>
             <widget class="QGroupBox" name="IDC_STATIC_9">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_STATIC_9</string>
                 </property>
                 <property name="geometry">
@@ -306,7 +306,7 @@
                     <string>Terrain Occlusion</string>
                 </property>
                 <widget class="QLabel" name="IDC_STATIC_10">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_STATIC_10</string>
                     </property>
                     <property name="geometry">
@@ -322,7 +322,7 @@
                     </property>
                 </widget>
                 <widget class="QSlider" name="IDC_HEMISAMPLEQ">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_HEMISAMPLEQ</string>
                     </property>
                     <property name="geometry">
@@ -341,7 +341,7 @@
                     </property>
                 </widget>
                 <widget class="QCheckBox" name="IDC_OBJECTTERRAINOCCL">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_OBJECTTERRAINOCCL</string>
                     </property>
                     <property name="geometry">
@@ -358,7 +358,7 @@
                 </widget>
             </widget>
             <widget class="QGroupBox" name="IDC_STATIC_4">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_STATIC_4</string>
                 </property>
                 <property name="geometry">
@@ -373,7 +373,7 @@
                     <string>Moon/Sun Shadow Transition</string>
                 </property>
                 <widget class="QLabel" name="IDC_STATIC_19">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_STATIC_19</string>
                     </property>
                     <property name="geometry">
@@ -389,7 +389,7 @@
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_20">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_STATIC_20</string>
                     </property>
                     <property name="geometry">
@@ -405,7 +405,7 @@
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_21">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_STATIC_21</string>
                     </property>
                     <property name="geometry">
@@ -421,7 +421,7 @@
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_22">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_STATIC_22</string>
                     </property>
                     <property name="geometry">
@@ -437,7 +437,7 @@
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_23">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_STATIC_23</string>
                     </property>
                     <property name="geometry">
@@ -453,7 +453,7 @@
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_6">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_STATIC_6</string>
                     </property>
                     <property name="geometry">
@@ -469,7 +469,7 @@
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_7">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_STATIC_7</string>
                     </property>
                     <property name="geometry">
@@ -485,7 +485,7 @@
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_17">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_STATIC_17</string>
                     </property>
                     <property name="geometry">
@@ -501,7 +501,7 @@
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_8">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_STATIC_8</string>
                     </property>
                     <property name="geometry">
@@ -517,7 +517,7 @@
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_18">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_STATIC_18</string>
                     </property>
                     <property name="geometry">
@@ -533,7 +533,7 @@
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_16">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_STATIC_16</string>
                     </property>
                     <property name="geometry">
@@ -549,7 +549,7 @@
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_5">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_STATIC_5</string>
                     </property>
                     <property name="geometry">
@@ -565,7 +565,7 @@
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_15">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_STATIC_15</string>
                     </property>
                     <property name="geometry">
@@ -581,7 +581,7 @@
                     </property>
                 </widget>
                 <widget class="QLineEdit" name="IDC_DAWN_INFO">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_DAWN_INFO</string>
                     </property>
                     <property name="geometry">
@@ -597,7 +597,7 @@
                     </property>
                 </widget>
                 <widget class="QLineEdit" name="IDC_DUSK_INFO">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_DUSK_INFO</string>
                     </property>
                     <property name="geometry">
@@ -613,7 +613,7 @@
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_13">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_STATIC_13</string>
                     </property>
                     <property name="geometry">
@@ -629,7 +629,7 @@
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_11">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_STATIC_11</string>
                     </property>
                     <property name="geometry">
@@ -645,7 +645,7 @@
                     </property>
                 </widget>
                 <widget class="QLineEdit" name="IDC_DAWN_DUR_INFO">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_DAWN_DUR_INFO</string>
                     </property>
                     <property name="geometry">
@@ -661,7 +661,7 @@
                     </property>
                 </widget>
                 <widget class="QLineEdit" name="IDC_DUSK_DUR_INFO">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_DUSK_DUR_INFO</string>
                     </property>
                     <property name="geometry">
@@ -677,7 +677,7 @@
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_14">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_STATIC_14</string>
                     </property>
                     <property name="geometry">
@@ -693,7 +693,7 @@
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_12">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_STATIC_12</string>
                     </property>
                     <property name="geometry">
@@ -709,7 +709,7 @@
                     </property>
                 </widget>
                 <widget class="QSlider" name="IDC_DAWN_SLIDER">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_DAWN_SLIDER</string>
                     </property>
                     <property name="geometry">
@@ -728,7 +728,7 @@
                     </property>
                 </widget>
                 <widget class="QSlider" name="IDC_DAWN_DUR_SLIDER">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_DAWN_DUR_SLIDER</string>
                     </property>
                     <property name="geometry">
@@ -747,7 +747,7 @@
                     </property>
                 </widget>
                 <widget class="QSlider" name="IDC_DUSK_SLIDER">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_DUSK_SLIDER</string>
                     </property>
                     <property name="geometry">
@@ -766,7 +766,7 @@
                     </property>
                 </widget>
                 <widget class="QSlider" name="IDC_DUSK_DUR_SLIDER">
-                    <property name="mfc_id">
+                    <property name="mfc_id" stdset="0">
                         <string notr="true">IDC_DUSK_DUR_SLIDER</string>
                     </property>
                     <property name="geometry">
@@ -786,7 +786,7 @@
                 </widget>
             </widget>
             <widget class="QGroupBox" name="IDC_HEIGHTMAP_BORDER">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_HEIGHTMAP_BORDER</string>
                 </property>
                 <property name="geometry">
@@ -802,7 +802,7 @@
                 </property>
             </widget>
         </widget>
-        <property name="mfc_id">
+        <property name="mfc_id" stdset="0">
             <string notr="true">IDD_LIGHTING</string>
         </property>
         <property name="geometry">
