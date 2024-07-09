@@ -12,6 +12,7 @@
 #include "astnode.h"
 #include "codedocument_p.h"
 #include "logger.h"
+#include "lsp_utils.h"
 #include "project.h"
 #include "querymatch.h"
 #include "rangemark.h"
@@ -38,7 +39,7 @@ namespace Core {
 /*!
  * \qmltype CodeDocument
  * \brief Base document object for any code that Knut can parse.
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup CodeDocument/@first
  * \inherits TextDocument
  *
@@ -205,14 +206,14 @@ QString CodeDocument::hover(int position, std::function<void(const QString &)> a
 std::pair<QString, std::optional<TextRange>> CodeDocument::hoverWithRange(
     int position, std::function<void(const QString &, std::optional<TextRange>)> asyncCallback /*  = {} */) const
 {
-    LOG("CodeDocument::hover");
+    spdlog::debug("CodeDocument::hover");
 
     if (!checkClient())
         return {"", {}};
 
     Lsp::HoverParams params;
     params.textDocument.uri = toUri();
-    params.position = fromPos(position);
+    params.position = Utils::lspFromPos(*this, position);
 
     QPointer<const CodeDocument> safeThis(this);
 
@@ -225,7 +226,7 @@ std::pair<QString, std::optional<TextRange>> CodeDocument::hoverWithRange(
 
         std::optional<TextRange> range;
         if (hover.range && !safeThis.isNull()) {
-            range = safeThis->toRange(hover.range.value());
+            range = Utils::lspToRange(*safeThis, hover.range.value());
         }
 
         Lsp::MarkupContent markupContent;
@@ -262,7 +263,7 @@ std::pair<QString, std::optional<TextRange>> CodeDocument::hoverWithRange(
 
 Core::TextLocationList CodeDocument::references(int position) const
 {
-    LOG("CodeDocument::references");
+    spdlog::debug("CodeDocument::references");
 
     if (!checkClient()) {
         return {};
@@ -270,13 +271,13 @@ Core::TextLocationList CodeDocument::references(int position) const
 
     Lsp::ReferenceParams params;
     params.textDocument.uri = toUri();
-    params.position = fromPos(position);
+    params.position = Utils::lspFromPos(*this, position);
 
     Core::TextLocationList textLocations;
     if (auto result = client()->references(std::move(params))) {
         const auto &value = result.value();
         if (const auto *locations = std::get_if<std::vector<Lsp::Location>>(&value)) {
-            return TextLocation::fromLsp(*locations);
+            return Utils::lspToTextLocationList(*locations);
         } else {
             spdlog::warn("CodeDocument::references: Language server returned unsupported references type!");
         }
@@ -287,17 +288,10 @@ Core::TextLocationList CodeDocument::references(int position) const
     return textLocations;
 }
 
-/*!
- * \qmlmethod CodeDocument::followSymbol()
- * Follows the symbol under the cursor.
- *
- * - Go to the declaration, if the symbol under cursor is a use
- * - Go to the declaration, if the symbol under cursor is a function definition
- * - Go to the definition, if the symbol under cursor is a function declaration
- */
+// Follows the symbol under the cursor.
 Document *CodeDocument::followSymbol()
 {
-    LOG("CodeDocument::followSymbol");
+    spdlog::debug("CodeDocument::followSymbol");
     if (!checkClient())
         return {};
 
@@ -305,7 +299,7 @@ Document *CodeDocument::followSymbol()
     // That way, calling followSymbol twice in a row causes Clangd
     // to switch between declaration and definition.
     auto cursor = textEdit()->textCursor();
-    LOG_RETURN("document", followSymbol(cursor.selectionStart()));
+    return followSymbol(cursor.selectionStart());
 }
 
 // At least with clangd, the "declaration" LSP call acts like followSymbol, it will:
@@ -358,9 +352,8 @@ Document *CodeDocument::followSymbol(int pos)
     auto *document = Project::instance()->open(filepath);
 
     if (document) {
-        auto *codeDocument = qobject_cast<CodeDocument *>(document);
-        if (codeDocument) {
-            codeDocument->selectRange(codeDocument->toRange(location.range));
+        if (auto *codeDocument = qobject_cast<CodeDocument *>(document)) {
+            codeDocument->selectRange(Utils::lspToRange(*codeDocument, location.range));
         } else {
             spdlog::warn("CodeDocument::followSymbol: Opened document '{}' is not an CodeDocument",
                          document->fileName());
@@ -373,7 +366,7 @@ Document *CodeDocument::followSymbol(int pos)
 // Switches between the function declaration or definition.
 Document *CodeDocument::switchDeclarationDefinition()
 {
-    LOG("CodeDocument::switchDeclarationDefinition");
+    spdlog::debug("CodeDocument::switchDeclarationDefinition");
     if (!checkClient())
         return {};
 
@@ -390,7 +383,7 @@ Document *CodeDocument::switchDeclarationDefinition()
         return nullptr;
     }
 
-    LOG_RETURN("document", followSymbol((*currentFunction)->selectionRange().start));
+    return followSymbol((*currentFunction)->selectionRange().start);
 }
 
 /*!
@@ -427,7 +420,8 @@ Symbol *CodeDocument::findSymbol(const QString &name, int options) const
     LOG("CodeDocument::findSymbol", LOG_ARG("text", name), options);
 
     auto symbols = this->symbols();
-    const auto regexp = (options & FindRegexp) ? Utils::createRegularExpression(name, options) : QRegularExpression {};
+    const auto regexp =
+        (options & FindRegexp) ? ::Utils::createRegularExpression(name, options) : QRegularExpression {};
     auto byName = [name, options, regexp](Symbol *symbol) {
         if (options & FindWholeWords)
             return symbol->name().compare(name,
@@ -478,36 +472,6 @@ Lsp::Client *CodeDocument::client() const
 std::string CodeDocument::toUri() const
 {
     return QUrl::fromLocalFile(fileName()).toString().toStdString();
-}
-
-int CodeDocument::toPos(const Lsp::Position &pos) const
-{
-    // Internally, columns are 0-based, like in LSP
-    const int blockNumber = qMin((int)pos.line, textEdit()->document()->blockCount() - 1);
-    const QTextBlock &block = textEdit()->document()->findBlockByNumber(blockNumber);
-    if (block.isValid()) {
-        QTextCursor cursor(block);
-        cursor.movePosition(QTextCursor::Right, QTextCursor::MoveAnchor, pos.character);
-        return cursor.position();
-    }
-    return 0;
-}
-
-Lsp::Position CodeDocument::fromPos(int pos) const
-{
-    Lsp::Position position;
-
-    auto cursor = textEdit()->textCursor();
-    cursor.setPosition(pos, QTextCursor::MoveAnchor);
-
-    position.line = cursor.blockNumber();
-    position.character = cursor.positionInBlock();
-    return position;
-}
-
-TextRange CodeDocument::toRange(const Lsp::Range &range) const
-{
-    return {toPos(range.start), toPos(range.end)};
 }
 
 std::optional<treesitter::QueryCursor> CodeDocument::createQueryCursor(const std::shared_ptr<treesitter::Query> &query)
@@ -620,10 +584,10 @@ Core::QueryMatchList CodeDocument::queryInRange(const Core::RangeMark &range, co
     Core::QueryMatchList matches;
     for (const treesitter::Node &node : nodes) {
         cursor.execute(tsQuery, node, std::make_unique<treesitter::Predicates>(text()));
-        matches.append(kdalgorithms::transformed<QVector<QueryMatch>>(cursor.allRemainingMatches(),
-                                                                      [this](const treesitter::QueryMatch &match) {
-                                                                          return QueryMatch(*this, match);
-                                                                      }));
+        matches.append(kdalgorithms::transformed<QList<QueryMatch>>(cursor.allRemainingMatches(),
+                                                                    [this](const treesitter::QueryMatch &match) {
+                                                                        return QueryMatch(*this, match);
+                                                                    }));
     }
     return matches;
 }

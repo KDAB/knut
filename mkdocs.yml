@@ -43,68 +43,68 @@ nav:
     - Script API:
 # DO NOT EDIT: THIS IS DONE AUTOMATICALLY
 # -->
-        - Script Module:
-            - Document: API/script/document.md
-            - Project: API/script/project.md
+        - Knut Module:
+            - Document: API/knut/document.md
+            - Project: API/knut/project.md
             - CodeDocument:
-                - CodeDocument: API/script/codedocument.md
-                - ClassSymbol: API/script/classsymbol.md
-                - FunctionArgument: API/script/functionargument.md
-                - FunctionSymbol: API/script/functionsymbol.md
-                - QueryCapture: API/script/querycapture.md
-                - QueryMatch: API/script/querymatch.md
-                - Symbol: API/script/symbol.md
+                - CodeDocument: API/knut/codedocument.md
+                - ClassSymbol: API/knut/classsymbol.md
+                - FunctionArgument: API/knut/functionargument.md
+                - FunctionSymbol: API/knut/functionsymbol.md
+                - QueryCapture: API/knut/querycapture.md
+                - QueryMatch: API/knut/querymatch.md
+                - Symbol: API/knut/symbol.md
             - CppDocument:
-                - CppDocument: API/script/cppdocument.md
-                - DataExchange: API/script/dataexchange.md
-                - DataExchangeEntry: API/script/dataexchangeentry.md
-                - MessageMap: API/script/messagemap.md
-                - MessageMapEntry: API/script/messagemapentry.md
+                - CppDocument: API/knut/cppdocument.md
+                - DataExchange: API/knut/dataexchange.md
+                - DataExchangeEntry: API/knut/dataexchangeentry.md
+                - MessageMap: API/knut/messagemap.md
+                - MessageMapEntry: API/knut/messagemapentry.md
             - QtTsDocument:
-                - QtTsDocument: API/script/qttsdocument.md
-                - QtTsMessage: API/script/qttsmessage.md
+                - QtTsDocument: API/knut/qttsdocument.md
+                - QtTsMessage: API/knut/qttsmessage.md
             - QtUiDocument:
-                - QtUiDocument: API/script/qtuidocument.md
-                - QtUiWidget: API/script/qtuiwidget.md
+                - QtUiDocument: API/knut/qtuidocument.md
+                - QtUiWidget: API/knut/qtuiwidget.md
             - RcDocument:
-                - RcDocument: API/script/rcdocument.md
-                - Action: API/script/action.md
-                - Asset: API/script/asset.md
-                - Menu: API/script/menu.md
-                - MenuItem: API/script/menuitem.md
-                - Ribbon: API/script/ribbon.md
-                - RibbonCategory: API/script/ribboncategory.md
-                - RibbonContext: API/script/ribboncontext.md
-                - RibbonElement: API/script/ribbonelement.md
-                - RibbonMenu: API/script/ribbonmenu.md
-                - RibbonPanel: API/script/ribbonpanel.md
-                - Shortcut: API/script/shortcut.md
-                - String: API/script/string.md
-                - ToolBar: API/script/toolbar.md
-                - ToolBarItem: API/script/toolbaritem.md
-                - Widget: API/script/widget.md
+                - RcDocument: API/knut/rcdocument.md
+                - Action: API/knut/action.md
+                - Asset: API/knut/asset.md
+                - Menu: API/knut/menu.md
+                - MenuItem: API/knut/menuitem.md
+                - Ribbon: API/knut/ribbon.md
+                - RibbonCategory: API/knut/ribboncategory.md
+                - RibbonContext: API/knut/ribboncontext.md
+                - RibbonElement: API/knut/ribbonelement.md
+                - RibbonMenu: API/knut/ribbonmenu.md
+                - RibbonPanel: API/knut/ribbonpanel.md
+                - Shortcut: API/knut/shortcut.md
+                - String: API/knut/string.md
+                - ToolBar: API/knut/toolbar.md
+                - ToolBarItem: API/knut/toolbaritem.md
+                - Widget: API/knut/widget.md
             - TextDocument:
-                - TextDocument: API/script/textdocument.md
-                - Mark: API/script/mark.md
-                - RangeMark: API/script/rangemark.md
-                - TextLocation: API/script/textlocation.md
-                - TextRange: API/script/textrange.md
+                - TextDocument: API/knut/textdocument.md
+                - Mark: API/knut/mark.md
+                - RangeMark: API/knut/rangemark.md
+                - TextLocation: API/knut/textlocation.md
+                - TextRange: API/knut/textrange.md
             - Items:
-                - Script: API/script/script.md
-                - ScriptDialog: API/script/scriptdialog.md
+                - Script: API/knut/script.md
+                - ScriptDialog: API/knut/scriptdialog.md
             - Utilities:
-                - Dir: API/script/dir.md
-                - File: API/script/file.md
-                - FileInfo: API/script/fileinfo.md
-                - Message: API/script/message.md
-                - Settings: API/script/settings.md
-                - UserDialog: API/script/userdialog.md
-                - Utils: API/script/utils.md
-                - QDirValueType: API/script/qdirvaluetype.md
-                - QFileInfoValueType: API/script/qfileinfovaluetype.md
-        - Script.Test Module:
-            - TestCase: API/script.test/testcase.md
-            - TestUtil: API/script.test/testutil.md
+                - Dir: API/knut/dir.md
+                - File: API/knut/file.md
+                - FileInfo: API/knut/fileinfo.md
+                - Message: API/knut/message.md
+                - Settings: API/knut/settings.md
+                - UserDialog: API/knut/userdialog.md
+                - Utils: API/knut/utils.md
+                - QDirValueType: API/knut/qdirvaluetype.md
+                - QFileInfoValueType: API/knut/qfileinfovaluetype.md
+        - Knut.Test Module:
+            - TestCase: API/knut.test/testcase.md
+            - TestUtil: API/knut.test/testutil.md
 # <--
 
 markdown_extensions:

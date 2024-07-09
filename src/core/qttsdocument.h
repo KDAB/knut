@@ -60,7 +60,7 @@ class QtTsDocument : public Document
     Q_OBJECT
     Q_PROPERTY(QString language READ language WRITE setLanguage NOTIFY languageChanged)
     Q_PROPERTY(QString sourceLanguage READ sourceLanguage WRITE setSourceLanguage NOTIFY sourceLanguageChanged)
-    Q_PROPERTY(QVector<Core::QtTsMessage *> messages READ messages NOTIFY messagesChanged)
+    Q_PROPERTY(QList<Core::QtTsMessage *> messages READ messages NOTIFY messagesChanged)
 public:
     explicit QtTsDocument(QObject *parent = nullptr);
 
@@ -71,7 +71,7 @@ public:
 
     QString language() const;
     QString sourceLanguage() const;
-    QVector<QtTsMessage *> messages() const;
+    QList<QtTsMessage *> messages() const;
 
 protected:
     bool doSave(const QString &fileName) override;
@@ -89,7 +89,7 @@ private:
     void initializeXml();
     pugi::xml_document m_document;
 
-    QVector<QtTsMessage *> m_messages;
+    QList<QtTsMessage *> m_messages;
 };
 
 } // namespace Core

@@ -18,7 +18,7 @@ namespace Core {
 /*!
  * \qmltype DataExchangeEntry
  * \brief Refers to a single entry within the `DoDataExchange`
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup CppDocument
  * \sa DataExchange
  *
@@ -58,7 +58,7 @@ static DataExchangeEntry fromDDX(const QueryMatch &ddxCall)
     return DataExchangeEntry {.function = function, .idc = idc, .member = member};
 }
 
-static QVector<DataExchangeEntry> queryDDXCalls(const QueryMatch &ddxFunction)
+static QList<DataExchangeEntry> queryDDXCalls(const QueryMatch &ddxFunction)
 {
     const auto ddxCalls = ddxFunction.queryIn("body", R"EOF(
                 (expression_statement
@@ -83,7 +83,7 @@ static DataValidationEntry fromDDV(const QueryMatch &ddvCall)
     return DataValidationEntry {.function = function, .member = member, .arguments = arguments};
 }
 
-static QVector<DataValidationEntry> queryDDVCalls(const QueryMatch &ddxFunction)
+static QList<DataValidationEntry> queryDDVCalls(const QueryMatch &ddxFunction)
 {
     const auto ddvCalls = ddxFunction.queryIn("body", R"EOF(
                 (expression_statement
@@ -102,7 +102,7 @@ static QVector<DataValidationEntry> queryDDVCalls(const QueryMatch &ddxFunction)
 /*!
  * \qmltype DataExchange
  * \brief DataExchange entries in a MFC C++ document.
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup CppDocument
  *
  * The `DataExchange` object represents the data contained in the MFC `DoDataExchange` method.

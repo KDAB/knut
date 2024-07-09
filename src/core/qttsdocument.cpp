@@ -22,7 +22,7 @@ namespace Core {
 /*!
  * \qmltype QtTsDocument
  * \brief Provides access to the content of a Ts file (Qt linguist).
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup QtTsDocument/@first
  */
 
@@ -208,7 +208,7 @@ QString QtTsDocument::language() const
     return QString::fromLatin1(ts.node().attribute("language").value());
 }
 
-QVector<QtTsMessage *> QtTsDocument::messages() const
+QList<QtTsMessage *> QtTsDocument::messages() const
 {
     return m_messages;
 }
@@ -216,7 +216,7 @@ QVector<QtTsMessage *> QtTsDocument::messages() const
 /*!
  * \qmltype QtTsMessage
  * \brief Provides access to message.
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup QtTsDocument
  * \sa QtTsDocument
  */

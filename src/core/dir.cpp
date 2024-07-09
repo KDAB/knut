@@ -18,10 +18,10 @@ namespace Core {
 /*!
  * \qmltype Dir
  * \brief Singleton with methods to handle directories.
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup Utilities
  *
- * The `Dir` singleton implements most of the static methods from `QDir`, check [QDir](https://doc.qt.io/qt-5/qdir.html)
+ * The `Dir` singleton implements most of the static methods from `QDir`, check [QDir](https://doc.qt.io/qt-6/qdir.html)
  * documentation.
  */
 

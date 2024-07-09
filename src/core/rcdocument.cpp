@@ -24,7 +24,7 @@ namespace Core {
 /*!
  * \qmltype RcDocument
  * \brief Provides access to the content of a RC file (MFC resource file).
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup RcDocument/@first
  */
 
@@ -94,7 +94,7 @@ bool RcDocument::isValid() const
     return m_rcFile.isValid;
 }
 
-QVector<RcCore::Asset> RcDocument::assets() const
+QList<RcCore::Asset> RcDocument::assets() const
 {
     if (isDataValid()) {
         if (m_cacheAssets.isEmpty())
@@ -104,7 +104,7 @@ QVector<RcCore::Asset> RcDocument::assets() const
     return {};
 }
 
-QVector<RcCore::Action> RcDocument::actions() const
+QList<RcCore::Action> RcDocument::actions() const
 {
     if (isDataValid()) {
         if (m_cacheActions.isEmpty())
@@ -174,7 +174,7 @@ RcCore::ActionList RcDocument::actionsFromToolbar(const QString &toolBarId) cons
     return actions;
 }
 
-QVector<RcCore::ToolBar> RcDocument::toolBars() const
+QList<RcCore::ToolBar> RcDocument::toolBars() const
 {
     if (isDataValid())
         return data().toolBars;
@@ -511,7 +511,7 @@ const RcCore::RcFile &RcDocument::file() const
     return m_rcFile;
 }
 
-QVector<RcCore::Menu> RcDocument::menus() const
+QList<RcCore::Menu> RcDocument::menus() const
 {
     if (isDataValid())
         return data().menus;

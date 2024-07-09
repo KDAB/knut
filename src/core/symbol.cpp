@@ -23,7 +23,7 @@ namespace Core {
 /*!
  * \qmltype Symbol
  * \brief Represent a symbol in the current file
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup CodeDocument
  */
 
@@ -104,7 +104,7 @@ Symbol *Symbol::makeSymbol(QObject *parent, const QueryMatch &match, Kind kind)
     return new Symbol(parent, match, kind);
 }
 
-void Symbol::assignContext(const QVector<Symbol *> &contexts)
+void Symbol::assignContext(const QList<Symbol *> &contexts)
 {
     auto names = kdalgorithms::transformed<QStringList>(contexts, &Symbol::name);
     if (!names.isEmpty()) {
@@ -191,7 +191,7 @@ Core::TextRange Symbol::selectionRange() const
     return m_selectionRange;
 }
 
-QVector<Core::TextLocation> Symbol::references() const
+QList<Core::TextLocation> Symbol::references() const
 {
     LOG("Symbol::references");
 

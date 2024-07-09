@@ -17,7 +17,7 @@ namespace Core {
 /*!
  * \qmltype ClassSymbol
  * \brief Represents a class in the current file
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup CodeDocument
  * \todo
  */
@@ -31,10 +31,10 @@ ClassSymbol::ClassSymbol(QObject *parent, const QueryMatch &match, Kind kind)
 {
 }
 
-QVector<Symbol *> ClassSymbol::findMembers() const
+QList<Symbol *> ClassSymbol::findMembers() const
 {
     if (auto codeDocument = qobject_cast<Core::CodeDocument *>(parent())) {
-        QVector<Symbol *> members;
+        QList<Symbol *> members;
         for (auto &symbol : codeDocument->symbols()) {
             if (m_range.contains(symbol->range()) && m_name != symbol->name())
                 members.append(symbol);
@@ -45,7 +45,7 @@ QVector<Symbol *> ClassSymbol::findMembers() const
     return {};
 }
 
-const QVector<Symbol *> &ClassSymbol::members() const
+const QList<Symbol *> &ClassSymbol::members() const
 {
     if (!m_members.has_value()) {
         m_members = {findMembers()};

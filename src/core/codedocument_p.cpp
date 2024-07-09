@@ -72,7 +72,7 @@ std::shared_ptr<treesitter::Query> TreeSitterHelper::constructQuery(const QStrin
 // The subsequent children of these outermost nodes are *not* returned, even though
 // they are also technically in the range!
 // This is used by queryInRange to find on which nodes to run the query on.
-QVector<treesitter::Node> TreeSitterHelper::nodesInRange(const RangeMark &range)
+QList<treesitter::Node> TreeSitterHelper::nodesInRange(const RangeMark &range)
 {
     enum RangeComparison { Overlaps, Contains, Disjoint };
 
@@ -82,8 +82,8 @@ QVector<treesitter::Node> TreeSitterHelper::nodesInRange(const RangeMark &range)
         return {};
     }
 
-    QVector<treesitter::Node> nodesToVisit;
-    QVector<treesitter::Node> nodesInRange;
+    QList<treesitter::Node> nodesToVisit;
+    QList<treesitter::Node> nodesInRange;
     nodesToVisit.emplace_back(tree->rootNode());
 
     auto compareToRange = [&range](const treesitter::Node &node) {
@@ -137,7 +137,7 @@ void TreeSitterHelper::assignSymbolContexts()
     }
 }
 
-QVector<Core::Symbol *> TreeSitterHelper::functionSymbols() const
+QList<Core::Symbol *> TreeSitterHelper::functionSymbols() const
 {
     auto functionDeclarator = R"EOF(
             (function_declarator
@@ -202,10 +202,10 @@ QVector<Core::Symbol *> TreeSitterHelper::functionSymbols() const
         return Symbol::makeSymbol(m_document, match, kind);
     };
 
-    return kdalgorithms::transformed<QVector<Symbol *>>(functions, function_to_symbol);
+    return kdalgorithms::transformed<QList<Symbol *>>(functions, function_to_symbol);
 }
 
-QVector<Core::Symbol *> TreeSitterHelper::classSymbols() const
+QList<Core::Symbol *> TreeSitterHelper::classSymbols() const
 {
     auto classesAndStructs = m_document->query(QString(R"EOF(
             (class_specifier
@@ -220,10 +220,10 @@ QVector<Core::Symbol *> TreeSitterHelper::classSymbols() const
         return Symbol::makeSymbol(m_document, match, Symbol::Kind::Class);
     };
 
-    return kdalgorithms::transformed<QVector<Symbol *>>(classesAndStructs, class_to_symbol);
+    return kdalgorithms::transformed<QList<Symbol *>>(classesAndStructs, class_to_symbol);
 }
 
-QVector<Core::Symbol *> TreeSitterHelper::memberSymbols() const
+QList<Core::Symbol *> TreeSitterHelper::memberSymbols() const
 {
     auto fieldIdentifier = "(field_identifier) @name @selectionRange";
     auto members = m_document->query(QString(R"EOF(
@@ -243,10 +243,10 @@ QVector<Core::Symbol *> TreeSitterHelper::memberSymbols() const
         return Symbol::makeSymbol(m_document, match, Symbol::Kind::Field);
     };
 
-    return kdalgorithms::transformed<QVector<Symbol *>>(members, member_to_symbol);
+    return kdalgorithms::transformed<QList<Symbol *>>(members, member_to_symbol);
 }
 
-QVector<Core::Symbol *> TreeSitterHelper::enumSymbols() const
+QList<Core::Symbol *> TreeSitterHelper::enumSymbols() const
 {
     auto enums = m_document->query(R"EOF(
         (enum_specifier
@@ -255,19 +255,19 @@ QVector<Core::Symbol *> TreeSitterHelper::enumSymbols() const
     auto enum_to_symbol = [this](const QueryMatch &match) {
         return Symbol::makeSymbol(m_document, match, Symbol::Kind::Enum);
     };
-    auto result = kdalgorithms::transformed<QVector<Symbol *>>(enums, enum_to_symbol);
+    auto result = kdalgorithms::transformed<QList<Symbol *>>(enums, enum_to_symbol);
 
     auto enumerators = m_document->query(R"EOF(
         (enumerator
           name: (_) @name @selectionRange
           value: (_)? @value) @range
     )EOF");
-    result.append(kdalgorithms::transformed<QVector<Symbol *>>(enumerators, enum_to_symbol));
+    result.append(kdalgorithms::transformed<QList<Symbol *>>(enumerators, enum_to_symbol));
 
     return result;
 }
 
-const QVector<Core::Symbol *> &TreeSitterHelper::symbols()
+const QList<Core::Symbol *> &TreeSitterHelper::symbols()
 {
     if (m_flags & HasSymbols)
         return m_symbols;

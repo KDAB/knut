@@ -14,8 +14,8 @@
 #include "symbol.h"
 #include "textrange.h"
 
+#include <QList>
 #include <QString>
-#include <QVector>
 
 namespace Core {
 
@@ -38,7 +38,7 @@ public:
     Q_OBJECT
 
     Q_PROPERTY(QString returnType READ returnType CONSTANT)
-    Q_PROPERTY(QVector<Core::FunctionArgument> arguments READ arguments CONSTANT)
+    Q_PROPERTY(QList<Core::FunctionArgument> arguments READ arguments CONSTANT)
 
 protected:
     // necessary so the constructor can be accessed from the Symbol class.
@@ -47,14 +47,14 @@ protected:
     FunctionSymbol(QObject *parent, const QueryMatch &match, Kind kind);
 
     mutable std::optional<QString> m_returnType;
-    mutable std::optional<QVector<FunctionArgument>> m_arguments;
+    mutable std::optional<QList<FunctionArgument>> m_arguments;
 
     QString returnTypeFromQueryMatch() const;
-    QVector<FunctionArgument> argumentsFromQueryMatch() const;
+    QList<FunctionArgument> argumentsFromQueryMatch() const;
 
 public:
     QString returnType() const;
-    const QVector<FunctionArgument> &arguments() const;
+    const QList<FunctionArgument> &arguments() const;
     QString signature() const;
     QString description() const override;
 };
@@ -64,4 +64,4 @@ bool operator==(const FunctionSymbol &left, const FunctionSymbol &right);
 
 Q_DECLARE_METATYPE(Core::FunctionArgument)
 Q_DECLARE_METATYPE(Core::FunctionSymbol)
-Q_DECLARE_METATYPE(QVector<Core::FunctionArgument>)
+Q_DECLARE_METATYPE(QList<Core::FunctionArgument>)

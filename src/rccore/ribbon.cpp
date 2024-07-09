@@ -17,7 +17,7 @@ namespace RcCore {
 /*!
  * \qmltype RibbonElement
  * \brief An item in the ribbon (button, separator...).
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup RcDocument
  * \sa Ribbon
  */
@@ -57,7 +57,7 @@ namespace RcCore {
 /*!
  * \qmltype RibbonPanel
  * \brief An panel (group of elements) in the ribbon.
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup RcDocument
  * \sa Ribbon
  */
@@ -77,7 +77,7 @@ namespace RcCore {
 /*!
  * \qmltype RibbonCategory
  * \brief A tab (made of panels) in the ribbon.
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup RcDocument
  * \sa Ribbon
  */
@@ -105,7 +105,7 @@ namespace RcCore {
 /*!
  * \qmltype RibbonContext
  * \brief A context (tabs with a title) in the ribbon.
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup RcDocument
  * \sa Ribbon
  */
@@ -125,7 +125,7 @@ namespace RcCore {
 /*!
  * \qmltype RibbonMenu
  * \brief A menu showing when clicking on the left/top icon in the ribbon.
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup RcDocument
  * \sa Ribbon
  */
@@ -153,7 +153,7 @@ namespace RcCore {
 /*!
  * \qmltype Ribbon
  * \brief The ribbon description (not everything is read yet).
- * \inqmlmodule Script
+ * \inqmlmodule Knut
  * \ingroup RcDocument
  * \sa RcFile
  *
@@ -180,9 +180,9 @@ namespace RcCore {
  */
 
 template <typename T, typename Func>
-QVector<T> readItems(pugi::xml_node node, Func readFunc)
+QList<T> readItems(pugi::xml_node node, Func readFunc)
 {
-    QVector<T> collection;
+    QList<T> collection;
     for (const auto &childNode : node.children())
         collection.push_back(readFunc(childNode));
     return collection;

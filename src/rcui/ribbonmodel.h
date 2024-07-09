@@ -27,7 +27,7 @@ public:
     };
 
 public:
-    explicit RibbonModel(const QVector<RcCore::Ribbon> &assets, QObject *parent = nullptr);
+    explicit RibbonModel(const QList<RcCore::Ribbon> &assets, QObject *parent = nullptr);
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -35,7 +35,7 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 
 private:
-    QVector<RcCore::Ribbon> m_ribbons;
+    QList<RcCore::Ribbon> m_ribbons;
 };
 
 } // namespace RcUi

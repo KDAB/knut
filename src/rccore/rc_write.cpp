@@ -57,7 +57,7 @@ static QImage convertBmpImage(const Asset &asset, Asset::TransparentColors color
  * @param assets list of assets
  * @param colors list of transparent colors for the conversion
  */
-void writeAssetsToImage(const QVector<Asset> &assets, Asset::TransparentColors colors)
+void writeAssetsToImage(const QList<Asset> &assets, Asset::TransparentColors colors)
 {
     QHash<QString, QImage> cache;
     for (const auto &asset : assets) {
@@ -89,7 +89,7 @@ void writeAssetsToImage(const QVector<Asset> &assets, Asset::TransparentColors c
  * @param device device to write on
  * @param fileName fileName of the qrc file (to have relative path to it)
  */
-void writeAssetsToQrc(const QVector<Asset> &assets, QIODevice *device, const QString &fileName)
+void writeAssetsToQrc(const QList<Asset> &assets, QIODevice *device, const QString &fileName)
 {
     Q_ASSERT(device);
 
