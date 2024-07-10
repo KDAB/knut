@@ -52,7 +52,7 @@ ScriptDialog {
 
     // This is to test the script automatically, to be used with `knut --test ex-gui-interactive.qml`
     // It will run the script automatically without interaction, even if it's the same method as `onAccepted`
-    function test() {
+    function test_script() {
         runSteps(stepGeneratorFunc());
         close();
     }

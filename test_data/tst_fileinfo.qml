@@ -10,11 +10,8 @@
 
 import QtQuick
 import Knut
-import Knut.Test
 
-TestCase {
-    name: "FileInfo"
-
+Script {
     function endsWith(str,pattern) {
         return str.substr(str.length-pattern.length,pattern.length) === pattern
     }

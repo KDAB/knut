@@ -18,7 +18,7 @@ import Knut
 
 | | Name |
 |-|-|
-||**[addProperty](#addProperty)**(string name, var value, object attributes = {})|
+||**[addProperty](#addProperty)**(string name, var value, object attributes = {}, bool userProperty = false)|
 |var |**[getProperty](#getProperty)**(string name)|
 
 ## Property Documentation
@@ -37,9 +37,9 @@ Name of the widget.
 
 ## Method Documentation
 
-#### <a name="addProperty"></a>**addProperty**(string name, var value, object attributes = {})
+#### <a name="addProperty"></a>**addProperty**(string name, var value, object attributes = {}, bool userProperty = false)
 
-Adds a new property with the given `name`, `value` and `attributes`.
+Adds a new property with the given `name`, `value`, `attributes` and `userProperty`.
 
 Attributes is a has<string, string> object, where the key is the attribute name and the value is the attribute value.
 For example:
@@ -47,6 +47,7 @@ For example:
 ```
 widget.setProperty("text", "My text", { "comment": "some comment for translation" });
 ```
+Set userProperty to true if you doesn't want to generate property.
 
 #### <a name="getProperty"></a>var **getProperty**(string name)
 

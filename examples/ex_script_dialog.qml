@@ -61,7 +61,7 @@ ScriptDialog {
     }
     // Function to automatically test the script, useful for automated testing
     // It runs the script without user interaction
-    function test() {
+    function test_script() {
         showData();
         close();
     }

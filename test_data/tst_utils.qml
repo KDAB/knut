@@ -10,11 +10,8 @@
 
 import QtQuick
 import Knut
-import Knut.Test
 
-TestCase {
-    name: "Utils"
-
+Script {
     function test_global() {
         Utils.setGlobal("foo", "bar")
         compare(Utils.getGlobal("foo"), "bar");
