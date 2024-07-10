@@ -71,6 +71,7 @@ public:
     TSNode m_node;
 
     friend class Tree;
+    friend class TreeCursor;
     friend class QueryCursor;
     friend class QueryMatch;
 };
