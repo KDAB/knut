@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include <QJSValue>
 #include <QObject>
 #include <QQmlEngine>
 #include <QSet>
@@ -41,6 +42,12 @@ public:
     QList<QQmlError> errors() const { return m_errors; }
 
     static bool isProperty(const QString &apiCall);
+
+    // Method used for testing, shared between ScriptItem and ScriptDialogItem
+    static void compare(QObject *object, const QJSValue &actual, const QJSValue &expected, QString message = {});
+    static void verify(QObject *object, bool value, QString message = {});
+    static QString callerFile(QObject *object, int frameIndex = 0);
+    static int callerLine(QObject *object, int frameIndex = 0);
 
 private:
     QQmlEngine *getEngine(const QString &fileName);

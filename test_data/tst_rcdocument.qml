@@ -10,11 +10,8 @@
 
 import QtQuick
 import Knut
-import Knut.Test
 
-TestCase {
-    name: "RcDocument"
-
+Script {
     property var document: RcDocument {
         fileName: Dir.currentScriptPath + "/rcfiles/2048Game/2048Game.rc"
         Component.onCompleted: mergeAllLanguages()

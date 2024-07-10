@@ -10,11 +10,8 @@
 
 import QtQuick
 import Knut
-import Knut.Test
 
-TestCase {
-    name: "Project"
-
+Script {
     function test_allFiles() {
         Project.root = Dir.currentScriptPath + "/projects/mfc-tutorial"
 
@@ -36,5 +33,4 @@ TestCase {
         var rcdoc = Project.open("MFC_UpdateGUI.rc")
         compare(rcdoc.type, Document.Rc)
     }
-
 }

@@ -25,7 +25,6 @@
 #include "scriptitem.h"
 #include "settings.h"
 #include "symbol.h"
-#include "testutil.h"
 #include "textdocument.h"
 #include "textrange.h"
 #include "userdialog.h"
@@ -38,6 +37,7 @@
 #include <QQuickItem>
 #include <QQuickView>
 #include <QQuickWindow>
+#include <QUrl>
 #include <QtQml/private/qqmlengine_p.h>
 #include <kdalgorithms.h>
 
@@ -137,11 +137,6 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qRegisterMetaType<RcCore::Ribbon>();
     qRegisterMetaType<QList<RcCore::Ribbon>>();
 
-    // Knut.Test
-    qmlRegisterSingletonType<TestUtil>("Knut.Test", 1, 0, "TestUtil", [](QQmlEngine *, QJSEngine *) {
-        return new TestUtil();
-    });
-
     // Properties
     addProperties<FunctionArgument>(m_properties);
     addProperties<ClassSymbol>(m_properties);
@@ -203,6 +198,62 @@ QVariant ScriptRunner::runScript(const QString &fileName, const std::function<vo
 bool ScriptRunner::isProperty(const QString &apiCall)
 {
     return m_properties.contains(apiCall);
+}
+
+void ScriptRunner::compare(QObject *object, const QJSValue &actual, const QJSValue &expected, QString message)
+{
+    if (actual.equals(expected)) // This is the most common case
+        return;
+
+    // Special case for doubles, we keep some very low precision here
+    if (actual.isNumber() && std::fabs(actual.toNumber() - expected.toNumber()) <= 0.00001)
+        return;
+
+    if (actual.toString() != expected.toString()) {
+        message = "Compared values are not the same";
+        {
+            if (message.isEmpty())
+                message = "Compared values are not the same";
+
+            spdlog::critical("FAIL!: {}({}) - {}\n   Actual  :{}\n   Expected:{}", callerFile(object),
+                             callerLine(object), message, actual.toString(), expected.toString());
+            object->setProperty("failed", object->property("failed").toInt() + 1);
+        }
+    }
+}
+
+void ScriptRunner::verify(QObject *object, bool value, QString message)
+{
+    if (!value) {
+        if (message.isEmpty())
+            message = "Verification failed";
+
+        spdlog::critical("FAIL!: {}({}) - {}", callerFile(object), callerLine(object), message);
+        object->setProperty("failed", object->property("failed").toInt() + 1);
+    }
+}
+
+QString ScriptRunner::callerFile(QObject *object, int frameIndex)
+{
+    QQmlEngine *engine = qmlEngine(object);
+    QV4::ExecutionEngine *v4 = QQmlEnginePrivate::getV4Engine(engine);
+
+    const QList<QV4::StackFrame> stack = v4->stackTrace(frameIndex + 1);
+    if (stack.size() > frameIndex) {
+        return QDir::toNativeSeparators(QUrl(stack.at(frameIndex).source).toLocalFile());
+    }
+    return QString();
+}
+
+int ScriptRunner::callerLine(QObject *object, int frameIndex)
+{
+    QQmlEngine *engine = qmlEngine(object);
+    QV4::ExecutionEngine *v4 = QQmlEnginePrivate::getV4Engine(engine);
+
+    QList<QV4::StackFrame> stack = v4->stackTrace(frameIndex + 1);
+    if (stack.size() > frameIndex)
+        return stack.at(frameIndex).line;
+    return -1;
 }
 
 QQmlEngine *ScriptRunner::getEngine(const QString &fileName)
@@ -287,6 +338,7 @@ QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine)
 
                 window->show();
             } else if (auto dialog = qobject_cast<ScriptDialogItem *>(topLevel)) {
+                engine->setProperty("scriptWindow", true);
                 dialog->show();
                 connect(dialog, &ScriptDialogItem::scriptFinished, engine, &QObject::deleteLater);
             }
@@ -302,21 +354,34 @@ QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine)
             if (topLevel->metaObject()->indexOfMethod("init()") != -1)
                 QMetaObject::invokeMethod(topLevel, "init", Qt::DirectConnection);
 
-            // Run the test (in testMode) or run method if it exists
-            QString methodName;
-            if (Settings::instance()->isTesting() && topLevel->metaObject()->indexOfMethod("test()") != -1) {
-                methodName = "test";
-            } else if (topLevel->metaObject()->indexOfMethod("run()") != -1) {
-                methodName = "run";
+            // Run all tests (in testMode)
+            QStringList methodToCalls;
+            if (Settings::instance()->isTesting()) {
+                const int methodCount = topLevel->metaObject()->methodCount();
+                for (int i = 0; i < methodCount; ++i) {
+                    const QMetaMethod method = topLevel->metaObject()->method(i);
+                    if (method.name().startsWith("test_"))
+                        methodToCalls.append(method.name());
+                }
             }
-            if (!methodName.isEmpty()) {
-                QMetaObject::invokeMethod(topLevel, qPrintable(methodName), Qt::DirectConnection);
+            // If no tests are found, run the run function (if any)
+            if (methodToCalls.isEmpty() && topLevel->metaObject()->indexOfMethod("run()") != -1) {
+                methodToCalls.append("run");
+            }
+            for (const auto &method : methodToCalls) {
+                QMetaObject::invokeMethod(topLevel, qPrintable(method), Qt::DirectConnection);
                 if (m_hasError)
                     return ErrorCode;
-                QVariant result = topLevel->property("failed");
-                return result;
             }
 
+            // Cleanup scripts if not a visual one
+            if (!engine->property("scriptWindow").toBool())
+                engine->deleteLater();
+
+            // Get the number of failed tests
+            QVariant result = topLevel->property("failed");
+            if (result.toInt() > 0)
+                return ErrorCode;
             return NormalExitCode;
         }
     }

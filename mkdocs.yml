@@ -102,9 +102,6 @@ nav:
                 - Utils: API/knut/utils.md
                 - QDirValueType: API/knut/qdirvaluetype.md
                 - QFileInfoValueType: API/knut/qfileinfovaluetype.md
-        - Knut.Test Module:
-            - TestCase: API/knut.test/testcase.md
-            - TestUtil: API/knut.test/testutil.md
 # <--
 
 markdown_extensions:

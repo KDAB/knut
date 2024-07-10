@@ -10,11 +10,8 @@
 
 import QtQuick
 import Knut
-import Knut.Test
 
-TestCase {
-    name: "Dir"
-
+Script {
     function test_basic() {
         if (Qt.platform.os === "windows") {
             var windows = Dir.create("C:\\Users\\Public")

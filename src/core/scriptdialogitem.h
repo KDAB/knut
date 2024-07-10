@@ -29,6 +29,7 @@ class ScriptDialogItem : public QDialog
     Q_PROPERTY(int stepCount READ stepCount WRITE setStepCount NOTIFY stepCountChanged)
     Q_PROPERTY(bool interactive READ isInteractive WRITE setInteractive NOTIFY interactiveChanged)
     Q_PROPERTY(QQmlListProperty<QObject> childrenData READ childrenData NOTIFY childrenDataChanged FINAL)
+    Q_PROPERTY(int failed MEMBER m_failed) // undocumented, internal use
     Q_CLASSINFO("DefaultProperty", "childrenData")
 
 public:
@@ -50,6 +51,9 @@ public:
     Q_INVOKABLE void firstStep(const QString &firstStep);
     Q_INVOKABLE void nextStep(const QString &title);
     Q_INVOKABLE void runSteps(const QJSValue &generator);
+
+    Q_INVOKABLE void compare(const QJSValue &actual, const QJSValue &expected, QString message = {});
+    Q_INVOKABLE void verify(bool value, QString message = {});
 
 public slots:
     void setStepCount(int stepCount);
@@ -88,6 +92,7 @@ private:
 
     int m_stepCount = 0;
     int m_currentStep = 0;
+    int m_failed = 0;
     QString m_currentStepTitle = "Initialization"; // Set a default title in case someone forgot the first step
     QString m_nextStepTitle;
 

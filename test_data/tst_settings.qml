@@ -10,11 +10,8 @@
 
 import QtQuick
 import Knut
-import Knut.Test
 
-TestCase {
-    name: "Settings"
-
+Script {
     function test_globalSettings() {
         // We can't test the values, as they could change
         verify(Settings.hasValue("/lsp/servers/0/arguments"))
