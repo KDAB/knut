@@ -22,6 +22,11 @@
 #include <QTest>
 #include <kdalgorithms.h>
 
+#define INIT_KNUT_PROJECT                                                                                              \
+    Core::KnutCore core;                                                                                               \
+    auto project = Core::Project::instance();                                                                          \
+    project->setRoot(Test::testDataPath() + "/projects/cpp-project")
+
 class TestCodeDocument : public QObject
 {
     Q_OBJECT
@@ -54,9 +59,7 @@ private slots:
     {
         CHECK_CLANGD_VERSION;
 
-        Core::KnutCore core;
-        auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/projects/cpp-project");
+        INIT_KNUT_PROJECT;
 
         auto cppDocument = qobject_cast<Core::CodeDocument *>(project->open("myobject.cpp"));
         const auto cppSymbols = cppDocument->symbols();
@@ -137,9 +140,7 @@ private slots:
         QFETCH(Core::Symbol::Kind, symbolKind);
         QFETCH(Lsp::Position, position);
 
-        Core::KnutCore core;
-        auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/projects/cpp-project");
+        INIT_KNUT_PROJECT;
 
         const auto document = qobject_cast<Core::CodeDocument *>(project->open(fileName));
 
@@ -160,9 +161,7 @@ private slots:
 
     void symbolUnderCursorCache()
     {
-        Core::KnutCore core;
-        auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/projects/cpp-project");
+        INIT_KNUT_PROJECT;
 
         const auto document = qobject_cast<Core::CodeDocument *>(project->open("main.cpp"));
 
@@ -182,9 +181,7 @@ private slots:
     {
         CHECK_CLANGD_VERSION;
 
-        Core::KnutCore core;
-        auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/projects/cpp-project");
+        INIT_KNUT_PROJECT;
 
         auto headerDocument = qobject_cast<Core::CodeDocument *>(project->open("myobject.h"));
 
@@ -214,9 +211,7 @@ private slots:
     {
         CHECK_CLANGD_VERSION;
 
-        Core::KnutCore core;
-        auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/projects/cpp-project");
+        INIT_KNUT_PROJECT;
 
         auto codedocument = qobject_cast<Core::CodeDocument *>(project->open("main.cpp"));
 
@@ -271,9 +266,7 @@ private slots:
     {
         CHECK_CLANGD_VERSION;
 
-        Core::KnutCore core;
-        auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/projects/cpp-project");
+        INIT_KNUT_PROJECT;
 
         auto mainfile = qobject_cast<Core::CodeDocument *>(project->open("main.cpp"));
         auto cppfile = qobject_cast<Core::CodeDocument *>(project->open("myobject.cpp"));
@@ -337,9 +330,7 @@ private slots:
     {
         CHECK_CLANGD;
 
-        Core::KnutCore core;
-        auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/projects/cpp-project");
+        INIT_KNUT_PROJECT;
 
         auto codedocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->get("myobject.h"));
 
@@ -358,9 +349,7 @@ private slots:
 
     void query()
     {
-        Core::KnutCore core;
-        auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/projects/cpp-project");
+        INIT_KNUT_PROJECT;
 
         auto codedocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->get("main.cpp"));
 
@@ -391,9 +380,7 @@ private slots:
 
     void failedQuery()
     {
-        Core::KnutCore core;
-        auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/projects/cpp-project");
+        INIT_KNUT_PROJECT;
 
         auto codedocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->get("main.cpp"));
 
@@ -416,9 +403,7 @@ private slots:
 
     void queryInRange()
     {
-        Core::KnutCore core;
-        auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/projects/cpp-project");
+        INIT_KNUT_PROJECT;
 
         auto codedocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->get("main.cpp"));
 
