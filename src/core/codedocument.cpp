@@ -413,7 +413,7 @@ void CodeDocument::selectSymbol(const QString &name, int options)
  */
 int CodeDocument::selectLargerSyntaxNode(int count /* = 1*/)
 {
-    LOG("CodeDocument::selectLargerSyntaxNode", LOG_ARG("count", count));
+    LOG_AND_MERGE("CodeDocument::selectLargerSyntaxNode", LOG_ARG("count", count));
 
     auto currentNode = m_treeSitterHelper->nodeCoveringRange(selectionStart(), selectionEnd());
 
@@ -452,7 +452,7 @@ int CodeDocument::selectLargerSyntaxNode(int count /* = 1*/)
  */
 int CodeDocument::selectSmallerSyntaxNode(int count /* = 1*/)
 {
-    LOG("CodeDocument::selectSmallerSyntaxNode", LOG_ARG("count", count));
+    LOG_AND_MERGE("CodeDocument::selectSmallerSyntaxNode", LOG_ARG("count", count));
 
     auto smallerNodes =
         kdalgorithms::filtered(m_treeSitterHelper->nodesInRange(createRangeMark()), [](const auto &node) {
@@ -518,7 +518,7 @@ findSibling(const treesitter::Node &start, treesitter::Node (treesitter::Node::*
  */
 int CodeDocument::selectNextSyntaxNode(int count /*= 1*/)
 {
-    LOG("CodeDocument::selectNextSyntaxNode", LOG_ARG("count", count));
+    LOG_AND_MERGE("CodeDocument::selectNextSyntaxNode", LOG_ARG("count", count));
 
     auto node = m_treeSitterHelper->nodeCoveringRange(selectionStart(), selectionEnd());
 
@@ -545,7 +545,7 @@ int CodeDocument::selectNextSyntaxNode(int count /*= 1*/)
  */
 int CodeDocument::selectPreviousSyntaxNode(int count /*= 1*/)
 {
-    LOG("CodeDocument::selectPreviousSyntaxNode", LOG_ARG("count", count));
+    LOG_AND_MERGE("CodeDocument::selectPreviousSyntaxNode", LOG_ARG("count", count));
 
     auto node = m_treeSitterHelper->nodeCoveringRange(selectionStart(), selectionEnd());
 
