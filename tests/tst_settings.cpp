@@ -18,12 +18,11 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Tests Data
 ///////////////////////////////////////////////////////////////////////////////
-// Use a test fixture for Settings, to be able to save (even if it's used in a test)
 class SettingsFixture : public Core::Settings
 {
 public:
     SettingsFixture()
-        : Settings(Core::Settings::Mode::Cli) // Not Testing
+        : Settings(Core::Settings::Mode::Test)
     {
     }
 };

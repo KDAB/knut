@@ -231,6 +231,9 @@ bool Settings::setValue(QString path, const QVariant &value)
 
 QString Settings::userFilePath() const
 {
+    if (isTesting()) {
+        return QDir::tempPath() + '/' + SettingsName;
+    }
     return QDir::homePath() + '/' + SettingsName;
 }
 
@@ -268,10 +271,6 @@ void Settings::loadKnutSettings()
 
 void Settings::saveSettings()
 {
-    // Don't save settings if testing
-    if (isTesting())
-        return;
-
     const auto &settings = isUser() ? m_userSettings : m_projectSettings;
     const auto &filePath = isUser() ? userFilePath() : projectFilePath();
 
