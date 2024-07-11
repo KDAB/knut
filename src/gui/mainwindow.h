@@ -69,7 +69,7 @@ private:
     // C++
     void followSymbol();
     void switchDeclarationDefinition();
-    void switchHeaderSource();
+    void openHeaderSource();
     void gotoBlockStart();
     void gotoBlockEnd();
     void selectBlockStart();

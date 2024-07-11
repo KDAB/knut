@@ -72,6 +72,42 @@ constexpr char RecentProjectKey[] = "RecentProject";
 constexpr char GeometryKey[] = "MainWindow/Geometry";
 constexpr char WindowStateKey[] = "MainWindow/WindowState";
 
+// Forward the function with the given FUNCTION name to the current document if it's of the specified TYPE.
+// As this was a common pattern, a macro is used to avoid code duplication.
+// This generates the appropriate implementation for a member function on MainWindow with the same name.
+// The function still needs to be declared in the header.
+#define FORWARD_TO_DOCUMENT(TYPE, FUNCTION)                                                                            \
+    void MainWindow::FUNCTION()                                                                                        \
+    {                                                                                                                  \
+        if (auto document = qobject_cast<Core::TYPE *>(Core::Project::instance()->currentDocument()))                  \
+            document->FUNCTION();                                                                                      \
+    }
+
+FORWARD_TO_DOCUMENT(TextDocument, selectAll)
+
+FORWARD_TO_DOCUMENT(TextDocument, deleteLine)
+
+FORWARD_TO_DOCUMENT(TextDocument, undo)
+FORWARD_TO_DOCUMENT(TextDocument, redo)
+
+FORWARD_TO_DOCUMENT(CodeDocument, selectLargerSyntaxNode)
+FORWARD_TO_DOCUMENT(CodeDocument, selectSmallerSyntaxNode)
+FORWARD_TO_DOCUMENT(CodeDocument, followSymbol)
+FORWARD_TO_DOCUMENT(CodeDocument, switchDeclarationDefinition)
+
+FORWARD_TO_DOCUMENT(CppDocument, openHeaderSource)
+
+FORWARD_TO_DOCUMENT(CppDocument, gotoBlockStart)
+FORWARD_TO_DOCUMENT(CppDocument, gotoBlockEnd)
+FORWARD_TO_DOCUMENT(CppDocument, selectBlockStart)
+FORWARD_TO_DOCUMENT(CppDocument, selectBlockEnd)
+FORWARD_TO_DOCUMENT(CppDocument, selectBlockUp)
+
+FORWARD_TO_DOCUMENT(CppDocument, commentSelection)
+FORWARD_TO_DOCUMENT(CppDocument, toggleSection)
+
+FORWARD_TO_DOCUMENT(CppDocument, deleteMethod)
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -165,7 +201,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->actionUndo->setShortcut(QKeySequence::Undo);
 
     // C++
-    connect(ui->actionSwitchHeaderSource, &QAction::triggered, this, &MainWindow::switchHeaderSource);
+    connect(ui->actionSwitchHeaderSource, &QAction::triggered, this, &MainWindow::openHeaderSource);
     connect(ui->actionFollowSymbol, &QAction::triggered, this, &MainWindow::followSymbol);
     connect(ui->actionSwitchDeclDef, &QAction::triggered, this, &MainWindow::switchDeclarationDefinition);
     connect(ui->actionCommentSelection, &QAction::triggered, this, &MainWindow::commentSelection);
@@ -277,66 +313,6 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
     return QMainWindow::eventFilter(watched, event);
 }
 
-void MainWindow::switchHeaderSource()
-{
-    if (auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->currentDocument()))
-        cppDocument->openHeaderSource();
-}
-
-void MainWindow::gotoBlockStart()
-{
-    if (auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->currentDocument()))
-        cppDocument->gotoBlockStart();
-}
-
-void MainWindow::gotoBlockEnd()
-{
-    if (auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->currentDocument()))
-        cppDocument->gotoBlockEnd();
-}
-
-void MainWindow::selectBlockStart()
-{
-    if (auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->currentDocument()))
-        cppDocument->selectBlockStart();
-}
-
-void MainWindow::selectBlockEnd()
-{
-    if (auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->currentDocument()))
-        cppDocument->selectBlockEnd();
-}
-
-void MainWindow::selectBlockUp()
-{
-    if (auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->currentDocument()))
-        cppDocument->selectBlockUp();
-}
-
-void MainWindow::selectLargerSyntaxNode()
-{
-    if (auto cppDocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->currentDocument()))
-        cppDocument->selectLargerSyntaxNode();
-}
-
-void MainWindow::selectSmallerSyntaxNode()
-{
-    if (auto cppDocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->currentDocument()))
-        cppDocument->selectSmallerSyntaxNode();
-}
-
-void MainWindow::commentSelection()
-{
-    if (auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->currentDocument()))
-        cppDocument->commentSelection();
-}
-
-void MainWindow::toggleSection()
-{
-    if (auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->currentDocument()))
-        cppDocument->toggleSection();
-}
-
 void MainWindow::inspectTreeSitter()
 {
     // Lazy-initialize the treesitter inspector.
@@ -345,12 +321,6 @@ void MainWindow::inspectTreeSitter()
         m_treeSitterInspector = new TreeSitterInspector(this);
     }
     m_treeSitterInspector->show();
-}
-
-void MainWindow::deleteMethod()
-{
-    if (auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->currentDocument()))
-        cppDocument->deleteMethod();
 }
 
 MainWindow::~MainWindow() = default;
@@ -528,26 +498,6 @@ void MainWindow::reloadDocuments()
     }
 }
 
-void MainWindow::followSymbol()
-{
-    auto *project = Core::Project::instance();
-    auto *document = qobject_cast<Core::CodeDocument *>(project->currentDocument());
-
-    if (document) {
-        document->followSymbol();
-    }
-}
-
-void MainWindow::switchDeclarationDefinition()
-{
-    auto *project = Core::Project::instance();
-    auto *document = qobject_cast<Core::CodeDocument *>(project->currentDocument());
-
-    if (document) {
-        document->switchDeclarationDefinition();
-    }
-}
-
 void MainWindow::saveDocument()
 {
     auto document = Core::Project::instance()->currentDocument();
@@ -676,12 +626,6 @@ void MainWindow::returnToEditor()
         ui->tabWidget->currentWidget()->setFocus(Qt::FocusReason::ShortcutFocusReason);
 }
 
-void MainWindow::selectAll()
-{
-    if (auto textDocument = qobject_cast<Core::TextDocument *>(Core::Project::instance()->currentDocument()))
-        textDocument->selectAll();
-}
-
 void MainWindow::toggleMark()
 {
     auto document = Core::Project::instance()->currentDocument();
@@ -703,24 +647,6 @@ void MainWindow::selectToMark()
     auto document = Core::Project::instance()->currentDocument();
     if (auto *textView = textViewForDocument(document))
         textView->selectToMark();
-}
-
-void MainWindow::deleteLine()
-{
-    if (auto textDocument = qobject_cast<Core::TextDocument *>(Core::Project::instance()->currentDocument()))
-        textDocument->deleteLine();
-}
-
-void MainWindow::undo()
-{
-    if (auto textDocument = qobject_cast<Core::TextDocument *>(Core::Project::instance()->currentDocument()))
-        textDocument->undo();
-}
-
-void MainWindow::redo()
-{
-    if (auto textDocument = qobject_cast<Core::TextDocument *>(Core::Project::instance()->currentDocument()))
-        textDocument->redo();
 }
 
 void MainWindow::changeTab()
