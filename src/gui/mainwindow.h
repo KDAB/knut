@@ -67,20 +67,24 @@ private:
     void redo();
 
     // C++
-    void followSymbol();
-    void switchDeclarationDefinition();
     void openHeaderSource();
     void gotoBlockStart();
     void gotoBlockEnd();
     void selectBlockStart();
     void selectBlockEnd();
     void selectBlockUp();
-    void selectLargerSyntaxNode();
-    void selectSmallerSyntaxNode();
     void commentSelection();
     void toggleSection();
     void inspectTreeSitter();
     void deleteMethod();
+
+    // Code
+    void followSymbol();
+    void switchDeclarationDefinition();
+    void selectLargerSyntaxNode();
+    void selectSmallerSyntaxNode();
+    void selectNextSyntaxNode();
+    void selectPreviousSyntaxNode();
 
     // Rc
     void createQrc();

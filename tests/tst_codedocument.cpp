@@ -547,6 +547,64 @@ private slots:
         QCOMPARE(result, codedocument->position());
         QCOMPARE(codedocument->selectedText(), "const");
     }
+
+    void selectNextSyntaxNode()
+    {
+        INIT_KNUT_PROJECT;
+
+        auto codedocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->get("main.cpp"));
+
+        // Test that a partial selection searches from the next larger syntax node.
+        QVERIFY(codedocument->find("gned int"));
+
+        auto result = codedocument->selectNextSyntaxNode();
+        QCOMPARE(result, codedocument->position());
+        QCOMPARE(codedocument->selectedText(), "long long");
+
+        // Skipping past the end of a node should select the next sibling from the parent.
+        result = codedocument->selectNextSyntaxNode(4);
+        QCOMPARE(result, codedocument->position());
+        QCOMPARE(codedocument->selectedText(), "{\n    return \"hello\";\n}");
+
+        auto lastFunction = "int freeFunction(unsigned, long long)\n"
+                            "{\n"
+                            "        return 5;\n"
+                            "}";
+        result = codedocument->selectNextSyntaxNode(2);
+        QCOMPARE(result, codedocument->position());
+        QCOMPARE(codedocument->selectedText(), lastFunction);
+
+        // No matter how far we go past the end, the selection should not change
+        QCOMPARE(codedocument->selectNextSyntaxNode(10), result);
+        QCOMPARE(codedocument->selectedText(), lastFunction);
+    }
+
+    void selectPreviousSyntaxNode()
+    {
+        INIT_KNUT_PROJECT;
+
+        auto codedocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->get("main.cpp"));
+
+        // Test that a partial selection searches from the next larger syntax node.
+        QVERIFY(codedocument->find("ction(1,"));
+
+        auto result = codedocument->selectPreviousSyntaxNode();
+        QCOMPARE(codedocument->position(), result);
+        QCOMPARE(codedocument->selectedText(), "object.sayMessage(\"Another message\" /*a comment*/);");
+
+        // Skipping past the end of a node should select the previous sibling from the parent.
+        result = codedocument->selectPreviousSyntaxNode(3);
+        QCOMPARE(codedocument->position(), result);
+        QCOMPARE(codedocument->selectedText(), "main(int argc, char *argv[])");
+
+        // going past the end selects the last sibling
+        result = codedocument->selectPreviousSyntaxNode(10);
+        QCOMPARE(codedocument->position(), result);
+        QCOMPARE(codedocument->selectedText(), "#include <iostream>\n");
+
+        QCOMPARE(codedocument->selectPreviousSyntaxNode(10), result);
+        QCOMPARE(codedocument->selectedText(), "#include <iostream>\n");
+    }
 };
 
 QTEST_MAIN(TestCodeDocument)

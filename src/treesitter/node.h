@@ -40,6 +40,11 @@ public:
     uint32_t childCount() const;
     QVector<Node> children() const;
 
+    Node nextSibling() const;
+    Node previousSibling() const;
+    Node nextNamedSibling() const;
+    Node previousNamedSibling() const;
+
     uint32_t startPosition() const;
     uint32_t endPosition() const;
 

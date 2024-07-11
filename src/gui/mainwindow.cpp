@@ -92,6 +92,8 @@ FORWARD_TO_DOCUMENT(TextDocument, redo)
 
 FORWARD_TO_DOCUMENT(CodeDocument, selectLargerSyntaxNode)
 FORWARD_TO_DOCUMENT(CodeDocument, selectSmallerSyntaxNode)
+FORWARD_TO_DOCUMENT(CodeDocument, selectNextSyntaxNode)
+FORWARD_TO_DOCUMENT(CodeDocument, selectPreviousSyntaxNode)
 FORWARD_TO_DOCUMENT(CodeDocument, followSymbol)
 FORWARD_TO_DOCUMENT(CodeDocument, switchDeclarationDefinition)
 
@@ -213,6 +215,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionSelectBlockUp, &QAction::triggered, this, &MainWindow::selectBlockUp);
     connect(ui->actionSelectLargerSyntaxNode, &QAction::triggered, this, &MainWindow::selectLargerSyntaxNode);
     connect(ui->actionSelectSmallerSyntaxNode, &QAction::triggered, this, &MainWindow::selectSmallerSyntaxNode);
+    connect(ui->actionSelectNextSyntaxNode, &QAction::triggered, this, &MainWindow::selectNextSyntaxNode);
+    connect(ui->actionSelectPreviousSyntaxNode, &QAction::triggered, this, &MainWindow::selectPreviousSyntaxNode);
     connect(ui->actionTreeSitterInspector, &QAction::triggered, this, &MainWindow::inspectTreeSitter);
     connect(ui->actionDeleteMethod, &QAction::triggered, this, &MainWindow::deleteMethod);
 
@@ -600,6 +604,9 @@ void MainWindow::updateActions()
 
     const bool isCodeDocument = codeDocument != nullptr;
     ui->actionSelectLargerSyntaxNode->setEnabled(isCodeDocument);
+    ui->actionSelectSmallerSyntaxNode->setEnabled(isCodeDocument);
+    ui->actionSelectNextSyntaxNode->setEnabled(isCodeDocument);
+    ui->actionSelectPreviousSyntaxNode->setEnabled(isCodeDocument);
     ui->actionTreeSitterInspector->setEnabled(isCodeDocument);
 
     const bool rcEnabled = qobject_cast<Core::RcDocument *>(document);

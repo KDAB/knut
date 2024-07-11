@@ -441,6 +441,15 @@ int CodeDocument::selectLargerSyntaxNode(int count /* = 1*/)
     return position();
 }
 
+/*!
+ * \qmlmethod int CodeDocument::selectSmallerSyntaxNode(int count = 1)
+ *
+ * Selects the left-most next smaller syntax node within the current selection.
+ *
+ * It does so `count` times and returns the resulting cursor position.
+ *
+ * Note that this only selects "named" Tree-sitter nodes, so punctuation and other unnamed nodes are skipped.
+ */
 int CodeDocument::selectSmallerSyntaxNode(int count /* = 1*/)
 {
     LOG("CodeDocument::selectSmallerSyntaxNode", LOG_ARG("count", count));
@@ -467,6 +476,83 @@ int CodeDocument::selectSmallerSyntaxNode(int count /* = 1*/)
 
     if (node.has_value()) {
         selectRegion(node->startPosition(), node->endPosition());
+    }
+
+    return position();
+}
+
+static std::optional<treesitter::Node>
+findSibling(const treesitter::Node &start, treesitter::Node (treesitter::Node::*nextFunction)() const, int count)
+{
+    auto node = start;
+
+    std::optional<treesitter::Node> target = node;
+    for (/*count already initialized*/; count > 0; --count) {
+        auto next = std::invoke(nextFunction, node);
+        while (next.isNull() && !node.parent().isNull()) {
+            node = node.parent();
+            next = std::invoke(nextFunction, node);
+        }
+        if (next.isNull()) {
+            // We're already at the very end/top, nowhere else to go
+            break;
+        }
+        node = next;
+        target = next;
+    }
+
+    return target;
+}
+
+/*!
+ * \qmlmethod int CodeDocument::selectNextSyntaxNode(int count = 1)
+ *
+ * Selects the next syntax node following the current selection.
+ *
+ * If there is no next syntax node in the current level, it increases the selection to the next larger syntax node and
+ * searches from there. See also: `CodeDocument::selectLargerSyntaxNode`
+ *
+ * It does so `count` times and returns the resulting cursor position.
+ *
+ * Note that this only selects "named" Tree-sitter nodes, so punctuation and other unnamed nodes are skipped.
+ */
+int CodeDocument::selectNextSyntaxNode(int count /*= 1*/)
+{
+    LOG("CodeDocument::selectNextSyntaxNode", LOG_ARG("count", count));
+
+    auto node = m_treeSitterHelper->nodeCoveringRange(selectionStart(), selectionEnd());
+
+    auto target = findSibling(node, &treesitter::Node::nextNamedSibling, count);
+
+    if (target.has_value()) {
+        selectRegion(target->startPosition(), target->endPosition());
+    }
+
+    return position();
+}
+
+/*!
+ * \qmlmethod int CodeDocument::selectPreviousSyntaxNode(int count = 1)
+ *
+ * Selects the previous syntax node before the current selection.
+ *
+ * If there is no previous syntax node in the current level, it increases the selection to the next larger syntax node
+ * and searches from there. See also: `CodeDocument::selectLargerSyntaxNode`
+ *
+ * It does so `count` times and returns the resulting cursor position.
+ *
+ * Note that this only selects "named" Tree-sitter nodes, so punctuation and other unnamed nodes are skipped.
+ */
+int CodeDocument::selectPreviousSyntaxNode(int count /*= 1*/)
+{
+    LOG("CodeDocument::selectPreviousSyntaxNode", LOG_ARG("count", count));
+
+    auto node = m_treeSitterHelper->nodeCoveringRange(selectionStart(), selectionEnd());
+
+    auto target = findSibling(node, &treesitter::Node::previousNamedSibling, count);
+
+    if (target.has_value()) {
+        selectRegion(target->startPosition(), target->endPosition());
     }
 
     return position();
