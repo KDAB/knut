@@ -9,7 +9,7 @@
 */
 
 #include "settings.h"
-#include "logger.h"
+#include "jsonutilities.h"
 #include "rcdocument.h"
 #include "scriptmanager.h"
 
@@ -17,31 +17,6 @@
 #include <QFile>
 #include <QStandardPaths>
 #include <QTextStream>
-#include <optional>
-
-static std::optional<nlohmann::json> loadSettings(const QString &name, bool log = true)
-{
-    if (name.isEmpty())
-        return {};
-
-    QFile file(name);
-    if (file.open(QIODevice::ReadOnly)) {
-        try {
-            auto settings = nlohmann::json::parse(file.readAll().constData());
-            if (log)
-                spdlog::debug("Settings::loadSettings {}", name);
-            return settings;
-        } catch (...) {
-            if (log)
-                spdlog::error("Settings::loadSettings {}", name);
-        }
-    } else {
-        if (log)
-            spdlog::debug("Settings::loadSettings {} - file can't be read", name);
-        return "{}"_json;
-    }
-    return {};
-}
 
 namespace Core {
 
@@ -96,7 +71,7 @@ Settings *Settings::instance()
 
 void Settings::loadUserSettings()
 {
-    auto userSettings = loadSettings(userFilePath());
+    auto userSettings = JsonUtilities::loadJsonData(userFilePath());
     if (userSettings) {
         m_userSettings = userSettings.value();
         m_settings.merge_patch(m_userSettings);
@@ -107,7 +82,7 @@ void Settings::loadUserSettings()
 void Settings::loadProjectSettings(const QString &rootDir)
 {
     m_projectPath = rootDir;
-    auto projectSettings = loadSettings(projectFilePath());
+    auto projectSettings = JsonUtilities::loadJsonData(projectFilePath());
     if (projectSettings) {
         m_projectSettings = projectSettings.value();
         m_settings.merge_patch(m_projectSettings);
@@ -119,114 +94,37 @@ void Settings::loadProjectSettings(const QString &rootDir)
  * \qmlmethod bool Settings::hasValue(string path)
  * Returns true if the project settings has a settings `path`.
  */
-bool Settings::hasValue(QString path) const
+bool Settings::hasValue(const QString &path) const
 {
-    LOG("Settings::hasValue", path);
-
-    if (!path.startsWith('/'))
-        path.prepend('/');
-    return m_settings.contains(nlohmann::json::json_pointer(path.toStdString()));
+    return JsonUtilities().hasValue(m_settings, path);
 }
 
 /*!
  * \qmlmethod variant Settings::value(string path, variant defaultValue = null)
  * Returns the value of the settings `path`, or `defaultValue` if the settings does not exist.
  */
-QVariant Settings::value(QString path, const QVariant &defaultValue) const
+QVariant Settings::value(const QString &path, const QVariant &defaultValue) const
 {
-    if (defaultValue.isValid())
-        LOG("Settings::value", path, defaultValue);
-    else
-        LOG("Settings::value", path);
-    try {
-        if (!path.startsWith('/'))
-            path.prepend('/');
-
-        // Special cases
-        if (path == RcAssetColors || path == RcAssetFlags || path == RcDialogFlags) {
-            return static_cast<int>(value<RcDocument::ConversionFlags>(path.toStdString()));
-        }
-
-        auto val = m_settings.at(nlohmann::json::json_pointer(path.toStdString()));
-        if (val.is_number_unsigned())
-            return val.get<unsigned int>();
-        if (val.is_number_integer())
-            return val.get<int>();
-        else if (val.is_number_float())
-            return val.get<float>();
-        else if (val.is_boolean())
-            return val.get<bool>();
-        else if (val.is_string())
-            return val.get<QString>();
-        else if (val.is_array()) {
-            // Only support QStringList for now
-            if (!val.empty()) {
-                if (val[0].is_string())
-                    return val.get<QStringList>();
-            } else {
-                return QStringList();
-            }
-        }
-        spdlog::error("Settings::value {} - can't convert", path);
-    } catch (...) {
-        spdlog::info("Settings::value {} - accessing non-existing value", path);
+    // Special cases
+    if (path == Settings::RcAssetColors || path == Settings::RcAssetFlags || path == Settings::RcDialogFlags) {
+        return static_cast<int>(value<RcDocument::ConversionFlags>(path.toStdString()));
     }
-    return defaultValue;
+    return JsonUtilities().value(m_settings, path, defaultValue);
 }
 
 /*!
  * \qmlmethod variant Settings::setValue(string path, variant value)
  * Adds a new value `value` to the project settings at the given `path`. Returns `true` if the operation succeeded.
  */
-bool Settings::setValue(QString path, const QVariant &value)
+bool Settings::setValue(const QString &path, const QVariant &value)
 {
-    LOG("Settings::setValue", path, value);
-
-    if (value.isNull()) {
-        spdlog::error("Settings::setValue {} in {} - value is null", value.toString(), path);
-        return false;
+    if (JsonUtilities().setValue(m_settings, path, value) && JsonUtilities().setValue(m_projectSettings, path, value)) {
+        emit settingsChanged(path);
+        // Asynchronous save
+        m_saveTimer->start();
+        return true;
     }
-
-    if (!path.startsWith('/'))
-        path.prepend('/');
-
-    auto jsonPath = nlohmann::json::json_pointer(path.toStdString());
-    switch (static_cast<QMetaType::Type>(value.typeId())) {
-    case QMetaType::Bool:
-        m_settings[jsonPath] = value.toBool();
-        m_projectSettings[jsonPath] = value.toBool();
-        break;
-    case QMetaType::Int:
-    case QMetaType::LongLong:
-        m_settings[jsonPath] = value.toInt();
-        m_projectSettings[jsonPath] = value.toInt();
-        break;
-    case QMetaType::UInt:
-    case QMetaType::ULongLong:
-        m_settings[jsonPath] = value.toUInt();
-        m_projectSettings[jsonPath] = value.toUInt();
-        break;
-    case QMetaType::Double:
-        m_settings[jsonPath] = value.toDouble();
-        m_projectSettings[jsonPath] = value.toDouble();
-        break;
-    case QMetaType::QString:
-        m_settings[jsonPath] = value.toString();
-        m_projectSettings[jsonPath] = value.toString();
-        break;
-    case QMetaType::QStringList:
-        m_settings[jsonPath] = value.toStringList();
-        m_projectSettings[jsonPath] = value.toStringList();
-        break;
-    default:
-        spdlog::error("Settings::setValue {} in {} - value type not handled", value.toString(), path);
-        return false;
-    }
-
-    emit settingsChanged(path);
-    // Asynchronous save
-    m_saveTimer->start();
-    return true;
+    return false;
 }
 
 QString Settings::userFilePath() const
