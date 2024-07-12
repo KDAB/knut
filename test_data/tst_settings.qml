@@ -45,4 +45,5 @@ Script {
         verify(Settings.hasValue("/numbers"));
         compare(Settings.value("/numbers"), undefined);
     }
+
 }

@@ -76,6 +76,7 @@ private:
 
 private slots:
     KNUT_TEST(settings)
+    KNUT_TEST(settings_rw)
     KNUT_TEST(dir)
     KNUT_TEST(fileinfo)
     KNUT_TEST(utils)

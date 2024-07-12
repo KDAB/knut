@@ -17,7 +17,7 @@ import Knut
 | | Name |
 |-|-|
 |bool |**[hasValue](#hasValue)**(string path)|
-|variant |**[setValue](#setValue)**(string path, variant value)|
+|variant |**[setValue](#setValue)**(string path, var value)|
 |variant |**[value](#value)**(string path, variant defaultValue = null)|
 
 ## Detailed Description
@@ -42,7 +42,7 @@ Returns true if Knut is currently in a test, and false otherwise
 
 Returns true if the project settings has a settings `path`.
 
-#### <a name="setValue"></a>variant **setValue**(string path, variant value)
+#### <a name="setValue"></a>variant **setValue**(string path, var value)
 
 Adds a new value `value` to the project settings at the given `path`. Returns `true` if the operation succeeded.
 

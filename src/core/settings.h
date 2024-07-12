@@ -14,6 +14,7 @@
 #include "utils/json.h"
 #include "utils/log.h"
 
+#include <QJSValue>
 #include <QObject>
 #include <QStringList>
 #include <QTimer>
@@ -110,7 +111,7 @@ public:
     bool hasLsp() const;
 
 public slots:
-    bool setValue(QString path, const QVariant &value);
+    bool setValue(QString path, const QJSValue &value);
 
 signals:
     void settingsLoaded();
