@@ -26,26 +26,26 @@ import Knut
 
 #### <a name="language"></a>string **language**
 
-Return language name.
+Returns the language name.
 
 #### <a name="messages"></a>array&lt;QtUiMessage> **messages**
 
-List of all translations in the ts file.
+List of all translations in the Qt ts file.
 
 #### <a name="sourceLanguage"></a>string **sourceLanguage**
 
-Return source language name.
+Returns the source language name.
 
 ## Method Documentation
 
 #### <a name="addMessage"></a>**addMessage**(string context, string location, string source, string translation)
 
-Add a new source text, its translation located in location within the given context.
+Adds a new `source` text, its `translation` located in `location` within the given `context`.
 
 #### <a name="setLanguage"></a>**setLanguage**(string lang)
 
-Change language.
+Changes the language.
 
 #### <a name="setSourceLanguage"></a>**setSourceLanguage**(string lang)
 
-Change source language.
+Changes the source language.

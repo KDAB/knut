@@ -28,17 +28,17 @@ namespace Core {
 
 /*!
  * \qmlproperty array<QtUiMessage> QtTsDocument::messages
- * List of all translations in the ts file.
+ * List of all translations in the Qt ts file.
  */
 
 /*!
  * \qmlproperty string QtTsDocument::language
- * Return language name.
+ * Returns the language name.
  */
 
 /*!
  * \qmlproperty string QtTsDocument::sourceLanguage
- * Return source language name.
+ * Returns the source language name.
  */
 
 QtTsDocument::QtTsDocument(QObject *parent)
@@ -57,7 +57,7 @@ void QtTsDocument::initializeXml()
 
 /*!
  * \qmlmethod QtTsDocument::setLanguage(string lang)
- * Change language.
+ * Changes the language.
  */
 void QtTsDocument::setLanguage(const QString &lang)
 {
@@ -78,7 +78,7 @@ void QtTsDocument::setLanguage(const QString &lang)
 
 /*!
  * \qmlmethod QtTsDocument::setSourceLanguage(string lang)
- * Change source language.
+ * Changes the source language.
  */
 void QtTsDocument::setSourceLanguage(const QString &lang)
 {
@@ -120,7 +120,7 @@ void QtTsDocument::addMessage(pugi::xml_node contextChild, const QString &contex
 
 /*!
  * \qmlmethod QtTsDocument::addMessage(string context, string location, string source, string translation)
- * Add a new source text, its translation located in location within the given context.
+ * Adds a new `source` text, its `translation` located in `location` within the given `context`.
  */
 
 void QtTsDocument::addMessage(const QString &context, const QString &fileName, const QString &source,
@@ -223,27 +223,27 @@ QList<QtTsMessage *> QtTsDocument::messages() const
 
 /*!
  * \qmlproperty string QtTsMessage::fileName
- * FileName where come from translate string.
+ * Filename where the translation comes from.
  */
 
 /*!
  * \qmlproperty string QtTsMessage::source
- * Original string which must be translated.
+ * Original string to be translated.
  */
 
 /*!
  * \qmlproperty string QtTsMessage::translation
- * String translated in specific language.
+ * Translated string in the Qt ts specific language.
  */
 
 /*!
  * \qmlproperty string QtTsMessage::context
- * Translate context (read only).
+ * Context used for the translation (read only).
  */
 
 /*!
  * \qmlproperty string QtTsMessage::comment
- * Define comment.
+ * Comment added to the string to help translations.
  */
 
 QtTsMessage::QtTsMessage(QString context, pugi::xml_node message, QObject *parent)
