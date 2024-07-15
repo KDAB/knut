@@ -138,28 +138,38 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qRegisterMetaType<QList<RcCore::Ribbon>>();
 
     // Properties
-    addProperties<FunctionArgument>(m_properties);
-    addProperties<ClassSymbol>(m_properties);
-    addProperties<FunctionSymbol>(m_properties);
-    addProperties<QDirValueType>(m_properties);
-    addProperties<QFileInfoValueType>(m_properties);
-    addProperties<Symbol>(m_properties);
-    addProperties<TextRange>(m_properties);
-    addProperties<Dir>(m_properties);
-    addProperties<FileInfo>(m_properties);
-    addProperties<File>(m_properties);
-    addProperties<Message>(m_properties);
-    addProperties<Utils>(m_properties);
-    addProperties<UserDialog>(m_properties);
     addProperties<Document>(m_properties);
-    addProperties<TextDocument>(m_properties);
-    addProperties<Mark>(m_properties);
-    addProperties<QtUiDocument>(m_properties);
-    addProperties<QtUiWidget>(m_properties);
+    addProperties<Project>(m_properties);
+    addProperties<CodeDocument>(m_properties);
+    addProperties<ClassSymbol>(m_properties);
+    addProperties<FunctionArgument>(m_properties);
+    addProperties<FunctionSymbol>(m_properties);
+    addProperties<QueryCapture>(m_properties);
+    addProperties<QueryMatch>(m_properties);
+    addProperties<Symbol>(m_properties);
     addProperties<CppDocument>(m_properties);
-    addProperties<RcDocument>(m_properties);
+    addProperties<DataExchange>(m_properties);
+    addProperties<DataExchangeEntry>(m_properties);
+    addProperties<MessageMap>(m_properties);
+    addProperties<MessageMapEntry>(m_properties);
     addProperties<QtTsDocument>(m_properties);
     addProperties<QtTsMessage>(m_properties);
+    addProperties<QtUiDocument>(m_properties);
+    addProperties<QtUiWidget>(m_properties);
+    addProperties<RcDocument>(m_properties);
+    addProperties<TextDocument>(m_properties);
+    addProperties<TextRange>(m_properties);
+    addProperties<Mark>(m_properties);
+    addProperties<RangeMark>(m_properties);
+    addProperties<Dir>(m_properties);
+    addProperties<File>(m_properties);
+    addProperties<FileInfo>(m_properties);
+    addProperties<Message>(m_properties);
+    addProperties<Settings>(m_properties);
+    addProperties<UserDialog>(m_properties);
+    addProperties<Utils>(m_properties);
+    addProperties<QDirValueType>(m_properties);
+    addProperties<QFileInfoValueType>(m_properties);
 }
 
 ScriptRunner::~ScriptRunner() = default;
