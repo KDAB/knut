@@ -75,6 +75,8 @@ private:
     void selectBlockStart();
     void selectBlockEnd();
     void selectBlockUp();
+    void selectLargerSyntaxNode();
+    void selectSmallerSyntaxNode();
     void commentSelection();
     void toggleSection();
     void inspectTreeSitter();

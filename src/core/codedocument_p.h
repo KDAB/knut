@@ -35,6 +35,7 @@ public:
 
     std::shared_ptr<treesitter::Query> constructQuery(const QString &query);
     QList<treesitter::Node> nodesInRange(const RangeMark &range);
+    treesitter::Node nodeCoveringRange(int start, int end);
 
     const QList<Core::Symbol *> &symbols();
 

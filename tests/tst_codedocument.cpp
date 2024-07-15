@@ -481,6 +481,72 @@ private slots:
         QCOMPARE(foo.startPos(), 57);
         QCOMPARE(foo.endPos(), 111);
     }
+
+    void selectLargerSyntaxNode()
+    {
+        INIT_KNUT_PROJECT;
+
+        auto codedocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->get("myobject.cpp"));
+
+        QVERIFY(codedocument->find("string&"));
+        QCOMPARE(codedocument->selectedText(), "string&");
+
+        auto result = codedocument->selectLargerSyntaxNode();
+        QCOMPARE(result, codedocument->position());
+        QCOMPARE(codedocument->selectedText(), "const std::string& message");
+
+        result = codedocument->selectLargerSyntaxNode();
+        QCOMPARE(result, codedocument->position());
+        QCOMPARE(codedocument->selectedText(), "(const std::string& message)");
+
+        result = codedocument->selectLargerSyntaxNode(2);
+        QCOMPARE(result, codedocument->position());
+        QCOMPARE(codedocument->selectedText(),
+                 "MyObject::MyObject(const std::string& message)\n"
+                 "    : m_message(message)\n"
+                 "{}");
+    }
+
+    // Regression test to ensure that certain unnamed nodes are handled correctly.
+    // For example the `const` qualifier has a `type_qualifier` in the AST, which covers the same span.
+    // Make sure that selectLargerSyntaxNode actually goes up far enough to actually expand the selection.
+    void selectLargerSyntaxNode_unnamed_nodes()
+    {
+        INIT_KNUT_PROJECT;
+
+        auto codedocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->get("myobject.cpp"));
+
+        QVERIFY(codedocument->find("const"));
+        QCOMPARE(codedocument->selectedText(), "const");
+
+        auto result = codedocument->selectLargerSyntaxNode();
+        QCOMPARE(result, codedocument->position());
+        QCOMPARE(codedocument->selectedText(), "const std::string& message");
+    }
+
+    void selectSmallerSyntaxNode()
+    {
+        INIT_KNUT_PROJECT;
+
+        auto codedocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->get("myobject.cpp"));
+        QVERIFY(codedocument->find("(const std::string& message)"));
+
+        // This should select the first **named** child, so skip the opening "("
+        auto result = codedocument->selectSmallerSyntaxNode();
+        QCOMPARE(result, codedocument->position());
+        QCOMPARE(codedocument->selectedText(), "const std::string& message");
+
+        result = codedocument->selectSmallerSyntaxNode();
+        QCOMPARE(result, codedocument->position());
+        QCOMPARE(codedocument->selectedText(), "const");
+
+        codedocument->selectLargerSyntaxNode(2);
+        QCOMPARE(codedocument->selectedText(), "(const std::string& message)");
+
+        result = codedocument->selectSmallerSyntaxNode(2);
+        QCOMPARE(result, codedocument->position());
+        QCOMPARE(codedocument->selectedText(), "const");
+    }
 };
 
 QTEST_MAIN(TestCodeDocument)

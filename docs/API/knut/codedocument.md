@@ -20,6 +20,7 @@ Inherited properties: [TextDocument properties](../knut/textdocument.md#properti
 |array&lt;[QueryMatch](../knut/querymatch.md)> |**[query](#query)**(string query)|
 |[QueryMatch](../knut/querymatch.md) |**[queryFirst](#queryFirst)**(string query)|
 |array&lt;[QueryMatch](../knut/querymatch.md)> |**[queryInRange](#queryInRange)**([RangeMark](../knut/rangemark.md) range, string query)|
+|int |**[selectLargerSyntaxNode](#selectLargerSyntaxNode)**(int count = 1)|
 ||**[selectSymbol](#selectSymbol)**(string name, int options = TextDocument.NoFindFlags)|
 |[Symbol](../knut/symbol.md) |**[symbolUnderCursor](#symbolUnderCursor)**()|
 |array&lt;[Symbol](../knut/symbol.md)> |**[symbols](#symbols)**()|
@@ -79,6 +80,12 @@ Also see: [Tree-sitter in Knut](../../getting-started/treesitter.md)
 
 Searches for the given `query`, but only in the provided `range`.
 
+
+#### <a name="selectLargerSyntaxNode"></a>int **selectLargerSyntaxNode**(int count = 1)
+
+Selects the text of the next larger syntax node that the selection is in.
+
+It does so `count` times and returns the resulting cursor position.
 
 #### <a name="selectSymbol"></a>**selectSymbol**(string name, int options = TextDocument.NoFindFlags)
 

@@ -175,6 +175,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionSelectToBlockEnd, &QAction::triggered, this, &MainWindow::selectBlockEnd);
     connect(ui->actionSelectToBlockStart, &QAction::triggered, this, &MainWindow::selectBlockStart);
     connect(ui->actionSelectBlockUp, &QAction::triggered, this, &MainWindow::selectBlockUp);
+    connect(ui->actionSelectLargerSyntaxNode, &QAction::triggered, this, &MainWindow::selectLargerSyntaxNode);
+    connect(ui->actionSelectSmallerSyntaxNode, &QAction::triggered, this, &MainWindow::selectSmallerSyntaxNode);
     connect(ui->actionTreeSitterInspector, &QAction::triggered, this, &MainWindow::inspectTreeSitter);
     connect(ui->actionDeleteMethod, &QAction::triggered, this, &MainWindow::deleteMethod);
 
@@ -309,6 +311,18 @@ void MainWindow::selectBlockUp()
 {
     if (auto cppDocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->currentDocument()))
         cppDocument->selectBlockUp();
+}
+
+void MainWindow::selectLargerSyntaxNode()
+{
+    if (auto cppDocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->currentDocument()))
+        cppDocument->selectLargerSyntaxNode();
+}
+
+void MainWindow::selectSmallerSyntaxNode()
+{
+    if (auto cppDocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->currentDocument()))
+        cppDocument->selectSmallerSyntaxNode();
 }
 
 void MainWindow::commentSelection()
@@ -622,7 +636,6 @@ void MainWindow::updateActions()
     const bool lspEnabled = codeDocument && codeDocument->hasLspClient();
     ui->actionFollowSymbol->setEnabled(lspEnabled);
     ui->actionSwitchDeclDef->setEnabled(lspEnabled);
-    ui->actionTreeSitterInspector->setEnabled(codeDocument != nullptr);
 
     const bool cppEnabled = codeDocument && qobject_cast<Core::CppDocument *>(document);
     ui->actionSwitchHeaderSource->setEnabled(cppEnabled);
@@ -634,6 +647,10 @@ void MainWindow::updateActions()
     ui->actionSelectToBlockStart->setEnabled(cppEnabled);
     ui->actionSelectBlockUp->setEnabled(cppEnabled);
     ui->actionDeleteMethod->setEnabled(cppEnabled);
+
+    const bool isCodeDocument = codeDocument != nullptr;
+    ui->actionSelectLargerSyntaxNode->setEnabled(isCodeDocument);
+    ui->actionTreeSitterInspector->setEnabled(isCodeDocument);
 
     const bool rcEnabled = qobject_cast<Core::RcDocument *>(document);
     ui->actionCreateQrc->setEnabled(rcEnabled);

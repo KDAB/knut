@@ -405,6 +405,74 @@ void CodeDocument::selectSymbol(const QString &name, int options)
 }
 
 /*!
+ * \qmlmethod int CodeDocument::selectLargerSyntaxNode(int count = 1)
+ *
+ * Selects the text of the next larger syntax node that the selection is in.
+ *
+ * It does so `count` times and returns the resulting cursor position.
+ */
+int CodeDocument::selectLargerSyntaxNode(int count /* = 1*/)
+{
+    LOG("CodeDocument::selectLargerSyntaxNode", LOG_ARG("count", count));
+
+    auto currentNode = m_treeSitterHelper->nodeCoveringRange(selectionStart(), selectionEnd());
+
+    auto matchesCurrentSelection = static_cast<int>(currentNode.startPosition()) == selectionStart()
+        && static_cast<int>(currentNode.endPosition()) == selectionEnd();
+    if (!matchesCurrentSelection) {
+        // finding the node that covers the current selection already produced a larger syntax node.
+        // So we're already up one level.
+        --count;
+    }
+
+    for (/*count already initialized*/; count > 0 && !currentNode.parent().isNull(); --count) {
+        auto largerNode = currentNode.parent();
+        if (largerNode.startPosition() == currentNode.startPosition()
+            && largerNode.endPosition() == currentNode.endPosition()) {
+            // If the parent node matches the current selection exactly, that's not a real change, so search one
+            // additional time.
+            ++count;
+        }
+        currentNode = largerNode;
+    }
+
+    selectRegion(currentNode.startPosition(), currentNode.endPosition());
+
+    return position();
+}
+
+int CodeDocument::selectSmallerSyntaxNode(int count /* = 1*/)
+{
+    LOG("CodeDocument::selectSmallerSyntaxNode", LOG_ARG("count", count));
+
+    auto smallerNodes =
+        kdalgorithms::filtered(m_treeSitterHelper->nodesInRange(createRangeMark()), [](const auto &node) {
+            return node.isNamed();
+        });
+
+    std::optional<treesitter::Node> node;
+    for (/*count already initialized*/; count > 0; --count) {
+        if (smallerNodes.isEmpty()) {
+            break;
+        }
+        node = smallerNodes.first();
+        auto matchesCurrentSelection = static_cast<int>(node->startPosition()) == selectionStart()
+            && static_cast<int>(node->endPosition()) == selectionEnd();
+        // If the first found node matches the current selection exactly, we need to search one additional time.
+        if (matchesCurrentSelection) {
+            ++count;
+        }
+        smallerNodes = node->namedChildren();
+    }
+
+    if (node.has_value()) {
+        selectRegion(node->startPosition(), node->endPosition());
+    }
+
+    return position();
+}
+
+/*!
  * \qmlmethod Symbol CodeDocument::findSymbol(string name, int options = TextDocument.NoFindFlags)
  * Finds a symbol based on its `name`, using different find `options`.
  *

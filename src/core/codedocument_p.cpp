@@ -11,6 +11,7 @@
 #include "codedocument_p.h"
 #include "codedocument.h"
 #include "treesitter/languages.h"
+#include "treesitter/tree_cursor.h"
 #include "utils/log.h"
 
 #include <kdalgorithms.h>
@@ -113,6 +114,29 @@ QList<treesitter::Node> TreeSitterHelper::nodesInRange(const RangeMark &range)
     }
 
     return nodesInRange;
+}
+
+treesitter::Node TreeSitterHelper::nodeCoveringRange(int start, int end)
+{
+    auto coversRange = [start, end](const treesitter::Node &node) {
+        return static_cast<int>(node.startPosition()) <= start && end <= static_cast<int>(node.endPosition());
+    };
+
+    auto coveringNode = syntaxTree()->rootNode();
+
+    auto cursor = treesitter::TreeCursor(coveringNode);
+
+    bool node_changed = cursor.gotoFirstChild();
+    while (node_changed) {
+        if (coversRange(cursor.currentNode())) {
+            coveringNode = cursor.currentNode();
+            node_changed = cursor.gotoFirstChild();
+        } else {
+            node_changed = cursor.gotoNextSibling();
+        }
+    }
+
+    return coveringNode;
 }
 
 void TreeSitterHelper::assignSymbolContexts()
