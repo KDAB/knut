@@ -82,6 +82,11 @@ public:
 public slots:
     void selectSymbol(const QString &name, int options = NoFindFlags);
 
+    int selectLargerSyntaxNode(int count = 1);
+    int selectSmallerSyntaxNode(int count = 1);
+    int selectNextSyntaxNode(int count = 1);
+    int selectPreviousSyntaxNode(int count = 1);
+
 protected:
     explicit CodeDocument(Type type, QObject *parent = nullptr);
 

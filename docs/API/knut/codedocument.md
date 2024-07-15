@@ -20,6 +20,10 @@ Inherited properties: [TextDocument properties](../knut/textdocument.md#properti
 |array&lt;[QueryMatch](../knut/querymatch.md)> |**[query](#query)**(string query)|
 |[QueryMatch](../knut/querymatch.md) |**[queryFirst](#queryFirst)**(string query)|
 |array&lt;[QueryMatch](../knut/querymatch.md)> |**[queryInRange](#queryInRange)**([RangeMark](../knut/rangemark.md) range, string query)|
+|int |**[selectLargerSyntaxNode](#selectLargerSyntaxNode)**(int count = 1)|
+|int |**[selectNextSyntaxNode](#selectNextSyntaxNode)**(int count = 1)|
+|int |**[selectPreviousSyntaxNode](#selectPreviousSyntaxNode)**(int count = 1)|
+|int |**[selectSmallerSyntaxNode](#selectSmallerSyntaxNode)**(int count = 1)|
 ||**[selectSymbol](#selectSymbol)**(string name, int options = TextDocument.NoFindFlags)|
 |[Symbol](../knut/symbol.md) |**[symbolUnderCursor](#symbolUnderCursor)**()|
 |array&lt;[Symbol](../knut/symbol.md)> |**[symbols](#symbols)**()|
@@ -79,6 +83,42 @@ Also see: [Tree-sitter in Knut](../../getting-started/treesitter.md)
 
 Searches for the given `query`, but only in the provided `range`.
 
+
+#### <a name="selectLargerSyntaxNode"></a>int **selectLargerSyntaxNode**(int count = 1)
+
+Selects the text of the next larger syntax node that the selection is in.
+
+It does so `count` times and returns the resulting cursor position.
+
+#### <a name="selectNextSyntaxNode"></a>int **selectNextSyntaxNode**(int count = 1)
+
+Selects the next syntax node following the current selection.
+
+If there is no next syntax node in the current level, it increases the selection to the next larger syntax node and
+searches from there. See also: `CodeDocument::selectLargerSyntaxNode`
+
+It does so `count` times and returns the resulting cursor position.
+
+Note that this only selects "named" Tree-sitter nodes, so punctuation and other unnamed nodes are skipped.
+
+#### <a name="selectPreviousSyntaxNode"></a>int **selectPreviousSyntaxNode**(int count = 1)
+
+Selects the previous syntax node before the current selection.
+
+If there is no previous syntax node in the current level, it increases the selection to the next larger syntax node
+and searches from there. See also: `CodeDocument::selectLargerSyntaxNode`
+
+It does so `count` times and returns the resulting cursor position.
+
+Note that this only selects "named" Tree-sitter nodes, so punctuation and other unnamed nodes are skipped.
+
+#### <a name="selectSmallerSyntaxNode"></a>int **selectSmallerSyntaxNode**(int count = 1)
+
+Selects the left-most next smaller syntax node within the current selection.
+
+It does so `count` times and returns the resulting cursor position.
+
+Note that this only selects "named" Tree-sitter nodes, so punctuation and other unnamed nodes are skipped.
 
 #### <a name="selectSymbol"></a>**selectSymbol**(string name, int options = TextDocument.NoFindFlags)
 

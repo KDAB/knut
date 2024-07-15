@@ -142,6 +142,26 @@ QList<Node> Node::namedChildren() const
     return result;
 }
 
+Node Node::nextSibling() const
+{
+    return Node(ts_node_next_sibling(m_node));
+}
+
+Node Node::previousSibling() const
+{
+    return Node(ts_node_prev_sibling(m_node));
+}
+
+Node Node::nextNamedSibling() const
+{
+    return Node(ts_node_next_named_sibling(m_node));
+}
+
+Node Node::previousNamedSibling() const
+{
+    return Node(ts_node_prev_named_sibling(m_node));
+}
+
 uint32_t Node::startPosition() const
 {
     return ts_node_start_byte(m_node) / sizeof(QChar);

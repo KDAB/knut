@@ -405,6 +405,163 @@ void CodeDocument::selectSymbol(const QString &name, int options)
 }
 
 /*!
+ * \qmlmethod int CodeDocument::selectLargerSyntaxNode(int count = 1)
+ *
+ * Selects the text of the next larger syntax node that the selection is in.
+ *
+ * It does so `count` times and returns the resulting cursor position.
+ */
+int CodeDocument::selectLargerSyntaxNode(int count /* = 1*/)
+{
+    LOG_AND_MERGE("CodeDocument::selectLargerSyntaxNode", LOG_ARG("count", count));
+
+    auto currentNode = m_treeSitterHelper->nodeCoveringRange(selectionStart(), selectionEnd());
+
+    auto matchesCurrentSelection = static_cast<int>(currentNode.startPosition()) == selectionStart()
+        && static_cast<int>(currentNode.endPosition()) == selectionEnd();
+    if (!matchesCurrentSelection) {
+        // finding the node that covers the current selection already produced a larger syntax node.
+        // So we're already up one level.
+        --count;
+    }
+
+    for (/*count already initialized*/; count > 0 && !currentNode.parent().isNull(); --count) {
+        auto largerNode = currentNode.parent();
+        if (largerNode.startPosition() == currentNode.startPosition()
+            && largerNode.endPosition() == currentNode.endPosition()) {
+            // If the parent node matches the current selection exactly, that's not a real change, so search one
+            // additional time.
+            ++count;
+        }
+        currentNode = largerNode;
+    }
+
+    selectRegion(currentNode.startPosition(), currentNode.endPosition());
+
+    LOG_RETURN("pos", position());
+}
+
+/*!
+ * \qmlmethod int CodeDocument::selectSmallerSyntaxNode(int count = 1)
+ *
+ * Selects the left-most next smaller syntax node within the current selection.
+ *
+ * It does so `count` times and returns the resulting cursor position.
+ *
+ * Note that this only selects "named" Tree-sitter nodes, so punctuation and other unnamed nodes are skipped.
+ */
+int CodeDocument::selectSmallerSyntaxNode(int count /* = 1*/)
+{
+    LOG_AND_MERGE("CodeDocument::selectSmallerSyntaxNode", LOG_ARG("count", count));
+
+    auto smallerNodes =
+        kdalgorithms::filtered(m_treeSitterHelper->nodesInRange(createRangeMark()), [](const auto &node) {
+            return node.isNamed();
+        });
+
+    std::optional<treesitter::Node> node;
+    for (/*count already initialized*/; count > 0; --count) {
+        if (smallerNodes.isEmpty()) {
+            break;
+        }
+        node = smallerNodes.first();
+        auto matchesCurrentSelection = static_cast<int>(node->startPosition()) == selectionStart()
+            && static_cast<int>(node->endPosition()) == selectionEnd();
+        // If the first found node matches the current selection exactly, we need to search one additional time.
+        if (matchesCurrentSelection) {
+            ++count;
+        }
+        smallerNodes = node->namedChildren();
+    }
+
+    if (node.has_value()) {
+        selectRegion(node->startPosition(), node->endPosition());
+    } else {
+        spdlog::warn(
+            "CodeDocument::selectSmallerSyntaxNode: No smaller node found! Do you currently not have a selection?");
+    }
+
+    LOG_RETURN("pos", position());
+}
+
+static std::optional<treesitter::Node>
+findSibling(const treesitter::Node &start, treesitter::Node (treesitter::Node::*nextFunction)() const, int count)
+{
+    auto node = start;
+
+    std::optional<treesitter::Node> target = node;
+    for (/*count already initialized*/; count > 0; --count) {
+        auto next = std::invoke(nextFunction, node);
+        while (next.isNull() && !node.parent().isNull()) {
+            node = node.parent();
+            next = std::invoke(nextFunction, node);
+        }
+        if (next.isNull()) {
+            // We're already at the very end/top, nowhere else to go
+            break;
+        }
+        node = next;
+        target = next;
+    }
+
+    return target;
+}
+
+/*!
+ * \qmlmethod int CodeDocument::selectNextSyntaxNode(int count = 1)
+ *
+ * Selects the next syntax node following the current selection.
+ *
+ * If there is no next syntax node in the current level, it increases the selection to the next larger syntax node and
+ * searches from there. See also: `CodeDocument::selectLargerSyntaxNode`
+ *
+ * It does so `count` times and returns the resulting cursor position.
+ *
+ * Note that this only selects "named" Tree-sitter nodes, so punctuation and other unnamed nodes are skipped.
+ */
+int CodeDocument::selectNextSyntaxNode(int count /*= 1*/)
+{
+    LOG_AND_MERGE("CodeDocument::selectNextSyntaxNode", LOG_ARG("count", count));
+
+    auto node = m_treeSitterHelper->nodeCoveringRange(selectionStart(), selectionEnd());
+
+    auto target = findSibling(node, &treesitter::Node::nextNamedSibling, count);
+
+    if (target.has_value()) {
+        selectRegion(target->startPosition(), target->endPosition());
+    }
+
+    LOG_RETURN("pos", position());
+}
+
+/*!
+ * \qmlmethod int CodeDocument::selectPreviousSyntaxNode(int count = 1)
+ *
+ * Selects the previous syntax node before the current selection.
+ *
+ * If there is no previous syntax node in the current level, it increases the selection to the next larger syntax node
+ * and searches from there. See also: `CodeDocument::selectLargerSyntaxNode`
+ *
+ * It does so `count` times and returns the resulting cursor position.
+ *
+ * Note that this only selects "named" Tree-sitter nodes, so punctuation and other unnamed nodes are skipped.
+ */
+int CodeDocument::selectPreviousSyntaxNode(int count /*= 1*/)
+{
+    LOG_AND_MERGE("CodeDocument::selectPreviousSyntaxNode", LOG_ARG("count", count));
+
+    auto node = m_treeSitterHelper->nodeCoveringRange(selectionStart(), selectionEnd());
+
+    auto target = findSibling(node, &treesitter::Node::previousNamedSibling, count);
+
+    if (target.has_value()) {
+        selectRegion(target->startPosition(), target->endPosition());
+    }
+
+    LOG_RETURN("pos", position());
+}
+
+/*!
  * \qmlmethod Symbol CodeDocument::findSymbol(string name, int options = TextDocument.NoFindFlags)
  * Finds a symbol based on its `name`, using different find `options`.
  *
