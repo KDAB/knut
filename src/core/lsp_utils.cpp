@@ -49,10 +49,10 @@ TextRange lspToRange(const TextDocument &textDocument, const Lsp::Range &range)
     return {lspToPos(textDocument, range.start), lspToPos(textDocument, range.end)};
 }
 
-TextLocationList lspToTextLocationList(const std::vector<Lsp::Location> &locations)
+RangeMarkList lspToRangeMarkList(const std::vector<Lsp::Location> &locations)
 {
-    TextLocationList textLocations;
-    textLocations.reserve(locations.size());
+    RangeMarkList rangeMarks;
+    rangeMarks.reserve(locations.size());
 
     for (const auto &location : locations) {
         const auto url = QUrl::fromEncoded(QByteArray::fromStdString(location.uri));
@@ -61,14 +61,13 @@ TextLocationList lspToTextLocationList(const std::vector<Lsp::Location> &locatio
         }
         const auto filepath = url.toLocalFile();
 
-        if (auto *document = qobject_cast<CodeDocument *>(Project::instance()->get(filepath))) {
+        if (auto document = qobject_cast<TextDocument *>(Project::instance()->get(filepath))) {
             const auto range = lspToRange(*document, location.range);
-
-            textLocations.emplace_back(TextLocation {.document = document, .range = range});
+            rangeMarks.push_back(document->createRangeMark(range.start, range.end));
         }
     }
 
-    return textLocations;
+    return rangeMarks;
 }
 
 QString removeTypeAliasInformation(const QString &typeInfo)

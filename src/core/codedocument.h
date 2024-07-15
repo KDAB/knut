@@ -73,7 +73,7 @@ public:
     // As they rely on the clangd LSP, they are not reliable enough to use for scripting.
     Core::Document *switchDeclarationDefinition();
     Core::Document *followSymbol();
-    Core::TextLocationList references(int position) const;
+    Core::RangeMarkList references(int position) const;
 
     QString hover(int position, std::function<void(const QString &)> asyncCallback = {}) const;
 

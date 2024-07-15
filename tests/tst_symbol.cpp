@@ -191,7 +191,7 @@ private slots:
         QCOMPARE(symbol->kind(), Core::Symbol::Class);
 
         const auto isSymbolRange = [&symbol](const auto &loc) {
-            return loc.range == symbol->selectionRange();
+            return loc.toTextRange() == symbol->selectionRange();
         };
 
         spdlog::warn("Finding references");
@@ -209,19 +209,19 @@ private slots:
         spdlog::warn("Counting documents");
         QCOMPARE(std::ranges::count_if(references,
                                        [](const auto &location) {
-                                           return location.document->fileName().endsWith("main.cpp");
+                                           return location.document()->fileName().endsWith("main.cpp");
                                        }),
                  1);
 
         QCOMPARE(std::ranges::count_if(references,
                                        [](const auto &location) {
-                                           return location.document->fileName().endsWith("myobject.h");
+                                           return location.document()->fileName().endsWith("myobject.h");
                                        }),
                  2);
 
         QCOMPARE(std::ranges::count_if(references,
                                        [](const auto &location) {
-                                           return location.document->fileName().endsWith("myobject.cpp");
+                                           return location.document()->fileName().endsWith("myobject.cpp");
                                        }),
                  6);
     }

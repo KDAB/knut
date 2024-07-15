@@ -11,7 +11,7 @@
 #pragma once
 
 #include "lsp/types.h"
-#include "textlocation.h"
+#include "rangemark.h"
 #include "textrange.h"
 
 #include <QString>
@@ -29,7 +29,7 @@ int lspToPos(const TextDocument &textDocument, const Lsp::Position &pos);
 
 TextRange lspToRange(const TextDocument &textDocument, const Lsp::Range &range);
 
-TextLocationList lspToTextLocationList(const std::vector<Lsp::Location> &locations);
+RangeMarkList lspToRangeMarkList(const std::vector<Lsp::Location> &locations);
 
 QString removeTypeAliasInformation(const QString &typeInfo);
 
