@@ -17,7 +17,6 @@
 #include "querymatch.h"
 #include "rangemark.h"
 #include "symbol.h"
-#include "textlocation.h"
 #include "treesitter/predicates.h"
 #include "utils/json.h"
 #include "utils/log.h"
@@ -261,7 +260,7 @@ std::pair<QString, std::optional<TextRange>> CodeDocument::hoverWithRange(
     return {"", {}};
 }
 
-Core::TextLocationList CodeDocument::references(int position) const
+RangeMarkList CodeDocument::references(int position) const
 {
     spdlog::debug("CodeDocument::references");
 
@@ -273,11 +272,10 @@ Core::TextLocationList CodeDocument::references(int position) const
     params.textDocument.uri = toUri();
     params.position = Utils::lspFromPos(*this, position);
 
-    Core::TextLocationList textLocations;
     if (auto result = client()->references(std::move(params))) {
         const auto &value = result.value();
         if (const auto *locations = std::get_if<std::vector<Lsp::Location>>(&value)) {
-            return Utils::lspToTextLocationList(*locations);
+            return Utils::lspToRangeMarkList(*locations);
         } else {
             spdlog::warn("CodeDocument::references: Language server returned unsupported references type!");
         }
@@ -285,7 +283,7 @@ Core::TextLocationList CodeDocument::references(int position) const
         spdlog::warn("CodeDocument::references: LSP call to references returned nothing!");
     }
 
-    return textLocations;
+    return {};
 }
 
 // Follows the symbol under the cursor.

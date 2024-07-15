@@ -94,8 +94,6 @@ set(PROJECT_SOURCES
     textdocument_p.h
     texteditor.h
     texteditor.cpp
-    textlocation.h
-    textlocation.cpp
     textrange.h
     textrange.cpp
     qtuidocument.h

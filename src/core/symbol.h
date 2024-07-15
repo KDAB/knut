@@ -11,7 +11,7 @@
 #pragma once
 
 #include "querymatch.h"
-#include "textlocation.h"
+#include "rangemark.h"
 #include "textrange.h"
 
 #include <QList>
@@ -92,7 +92,7 @@ public:
     // As per KNUT-163, these are no longer public API.
     // They are only used internally by the editor/GUI and not available from QML/JS.
     // As this relies on the clangd LSP, it is not reliable enough to use for scripting.
-    QList<Core::TextLocation> references() const;
+    Core::RangeMarkList references() const;
 
     Q_INVOKABLE void select();
 

@@ -87,7 +87,6 @@ nav:
                 - TextDocument: API/knut/textdocument.md
                 - Mark: API/knut/mark.md
                 - RangeMark: API/knut/rangemark.md
-                - TextLocation: API/knut/textlocation.md
                 - TextRange: API/knut/textrange.md
             - Items:
                 - Script: API/knut/script.md

@@ -191,14 +191,14 @@ Core::TextRange Symbol::selectionRange() const
     return m_selectionRange;
 }
 
-QList<Core::TextLocation> Symbol::references() const
+RangeMarkList Symbol::references() const
 {
     LOG("Symbol::references");
 
     if (const auto codedocument = document()) {
         auto references = codedocument->references(selectionRange().start);
-        kdalgorithms::erase_if(references, [this](const auto &reference) {
-            return reference.range == this->selectionRange();
+        kdalgorithms::erase_if(references, [this](const RangeMark &reference) {
+            return reference.toTextRange() == m_selectionRange;
         });
         return references;
     }
