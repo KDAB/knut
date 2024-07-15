@@ -167,6 +167,10 @@ namespace RcCore {
  *     - each context contains multiple categories
  */
 /*!
+ * \qmlproperty string Ribbon::id
+ * This property holds the id of the ribbon.
+ */
+/*!
  * \qmlproperty RibbonMenu Ribbon::menu
  * This property holds the menu of the ribbon.
  */

@@ -205,6 +205,14 @@ namespace RcCore {
  * \qmlproperty bool Action::checked
  * This property is `true` if the action is checkabled and checked by default.
  */
+/*!
+ * \qmlproperty string Action::title
+ * This property holds the title of the action.
+ */
+/*!
+ * \qmlproperty string Action::iconId
+ * This property holds the id of the icon, if any.
+ */
 
 /*!
  * \qmltype String

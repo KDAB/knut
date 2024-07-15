@@ -12,6 +12,7 @@ import Knut
 |-|-|
 |array&lt;[RibbonCategory](../knut/ribboncategory.md)>|**[categories](#categories)**|
 |array&lt;[RibbonContext](../knut/ribboncontext.md)>|**[contexts](#contexts)**|
+|string|**[id](#id)**|
 |[RibbonMenu](../knut/ribbonmenu.md)|**[menu](#menu)**|
 
 ## Detailed Description
@@ -34,6 +35,10 @@ This property holds the children categories of this ribbon.
 #### <a name="contexts"></a>array&lt;[RibbonContext](../knut/ribboncontext.md)> **contexts**
 
 This property holds the children contexts of this ribbon.
+
+#### <a name="id"></a>string **id**
+
+This property holds the id of the ribbon.
 
 #### <a name="menu"></a>[RibbonMenu](../knut/ribbonmenu.md) **menu**
 
