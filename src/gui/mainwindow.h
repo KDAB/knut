@@ -17,6 +17,10 @@ class QMenu;
 class QFileSystemModel;
 class QTreeView;
 
+namespace Core {
+class Document;
+}
+
 namespace Gui {
 
 class Palette;
@@ -100,6 +104,7 @@ private:
     void openDocument(const QModelIndex &index);
     void updateRecentProjects();
     void changeTab();
+    QWidget *widgetForDocument(Core::Document *document);
     void changeCurrentDocument();
     QDockWidget *createDock(QWidget *widget, Qt::DockWidgetArea area, QWidget *toolbar = nullptr);
     void reloadDocuments();
