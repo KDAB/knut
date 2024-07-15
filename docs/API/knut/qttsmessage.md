@@ -20,20 +20,20 @@ import Knut
 
 #### <a name="comment"></a>string **comment**
 
-Define comment.
+Comment added to the string to help translations.
 
 #### <a name="context"></a>string **context**
 
-Translate context (read only).
+Context used for the translation (read only).
 
 #### <a name="fileName"></a>string **fileName**
 
-FileName where come from translate string.
+Filename where the translation comes from.
 
 #### <a name="source"></a>string **source**
 
-Original string which must be translated.
+Original string to be translated.
 
 #### <a name="translation"></a>string **translation**
 
-String translated in specific language.
+Translated string in the Qt ts specific language.
