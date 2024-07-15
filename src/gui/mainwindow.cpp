@@ -9,6 +9,7 @@
 */
 
 #include "mainwindow.h"
+#include "codeview.h"
 #include "core/codedocument.h"
 #include "core/cppdocument.h"
 #include "core/document.h"
@@ -717,13 +718,19 @@ static QWidget *widgetForDocument(Core::Document *document)
         tsView->setTsDocument(qobject_cast<Core::QtTsDocument *>(document));
         return tsView;
     }
-    case Core::Document::Type::Json:
     case Core::Document::Type::Cpp:
+    case Core::Document::Type::Json:
     case Core::Document::Type::Text:
     default: {
-        auto textView = new TextView();
-        textView->setDocument(qobject_cast<Core::TextDocument *>(document));
-        return textView;
+        if (auto codeDocument = qobject_cast<Core::CodeDocument *>(document)) {
+            auto codeView = new CodeView();
+            codeView->setDocument(codeDocument);
+            return codeView;
+        } else {
+            auto textView = new TextView();
+            textView->setDocument(qobject_cast<Core::TextDocument *>(document));
+            return textView;
+        }
     }
     }
     Q_UNREACHABLE();

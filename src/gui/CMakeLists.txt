@@ -14,6 +14,8 @@ set(PROJECT_SOURCES
     apiexecutorwidget.h
     apiexecutorwidget.cpp
     apiexecutorwidget.ui
+    codeview.cpp
+    codeview.h
     documentpalette.h
     documentpalette.cpp
     fileselector.h

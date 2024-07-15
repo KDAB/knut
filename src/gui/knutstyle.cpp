@@ -82,6 +82,8 @@ int KnutStyle::pixelMetric(PixelMetric metric, const QStyleOption *option, const
         return 1;
     case PM_TabBarTabVSpace:
         return 10;
+    case PM_SplitterWidth:
+        return 1;
     default:
         break;
     }
