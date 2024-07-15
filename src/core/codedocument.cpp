@@ -438,7 +438,7 @@ int CodeDocument::selectLargerSyntaxNode(int count /* = 1*/)
 
     selectRegion(currentNode.startPosition(), currentNode.endPosition());
 
-    return position();
+    LOG_RETURN("pos", position());
 }
 
 /*!
@@ -476,9 +476,12 @@ int CodeDocument::selectSmallerSyntaxNode(int count /* = 1*/)
 
     if (node.has_value()) {
         selectRegion(node->startPosition(), node->endPosition());
+    } else {
+        spdlog::warn(
+            "CodeDocument::selectSmallerSyntaxNode: No smaller node found! Do you currently not have a selection?");
     }
 
-    return position();
+    LOG_RETURN("pos", position());
 }
 
 static std::optional<treesitter::Node>
@@ -528,7 +531,7 @@ int CodeDocument::selectNextSyntaxNode(int count /*= 1*/)
         selectRegion(target->startPosition(), target->endPosition());
     }
 
-    return position();
+    LOG_RETURN("pos", position());
 }
 
 /*!
@@ -555,7 +558,7 @@ int CodeDocument::selectPreviousSyntaxNode(int count /*= 1*/)
         selectRegion(target->startPosition(), target->endPosition());
     }
 
-    return position();
+    LOG_RETURN("pos", position());
 }
 
 /*!
