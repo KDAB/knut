@@ -39,7 +39,7 @@ Inherited properties: [Document properties](../knut/document.md#properties)
 ||**[deleteLine](#deleteLine)**(int line = -1)|
 ||**[deleteNextCharacter](#deleteNextCharacter)**(int count = 1)|
 ||**[deletePreviousCharacter](#deletePreviousCharacter)**(int count = 1)|
-||**[deleteRange](#deleteRange)**([TextRange](../knut/textrange.md) range)|
+||**[deleteRange](#deleteRange)**([RangeMark](../knut/rangemark.md) range)|
 ||**[deleteRegion](#deleteRegion)**(int from, int to)|
 ||**[deleteSelection](#deleteSelection)**()|
 ||**[deleteStartOfLine](#deleteStartOfLine)**()|
@@ -74,7 +74,7 @@ Inherited properties: [Document properties](../knut/document.md#properties)
 ||**[remove](#remove)**(int length)|
 ||**[removeIndent](#removeIndent)**(int count)|
 ||**[replace](#replace)**(int length, string text)|
-||**[replace](#replace)**([TextRange](../knut/textrange.md) range, string text)|
+||**[replace](#replace)**([RangeMark](../knut/rangemark.md) range, string text)|
 ||**[replace](#replace)**(int from, int to, string text)|
 |bool |**[replaceAll](#replaceAll)**(string before, string after, int options = TextDocument.NoFindFlags)|
 |bool |**[replaceAllInRange](#replaceAllInRange)**(string before, string after, [RangeMark](../knut/rangemark.md) range, int options = TextDocument.NoFindFlags)|
@@ -90,7 +90,7 @@ Inherited properties: [Document properties](../knut/document.md#properties)
 ||**[selectPreviousChar](#selectPreviousChar)**(int count = 1)|
 ||**[selectPreviousLine](#selectPreviousLine)**(int count = 1)|
 ||**[selectPreviousWord](#selectPreviousWord)**(int count = 1)|
-||**[selectRange](#selectRange)**([TextRange](../knut/textrange.md) range)|
+||**[selectRange](#selectRange)**([RangeMark](../knut/rangemark.md) range)|
 ||**[selectRangeMark](#selectRangeMark)**([RangeMark](../knut/rangemark.md) mark)|
 ||**[selectRegion](#selectRegion)**(int from, int to)|
 ||**[selectStartOfLine](#selectStartOfLine)**(int count = 1)|
@@ -205,7 +205,7 @@ Deletes the next `count` characters.
 
 Deletes the previous `count` characters.
 
-#### <a name="deleteRange"></a>**deleteRange**([TextRange](../knut/textrange.md) range)
+#### <a name="deleteRange"></a>**deleteRange**([RangeMark](../knut/rangemark.md) range)
 
 Deletes the range passed in parameter.
 
@@ -364,7 +364,7 @@ Indents the current line `count` times. If there's a selection, indent all lines
 
 Replaces `length` characters from the current position with the string `text`.
 
-#### <a name="replace"></a>**replace**([TextRange](../knut/textrange.md) range, string text)
+#### <a name="replace"></a>**replace**([RangeMark](../knut/rangemark.md) range, string text)
 
 Replaces the text in the range `range` with the string `text`.
 
@@ -471,7 +471,7 @@ Selects the previous line, repeat the operation `count` times.
 
 Selects the previous word, repeat the operation `count` times.
 
-#### <a name="selectRange"></a>**selectRange**([TextRange](../knut/textrange.md) range)
+#### <a name="selectRange"></a>**selectRange**([RangeMark](../knut/rangemark.md) range)
 
 Selects the range passed in parameter.
 

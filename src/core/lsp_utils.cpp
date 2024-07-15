@@ -44,9 +44,11 @@ int lspToPos(const TextDocument &textDocument, const Lsp::Position &pos)
     return 0;
 }
 
-TextRange lspToRange(const TextDocument &textDocument, const Lsp::Range &range)
+RangeMark lspToRange(const TextDocument &textDocument, const Lsp::Range &range)
 {
-    return {lspToPos(textDocument, range.start), lspToPos(textDocument, range.end)};
+    // I know, ugly, but that's the easiest to do that here.
+    auto document = const_cast<TextDocument *>(&textDocument);
+    return document->createRangeMark(lspToPos(textDocument, range.start), lspToPos(textDocument, range.end));
 }
 
 RangeMarkList lspToRangeMarkList(const std::vector<Lsp::Location> &locations)
@@ -62,8 +64,7 @@ RangeMarkList lspToRangeMarkList(const std::vector<Lsp::Location> &locations)
         const auto filepath = url.toLocalFile();
 
         if (auto document = qobject_cast<TextDocument *>(Project::instance()->get(filepath))) {
-            const auto range = lspToRange(*document, location.range);
-            rangeMarks.push_back(document->createRangeMark(range.start, range.end));
+            rangeMarks.push_back(lspToRange(*document, location.range));
         }
     }
 

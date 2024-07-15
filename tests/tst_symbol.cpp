@@ -37,7 +37,7 @@ class TestSymbol : public QObject
         QString name;
         QString returnType;
         QList<Core::FunctionArgument> arguments;
-        Core::TextRange range;
+        Core::RangeMark range;
 
         bool isNull() { return name.isEmpty(); }
     };
@@ -191,7 +191,7 @@ private slots:
         QCOMPARE(symbol->kind(), Core::Symbol::Class);
 
         const auto isSymbolRange = [&symbol](const auto &loc) {
-            return loc.toTextRange() == symbol->selectionRange();
+            return loc == symbol->selectionRange();
         };
 
         spdlog::warn("Finding references");
@@ -203,7 +203,7 @@ private slots:
 
         spdlog::warn("Verifying document existence");
         for (const auto &reference : references) {
-            QVERIFY(reference.document);
+            QVERIFY(reference.document());
         }
 
         spdlog::warn("Counting documents");

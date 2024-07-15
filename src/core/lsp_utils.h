@@ -12,7 +12,6 @@
 
 #include "lsp/types.h"
 #include "rangemark.h"
-#include "textrange.h"
 
 #include <QString>
 #include <string>
@@ -27,7 +26,7 @@ Lsp::Position lspFromPos(const TextDocument &textDocument, int pos);
 
 int lspToPos(const TextDocument &textDocument, const Lsp::Position &pos);
 
-TextRange lspToRange(const TextDocument &textDocument, const Lsp::Range &range);
+RangeMark lspToRange(const TextDocument &textDocument, const Lsp::Range &range);
 
 RangeMarkList lspToRangeMarkList(const std::vector<Lsp::Location> &locations);
 

@@ -98,9 +98,9 @@ protected:
 
     int revision() const;
 
-    std::pair<QString, std::optional<TextRange>>
+    std::pair<QString, std::optional<RangeMark>>
     hoverWithRange(int position,
-                   std::function<void(const QString &, std::optional<TextRange>)> asyncCallback = {}) const;
+                   std::function<void(const QString &, std::optional<RangeMark>)> asyncCallback = {}) const;
 
 private:
     bool checkClient() const;

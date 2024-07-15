@@ -50,11 +50,6 @@ namespace Core {
  * \qmlproperty vector<FunctionArgument> FunctionSymbol::arguments
  * Returns the list of arguments being passed to this function.
  */
-/*!
- * \qmlproperty TextRange FunctionSymbol::range
- * The range enclosing this function, not including leading/trailing
- * whitespace but everything else like comments.
- */
 
 FunctionSymbol::FunctionSymbol(QObject *parent, const QueryMatch &match, Kind kind)
     : Symbol(parent, match, kind)

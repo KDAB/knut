@@ -465,7 +465,7 @@ bool CppDocument::insertCodeInMethod(const QString &methodName, QString code, Po
     }
 
     QTextCursor cursor = textEdit()->textCursor();
-    cursor.setPosition(symbol->range().end);
+    cursor.setPosition(symbol->range().end());
     cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor);
     if (cursor.selectedText() != "}") {
         spdlog::warn("CppDocument::insertCodeInMethod: {} is not a function definition.", symbol->name());
@@ -474,7 +474,7 @@ bool CppDocument::insertCodeInMethod(const QString &methodName, QString code, Po
 
     cursor.beginEditBlock();
     // Goto the end and move back one character
-    cursor.setPosition(symbol->range().end);
+    cursor.setPosition(symbol->range().end());
     cursor.movePosition(QTextCursor::PreviousCharacter);
 
     const QString strTab = tab();
@@ -1001,14 +1001,14 @@ void CppDocument::toggleSection()
 
         cursor.beginEditBlock();
         // Start from the end
-        cursor.setPosition(symbol->range().end);
+        cursor.setPosition(symbol->range().end());
         cursor.movePosition(QTextCursor::StartOfLine);
         cursor.movePosition(QTextCursor::Up, QTextCursor::KeepAnchor);
 
         if (cursor.selectedText().startsWith(endifString)) {
             // The function is already commented out, remove the comments
             int start = textEdit()->document()->find(elseString, cursor, QTextDocument::FindBackward).selectionStart();
-            if (start > symbol->range().start)
+            if (start > symbol->range().start())
                 cursor.setPosition(start, QTextCursor::KeepAnchor);
             cursor.removeSelectedText();
             cursor.setPosition(moveBlock(cursor.position(), QTextCursor::PreviousCharacter));
@@ -1019,7 +1019,7 @@ void CppDocument::toggleSection()
             cursorPos -= ifdefString.length() + 1;
         } else {
             // Comment out the function with #if/#def, make sure to return something if needed
-            cursor.setPosition(symbol->range().end);
+            cursor.setPosition(symbol->range().end());
             cursor.movePosition(QTextCursor::PreviousCharacter);
 
             QString text = elseString + newLine;
@@ -1350,7 +1350,7 @@ void CppDocument::deleteMethodLocal(const QString &methodName, const QString &si
     // That way removing a function won't change the position of the other functions.
     // This assumes the ranges don't overlap.
     auto byRange = [](const auto &symbol1, const auto &symbol2) {
-        return symbol1->range().start > symbol2->range().start;
+        return symbol1->range().start() > symbol2->range().start();
     };
     std::ranges::sort(symbolList, byRange);
 

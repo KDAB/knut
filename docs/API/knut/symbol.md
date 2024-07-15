@@ -13,8 +13,8 @@ import Knut
 |string|**[description](#description)**|
 |Kind|**[kind](#kind)**|
 |string|**[name](#name)**|
-|[TextRange](../knut/textrange.md)|**[range](#range)**|
-|[TextRange](../knut/textrange.md)|**[selectionRange](#selectionRange)**|
+|[RangeMark](../knut/rangemark.md)|**[range](#range)**|
+|[RangeMark](../knut/rangemark.md)|**[selectionRange](#selectionRange)**|
 
 ## Methods
 
@@ -65,13 +65,13 @@ Return the kind of this symbol. Available symbol kinds are:
 
 Return the name of this symbol.
 
-#### <a name="range"></a>[TextRange](../knut/textrange.md) **range**
+#### <a name="range"></a>[RangeMark](../knut/rangemark.md) **range**
 
 The range enclosing this symbol not including leading/trailing whitespace but everything else like comments. This
 information is typically used to determine if the clients cursor is inside the symbol to reveal in the symbol in the
 UI.
 
-#### <a name="selectionRange"></a>[TextRange](../knut/textrange.md) **selectionRange**
+#### <a name="selectionRange"></a>[RangeMark](../knut/rangemark.md) **selectionRange**
 
 The range that should be selected and revealed when this symbol is being picked, e.g. the name of a function. Must be
 contained by the `range`.

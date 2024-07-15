@@ -133,11 +133,6 @@ TextDocument *RangeMark::document() const
     return d ? d->m_editor : nullptr;
 }
 
-TextRange RangeMark::toTextRange() const
-{
-    return {start(), end()};
-}
-
 QString RangeMark::text() const
 {
     // <= here instead of < because m_end is exclusive

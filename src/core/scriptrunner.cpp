@@ -26,7 +26,6 @@
 #include "settings.h"
 #include "symbol.h"
 #include "textdocument.h"
-#include "textrange.h"
 #include "userdialog.h"
 #include "utils.h"
 #include "utils/log.h"
@@ -66,7 +65,6 @@ ScriptRunner::ScriptRunner(QObject *parent)
     qRegisterMetaType<QDirValueType>();
     qRegisterMetaType<QFileInfoValueType>();
     qRegisterMetaType<Symbol>();
-    qRegisterMetaType<TextRange>();
 
     // Knut QML module
     qmlRegisterSingletonType<Dir>("Knut", 1, 0, "Dir", [](QQmlEngine *engine, QJSEngine *) {
@@ -158,7 +156,6 @@ ScriptRunner::ScriptRunner(QObject *parent)
     addProperties<QtUiWidget>(m_properties);
     addProperties<RcDocument>(m_properties);
     addProperties<TextDocument>(m_properties);
-    addProperties<TextRange>(m_properties);
     addProperties<Mark>(m_properties);
     addProperties<RangeMark>(m_properties);
     addProperties<Dir>(m_properties);
