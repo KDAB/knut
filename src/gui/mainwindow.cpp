@@ -9,6 +9,7 @@
 */
 
 #include "mainwindow.h"
+#include "codeview.h"
 #include "core/codedocument.h"
 #include "core/cppdocument.h"
 #include "core/document.h"
@@ -325,6 +326,8 @@ void MainWindow::inspectTreeSitter()
         m_treeSitterInspector = new TreeSitterInspector(this);
     }
     m_treeSitterInspector->show();
+    m_treeSitterInspector->raise();
+    m_treeSitterInspector->activateWindow();
 }
 
 MainWindow::~MainWindow() = default;
@@ -674,7 +677,7 @@ void MainWindow::changeTab()
     ui->actionSwitchHeaderSource->setEnabled(document->type() == Core::Document::Type::Cpp);
 }
 
-static QWidget *widgetForDocument(Core::Document *document)
+QWidget *MainWindow::widgetForDocument(Core::Document *document)
 {
     switch (document->type()) {
     case Core::Document::Type::Rc: {
@@ -717,8 +720,13 @@ static QWidget *widgetForDocument(Core::Document *document)
         tsView->setTsDocument(qobject_cast<Core::QtTsDocument *>(document));
         return tsView;
     }
+    case Core::Document::Type::Cpp: {
+        auto codeView = new CodeView();
+        codeView->setDocument(qobject_cast<Core::CodeDocument *>(document));
+        connect(codeView, &CodeView::treeSitterExplorerRequested, this, &MainWindow::inspectTreeSitter);
+        return codeView;
+    }
     case Core::Document::Type::Json:
-    case Core::Document::Type::Cpp:
     case Core::Document::Type::Text:
     default: {
         auto textView = new TextView();
