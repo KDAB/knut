@@ -11,10 +11,12 @@ import Knut
 | | Name |
 |-|-|
 |bool|**[checked](#checked)**|
+|string|**[iconId](#iconId)**|
 |string|**[iconPath](#iconPath)**|
 |string|**[id](#id)**|
 |array&lt;[Shortcut](../knut/shortcut.md)>|**[shortcuts](#shortcuts)**|
 |string|**[statusTip](#statusTip)**|
+|string|**[title](#title)**|
 |string|**[toolTip](#toolTip)**|
 
 ## Property Documentation
@@ -22,6 +24,10 @@ import Knut
 #### <a name="checked"></a>bool **checked**
 
 This property is `true` if the action is checkabled and checked by default.
+
+#### <a name="iconId"></a>string **iconId**
+
+This property holds the id of the icon, if any.
 
 #### <a name="iconPath"></a>string **iconPath**
 
@@ -38,6 +44,10 @@ This property holds all the shortcuts associated with the action.
 #### <a name="statusTip"></a>string **statusTip**
 
 This property holds the statusTip of the action.
+
+#### <a name="title"></a>string **title**
+
+This property holds the title of the action.
 
 #### <a name="toolTip"></a>string **toolTip**
 

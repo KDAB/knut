@@ -83,6 +83,10 @@ namespace Core {
  * \qmlproperty array<string> RcDocument::languages
  * This read-only property holds the list of languages available in the file.
  */
+/*!
+ * \qmlproperty array<string> RcDocument::ribbonIds
+ * This read-only property holds the list of ribbons available in the file.
+ */
 
 RcDocument::RcDocument(QObject *parent)
     : Document(Type::Rc, parent)
@@ -390,8 +394,8 @@ QList<RcCore::String> RcDocument::strings() const
 }
 
 /*!
- * \qmlmethod string RcDocument::text(string id)
- * Return the string for the given `id`.
+ * \qmlmethod string RcDocument::string(string id)
+ * Returns the string for the given `id`.
  */
 QString RcDocument::string(const QString &id) const
 {
@@ -432,7 +436,7 @@ QString extractStringForDialog(const RcCore::Data::Dialog *dialog, const QString
 
 /*!
  * \qmlmethod string RcDocument::stringForDialogAndLanguage(string language, string dialogId, string id)
- * Return the string for the given `language`, `dialogid` and id.
+ * Returns the string with `id` for the given `language` and `dialogid`.
  */
 QString RcDocument::stringForDialogAndLanguage(const QString &language, const QString &dialogId,
                                                const QString &id) const
@@ -451,7 +455,7 @@ QString RcDocument::stringForDialogAndLanguage(const QString &language, const QS
 
 /*!
  * \qmlmethod string RcDocument::stringForDialog(string dialogId, string id)
- * Return the string for the given `dialogid` and id.
+ * Returns the string with `id` for the given `dialogid`.
  */
 QString RcDocument::stringForDialog(const QString &dialogId, const QString &id) const
 {
@@ -523,7 +527,7 @@ QList<RcCore::Menu> RcDocument::menus() const
  * \sa RcDocument::writeAssetsToImage
  * \sa RcDocument::writeAssetsToQrc
  *
- * Convert all assets using the `flags`.
+ * Converts all assets using the `flags`.
  *
  * - `RcDocument.RemoveUnknown`: remove the unknown assets
  * - `RcDocument.SplitToolBar`: split toolbars strip into individual icon, one per action
@@ -544,7 +548,7 @@ void RcDocument::convertAssets(int flags)
 /*!
  * \qmlmethod void RcDocument::convertActions(int flags)
  * \todo
- * Convert all actions using the `flags`.
+ * Converts all actions using the `flags`.
  *
  * The `flags` are used to fill the iconPath of the action:
  *
@@ -632,7 +636,7 @@ bool RcDocument::writeDialogToUi(const RcCore::Widget &dialog, const QString &fi
 /*!
  * \qmlmethod bool RcDocument::previewDialog(Widget dialog )
  * \sa RcDocument::dialog
- * Preview the result of the conversion RC->UI
+ * Previews the result of the conversion RC->UI
  */
 void RcDocument::previewDialog(const RcCore::Widget &dialog) const
 {

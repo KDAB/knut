@@ -18,6 +18,7 @@ import Knut
 |array&lt;string>|**[languages](#languages)**|
 |array&lt;string>|**[menuIds](#menuIds)**|
 |array&lt;[Menu](../knut/menu.md)>|**[menus](#menus)**|
+|array&lt;string>|**[ribbonIds](#ribbonIds)**|
 |array&lt;string>|**[stringIds](#stringIds)**|
 |array&lt;string>|**[strings](#strings)**|
 |array&lt;string>|**[toolbarIds](#toolbarIds)**|
@@ -40,11 +41,11 @@ import Knut
 |bool |**[mergeLanguages](#mergeLanguages)**()|
 |bool |**[previewDialog](#previewDialog)**([Widget](../knut/widget.md) dialog)|
 |[Menu](../knut/menu.md) |**[ribbon](#ribbon)**(string id)|
+|string |**[string](#string)**(string id)|
 |string |**[stringForDialog](#stringForDialog)**(string dialogId, string id)|
 |string |**[stringForDialogAndLanguage](#stringForDialogAndLanguage)**(string language, string dialogId, string id)|
 |string |**[stringForLanguage](#stringForLanguage)**(string language, string id)|
 |array&lt;[String](../knut/string.md)> |**[stringsForLanguage](#stringsForLanguage)**(string language)|
-|string |**[text](#text)**(string id)|
 |[ToolBar](../knut/toolbar.md) |**[toolBar](#toolBar)**(string id)|
 |bool |**[writeAssetsToImage](#writeAssetsToImage)**(int flags)|
 |bool |**[writeAssetsToQrc](#writeAssetsToQrc)**(string fileName)|
@@ -84,6 +85,10 @@ This read-only property holds the list of menu's ids in the RC file.
 #### <a name="menus"></a>array&lt;[Menu](../knut/menu.md)> **menus**
 
 This read-only property holds the list of menus in the RC file.
+
+#### <a name="ribbonIds"></a>array&lt;string> **ribbonIds**
+
+This read-only property holds the list of ribbons available in the file.
 
 #### <a name="stringIds"></a>array&lt;string> **stringIds**
 
@@ -127,7 +132,7 @@ Returns all actions used in the toolbar `toolBarId`.
 !!! Warning "Experimental API"
     The API here is still experimental, and may change in follow-up release. Use it at your own risk.
 
-Convert all actions using the `flags`.
+Converts all actions using the `flags`.
 
 The `flags` are used to fill the iconPath of the action:
 
@@ -138,7 +143,7 @@ The `flags` are used to fill the iconPath of the action:
 
 #### <a name="convertAssets"></a>**convertAssets**(int flags)
 
-Convert all assets using the `flags`.
+Converts all assets using the `flags`.
 
 - `RcDocument.RemoveUnknown`: remove the unknown assets
 - `RcDocument.SplitToolBar`: split toolbars strip into individual icon, one per action
@@ -180,19 +185,23 @@ resulting language they will be merged together.
 
 #### <a name="previewDialog"></a>bool **previewDialog**([Widget](../knut/widget.md) dialog)
 
-Preview the result of the conversion RC->UI
+Previews the result of the conversion RC->UI
 
 #### <a name="ribbon"></a>[Menu](../knut/menu.md) **ribbon**(string id)
 
 Returns the ribbon for the given `id`.
 
+#### <a name="string"></a>string **string**(string id)
+
+Returns the string for the given `id`.
+
 #### <a name="stringForDialog"></a>string **stringForDialog**(string dialogId, string id)
 
-Return the string for the given `dialogid` and id.
+Returns the string with `id` for the given `dialogid`.
 
 #### <a name="stringForDialogAndLanguage"></a>string **stringForDialogAndLanguage**(string language, string dialogId, string id)
 
-Return the string for the given `language`, `dialogid` and id.
+Returns the string with `id` for the given `language` and `dialogid`.
 
 #### <a name="stringForLanguage"></a>string **stringForLanguage**(string language, string id)
 
@@ -201,10 +210,6 @@ Return the string for the given `id` in language `language`.
 #### <a name="stringsForLanguage"></a>array&lt;[String](../knut/string.md)> **stringsForLanguage**(string language)
 
 Returns translated string for specific `language`.
-
-#### <a name="text"></a>string **text**(string id)
-
-Return the string for the given `id`.
 
 #### <a name="toolBar"></a>[ToolBar](../knut/toolbar.md) **toolBar**(string id)
 
