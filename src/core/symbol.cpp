@@ -70,14 +70,14 @@ namespace Core {
  */
 
 /*!
- * \qmlproperty TextRange Symbol::range
+ * \qmlproperty RangeMark Symbol::range
  * The range enclosing this symbol not including leading/trailing whitespace but everything else like comments. This
  * information is typically used to determine if the clients cursor is inside the symbol to reveal in the symbol in the
  * UI.
  */
 
 /*!
- * \qmlproperty TextRange Symbol::selectionRange
+ * \qmlproperty RangeMark Symbol::selectionRange
  * The range that should be selected and revealed when this symbol is being picked, e.g. the name of a function. Must be
  * contained by the `range`.
  */
@@ -86,8 +86,8 @@ Symbol::Symbol(QObject *parent, const QueryMatch &match, Kind kind)
     : QObject(parent)
     , m_name {match.get("name").text()}
     , m_kind {kind}
-    , m_range {match.get("range").toTextRange()}
-    , m_selectionRange {match.get("selectionRange").toTextRange()}
+    , m_range {match.get("range")}
+    , m_selectionRange {match.get("selectionRange")}
     , m_queryMatch {match}
 {
 }
@@ -181,12 +181,12 @@ Symbol::Kind Symbol::kind() const
     return m_kind;
 }
 
-Core::TextRange Symbol::range() const
+Core::RangeMark Symbol::range() const
 {
     return m_range;
 }
 
-Core::TextRange Symbol::selectionRange() const
+Core::RangeMark Symbol::selectionRange() const
 {
     return m_selectionRange;
 }
@@ -196,9 +196,9 @@ RangeMarkList Symbol::references() const
     LOG("Symbol::references");
 
     if (const auto codedocument = document()) {
-        auto references = codedocument->references(selectionRange().start);
+        auto references = codedocument->references(selectionRange().start());
         kdalgorithms::erase_if(references, [this](const RangeMark &reference) {
-            return reference.toTextRange() == m_selectionRange;
+            return reference == m_selectionRange;
         });
         return references;
     }

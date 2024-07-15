@@ -304,7 +304,7 @@ const QList<Core::Symbol *> &TreeSitterHelper::symbols()
     m_symbols.append(enumSymbols());
 
     kdalgorithms::sort_by(m_symbols, [](const auto &symbol) {
-        return symbol->range().start;
+        return symbol->range().start();
     });
 
     assignSymbolContexts();

@@ -15,7 +15,6 @@ import Knut
 | | Name |
 |-|-|
 |vector<[FunctionArgument](../knut/functionargument.md)>|**[arguments](#arguments)**|
-|[TextRange](../knut/textrange.md)|**[range](#range)**|
 |string|**[returnType](#returnType)**|
 
 ## Property Documentation
@@ -23,11 +22,6 @@ import Knut
 #### <a name="arguments"></a>vector<[FunctionArgument](../knut/functionargument.md)> **arguments**
 
 Returns the list of arguments being passed to this function.
-
-#### <a name="range"></a>[TextRange](../knut/textrange.md) **range**
-
-The range enclosing this function, not including leading/trailing
-whitespace but everything else like comments.
 
 #### <a name="returnType"></a>string **returnType**
 

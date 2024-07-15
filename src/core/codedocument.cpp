@@ -94,38 +94,33 @@ Symbol *CodeDocument::currentSymbol(const std::function<bool(const Symbol &)> &f
  */
 void CodeDocument::deleteSymbol(const Symbol &symbol)
 {
-    auto range = symbol.range();
+    const auto range = symbol.range();
 
     // Include any leading whitespace (excluding newlines).
-    auto leading = Core::TextRange {range.start, range.start + 1};
-    while (leading.start > 0) {
-        leading.start--;
-        leading.end--;
-        selectRange(leading);
+    int start = range.start();
+    while (start > 0) {
+        selectRegion(start - 1, start);
 
         if (selectedText() != " " && selectedText() != "\t") {
             break;
         }
 
-        range.start--;
+        start--;
     }
 
     // Include a trailing semicolon and up to one trailing newline
-    auto trailing = Core::TextRange {range.end, range.end + 1};
-    selectRange(trailing);
+    int end = range.end();
+    selectRegion(end, end + 1);
     if (selectedText() == ";") {
-        range.end++;
-
-        trailing.start++;
-        trailing.end++;
-        selectRange(trailing);
+        end++;
+        selectRegion(end, end + 1);
     }
 
     if (selectedText() == "\n") {
-        range.end++;
+        end++;
     }
 
-    this->selectRange(range);
+    this->selectRegion(start, end);
     this->deleteSelection();
 }
 
@@ -202,8 +197,8 @@ QString CodeDocument::hover(int position, std::function<void(const QString &)> a
     }
 }
 
-std::pair<QString, std::optional<TextRange>> CodeDocument::hoverWithRange(
-    int position, std::function<void(const QString &, std::optional<TextRange>)> asyncCallback /*  = {} */) const
+std::pair<QString, std::optional<RangeMark>> CodeDocument::hoverWithRange(
+    int position, std::function<void(const QString &, std::optional<RangeMark>)> asyncCallback /*  = {} */) const
 {
     spdlog::debug("CodeDocument::hover");
 
@@ -216,14 +211,14 @@ std::pair<QString, std::optional<TextRange>> CodeDocument::hoverWithRange(
 
     QPointer<const CodeDocument> safeThis(this);
 
-    auto convertResult = [safeThis](const auto &result) -> std::pair<QString, std::optional<TextRange>> {
+    auto convertResult = [safeThis](const auto &result) -> std::pair<QString, std::optional<RangeMark>> {
         if (!std::holds_alternative<Lsp::Hover>(result)) {
             return {"", {}};
         }
 
         auto hover = std::get<Lsp::Hover>(result);
 
-        std::optional<TextRange> range;
+        std::optional<RangeMark> range;
         if (hover.range && !safeThis.isNull()) {
             range = Utils::lspToRange(*safeThis, hover.range.value());
         }
@@ -372,7 +367,7 @@ Document *CodeDocument::switchDeclarationDefinition()
     auto symbolList = symbols();
 
     auto currentFunction = kdalgorithms::find_if(symbolList, [&cursor](const auto &symbol) {
-        auto isInRange = symbol->range().start <= cursor.position() && cursor.position() <= symbol->range().end;
+        auto isInRange = symbol->range().contains(cursor.position());
         return isInRange && symbol->isFunction();
     });
 
@@ -381,7 +376,7 @@ Document *CodeDocument::switchDeclarationDefinition()
         return nullptr;
     }
 
-    return followSymbol((*currentFunction)->selectionRange().start);
+    return followSymbol((*currentFunction)->selectionRange().start());
 }
 
 /*!

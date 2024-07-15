@@ -313,16 +313,16 @@ private slots:
             QVERIFY(cppFile);
 
             const auto before = cppFile->findSymbol("Section::bar")->range();
-            QCOMPARE(before.start, 326);
-            QCOMPARE(before.end, 386);
+            QCOMPARE(before.start(), 326);
+            QCOMPARE(before.end(), 386);
 
             // Changing the code will cause the Language server to become out of sync with the
             // state in Knut. Therefore the next language server call will fail.
             cppFile->gotoStartOfDocument();
             cppFile->insert("\n");
             const auto after = cppFile->findSymbol("Section::bar")->range();
-            QCOMPARE(after.start, 327);
-            QCOMPARE(after.end, 387);
+            QCOMPARE(after.start(), 327);
+            QCOMPARE(after.end(), 387);
         }
     }
 
@@ -339,7 +339,7 @@ private slots:
 
         QAction signalled;
 
-        codedocument->hover(symbol->selectionRange().start + 1, [&signalled](const auto &) {
+        codedocument->hover(symbol->selectionRange().start() + 1, [&signalled](const auto &) {
             signalled.trigger();
         });
 

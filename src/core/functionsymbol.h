@@ -12,7 +12,6 @@
 
 #include "document.h"
 #include "symbol.h"
-#include "textrange.h"
 
 #include <QList>
 #include <QString>

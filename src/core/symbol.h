@@ -12,7 +12,6 @@
 
 #include "querymatch.h"
 #include "rangemark.h"
-#include "textrange.h"
 
 #include <QList>
 
@@ -28,8 +27,8 @@ class Symbol : public QObject
     Q_PROPERTY(QString name READ name CONSTANT)
     Q_PROPERTY(QString description READ description CONSTANT)
     Q_PROPERTY(Kind kind READ kind CONSTANT)
-    Q_PROPERTY(Core::TextRange range READ range CONSTANT)
-    Q_PROPERTY(Core::TextRange selectionRange READ selectionRange CONSTANT)
+    Q_PROPERTY(Core::RangeMark range READ range CONSTANT)
+    Q_PROPERTY(Core::RangeMark selectionRange READ selectionRange CONSTANT)
 
 public:
     // Follow the LSP SymbolKind enum
@@ -68,8 +67,8 @@ protected:
 
     QString m_name;
     Kind m_kind;
-    TextRange m_range;
-    TextRange m_selectionRange;
+    RangeMark m_range;
+    RangeMark m_selectionRange;
     QueryMatch m_queryMatch;
 
     CodeDocument *document() const;
@@ -86,8 +85,8 @@ public:
     QString name() const;
     virtual QString description() const;
     Kind kind() const;
-    Core::TextRange range() const;
-    Core::TextRange selectionRange() const;
+    Core::RangeMark range() const;
+    Core::RangeMark selectionRange() const;
 
     // As per KNUT-163, these are no longer public API.
     // They are only used internally by the editor/GUI and not available from QML/JS.

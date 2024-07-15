@@ -10,8 +10,6 @@
 
 #pragma once
 
-#include "textrange.h"
-
 #include <QObject>
 #include <memory>
 
@@ -52,9 +50,6 @@ public:
     Q_INVOKABLE QString toString() const;
 
     TextDocument *document() const;
-
-    // Casting
-    TextRange toTextRange() const;
 
     // Text manipulation
     Q_INVOKABLE void select() const;
