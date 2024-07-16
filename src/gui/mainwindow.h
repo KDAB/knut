@@ -30,6 +30,7 @@ class ScriptListPanel;
 class DocumentPalette;
 class ShortcutManager;
 class TreeSitterInspector;
+class ToolBar;
 
 namespace Ui {
     class MainWindow;
@@ -119,6 +120,7 @@ private:
     ScriptListPanel *const m_scriptlistpanel = nullptr;
     DocumentPalette *const m_documentPalette = nullptr;
     ShortcutManager *const m_shortcutManager = nullptr;
+    ToolBar *const m_toolBar = nullptr;
     TreeSitterInspector *m_treeSitterInspector = nullptr;
 };
 

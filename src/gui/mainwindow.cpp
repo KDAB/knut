@@ -122,6 +122,7 @@ MainWindow::MainWindow(QWidget *parent)
     , m_scriptlistpanel(new ScriptListPanel(this))
     , m_documentPalette(new DocumentPalette(this))
     , m_shortcutManager(new ShortcutManager(this))
+    , m_toolBar(new ToolBar(this))
 {
     // Initialize the settings before anything
     GuiSettings::instance();
@@ -133,6 +134,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->setupUi(this);
     setWindowTitle(QApplication::applicationName() + ' ' + QApplication::applicationVersion());
+    ui->tabWidget->setCornerWidget(m_toolBar);
 
     setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
     setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
@@ -776,14 +778,6 @@ void MainWindow::changeCurrentDocument()
         auto document = project->currentDocument();
         auto widget = widgetForDocument(document);
 
-        if (const auto actions = widget->actions(); !actions.isEmpty()) {
-            auto toolBar = new Toolbar(widget);
-            toolBar->setVisible(true);
-            for (const auto &act : actions) {
-                toolBar->addAction(act);
-            }
-        }
-
         widget->setWindowTitle(fileName);
         const auto fi = QFileInfo {fileName};
         windowIndex = ui->tabWidget->addTab(widget, fi.fileName());
@@ -794,8 +788,10 @@ void MainWindow::changeCurrentDocument()
         });
     }
     ui->tabWidget->setCurrentIndex(windowIndex);
-    if (ui->tabWidget->currentWidget())
-        ui->tabWidget->currentWidget()->setFocus(Qt::OtherFocusReason);
+    if (auto view = ui->tabWidget->currentWidget()) {
+        view->setFocus(Qt::OtherFocusReason);
+        m_toolBar->setView(view);
+    }
 
     const QModelIndex &index = m_fileModel->index(fileName);
     m_projectView->setCurrentIndex(index);
