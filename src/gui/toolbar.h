@@ -10,20 +10,27 @@
 
 #pragma once
 
-#include <QToolBar>
+#include <QWidget>
+
+class QScrollBar;
 
 namespace Gui {
 
-class Toolbar : public QToolBar
+class ToolBar : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit Toolbar(QWidget *parent = nullptr);
+    explicit ToolBar(QWidget *parent = nullptr);
+
+    void setView(QWidget *view);
 
 private:
     bool eventFilter(QObject *watched, QEvent *event) override;
     void relayout();
+    QScrollBar *getVerticallScrollBar();
+
+    QWidget *m_view = nullptr;
 };
 
 }
