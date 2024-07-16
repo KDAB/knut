@@ -84,6 +84,8 @@ TreeSitterInspector::TreeSitterInspector(QWidget *parent)
     , m_errorHighlighter(nullptr)
     , m_document(nullptr)
 {
+    setAttribute(Qt::WA_DeleteOnClose);
+
     ui->setupUi(this);
     m_errorHighlighter = new QueryErrorHighlighter(ui->query->document());
 

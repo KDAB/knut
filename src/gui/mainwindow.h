@@ -11,6 +11,7 @@
 #pragma once
 
 #include <QMainWindow>
+#include <QPointer>
 #include <memory>
 
 class QMenu;
@@ -121,7 +122,7 @@ private:
     DocumentPalette *const m_documentPalette = nullptr;
     ShortcutManager *const m_shortcutManager = nullptr;
     ToolBar *const m_toolBar = nullptr;
-    TreeSitterInspector *m_treeSitterInspector = nullptr;
+    QPointer<TreeSitterInspector> m_treeSitterInspector;
 };
 
 } // namespace Gui
