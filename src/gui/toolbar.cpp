@@ -20,6 +20,8 @@ namespace Gui {
 Toolbar::Toolbar(QWidget *parent)
     : QToolBar(parent)
 {
+    setIconSize({16, 16});
+    setContentsMargins({});
     parent->installEventFilter(this);
     setAutoFillBackground(true);
     if (auto scroll = qobject_cast<QAbstractScrollArea *>(parentWidget())) {
@@ -43,7 +45,7 @@ bool Toolbar::eventFilter(QObject *watched, QEvent *event)
 
 void Toolbar::relayout()
 {
-    QSize size = {int(actions().size()) * iconSize().width(), 30};
+    QSize size = {int(actions().size()) * iconSize().width(), iconSize().height()};
     resize(size);
     adjustSize();
     int shift = 0;

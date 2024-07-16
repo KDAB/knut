@@ -777,6 +777,7 @@ void MainWindow::changeCurrentDocument()
 
         if (const auto actions = widget->actions(); !actions.isEmpty()) {
             auto toolBar = new Toolbar(widget);
+            toolBar->setProperty("panelWidget", true);
             toolBar->setVisible(true);
             for (const auto &act : actions) {
                 toolBar->addAction(act);
