@@ -212,14 +212,15 @@ void TreeSitterInspector::setDocument(Core::CodeDocument *document)
     }
 
     m_document = document;
-    m_parser = treesitter::Parser::getLanguage(document->type());
     if (m_document) {
+        m_parser = treesitter::Parser::getLanguage(document->type());
         connect(m_document, &Core::CodeDocument::textChanged, this, &TreeSitterInspector::changeText);
         connect(m_document, &Core::CodeDocument::positionChanged, this, &TreeSitterInspector::changeCursor);
 
         changeCursor();
         changeText();
     } else {
+        m_parser = {nullptr};
         m_treemodel.clear();
     }
 }
