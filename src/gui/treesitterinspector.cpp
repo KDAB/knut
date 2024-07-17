@@ -182,6 +182,7 @@ void TreeSitterInspector::changeText()
         Core::LoggerDisabler disableLogging;
         text = m_document->text();
     }
+    m_parser.setIncludedRanges(m_document->includedRanges());
     auto tree = m_parser.parseString(text);
     if (tree.has_value()) {
         m_treemodel.setTree(std::move(tree.value()), makePredicates(), ui->enableUnnamed->isChecked());

@@ -358,6 +358,29 @@ private slots:
             QVERIFY(headerFile.compare());
         }
     }
+
+    void excludeMacros()
+    {
+        Test::testCppDocument("tst_cppdocument/treesitterExcludesMacros", "AFX_EXT_CLASS.h", [](auto *document) {
+            auto match = document->queryClassDefinition("TestClass");
+            QVERIFY(!match.isEmpty());
+            QCOMPARE(match.get("name").text(), "TestClass");
+            QCOMPARE(match.get("base").text(), "Base");
+
+            match = document->queryMember("TestClass", "m_count");
+            QVERIFY(!match.isEmpty());
+            QCOMPARE(match.get("name").text(), "m_count");
+            QCOMPARE(match.get("type").text(), "int");
+            QCOMPARE(match.get("member").text(), "int AFX_EXT_CLASS m_count;");
+
+            auto matches = document->queryMethodDeclaration("TestClass", "testMethod");
+            QCOMPARE(matches.length(), 1);
+            match = matches.front();
+            QVERIFY(!match.isEmpty());
+            QCOMPARE(match.get("name").text(), "testMethod");
+            QCOMPARE(match.get("return-type").text(), "void");
+        });
+    }
 };
 
 QTEST_MAIN(TestCppDocumentTreeSitter)

@@ -48,7 +48,12 @@ treesitter::Parser &TreeSitterHelper::parser()
 std::optional<treesitter::Tree> &TreeSitterHelper::syntaxTree()
 {
     if (!m_tree) {
-        m_tree = parser().parseString(m_document->text());
+        auto &parser = this->parser();
+        if (!parser.setIncludedRanges(m_document->includedRanges())) {
+            spdlog::warn("TreeSitterHelper::syntaxTree: Unable to set the included ranges on the treesitter parser!");
+            parser.setIncludedRanges({});
+        }
+        m_tree = parser.parseString(m_document->text());
         if (!m_tree) {
             spdlog::warn("CodeDocument::syntaxTree: Failed to parse document {}!", m_document->fileName());
         }

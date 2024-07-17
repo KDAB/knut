@@ -15,6 +15,7 @@
 #include "querymatch.h"
 #include "symbol.h"
 #include "textdocument.h"
+#include "treesitter/parser.h"
 #include "treesitter/query.h"
 
 #include <functional>
@@ -78,6 +79,8 @@ public:
     QString hover(int position, std::function<void(const QString &)> asyncCallback = {}) const;
 
     Q_INVOKABLE Core::AstNode astNodeAt(int pos);
+
+    virtual QList<treesitter::Range> includedRanges() const;
 
 public slots:
     void selectSymbol(const QString &name, int options = NoFindFlags);

@@ -60,6 +60,8 @@ public:
     bool changeBaseClass(CppDocument *header, CppDocument *source, const QString &className,
                          const QString &newClassBaseName);
 
+    QList<treesitter::Range> includedRanges() const override;
+
 public slots:
     Core::CppDocument *openHeaderSource();
 
