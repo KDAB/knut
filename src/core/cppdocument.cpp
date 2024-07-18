@@ -1548,14 +1548,24 @@ QStringList CppDocument::primitiveTypes() const
 
 QList<treesitter::Range> CppDocument::includedRanges() const
 {
-    QList<QString> macros {"AFX_EXT_CLASS"};
+    auto macros = Settings::instance()->value<QStringList>(Settings::CppExcludedMacros);
+    if (macros.isEmpty()) {
+        return {};
+    }
+
+    QRegularExpression regex(macros.join("|"));
+    if (!regex.isValid()) {
+        spdlog::error("CppDocument::includedRanges: Failed to create regex for excluded macros: {}",
+                      regex.errorString());
+        return {};
+    }
+
+    auto document = textEdit()->document();
+
     QList<treesitter::Range> ranges;
     treesitter::Point lastPoint {0, 0};
     uint32_t lastByte = 0;
 
-    auto document = textEdit()->document();
-
-    QRegularExpression regex(macros.join("|"));
     for (auto block = document->firstBlock(); block.isValid(); block = block.next()) {
         QRegularExpressionMatch match;
         auto searchFrom = 0;

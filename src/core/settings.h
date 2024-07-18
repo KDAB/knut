@@ -49,6 +49,7 @@ public:
     static inline constexpr char RcAssetFlags[] = "/rc/asset_flags";
     static inline constexpr char RcAssetColors[] = "/rc/asset_transparent_colors";
     static inline constexpr char RcLanguageMap[] = "/rc/language_map";
+    static inline constexpr char CppExcludedMacros[] = "/cpp/excluded_macros";
     static inline constexpr char SaveLogsToFile[] = "/logs/saveToFile";
     static inline constexpr char ScriptPaths[] = "/script_paths";
     static inline constexpr char Tab[] = "/text_editor/tab";

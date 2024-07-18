@@ -35,6 +35,7 @@ private:
     void initializeScriptPathSettings();
     void initializeScriptBehaviorSettings();
     void initializeRcSettings();
+    void initializeCppSettings();
 
     void openUserSettings();
     void openProjectSettings();
