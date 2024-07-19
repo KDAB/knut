@@ -692,6 +692,7 @@ MessageMap CppDocument::mfcExtractMessageMap(const QString &className /* = ""*/)
  * - `declaration`: The full declaration of the method
  * - `function`: The function declaration, without the return type
  * - `name`: The name of the function
+ * - `return-type`: The return type of the function without any reference/pointer specifiers (i.e. `&`/`*`)
  */
 Core::QueryMatchList CppDocument::queryMethodDeclaration(const QString &className, const QString &functionName)
 {
@@ -1543,6 +1544,77 @@ QStringList CppDocument::keywords() const
 QStringList CppDocument::primitiveTypes() const
 {
     return Utils::cppPrimitiveTypes();
+}
+
+QList<treesitter::Range> CppDocument::includedRanges() const
+{
+    auto macros = Settings::instance()->value<QStringList>(Settings::CppExcludedMacros);
+    if (macros.isEmpty()) {
+        return {};
+    }
+
+    QRegularExpression regex(macros.join("|"));
+    if (!regex.isValid()) {
+        spdlog::error("CppDocument::includedRanges: Failed to create regex for excluded macros: {}",
+                      regex.errorString());
+        return {};
+    }
+
+    auto document = textEdit()->document();
+
+    QList<treesitter::Range> ranges;
+    treesitter::Point lastPoint {0, 0};
+    uint32_t lastByte = 0;
+
+    for (auto block = document->firstBlock(); block.isValid(); block = block.next()) {
+        QRegularExpressionMatch match;
+        auto searchFrom = 0;
+        auto index = block.text().indexOf(regex, searchFrom, &match);
+
+        // Run this in a loop to support multiple macros on the same line.
+        while (index != -1) {
+            // We need to construct a range from the end of the last match to the start of the current match.
+            //
+            // Note that the ranges have an inclusive start and an exclusive end..
+            //
+            // Also Note that the column seems to be in bytes, not characters.
+            // This is why we multiply by sizeof(QChar) to get the correct column.
+            // At least that's what the TreeSitterInspector shows us.
+            auto endPoint = treesitter::Point {.row = static_cast<uint32_t>(block.blockNumber()),
+                                               .column = static_cast<uint32_t>(index * sizeof(QChar))};
+            ranges.push_back({.start_point = lastPoint,
+                              .end_point = endPoint,
+                              .start_byte = lastByte,
+                              // No need to add - 1 here, the ranges are exclusive at the end.
+                              .end_byte = static_cast<uint32_t>((block.position() + index) * sizeof(QChar))});
+
+            auto matchLength = match.capturedLength();
+            lastByte = static_cast<uint32_t>((block.position() + index + matchLength) * sizeof(QChar));
+            lastPoint = {.row = static_cast<uint32_t>(block.blockNumber()),
+                         .column = static_cast<uint32_t>((index + matchLength) * sizeof(QChar))};
+            if (lastPoint.column == static_cast<uint32_t>(block.length())) {
+                ++lastPoint.row;
+                lastPoint.column = 0;
+            }
+
+            searchFrom = index + matchLength;
+            index = block.text().indexOf(regex, searchFrom, &match);
+        }
+    }
+
+    if (!ranges.isEmpty()) {
+        // Add the last range, up to the end of the document, but only if we have another range.
+        // Leaving the ranges empty will parse the entire document, so that's easiest.
+        auto endPoint =
+            treesitter::Point {.row = static_cast<uint32_t>(document->blockCount() - 1),
+                               .column = static_cast<uint32_t>(document->lastBlock().length() * sizeof(QChar))};
+        ranges.push_back({.start_point = lastPoint,
+                          .end_point = endPoint,
+                          .start_byte = lastByte,
+                          .end_byte = static_cast<uint32_t>(document->characterCount() * sizeof(QChar))});
+    }
+
+    return ranges;
 }
 
 } // namespace Core

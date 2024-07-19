@@ -19,7 +19,9 @@
 #include <QApplication>
 #include <QDesktopServices>
 #include <QFileDialog>
+#include <QInputDialog>
 #include <QIntValidator>
+#include <QStringListModel>
 #include <QUrl>
 #include <algorithm>
 
@@ -45,6 +47,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     initializeRcSettings();
     initializeSaveToLogFileSetting();
     initializeEnableLSPSetting();
+    initializeCppSettings();
 
     updateScriptPaths();
 }
@@ -214,6 +217,42 @@ void OptionsDialog::initializeRcSettings()
 
     connect(ui->languageMap, &QTreeWidget::itemSelectionChanged, this, [this]() {
         ui->removeLanguageButton->setEnabled(!ui->languageMap->selectedItems().isEmpty());
+    });
+}
+
+void OptionsDialog::initializeCppSettings()
+{
+    auto *model = new QStringListModel(this);
+    model->setStringList(DEFAULT_VALUE(QStringList, CppExcludedMacros));
+    ui->cppExcludedMacros->setModel(model);
+    ui->cppExcludedMacros->setSelectionMode(QAbstractItemView::SingleSelection);
+
+    connect(ui->cppAddExcludedMacro, &QPushButton::clicked, model, [this, model]() {
+        auto ok = false;
+        auto excludeMacro = QInputDialog::getText(this, tr("Exclude a new macro"), tr("Macro name (supports Regex)"),
+                                                  QLineEdit::Normal, "", &ok);
+        if (ok) {
+            if (model->insertRows(0, 1)) {
+                model->setData(model->index(0), excludeMacro);
+            } else {
+                spdlog::warn("OptionsDialog::excludeMacro: Failed to create new row!");
+            }
+        }
+    });
+
+    connect(ui->cppRemoveExcludedMacro, &QPushButton::clicked, model, [this, model]() {
+        auto selection = ui->cppExcludedMacros->selectionModel()->selectedRows();
+        // single selection mode, so should be at most one.
+        if (!selection.isEmpty()) {
+            model->removeRows(selection.front().row(), 1);
+        }
+    });
+
+    connect(model, &QStringListModel::dataChanged, model, [model]() {
+        SET_DEFAULT_VALUE(CppExcludedMacros, model->stringList());
+    });
+    connect(model, &QStringListModel::rowsRemoved, model, [model]() {
+        SET_DEFAULT_VALUE(CppExcludedMacros, model->stringList());
     });
 }
 

@@ -848,4 +848,10 @@ AstNode CodeDocument::astNodeAt(int pos)
     return {};
 }
 
+QList<treesitter::Range> CodeDocument::includedRanges() const
+{
+    // An empty list tells the parser to include the entire document.
+    return {};
+}
+
 } // namespace Core

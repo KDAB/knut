@@ -298,6 +298,7 @@ The returned QueryMatch instances contain the following captures:
 - `declaration`: The full declaration of the method
 - `function`: The function declaration, without the return type
 - `name`: The name of the function
+- `return-type`: The return type of the function without any reference/pointer specifiers (i.e. `&`/`*`)
 
 #### <a name="queryMethodDefinition"></a>array&lt;[QueryMatch](../knut/querymatch.md)> **queryMethodDefinition**(string scope, string methodName)
 
