@@ -20,6 +20,7 @@ import Knut
 |-|-|
 ||**[addMessage](#addMessage)**(string context, string location, string source, string translation)|
 ||**[setLanguage](#setLanguage)**(string lang)|
+||**[setMessageContext](#setMessageContext)**(string context, string comment, string source, string newContext)|
 ||**[setSourceLanguage](#setSourceLanguage)**(string lang)|
 
 ## Property Documentation
@@ -45,6 +46,10 @@ Adds a new `source` text, its `translation` located in `location` within the giv
 #### <a name="setLanguage"></a>**setLanguage**(string lang)
 
 Changes the language.
+
+#### <a name="setMessageContext"></a>**setMessageContext**(string context, string comment, string source, string newContext)
+
+Set a `newContext` for the message identified by the `context`, `comment` and `source` strings
 
 #### <a name="setSourceLanguage"></a>**setSourceLanguage**(string lang)
 

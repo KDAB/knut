@@ -160,6 +160,72 @@ void QtTsDocument::addMessage(const QString &context, const QString &fileName, c
     Q_EMIT fileUpdated();
 }
 
+/*!
+ * \qmlmethod QtTsDocument::setMessageContext(string context, string comment, string source, string newContext)
+ * Set a `newContext` for the message identified by the `context`, `comment` and `source` strings
+ */
+
+
+void QtTsDocument::setMessageContext(const QString &context, const QString &comment, const QString &source, const QString &newContext)
+{
+    LOG("QtTsDocument::setContext", context, comment, source, newContext);
+
+    initializeXml();
+
+    const auto contexts = m_document.select_nodes("//context");
+    for (const auto &contextNode : contexts) {
+
+        const auto messages = contextNode.node().select_nodes("message");
+        for (const auto &messageNode : messages) {
+
+            pugi::xml_node commentNode = messageNode.node().child("comment");
+            pugi::xml_node sourceNode = messageNode.node().child("source");
+            auto commentsAreEqual = [&](){ return QString::fromUtf8(commentNode.text().as_string()) == comment; };
+            auto sourcesAreEqual = [&](){ return QString::fromUtf8(sourceNode.text().as_string()) == source; };
+            auto contextsAreEqual = [&](){ return QString::fromUtf8(contextNode.node().child("name").text().as_string()) == context;};
+            if (commentsAreEqual() && sourcesAreEqual() && contextsAreEqual()) {
+
+                pugi::xml_node targetContextNode = findOrCreateContext(newContext);
+                targetContextNode.append_move(messageNode.node());
+
+                setHasChanged(true);
+                Q_EMIT messagesChanged();
+                Q_EMIT fileUpdated();
+
+                return;
+            }
+        }
+    }
+}
+
+pugi::xml_node QtTsDocument::findOrCreateContext(const QString &context)
+{
+    pugi::xml_node contextNode = findContext(context);
+
+    if (contextNode == nullptr) {
+        pugi::xml_node tsNode = m_document.select_node("TS").node();
+        contextNode = tsNode.append_child("context");
+        contextNode.append_child("name").append_child(pugi::node_pcdata).set_value(context.toLatin1().constData());
+    }
+
+    return contextNode;
+}
+
+pugi::xml_node QtTsDocument::findContext(const QString &context) const
+{
+    pugi::xml_node contextNode;
+    const auto contexts = m_document.select_nodes("//context");
+    for (const auto &existingContext : contexts) {
+        pugi::xml_node nameNode = existingContext.node().child("name");
+        if (QString::fromLatin1(nameNode.text().as_string()) == context) {
+            contextNode = existingContext.node();
+            break;
+        }
+    }
+
+    return contextNode;
+}
+
 bool QtTsDocument::doSave(const QString &fileName)
 {
     return m_document.save_file(fileName.toLatin1().constData(), "    ");
