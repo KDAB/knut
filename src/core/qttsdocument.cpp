@@ -266,6 +266,19 @@ void QtTsMessage::setFileName(const QString &file)
     Q_EMIT fileNameChanged();
 }
 
+int QtTsMessage::line() const
+{
+    return QByteArray(m_message.child("location").attribute("line").value()).toInt();
+}
+
+void QtTsMessage::setLine(int line)
+{
+    LOG("QtTsMessage::setLine", line);
+    m_message.child("location").attribute("line").set_value(QByteArray::number(line).constData());
+    qobject_cast<QtTsDocument *>(parent())->setHasChanged(true);
+    Q_EMIT lineChanged();
+}
+
 QString QtTsMessage::comment() const
 {
     return QString::fromLatin1(m_message.child("comment").text().as_string());
