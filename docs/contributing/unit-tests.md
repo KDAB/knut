@@ -1,6 +1,6 @@
 # Unit tests
 
-There are 2 different kinds of unit-tests: C++ and script. THey are located in the `tests` directory, with all test data in the `test_data` directory.
+There are 2 different kinds of unit-tests: C++ and script. They are located in the `tests` directory, with all test data in the `test_data` directory.
 
 ## C++ unit-tests
 
