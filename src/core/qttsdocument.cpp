@@ -165,8 +165,8 @@ void QtTsDocument::addMessage(const QString &context, const QString &fileName, c
  * Set a `newContext` for the message identified by the `context`, `comment` and `source` strings
  */
 
-
-void QtTsDocument::setMessageContext(const QString &context, const QString &comment, const QString &source, const QString &newContext)
+void QtTsDocument::setMessageContext(const QString &context, const QString &comment, const QString &source,
+                                     const QString &newContext)
 {
     LOG("QtTsDocument::setContext", context, comment, source, newContext);
 
@@ -180,9 +180,15 @@ void QtTsDocument::setMessageContext(const QString &context, const QString &comm
 
             pugi::xml_node commentNode = messageNode.node().child("comment");
             pugi::xml_node sourceNode = messageNode.node().child("source");
-            auto commentsAreEqual = [&](){ return QString::fromUtf8(commentNode.text().as_string()) == comment; };
-            auto sourcesAreEqual = [&](){ return QString::fromUtf8(sourceNode.text().as_string()) == source; };
-            auto contextsAreEqual = [&](){ return QString::fromUtf8(contextNode.node().child("name").text().as_string()) == context;};
+            auto commentsAreEqual = [&]() {
+                return QString::fromUtf8(commentNode.text().as_string()) == comment;
+            };
+            auto sourcesAreEqual = [&]() {
+                return QString::fromUtf8(sourceNode.text().as_string()) == source;
+            };
+            auto contextsAreEqual = [&]() {
+                return QString::fromUtf8(contextNode.node().child("name").text().as_string()) == context;
+            };
             if (commentsAreEqual() && sourcesAreEqual() && contextsAreEqual()) {
 
                 pugi::xml_node targetContextNode = findOrCreateContext(newContext);
