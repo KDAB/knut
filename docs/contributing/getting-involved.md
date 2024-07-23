@@ -6,15 +6,28 @@ Please submit your contributions or issue reports from our GitHub space at <http
 
 ## Compilation
 
-To compile Knut, you need:
+For instructions on how to build and run Knut, refer to the [Building Section in the project README](https://github.com/kdab/knut?tab=readme-ov-file#building).
 
-- a C++20 compiler (recent compilers should work)
-- Qt 6.2 at least
+For development, you will likely want to use the `debug` or `debug-asan` CMake presets.
+Simply replace `--preset=release` with `--preset=debug` in the CMake calls.
 
-All 3rd-party dependencies are set up as git submodules, make sure to run:
+Note that if you're building with the `debug-asan`, asan will likely detect a few leaks from the larger dependencies like Qt, or even some drivers.
+This is mostly okay, and we haven't set up comprehensive suppressions, so they are expected.
 
-```
-git submodule update --init --recursive
+However, to avoid the tests failing, set the environment variable `ASAN_OPTIONS=detect_leaks=0` when running ctest.
+
+### Testing Knut
+
+To test Knut, use `ctest` or `ctest --preset=...` with the preset you used for building.
+
+Some useful ctest options include:
+
+- `-j$(nproc)` - runs multiple tests in parallel which can considerably speed up testing
+- `--output-on-failure`
+
+When building with `--preset=debug-asan` you will likely want to disable leak checking:
+```bash
+ASAN_OPTIONS=detect_leaks=0 ctest -j$(nproc) --preset=debug-asan --output-on-failure
 ```
 
 ### Qt Creator compilation error on Windows
