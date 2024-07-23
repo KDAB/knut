@@ -22,6 +22,7 @@ class QtTsMessage : public QObject
     Q_OBJECT
     Q_PROPERTY(QString fileName READ fileName WRITE setFileName NOTIFY fileNameChanged)
     Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(int line READ line WRITE setLine NOTIFY lineChanged)
     Q_PROPERTY(QString translation READ translation WRITE setTranslation NOTIFY translationChanged)
     Q_PROPERTY(QString comment READ comment WRITE setComment NOTIFY commentChanged)
     Q_PROPERTY(QString context READ context CONSTANT)
@@ -30,6 +31,9 @@ public:
 
     QString fileName() const;
     void setFileName(const QString &name);
+
+    int line() const;
+    void setLine(int line);
 
     QString source() const;
     void setSource(const QString &source);
@@ -44,6 +48,7 @@ public:
 
 signals:
     void fileNameChanged();
+    void lineChanged();
     void sourceChanged();
     void translationChanged();
     void commentChanged();
