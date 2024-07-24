@@ -136,6 +136,7 @@ private:
     void updatePaths(const QString &path, const std::string &json_path, bool add);
     void saveSettings();
     bool isUser() const;
+    void saveOnExit();
 
     inline static Settings *m_instance = nullptr;
 

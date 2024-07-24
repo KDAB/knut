@@ -85,6 +85,7 @@ Settings::Settings(Mode mode, QObject *parent)
 
 Settings::~Settings()
 {
+    saveOnExit();
     m_instance = nullptr;
 }
 
@@ -296,6 +297,13 @@ void Settings::saveSettings()
     QTextStream stream(&file);
     stream << QString::fromStdString(settings.dump(4, ' ', false));
     emit settingsSaved();
+}
+
+void Settings::saveOnExit()
+{
+    if (m_saveTimer->isActive()) {
+        saveSettings();
+    }
 }
 
 bool Settings::isUser() const

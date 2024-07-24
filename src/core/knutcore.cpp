@@ -86,6 +86,10 @@ void KnutCore::process(const QStringList &arguments)
     else
         mode = Settings::Mode::Gui;
 
+    // Finish scripts using scriptFinished(), not just when the last window is closed
+    if (mode == Settings::Mode::Test)
+        QApplication::setQuitOnLastWindowClosed(false);
+
     initialize(mode);
 
     const QStringList positionalArguments = parser.positionalArguments();
