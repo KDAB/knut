@@ -14,6 +14,7 @@
 #include "functionsymbol.h"
 #include "logger.h"
 #include "project.h"
+#include "typedsymbol.h"
 #include "utils/log.h"
 
 #include <kdalgorithms.h>
@@ -100,6 +101,9 @@ Symbol *Symbol::makeSymbol(QObject *parent, const QueryMatch &match, Kind kind)
     }
     if (kind == Class || kind == Struct) {
         return new ClassSymbol(parent, match, kind);
+    }
+    if (kind == Field || kind == Variable) {
+        return new TypedSymbol(parent, match, kind);
     }
     return new Symbol(parent, match, kind);
 }
