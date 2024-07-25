@@ -49,7 +49,7 @@ public:
     int stepCount() const;
 
     Q_INVOKABLE void firstStep(const QString &firstStep);
-    Q_INVOKABLE void nextStep(const QString &title);
+    Q_INVOKABLE void nextStep(const QString &title = QString());
     Q_INVOKABLE void runSteps(const QJSValue &generator);
 
     Q_INVOKABLE void compare(const QJSValue &actual, const QJSValue &expected, QString message = {});

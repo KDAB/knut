@@ -231,7 +231,9 @@ void ScriptDialogItem::nextStep(const QString &title)
     //
     // This is likely just caused by a script that's indicating too few progress steps.
     // So just increase the maximum.
-    m_currentStepTitle = title;
+    if (!title.isEmpty()) {
+        m_currentStepTitle = title;
+    }
 
     if (m_stepCount != 0 && m_currentStep >= m_stepCount) {
         setStepCount(m_stepCount + 1);
