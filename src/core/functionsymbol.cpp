@@ -74,7 +74,7 @@ QString FunctionSymbol::signature() const
 
 QString FunctionSymbol::returnTypeFromQueryMatch() const
 {
-    return m_queryMatch.getAllJoined("return").text();
+    return m_queryMatch.getAllJoined("return").text().simplified();
 }
 
 QString FunctionSymbol::returnType() const
