@@ -105,6 +105,8 @@ protected:
     hoverWithRange(int position,
                    std::function<void(const QString &, std::optional<RangeMark>)> asyncCallback = {}) const;
 
+    std::unique_ptr<TreeSitterHelper> &helper();
+
 private:
     bool checkClient() const;
     Document *followSymbol(int pos);

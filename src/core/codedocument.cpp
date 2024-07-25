@@ -624,6 +624,11 @@ std::string CodeDocument::toUri() const
     return QUrl::fromLocalFile(fileName()).toString().toStdString();
 }
 
+std::unique_ptr<TreeSitterHelper> &CodeDocument::helper()
+{
+    return m_treeSitterHelper;
+}
+
 std::optional<treesitter::QueryCursor> CodeDocument::createQueryCursor(const std::shared_ptr<treesitter::Query> &query)
 {
     const auto &tree = m_treeSitterHelper->syntaxTree();
