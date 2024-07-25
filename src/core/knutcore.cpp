@@ -44,7 +44,7 @@ KnutCore::KnutCore(InternalTag, QObject *parent)
     spdlog::cfg::load_env_levels();
 }
 
-void KnutCore::process(const QStringList &arguments)
+bool KnutCore::process(const QStringList &arguments)
 {
     // Parse command line options
     QCommandLineParser parser;
@@ -102,6 +102,7 @@ void KnutCore::process(const QStringList &arguments)
         } else {
             spdlog::error("KnutCore::process - Root directory: {}, does not exist. Cannot open a new project!",
                           pathDir.absolutePath());
+            return false;
         }
     }
 
@@ -140,10 +141,11 @@ void KnutCore::process(const QStringList &arguments)
                 qApp->exit(value.toInt());
             },
             Qt::QueuedConnection);
-        return;
+        return true;
     }
 
     doParse(parser);
+    return true;
 }
 
 void KnutCore::initParser(QCommandLineParser &parser) const
