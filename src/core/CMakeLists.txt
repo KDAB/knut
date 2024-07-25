@@ -94,6 +94,8 @@ set(PROJECT_SOURCES
     textdocument_p.h
     texteditor.h
     texteditor.cpp
+    typedsymbol.h
+    typedsymbol.cpp
     qtuidocument.h
     qtuidocument.cpp
     qttsdocument.h

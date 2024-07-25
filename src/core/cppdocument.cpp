@@ -120,12 +120,13 @@ auto queryMemberSymbols(CodeDocument *const document) -> QList<Core::Symbol *>
     auto fieldIdentifier = "(field_identifier) @name @selectionRange";
     auto members = document->query(QString(R"EOF(
                                         (field_declaration
-                                          type: (_) @type
+                                          (type_qualifier)? @type @typeAndName
+                                          type: (_) @type @typeAndName
                                           declarator: [
                                             %1
                                             (_ %1) @decl_type
                                             (_ (_ %1) @decl_type) @decl_type
-                                          ]
+                                          ] @typeAndName
                                           ; We need to filter out functions, they are already captured
                                           ; by the functionSymbols query
                                           (#not_is? @decl_type function_declarator)) @range)EOF")

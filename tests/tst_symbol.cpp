@@ -15,6 +15,7 @@
 #include "core/knutcore.h"
 #include "core/project.h"
 #include "core/symbol.h"
+#include "core/typedsymbol.h"
 
 #include <QTest>
 #include <QThread>
@@ -172,6 +173,14 @@ private slots:
         QCOMPARE(members.at(2)->kind(), Core::Symbol::Method);
         QCOMPARE(members.last()->name(), "MyObject::m_enum");
         QCOMPARE(members.last()->kind(), Core::Symbol::Field);
+
+        auto typedsymbol = qobject_cast<Core::TypedSymbol *>(members.at(8));
+        QVERIFY(typedsymbol);
+        QCOMPARE(typedsymbol->type(), "std::string");
+
+        typedsymbol = qobject_cast<Core::TypedSymbol *>(members.last());
+        QVERIFY(typedsymbol);
+        QCOMPARE(typedsymbol->type(), "MyEnum");
     }
 
     void references()
@@ -224,6 +233,29 @@ private slots:
                                            return location.document()->fileName().endsWith("myobject.cpp");
                                        }),
                  6);
+    }
+
+    void typedSymbol()
+    {
+
+        Core::KnutCore core;
+        Core::Project::instance()->setRoot(Test::testDataPath() + "/tst_symbol/");
+
+        auto codeDocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->open("typedsymbol.h"));
+        QVERIFY(codeDocument);
+
+        auto testTypedSymbol = [&codeDocument](const QString &symbolName, const QString &expectedType) {
+            auto symbol = codeDocument->findSymbol(symbolName);
+            QVERIFY(symbol);
+            auto typedSymbol = qobject_cast<Core::TypedSymbol *>(symbol);
+            QVERIFY(typedSymbol);
+            QCOMPARE(typedSymbol->type(), expectedType);
+        };
+
+        testTypedSymbol("TestClass::m_ptr", "void *");
+        testTypedSymbol("TestClass::m_lvalue_reference", "const std::string &");
+        testTypedSymbol("TestClass::m_rvalue_reference", "std::string&&");
+        testTypedSymbol("TestClass::m_const_ptr", "const class T*const");
     }
 };
 

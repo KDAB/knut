@@ -54,6 +54,7 @@ nav:
                 - QueryCapture: API/knut/querycapture.md
                 - QueryMatch: API/knut/querymatch.md
                 - Symbol: API/knut/symbol.md
+                - TypedSymbol: API/knut/typedsymbol.md
             - CppDocument:
                 - CppDocument: API/knut/cppdocument.md
                 - DataExchange: API/knut/dataexchange.md
