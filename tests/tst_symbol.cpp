@@ -257,6 +257,54 @@ private slots:
         testTypedSymbol("TestClass::m_rvalue_reference", "std::string&&");
         testTypedSymbol("TestClass::m_const_ptr", "const class T*const");
     }
+
+    void functionSymbolReturnType_data()
+    {
+        QTest::addColumn<QString>("symbolName");
+        QTest::addColumn<QString>("returnType");
+
+        auto addRow = [&](const QString &symbolName, const QString &returnType) {
+            QTest::newRow(symbolName.toUtf8().constData()) << symbolName << returnType;
+        };
+
+        addRow("freePtr", "void *");
+        addRow("freePtrImpl", "void *");
+        addRow("freeReference", "const std::string &");
+        addRow("freeReferenceImpl", "const std::string &");
+        addRow("freeConstPtr", "const class T *const");
+        addRow("freeConstPtrImpl", "const class T *const");
+
+        addRow("MyClass::memberPtr", "void *");
+        addRow("MyClass::memberReference", "const string&");
+        addRow("MyClass::memberConstPtr", "const class T* const");
+
+        addRow("MyClass::memberPtrImpl", "void*");
+        addRow("MyClass::memberReferenceImpl", "const std::string&");
+        addRow("MyClass::memberConstPtrImpl", "const class T * const");
+
+        addRow("MyClass::MyClass", "");
+        addRow("MyClass::~MyClass", "");
+        addRow("MyClassImpl::MyClassImpl", "");
+        addRow("MyClassImpl::~MyClassImpl", "");
+    }
+
+    void functionSymbolReturnType()
+    {
+        QFETCH(QString, symbolName);
+        QFETCH(QString, returnType);
+
+        Core::KnutCore core;
+        Core::Project::instance()->setRoot(Test::testDataPath() + "/tst_symbol/");
+
+        auto codeDocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->open("return_type.h"));
+        QVERIFY(codeDocument);
+
+        auto symbol = codeDocument->findSymbol(symbolName);
+        QVERIFY(symbol);
+        auto functionSymbol = qobject_cast<Core::FunctionSymbol *>(symbol);
+        QVERIFY(functionSymbol);
+        QCOMPARE(functionSymbol->returnType(), returnType);
+    }
 };
 
 QTEST_MAIN(TestSymbol)

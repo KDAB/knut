@@ -52,19 +52,26 @@ auto queryFunctionSymbols(CodeDocument *const document) -> QList<Core::Symbol *>
 
     auto pointerDeclarator = QString(R"EOF(
         [%1
-        (_ "*"? @return "&"? @return "&&"? @return %1)
+        (_ ["*" "&" "&&"]? @return (type_qualifier)? @return %1)
         (_ ["*" "&" "&&"]? @return
-            (_ ["*" "&" "&&"]? @return %1))]
+           (type_qualifier)? @return
+            (_ ["*" "&" "&&"]? @return (type_qualifier)? @return %1))]
     )EOF")
                                  .arg(functionDeclarator);
 
-    // TODO: Add support for pointers & references
     auto functions = document->query(QString(R"EOF(
-                        [; Free functions
+                        [; Free function implementations
                         (function_definition
+                          (type_qualifier)? @return
                           type: (_)? @return
                           ; If using trailing return type, we need to remove the auto type at the start
                           (#exclude! @return placeholder_type_specifier)
+                          declarator: %2) @range
+
+                        ; Free Function declarations
+                        (declaration
+                          (type_qualifier)? @return
+                          type: (_)? @return
                           declarator: %2) @range
 
                         ; Constructor/Destructors
@@ -73,6 +80,7 @@ auto queryFunctionSymbols(CodeDocument *const document) -> QList<Core::Symbol *>
 
                         ; Member functions
                         (field_declaration
+                          (type_qualifier)? @return
                           type: (_)? @return
                           ; If using trailing return type, we need to remove the auto type at the start
                           (#exclude! @return placeholder_type_specifier)
