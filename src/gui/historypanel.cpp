@@ -28,10 +28,9 @@ HistoryPanel::HistoryPanel(QWidget *parent)
 {
     setWindowTitle(tr("History"));
     setObjectName("HistoryPanel");
-
+    setUniformRowHeights(true);
     setModel(m_model);
     header()->setStretchLastSection(true);
-    header()->setSectionResizeMode(Core::HistoryModel::NameCol, QHeaderView::ResizeToContents);
 
     auto showLast = [this]() {
         scrollTo(m_model->index(m_model->rowCount() - 1, 0));
