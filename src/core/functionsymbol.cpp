@@ -96,7 +96,7 @@ const QList<FunctionArgument> &FunctionSymbol::arguments() const
 
 QList<FunctionArgument> FunctionSymbol::argumentsFromQueryMatch() const
 {
-    auto arguments = m_queryMatch.getAll("parameter");
+    auto arguments = m_queryMatch.getAll("parameters");
     auto to_function_arg = [this](const RangeMark &argument) {
         auto result = document()->queryInRange(argument, "(identifier) @name");
         auto nameRange = result.isEmpty() ? RangeMark() : result.first().get("name");

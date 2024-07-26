@@ -227,19 +227,19 @@ private slots:
                                 << "double"
                                 << "double m_double = 1.1;";
         QTest::newRow("int") << "m_constInt"
-                             << "int"
+                             << "const int"
                              << "const int m_constInt = 2;";
         QTest::newRow("ref") << "m_fooRef"
-                             << "Foo"
+                             << "Foo &"
                              << "Foo &m_fooRef;";
         QTest::newRow("ptr") << "m_barPtr"
-                             << "Bar"
+                             << "Bar *"
                              << "Bar *m_barPtr = nullptr;";
         QTest::newRow("ptrRef") << "m_fooPtrRef"
-                                << "Foo"
+                                << "const Foo *&"
                                 << "const Foo *& m_fooPtrRef;";
         QTest::newRow("ptrptr") << "m_barPtrPtr"
-                                << "Bar"
+                                << "Bar **"
                                 << "Bar **m_barPtrPtr;";
     }
 
@@ -252,7 +252,7 @@ private slots:
         Test::testCppDocument("tst_cppdocument/query", "myclass.h",
                               [&memberName, &type, &text](Core::CppDocument *document) {
                                   auto query = document->queryMember("MyClass", memberName);
-                                  QCOMPARE(query.get("type").text(), type);
+                                  QCOMPARE(query.getAllJoined("type").text(), type);
                                   QCOMPARE(query.get("member").text(), text);
                               });
     }
@@ -261,33 +261,46 @@ private slots:
     {
         QTest::addColumn<QString>("functionName");
         QTest::addColumn<QString>("text");
+        QTest::addColumn<QStringList>("parameters");
+        QTest::addColumn<QString>("returnValue");
 
         QTest::newRow("foo") << "foo"
-                             << "Foo foo() const;";
+                             << "Foo foo() const;" << QStringList {} << "Foo";
         QTest::newRow("setFoo") << "setFoo"
-                                << "void setFoo(Foo* foo);";
+                                << "void setFoo(Foo* foo);" << QStringList {"Foo* foo"} << "void";
         QTest::newRow("setFooBar") << "setFooBar"
-                                   << "virtual void setFooBar(Foo* foo, Bar* bar);";
+                                   << "virtual void setFooBar(Foo* foo, Bar* bar);"
+                                   << QStringList {"Foo* foo", "Bar* bar"} << "void";
         QTest::newRow("fooRef") << "fooRef"
-                                << "Foo &fooRef() const;";
+                                << "Foo &fooRef() const;" << QStringList {} << "Foo &";
         QTest::newRow("barPtr") << "barPtr"
-                                << "Bar *barPtr() const;";
+                                << "Bar *barPtr() const;" << QStringList {} << "Bar *";
         QTest::newRow("fooPtrRef") << "fooPtrRef"
-                                   << "const Foo *&fooPtrRef() const;";
+                                   << "const Foo *&fooPtrRef() const;" << QStringList {} << "const Foo *&";
         QTest::newRow("barPtrPtr") << "barPtrPtr"
-                                   << "Bar **barPtrPtr() const;";
+                                   << "Bar **barPtrPtr() const;" << QStringList {} << "Bar **";
+        QTest::newRow("constructor") << "MyClass"
+                                     << "MyClass();" << QStringList {} << "";
+        QTest::newRow("destructor") << "~MyClass"
+                                    << "virtual ~MyClass();" << QStringList {} << "";
     }
 
     void queryMethodDeclaration()
     {
         QFETCH(QString, functionName);
         QFETCH(QString, text);
+        QFETCH(QStringList, parameters);
+        QFETCH(QString, returnValue);
 
         Test::testCppDocument("tst_cppdocument/query", "myclass.h",
-                              [&functionName, &text](Core::CppDocument *document) {
+                              [&functionName, &text, &parameters, &returnValue](Core::CppDocument *document) {
                                   auto queries = document->queryMethodDeclaration("MyClass", functionName);
                                   QCOMPARE(queries.size(), 1);
                                   QCOMPARE(queries.first().get("declaration").text(), text);
+                                  auto actualParameters = kdalgorithms::transformed(
+                                      queries.first().getAll("parameters"), &Core::RangeMark::text);
+                                  QCOMPARE(actualParameters, parameters);
+                                  QCOMPARE(queries.first().getAllJoined("return").text(), returnValue);
                               });
 
         // TODO: test overloads (same function name)
@@ -370,7 +383,7 @@ private slots:
             match = document->queryMember("TestClass", "m_count");
             QVERIFY(!match.isEmpty());
             QCOMPARE(match.get("name").text(), "m_count");
-            QCOMPARE(match.get("type").text(), "int");
+            QCOMPARE(match.getAllJoined("type").text(), "int");
             QCOMPARE(match.get("member").text(), "int AFX_EXT_CLASS m_count;");
 
             auto matches = document->queryMethodDeclaration("TestClass", "testMethod");
@@ -378,7 +391,7 @@ private slots:
             match = matches.front();
             QVERIFY(!match.isEmpty());
             QCOMPARE(match.get("name").text(), "testMethod");
-            QCOMPARE(match.get("return-type").text(), "void");
+            QCOMPARE(match.get("return").text(), "void");
         });
     }
 };

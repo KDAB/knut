@@ -31,63 +31,154 @@
 namespace {
 using namespace Core;
 
-auto queryFunctionSymbols(CodeDocument *const document) -> QList<Core::Symbol *>
+// We query for classes in queryClassSymbols and queryClassDefinition.
+// To make sure the results of both are consistent, share the actual query by using this function.
+static QString classQuery(std::optional<QString> className)
 {
-    auto functionDeclarator = R"EOF(
-            (function_declarator
-              declarator: [
+    auto like_predicate = className.has_value() ? QString("(#like? @name \"%1\")").arg(*className) : "";
+
+    return QString(R"EOF(
+        ; query classes or structs
+        [(class_specifier
+            name: (_) @name @selectionRange %1
+            (base_class_clause
+                [(type_identifier) @base _]*)?
+            body: (_) @body)
+        (struct_specifier
+            name: (_) @name @selectionRange %1
+            (base_class_clause
+                [(type_identifier) @base _]*)?
+            body: (_) @body)] @range
+    )EOF")
+        .arg(like_predicate);
+}
+
+static QString functionDeclaratorQuery(const QString &scope, std::optional<QString> name)
+{
+    auto identifier = QString("");
+    if (name.has_value()) {
+        // clang-format off
+        identifier = QString(R"EOF(
+            [(identifier) (field_identifier)] @name (#eq? @name "%1")
+        )EOF").arg(*name);
+
+        if (!scope.isEmpty()) {
+            identifier = QString(R"EOF(
+                (qualified_identifier
+                    scope: (_) @scope (#like? @scope "%1")
+                    %2
+                )
+            )EOF").arg(scope, identifier);
+        }
+        // clang-format on
+    } else {
+        identifier = R"EOF(
+              [
                 (identifier) @selectionRange
                 (field_identifier) @selectionRange
                 (_ [(identifier) (field_identifier)] @selectionRange)
                 (_ (_ [(identifier) (field_identifier)] @selectionRange))
               ] @name
+        )EOF";
+    }
+
+    // clang-format off
+    return QString(R"EOF(
+            (function_declarator
+              declarator: %1
 
               parameters: (parameter_list
                 ; Cool trick: We can use [(type) @capture _]* to capture specific node types
                 ; and ignore all others, like comments, "," and so on.
-                [(parameter_declaration) @parameter _]*) @parameters
+                [(parameter_declaration) @parameters _]*) @parameter-list
 
-              (trailing_return_type (_) @return)? )
-    )EOF";
+              (trailing_return_type (_) @return)?)
+    )EOF").arg(identifier);
+    // clang-format on
+}
 
-    auto pointerDeclarator = QString(R"EOF(
-        [%1
-        (_ ["*" "&" "&&"]? @return (type_qualifier)? @return %1)
-        (_ ["*" "&" "&&"]? @return
-           (type_qualifier)? @return
-            (_ ["*" "&" "&&"]? @return (type_qualifier)? @return %1))]
+static QString pointerDeclaratorQuery(const QString declarator, const QString &captureName)
+{
+    // clang-format off
+    return QString(R"EOF(
+        [
+        %1
+        (_
+          ["*" "&" "&&"]? %2
+          (type_qualifier)? %2
+          %1) @declaration_type
+        (_
+          ["*" "&" "&&"]? %2
+          (type_qualifier)? %2
+          (_
+            ["*" "&" "&&"]? %2
+            (type_qualifier)? %2
+            %1) @declaration_type) @declaration_type
+        ]
+    )EOF").arg(declarator, captureName);
+    // clang-format on
+}
+
+static QString methodDefinitionQuery(const QString &functionDeclarator)
+{
+    // clang-format off
+    return QString(R"EOF(
+        (function_definition
+          (type_qualifier)? @return
+          type: (_)? @return
+
+          ; If using trailing return type, we need to remove the auto type at the start
+          (#exclude! @return placeholder_type_specifier)
+          declarator: %1
+
+          body: (compound_statement) @body) @range @definition
+    )EOF").arg(functionDeclarator);
+    // clang-format on
+}
+
+static QString methodDeclarationQuery(const QString &declarator)
+{
+    return QString(R"EOF(
+        (field_declaration
+          (type_qualifier)? @return
+          type: (_)? @return
+          ; If using trailing return type, we need to remove the auto type at the start
+          (#exclude! @return placeholder_type_specifier)
+          declarator: %1) @range @declaration
     )EOF")
-                                 .arg(functionDeclarator);
+        .arg(declarator);
+}
 
+auto queryFunctionSymbols(CodeDocument *const document) -> QList<Core::Symbol *>
+{
+    auto functionDeclarator = functionDeclaratorQuery("", std::nullopt);
+    auto pointerDeclarator = pointerDeclaratorQuery(functionDeclarator, "@return");
+
+    auto functionDefinition = methodDefinitionQuery(pointerDeclarator);
+    auto memberFunctionDeclaration = methodDeclarationQuery(pointerDeclarator);
+
+    // clang-format off
     auto functions = document->query(QString(R"EOF(
-                        [; Free function implementations
-                        (function_definition
-                          (type_qualifier)? @return
-                          type: (_)? @return
-                          ; If using trailing return type, we need to remove the auto type at the start
-                          (#exclude! @return placeholder_type_specifier)
-                          declarator: %2) @range
+        [; Free function implementations
+        %3
 
-                        ; Free Function declarations
-                        (declaration
-                          (type_qualifier)? @return
-                          type: (_)? @return
-                          declarator: %2) @range
+        ; Free Function declarations
+        (declaration
+          (type_qualifier)? @return
+          type: (_)? @return
+          declarator: %2) @range
 
-                        ; Constructor/Destructors
-                        (declaration
-                          declarator: %1) @range
+        ; Constructor/Destructors
+        (declaration
+          declarator: %1) @range
+        ; Constructors/Destructors with = default
+        (function_definition
+            declarator: %1) @range
 
-                        ; Member functions
-                        (field_declaration
-                          (type_qualifier)? @return
-                          type: (_)? @return
-                          ; If using trailing return type, we need to remove the auto type at the start
-                          (#exclude! @return placeholder_type_specifier)
-                          declarator: %2) @range
-
-                        ])EOF")
-                                         .arg(functionDeclarator, pointerDeclarator));
+        ; Member functions
+        %4
+    ])EOF").arg(functionDeclarator, pointerDeclarator, functionDefinition, memberFunctionDeclaration));
+    // clang-format on
 
     auto function_to_symbol = [document](const QueryMatch &match) {
         auto kind = Symbol::Kind::Function;
@@ -106,39 +197,43 @@ auto queryFunctionSymbols(CodeDocument *const document) -> QList<Core::Symbol *>
 
     return kdalgorithms::transformed<QList<Symbol *>>(functions, function_to_symbol);
 }
+
 auto queryClassSymbols(CodeDocument *const document) -> QList<Core::Symbol *>
 {
-    auto classesAndStructs = document->query(QString(R"EOF(
-            (class_specifier
-              name: (_) @name @selectionRange
-              body: (field_declaration_list)) @range
-
-            (struct_specifier
-              name: (_) @name @selectionRange
-              body: (field_declaration_list)) @range
-    )EOF"));
+    auto classesAndStructs = document->query(classQuery(std::nullopt));
     auto class_to_symbol = [document](const QueryMatch &match) {
         return Symbol::makeSymbol(document, match, Symbol::Kind::Class);
     };
 
     return kdalgorithms::transformed<QList<Symbol *>>(classesAndStructs, class_to_symbol);
 }
-auto queryMemberSymbols(CodeDocument *const document) -> QList<Core::Symbol *>
+
+static QString membersQuery(std::optional<QString> name)
 {
     auto fieldIdentifier = "(field_identifier) @name @selectionRange";
-    auto members = document->query(QString(R"EOF(
-                                        (field_declaration
-                                          (type_qualifier)? @type @typeAndName
-                                          type: (_) @type @typeAndName
-                                          declarator: [
-                                            %1
-                                            (_ %1) @decl_type
-                                            (_ (_ %1) @decl_type) @decl_type
-                                          ] @typeAndName
-                                          ; We need to filter out functions, they are already captured
-                                          ; by the functionSymbols query
-                                          (#not_is? @decl_type function_declarator)) @range)EOF")
-                                       .arg(fieldIdentifier));
+    auto pointerDeclarator = pointerDeclaratorQuery(fieldIdentifier, "@type");
+
+    auto nameCheck = name.has_value() ? QString("(#eq? @name \"%1\")").arg(*name) : "";
+
+    // clang-format off
+    return QString(R"EOF(
+        (field_declaration
+          (type_qualifier)? @type @typeAndName
+          type: (_) @type @typeAndName
+
+          declarator: %1 @typeAndName
+
+          ; We need to filter out functions, they are already captured
+          ; by the functionSymbols query
+          (#not_is? @declaration_type function_declarator)
+          %2) @range @member
+    )EOF").arg(pointerDeclarator, nameCheck);
+    // clang-format on
+}
+
+auto queryMemberSymbols(CodeDocument *const document) -> QList<Core::Symbol *>
+{
+    auto members = document->query(membersQuery(std::nullopt));
 
     auto member_to_symbol = [document](const QueryMatch &match) {
         return Symbol::makeSymbol(document, match, Symbol::Kind::Field);
@@ -425,21 +520,7 @@ Core::QueryMatch CppDocument::queryClassDefinition(const QString &className)
 {
     LOG("CppDocument::queryClassDefinition", LOG_ARG("className", className));
 
-    // clang-format off
-    const auto classDefinitionQuery = QString(R"EOF(
-        ; query classes or structs
-        [(class_specifier
-            name: (_) @name (#like? @name "%1")
-            (base_class_clause
-                [(type_identifier) @base _]*)?
-            body: (_) @body)
-        (struct_specifier
-            name: (_) @name (#like? @name "%1")
-            (base_class_clause
-                [(type_identifier) @base _]*)?
-            body: (_) @body)]
-    )EOF").arg(className);
-    // clang-format on
+    const auto classDefinitionQuery = classQuery({className});
 
     auto matches = query(classDefinitionQuery);
     if (matches.isEmpty()) {
@@ -468,6 +549,9 @@ Core::QueryMatch CppDocument::queryClassDefinition(const QString &className)
  * - `parameter-list` - The list of parameters
  * - `parameters` - One capture per parameter, containing the type and name of the parameter, excluding comments!
  * - `body` - The body of the method (including curly-braces)
+ * - `return` - The return type of the method
+ *   - Because the C++ grammar associates pointers to the identifier and not the type this may capture multiple ranges.
+ *   - It is recommended to use `getAllJoined("return")` to get the full type.
  *
  * Please note that the return type is not available, as TreeSitter is not able to parse it easily.
  */
@@ -475,47 +559,12 @@ Core::QueryMatchList CppDocument::queryMethodDefinition(const QString &scope, co
 {
     LOG("CppDocument::queryMethodDefinition", LOG_ARG("scope", scope), LOG_ARG("functionName", functionName));
 
-    // Clang-format gets confused by the raw strings
-    // clang-format off
-    auto identifier = QString(R"EOF(
-            (identifier) @name (#eq? @name "%1")
-        )EOF").arg(functionName);
-
-    if (!scope.isEmpty()) {
-        identifier = QString(R"EOF(
-            (qualified_identifier
-                scope: (_) @scope (#like? @scope "%1")
-                %2
-            )
-        )EOF").arg(scope, identifier);
-    }
-
-    const auto queryFunctionName = QString(R"EOF(
-        (function_declarator
-            declarator: %1
-            parameters: (parameter_list
-                (parameter_declaration)* @parameters
-            ) @parameter-list
-        )
-    )EOF").arg(identifier);
-    // handle Type, Type *, Type &, Type *&, Type &* and Type **
-    const auto queryString = QString(R"EOF(
-        (function_definition
-            type: (_)? @return-type
-            [
-                declarator: (_ (_ %1 ) )
-                declarator: (_ %1 )
-                declarator: %1
-            ]
-            body: (compound_statement) @body
-        ) @definition
-    )EOF").arg(queryFunctionName);
-    //clang-format on
-
-    return query(queryString);
+    const auto functionDeclarator = functionDeclaratorQuery(scope, {functionName});
+    const auto pointerDeclaration = pointerDeclaratorQuery(functionDeclarator, "@return");
+    return query(methodDefinitionQuery(pointerDeclaration));
 }
 
-QList<QueryMatch> CppDocument::internalQueryFunctionCall(const QString& functionName, const QString& argumentsQuery)
+QList<QueryMatch> CppDocument::internalQueryFunctionCall(const QString &functionName, const QString &argumentsQuery)
 {
     const auto queryString = QString(R"EOF(
                 (call_expression
@@ -524,7 +573,8 @@ QList<QueryMatch> CppDocument::internalQueryFunctionCall(const QString& function
                             %2
                         ) @argument-list
                 ) @call
-    )EOF").arg(functionName, argumentsQuery);
+    )EOF")
+                                 .arg(functionName, argumentsQuery);
 
     return query(queryString);
 }
@@ -551,28 +601,30 @@ Core::QueryMatchList CppDocument::queryFunctionCall(const QString &functionName,
     LOG("queryFunctionCall", LOG_ARG("functionName", functionName), LOG_ARG("argumentCaptures", argumentCaptures));
 
     for (const auto &argument : argumentCaptures) {
-        if (kdalgorithms::value_in(argument, {"call", "name", "argument-list"}) ){
+        if (kdalgorithms::value_in(argument, {"call", "name", "argument-list"})) {
             spdlog::warn("CppDocument::queryFunctionCall: provided capture {} is reserved!", argument);
         }
     }
 
-    const auto arguments = kdalgorithms::transformed(argumentCaptures, [](const auto& name) {
-            return QString(". (_)+ @%1").arg(name);
-            });
+    const auto arguments = kdalgorithms::transformed(argumentCaptures, [](const auto &name) {
+        return QString(". (_)+ @%1").arg(name);
+    });
     const auto argumentsQuery = arguments.join(" \",\"\n");
 
-
-    return internalQueryFunctionCall(functionName, QString(R"EOF(
+    return internalQueryFunctionCall(functionName,
+                                     QString(R"EOF(
         . "("
         %1
         . ")" .
-    )EOF").arg(argumentsQuery));
+    )EOF")
+                                         .arg(argumentsQuery));
 }
 
 /*!
  * \qmlmethod array<QueryMatch> CppDocument::queryFunctionCall(string functionName)
  *
- * Returns the list of function calls to the function `functionName`, no matter how many arguments they were called with.
+ * Returns the list of function calls to the function `functionName`, no matter how many arguments they were called
+ * with.
  *
  * The returned QueryMatch instances will have the following captures available:
  *
@@ -581,12 +633,10 @@ Core::QueryMatchList CppDocument::queryFunctionCall(const QString &functionName,
  * - `argument-list` - The entire list of arguments, including the surroundg parentheses `()`
  * - `arguments` - Each argument provided to the function call, in order, excluding any comments
  */
-Core::QueryMatchList CppDocument::queryFunctionCall(const QString& functionName)
+Core::QueryMatchList CppDocument::queryFunctionCall(const QString &functionName)
 {
     LOG("queryFunctionCall", LOG_ARG("functionName", functionName));
-    return internalQueryFunctionCall(
-            functionName,
-            R"EOF([(_) @arguments ","]* (#exclude! @arguments comment))EOF");
+    return internalQueryFunctionCall(functionName, R"EOF([(_) @arguments ","]* (#exclude! @arguments comment))EOF");
 }
 
 /*!
@@ -610,8 +660,7 @@ bool CppDocument::insertCodeInMethod(const QString &methodName, QString code, Po
     }
 
     if (!symbol->isFunction()) {
-        spdlog::warn("CppDocument::insertCodeInMethod: {} is not a function or a method.",
-                     symbol->name());
+        spdlog::warn("CppDocument::insertCodeInMethod: {} is not a function or a method.", symbol->name());
         return false;
     }
 
@@ -684,7 +733,8 @@ bool CppDocument::insertForwardDeclaration(const QString &forwardDeclaration)
 
     const int spacePos = forwardDeclaration.indexOf(' ');
     const auto classOrStruct = QStringView(forwardDeclaration).left(spacePos);
-    if (forwardDeclaration.isEmpty() || (classOrStruct != QStringLiteral("class") && classOrStruct != QStringLiteral("struct"))) {
+    if (forwardDeclaration.isEmpty()
+        || (classOrStruct != QStringLiteral("class") && classOrStruct != QStringLiteral("struct"))) {
         spdlog::warn("CppDocument::insertForwardDeclaration: {} - should start with 'class ' or 'struct '. ",
                      forwardDeclaration);
         return false;
@@ -843,7 +893,11 @@ MessageMap CppDocument::mfcExtractMessageMap(const QString &className /* = ""*/)
  * - `declaration`: The full declaration of the method
  * - `function`: The function declaration, without the return type
  * - `name`: The name of the function
- * - `return-type`: The return type of the function without any reference/pointer specifiers (i.e. `&`/`*`)
+ * - `parameter-list`: The full parameter list of the function
+ * - `parameters`: One capture per parameter, containing the type and name of the parameter, excluding comments!
+ * - `return`: The return type of the function
+ *   - Because the C++ grammar associates pointers to the identifier and not the type this may capture multiple ranges.
+ *   - It is recommended to use `getAllJoined("return")` to get the full type.
  */
 Core::QueryMatchList CppDocument::queryMethodDeclaration(const QString &className, const QString &functionName)
 {
@@ -851,26 +905,38 @@ Core::QueryMatchList CppDocument::queryMethodDeclaration(const QString &classNam
 
     auto classQuery = queryClassDefinition(className);
 
-    // TODO: extract parameters
-    // TODO: make it works with constructors and destructors
+    if (classQuery.isEmpty()) {
+        spdlog::warn("CppDocument::queryMethodDeclaration: No class named `{}` found in `{}`", className, fileName());
+        return {};
+    }
+
+    auto functionDeclarator = functionDeclaratorQuery("", {functionName});
 
     // clang-format off
-    auto queryFunctionName = QString(R"EOF(
+    auto destructorDeclarator = QString(R"EOF(
         (function_declarator
-            declarator:(field_identifier) @name (#eq? @name "%1")
-        )
+            declarator: (destructor_name) @name (#eq? @name "%1")
+
+             ; The parameter-list of a destructor must be empty.
+             ; No point in capturing individual parameters
+            parameters: (parameter_list) @parameter-list)
     )EOF").arg(functionName);
-    // handle Type, Type *, Type &, Type *&, Type &* and Type **
+
     auto queryString = QString(R"EOF(
-        (field_declaration
-            type: (_)? @return-type
-            [
-                declarator: (_ (_ %1 ) )
-                declarator: (_ %1 )
-                declarator: %1
-            ]
-        ) @declaration
-    )EOF").arg(queryFunctionName);
+        [
+        ; normal member functions
+        %1
+
+        ; Constructor/Destructors
+        (declaration
+          declarator: [%2 %3]) @range @declaration
+        ; Constructors/Destructors with = default
+        (function_definition
+            declarator: [%2 %3]) @range @declaration
+        ]
+    )EOF").arg(methodDeclarationQuery(pointerDeclaratorQuery(functionDeclarator, "@return")),
+               functionDeclarator, // Used for constructors
+               destructorDeclarator);
     // clang-format on
 
     auto matches = classQuery.queryIn("body", queryString);
@@ -891,7 +957,9 @@ Core::QueryMatchList CppDocument::queryMethodDeclaration(const QString &classNam
  * The returned QueryMatch instance will have the following captures available:
  *
  * - `member`: The full definition of the member
- * - `type`: The type of the member, without `const` or any reference/pointer specifiers (i.e. `&`/`*`)
+ * - `type`: The type of the member
+ *   - Because the C++ grammar associates pointers to the identifier and not the type this may capture multiple ranges.
+ *   - It is recommended to use `getAllJoined("type")` to get the full type.
  * - `name`: The name of the member (should be equal to memberName)
  */
 Core::QueryMatch CppDocument::queryMember(const QString &className, const QString &memberName)
@@ -900,23 +968,7 @@ Core::QueryMatch CppDocument::queryMember(const QString &className, const QStrin
 
     auto classQuery = queryClassDefinition(className);
 
-    // clang-format off
-    auto queryMemberName = QString("(field_identifier) @name");
-    // handle Type, Type *, Type &, Type *&, Type &* and Type **
-    auto queryString = QString(R"EOF(
-        (field_declaration
-            type: (_) @type
-            [
-                declarator: (_ (_ %1 ) )
-                declarator: (_ %1 )
-                declarator: %1
-            ]
-            (#eq? @name "%2")
-        ) @member
-    )EOF").arg(queryMemberName, memberName);
-    // clang-format on
-
-    auto matches = classQuery.queryIn("body", queryString);
+    auto matches = classQuery.queryIn("body", membersQuery(memberName));
     if (matches.isEmpty()) {
         spdlog::warn("CppDocument::queryMember: No member named `{}` found in `{}`", memberName, fileName());
         return {};

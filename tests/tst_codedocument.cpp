@@ -356,7 +356,7 @@ private slots:
         Test::LogCounter counter;
         auto matches = codedocument->query(R"EOF(
                 (function_definition
-                  type: (_) @return-type
+                  type: (_) @return
                   declarator: (function_declarator
                     declarator: (identifier) @name (eq? @name "main")
                     parameters: (parameter_list
@@ -370,10 +370,10 @@ private slots:
         const auto &captures = match.captures();
         QCOMPARE(captures.size(), 4);
         QCOMPARE(match.getAll("name").size(), 1);
-        QCOMPARE(match.getAll("return-type").size(), 1);
+        QCOMPARE(match.getAll("return").size(), 1);
         QCOMPARE(match.getAll("param").size(), 2);
 
-        QCOMPARE(match.getAll("return-type").at(0).text(), "int");
+        QCOMPARE(match.getAll("return").at(0).text(), "int");
         QCOMPARE(match.getAll("param").at(0).text(), "int argc");
         QCOMPARE(match.getAll("param").at(1).text(), "char *argv[]");
     }

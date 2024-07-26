@@ -16,8 +16,8 @@ const class T *const freeConstPtr();
 const class T *const freeConstPtrImpl() { return nullptr; }
 
 class MyClass {
-  MyClass() = default();
-  ~MyClass() = default();
+  MyClass();
+  ~MyClass() = default;
 
   void *memberPtr();
   const string& memberReference();
