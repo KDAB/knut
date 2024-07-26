@@ -250,7 +250,8 @@ The returned QueryMatch instance will have the following captures available:
 
 #### <a name="queryFunctionCall"></a>array&lt;[QueryMatch](../knut/querymatch.md)> **queryFunctionCall**(string functionName)
 
-Returns the list of function calls to the function `functionName`, no matter how many arguments they were called with.
+Returns the list of function calls to the function `functionName`, no matter how many arguments they were called
+with.
 
 The returned QueryMatch instances will have the following captures available:
 
@@ -283,7 +284,9 @@ Returns a QueryMatch object containing the member definition if it exists.
 The returned QueryMatch instance will have the following captures available:
 
 - `member`: The full definition of the member
-- `type`: The type of the member, without `const` or any reference/pointer specifiers (i.e. `&`/`*`)
+- `type`: The type of the member
+  - Because the C++ grammar associates pointers to the identifier and not the type this may capture multiple ranges.
+  - It is recommended to use `getAllJoined("type")` to get the full type.
 - `name`: The name of the member (should be equal to memberName)
 
 #### <a name="queryMethodDeclaration"></a>array&lt;[QueryMatch](../knut/querymatch.md)> **queryMethodDeclaration**(string className, string functionName)
@@ -298,7 +301,11 @@ The returned QueryMatch instances contain the following captures:
 - `declaration`: The full declaration of the method
 - `function`: The function declaration, without the return type
 - `name`: The name of the function
-- `return-type`: The return type of the function without any reference/pointer specifiers (i.e. `&`/`*`)
+- `parameter-list`: The full parameter list of the function
+- `parameters`: One capture per parameter, containing the type and name of the parameter, excluding comments!
+- `return`: The return type of the function
+  - Because the C++ grammar associates pointers to the identifier and not the type this may capture multiple ranges.
+  - It is recommended to use `getAllJoined("return")` to get the full type.
 
 #### <a name="queryMethodDefinition"></a>array&lt;[QueryMatch](../knut/querymatch.md)> **queryMethodDefinition**(string scope, string methodName)
 
@@ -313,6 +320,9 @@ Every QueryMatch returned by this function will have the following captures avai
 - `parameter-list` - The list of parameters
 - `parameters` - One capture per parameter, containing the type and name of the parameter, excluding comments!
 - `body` - The body of the method (including curly-braces)
+- `return` - The return type of the method
+  - Because the C++ grammar associates pointers to the identifier and not the type this may capture multiple ranges.
+  - It is recommended to use `getAllJoined("return")` to get the full type.
 
 Please note that the return type is not available, as TreeSitter is not able to parse it easily.
 
