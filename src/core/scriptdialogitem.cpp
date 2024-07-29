@@ -15,7 +15,13 @@
 #include "settings.h"
 #include "utils/log.h"
 
+#include <definition.h>
+#include <repository.h>
+#include <syntaxhighlighter.h>
+#include <theme.h>
+
 #include <QAbstractItemModel>
+#include <QApplication>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QCompleter>
@@ -29,10 +35,12 @@
 #include <QJsonValue>
 #include <QLineEdit>
 #include <QMessageBox>
+#include <QPlainTextEdit>
 #include <QPushButton>
 #include <QQmlContext>
 #include <QRadioButton>
 #include <QSpinBox>
+#include <QTextEdit>
 #include <QToolButton>
 #include <QUiLoader>
 #include <QVBoxLayout>
@@ -552,6 +560,22 @@ void ScriptDialogItem::createProperties(QWidget *dialogWidget)
                 completer->setModel(comboBox->model());
                 comboBox->setCompleter(completer);
             }
+        } else if (auto textEdit = qobject_cast<QTextEdit *>(widget)) {
+            m_data->addProperty(widget->objectName().toLocal8Bit(), "QString", QMetaType::QString,
+                                textEdit->toPlainText());
+            connect(textEdit, &QTextEdit::textChanged, this, [this, textEdit]() {
+                m_data->setProperty(sender()->objectName().toLocal8Bit(), textEdit->toPlainText());
+            });
+            m_data->addProperty((widget->objectName() + "Syntax").toLocal8Bit(), "QString", QMetaType::QString,
+                                QString());
+        } else if (auto plainTextEdit = qobject_cast<QPlainTextEdit *>(widget)) {
+            m_data->addProperty(widget->objectName().toLocal8Bit(), "QString", QMetaType::QString,
+                                plainTextEdit->toPlainText());
+            connect(plainTextEdit, &QPlainTextEdit::textChanged, this, [this, plainTextEdit]() {
+                m_data->setProperty(sender()->objectName().toLocal8Bit(), plainTextEdit->toPlainText());
+            });
+            m_data->addProperty((widget->objectName() + "Syntax").toLocal8Bit(), "QString", QMetaType::QString,
+                                QString());
         }
     }
 
@@ -580,6 +604,16 @@ void ScriptDialogItem::changeValue(const QString &key, const QVariant &value)
     } else if (auto comboBox = qobject_cast<QComboBox *>(widget)) {
         comboBox->setCurrentText(value.toString());
         return;
+    } else if (auto textEdit = qobject_cast<QTextEdit *>(widget)) {
+        QString valueString = value.toString();
+        if (textEdit->toPlainText() != valueString)
+            textEdit->setPlainText(value.toString());
+        return;
+    } else if (auto plainTextEdit = qobject_cast<QPlainTextEdit *>(widget)) {
+        QString valueString = value.toString();
+        if (plainTextEdit->toPlainText() != valueString)
+            plainTextEdit->setPlainText(value.toString());
+        return;
     }
 
     // It may be a combobox model
@@ -593,11 +627,37 @@ void ScriptDialogItem::changeValue(const QString &key, const QVariant &value)
         return;
     }
 
+    // It may be a syntax rule
+    if (key.endsWith("Syntax")) {
+        if (auto textEdit = findChild<QTextEdit *>(key.left(key.length() - 6))) {
+            applySyntaxHighlighting(textEdit->document(), value.toString());
+        } else if (auto plainTextEdit = findChild<QPlainTextEdit *>(key.left(key.length() - 6))) {
+            applySyntaxHighlighting(plainTextEdit->document(), value.toString());
+        }
+        return;
+    }
+
     if (!widget) {
         spdlog::warn("No widget found for the key '{}'.", key.toStdString());
     } else {
         spdlog::warn("Unsupported widget type '{}' for the key '{}'.", widget->metaObject()->className(),
                      key.toStdString());
+    }
+}
+
+void ScriptDialogItem::applySyntaxHighlighting(QTextDocument *document, const QString &syntax)
+{
+    if (!syntax.isEmpty()) {
+        auto highlighter = new KSyntaxHighlighting::SyntaxHighlighter(document);
+        static KSyntaxHighlighting::Repository repository;
+        highlighter->setTheme(repository.themeForPalette(QApplication::palette()));
+        const auto definition = repository.definitionForFileName("." + syntax);
+        if (!definition.isValid()) {
+            qWarning() << "No valid syntax definition for file extension" << syntax;
+            delete highlighter;
+            return;
+        }
+        highlighter->setDefinition(definition);
     }
 }
 

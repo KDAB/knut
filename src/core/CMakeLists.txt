@@ -117,6 +117,7 @@ target_link_libraries(
   PUBLIC nlohmann_json::nlohmann_json
          pugixml::pugixml
          kdalgorithms
+         KF5SyntaxHighlighting
          Qt::Core
          Qt::CorePrivate
          Qt::Qml

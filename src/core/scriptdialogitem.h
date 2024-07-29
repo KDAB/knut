@@ -18,6 +18,11 @@
 #include <vector>
 
 class ScriptProgressDialog;
+class QTextDocument;
+
+namespace KSyntaxHighlighting {
+class SyntaxHighlighter;
+}
 
 namespace Core {
 
@@ -84,6 +89,8 @@ private:
     static QObject *atChild(QQmlListProperty<QObject> *list, qsizetype index);
     static qsizetype countChildren(QQmlListProperty<QObject> *list);
     static void clearChildren(QQmlListProperty<QObject> *list);
+
+    void applySyntaxHighlighting(QTextDocument *document, const QString &syntax);
 
 private:
     DynamicObject *m_data;
