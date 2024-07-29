@@ -50,7 +50,6 @@ static constexpr char SettingsName[] = "knut.json";
 /*!
  * \qmltype Settings
  * \brief Singleton for accessing and editing persistent settings.
- * \inqmlmodule Knut
  * \ingroup Utilities
  *
  * The settings are stored in a json file, and could be:

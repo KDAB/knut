@@ -38,7 +38,6 @@ namespace Core {
 /*!
  * \qmltype Project
  * \brief Singleton for handling the current project.
- * \inqmlmodule Knut
  * The `Project` object is not meant to open multiple projects, but only open one.
  */
 

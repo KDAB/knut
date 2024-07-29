@@ -21,7 +21,6 @@ namespace Core {
 /*!
  * \qmltype RangeMark
  * \brief Keeps track of a range within a text document.
- * \inqmlmodule Knut
  * \ingroup TextDocument
  * \sa TextDocument
  *

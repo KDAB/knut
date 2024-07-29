@@ -15,7 +15,6 @@ namespace Core {
 /*!
  * \qmltype QFileInfoValueType
  * \brief Wrapper around the `QFileInfo` class.
- * \inqmlmodule Knut
  * \ingroup Utilities/@last
  * \sa FileInfo
  *

@@ -103,6 +103,10 @@ Data::TypeBlock SourceParser::parseType(QTextStream &stream, QString line)
             parseBlock(line, currentType);
     }
 
+    if (currentType.qmlModule.isEmpty()) {
+        currentType.qmlModule = "Knut";
+    }
+
     return currentType;
 }
 

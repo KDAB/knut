@@ -19,7 +19,6 @@ namespace Core {
 /*!
  * \qmltype File
  * \brief Singleton with methods to handle files.
- * \inqmlmodule Knut
  * \ingroup Utilities
  *
  * The `File` singleton implements most of the static methods from `QFile`, check
