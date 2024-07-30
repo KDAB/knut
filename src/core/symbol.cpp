@@ -24,7 +24,6 @@ namespace Core {
 /*!
  * \qmltype Symbol
  * \brief Represent a symbol in the current file
- * \inqmlmodule Knut
  * \ingroup CodeDocument
  */
 

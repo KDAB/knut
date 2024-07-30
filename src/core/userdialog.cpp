@@ -22,7 +22,6 @@ namespace Core {
 /*!
  * \qmltype UserDialog
  * \brief Singleton with methods to display common dialog to the user.
- * \inqmlmodule Knut
  * \ingroup Utilities
  *
  * The `UserDialog` singleton provides methods to display common dialog that could be used in

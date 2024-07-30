@@ -19,7 +19,6 @@ namespace Core {
 /*!
  * \qmltype FunctionArgument
  * \brief Represents an argument to be passed to the function
- * \inqmlmodule Knut
  * \ingroup CodeDocument
  * \todo
  * \sa FunctionSymbol
@@ -37,7 +36,6 @@ namespace Core {
 /*!
  * \qmltype FunctionSymbol
  * \brief Represents a function or a method in the current file
- * \inqmlmodule Knut
  * \ingroup CodeDocument
  * \todo
  */

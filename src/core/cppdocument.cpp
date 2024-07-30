@@ -277,7 +277,6 @@ namespace Core {
 /*!
  * \qmltype CppDocument
  * \brief Document object for a C++ file (source or header)
- * \inqmlmodule Knut
  * \ingroup CppDocument/@first
  * \inherits CodeDocument
  */

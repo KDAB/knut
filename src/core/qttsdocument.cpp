@@ -22,7 +22,6 @@ namespace Core {
 /*!
  * \qmltype QtTsDocument
  * \brief Provides access to the content of a Ts file (Qt linguist).
- * \inqmlmodule Knut
  * \ingroup QtTsDocument/@first
  */
 
@@ -288,7 +287,6 @@ QList<QtTsMessage *> QtTsDocument::messages() const
 /*!
  * \qmltype QtTsMessage
  * \brief Provides access to message.
- * \inqmlmodule Knut
  * \ingroup QtTsDocument
  * \sa QtTsDocument
  */

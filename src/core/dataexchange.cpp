@@ -18,7 +18,6 @@ namespace Core {
 /*!
  * \qmltype DataExchangeEntry
  * \brief Refers to a single entry within the `DoDataExchange`
- * \inqmlmodule Knut
  * \ingroup CppDocument
  * \sa DataExchange
  *
@@ -102,7 +101,6 @@ static QList<DataValidationEntry> queryDDVCalls(const QueryMatch &ddxFunction)
 /*!
  * \qmltype DataExchange
  * \brief DataExchange entries in a MFC C++ document.
- * \inqmlmodule Knut
  * \ingroup CppDocument
  *
  * The `DataExchange` object represents the data contained in the MFC `DoDataExchange` method.

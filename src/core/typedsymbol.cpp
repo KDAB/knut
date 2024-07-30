@@ -7,7 +7,6 @@ namespace Core {
 /*!
  * \qmltype TypedSymbol
  * \brief Represents a symbol with a type
- * \inqmlmodule Knut
  * \ingroup CodeDocument
  *
  * This symbol has a type associated with it, like a variable or a member of a class.

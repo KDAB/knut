@@ -17,7 +17,6 @@ namespace Core {
 /*!
  * \qmltype ClassSymbol
  * \brief Represents a class in the current file
- * \inqmlmodule Knut
  * \ingroup CodeDocument
  * \todo
  */

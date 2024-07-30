@@ -23,7 +23,6 @@ namespace Core {
 /*!
  * \qmltype QtUiDocument
  * \brief Provides access to the content of a Ui file (Qt designer file).
- * \inqmlmodule Knut
  * \ingroup QtUiDocument/@first
  */
 
@@ -171,7 +170,6 @@ Utils::QtUiWriter *QtUiDocument::uiWriter()
 /*!
  * \qmltype QtUiWidget
  * \brief Provides access to widget attributes in the ui files.
- * \inqmlmodule Knut
  * \ingroup QtUiDocument
  * \sa QtUiDocument
  */
