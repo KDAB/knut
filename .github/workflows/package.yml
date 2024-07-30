@@ -1,0 +1,91 @@
+# SPDX-FileCopyrightText: 2024 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+#
+# SPDX-License-Identifier: MIT
+
+name: package knut
+
+on:
+  workflow_run:
+    workflows:
+      - knut tests
+    types:
+      - completed
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Windows
+            os: windows-latest
+            compiler_cache_path: C:\Users\runneradmin\AppData\Local\Mozilla\sccache\cache
+            cmake_preset: ci
+
+    env:
+      SCCACHE_CACHE_SIZE: "2G"
+
+    steps:
+      - name: Inspect Environment Variables
+        run: env
+
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Checkout submodules
+        run: |
+          git submodule update --init --force --depth=1 --recursive -- 3rdparty/*
+
+      - name: Install ninja-build tool
+        uses: aseprite/get-ninja@main
+
+      - name: Install Qt 6
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: 6.5.* # 6.5 is the current LTS (as of 2024-06-06)
+          cache: true
+
+      - name: Make sure MSVC is found when Ninja generator is in use
+        uses: ilammy/msvc-dev-cmd@v1
+
+      # Restore the compiler cache from the testing build
+      - name: "Restore Compiler Cache"
+        id: compiler-cache-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ matrix.compiler_cache_path }}
+          key: ${{ matrix.os }}_${{ matrix.cmake_preset }}_compiler_cache
+
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@v0.0.3
+
+      - name: Configure project
+        run: cmake -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache --preset=${{ matrix.cmake_preset }}
+
+      - name: Build Project
+        run: cmake --build --preset=${{ matrix.cmake_preset }}
+
+      - name: Create package
+        run: |
+          mkdir deploy
+          cp build-${{ matrix.cmake_preset }}/AppxManifest.xml deploy
+          cp src/gui/gui/icons/knut-44.png deploy
+          cp src/gui/gui/icons/knut-50.png deploy
+          cp src/gui/gui/icons/knut-150.png deploy
+          cp build-${{ matrix.cmake_preset }}/bin/knut.exe deploy
+          windeployqt --release --dir deploy deploy/knut.exe
+          makeappx pack -o -d deploy -p knut-${{ matrix.os }}-${{ github.head_ref || github.ref_name }}.msix
+
+      - name: Output the package as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: knut-msix-${{ matrix.os }}-${{ github.head_ref || github.ref_name }}
+          path: knut-${{ matrix.os }}-${{ github.head_ref || github.ref_name }}.msix
+          overwrite: true

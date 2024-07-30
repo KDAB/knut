@@ -194,3 +194,7 @@ else()
     COMMENT "Update documentation"
     SOURCES ${DOCS_FILES})
 endif()
+
+if(WIN32)
+    configure_file(AppxManifest.xml.in AppxManifest.xml @ONLY)
+endif()
