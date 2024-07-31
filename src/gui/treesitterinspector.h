@@ -18,7 +18,6 @@
 #include <QSyntaxHighlighter>
 
 namespace treesitter {
-class Transformation;
 class Predicates;
 }
 
@@ -62,9 +61,6 @@ private:
     void changeCursor();
     void changeQuery();
     void changeQueryState();
-    void previewTransformation();
-    void runTransformation();
-    void prepareTransformation(const std::function<void(treesitter::Transformation &transformation)> &runFunction);
 
     std::unique_ptr<treesitter::Predicates> makePredicates();
 
