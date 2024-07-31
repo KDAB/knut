@@ -12,6 +12,7 @@
 #include "core/codedocument.h"
 #include "core/logger.h"
 #include "core/project.h"
+#include "guisettings.h"
 #include "transformpreviewdialog.h"
 #include "treesitter/languages.h"
 #include "treesitter/predicates.h"
@@ -19,6 +20,9 @@
 #include "ui_treesitterinspector.h"
 #include "utils/log.h"
 
+#include <KSyntaxHighlighting/Definition>
+#include <KSyntaxHighlighting/Repository>
+#include <KSyntaxHighlighting/Theme>
 #include <QMessageBox>
 #include <QPalette>
 #include <QTextEdit>
@@ -26,12 +30,17 @@
 namespace Gui {
 
 QueryErrorHighlighter::QueryErrorHighlighter(QTextDocument *parent)
-    : QSyntaxHighlighter(parent)
+    : KSyntaxHighlighting::SyntaxHighlighter(parent)
 {
 }
 
 void QueryErrorHighlighter::highlightBlock(const QString &text)
 {
+    KSyntaxHighlighting::SyntaxHighlighter::highlightBlock(text);
+
+    // Note that the previousBlockState call doesn't conflict with the KSyntaxHighlighting::SyntaxHighlighter, because
+    // that uses userData instead. If the SyntaxHighlighter changes that, we may need to inherit from
+    // AbstractSyntaxHighlighter and reimplement all of the SyntaxHighlighter logic ourselves.
     auto previousLength = previousBlockState();
     if (previousLength == -1) {
         previousLength = 0;
@@ -84,10 +93,20 @@ TreeSitterInspector::TreeSitterInspector(QWidget *parent)
     , m_errorHighlighter(nullptr)
     , m_document(nullptr)
 {
+    static KSyntaxHighlighting::Repository repository;
+
     setAttribute(Qt::WA_DeleteOnClose);
 
     ui->setupUi(this);
     m_errorHighlighter = new QueryErrorHighlighter(ui->query->document());
+    auto theme = GuiSettings::instance()->theme();
+    if (theme.isEmpty())
+        m_errorHighlighter->setTheme(repository.themeForPalette(QApplication::palette()));
+    else
+        m_errorHighlighter->setTheme(repository.theme(theme));
+    // For now we simply use the highlighting for "scheme", which is close enough in many cases.
+    // However, we could consider implementing our own highlighting in the future.
+    m_errorHighlighter->setDefinition(repository.definitionForMimeType("text/x-scheme"));
 
     connect(Core::Project::instance(), &Core::Project::currentDocumentChanged, this,
             &TreeSitterInspector::changeCurrentDocument);

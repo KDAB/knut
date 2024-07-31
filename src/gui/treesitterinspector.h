@@ -13,6 +13,7 @@
 #include "treesitter/parser.h"
 #include "treesittertreemodel.h"
 
+#include <KSyntaxHighlighting/SyntaxHighlighter>
 #include <QDialog>
 #include <QSyntaxHighlighter>
 
@@ -31,7 +32,7 @@ namespace Ui {
     class TreeSitterInspector;
 }
 
-class QueryErrorHighlighter : public QSyntaxHighlighter
+class QueryErrorHighlighter : public KSyntaxHighlighting::SyntaxHighlighter
 {
     Q_OBJECT
 public:
