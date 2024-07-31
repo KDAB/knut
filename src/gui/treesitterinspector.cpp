@@ -13,10 +13,7 @@
 #include "core/logger.h"
 #include "core/project.h"
 #include "guisettings.h"
-#include "transformpreviewdialog.h"
-#include "treesitter/languages.h"
 #include "treesitter/predicates.h"
-#include "treesitter/transformation.h"
 #include "ui_treesitterinspector.h"
 #include "utils/log.h"
 
@@ -119,11 +116,6 @@ TreeSitterInspector::TreeSitterInspector(QWidget *parent)
     connect(ui->query, &QPlainTextEdit::textChanged, this, &TreeSitterInspector::changeQuery);
 
     changeCurrentDocument(Core::Project::instance()->currentDocument());
-
-    connect(ui->previewButton, &QPushButton::clicked, this, &TreeSitterInspector::previewTransformation);
-    connect(ui->runButton, &QPushButton::clicked, this, &TreeSitterInspector::runTransformation);
-
-    connect(ui->enableUnnamed, &QCheckBox::toggled, this, &TreeSitterInspector::showUnnamedChanged);
 }
 
 TreeSitterInspector::~TreeSitterInspector()
@@ -257,23 +249,7 @@ QString TreeSitterInspector::preCheckTransformation() const
         return tr("You need to specify a query!");
     }
 
-    if (ui->target->toPlainText().isEmpty()) {
-        return tr("You need to specify a transformation target!");
-    }
-
     return {};
-}
-
-void TreeSitterInspector::previewTransformation()
-{
-    prepareTransformation([this](auto &transformation) {
-        auto result = transformation.run();
-
-        TransformPreviewDialog dialog(m_document, result, transformation.replacementsMade(), this);
-        if (dialog.exec() == QDialog::Accepted) {
-            m_document->setText(result);
-        }
-    });
 }
 
 QString TreeSitterInspector::highlightQueryError(const treesitter::Query::Error &error) const
@@ -281,52 +257,6 @@ QString TreeSitterInspector::highlightQueryError(const treesitter::Query::Error 
     return tr("<span style='color:red'><b>%1</b> at character: %2</span>")
         .arg(error.description)
         .arg(error.utf8_offset);
-}
-
-void TreeSitterInspector::runTransformation()
-{
-    prepareTransformation([this](auto &transformation) {
-        m_document->setText(transformation.run());
-
-        QMessageBox msgBox;
-        msgBox.setText(tr("%1 Replacements made").arg(transformation.replacementsMade()));
-    });
-}
-
-void TreeSitterInspector::prepareTransformation(
-    const std::function<void(treesitter::Transformation &transformation)> &runFunction)
-{
-    const auto errorMessage = preCheckTransformation();
-    if (!errorMessage.isEmpty()) {
-        QMessageBox msgBox;
-        msgBox.setText(errorMessage);
-        msgBox.setIcon(QMessageBox::Critical);
-        msgBox.exec();
-        return;
-    }
-
-    try {
-        auto lang = treesitter::Parser::getLanguage(m_document->type());
-        auto query = std::make_shared<treesitter::Query>(lang, m_queryText);
-        treesitter::Parser parser(lang);
-
-        treesitter::Transformation transformation(m_document->text(), std::move(parser), query,
-                                                  ui->target->toPlainText());
-
-        runFunction(transformation);
-    } catch (treesitter::Query::Error &error) {
-        QMessageBox msgBox;
-        msgBox.setText(tr("Error in Query"));
-        msgBox.setInformativeText(highlightQueryError(error));
-        msgBox.setIcon(QMessageBox::Critical);
-        msgBox.exec();
-    } catch (treesitter::Transformation::Error &error) {
-        QMessageBox msgBox;
-        msgBox.setText(tr("Error performing Transformation"));
-        msgBox.setInformativeText(error.description);
-        msgBox.setIcon(QMessageBox::Critical);
-        msgBox.exec();
-    }
 }
 
 std::unique_ptr<treesitter::Predicates> TreeSitterInspector::makePredicates()
