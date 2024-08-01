@@ -20,6 +20,7 @@
 #include <KSyntaxHighlighting/Definition>
 #include <KSyntaxHighlighting/Repository>
 #include <KSyntaxHighlighting/Theme>
+#include <QFileDialog>
 #include <QMessageBox>
 #include <QPalette>
 #include <QTextEdit>
@@ -115,12 +116,60 @@ TreeSitterInspector::TreeSitterInspector(QWidget *parent)
 
     connect(ui->query, &QPlainTextEdit::textChanged, this, &TreeSitterInspector::changeQuery);
 
+    connect(ui->saveButton, &QPushButton::clicked, this, &TreeSitterInspector::saveToFile);
+    connect(ui->loadButton, &QPushButton::clicked, this, &TreeSitterInspector::loadFromFile);
+
+    connect(ui->enableUnnamed, &QCheckBox::toggled, this, &TreeSitterInspector::showUnnamedChanged);
+
     changeCurrentDocument(Core::Project::instance()->currentDocument());
 }
 
 TreeSitterInspector::~TreeSitterInspector()
 {
     delete ui;
+}
+
+void TreeSitterInspector::saveToFile()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save Query"), "", tr("Query Files (*.scm)"));
+
+    QFile file(fileName);
+    // Note: at least on Linux, the file dialog will already warn if the file exists, so no need
+    // to do that manually.
+
+    if (!file.open(QIODevice::WriteOnly)) {
+        QMessageBox::warning(this, tr("Error"), tr("Could not open file to write!"));
+        return;
+    }
+
+    QTextStream out(&file);
+    out << ui->query->toPlainText() << Qt::flush;
+}
+
+void TreeSitterInspector::loadFromFile()
+{
+    if (!ui->query->toPlainText().isEmpty()) {
+        auto result =
+            QMessageBox::warning(this, tr("Warning"), tr("Loading a query will overwrite the existing one, continue?"),
+                                 QMessageBox::Ok | QMessageBox::Cancel);
+        if (result != QMessageBox::Ok) {
+            return;
+        }
+    }
+
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), QString(), tr("Query Files (*.scm)"));
+    if (fileName.isNull()) {
+        return;
+    }
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly)) {
+        QMessageBox::warning(this, tr("Error"), tr("Could not open file!"));
+        return;
+    }
+
+    QTextStream in(&file);
+    ui->query->setPlainText(in.readAll());
 }
 
 void TreeSitterInspector::changeQueryState()
