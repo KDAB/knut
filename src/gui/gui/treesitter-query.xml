@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE language
+[
+  <!ENTITY xmlattrs "\s+([^&quot;/>]++|&quot;[^&quot;]*+&quot;)*+">
+  <!ENTITY tab      "&#009;">
+  <!ENTITY regex    "(?:[^\\(\[/]++|\\.|\[\^?\]?([^\\\[\]]++|\\.|\[(:[^:]+:\])?)++\]|\((?R)\))+">
+
+  <!ENTITY initial_ascii_set "a-zA-Z!$&#37;&amp;*/:&lt;=&gt;?~_^">
+  <!ENTITY initial_unicode_set "\p{Lu}\p{Ll}\p{Lt}\p{Lm}\p{Lo}\p{Mn}\p{Nl}\p{No}\p{Pd}\p{Pc}\p{Po}\p{Sc}\p{Sm}\p{Sk}\p{So}\p{Co}">
+  <!ENTITY initial_others "\\x[0-9a-fA-F]++;|(?![\x01-\x7f])[&initial_unicode_set;]">
+  <!ENTITY initial "(?:[&initial_ascii_set;]|&initial_others;)">
+  <!ENTITY subsequent "(?:[&initial_ascii_set;0-9-@.+\p{Nd}\p{Mc}\p{Me}]|&initial_others;)">
+  <!ENTITY symbol "(?:&initial;&subsequent;*+)">
+]>
+<!--
+Based on the scheme.xml syntax shipped with KSyntaxHighlighting by Dominik Haumann (dhaumann@kde.org).
+-->
+<language version="1" kateversion="5.79" name="Tree-Sitter Query" section="Scripts" extensions="*.scm" mimetype="text/x-treesitter-query" author="Leon Matthes (leon.matthes@kdab.com) and Dominik Haumann (dhaumann@kde.org)" license="MIT" priority="5" indenter="lisp">
+  <highlighting>
+    <list name="operators">
+      <item>!</item>
+      <item>_</item>
+      <item>.</item>
+      <item>*</item>
+      <item>?</item>
+      <item>+</item>
+    </list>
+    <contexts>
+      <context name="Level0" attribute="Normal" lineEndContext="#stay">
+        <DetectChar attribute="Brackets1" context="Level1" char="("/>
+        <IncludeRules context="Default"/>
+      </context>
+
+      <context name="Default" attribute="Normal" lineEndContext="#stay">
+        <DetectSpaces/>
+        <DetectChar attribute="Predicate" context="hash" char="#"/>
+        <DetectChar attribute="Capture" context="Capture" char="@"/>
+        <DetectChar attribute="Comment" context="semicolon" char=";" lookAhead="1"/>
+        <DetectChar attribute="String" context="String" char="&quot;"/>
+        <AnyChar attribute="Other Brackets" context="#stay" String="{}[]"/>
+        <!-- Negated fields are immediately followed by another character, so can't be matched as keywords -->
+        <DetectChar attribute="Operator" context="#stay" char="!"/>
+        <keyword attribute="Operator" context="#stay" String="operators"/>
+        <RegExpr attribute="Normal" context="#stay" String="&symbol;"/>
+      </context>
+
+
+      <context name="semicolon" attribute="Comment" lineEndContext="#stay" fallthroughContext="#pop!comment">
+        <RegExpr attribute="Region Marker" context="#pop" String=";+\s*BEGIN\b.*" beginRegion="region"/>
+        <RegExpr attribute="Region Marker" context="#pop" String=";+\s*END\b.*" endRegion="region"/>
+      </context>
+      <context name="comment" attribute="Comment" lineEndContext="#pop">
+        <DetectSpaces/>
+        <IncludeRules context="##Comments"/>
+        <DetectIdentifier/>
+      </context>
+
+      <!-- Predicates start with #, e.g.: (#eq? ...) -->
+      <context name="hash" attribute="Predicate" lineEndContext="#pop" fallthroughContext="#pop">
+        <RegExpr attribute="Predicate" context="#pop" String="[_a-zA-Z\?\!]*"/>
+      </context>
+
+      <!-- Captures start with @, e.g.: @foo -->
+      <context name="Capture" attribute="Capture" lineEndContext="#pop" fallthroughContext="#pop">
+        <RegExpr attribute="Capture" context="#pop" String="[a-zA-Z\?\!\._-]*"/>
+      </context>
+
+      <context name="String" attribute="String" lineEndContext="#stay">
+        <DetectChar attribute="String" context="#pop" char="&quot;"/>
+        <DetectChar attribute="Char" context="EscapeString" char="\"/>
+      </context>
+      <context name="EscapeString" attribute="Char" lineEndContext="#pop" fallthroughContext="#pop">
+        <AnyChar attribute="Char" context="#pop" String="abfnrtv&quot;\"/>
+        <AnyChar attribute="Char" context="MultiLineString" String="&tab; "/>
+        <RegExpr attribute="Char" context="#pop" String="[xXu][0-9a-fA-F]+;|\\[0-7]{3}|(?:[MC]-|\^)?."/>
+      </context>
+      <context name="MultiLineString" attribute="String" lineEndContext="#stay" fallthroughContext="#pop#pop">
+        <DetectSpaces/>
+      </context>
+
+
+      <context name="Level1" attribute="Normal" lineEndContext="#stay">
+        <DetectChar attribute="Brackets2" context="Level2" char="("/>
+        <DetectChar attribute="Brackets1" context="#pop" char=")"/>
+        <IncludeRules context="Default"/>
+      </context>
+      <context name="Level2" attribute="Normal" lineEndContext="#stay">
+        <DetectChar attribute="Brackets3" context="Level3" char="("/>
+        <DetectChar attribute="Brackets2" context="#pop" char=")"/>
+        <IncludeRules context="Default"/>
+      </context>
+      <context name="Level3" attribute="Normal" lineEndContext="#stay">
+        <DetectChar attribute="Brackets4" context="Level4" char="("/>
+        <DetectChar attribute="Brackets3" context="#pop" char=")"/>
+        <IncludeRules context="Default"/>
+      </context>
+      <context name="Level4" attribute="Normal" lineEndContext="#stay">
+        <DetectChar attribute="Brackets5" context="Level5" char="("/>
+        <DetectChar attribute="Brackets4" context="#pop" char=")"/>
+        <IncludeRules context="Default"/>
+      </context>
+      <context name="Level5" attribute="Normal" lineEndContext="#stay">
+        <DetectChar attribute="Brackets6" context="Level6" char="("/>
+        <DetectChar attribute="Brackets5" context="#pop" char=")"/>
+        <IncludeRules context="Default"/>
+      </context>
+      <context name="Level6" attribute="Normal" lineEndContext="#stay">
+        <DetectChar attribute="Brackets1" context="Level1" char="("/>
+        <DetectChar attribute="Brackets6" context="#pop" char=")"/>
+        <IncludeRules context="Default"/>
+      </context>
+    </contexts>
+    <itemDatas>
+      <itemData name="Normal"      defStyleNum="dsNormal"/>
+      <itemData name="Capture"     defStyleNum="dsVariable" spellChecking="0"/>
+      <itemData name="Predicate"   defStyleNum="dsFunction" spellChecking="0"/>
+      <itemData name="Operator"    defStyleNum="dsOperator" spellChecking="0"/>
+      <itemData name="Char"        defStyleNum="dsChar" spellChecking="0"/>
+      <itemData name="String"      defStyleNum="dsString"/>
+      <itemData name="Comment"     defStyleNum="dsComment"/>
+      <itemData name="Region Marker" defStyleNum="dsRegionMarker"/>
+      <itemData name="Brackets1"   defStyleNum="dsNormal" color="#ff0000" bold="1" spellChecking="0"/>
+      <itemData name="Brackets2"   defStyleNum="dsNormal" color="#ff8800" bold="1" spellChecking="0"/>
+      <itemData name="Brackets3"   defStyleNum="dsNormal" color="#888800" bold="1" spellChecking="0"/>
+      <itemData name="Brackets4"   defStyleNum="dsNormal" color="#008800" bold="1" spellChecking="0"/>
+      <itemData name="Brackets5"   defStyleNum="dsNormal" color="#3689e6" bold="1" spellChecking="0"/> <!-- #000088 -->
+      <itemData name="Brackets6"   defStyleNum="dsNormal" color="#a100a1" bold="1" spellChecking="0"/> <!-- #880088 -->
+      <itemData name="Other Brackets" defStyleNum="dsOperator" spellChecking="0"/>
+    </itemDatas>
+  </highlighting>
+  <general>
+    <keywords casesensitive="1" weakDeliminator="-+*?!&lt;&gt;=/:.,\&amp;" additionalDeliminator="&quot;;#"/>
+    <comments>
+      <comment name="singleLine" start=";;"/>
+      <comment name="multiLine" start="#|" end="|#" region="comment"/>
+    </comments>
+  </general>
+</language>
+<!-- kate: replace-tabs on; tab-width 2; indent-width 2; -->
