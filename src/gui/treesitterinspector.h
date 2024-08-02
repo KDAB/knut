@@ -54,6 +54,9 @@ public:
     ~TreeSitterInspector() override;
 
 private:
+    void saveToFile();
+    void loadFromFile();
+
     void showUnnamedChanged();
     void changeCurrentDocument(Core::Document *document);
     void setDocument(Core::CodeDocument *document);
