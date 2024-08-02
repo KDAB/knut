@@ -96,6 +96,7 @@ TreeSitterInspector::TreeSitterInspector(QWidget *parent)
     setAttribute(Qt::WA_DeleteOnClose);
 
     ui->setupUi(this);
+
     m_errorHighlighter = new QueryErrorHighlighter(ui->query->document());
     auto theme = GuiSettings::instance()->theme();
     if (theme.isEmpty())
@@ -104,7 +105,11 @@ TreeSitterInspector::TreeSitterInspector(QWidget *parent)
         m_errorHighlighter->setTheme(repository.theme(theme));
     // For now we simply use the highlighting for "scheme", which is close enough in many cases.
     // However, we could consider implementing our own highlighting in the future.
-    m_errorHighlighter->setDefinition(repository.definitionForMimeType("text/x-scheme"));
+    auto definition = repository.definitionForMimeType("text/x-treesitter-query");
+    if (!definition.isValid()) {
+        spdlog::warn("Could not find definition for treesitter-query");
+    }
+    m_errorHighlighter->setDefinition(definition);
 
     connect(Core::Project::instance(), &Core::Project::currentDocumentChanged, this,
             &TreeSitterInspector::changeCurrentDocument);
