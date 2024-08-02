@@ -17,6 +17,7 @@
 #include <QSharedPointer>
 #include <QString>
 #include <functional>
+#include <nlohmann/json.hpp>
 
 namespace Core {
 
@@ -36,7 +37,7 @@ public:
 
     // Run a script
     using EndScriptFunc = std::function<void()>;
-    QVariant runScript(const QString &fileName, const EndScriptFunc &endCallback = {});
+    QVariant runScript(const QString &fileName, nlohmann::json &&data, const EndScriptFunc &endCallback = {});
 
     bool hasError() const { return m_hasError; }
     QList<QQmlError> errors() const { return m_errors; }
@@ -52,7 +53,7 @@ public:
 private:
     QQmlEngine *getEngine(const QString &fileName);
     QVariant runJavascript(const QString &fileName, QQmlEngine *engine);
-    QVariant runQml(const QString &fileName, QQmlEngine *engine);
+    QVariant runQml(const QString &fileName, nlohmann::json &&data, QQmlEngine *engine);
     void filterErrors(const QQmlComponent &component);
 
 private:

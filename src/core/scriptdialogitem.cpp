@@ -24,6 +24,9 @@
 #include <QDoubleSpinBox>
 #include <QFile>
 #include <QFileInfo>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonValue>
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QPushButton>
@@ -143,6 +146,29 @@ ScriptDialogItem::ScriptDialogItem(QWidget *parent)
     m_data->registerDataChangedCallback([this](const QString &key, const QVariant &value) {
         changeValue(key, value);
     });
+}
+
+void ScriptDialogItem::initialize(nlohmann::json &&jsonData)
+{
+    for (auto it = jsonData.cbegin(); it != jsonData.cend(); ++it) {
+        const QString key = QString::fromStdString(it.key());
+
+        QVariant value;
+        if (it.value().is_string()) {
+            value = QString::fromStdString(it.value().get<std::string>());
+        } else if (it.value().is_boolean()) {
+            value = it.value().get<bool>();
+        } else if (it.value().is_number_integer()) {
+            value = it.value().get<int>();
+        } else if (it.value().is_number_float()) {
+            value = it.value().get<double>();
+        } else {
+            spdlog::error("Unsupported data type for key '{}'", it.key());
+            value = QString::fromStdString(it.value().dump());
+        }
+
+        changeValue(key, value);
+    }
 }
 
 void ScriptDialogItem::done(int code)
@@ -535,18 +561,25 @@ void ScriptDialogItem::createProperties(QWidget *dialogWidget)
 void ScriptDialogItem::changeValue(const QString &key, const QVariant &value)
 {
     auto widget = findChild<QWidget *>(key);
+
     if (auto lineEdit = qobject_cast<QLineEdit *>(widget)) {
         lineEdit->setText(value.toString());
+        return;
     } else if (auto checkBox = qobject_cast<QCheckBox *>(widget)) {
         checkBox->setChecked(value.toBool());
+        return;
     } else if (auto radioButton = qobject_cast<QRadioButton *>(widget)) {
         radioButton->setChecked(value.toBool());
+        return;
     } else if (auto spinBox = qobject_cast<QSpinBox *>(widget)) {
         spinBox->setValue(value.toInt());
+        return;
     } else if (auto doubleSpinBox = qobject_cast<QDoubleSpinBox *>(widget)) {
         doubleSpinBox->setValue(value.toDouble());
+        return;
     } else if (auto comboBox = qobject_cast<QComboBox *>(widget)) {
         comboBox->setCurrentText(value.toString());
+        return;
     }
 
     // It may be a combobox model
@@ -557,6 +590,14 @@ void ScriptDialogItem::changeValue(const QString &key, const QVariant &value)
             if (comboBox->count())
                 comboBox->setCurrentIndex(0);
         }
+        return;
+    }
+
+    if (!widget) {
+        spdlog::warn("No widget found for the key '{}'.", key.toStdString());
+    } else {
+        spdlog::warn("Unsupported widget type '{}' for the key '{}'.", widget->metaObject()->className(),
+                     key.toStdString());
     }
 }
 

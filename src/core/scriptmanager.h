@@ -14,6 +14,7 @@
 #include <QStringList>
 #include <QVariant>
 #include <functional>
+#include <nlohmann/json.hpp>
 #include <vector>
 
 class QFileSystemWatcher;
@@ -57,8 +58,8 @@ public:
 
     static QAbstractItemModel *model();
 
-public slots:
-    void runScript(const QString &fileName, bool async = true, bool log = true);
+    void runScript(const QString &fileName, nlohmann::json &&data = nlohmann::json::object(), bool async = true,
+                   bool log = true);
 
 signals:
     void scriptFinished(const QVariant &result);
@@ -79,7 +80,7 @@ private:
     void addScriptsFromPath(const QString &path);
     void removeScriptsFromPath(const QString &path);
 
-    void doRunScript(const QString &fileName, const std::function<void()> &endFunc);
+    void doRunScript(const QString &fileName, nlohmann::json &&data, const std::function<void()> &endFunc);
 
     void updateDirectories();
     void updateScriptDirectory(const QString &path);

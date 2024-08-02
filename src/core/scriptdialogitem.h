@@ -14,6 +14,7 @@
 #include <QJSValue>
 #include <QQmlListProperty>
 #include <QQmlPropertyMap>
+#include <nlohmann/json_fwd.hpp>
 #include <vector>
 
 class ScriptProgressDialog;
@@ -34,6 +35,8 @@ class ScriptDialogItem : public QDialog
 
 public:
     explicit ScriptDialogItem(QWidget *parent = nullptr);
+
+    void initialize(nlohmann::json &&jsonData);
 
     QObject *data() const;
     QQmlListProperty<QObject> childrenData();

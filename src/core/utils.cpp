@@ -111,7 +111,7 @@ void Utils::runScript(const QString &path, bool log)
     LOG("Utils::runScript", LOG_ARG("path", path), log);
 
     // Run the script synchronously
-    ScriptManager::instance()->runScript(path, false, log);
+    ScriptManager::instance()->runScript(path, nlohmann::json::object(), false, log);
 }
 
 /*!
