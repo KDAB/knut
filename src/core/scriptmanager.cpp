@@ -77,7 +77,7 @@ QAbstractItemModel *ScriptManager::model()
     return model;
 }
 
-void ScriptManager::runScript(const QString &fileName, bool async, bool log)
+void ScriptManager::runScript(const QString &fileName, nlohmann::json &&data, bool async, bool log)
 {
     if (log)
         spdlog::debug("==> Start script {}", fileName);
@@ -88,11 +88,11 @@ void ScriptManager::runScript(const QString &fileName, bool async, bool log)
     };
 
     if (async)
-        QTimer::singleShot(0, this, [this, fileName, endScriptCallback]() {
-            doRunScript(fileName, endScriptCallback);
+        QTimer::singleShot(0, this, [this, fileName, data = std::move(data), endScriptCallback]() mutable {
+            doRunScript(fileName, std::move(data), endScriptCallback);
         });
     else
-        doRunScript(fileName, endScriptCallback);
+        doRunScript(fileName, std::move(data), endScriptCallback);
 }
 
 void ScriptManager::addScript(const QString &fileName)
@@ -199,9 +199,9 @@ ScriptManager::ScriptList::iterator ScriptManager::removeScript(const ScriptList
     return it;
 }
 
-void ScriptManager::doRunScript(const QString &fileName, const std::function<void()> &endFunc)
+void ScriptManager::doRunScript(const QString &fileName, nlohmann::json &&data, const std::function<void()> &endFunc)
 {
-    m_result = m_runner->runScript(fileName, endFunc);
+    m_result = m_runner->runScript(fileName, std::move(data), endFunc);
     if (m_runner->hasError()) {
         const auto errors = m_runner->errors();
         for (const auto &error : errors)

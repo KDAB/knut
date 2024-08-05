@@ -124,6 +124,18 @@ bool KnutCore::process(const QStringList &arguments)
         }
     }
 
+    // Get json data if provided
+    const QString jsonDataStr = parser.value("data");
+    json jsonData;
+    if (!jsonDataStr.isEmpty()) {
+        try {
+            jsonData = json::parse(jsonDataStr.toStdString());
+        } catch (const json::parse_error &ex) {
+            spdlog::error("JSON parsing error at byte {}: {}", ex.byte, ex.what());
+            return false;
+        }
+    }
+
     // Run the script passed in parameter, if any
     // Exit Knut if there are no windows opened
     auto scriptName = parser.value("run");
@@ -132,8 +144,8 @@ bool KnutCore::process(const QStringList &arguments)
     }
 
     if (!scriptName.isEmpty()) {
-        QTimer::singleShot(0, this, [scriptName]() {
-            ScriptManager::instance()->runScript(scriptName);
+        QTimer::singleShot(0, this, [scriptName, jsonData = std::move(jsonData)]() mutable {
+            ScriptManager::instance()->runScript(scriptName, std::move(jsonData));
         });
         connect(
             ScriptManager::instance(), &ScriptManager::scriptFinished, qApp,
@@ -160,6 +172,7 @@ void KnutCore::initParser(QCommandLineParser &parser) const
                        {{"i", "input"}, "Opens document <file> on startup.", "file"},
                        {{"l", "line"}, "Line in the current file, if any.", "line"},
                        {{"c", "column"}, "Column in the current file, if any.", "column"},
+                       {{"d", "data"}, "JSON data string for initializing the dialog.", "data"},
                        {"json-list", "Returns the list of all available scripts as a JSON file"},
                        {"json-settings", "Returns the settings as a JSON file"}});
 }

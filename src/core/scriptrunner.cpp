@@ -171,7 +171,8 @@ ScriptRunner::ScriptRunner(QObject *parent)
 
 ScriptRunner::~ScriptRunner() = default;
 
-QVariant ScriptRunner::runScript(const QString &fileName, const std::function<void()> &endCallback)
+QVariant ScriptRunner::runScript(const QString &fileName, nlohmann::json &&data,
+                                 const std::function<void()> &endCallback)
 {
     const QFileInfo fi(fileName);
 
@@ -191,7 +192,7 @@ QVariant ScriptRunner::runScript(const QString &fileName, const std::function<vo
         if (fi.suffix() == "js") {
             result = runJavascript(fullName, engine);
         } else {
-            result = runQml(fullName, engine);
+            result = runQml(fullName, std::move(data), engine);
         }
         // engine is deleted in runJavascript or runQml
     } else {
@@ -312,7 +313,7 @@ QVariant ScriptRunner::runJavascript(const QString &fileName, QQmlEngine *engine
     return QVariant(ErrorCode);
 }
 
-QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine)
+QVariant ScriptRunner::runQml(const QString &fileName, nlohmann::json &&data, QQmlEngine *engine)
 {
     auto component = new QQmlComponent(engine, engine);
     component->loadUrl(QUrl::fromLocalFile(fileName));
@@ -346,6 +347,7 @@ QVariant ScriptRunner::runQml(const QString &fileName, QQmlEngine *engine)
                 window->show();
             } else if (auto dialog = qobject_cast<ScriptDialogItem *>(topLevel)) {
                 engine->setProperty("scriptWindow", true);
+                dialog->initialize(std::move(data));
                 dialog->show();
                 connect(dialog, &ScriptDialogItem::scriptFinished, engine, &QObject::deleteLater);
             }
