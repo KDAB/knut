@@ -53,6 +53,8 @@ public:
                                                   Core::Project::PathType type = RelativeToRoot);
     Q_INVOKABLE QStringList allFilesWithExtensions(const QStringList &extensions,
                                                    Core::Project::PathType type = RelativeToRoot);
+    Q_INVOKABLE QVariantList findInFiles(const QString &pattern) const;
+    Q_INVOKABLE bool isFindInFilesAvailable() const;
 
 public slots:
     Core::Document *get(const QString &fileName);
