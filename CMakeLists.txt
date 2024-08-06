@@ -195,5 +195,5 @@ else()
 endif()
 
 if(WIN32)
-    configure_file(AppxManifest.xml.in AppxManifest.xml @ONLY)
+  configure_file(AppxManifest.xml.in AppxManifest.xml @ONLY)
 endif()
