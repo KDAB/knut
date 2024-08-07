@@ -193,6 +193,8 @@ void KnutCore::initialize(Settings::Mode mode)
     new ScriptManager(this);
     if (Core::Settings::instance()->value<bool>(Core::Settings::SaveLogsToFile))
         initializeMultiSinkLogger();
+    // auto flush when "info" or higher message is logged.
+    spdlog::flush_on(spdlog::level::info);
     m_initialized = true;
 }
 
@@ -207,8 +209,6 @@ void KnutCore::initializeMultiSinkLogger()
         Core::Settings::instance()->logFilePath().toStdString(), SIZE_MAX, max_files, rotate_on_open);
     auto logger = spdlog::default_logger();
     logger->sinks().push_back(fileSink);
-    // auto flush when "info" or higher message is logged.
-    spdlog::flush_on(spdlog::level::info);
 }
 
 } // namespace Core
