@@ -21,7 +21,6 @@ class ScriptProgressDialog;
 class QTextDocument;
 
 namespace KSyntaxHighlighting {
-class SyntaxHighlighter;
 }
 
 namespace Core {

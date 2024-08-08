@@ -15,8 +15,6 @@
 #include <QCommandLineParser>
 #include <QObject>
 
-class QCoreApplication;
-
 namespace Core {
 
 class KnutCore : public QObject
