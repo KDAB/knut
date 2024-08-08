@@ -10,6 +10,7 @@
 
 #include "docwriter.h"
 
+#include <QBuffer>
 #include <QDir>
 #include <QFile>
 #include <QTextStream>
@@ -123,7 +124,7 @@ static constexpr char TypeFile[] = R"(# %1
 %2 [More...](#detailed-description)
 
 ```qml
-import %3 1.0
+import %3
 ```
 )";
 
@@ -158,7 +159,10 @@ void DocWriter::writeTypeFile(const Data::TypeBlock &type)
         qWarning() << "Can't write file: " << fileName;
         return;
     }
-    QTextStream stream(&file);
+
+    QBuffer buffer;
+    buffer.open(QIODevice::ReadWrite);
+    QTextStream stream(&buffer);
 
     stream << QString(TypeFile).arg(type.name + (type.isExperimental ? Experimental : ""), type.brief, type.qmlModule);
 
@@ -269,6 +273,11 @@ void DocWriter::writeTypeFile(const Data::TypeBlock &type)
                 stream << "\n" << signal.description;
         }
     }
+
+    buffer.close();
+    auto text = buffer.data();
+    text.replace("array<", "array&lt;");
+    file.write(text);
 }
 
 std::vector<Data::PropertyBlock> DocWriter::propertyForType(const Data::TypeBlock &type) const

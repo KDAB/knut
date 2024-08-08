@@ -66,7 +66,6 @@ matchInBlock(const QTextBlock &block, const QRegularExpression &expr, int offset
 /*!
  * \qmltype TextDocument
  * \brief Document object for text files.
- * \inqmlmodule Script
  * \ingroup TextDocument/@first
  * \inherits Document
  */
@@ -828,13 +827,13 @@ void TextDocument::selectRegion(int from, int to)
 }
 
 /*!
- * \qmlmethod TextDocument::selectRange(TextRange range)
+ * \qmlmethod TextDocument::selectRange(RangeMark range)
  * Selects the range passed in parameter.
  */
-void TextDocument::selectRange(const TextRange &range)
+void TextDocument::selectRange(const RangeMark &range)
 {
     LOG("TextDocument::selectRange", range);
-    selectRegion(range.start, range.end);
+    selectRegion(range.start(), range.end());
 }
 
 /*!
@@ -954,13 +953,13 @@ void TextDocument::replace(int from, int to, const QString &text)
 }
 
 /*!
- * \qmlmethod TextDocument::replace(TextRange range, string text)
+ * \qmlmethod TextDocument::replace(RangeMark range, string text)
  * Replaces the text in the range `range` with the string `text`.
  */
-void TextDocument::replace(const TextRange &range, const QString &text)
+void TextDocument::replace(const RangeMark &range, const QString &text)
 {
     LOG("TextDocument::replace", range, text);
-    replace(range.start, range.end, text);
+    replace(range.start(), range.end(), text);
 }
 
 /*!
@@ -1012,15 +1011,15 @@ void TextDocument::deleteRegion(int from, int to)
 }
 
 /*!
- * \qmlmethod TextDocument::deleteRange(TextRange range)
+ * \qmlmethod TextDocument::deleteRange(RangeMark range)
  * Deletes the range passed in parameter.
  */
-void TextDocument::deleteRange(const TextRange &range)
+void TextDocument::deleteRange(const RangeMark &range)
 {
     LOG("TextDocument::deleteRange", range);
     QTextCursor cursor(m_document->document());
-    cursor.setPosition(range.start, QTextCursor::MoveAnchor);
-    cursor.setPosition(range.end, QTextCursor::KeepAnchor);
+    cursor.setPosition(range.start(), QTextCursor::MoveAnchor);
+    cursor.setPosition(range.end(), QTextCursor::KeepAnchor);
     cursor.removeSelectedText();
     m_document->setTextCursor(cursor);
 }

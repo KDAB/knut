@@ -18,12 +18,11 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Tests Data
 ///////////////////////////////////////////////////////////////////////////////
-// Use a test fixture for Settings, to be able to save (even if it's used in a test)
 class SettingsFixture : public Core::Settings
 {
 public:
     SettingsFixture()
-        : Settings(Core::Settings::Mode::Cli) // Not Testing
+        : Settings(Core::Settings::Mode::Test)
     {
     }
 };
@@ -98,15 +97,21 @@ private slots:
         settings.setValue("/thisisatest", test);
         QCOMPARE(settings.value<QStringList>("/thisisatest"), test);
 
-        QVariant var(10);
-        settings.setValue("/thisisanothertest", var);
+        QJSValue varInt(10);
+        settings.setValue("/thisisanothertest", varInt);
         QCOMPARE(settings.value("/thisisanothertest").toInt(), 10);
 
-        QVariant v;
-        QVERIFY(!settings.setValue("/shouldnotwork", v));
+        QJSValue varString("test");
+        settings.setValue("/thisisastringtest", varString);
+        QCOMPARE(settings.value("/thisisastringtest").toString(), "test");
 
-        QRect r;
-        QVERIFY(!settings.setValue("/shouldnotwork", QVariant(r)));
+        QJSValue varDouble(3.5);
+        settings.setValue("/thisisadoubletest", varDouble);
+        QCOMPARE(settings.value("/thisisadoubletest").toDouble(), 3.5);
+
+        QJSValue varBool(true);
+        settings.setValue("/thisisabooltest", varBool);
+        QCOMPARE(settings.value("/thisisabooltest").toBool(), true);
 
         // There's only one signal, as the save is done asynchronously
         settingsSaved.wait();

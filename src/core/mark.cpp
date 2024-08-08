@@ -22,7 +22,6 @@ namespace Core {
 /*!
  * \qmltype Mark
  * \brief Keeps track of a position in a text document.
- * \inqmlmodule Script
  * \ingroup TextDocument
  * \sa TextDocument
  *

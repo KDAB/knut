@@ -718,19 +718,18 @@ struct WorkDoneProgressOptions
     std::optional<bool> workDoneProgress;
 };
 
-/*
-The glob pattern to watch relative to the base path. Glob patterns can have the following syntax:
-- `*` to match one or more characters in a path segment
-- `?` to match on one character in a path segment
-- `**` to match any number of path segments, including none
-- `{}` to group conditions (e.g. `**​/*.{ts,js}` matches all TypeScript and JavaScript files)
-- `[]` to declare a range of characters to match in a path segment (e.g., `example.[0-9]` to match on `example.0`,
-`example.1`, …)
-- `[!...]` to negate a range of characters to match in a path segment (e.g., `example.[!0-9]` to match on `example.a`,
-`example.b`, but not `example.0`)
+// The glob pattern to watch relative to the base path. Glob patterns can have the following syntax:
+// - `*` to match one or more characters in a path segment
+// - `?` to match on one character in a path segment
+// - `**` to match any number of path segments, including none
+// - `{}` to group conditions (e.g. `**​/*.{ts,js}` matches all TypeScript and JavaScript files)
+// - `[]` to declare a range of characters to match in a path segment (e.g., `example.[0-9]` to match on `example.0`,
+// `example.1`, …)
+// - `[!...]` to negate a range of characters to match in a path segment (e.g., `example.[!0-9]` to match on
+// `example.a`, `example.b`, but not `example.0`)
 
-@since 3.17.0
-*/
+// @since 3.17.0
+
 using Pattern = std::string;
 
 struct FoldingRange
@@ -2421,26 +2420,25 @@ Note that markdown strings will be sanitized - that means html will be escaped.
 */
 using MarkedString = std::variant<std::string, MarkedStringFull>;
 
-/*
-A document filter denotes a document by different properties like
-the [language](#TextDocument.languageId), the [scheme](#Uri.scheme) of
-its resource, or a glob-pattern that is applied to the [path](#TextDocument.fileName).
+// A document filter denotes a document by different properties like
+// the [language](#TextDocument.languageId), the [scheme](#Uri.scheme) of
+// its resource, or a glob-pattern that is applied to the [path](#TextDocument.fileName).
 
-Glob patterns can have the following syntax:
-- `*` to match one or more characters in a path segment
-- `?` to match on one character in a path segment
-- `**` to match any number of path segments, including none
-- `{}` to group sub patterns into an OR expression. (e.g. `**​/*.{ts,js}` matches all TypeScript and JavaScript files)
-- `[]` to declare a range of characters to match in a path segment (e.g., `example.[0-9]` to match on `example.0`,
-`example.1`, …)
-- `[!...]` to negate a range of characters to match in a path segment (e.g., `example.[!0-9]` to match on `example.a`,
-`example.b`, but not `example.0`)
+// Glob patterns can have the following syntax:
+// - `*` to match one or more characters in a path segment
+// - `?` to match on one character in a path segment
+// - `**` to match any number of path segments, including none
+// - `{}` to group sub patterns into an OR expression. (e.g. `**​/*.{ts,js}` matches all TypeScript and JavaScript
+// files)
+// - `[]` to declare a range of characters to match in a path segment (e.g., `example.[0-9]` to match on `example.0`,
+// `example.1`, …)
+// - `[!...]` to negate a range of characters to match in a path segment (e.g., `example.[!0-9]` to match on
+// `example.a`, `example.b`, but not `example.0`)
 
-@sample A language filter that applies to typescript files on disk: `{ language: 'typescript', scheme: 'file' }`
-@sample A language filter that applies to all package.json paths: `{ language: 'json', pattern: '**package.json' }`
+// @sample A language filter that applies to typescript files on disk: `{ language: 'typescript', scheme: 'file' }`
+// @sample A language filter that applies to all package.json paths: `{ language: 'json', pattern: '**package.json' }`
 
-@since 3.17.0
-*/
+// @since 3.17.0
 using TextDocumentFilter = std::variant<TextDocumentFilter_1, TextDocumentFilter_2, TextDocumentFilter_3>;
 
 struct ConfigurationParams
@@ -3050,18 +3048,18 @@ struct WorkspaceUnchangedDocumentDiagnosticReport : public UnchangedDocumentDiag
 
 struct FileOperationPattern
 {
-    /*
-    The glob pattern to match. Glob patterns can have the following syntax:
-    - `*` to match one or more characters in a path segment
-    - `?` to match on one character in a path segment
-    - `**` to match any number of path segments, including none
-    - `{}` to group sub patterns into an OR expression. (e.g. `**​/*.{ts,js}` matches all TypeScript and JavaScript
-    files)
-    - `[]` to declare a range of characters to match in a path segment (e.g., `example.[0-9]` to match on `example.0`,
-    `example.1`, …)
-    - `[!...]` to negate a range of characters to match in a path segment (e.g., `example.[!0-9]` to match on
-    `example.a`, `example.b`, but not `example.0`)
-    */
+
+    // The glob pattern to match. Glob patterns can have the following syntax:
+    // - `*` to match one or more characters in a path segment
+    // - `?` to match on one character in a path segment
+    // - `**` to match any number of path segments, including none
+    // - `{}` to group sub patterns into an OR expression. (e.g. `**​/*.{ts,js}` matches all TypeScript and JavaScript
+    // files)
+    // - `[]` to declare a range of characters to match in a path segment (e.g., `example.[0-9]` to match on
+    // `example.0`, `example.1`, …)
+    // - `[!...]` to negate a range of characters to match in a path segment (e.g., `example.[!0-9]` to match on
+    // `example.a`, `example.b`, but not `example.0`)
+
     std::string glob;
     /*
     Whether to match files or folders with this pattern.

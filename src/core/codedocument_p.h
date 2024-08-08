@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include "document.h"
 #include "rangemark.h"
 #include "symbol.h"
 #include "treesitter/node.h"
@@ -17,7 +18,7 @@
 #include "treesitter/query.h"
 #include "treesitter/tree.h"
 
-#include <QVector>
+#include <QList>
 
 namespace Core {
 
@@ -26,6 +27,12 @@ class CodeDocument;
 class TreeSitterHelper
 {
 public:
+    using SymbolQueryFunction = std::function<QList<Core::Symbol *>(CodeDocument *const)>;
+
+    SymbolQueryFunction querySymbols = [](CodeDocument *const) -> QList<Core::Symbol *> {
+        return {};
+    };
+
     explicit TreeSitterHelper(CodeDocument *document);
 
     void clear();
@@ -34,17 +41,13 @@ public:
     std::optional<treesitter::Tree> &syntaxTree();
 
     std::shared_ptr<treesitter::Query> constructQuery(const QString &query);
-    QVector<treesitter::Node> nodesInRange(const RangeMark &range);
+    QList<treesitter::Node> nodesInRange(const RangeMark &range);
+    treesitter::Node nodeCoveringRange(int start, int end);
 
-    const QVector<Core::Symbol *> &symbols();
+    const QList<Core::Symbol *> &symbols();
 
 private:
     void assignSymbolContexts();
-
-    QVector<Core::Symbol *> functionSymbols() const;
-    QVector<Core::Symbol *> classSymbols() const;
-    QVector<Core::Symbol *> memberSymbols() const;
-    QVector<Core::Symbol *> enumSymbols() const;
 
     enum Flags {
         HasSymbols = 0x01,
@@ -53,7 +56,7 @@ private:
     CodeDocument *const m_document;
     std::optional<treesitter::Parser> m_parser;
     std::optional<treesitter::Tree> m_tree;
-    QVector<Core::Symbol *> m_symbols;
+    QList<Core::Symbol *> m_symbols;
     int m_flags = 0;
 };
 

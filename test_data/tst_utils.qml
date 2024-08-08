@@ -8,13 +8,10 @@
   Contact KDAB at <info@kdab.com> for commercial licensing options.
 */
 
-import QtQuick 2.2
-import Script 1.0
-import Script.Test 1.0
+import QtQuick
+import Knut
 
-TestCase {
-    name: "Utils"
-
+Script {
     function test_global() {
         Utils.setGlobal("foo", "bar")
         compare(Utils.getGlobal("foo"), "bar");

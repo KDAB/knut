@@ -54,7 +54,7 @@
      <x>0</x>
      <y>0</y>
      <width>1463</width>
-     <height>24</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -81,9 +81,9 @@
     <addaction name="actionCreateQrc"/>
     <addaction name="actionCreateUi"/>
    </widget>
-   <widget class="QMenu" name="menuC">
+   <widget class="QMenu" name="menuCode">
     <property name="title">
-     <string>&amp;C++</string>
+     <string>&amp;Code</string>
     </property>
     <addaction name="actionSwitchHeaderSource"/>
     <addaction name="actionFollowSymbol"/>
@@ -98,6 +98,11 @@
     <addaction name="actionSelectToBlockEnd"/>
     <addaction name="separator"/>
     <addaction name="actionSelectBlockUp"/>
+    <addaction name="actionSelectLargerSyntaxNode"/>
+    <addaction name="actionSelectSmallerSyntaxNode"/>
+    <addaction name="actionSelectNextSyntaxNode"/>
+    <addaction name="actionSelectPreviousSyntaxNode"/>
+    <addaction name="separator"/>
     <addaction name="actionDeleteMethod"/>
     <addaction name="separator"/>
     <addaction name="actionTreeSitterInspector"/>
@@ -151,7 +156,7 @@
    <addaction name="menu_Script"/>
    <addaction name="menuEdit"/>
    <addaction name="menu_View"/>
-   <addaction name="menuC"/>
+   <addaction name="menuCode"/>
    <addaction name="menu_Rc"/>
    <addaction name="menu_Help"/>
   </widget>
@@ -233,6 +238,9 @@
   </action>
   <action name="actionSwitchHeaderSource">
    <property name="text">
+    <string>Switch Header/Source</string>
+   </property>
+   <property name="toolTip">
     <string>Switch Header/Source</string>
    </property>
    <property name="shortcut">
@@ -456,6 +464,17 @@
     <string>Select Block Up</string>
    </property>
    <property name="shortcut">
+    <string>Ctrl+Shift+U</string>
+   </property>
+  </action>
+  <action name="actionSelectLargerSyntaxNode">
+   <property name="text">
+    <string>Select Larger Syntax Node</string>
+   </property>
+   <property name="toolTip">
+    <string>Enlarges the current selection to the parent node in the Tree-Sitter concrete syntax tree</string>
+   </property>
+   <property name="shortcut">
     <string>Ctrl+U</string>
    </property>
   </action>
@@ -476,6 +495,30 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+R</string>
+   </property>
+  </action>
+  <action name="actionSelectSmallerSyntaxNode">
+   <property name="text">
+    <string>Select Smaller Syntax Node</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionSelectNextSyntaxNode">
+   <property name="text">
+    <string>Select Next Syntax Node</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="actionSelectPreviousSyntaxNode">
+   <property name="text">
+    <string>Select Previous Syntax Node</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+N</string>
    </property>
   </action>
  </widget>

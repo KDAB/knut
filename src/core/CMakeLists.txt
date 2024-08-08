@@ -1,7 +1,6 @@
 # This file is part of Knut.
 #
-# SPDX-FileCopyrightText: 2024 Klarälvdalens Datakonsult AB, a KDAB Group
-# company <info@kdab.com>
+# SPDX-FileCopyrightText: 2024 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 #
 # SPDX-License-Identifier: GPL-3.0-only
 #
@@ -43,6 +42,8 @@ set(PROJECT_SOURCES
     jsondocument.cpp
     knutcore.h
     knutcore.cpp
+    lsp_utils.h
+    lsp_utils.cpp
     logger.h
     logger.cpp
     mark_p.h
@@ -87,17 +88,13 @@ set(PROJECT_SOURCES
     slintdocument.cpp
     symbol.h
     symbol.cpp
-    testutil.h
-    testutil.cpp
     textdocument.h
     textdocument.cpp
     textdocument_p.h
     texteditor.h
     texteditor.cpp
-    textlocation.h
-    textlocation.cpp
-    textrange.h
-    textrange.cpp
+    typedsymbol.h
+    typedsymbol.cpp
     qtuidocument.h
     qtuidocument.cpp
     qttsdocument.h
@@ -119,14 +116,15 @@ target_link_libraries(
   PUBLIC nlohmann_json::nlohmann_json
          pugixml::pugixml
          kdalgorithms
-         Qt${QT_VERSION_MAJOR}::Core
-         Qt${QT_VERSION_MAJOR}::CorePrivate
-         Qt${QT_VERSION_MAJOR}::Qml
-         Qt${QT_VERSION_MAJOR}::QmlPrivate
-         Qt${QT_VERSION_MAJOR}::Quick
-         Qt${QT_VERSION_MAJOR}::Widgets
-         Qt${QT_VERSION_MAJOR}::WidgetsPrivate
-         Qt${QT_VERSION_MAJOR}::UiTools
+         KF5SyntaxHighlighting
+         Qt::Core
+         Qt::CorePrivate
+         Qt::Qml
+         Qt::QmlPrivate
+         Qt::Quick
+         Qt::Widgets
+         Qt::WidgetsPrivate
+         Qt::UiTools
          knut-lsp
          knut-treesitter
          knut-rccore

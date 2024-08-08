@@ -94,7 +94,7 @@ QVariant MenuModel::headerData(int section, Qt::Orientation orientation, int rol
     return {};
 }
 
-void MenuModel::createTree(Item &item, const QVector<MenuItem> &children, const Data &data)
+void MenuModel::createTree(Item &item, const QList<MenuItem> &children, const Data &data)
 {
     item.children.resize(children.size());
     for (int i = 0; i < children.size(); ++i) {

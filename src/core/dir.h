@@ -73,7 +73,7 @@ public:
     Q_ENUM(SortFlag)
     Q_DECLARE_FLAGS(SortFlags, SortFlag)
 
-    Q_INVOKABLE QChar separator() const;
+    QChar separator() const;
 
     Q_INVOKABLE inline Core::QDirValueType current() const { return QDirValueType(currentPath()); }
     QString currentPath() const;

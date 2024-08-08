@@ -28,7 +28,10 @@
     "rc": {
         "dialog_scalex": 2.0
     },
+    "thisisabooltest": true,
+    "thisisadoubletest": 3.5,
     "thisisanothertest": 10,
+    "thisisastringtest": "test",
     "thisisatest": [
         "This",
         "is",

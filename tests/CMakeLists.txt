@@ -1,7 +1,6 @@
 # This file is part of Knut.
 #
-# SPDX-FileCopyrightText: 2024 Klarälvdalens Datakonsult AB, a KDAB Group
-# company <info@kdab.com>
+# SPDX-FileCopyrightText: 2024 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 #
 # SPDX-License-Identifier: GPL-3.0-only
 #
@@ -29,11 +28,11 @@ function(add_knut_test_variadic name)
 
   add_executable(${name} ${ARG_SOURCES})
 
-  target_link_libraries(${name} PRIVATE Qt${QT_VERSION_MAJOR}::Test knut-core
-                                        ${ARG_LIBS})
+  target_link_libraries(${name} PRIVATE Qt::Test knut-core ${ARG_LIBS})
   target_include_directories(${name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src)
 
   add_test(${name} ${CMAKE_BINARY_DIR}/bin/${name})
+  set_property(TEST ${name} PROPERTY ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
 endfunction()
 
 # * Create a test, with one source and arbitrary libs
@@ -66,6 +65,8 @@ add_knut_test(tst_cppdocument_clangd tst_cppdocument_clangd.cpp)
 add_knut_test(tst_cppdocument_treesitter tst_cppdocument_treesitter.cpp)
 
 add_knut_test(tst_codedocument tst_codedocument.cpp)
+
+add_knut_test(tst_qmldocument tst_qmldocument.cpp)
 
 add_knut_test(tst_symbol tst_symbol.cpp)
 

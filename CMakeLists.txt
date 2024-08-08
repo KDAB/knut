@@ -1,17 +1,17 @@
-cmake_minimum_required(VERSION 3.15)
-# This enables the use of CMAKE_MSVC_DEBUG_INFORMATION_FORMAT as required by the
-# CI preset
-cmake_policy(SET CMP0141 NEW)
-
+#
 # This file is part of Knut.
 #
-# SPDX-FileCopyrightText: 2024 Klarälvdalens Datakonsult AB, a KDAB Group
-# company <info@kdab.com>
+# SPDX-FileCopyrightText: 2024 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 #
 # SPDX-License-Identifier: GPL-3.0-only
 #
 # Contact KDAB at <info@kdab.com> for commercial licensing options.
 #
+
+cmake_minimum_required(VERSION 3.15)
+# This enables the use of CMAKE_MSVC_DEBUG_INFORMATION_FORMAT as required by the
+# CI preset
+cmake_policy(SET CMP0141 NEW)
 
 include(FetchContent)
 
@@ -50,6 +50,11 @@ option(USE_ASAN "use Address Sanitizer" OFF)
 # default.
 option(KNUT_ERROR_ON_WARN
        "Issue a compiler error if the compiler encounters a warning" OFF)
+option(
+  KNUT_UPDATE_DOCS
+  "Automatically update the documentation markdown files on each build.\n \
+  If cpp2doc cannot be executed on your setup, consider disabling this feature."
+  ON)
 
 if(USE_ASAN)
   # /MD will be used implicitly
@@ -174,8 +179,17 @@ file(
   docs/*.md
   docs/contributing/*.md
   docs/getting-started/*.md)
-add_custom_target(
-  docs
-  cpp2doc
-  COMMENT "Update documentation"
-  SOURCES ${DOCS_FILES})
+
+if(KNUT_UPDATE_DOCS)
+  add_custom_target(
+    docs ALL
+    cpp2doc
+    COMMENT "Update documentation"
+    SOURCES ${DOCS_FILES})
+else()
+  add_custom_target(
+    docs
+    cpp2doc
+    COMMENT "Update documentation"
+    SOURCES ${DOCS_FILES})
+endif()

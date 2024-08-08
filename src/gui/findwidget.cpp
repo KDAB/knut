@@ -141,7 +141,7 @@ void FindWidget::replace(bool onlyOne)
 {
     const QString &before = findString();
     const QString &after = ui->replaceEdit->text();
-    if (before.isEmpty() || after.isEmpty())
+    if (before.isEmpty())
         return;
 
     auto document = Core::Project::instance()->currentDocument();

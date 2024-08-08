@@ -15,7 +15,13 @@
 #include "settings.h"
 #include "utils/log.h"
 
+#include <definition.h>
+#include <repository.h>
+#include <syntaxhighlighter.h>
+#include <theme.h>
+
 #include <QAbstractItemModel>
+#include <QApplication>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QCompleter>
@@ -24,12 +30,17 @@
 #include <QDoubleSpinBox>
 #include <QFile>
 #include <QFileInfo>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonValue>
 #include <QLineEdit>
 #include <QMessageBox>
+#include <QPlainTextEdit>
 #include <QPushButton>
 #include <QQmlContext>
 #include <QRadioButton>
 #include <QSpinBox>
+#include <QTextEdit>
 #include <QToolButton>
 #include <QUiLoader>
 #include <QVBoxLayout>
@@ -39,18 +50,23 @@ namespace Core {
 /*!
  * \qmltype ScriptDialog
  * \brief QML Item for writing visual scripts.
- * \inqmlmodule Script
  * \ingroup Items
  *
  * The `ScriptDialog` allows creating a script dialog based on a ui file. It requires creating a ui file with the same
  * name as the qml script.
  *
- * Widget's main properties are mapped to a property inside the data property, using the same name as the `objectName`.
- * Buttons (`QPushButton` or `QToolButton`) `clicked` signal is mapped to the `clicked` signal of this class, with the
- * button `objectName` as parameter. `QDialogButtonBox` `accepted` or `rejected` signals are automatically connected.
+ * Inside the dialog, all widget's main property is mapped to a property inside the data property, using the same
+ * name as the `objectName`. For example, the text of a `QLineEdit` with `objectName` set to `lineEdit` will be mapped
+ * to `data.lineEdit`.
+ *
+ * Buttons (`QPushButton` or `QToolButton`) `clicked` signal is available through the `onClikced` signal handler, with
+ * the button `objectName` as parameter.
+ *
+ * `QDialogButtonBox` `accepted` or `rejected` signals are
+ * automatically connected and available through the `onAccepted` and `onRejected` signal handlers.
  *
  * ```qml
- * import Script 1.0
+ * import Knut
  *
  * ScriptDialog {
  *     property string text1: data.lineEdit
@@ -63,41 +79,64 @@ namespace Core {
  *         if (name == "pushButton" || name == "toolButton")
  *             console.log(name)
  *     }
+ *     onAccepted: {
+ *         console.log("Accepted")
+ *     }
+ *     onRejected: {
+ *         console.log("Rejected")
+ *     }
+ * }
+ * ```
+ *
+ * You can also integrate unit-tests as part of the script dialog. This is done by adding methods prefixed with `test_`.
+ * Those methods will be executed when the script is run in test mode (using `--test` command line option). If a test is
+ * failing, the script will show a critical log message, and the script will return a non-zero exit code.
+ *
+ * ```qml
+ * import Knut
+ *
+ * ScriptDialog {
+ *     function test_foo() {
+ *         compare(1, 2, "test should failed")
+ *     }
+ *     function test_bar() {
+ *         verify(1 == 1, "test should pass")
+ *     }
  * }
  * ```
  */
 
 /*!
- * \qmlproperty QQmlPropertyMap ScriptDialog::data
+ * \qmlproperty var ScriptDialog::data
  * This read-only property contains all properties mapping the widgets.
+ *
+ * Use `data.objectName` to access the main property of a widget (the text for a `QLineEdit` for example).
  */
 
 /*!
  * \qmlproperty bool ScriptDialog::interactive
- *
- * If set to false, runSteps will not ask for user input, the entire script will be run at once.
+ * If set to false, `runSteps` will not ask for user input, the entire script will be run at once.
  * This is especially useful for testing.
  */
 
 /*!
  * \qmlproperty int ScriptDialog::stepCount
- *
  * Number of steps to display in the progress bar.
  */
 
 /*!
- * \qmlsignal ScriptDialog::clicked(string name)
+ * \qmlsignal ScriptDialog::onClicked(string name)
  * This handler is called when a button is cliked, the `name` is the name of the button.
  */
 
 /*!
- * \qmlsignal ScriptDialog::accepted()
+ * \qmlsignal ScriptDialog::onAccepted()
  * This handler is called when a button with an accept role from a `QDialogButtonBox` is pressed (usually the OK
  * button).
  */
 
 /*!
- * \qmlsignal ScriptDialog::rejected()
+ * \qmlsignal ScriptDialog::onRejected()
  * This handler is called when a button with a reject role from a `QDialogButtonBox` is pressed (usually the Cancel
  * button).
  */
@@ -115,6 +154,29 @@ ScriptDialogItem::ScriptDialogItem(QWidget *parent)
     m_data->registerDataChangedCallback([this](const QString &key, const QVariant &value) {
         changeValue(key, value);
     });
+}
+
+void ScriptDialogItem::initialize(nlohmann::json &&jsonData)
+{
+    for (auto it = jsonData.cbegin(); it != jsonData.cend(); ++it) {
+        const QString key = QString::fromStdString(it.key());
+
+        QVariant value;
+        if (it.value().is_string()) {
+            value = QString::fromStdString(it.value().get<std::string>());
+        } else if (it.value().is_boolean()) {
+            value = it.value().get<bool>();
+        } else if (it.value().is_number_integer()) {
+            value = it.value().get<int>();
+        } else if (it.value().is_number_float()) {
+            value = it.value().get<double>();
+        } else {
+            spdlog::error("Unsupported data type for key '{}'", it.key());
+            value = QString::fromStdString(it.value().dump());
+        }
+
+        changeValue(key, value);
+    }
 }
 
 void ScriptDialogItem::done(int code)
@@ -185,7 +247,7 @@ void ScriptDialogItem::firstStep(const QString &firstStep)
 /**
  * \qmlmethod ScriptDialog::nextStep(string title)
  *
- * Indicate a new progress step.
+ * Changes the progression to a new progress step.
  *
  * This will update the progress bar and the title of the progress dialog.
  * Make sure that the number of steps is set correctly before calling this method.
@@ -202,7 +264,9 @@ void ScriptDialogItem::nextStep(const QString &title)
     //
     // This is likely just caused by a script that's indicating too few progress steps.
     // So just increase the maximum.
-    m_currentStepTitle = title;
+    if (!title.isEmpty()) {
+        m_currentStepTitle = title;
+    }
 
     if (m_stepCount != 0 && m_currentStep >= m_stepCount) {
         setStepCount(m_stepCount + 1);
@@ -276,15 +340,16 @@ static bool isGenerator(const QJSValue &generator)
 /**
  * \qmlmethod ScriptDialog::runSteps(function generator)
  *
- * Run a script in multiple (interactive) steps.
+ * Runs a script in multiple (interactive) steps.
+ *
  * The argument to this function must be a JavaScript generator object
  * ([See this documentation on JS
  * Generators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator)).
  *
- * The generator should yield a string with the next step title,
- * whenever the user should be able to pause the script and inspect the changes.
- * This will behave the same as calling `nextStep`, but pauses the script, until the user continues or aborts the
- * script.
+ * The generator should yield a string with the next step title, whenever the user should be able to pause the script
+ * and inspect the changes. This will behave the same as calling `nextStep`, but pauses the script, until the user
+ * continues or aborts the script.
+ *
  * You can also mix and match between `yield` and `nextStep` calls.
  *
  * For the best experience, we recommend to use `setStepCount`, `firstStep` and `yield` to indicate the remaining
@@ -319,6 +384,51 @@ void ScriptDialogItem::runSteps(const QJSValue &generator)
 
     m_stepGenerator = generator;
     runNextStep();
+}
+
+/*!
+ * \qmlmethod ScriptDialog::compare(var actual, var expected, string message = {})
+ * Compare `actual` with `expected` and log an error `message` if they are not equal.
+ *
+ * This method will increment the number of failed test internally, and when the script is finished, the test runner
+ * will return the number of failed tests.
+ *
+ * This is usually used in tests method like that:
+ *
+ * ```qml
+ * ScriptDialog {
+ *     function test_foo() {
+ *         compare(1, 2, "1 should be equal to 2"); // This will log an error
+ *     }
+ * }
+ * ```
+ */
+void ScriptDialogItem::compare(const QJSValue &actual, const QJSValue &expected, QString message)
+{
+    ScriptRunner::compare(this, actual, expected, message);
+}
+
+/*!
+ * \qmlmethod ScriptDialog::verify(bool value, string message = {})
+ * Compare `actual` with `expected` and log an error `message` if they are not equal.
+ *
+ * This method will increment the number of failed test internally, and when the script is finished, the test runner
+ * will return the number of failed tests.
+ *
+ * This is usually used in tests method like that:
+ *
+ * ```qml
+ * ScriptDialog {
+ *     function test_foo() {
+ *         let answerToEverything = 42;
+ *         verify(answerToEverything == 42, "What else?");
+ *     }
+ * }
+ * ```
+ */
+void ScriptDialogItem::verify(bool value, QString message)
+{
+    ScriptRunner::verify(this, value, message);
 }
 
 void ScriptDialogItem::showProgressDialog()
@@ -450,6 +560,22 @@ void ScriptDialogItem::createProperties(QWidget *dialogWidget)
                 completer->setModel(comboBox->model());
                 comboBox->setCompleter(completer);
             }
+        } else if (auto textEdit = qobject_cast<QTextEdit *>(widget)) {
+            m_data->addProperty(widget->objectName().toLocal8Bit(), "QString", QMetaType::QString,
+                                textEdit->toPlainText());
+            connect(textEdit, &QTextEdit::textChanged, this, [this, textEdit]() {
+                m_data->setProperty(sender()->objectName().toLocal8Bit(), textEdit->toPlainText());
+            });
+            m_data->addProperty((widget->objectName() + "Syntax").toLocal8Bit(), "QString", QMetaType::QString,
+                                QString());
+        } else if (auto plainTextEdit = qobject_cast<QPlainTextEdit *>(widget)) {
+            m_data->addProperty(widget->objectName().toLocal8Bit(), "QString", QMetaType::QString,
+                                plainTextEdit->toPlainText());
+            connect(plainTextEdit, &QPlainTextEdit::textChanged, this, [this, plainTextEdit]() {
+                m_data->setProperty(sender()->objectName().toLocal8Bit(), plainTextEdit->toPlainText());
+            });
+            m_data->addProperty((widget->objectName() + "Syntax").toLocal8Bit(), "QString", QMetaType::QString,
+                                QString());
         }
     }
 
@@ -459,18 +585,35 @@ void ScriptDialogItem::createProperties(QWidget *dialogWidget)
 void ScriptDialogItem::changeValue(const QString &key, const QVariant &value)
 {
     auto widget = findChild<QWidget *>(key);
+
     if (auto lineEdit = qobject_cast<QLineEdit *>(widget)) {
         lineEdit->setText(value.toString());
+        return;
     } else if (auto checkBox = qobject_cast<QCheckBox *>(widget)) {
         checkBox->setChecked(value.toBool());
+        return;
     } else if (auto radioButton = qobject_cast<QRadioButton *>(widget)) {
         radioButton->setChecked(value.toBool());
+        return;
     } else if (auto spinBox = qobject_cast<QSpinBox *>(widget)) {
         spinBox->setValue(value.toInt());
+        return;
     } else if (auto doubleSpinBox = qobject_cast<QDoubleSpinBox *>(widget)) {
         doubleSpinBox->setValue(value.toDouble());
+        return;
     } else if (auto comboBox = qobject_cast<QComboBox *>(widget)) {
         comboBox->setCurrentText(value.toString());
+        return;
+    } else if (auto textEdit = qobject_cast<QTextEdit *>(widget)) {
+        QString valueString = value.toString();
+        if (textEdit->toPlainText() != valueString)
+            textEdit->setPlainText(value.toString());
+        return;
+    } else if (auto plainTextEdit = qobject_cast<QPlainTextEdit *>(widget)) {
+        QString valueString = value.toString();
+        if (plainTextEdit->toPlainText() != valueString)
+            plainTextEdit->setPlainText(value.toString());
+        return;
     }
 
     // It may be a combobox model
@@ -481,6 +624,40 @@ void ScriptDialogItem::changeValue(const QString &key, const QVariant &value)
             if (comboBox->count())
                 comboBox->setCurrentIndex(0);
         }
+        return;
+    }
+
+    // It may be a syntax rule
+    if (key.endsWith("Syntax")) {
+        if (auto textEdit = findChild<QTextEdit *>(key.left(key.length() - 6))) {
+            applySyntaxHighlighting(textEdit->document(), value.toString());
+        } else if (auto plainTextEdit = findChild<QPlainTextEdit *>(key.left(key.length() - 6))) {
+            applySyntaxHighlighting(plainTextEdit->document(), value.toString());
+        }
+        return;
+    }
+
+    if (!widget) {
+        spdlog::warn("No widget found for the key '{}'.", key.toStdString());
+    } else {
+        spdlog::warn("Unsupported widget type '{}' for the key '{}'.", widget->metaObject()->className(),
+                     key.toStdString());
+    }
+}
+
+void ScriptDialogItem::applySyntaxHighlighting(QTextDocument *document, const QString &syntax)
+{
+    if (!syntax.isEmpty()) {
+        auto highlighter = new KSyntaxHighlighting::SyntaxHighlighter(document);
+        static KSyntaxHighlighting::Repository repository;
+        highlighter->setTheme(repository.themeForPalette(QApplication::palette()));
+        const auto definition = repository.definitionForFileName("." + syntax);
+        if (!definition.isValid()) {
+            qWarning() << "No valid syntax definition for file extension" << syntax;
+            delete highlighter;
+            return;
+        }
+        highlighter->setDefinition(definition);
     }
 }
 

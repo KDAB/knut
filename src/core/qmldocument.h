@@ -11,6 +11,7 @@
 #pragma once
 
 #include "codedocument.h"
+#include "symbol.h"
 
 namespace Core {
 

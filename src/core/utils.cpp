@@ -25,7 +25,6 @@ namespace Core {
 /*!
  * \qmltype Utils
  * \brief Singleton with utility methods.
- * \inqmlmodule Script
  * \ingroup Utilities
  *
  * The `Utils` singleton implements some utility methods useful for scripts.
@@ -112,7 +111,7 @@ void Utils::runScript(const QString &path, bool log)
     LOG("Utils::runScript", LOG_ARG("path", path), log);
 
     // Run the script synchronously
-    ScriptManager::instance()->runScript(path, false, log);
+    ScriptManager::instance()->runScript(path, nlohmann::json::object(), false, log);
 }
 
 /*!
@@ -204,6 +203,7 @@ void Utils::copyToClipboard(const QString &text)
 // The readonly C++ attribute has the same functionality as the readonly MIDL attribute.
 QStringList Utils::cppKeywords()
 {
+    LOG("Utils::cppKeywords");
     return QStringList {"alignas",
                         "alignof",
                         "and",
@@ -299,6 +299,7 @@ QStringList Utils::cppKeywords()
  */
 QStringList Utils::cppPrimitiveTypes()
 {
+    LOG("Utils::cppPrimitiveTypes");
     return QStringList {"int",  "long",    "short",    "void",     "float",  "double",
                         "char", "char8_t", "char16_t", "char32_t", "wchar_t"};
 }

@@ -9,6 +9,7 @@
 */
 
 #include "cppdocument.h"
+#include "codedocument_p.h"
 #include "cppdocument_p.h"
 #include "functionsymbol.h"
 #include "logger.h"
@@ -27,12 +28,255 @@
 #include <algorithm>
 #include <kdalgorithms.h>
 
+namespace {
+using namespace Core;
+
+// We query for classes in queryClassSymbols and queryClassDefinition.
+// To make sure the results of both are consistent, share the actual query by using this function.
+static QString classQuery(std::optional<QString> className)
+{
+    auto like_predicate = className.has_value() ? QString("(#like? @name \"%1\")").arg(*className) : "";
+
+    return QString(R"EOF(
+        ; query classes or structs
+        [(class_specifier
+            name: (_) @name @selectionRange %1
+            (base_class_clause
+                [(type_identifier) @base _]*)?
+            body: (_) @body)
+        (struct_specifier
+            name: (_) @name @selectionRange %1
+            (base_class_clause
+                [(type_identifier) @base _]*)?
+            body: (_) @body)] @range
+    )EOF")
+        .arg(like_predicate);
+}
+
+static QString functionDeclaratorQuery(const QString &scope, std::optional<QString> name)
+{
+    auto identifier = QString("");
+    if (name.has_value()) {
+        // clang-format off
+        identifier = QString(R"EOF(
+            [(identifier) (field_identifier)] @name (#eq? @name "%1")
+        )EOF").arg(*name);
+
+        if (!scope.isEmpty()) {
+            identifier = QString(R"EOF(
+                (qualified_identifier
+                    scope: (_) @scope (#like? @scope "%1")
+                    %2
+                )
+            )EOF").arg(scope, identifier);
+        }
+        // clang-format on
+    } else {
+        identifier = R"EOF(
+              [
+                (identifier) @selectionRange
+                (field_identifier) @selectionRange
+                (_ [(identifier) (field_identifier)] @selectionRange)
+                (_ (_ [(identifier) (field_identifier)] @selectionRange))
+              ] @name
+        )EOF";
+    }
+
+    // clang-format off
+    return QString(R"EOF(
+            (function_declarator
+              declarator: %1
+
+              parameters: (parameter_list
+                ; Cool trick: We can use [(type) @capture _]* to capture specific node types
+                ; and ignore all others, like comments, "," and so on.
+                [(parameter_declaration) @parameters _]*) @parameter-list
+
+              (trailing_return_type (_) @return)?)
+    )EOF").arg(identifier);
+    // clang-format on
+}
+
+static QString pointerDeclaratorQuery(const QString declarator, const QString &captureName)
+{
+    // clang-format off
+    return QString(R"EOF(
+        [
+        %1
+        (_
+          ["*" "&" "&&"]? %2
+          (type_qualifier)? %2
+          %1) @declaration_type
+        (_
+          ["*" "&" "&&"]? %2
+          (type_qualifier)? %2
+          (_
+            ["*" "&" "&&"]? %2
+            (type_qualifier)? %2
+            %1) @declaration_type) @declaration_type
+        ]
+    )EOF").arg(declarator, captureName);
+    // clang-format on
+}
+
+static QString methodDefinitionQuery(const QString &functionDeclarator)
+{
+    // clang-format off
+    return QString(R"EOF(
+        (function_definition
+          (type_qualifier)? @return
+          type: (_)? @return
+
+          ; If using trailing return type, we need to remove the auto type at the start
+          (#exclude! @return placeholder_type_specifier)
+          declarator: %1
+
+          body: (compound_statement) @body) @range @definition
+    )EOF").arg(functionDeclarator);
+    // clang-format on
+}
+
+static QString methodDeclarationQuery(const QString &declarator)
+{
+    return QString(R"EOF(
+        (field_declaration
+          (type_qualifier)? @return
+          type: (_)? @return
+          ; If using trailing return type, we need to remove the auto type at the start
+          (#exclude! @return placeholder_type_specifier)
+          declarator: %1) @range @declaration
+    )EOF")
+        .arg(declarator);
+}
+
+auto queryFunctionSymbols(CodeDocument *const document) -> QList<Core::Symbol *>
+{
+    auto functionDeclarator = functionDeclaratorQuery("", std::nullopt);
+    auto pointerDeclarator = pointerDeclaratorQuery(functionDeclarator, "@return");
+
+    auto functionDefinition = methodDefinitionQuery(pointerDeclarator);
+    auto memberFunctionDeclaration = methodDeclarationQuery(pointerDeclarator);
+
+    // clang-format off
+    auto functions = document->query(QString(R"EOF(
+        [; Free function implementations
+        %3
+
+        ; Free Function declarations
+        (declaration
+          (type_qualifier)? @return
+          type: (_)? @return
+          declarator: %2) @range
+
+        ; Constructor/Destructors
+        (declaration
+          declarator: %1) @range
+        ; Constructors/Destructors with = default
+        (function_definition
+            declarator: %1) @range
+
+        ; Member functions
+        %4
+    ])EOF").arg(functionDeclarator, pointerDeclarator, functionDefinition, memberFunctionDeclaration));
+    // clang-format on
+
+    auto function_to_symbol = [document](const QueryMatch &match) {
+        auto kind = Symbol::Kind::Function;
+        if (!match.get("return").isValid()) {
+            // No return type, this is a Constructor/Destructor
+            // Clangd also assigned the Constructor kind to Destructors, so we'll do the same
+            kind = Symbol::Kind::Constructor;
+        } else if (match.get("name").text().contains("::")) {
+            // This is a bit of a guesstimate, but if the function name contains "::", it's likely a method.
+            // It may also be a member of a namespace, but this information isn't really available unless we try
+            // to resolve the original declaration.
+            kind = Symbol::Kind::Method;
+        }
+        return Symbol::makeSymbol(document, match, kind);
+    };
+
+    return kdalgorithms::transformed<QList<Symbol *>>(functions, function_to_symbol);
+}
+
+auto queryClassSymbols(CodeDocument *const document) -> QList<Core::Symbol *>
+{
+    auto classesAndStructs = document->query(classQuery(std::nullopt));
+    auto class_to_symbol = [document](const QueryMatch &match) {
+        return Symbol::makeSymbol(document, match, Symbol::Kind::Class);
+    };
+
+    return kdalgorithms::transformed<QList<Symbol *>>(classesAndStructs, class_to_symbol);
+}
+
+static QString membersQuery(std::optional<QString> name)
+{
+    auto fieldIdentifier = "(field_identifier) @name @selectionRange";
+    auto pointerDeclarator = pointerDeclaratorQuery(fieldIdentifier, "@type");
+
+    auto nameCheck = name.has_value() ? QString("(#eq? @name \"%1\")").arg(*name) : "";
+
+    // clang-format off
+    return QString(R"EOF(
+        (field_declaration
+          (type_qualifier)? @type @typeAndName
+          type: (_) @type @typeAndName
+
+          declarator: %1 @typeAndName
+
+          ; We need to filter out functions, they are already captured
+          ; by the functionSymbols query
+          (#not_is? @declaration_type function_declarator)
+          %2) @range @member
+    )EOF").arg(pointerDeclarator, nameCheck);
+    // clang-format on
+}
+
+auto queryMemberSymbols(CodeDocument *const document) -> QList<Core::Symbol *>
+{
+    auto members = document->query(membersQuery(std::nullopt));
+
+    auto member_to_symbol = [document](const QueryMatch &match) {
+        return Symbol::makeSymbol(document, match, Symbol::Kind::Field);
+    };
+
+    return kdalgorithms::transformed<QList<Symbol *>>(members, member_to_symbol);
+}
+auto queryEnumSymbols(CodeDocument *const document) -> QList<Core::Symbol *>
+{
+    auto enums = document->query(R"EOF(
+        (enum_specifier
+          name: (_) @name @selectionRange) @range
+    )EOF");
+    auto enum_to_symbol = [document](const QueryMatch &match) {
+        return Symbol::makeSymbol(document, match, Symbol::Kind::Enum);
+    };
+    auto result = kdalgorithms::transformed<QList<Symbol *>>(enums, enum_to_symbol);
+
+    auto enumerators = document->query(R"EOF(
+        (enumerator
+          name: (_) @name @selectionRange
+          value: (_)? @value) @range
+    )EOF");
+    result.append(kdalgorithms::transformed<QList<Symbol *>>(enumerators, enum_to_symbol));
+
+    return result;
+}
+auto queryAllSymbols(CodeDocument *const document) -> QList<Core::Symbol *>
+{
+    auto symbols = ::queryClassSymbols(document);
+    symbols.append(::queryFunctionSymbols(document));
+    symbols.append(::queryMemberSymbols(document));
+    symbols.append(::queryEnumSymbols(document));
+    return symbols;
+}
+
+}
+
 namespace Core {
 
 /*!
  * \qmltype CppDocument
  * \brief Document object for a C++ file (source or header)
- * \inqmlmodule Script
  * \ingroup CppDocument/@first
  * \inherits CodeDocument
  */
@@ -45,8 +289,9 @@ namespace Core {
 CppDocument::CppDocument(QObject *parent)
     : CodeDocument(Type::Cpp, parent)
 {
+    // setup symbol query functions specific to c++
+    helper()->querySymbols = ::queryAllSymbols;
 }
-
 CppDocument::~CppDocument() = default;
 
 static bool isHeaderSuffix(const QString &suffix)
@@ -274,21 +519,7 @@ Core::QueryMatch CppDocument::queryClassDefinition(const QString &className)
 {
     LOG("CppDocument::queryClassDefinition", LOG_ARG("className", className));
 
-    // clang-format off
-    const auto classDefinitionQuery = QString(R"EOF(
-        ; query classes or structs
-        [(class_specifier
-            name: (_) @name (#like? @name "%1")
-            (base_class_clause
-                [(type_identifier) @base _]*)?
-            body: (_) @body)
-        (struct_specifier
-            name: (_) @name (#like? @name "%1")
-            (base_class_clause
-                [(type_identifier) @base _]*)?
-            body: (_) @body)]
-    )EOF").arg(className);
-    // clang-format on
+    const auto classDefinitionQuery = classQuery({className});
 
     auto matches = query(classDefinitionQuery);
     if (matches.isEmpty()) {
@@ -317,6 +548,9 @@ Core::QueryMatch CppDocument::queryClassDefinition(const QString &className)
  * - `parameter-list` - The list of parameters
  * - `parameters` - One capture per parameter, containing the type and name of the parameter, excluding comments!
  * - `body` - The body of the method (including curly-braces)
+ * - `return` - The return type of the method
+ *   - Because the C++ grammar associates pointers to the identifier and not the type this may capture multiple ranges.
+ *   - It is recommended to use `getAllJoined("return")` to get the full type.
  *
  * Please note that the return type is not available, as TreeSitter is not able to parse it easily.
  */
@@ -324,47 +558,12 @@ Core::QueryMatchList CppDocument::queryMethodDefinition(const QString &scope, co
 {
     LOG("CppDocument::queryMethodDefinition", LOG_ARG("scope", scope), LOG_ARG("functionName", functionName));
 
-    // Clang-format gets confused by the raw strings
-    // clang-format off
-    auto identifier = QString(R"EOF(
-            (identifier) @name (#eq? @name "%1")
-        )EOF").arg(functionName);
-
-    if (!scope.isEmpty()) {
-        identifier = QString(R"EOF(
-            (qualified_identifier
-                scope: (_) @scope (#like? @scope "%1")
-                %2
-            )
-        )EOF").arg(scope, identifier);
-    }
-
-    const auto queryFunctionName = QString(R"EOF(
-        (function_declarator
-            declarator: %1
-            parameters: (parameter_list
-                (parameter_declaration)* @parameters
-            ) @parameter-list
-        )
-    )EOF").arg(identifier);
-    // handle Type, Type *, Type &, Type *&, Type &* and Type **
-    const auto queryString = QString(R"EOF(
-        (function_definition
-            type: (_)? @return-type
-            [
-                declarator: (_ (_ %1 ) )
-                declarator: (_ %1 )
-                declarator: %1
-            ]
-            body: (compound_statement) @body
-        ) @definition
-    )EOF").arg(queryFunctionName);
-    //clang-format on
-
-    return query(queryString);
+    const auto functionDeclarator = functionDeclaratorQuery(scope, {functionName});
+    const auto pointerDeclaration = pointerDeclaratorQuery(functionDeclarator, "@return");
+    return query(methodDefinitionQuery(pointerDeclaration));
 }
 
-QVector<QueryMatch> CppDocument::internalQueryFunctionCall(const QString& functionName, const QString& argumentsQuery)
+QList<QueryMatch> CppDocument::internalQueryFunctionCall(const QString &functionName, const QString &argumentsQuery)
 {
     const auto queryString = QString(R"EOF(
                 (call_expression
@@ -373,7 +572,8 @@ QVector<QueryMatch> CppDocument::internalQueryFunctionCall(const QString& functi
                             %2
                         ) @argument-list
                 ) @call
-    )EOF").arg(functionName, argumentsQuery);
+    )EOF")
+                                 .arg(functionName, argumentsQuery);
 
     return query(queryString);
 }
@@ -400,28 +600,30 @@ Core::QueryMatchList CppDocument::queryFunctionCall(const QString &functionName,
     LOG("queryFunctionCall", LOG_ARG("functionName", functionName), LOG_ARG("argumentCaptures", argumentCaptures));
 
     for (const auto &argument : argumentCaptures) {
-        if (kdalgorithms::value_in(argument, {"call", "name", "argument-list"}) ){
+        if (kdalgorithms::value_in(argument, {"call", "name", "argument-list"})) {
             spdlog::warn("CppDocument::queryFunctionCall: provided capture {} is reserved!", argument);
         }
     }
 
-    const auto arguments = kdalgorithms::transformed(argumentCaptures, [](const auto& name) {
-            return QString(". (_)+ @%1").arg(name);
-            });
+    const auto arguments = kdalgorithms::transformed(argumentCaptures, [](const auto &name) {
+        return QString(". (_)+ @%1").arg(name);
+    });
     const auto argumentsQuery = arguments.join(" \",\"\n");
 
-
-    return internalQueryFunctionCall(functionName, QString(R"EOF(
+    return internalQueryFunctionCall(functionName,
+                                     QString(R"EOF(
         . "("
         %1
         . ")" .
-    )EOF").arg(argumentsQuery));
+    )EOF")
+                                         .arg(argumentsQuery));
 }
 
 /*!
  * \qmlmethod array<QueryMatch> CppDocument::queryFunctionCall(string functionName)
  *
- * Returns the list of function calls to the function `functionName`, no matter how many arguments they were called with.
+ * Returns the list of function calls to the function `functionName`, no matter how many arguments they were called
+ * with.
  *
  * The returned QueryMatch instances will have the following captures available:
  *
@@ -430,12 +632,10 @@ Core::QueryMatchList CppDocument::queryFunctionCall(const QString &functionName,
  * - `argument-list` - The entire list of arguments, including the surroundg parentheses `()`
  * - `arguments` - Each argument provided to the function call, in order, excluding any comments
  */
-Core::QueryMatchList CppDocument::queryFunctionCall(const QString& functionName)
+Core::QueryMatchList CppDocument::queryFunctionCall(const QString &functionName)
 {
     LOG("queryFunctionCall", LOG_ARG("functionName", functionName));
-    return internalQueryFunctionCall(
-            functionName,
-            R"EOF([(_) @arguments ","]* (#exclude! @arguments comment))EOF");
+    return internalQueryFunctionCall(functionName, R"EOF([(_) @arguments ","]* (#exclude! @arguments comment))EOF");
 }
 
 /*!
@@ -459,13 +659,12 @@ bool CppDocument::insertCodeInMethod(const QString &methodName, QString code, Po
     }
 
     if (!symbol->isFunction()) {
-        spdlog::warn("CppDocument::insertCodeInMethod: {} is not a function or a method.",
-                     symbol->name());
+        spdlog::warn("CppDocument::insertCodeInMethod: {} is not a function or a method.", symbol->name());
         return false;
     }
 
     QTextCursor cursor = textEdit()->textCursor();
-    cursor.setPosition(symbol->range().end);
+    cursor.setPosition(symbol->range().end());
     cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor);
     if (cursor.selectedText() != "}") {
         spdlog::warn("CppDocument::insertCodeInMethod: {} is not a function definition.", symbol->name());
@@ -474,7 +673,7 @@ bool CppDocument::insertCodeInMethod(const QString &methodName, QString code, Po
 
     cursor.beginEditBlock();
     // Goto the end and move back one character
-    cursor.setPosition(symbol->range().end);
+    cursor.setPosition(symbol->range().end());
     cursor.movePosition(QTextCursor::PreviousCharacter);
 
     const QString strTab = tab();
@@ -533,7 +732,8 @@ bool CppDocument::insertForwardDeclaration(const QString &forwardDeclaration)
 
     const int spacePos = forwardDeclaration.indexOf(' ');
     const auto classOrStruct = QStringView(forwardDeclaration).left(spacePos);
-    if (forwardDeclaration.isEmpty() || (classOrStruct != QStringLiteral("class") && classOrStruct != QStringLiteral("struct"))) {
+    if (forwardDeclaration.isEmpty()
+        || (classOrStruct != QStringLiteral("class") && classOrStruct != QStringLiteral("struct"))) {
         spdlog::warn("CppDocument::insertForwardDeclaration: {} - should start with 'class ' or 'struct '. ",
                      forwardDeclaration);
         return false;
@@ -692,6 +892,11 @@ MessageMap CppDocument::mfcExtractMessageMap(const QString &className /* = ""*/)
  * - `declaration`: The full declaration of the method
  * - `function`: The function declaration, without the return type
  * - `name`: The name of the function
+ * - `parameter-list`: The full parameter list of the function
+ * - `parameters`: One capture per parameter, containing the type and name of the parameter, excluding comments!
+ * - `return`: The return type of the function
+ *   - Because the C++ grammar associates pointers to the identifier and not the type this may capture multiple ranges.
+ *   - It is recommended to use `getAllJoined("return")` to get the full type.
  */
 Core::QueryMatchList CppDocument::queryMethodDeclaration(const QString &className, const QString &functionName)
 {
@@ -699,26 +904,38 @@ Core::QueryMatchList CppDocument::queryMethodDeclaration(const QString &classNam
 
     auto classQuery = queryClassDefinition(className);
 
-    // TODO: extract parameters
-    // TODO: make it works with constructors and destructors
+    if (classQuery.isEmpty()) {
+        spdlog::warn("CppDocument::queryMethodDeclaration: No class named `{}` found in `{}`", className, fileName());
+        return {};
+    }
+
+    auto functionDeclarator = functionDeclaratorQuery("", {functionName});
 
     // clang-format off
-    auto queryFunctionName = QString(R"EOF(
+    auto destructorDeclarator = QString(R"EOF(
         (function_declarator
-            declarator:(field_identifier) @name (#eq? @name "%1")
-        )
+            declarator: (destructor_name) @name (#eq? @name "%1")
+
+             ; The parameter-list of a destructor must be empty.
+             ; No point in capturing individual parameters
+            parameters: (parameter_list) @parameter-list)
     )EOF").arg(functionName);
-    // handle Type, Type *, Type &, Type *&, Type &* and Type **
+
     auto queryString = QString(R"EOF(
-        (field_declaration
-            type: (_)? @return-type
-            [
-                declarator: (_ (_ %1 ) )
-                declarator: (_ %1 )
-                declarator: %1
-            ]
-        ) @declaration
-    )EOF").arg(queryFunctionName);
+        [
+        ; normal member functions
+        %1
+
+        ; Constructor/Destructors
+        (declaration
+          declarator: [%2 %3]) @range @declaration
+        ; Constructors/Destructors with = default
+        (function_definition
+            declarator: [%2 %3]) @range @declaration
+        ]
+    )EOF").arg(methodDeclarationQuery(pointerDeclaratorQuery(functionDeclarator, "@return")),
+               functionDeclarator, // Used for constructors
+               destructorDeclarator);
     // clang-format on
 
     auto matches = classQuery.queryIn("body", queryString);
@@ -739,7 +956,9 @@ Core::QueryMatchList CppDocument::queryMethodDeclaration(const QString &classNam
  * The returned QueryMatch instance will have the following captures available:
  *
  * - `member`: The full definition of the member
- * - `type`: The type of the member, without `const` or any reference/pointer specifiers (i.e. `&`/`*`)
+ * - `type`: The type of the member
+ *   - Because the C++ grammar associates pointers to the identifier and not the type this may capture multiple ranges.
+ *   - It is recommended to use `getAllJoined("type")` to get the full type.
  * - `name`: The name of the member (should be equal to memberName)
  */
 Core::QueryMatch CppDocument::queryMember(const QString &className, const QString &memberName)
@@ -748,23 +967,7 @@ Core::QueryMatch CppDocument::queryMember(const QString &className, const QStrin
 
     auto classQuery = queryClassDefinition(className);
 
-    // clang-format off
-    auto queryMemberName = QString("(field_identifier) @name");
-    // handle Type, Type *, Type &, Type *&, Type &* and Type **
-    auto queryString = QString(R"EOF(
-        (field_declaration
-            type: (_) @type
-            [
-                declarator: (_ (_ %1 ) )
-                declarator: (_ %1 )
-                declarator: %1
-            ]
-            (#eq? @name "%2")
-        ) @member
-    )EOF").arg(queryMemberName, memberName);
-    // clang-format on
-
-    auto matches = classQuery.queryIn("body", queryString);
+    auto matches = classQuery.queryIn("body", membersQuery(memberName));
     if (matches.isEmpty()) {
         spdlog::warn("CppDocument::queryMember: No member named `{}` found in `{}`", memberName, fileName());
         return {};
@@ -910,9 +1113,9 @@ int CppDocument::moveBlock(int startPos, QTextCursor::MoveOperation direction)
 
     // Set the characters delimiter that increment or decrement the counter when iterating
     auto incCounterChar =
-        direction == QTextCursor::NextCharacter ? QVector<QChar> {'(', '{', '['} : QVector<QChar> {')', '}', ']'};
+        direction == QTextCursor::NextCharacter ? QList<QChar> {'(', '{', '['} : QList<QChar> {')', '}', ']'};
     auto decCounterChar =
-        direction == QTextCursor::PreviousCharacter ? QVector<QChar> {'(', '{', '['} : QVector<QChar> {')', '}', ']'};
+        direction == QTextCursor::PreviousCharacter ? QList<QChar> {'(', '{', '['} : QList<QChar> {')', '}', ']'};
 
     // If the character next is a special one, go inside the block
     if (incCounterChar.contains(currentChar))
@@ -1001,14 +1204,14 @@ void CppDocument::toggleSection()
 
         cursor.beginEditBlock();
         // Start from the end
-        cursor.setPosition(symbol->range().end);
+        cursor.setPosition(symbol->range().end());
         cursor.movePosition(QTextCursor::StartOfLine);
         cursor.movePosition(QTextCursor::Up, QTextCursor::KeepAnchor);
 
         if (cursor.selectedText().startsWith(endifString)) {
             // The function is already commented out, remove the comments
             int start = textEdit()->document()->find(elseString, cursor, QTextDocument::FindBackward).selectionStart();
-            if (start > symbol->range().start)
+            if (start > symbol->range().start())
                 cursor.setPosition(start, QTextCursor::KeepAnchor);
             cursor.removeSelectedText();
             cursor.setPosition(moveBlock(cursor.position(), QTextCursor::PreviousCharacter));
@@ -1019,7 +1222,7 @@ void CppDocument::toggleSection()
             cursorPos -= ifdefString.length() + 1;
         } else {
             // Comment out the function with #if/#def, make sure to return something if needed
-            cursor.setPosition(symbol->range().end);
+            cursor.setPosition(symbol->range().end());
             cursor.movePosition(QTextCursor::PreviousCharacter);
 
             QString text = elseString + newLine;
@@ -1350,7 +1553,7 @@ void CppDocument::deleteMethodLocal(const QString &methodName, const QString &si
     // That way removing a function won't change the position of the other functions.
     // This assumes the ranges don't overlap.
     auto byRange = [](const auto &symbol1, const auto &symbol2) {
-        return symbol1->range().start > symbol2->range().start;
+        return symbol1->range().start() > symbol2->range().start();
     };
     std::ranges::sort(symbolList, byRange);
 
@@ -1543,6 +1746,77 @@ QStringList CppDocument::keywords() const
 QStringList CppDocument::primitiveTypes() const
 {
     return Utils::cppPrimitiveTypes();
+}
+
+QList<treesitter::Range> CppDocument::includedRanges() const
+{
+    auto macros = Settings::instance()->value<QStringList>(Settings::CppExcludedMacros);
+    if (macros.isEmpty()) {
+        return {};
+    }
+
+    QRegularExpression regex(macros.join("|"));
+    if (!regex.isValid()) {
+        spdlog::error("CppDocument::includedRanges: Failed to create regex for excluded macros: {}",
+                      regex.errorString());
+        return {};
+    }
+
+    auto document = textEdit()->document();
+
+    QList<treesitter::Range> ranges;
+    treesitter::Point lastPoint {0, 0};
+    uint32_t lastByte = 0;
+
+    for (auto block = document->firstBlock(); block.isValid(); block = block.next()) {
+        QRegularExpressionMatch match;
+        auto searchFrom = 0;
+        auto index = block.text().indexOf(regex, searchFrom, &match);
+
+        // Run this in a loop to support multiple macros on the same line.
+        while (index != -1) {
+            // We need to construct a range from the end of the last match to the start of the current match.
+            //
+            // Note that the ranges have an inclusive start and an exclusive end..
+            //
+            // Also Note that the column seems to be in bytes, not characters.
+            // This is why we multiply by sizeof(QChar) to get the correct column.
+            // At least that's what the TreeSitterInspector shows us.
+            auto endPoint = treesitter::Point {.row = static_cast<uint32_t>(block.blockNumber()),
+                                               .column = static_cast<uint32_t>(index * sizeof(QChar))};
+            ranges.push_back({.start_point = lastPoint,
+                              .end_point = endPoint,
+                              .start_byte = lastByte,
+                              // No need to add - 1 here, the ranges are exclusive at the end.
+                              .end_byte = static_cast<uint32_t>((block.position() + index) * sizeof(QChar))});
+
+            auto matchLength = match.capturedLength();
+            lastByte = static_cast<uint32_t>((block.position() + index + matchLength) * sizeof(QChar));
+            lastPoint = {.row = static_cast<uint32_t>(block.blockNumber()),
+                         .column = static_cast<uint32_t>((index + matchLength) * sizeof(QChar))};
+            if (lastPoint.column == static_cast<uint32_t>(block.length())) {
+                ++lastPoint.row;
+                lastPoint.column = 0;
+            }
+
+            searchFrom = index + matchLength;
+            index = block.text().indexOf(regex, searchFrom, &match);
+        }
+    }
+
+    if (!ranges.isEmpty()) {
+        // Add the last range, up to the end of the document, but only if we have another range.
+        // Leaving the ranges empty will parse the entire document, so that's easiest.
+        auto endPoint =
+            treesitter::Point {.row = static_cast<uint32_t>(document->blockCount() - 1),
+                               .column = static_cast<uint32_t>(document->lastBlock().length() * sizeof(QChar))};
+        ranges.push_back({.start_point = lastPoint,
+                          .end_point = endPoint,
+                          .start_byte = lastByte,
+                          .end_byte = static_cast<uint32_t>(document->characterCount() * sizeof(QChar))});
+    }
+
+    return ranges;
 }
 
 } // namespace Core

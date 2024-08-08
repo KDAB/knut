@@ -36,8 +36,8 @@ public:
     ~PainterPen() { m_painter->setPen(m_oldPen); }
 
 private:
-    QPainter *m_painter;
-    QPen m_oldPen;
+    QPainter *const m_painter;
+    const QPen m_oldPen;
 };
 
 static bool isPanel(const QWidget *widget)
@@ -82,6 +82,8 @@ int KnutStyle::pixelMetric(PixelMetric metric, const QStyleOption *option, const
         return 1;
     case PM_TabBarTabVSpace:
         return 10;
+    case PM_SplitterWidth:
+        return 1;
     default:
         break;
     }

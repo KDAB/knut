@@ -1,6 +1,15 @@
 // Example script with all the different widgets managed by ScriptDialog showing how to set/get data
+/*
+  This file is part of Knut.
 
-import Script 1.0
+  SPDX-FileCopyrightText: 2024 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+
+  SPDX-License-Identifier: BSD-3-Clause
+
+  Contact KDAB at <info@kdab.com> for commercial licensing options.
+*/
+
+import Knut
 
 ScriptDialog {
     id: root
@@ -17,6 +26,12 @@ ScriptDialog {
         // Defined the possible choices for the comboBoxfine
         data.comboBoxModel = ["1", "2", "3"]
         data.comboBox = "2"
+        // Initialize textEdit and plainTextEdit with example text and syntax
+        data.textEdit = "// Example C++ code\nint main() {\n    return 0;\n}"
+        data.textEditSyntax = "cpp"
+        data.plainTextEdit = "// Example JavaScript code\nfunction hello() {\n    console.log('Hello');\n}"
+        data.plainTextEditSyntax = "js"
+
     }
 
     function showData() {
@@ -27,6 +42,8 @@ ScriptDialog {
         Message.log("SpinBox data: " + data.spinBox)
         Message.log("DoubleSpinBox data: " + data.doubleSpinBox)
         Message.log("ComboBox data: " + data.comboBox)
+        Message.log("TextEdit data: " + data.textEdit)
+        Message.log("PlainTextEdit data: " + data.plainTextEdit)
     }
 
     // Function called when the user click on the OK button
@@ -37,22 +54,22 @@ ScriptDialog {
 
     // Function called when the user click on the Cancel button
     onRejected: {
-         // Logging when the Cancel button is clicked
+        // Logging when the Cancel button is clicked
         Message.log("Cancel button is clicked")
     }
 
     // Function called when a button is clicked
-    onClicked:(name)=>{
-        if (name == "pushButton"){
+    onClicked: (name) => {
+        if (name === "pushButton") {
             Message.log("PushButton is clicked")
-        }
-        else if (name == "toolButton"){
+        } else if (name === "toolButton") {
             Message.log("ToolButton is clicked")
         }
     }
     // Function to automatically test the script, useful for automated testing
     // It runs the script without user interaction
-    function test() {
+
+    function test_script() {
         showData();
         close();
     }

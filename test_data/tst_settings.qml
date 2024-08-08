@@ -8,13 +8,10 @@
   Contact KDAB at <info@kdab.com> for commercial licensing options.
 */
 
-import QtQuick 2.12
-import Script 1.0
-import Script.Test 1.0
+import QtQuick
+import Knut
 
-TestCase {
-    name: "Settings"
-
+Script {
     function test_globalSettings() {
         // We can't test the values, as they could change
         verify(Settings.hasValue("/lsp/servers/0/arguments"))
@@ -48,4 +45,5 @@ TestCase {
         verify(Settings.hasValue("/numbers"));
         compare(Settings.value("/numbers"), undefined);
     }
+
 }

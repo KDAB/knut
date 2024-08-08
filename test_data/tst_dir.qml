@@ -8,13 +8,10 @@
   Contact KDAB at <info@kdab.com> for commercial licensing options.
 */
 
-import QtQuick 2.12
-import Script 1.0
-import Script.Test 1.0
+import QtQuick
+import Knut
 
-TestCase {
-    name: "Dir"
-
+Script {
     function test_basic() {
         if (Qt.platform.os === "windows") {
             var windows = Dir.create("C:\\Users\\Public")

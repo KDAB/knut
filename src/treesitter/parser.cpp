@@ -58,6 +58,11 @@ std::optional<Tree> Parser::parseString(const QString &text, const Tree *old_tre
     return tree ? Tree(tree) : std::optional<Tree> {};
 }
 
+bool Parser::setIncludedRanges(const QList<Range> &ranges)
+{
+    return ts_parser_set_included_ranges(m_parser, ranges.data(), ranges.size());
+}
+
 const TSLanguage *Parser::language() const
 {
     return ts_parser_language(m_parser);

@@ -222,6 +222,6 @@ Note that for most operations, using [`CppDocument::mfcExtractMessageMap`][extra
 [queries]: https://tree-sitter.github.io/tree-sitter/using-parsers#pattern-matching-with-queries
 [destructuring]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment?retiredLocale=de
 [template-literals]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals?retiredLocale=de
-[extract-message-map]: ../API/script/cppdocument.md#mfcExtractMessageMap
-[querymatch]: ../API/script/querymatch.md
-[codedocument-query]: ../API/script/codedocument.md#query
+[extract-message-map]: ../API/knut/cppdocument.md#mfcExtractMessageMap
+[querymatch]: ../API/knut/querymatch.md
+[codedocument-query]: ../API/knut/codedocument.md#query

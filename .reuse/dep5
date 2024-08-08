@@ -4,17 +4,36 @@ Upstream-Contact: <info@kdab.com>
 Source: https://github.com/KDAB/knut/
 
 #misc config files
-Files: .pre-commit-config.yaml .codespellrc .clangd .clazy .gitattributes .github/workflows/documentation.yml .gitignore .gitmodules
+Files: .pre-commit-config.yaml .codespellrc .clangd **.clang-format .clazy .gitattributes .github/workflows/documentation.yml .gitignore .gitmodules .krazy  knut.code-workspace .github/**.yml mkdocs.yml
 Copyright: 2024 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 License: BSD-3-Clause
 
 #misc documentation
-Files: *.md
+Files: *.md docs/**.png docs/**.puml docs/**.gif docs/**.svg docs/**.css
 Copyright: 2024 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 License: GPL-3.0-only
 
 #misc source code
-Files: *.json
+Files: *.json *.ui *.qrc *.rc *.xml src/**.png src/**.ico version.txt
 Copyright: 2024 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 License: GPL-2.0-only OR GPL-3.0-only
 
+#test_data
+Files: test_data/**
+Copyright: 2024 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+License: GPL-2.0-only OR GPL-3.0-only
+
+#3rdparty test_data
+Files: test_data/rcfiles/cryEdit/Resource.h test_data/rcfiles/luaDebugger/resource.h
+Copyright: Amazon.com, Inc. or its affiliates or its licensors
+License: Apache-2.0 OR MIT
+
+#3rdparty from the Qt Company
+Files: qt6.natvis
+Copyright: 2022 The Qt Company Ltd.
+License: GPL-3.0-only OR LicenseRef-Qt-Commercial
+
+#3rdparty Pictogrammers icons used inside the GUI application
+Files: src/gui/gui/*.png
+Copyright: The Pictogrammers
+License: Apache-2.0

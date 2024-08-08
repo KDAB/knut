@@ -13,6 +13,7 @@
 #include "codedocument.h"
 #include "dataexchange.h"
 #include "messagemap.h"
+#include "symbol.h"
 
 #ifndef Q_MOC_RUN
 #define API_EXECUTOR
@@ -60,6 +61,8 @@ public:
     bool changeBaseClass(CppDocument *header, CppDocument *source, const QString &className,
                          const QString &newClassBaseName);
 
+    QList<treesitter::Range> includedRanges() const override;
+
 public slots:
     Core::CppDocument *openHeaderSource();
 
@@ -93,7 +96,7 @@ public slots:
     bool changeBaseClass(const QString &className, const QString &newClassBaseName);
 
 private:
-    QVector<Core::QueryMatch> internalQueryFunctionCall(const QString &functionName, const QString &argumentsQuery);
+    QList<Core::QueryMatch> internalQueryFunctionCall(const QString &functionName, const QString &argumentsQuery);
 
     enum class MemberOrMethodAdditionResult { Success, ClassNotFound };
     MemberOrMethodAdditionResult addMemberOrMethod(const QString &memberInfo, const QString &className,

@@ -1,6 +1,6 @@
 # Unit tests
 
-There are 2 different kinds of unit-tests: C++ and script. THey are located in the `tests` directory, with all test data in the `test_data` directory.
+There are 2 different kinds of unit-tests: C++ and script. They are located in the `tests` directory, with all test data in the `test_data` directory.
 
 ## C++ unit-tests
 
@@ -55,11 +55,11 @@ KNUT_TEST(dir)
 
 Each line will run a file from the `test_data` directory, for example the first one is looking for a `tst_settings.qml` file.
 
-A QML test is using the module `Script.Test` and the item `TestCase`. Each function will be called automatically and returns true or false, depending of the test results.
+A QML test is using the module `Knut.Test` and the item `TestCase`. Each function will be called automatically and returns true or false, depending of the test results.
 
 ```qml
-import Script 1.0
-import Script.Test 1.0
+import Knut
+import Knut.Test
 
 TestCase {
     name: "FileInfo"

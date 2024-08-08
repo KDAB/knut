@@ -15,6 +15,7 @@
 #include "core/knutcore.h"
 #include "core/project.h"
 #include "core/symbol.h"
+#include "core/typedsymbol.h"
 
 #include <QTest>
 #include <QThread>
@@ -36,8 +37,8 @@ class TestSymbol : public QObject
     {
         QString name;
         QString returnType;
-        QVector<Core::FunctionArgument> arguments;
-        Core::TextRange range;
+        QList<Core::FunctionArgument> arguments;
+        Core::RangeMark range;
 
         bool isNull() { return name.isEmpty(); }
     };
@@ -172,6 +173,14 @@ private slots:
         QCOMPARE(members.at(2)->kind(), Core::Symbol::Method);
         QCOMPARE(members.last()->name(), "MyObject::m_enum");
         QCOMPARE(members.last()->kind(), Core::Symbol::Field);
+
+        auto typedsymbol = qobject_cast<Core::TypedSymbol *>(members.at(8));
+        QVERIFY(typedsymbol);
+        QCOMPARE(typedsymbol->type(), "std::string");
+
+        typedsymbol = qobject_cast<Core::TypedSymbol *>(members.last());
+        QVERIFY(typedsymbol);
+        QCOMPARE(typedsymbol->type(), "MyEnum");
     }
 
     void references()
@@ -191,7 +200,7 @@ private slots:
         QCOMPARE(symbol->kind(), Core::Symbol::Class);
 
         const auto isSymbolRange = [&symbol](const auto &loc) {
-            return loc.range == symbol->selectionRange();
+            return loc == symbol->selectionRange();
         };
 
         spdlog::warn("Finding references");
@@ -203,27 +212,98 @@ private slots:
 
         spdlog::warn("Verifying document existence");
         for (const auto &reference : references) {
-            QVERIFY(reference.document);
+            QVERIFY(reference.document());
         }
 
         spdlog::warn("Counting documents");
         QCOMPARE(std::ranges::count_if(references,
                                        [](const auto &location) {
-                                           return location.document->fileName().endsWith("main.cpp");
+                                           return location.document()->fileName().endsWith("main.cpp");
                                        }),
                  1);
 
         QCOMPARE(std::ranges::count_if(references,
                                        [](const auto &location) {
-                                           return location.document->fileName().endsWith("myobject.h");
+                                           return location.document()->fileName().endsWith("myobject.h");
                                        }),
                  2);
 
         QCOMPARE(std::ranges::count_if(references,
                                        [](const auto &location) {
-                                           return location.document->fileName().endsWith("myobject.cpp");
+                                           return location.document()->fileName().endsWith("myobject.cpp");
                                        }),
                  6);
+    }
+
+    void typedSymbol()
+    {
+
+        Core::KnutCore core;
+        Core::Project::instance()->setRoot(Test::testDataPath() + "/tst_symbol/");
+
+        auto codeDocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->open("typedsymbol.h"));
+        QVERIFY(codeDocument);
+
+        auto testTypedSymbol = [&codeDocument](const QString &symbolName, const QString &expectedType) {
+            auto symbol = codeDocument->findSymbol(symbolName);
+            QVERIFY(symbol);
+            auto typedSymbol = qobject_cast<Core::TypedSymbol *>(symbol);
+            QVERIFY(typedSymbol);
+            QCOMPARE(typedSymbol->type(), expectedType);
+        };
+
+        testTypedSymbol("TestClass::m_ptr", "void *");
+        testTypedSymbol("TestClass::m_lvalue_reference", "const std::string &");
+        testTypedSymbol("TestClass::m_rvalue_reference", "std::string&&");
+        testTypedSymbol("TestClass::m_const_ptr", "const class T*const");
+    }
+
+    void functionSymbolReturnType_data()
+    {
+        QTest::addColumn<QString>("symbolName");
+        QTest::addColumn<QString>("returnType");
+
+        auto addRow = [&](const QString &symbolName, const QString &returnType) {
+            QTest::newRow(symbolName.toUtf8().constData()) << symbolName << returnType;
+        };
+
+        addRow("freePtr", "void *");
+        addRow("freePtrImpl", "void *");
+        addRow("freeReference", "const std::string &");
+        addRow("freeReferenceImpl", "const std::string &");
+        addRow("freeConstPtr", "const class T *const");
+        addRow("freeConstPtrImpl", "const class T *const");
+
+        addRow("MyClass::memberPtr", "void *");
+        addRow("MyClass::memberReference", "const string&");
+        addRow("MyClass::memberConstPtr", "const class T* const");
+
+        addRow("MyClass::memberPtrImpl", "void*");
+        addRow("MyClass::memberReferenceImpl", "const std::string&");
+        addRow("MyClass::memberConstPtrImpl", "const class T * const");
+
+        addRow("MyClass::MyClass", "");
+        addRow("MyClass::~MyClass", "");
+        addRow("MyClassImpl::MyClassImpl", "");
+        addRow("MyClassImpl::~MyClassImpl", "");
+    }
+
+    void functionSymbolReturnType()
+    {
+        QFETCH(QString, symbolName);
+        QFETCH(QString, returnType);
+
+        Core::KnutCore core;
+        Core::Project::instance()->setRoot(Test::testDataPath() + "/tst_symbol/");
+
+        auto codeDocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->open("return_type.h"));
+        QVERIFY(codeDocument);
+
+        auto symbol = codeDocument->findSymbol(symbolName);
+        QVERIFY(symbol);
+        auto functionSymbol = qobject_cast<Core::FunctionSymbol *>(symbol);
+        QVERIFY(functionSymbol);
+        QCOMPARE(functionSymbol->returnType(), returnType);
     }
 };
 
