@@ -22,7 +22,7 @@ using namespace Qt::Literals::StringLiterals;
 
 namespace RcCore {
 
-static QVector<Asset> splitToolBar(const Data &data, const ToolBar &toolBar, const Asset &asset)
+static QList<Asset> splitToolBar(const Data &data, const ToolBar &toolBar, const Asset &asset)
 {
     const int iconCount = std::ranges::count_if(toolBar.children, [](const auto &toolBarItem) {
         return !toolBarItem.id.isEmpty();
@@ -36,7 +36,7 @@ static QVector<Asset> splitToolBar(const Data &data, const ToolBar &toolBar, con
         spdlog::warn("{}({}): asset and toolbar widths don't match for {}", data.fileName, asset.line, asset.id);
     }
 
-    QVector<Asset> assets;
+    QList<Asset> assets;
     for (int i = 0; i < iconCount; ++i) {
         Asset iconAsset = asset;
         const int dotPos = iconAsset.fileName.lastIndexOf('.');
@@ -49,7 +49,7 @@ static QVector<Asset> splitToolBar(const Data &data, const ToolBar &toolBar, con
     return assets;
 }
 
-QVector<Asset> convertAsset(const Data &data, Asset asset, Asset::ConversionFlags flags)
+QList<Asset> convertAsset(const Data &data, Asset asset, Asset::ConversionFlags flags)
 {
     if ((flags & Asset::RemoveUnknown) && !asset.exist)
         return {};
@@ -81,12 +81,12 @@ QVector<Asset> convertAsset(const Data &data, Asset asset, Asset::ConversionFlag
  * The conversion will not write anything - see writeAssetsToImage method.
  * @return New list of assets
  */
-QVector<Asset> convertAssets(const Data &data, Asset::ConversionFlags flags)
+QList<Asset> convertAssets(const Data &data, Asset::ConversionFlags flags)
 {
     if (flags == Asset::NoFlags)
         return data.assets;
 
-    QVector<Asset> assets;
+    QList<Asset> assets;
     for (const auto &asset : data.assets)
         assets.append(convertAsset(data, asset, flags));
 
@@ -641,7 +641,7 @@ static Widget convertChildWidget(const Data &data, const QString &dialogId, Data
     return widget;
 }
 
-static QVector<Widget> adjustHierarchy(QVector<Widget> widgets)
+static QList<Widget> adjustHierarchy(QList<Widget> widgets)
 {
     if (widgets.isEmpty())
         return {};
@@ -653,7 +653,7 @@ static QVector<Widget> adjustHierarchy(QVector<Widget> widgets)
     };
     std::ranges::stable_sort(widgets, sortByArea);
 
-    QVector<Widget> result;
+    QList<Widget> result;
     for (int i = 0; i < widgets.size(); ++i) {
         bool isChildren = false;
         Widget iWidget = std::move(widgets[i]);
@@ -752,7 +752,7 @@ static void fillTips(const Data &data, const QString &id, Action &action)
 }
 
 // actionIdMap allows to find the index of the action in the action vector in case it already exists
-static void createActionForMenu(const Data &data, QVector<Action> &actions, QHash<QString, int> &actionIdMap,
+static void createActionForMenu(const Data &data, QList<Action> &actions, QHash<QString, int> &actionIdMap,
                                 const MenuItem &item)
 {
     if (!item.children.empty()) {
@@ -790,7 +790,7 @@ static Shortcut createShortcut(const Data &data, const Data::Accelerator &accele
 }
 
 // actionIdMap allows to find the index of the action in the action vector in case it already exists
-static void createActionForAccelerator(const Data &data, QVector<Action> &actions, QHash<QString, int> &actionIdMap,
+static void createActionForAccelerator(const Data &data, QList<Action> &actions, QHash<QString, int> &actionIdMap,
                                        const Data::AcceleratorTable &table)
 {
     for (const auto &accelerator : table.accelerators) {
@@ -815,10 +815,10 @@ static void createActionForAccelerator(const Data &data, QVector<Action> &action
 
 // actionIdMap allows to find the index of the action in the action vector in case it already exists
 // the conversion flags are used to compute the name of the icon
-static void createActionForToolBar(const Data &data, QVector<Action> &actions, QHash<QString, int> &actionIdMap,
+static void createActionForToolBar(const Data &data, QList<Action> &actions, QHash<QString, int> &actionIdMap,
                                    const ToolBar &toolBar, Asset::ConversionFlags flags)
 {
-    QVector<Asset> assets;
+    QList<Asset> assets;
     if (auto asset = data.asset(toolBar.id))
         assets = convertAsset(data, *asset, flags);
 
@@ -848,9 +848,9 @@ static void createActionForToolBar(const Data &data, QVector<Action> &actions, Q
     }
 }
 
-QVector<Action> convertActions(const Data &data, Asset::ConversionFlags flags)
+QList<Action> convertActions(const Data &data, Asset::ConversionFlags flags)
 {
-    QVector<Action> actions;
+    QList<Action> actions;
     // Map the id of an action, already created, to the index in the vector
     // This allows fast lookup, and avoid creating multiple times the same action
     // Also note that the same action could be used multiple times in a menu or a toolbar

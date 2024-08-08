@@ -24,7 +24,6 @@ namespace Core {
 /*!
  * \qmltype RcDocument
  * \brief Provides access to the content of a RC file (MFC resource file).
- * \inqmlmodule Script
  * \ingroup RcDocument/@first
  */
 
@@ -83,6 +82,10 @@ namespace Core {
  * \qmlproperty array<string> RcDocument::languages
  * This read-only property holds the list of languages available in the file.
  */
+/*!
+ * \qmlproperty array<string> RcDocument::ribbonIds
+ * This read-only property holds the list of ribbons available in the file.
+ */
 
 RcDocument::RcDocument(QObject *parent)
     : Document(Type::Rc, parent)
@@ -94,7 +97,7 @@ bool RcDocument::isValid() const
     return m_rcFile.isValid;
 }
 
-QVector<RcCore::Asset> RcDocument::assets() const
+QList<RcCore::Asset> RcDocument::assets() const
 {
     if (isDataValid()) {
         if (m_cacheAssets.isEmpty())
@@ -104,7 +107,7 @@ QVector<RcCore::Asset> RcDocument::assets() const
     return {};
 }
 
-QVector<RcCore::Action> RcDocument::actions() const
+QList<RcCore::Action> RcDocument::actions() const
 {
     if (isDataValid()) {
         if (m_cacheActions.isEmpty())
@@ -174,7 +177,7 @@ RcCore::ActionList RcDocument::actionsFromToolbar(const QString &toolBarId) cons
     return actions;
 }
 
-QVector<RcCore::ToolBar> RcDocument::toolBars() const
+QList<RcCore::ToolBar> RcDocument::toolBars() const
 {
     if (isDataValid())
         return data().toolBars;
@@ -390,8 +393,8 @@ QList<RcCore::String> RcDocument::strings() const
 }
 
 /*!
- * \qmlmethod string RcDocument::text(string id)
- * Return the string for the given `id`.
+ * \qmlmethod string RcDocument::string(string id)
+ * Returns the string for the given `id`.
  */
 QString RcDocument::string(const QString &id) const
 {
@@ -432,7 +435,7 @@ QString extractStringForDialog(const RcCore::Data::Dialog *dialog, const QString
 
 /*!
  * \qmlmethod string RcDocument::stringForDialogAndLanguage(string language, string dialogId, string id)
- * Return the string for the given `language`, `dialogid` and id.
+ * Returns the string with `id` for the given `language` and `dialogid`.
  */
 QString RcDocument::stringForDialogAndLanguage(const QString &language, const QString &dialogId,
                                                const QString &id) const
@@ -451,7 +454,7 @@ QString RcDocument::stringForDialogAndLanguage(const QString &language, const QS
 
 /*!
  * \qmlmethod string RcDocument::stringForDialog(string dialogId, string id)
- * Return the string for the given `dialogid` and id.
+ * Returns the string with `id` for the given `dialogid`.
  */
 QString RcDocument::stringForDialog(const QString &dialogId, const QString &id) const
 {
@@ -511,7 +514,7 @@ const RcCore::RcFile &RcDocument::file() const
     return m_rcFile;
 }
 
-QVector<RcCore::Menu> RcDocument::menus() const
+QList<RcCore::Menu> RcDocument::menus() const
 {
     if (isDataValid())
         return data().menus;
@@ -523,7 +526,7 @@ QVector<RcCore::Menu> RcDocument::menus() const
  * \sa RcDocument::writeAssetsToImage
  * \sa RcDocument::writeAssetsToQrc
  *
- * Convert all assets using the `flags`.
+ * Converts all assets using the `flags`.
  *
  * - `RcDocument.RemoveUnknown`: remove the unknown assets
  * - `RcDocument.SplitToolBar`: split toolbars strip into individual icon, one per action
@@ -544,7 +547,7 @@ void RcDocument::convertAssets(int flags)
 /*!
  * \qmlmethod void RcDocument::convertActions(int flags)
  * \todo
- * Convert all actions using the `flags`.
+ * Converts all actions using the `flags`.
  *
  * The `flags` are used to fill the iconPath of the action:
  *
@@ -632,7 +635,7 @@ bool RcDocument::writeDialogToUi(const RcCore::Widget &dialog, const QString &fi
 /*!
  * \qmlmethod bool RcDocument::previewDialog(Widget dialog )
  * \sa RcDocument::dialog
- * Preview the result of the conversion RC->UI
+ * Previews the result of the conversion RC->UI
  */
 void RcDocument::previewDialog(const RcCore::Widget &dialog) const
 {

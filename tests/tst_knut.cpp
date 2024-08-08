@@ -36,7 +36,11 @@ class TestKnut : public QObject
 private:
     void run_knut(const QStringList &arguments)
     {
-        const int failedTests = QProcess::execute(KNUT_BINARY_PATH, arguments);
+        QProcess knut;
+        // Propagate the process environment.
+        // This allows us to e.g. pass QT_QPA_PLATFORM=offscreen to avoid window popups
+        knut.setProcessEnvironment(QProcessEnvironment::systemEnvironment());
+        const int failedTests = knut.execute(KNUT_BINARY_PATH, arguments);
 
         switch (failedTests) {
         case -2:
@@ -72,6 +76,7 @@ private:
 
 private slots:
     KNUT_TEST(settings)
+    KNUT_TEST(settings_rw)
     KNUT_TEST(dir)
     KNUT_TEST(fileinfo)
     KNUT_TEST(utils)

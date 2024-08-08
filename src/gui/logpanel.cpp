@@ -64,7 +64,7 @@ private:
         QString keyword;
         QTextCharFormat format;
     };
-    QVector<HighlightingRule> m_rules;
+    QList<HighlightingRule> m_rules;
 };
 
 LogPanel::LogPanel(QWidget *parent)

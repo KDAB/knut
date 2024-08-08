@@ -13,6 +13,7 @@
 
 #include <QAbstractTableModel>
 #include <QHeaderView>
+#include <QLineEdit>
 #include <QTableView>
 #include <QVBoxLayout>
 
@@ -101,14 +102,41 @@ public:
     }
 
 private:
-    Core::QtTsDocument *m_document = nullptr;
+    Core::QtTsDocument *const m_document;
+};
+
+class QtTsProxy : public QSortFilterProxyModel
+{
+    Q_OBJECT
+public:
+    using QSortFilterProxyModel::QSortFilterProxyModel;
+
+    void setFilterText(const QString &str);
+
+protected:
+    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
+
+private:
+    QString m_filterText;
 };
 
 QtTsView::QtTsView(QWidget *parent)
-    : QTableView(parent)
+    : QWidget(parent)
+    , m_tableView(new QTableView(this))
+    , m_searchLineEdit(new QLineEdit(this))
+    , m_contentProxyModel(new QtTsProxy(this))
 {
-    verticalHeader()->hide();
-    setSelectionBehavior(QAbstractItemView::SelectRows);
+    auto mainWidgetLayout = new QVBoxLayout(this);
+    m_tableView->verticalHeader()->hide();
+    m_tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    mainWidgetLayout->addWidget(m_tableView);
+    mainWidgetLayout->addWidget(m_searchLineEdit);
+    m_searchLineEdit->setPlaceholderText(tr("Filter..."));
+    m_searchLineEdit->setClearButtonEnabled(true);
+
+    m_contentProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    m_tableView->setModel(m_contentProxyModel);
+    connect(m_searchLineEdit, &QLineEdit::textChanged, m_contentProxyModel, &QtTsProxy::setFilterText);
 }
 
 void QtTsView::setTsDocument(Core::QtTsDocument *document)
@@ -127,16 +155,43 @@ void QtTsView::setTsDocument(Core::QtTsDocument *document)
 
 void QtTsView::updateView()
 {
-    delete model();
+    m_contentProxyModel->setSourceModel(nullptr);
+    delete m_contentModel;
+    m_contentModel = new QtTsModelView(m_document);
 
-    setModel(new QtTsModelView(m_document));
-    horizontalHeader()->resizeSection(QtTsModelView::TsColumn::Source, 200);
-    horizontalHeader()->resizeSection(QtTsModelView::TsColumn::Translation, 200);
-    horizontalHeader()->resizeSection(QtTsModelView::TsColumn::Context, 200);
-    horizontalHeader()->setSectionResizeMode(QtTsModelView::TsColumn::Source, QHeaderView::Fixed);
-    horizontalHeader()->setSectionResizeMode(QtTsModelView::TsColumn::Translation, QHeaderView::Fixed);
-    horizontalHeader()->setSectionResizeMode(QtTsModelView::TsColumn::Context, QHeaderView::Interactive);
-    horizontalHeader()->setStretchLastSection(true);
+    m_contentProxyModel->setSourceModel(m_contentModel);
+    m_tableView->setModel(m_contentProxyModel);
+    m_tableView->horizontalHeader()->resizeSection(QtTsModelView::TsColumn::Source, 200);
+    m_tableView->horizontalHeader()->resizeSection(QtTsModelView::TsColumn::Translation, 200);
+    m_tableView->horizontalHeader()->resizeSection(QtTsModelView::TsColumn::Context, 200);
+    m_tableView->horizontalHeader()->setSectionResizeMode(QtTsModelView::TsColumn::Source, QHeaderView::Fixed);
+    m_tableView->horizontalHeader()->setSectionResizeMode(QtTsModelView::TsColumn::Translation, QHeaderView::Fixed);
+    m_tableView->horizontalHeader()->setSectionResizeMode(QtTsModelView::TsColumn::Context, QHeaderView::Interactive);
+    m_tableView->horizontalHeader()->setStretchLastSection(true);
 }
 
+void QtTsProxy::setFilterText(const QString &str)
+{
+    m_filterText = str;
+    invalidateFilter();
 }
+
+bool QtTsProxy::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
+{
+    auto match = [&](int role) {
+        return m_filterText.isEmpty()
+            || sourceModel()
+                   ->index(source_row, role, source_parent)
+                   .data()
+                   .toString()
+                   .contains(m_filterText, Qt::CaseInsensitive);
+    };
+    if (!match(QtTsModelView::TsColumn::Comment) && !match(QtTsModelView::TsColumn::Source)
+        && !match(QtTsModelView::TsColumn::Translation) && !match(QtTsModelView::TsColumn::Context)) {
+        return false;
+    }
+
+    return true;
+}
+}
+#include "qttsview.moc"

@@ -240,13 +240,13 @@ private slots:
             QCOMPARE(methods.size(), 2);
 
             QCOMPARE(methods[0].get("name").text(), "sayMessage");
-            QCOMPARE(methods[0].get("return-type").text(), "void");
+            QCOMPARE(methods[0].get("return").text(), "void");
             QCOMPARE(methods[0].getAll("parameters").size(), 0);
             QCOMPARE(methods[0].get("parameter-list").text(), "()");
             QCOMPARE(methods[0].get("body").text(), "{\n    std::cout << m_message << std::endl;\n}");
 
             QCOMPARE(methods[1].get("name").text(), "sayMessage");
-            QCOMPARE(methods[1].get("return-type").text(), "void");
+            QCOMPARE(methods[1].get("return").text(), "void");
             QCOMPARE(methods[1].getAll("parameters").size(), 1);
             QCOMPARE(methods[1].get("parameter-list").text(), "(const std::string& test)");
             QVERIFY(methods[1].get("body").text().contains("m_enum = MyEnum::C"));

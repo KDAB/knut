@@ -30,6 +30,13 @@
             "LANG_NEUTRAL": "[default]"
         }
     },
+    "cpp": {
+        "excluded_macros": [
+            "AFX_EXT_CLASS",
+            "[A-Z_]*EXPORT[A-Z_]*",
+            "Q_OBJECT"
+        ]
+    },
     "mime_types": {
         "c": "cpp_type",
         "cpp": "cpp_type",

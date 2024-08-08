@@ -104,6 +104,20 @@
             "name": "clazy",
             "inherits": "ci",
             "configurePreset": "clazy"
+        },
+        {
+            "name": "debug",
+            "inherits": "ci",
+            "configurePreset": "debug",
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": false
+            }
+        },
+        {
+            "name": "debug-asan",
+            "inherits": "debug",
+            "configurePreset": "debug-asan"
         }
     ]
 }

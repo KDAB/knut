@@ -23,7 +23,6 @@ namespace Core {
 /*!
  * \qmltype Document
  * \brief Base class for all documents
- * \inqmlmodule Script
  *
  * The `Document` class is the base class for all documents.
  * A document is a file loaded by Knut and that can be used in script (either to get data or to edit).
@@ -54,6 +53,7 @@ namespace Core {
  */
 /*!
  * \qmlproperty string Document::errorString
+ * Returns the error string if an error occurred while loading the document, otherwise returns an empty string.
  */
 /*!
  * \qmlproperty bool Document::hasChanged

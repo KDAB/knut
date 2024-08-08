@@ -10,10 +10,10 @@
 
 #pragma once
 
-#include "core/testutil.h"
 #include "utils/log.h"
 
 #include <QDir>
+#include <QDirIterator>
 #include <QFile>
 #include <QFileInfo>
 #include <QString>
@@ -52,12 +52,57 @@ inline QString testDataPath()
 
 inline bool compareFiles(const QString &file, const QString &expected, bool eolLF = true)
 {
-    return Core::TestUtil::compareFiles(file, expected, eolLF);
+    QFile file1(file);
+    if (!file1.open(QIODevice::ReadOnly)) {
+        spdlog::warn("Cannot open {} for comparison!", file);
+        return false;
+    }
+    QFile file2(expected);
+    if (!file2.open(QIODevice::ReadOnly)) {
+        spdlog::warn("Cannot open {} for comparison!", expected);
+        return false;
+    }
+
+    auto data1 = file1.readAll();
+    auto data2 = file2.readAll();
+    if (eolLF) {
+        data1.replace("\r\n", "\n");
+        data2.replace("\r\n", "\n");
+    }
+    auto result = data1 == data2;
+    if (!result) {
+        spdlog::warn("Comparison of {} and {} failed!", file, expected);
+        spdlog::warn("Actual: {}", data1);
+        spdlog::warn("Expected: {}", data2);
+    }
+    return result;
 }
 
 inline bool compareDirectories(const QString &current, const QString &expected)
 {
-    return Core::TestUtil::compareDirectories(current, expected);
+    QDir currentDir(current);
+    if (!currentDir.exists()) {
+        spdlog::warn("Cannot open directory {} for comparison!", current);
+        return false;
+    }
+
+    bool result = true;
+
+    QDirIterator it(currentDir, QDirIterator::Subdirectories);
+    while (it.hasNext()) {
+        it.next();
+
+        const auto fileInfo = it.fileInfo();
+
+        if (fileInfo.isDir())
+            continue;
+
+        const QString subPath = fileInfo.absoluteFilePath().mid(currentDir.absolutePath().length());
+
+        result &= compareFiles(fileInfo.absoluteFilePath(), expected + subPath);
+    }
+
+    return result;
 }
 
 /**

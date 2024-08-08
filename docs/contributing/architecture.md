@@ -32,7 +32,7 @@ High-level architecture description.
 
 `KnutCore` is the central object in the application (module **core**), and is created in the `main.cpp`:
 
-- create the application singletons: [`Project`](../API/script/project.md), [`Settings`](../API/script/settings.md) and `ScriptManager`
+- create the application singletons: [`Project`](../API/knut/project.md), [`Settings`](../API/knut/settings.md) and `ScriptManager`
 - read parameters from the command line
 
 `KnutMain` is a subclass (module **gui**) that adds the gui specific parameters.

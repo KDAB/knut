@@ -35,7 +35,7 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 
 private:
-    const QVector<RcCore::Data::Accelerator> m_accelerators;
+    const QList<RcCore::Data::Accelerator> m_accelerators;
 };
 
 } // namespace RcUi

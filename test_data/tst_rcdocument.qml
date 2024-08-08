@@ -8,13 +8,10 @@
   Contact KDAB at <info@kdab.com> for commercial licensing options.
 */
 
-import QtQuick 2.12
-import Script 1.0
-import Script.Test 1.0
+import QtQuick
+import Knut
 
-TestCase {
-    name: "RcDocument"
-
+Script {
     property var document: RcDocument {
         fileName: Dir.currentScriptPath + "/rcfiles/2048Game/2048Game.rc"
         Component.onCompleted: mergeAllLanguages()

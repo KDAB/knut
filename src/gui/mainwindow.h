@@ -11,11 +11,16 @@
 #pragma once
 
 #include <QMainWindow>
+#include <QPointer>
 #include <memory>
 
 class QMenu;
 class QFileSystemModel;
 class QTreeView;
+
+namespace Core {
+class Document;
+}
 
 namespace Gui {
 
@@ -26,6 +31,7 @@ class ScriptListPanel;
 class DocumentPalette;
 class ShortcutManager;
 class TreeSitterInspector;
+class ToolBar;
 
 namespace Ui {
     class MainWindow;
@@ -67,9 +73,7 @@ private:
     void redo();
 
     // C++
-    void followSymbol();
-    void switchDeclarationDefinition();
-    void switchHeaderSource();
+    void openHeaderSource();
     void gotoBlockStart();
     void gotoBlockEnd();
     void selectBlockStart();
@@ -79,6 +83,14 @@ private:
     void toggleSection();
     void inspectTreeSitter();
     void deleteMethod();
+
+    // Code
+    void followSymbol();
+    void switchDeclarationDefinition();
+    void selectLargerSyntaxNode();
+    void selectSmallerSyntaxNode();
+    void selectNextSyntaxNode();
+    void selectPreviousSyntaxNode();
 
     // Rc
     void createQrc();
@@ -94,6 +106,7 @@ private:
     void openDocument(const QModelIndex &index);
     void updateRecentProjects();
     void changeTab();
+    QWidget *widgetForDocument(Core::Document *document);
     void changeCurrentDocument();
     QDockWidget *createDock(QWidget *widget, Qt::DockWidgetArea area, QWidget *toolbar = nullptr);
     void reloadDocuments();
@@ -108,7 +121,8 @@ private:
     ScriptListPanel *const m_scriptlistpanel = nullptr;
     DocumentPalette *const m_documentPalette = nullptr;
     ShortcutManager *const m_shortcutManager = nullptr;
-    TreeSitterInspector *m_treeSitterInspector = nullptr;
+    ToolBar *const m_toolBar = nullptr;
+    QPointer<TreeSitterInspector> m_treeSitterInspector;
 };
 
 } // namespace Gui

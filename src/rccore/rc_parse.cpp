@@ -1042,7 +1042,7 @@ static MenuItem readMenuItem(Context &context)
 
 static MenuItem readMenuPopup(Context &context);
 
-static void readMenuChildren(Context &context, QVector<MenuItem> &children)
+static void readMenuChildren(Context &context, QList<MenuItem> &children)
 {
     LEXER_FROM_CONTEXT;
 
@@ -1165,7 +1165,7 @@ static Data::Control readControl(Context &context, const std::optional<Token> &t
     //	STATE3 text, id, x, y, width, height [, style [, extended-style]]
     LEXER_FROM_CONTEXT;
 
-    static QVector<Keywords> knownControls = {
+    static QList<Keywords> knownControls = {
         Keywords::AUTO3STATE,  Keywords::AUTOCHECKBOX,  Keywords::AUTORADIOBUTTON,
         Keywords::CHECKBOX,    Keywords::COMBOBOX,      Keywords::CONTROL,
         Keywords::CTEXT,       Keywords::DEFPUSHBUTTON, Keywords::EDITTEXT,
@@ -1186,11 +1186,11 @@ static Data::Control readControl(Context &context, const std::optional<Token> &t
     }
 
     // Only a limited number of controls have a text
-    static QVector<Keywords> textControl = {Keywords::AUTO3STATE, Keywords::AUTOCHECKBOX, Keywords::AUTORADIOBUTTON,
-                                            Keywords::CHECKBOX,   Keywords::CTEXT,        Keywords::DEFPUSHBUTTON,
-                                            Keywords::GROUPBOX,   Keywords::ICON,         Keywords::LTEXT,
-                                            Keywords::PUSHBOX,    Keywords::PUSHBUTTON,   Keywords::RADIOBUTTON,
-                                            Keywords::RTEXT,      Keywords::STATE3,       Keywords::CONTROL};
+    static QList<Keywords> textControl = {Keywords::AUTO3STATE, Keywords::AUTOCHECKBOX, Keywords::AUTORADIOBUTTON,
+                                          Keywords::CHECKBOX,   Keywords::CTEXT,        Keywords::DEFPUSHBUTTON,
+                                          Keywords::GROUPBOX,   Keywords::ICON,         Keywords::LTEXT,
+                                          Keywords::PUSHBOX,    Keywords::PUSHBUTTON,   Keywords::RADIOBUTTON,
+                                          Keywords::RTEXT,      Keywords::STATE3,       Keywords::CONTROL};
 
     if (textControl.contains(controlType)) {
         if (controlType == Keywords::ICON || controlType == Keywords::CONTROL)

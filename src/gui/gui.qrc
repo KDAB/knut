@@ -24,6 +24,7 @@
         <file>gui/magnify-minus.png</file>
         <file>gui/magnify-plus.png</file>
         <file>gui/lightbulb.png</file>
+        <file>gui/file-tree.png</file>
     </qresource>
     <qresource prefix="/org.kde.syntax-highlighting/syntax-addons">
         <file alias="rc.xml">gui/rc.xml</file>

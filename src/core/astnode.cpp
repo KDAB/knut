@@ -32,7 +32,7 @@ AstNode AstNode::parentNode() const
 
 Core::AstNodeList AstNode::childrenNodes() const
 {
-    QVector<AstNode> children;
+    QList<AstNode> children;
     if (auto n = node()) {
         const auto childNodes = n->children();
         for (const auto &node : childNodes) {

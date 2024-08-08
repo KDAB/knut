@@ -10,12 +10,14 @@
 
 #pragma once
 
+#include <QJSValue>
 #include <QObject>
 #include <QQmlEngine>
 #include <QSet>
 #include <QSharedPointer>
 #include <QString>
 #include <functional>
+#include <nlohmann/json.hpp>
 
 namespace Core {
 
@@ -35,17 +37,23 @@ public:
 
     // Run a script
     using EndScriptFunc = std::function<void()>;
-    QVariant runScript(const QString &fileName, const EndScriptFunc &endCallback = {});
+    QVariant runScript(const QString &fileName, nlohmann::json &&data, const EndScriptFunc &endCallback = {});
 
     bool hasError() const { return m_hasError; }
     QList<QQmlError> errors() const { return m_errors; }
 
     static bool isProperty(const QString &apiCall);
 
+    // Method used for testing, shared between ScriptItem and ScriptDialogItem
+    static void compare(QObject *object, const QJSValue &actual, const QJSValue &expected, QString message = {});
+    static void verify(QObject *object, bool value, QString message = {});
+    static QString callerFile(QObject *object, int frameIndex = 0);
+    static int callerLine(QObject *object, int frameIndex = 0);
+
 private:
     QQmlEngine *getEngine(const QString &fileName);
     QVariant runJavascript(const QString &fileName, QQmlEngine *engine);
-    QVariant runQml(const QString &fileName, QQmlEngine *engine);
+    QVariant runQml(const QString &fileName, nlohmann::json &&data, QQmlEngine *engine);
     void filterErrors(const QQmlComponent &component);
 
 private:

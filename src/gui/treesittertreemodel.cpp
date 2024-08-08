@@ -74,11 +74,13 @@ QVariant TreeSitterTreeModel::TreeNode::data(int column) const
             return QString("%1: %2").arg(fieldName, m_node.type());
         }
     case 1:
-        return QString("[%1:%2] - [%3:%4]")
+        return QString("[%1:%2](%3) - [%4:%5](%6)")
             .arg(m_node.startPoint().row)
             .arg(m_node.startPoint().column)
+            .arg(m_node.startPosition())
             .arg(m_node.endPoint().row)
-            .arg(m_node.endPoint().column);
+            .arg(m_node.endPoint().column)
+            .arg(m_node.endPosition());
     default:
         break;
     }

@@ -18,7 +18,7 @@ using namespace RcCore;
 
 namespace RcUi {
 
-AssetModel::AssetModel(const QVector<Asset> &assets, QObject *parent)
+AssetModel::AssetModel(const QList<Asset> &assets, QObject *parent)
     : QAbstractTableModel(parent)
     , m_assets(assets)
 {

@@ -23,7 +23,6 @@ namespace Core {
 /*!
  * \qmltype QueryCapture
  * \brief Defines a capture made by a query.
- * \inqmlmodule Script
  * \ingroup CodeDocument
  * \sa QueryMatch
  */
@@ -45,7 +44,6 @@ QString QueryCapture::toString() const
 /*!
  * \qmltype QueryMatch
  * \brief Contains all captures for a query match.
- * \inqmlmodule Script
  * \ingroup CodeDocument
  * \sa CodeDocument::query
  *
@@ -97,7 +95,7 @@ QueryMatch::QueryMatch(TextDocument &document, const treesitter::QueryMatch &mat
     }
 }
 
-const QVector<QueryCapture> &QueryMatch::captures() const
+const QList<QueryCapture> &QueryMatch::captures() const
 {
     return m_captures;
 }

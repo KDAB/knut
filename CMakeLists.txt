@@ -50,6 +50,11 @@ option(USE_ASAN "use Address Sanitizer" OFF)
 # default.
 option(KNUT_ERROR_ON_WARN
        "Issue a compiler error if the compiler encounters a warning" OFF)
+option(
+  KNUT_UPDATE_DOCS
+  "Automatically update the documentation markdown files on each build.\n \
+  If cpp2doc cannot be executed on your setup, consider disabling this feature."
+  ON)
 
 if(USE_ASAN)
   # /MD will be used implicitly
@@ -174,8 +179,17 @@ file(
   docs/*.md
   docs/contributing/*.md
   docs/getting-started/*.md)
-add_custom_target(
-  docs
-  cpp2doc
-  COMMENT "Update documentation"
-  SOURCES ${DOCS_FILES})
+
+if(KNUT_UPDATE_DOCS)
+  add_custom_target(
+    docs ALL
+    cpp2doc
+    COMMENT "Update documentation"
+    SOURCES ${DOCS_FILES})
+else()
+  add_custom_target(
+    docs
+    cpp2doc
+    COMMENT "Update documentation"
+    SOURCES ${DOCS_FILES})
+endif()

@@ -12,11 +12,11 @@
 #include "astnode.h"
 #include "codedocument_p.h"
 #include "logger.h"
+#include "lsp_utils.h"
 #include "project.h"
 #include "querymatch.h"
 #include "rangemark.h"
 #include "symbol.h"
-#include "textlocation.h"
 #include "treesitter/predicates.h"
 #include "utils/json.h"
 #include "utils/log.h"
@@ -38,7 +38,6 @@ namespace Core {
 /*!
  * \qmltype CodeDocument
  * \brief Base document object for any code that Knut can parse.
- * \inqmlmodule Script
  * \ingroup CodeDocument/@first
  * \inherits TextDocument
  *
@@ -94,38 +93,33 @@ Symbol *CodeDocument::currentSymbol(const std::function<bool(const Symbol &)> &f
  */
 void CodeDocument::deleteSymbol(const Symbol &symbol)
 {
-    auto range = symbol.range();
+    const auto range = symbol.range();
 
     // Include any leading whitespace (excluding newlines).
-    auto leading = Core::TextRange {range.start, range.start + 1};
-    while (leading.start > 0) {
-        leading.start--;
-        leading.end--;
-        selectRange(leading);
+    int start = range.start();
+    while (start > 0) {
+        selectRegion(start - 1, start);
 
         if (selectedText() != " " && selectedText() != "\t") {
             break;
         }
 
-        range.start--;
+        start--;
     }
 
     // Include a trailing semicolon and up to one trailing newline
-    auto trailing = Core::TextRange {range.end, range.end + 1};
-    selectRange(trailing);
+    int end = range.end();
+    selectRegion(end, end + 1);
     if (selectedText() == ";") {
-        range.end++;
-
-        trailing.start++;
-        trailing.end++;
-        selectRange(trailing);
+        end++;
+        selectRegion(end, end + 1);
     }
 
     if (selectedText() == "\n") {
-        range.end++;
+        end++;
     }
 
-    this->selectRange(range);
+    this->selectRegion(start, end);
     this->deleteSelection();
 }
 
@@ -202,30 +196,30 @@ QString CodeDocument::hover(int position, std::function<void(const QString &)> a
     }
 }
 
-std::pair<QString, std::optional<TextRange>> CodeDocument::hoverWithRange(
-    int position, std::function<void(const QString &, std::optional<TextRange>)> asyncCallback /*  = {} */) const
+std::pair<QString, std::optional<RangeMark>> CodeDocument::hoverWithRange(
+    int position, std::function<void(const QString &, std::optional<RangeMark>)> asyncCallback /*  = {} */) const
 {
-    LOG("CodeDocument::hover");
+    spdlog::debug("CodeDocument::hover");
 
     if (!checkClient())
         return {"", {}};
 
     Lsp::HoverParams params;
     params.textDocument.uri = toUri();
-    params.position = fromPos(position);
+    params.position = Utils::lspFromPos(*this, position);
 
     QPointer<const CodeDocument> safeThis(this);
 
-    auto convertResult = [safeThis](const auto &result) -> std::pair<QString, std::optional<TextRange>> {
+    auto convertResult = [safeThis](const auto &result) -> std::pair<QString, std::optional<RangeMark>> {
         if (!std::holds_alternative<Lsp::Hover>(result)) {
             return {"", {}};
         }
 
         auto hover = std::get<Lsp::Hover>(result);
 
-        std::optional<TextRange> range;
+        std::optional<RangeMark> range;
         if (hover.range && !safeThis.isNull()) {
-            range = safeThis->toRange(hover.range.value());
+            range = Utils::lspToRange(*safeThis, hover.range.value());
         }
 
         Lsp::MarkupContent markupContent;
@@ -260,9 +254,9 @@ std::pair<QString, std::optional<TextRange>> CodeDocument::hoverWithRange(
     return {"", {}};
 }
 
-Core::TextLocationList CodeDocument::references(int position) const
+RangeMarkList CodeDocument::references(int position) const
 {
-    LOG("CodeDocument::references");
+    spdlog::debug("CodeDocument::references");
 
     if (!checkClient()) {
         return {};
@@ -270,13 +264,12 @@ Core::TextLocationList CodeDocument::references(int position) const
 
     Lsp::ReferenceParams params;
     params.textDocument.uri = toUri();
-    params.position = fromPos(position);
+    params.position = Utils::lspFromPos(*this, position);
 
-    Core::TextLocationList textLocations;
     if (auto result = client()->references(std::move(params))) {
         const auto &value = result.value();
         if (const auto *locations = std::get_if<std::vector<Lsp::Location>>(&value)) {
-            return TextLocation::fromLsp(*locations);
+            return Utils::lspToRangeMarkList(*locations);
         } else {
             spdlog::warn("CodeDocument::references: Language server returned unsupported references type!");
         }
@@ -284,20 +277,13 @@ Core::TextLocationList CodeDocument::references(int position) const
         spdlog::warn("CodeDocument::references: LSP call to references returned nothing!");
     }
 
-    return textLocations;
+    return {};
 }
 
-/*!
- * \qmlmethod CodeDocument::followSymbol()
- * Follows the symbol under the cursor.
- *
- * - Go to the declaration, if the symbol under cursor is a use
- * - Go to the declaration, if the symbol under cursor is a function definition
- * - Go to the definition, if the symbol under cursor is a function declaration
- */
+// Follows the symbol under the cursor.
 Document *CodeDocument::followSymbol()
 {
-    LOG("CodeDocument::followSymbol");
+    spdlog::debug("CodeDocument::followSymbol");
     if (!checkClient())
         return {};
 
@@ -305,7 +291,7 @@ Document *CodeDocument::followSymbol()
     // That way, calling followSymbol twice in a row causes Clangd
     // to switch between declaration and definition.
     auto cursor = textEdit()->textCursor();
-    LOG_RETURN("document", followSymbol(cursor.selectionStart()));
+    return followSymbol(cursor.selectionStart());
 }
 
 // At least with clangd, the "declaration" LSP call acts like followSymbol, it will:
@@ -358,9 +344,8 @@ Document *CodeDocument::followSymbol(int pos)
     auto *document = Project::instance()->open(filepath);
 
     if (document) {
-        auto *codeDocument = qobject_cast<CodeDocument *>(document);
-        if (codeDocument) {
-            codeDocument->selectRange(codeDocument->toRange(location.range));
+        if (auto *codeDocument = qobject_cast<CodeDocument *>(document)) {
+            codeDocument->selectRange(Utils::lspToRange(*codeDocument, location.range));
         } else {
             spdlog::warn("CodeDocument::followSymbol: Opened document '{}' is not an CodeDocument",
                          document->fileName());
@@ -373,7 +358,7 @@ Document *CodeDocument::followSymbol(int pos)
 // Switches between the function declaration or definition.
 Document *CodeDocument::switchDeclarationDefinition()
 {
-    LOG("CodeDocument::switchDeclarationDefinition");
+    spdlog::debug("CodeDocument::switchDeclarationDefinition");
     if (!checkClient())
         return {};
 
@@ -381,7 +366,7 @@ Document *CodeDocument::switchDeclarationDefinition()
     auto symbolList = symbols();
 
     auto currentFunction = kdalgorithms::find_if(symbolList, [&cursor](const auto &symbol) {
-        auto isInRange = symbol->range().start <= cursor.position() && cursor.position() <= symbol->range().end;
+        auto isInRange = symbol->range().contains(cursor.position());
         return isInRange && symbol->isFunction();
     });
 
@@ -390,7 +375,7 @@ Document *CodeDocument::switchDeclarationDefinition()
         return nullptr;
     }
 
-    LOG_RETURN("document", followSymbol((*currentFunction)->selectionRange().start));
+    return followSymbol((*currentFunction)->selectionRange().start());
 }
 
 /*!
@@ -412,6 +397,163 @@ void CodeDocument::selectSymbol(const QString &name, int options)
 }
 
 /*!
+ * \qmlmethod int CodeDocument::selectLargerSyntaxNode(int count = 1)
+ *
+ * Selects the text of the next larger syntax node that the selection is in.
+ *
+ * It does so `count` times and returns the resulting cursor position.
+ */
+int CodeDocument::selectLargerSyntaxNode(int count /* = 1*/)
+{
+    LOG_AND_MERGE("CodeDocument::selectLargerSyntaxNode", LOG_ARG("count", count));
+
+    auto currentNode = m_treeSitterHelper->nodeCoveringRange(selectionStart(), selectionEnd());
+
+    auto matchesCurrentSelection = static_cast<int>(currentNode.startPosition()) == selectionStart()
+        && static_cast<int>(currentNode.endPosition()) == selectionEnd();
+    if (!matchesCurrentSelection) {
+        // finding the node that covers the current selection already produced a larger syntax node.
+        // So we're already up one level.
+        --count;
+    }
+
+    for (/*count already initialized*/; count > 0 && !currentNode.parent().isNull(); --count) {
+        auto largerNode = currentNode.parent();
+        if (largerNode.startPosition() == currentNode.startPosition()
+            && largerNode.endPosition() == currentNode.endPosition()) {
+            // If the parent node matches the current selection exactly, that's not a real change, so search one
+            // additional time.
+            ++count;
+        }
+        currentNode = largerNode;
+    }
+
+    selectRegion(currentNode.startPosition(), currentNode.endPosition());
+
+    LOG_RETURN("pos", position());
+}
+
+/*!
+ * \qmlmethod int CodeDocument::selectSmallerSyntaxNode(int count = 1)
+ *
+ * Selects the left-most next smaller syntax node within the current selection.
+ *
+ * It does so `count` times and returns the resulting cursor position.
+ *
+ * Note that this only selects "named" Tree-sitter nodes, so punctuation and other unnamed nodes are skipped.
+ */
+int CodeDocument::selectSmallerSyntaxNode(int count /* = 1*/)
+{
+    LOG_AND_MERGE("CodeDocument::selectSmallerSyntaxNode", LOG_ARG("count", count));
+
+    auto smallerNodes =
+        kdalgorithms::filtered(m_treeSitterHelper->nodesInRange(createRangeMark()), [](const auto &node) {
+            return node.isNamed();
+        });
+
+    std::optional<treesitter::Node> node;
+    for (/*count already initialized*/; count > 0; --count) {
+        if (smallerNodes.isEmpty()) {
+            break;
+        }
+        node = smallerNodes.first();
+        auto matchesCurrentSelection = static_cast<int>(node->startPosition()) == selectionStart()
+            && static_cast<int>(node->endPosition()) == selectionEnd();
+        // If the first found node matches the current selection exactly, we need to search one additional time.
+        if (matchesCurrentSelection) {
+            ++count;
+        }
+        smallerNodes = node->namedChildren();
+    }
+
+    if (node.has_value()) {
+        selectRegion(node->startPosition(), node->endPosition());
+    } else {
+        spdlog::warn(
+            "CodeDocument::selectSmallerSyntaxNode: No smaller node found! Do you currently not have a selection?");
+    }
+
+    LOG_RETURN("pos", position());
+}
+
+static std::optional<treesitter::Node>
+findSibling(const treesitter::Node &start, treesitter::Node (treesitter::Node::*nextFunction)() const, int count)
+{
+    auto node = start;
+
+    std::optional<treesitter::Node> target = node;
+    for (/*count already initialized*/; count > 0; --count) {
+        auto next = std::invoke(nextFunction, node);
+        while (next.isNull() && !node.parent().isNull()) {
+            node = node.parent();
+            next = std::invoke(nextFunction, node);
+        }
+        if (next.isNull()) {
+            // We're already at the very end/top, nowhere else to go
+            break;
+        }
+        node = next;
+        target = next;
+    }
+
+    return target;
+}
+
+/*!
+ * \qmlmethod int CodeDocument::selectNextSyntaxNode(int count = 1)
+ *
+ * Selects the next syntax node following the current selection.
+ *
+ * If there is no next syntax node in the current level, it increases the selection to the next larger syntax node and
+ * searches from there. See also: `CodeDocument::selectLargerSyntaxNode`
+ *
+ * It does so `count` times and returns the resulting cursor position.
+ *
+ * Note that this only selects "named" Tree-sitter nodes, so punctuation and other unnamed nodes are skipped.
+ */
+int CodeDocument::selectNextSyntaxNode(int count /*= 1*/)
+{
+    LOG_AND_MERGE("CodeDocument::selectNextSyntaxNode", LOG_ARG("count", count));
+
+    auto node = m_treeSitterHelper->nodeCoveringRange(selectionStart(), selectionEnd());
+
+    auto target = findSibling(node, &treesitter::Node::nextNamedSibling, count);
+
+    if (target.has_value()) {
+        selectRegion(target->startPosition(), target->endPosition());
+    }
+
+    LOG_RETURN("pos", position());
+}
+
+/*!
+ * \qmlmethod int CodeDocument::selectPreviousSyntaxNode(int count = 1)
+ *
+ * Selects the previous syntax node before the current selection.
+ *
+ * If there is no previous syntax node in the current level, it increases the selection to the next larger syntax node
+ * and searches from there. See also: `CodeDocument::selectLargerSyntaxNode`
+ *
+ * It does so `count` times and returns the resulting cursor position.
+ *
+ * Note that this only selects "named" Tree-sitter nodes, so punctuation and other unnamed nodes are skipped.
+ */
+int CodeDocument::selectPreviousSyntaxNode(int count /*= 1*/)
+{
+    LOG_AND_MERGE("CodeDocument::selectPreviousSyntaxNode", LOG_ARG("count", count));
+
+    auto node = m_treeSitterHelper->nodeCoveringRange(selectionStart(), selectionEnd());
+
+    auto target = findSibling(node, &treesitter::Node::previousNamedSibling, count);
+
+    if (target.has_value()) {
+        selectRegion(target->startPosition(), target->endPosition());
+    }
+
+    LOG_RETURN("pos", position());
+}
+
+/*!
  * \qmlmethod Symbol CodeDocument::findSymbol(string name, int options = TextDocument.NoFindFlags)
  * Finds a symbol based on its `name`, using different find `options`.
  *
@@ -427,7 +569,8 @@ Symbol *CodeDocument::findSymbol(const QString &name, int options) const
     LOG("CodeDocument::findSymbol", LOG_ARG("text", name), options);
 
     auto symbols = this->symbols();
-    const auto regexp = (options & FindRegexp) ? Utils::createRegularExpression(name, options) : QRegularExpression {};
+    const auto regexp =
+        (options & FindRegexp) ? ::Utils::createRegularExpression(name, options) : QRegularExpression {};
     auto byName = [name, options, regexp](Symbol *symbol) {
         if (options & FindWholeWords)
             return symbol->name().compare(name,
@@ -480,34 +623,9 @@ std::string CodeDocument::toUri() const
     return QUrl::fromLocalFile(fileName()).toString().toStdString();
 }
 
-int CodeDocument::toPos(const Lsp::Position &pos) const
+std::unique_ptr<TreeSitterHelper> &CodeDocument::helper()
 {
-    // Internally, columns are 0-based, like in LSP
-    const int blockNumber = qMin((int)pos.line, textEdit()->document()->blockCount() - 1);
-    const QTextBlock &block = textEdit()->document()->findBlockByNumber(blockNumber);
-    if (block.isValid()) {
-        QTextCursor cursor(block);
-        cursor.movePosition(QTextCursor::Right, QTextCursor::MoveAnchor, pos.character);
-        return cursor.position();
-    }
-    return 0;
-}
-
-Lsp::Position CodeDocument::fromPos(int pos) const
-{
-    Lsp::Position position;
-
-    auto cursor = textEdit()->textCursor();
-    cursor.setPosition(pos, QTextCursor::MoveAnchor);
-
-    position.line = cursor.blockNumber();
-    position.character = cursor.positionInBlock();
-    return position;
-}
-
-TextRange CodeDocument::toRange(const Lsp::Range &range) const
-{
-    return {toPos(range.start), toPos(range.end)};
+    return m_treeSitterHelper;
 }
 
 std::optional<treesitter::QueryCursor> CodeDocument::createQueryCursor(const std::shared_ptr<treesitter::Query> &query)
@@ -620,10 +738,10 @@ Core::QueryMatchList CodeDocument::queryInRange(const Core::RangeMark &range, co
     Core::QueryMatchList matches;
     for (const treesitter::Node &node : nodes) {
         cursor.execute(tsQuery, node, std::make_unique<treesitter::Predicates>(text()));
-        matches.append(kdalgorithms::transformed<QVector<QueryMatch>>(cursor.allRemainingMatches(),
-                                                                      [this](const treesitter::QueryMatch &match) {
-                                                                          return QueryMatch(*this, match);
-                                                                      }));
+        matches.append(kdalgorithms::transformed<QList<QueryMatch>>(cursor.allRemainingMatches(),
+                                                                    [this](const treesitter::QueryMatch &match) {
+                                                                        return QueryMatch(*this, match);
+                                                                    }));
     }
     return matches;
 }
@@ -731,6 +849,12 @@ AstNode CodeDocument::astNodeAt(int pos)
     if (const auto node = root.descendantForRange(pos, pos); !node.isNull()) {
         return AstNode(node, this);
     }
+    return {};
+}
+
+QList<treesitter::Range> CodeDocument::includedRanges() const
+{
+    // An empty list tells the parser to include the entire document.
     return {};
 }
 

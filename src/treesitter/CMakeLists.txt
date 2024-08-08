@@ -10,8 +10,8 @@
 
 project(knut-treesitter LANGUAGES CXX)
 
-set(PROJECT_SOURCES node.cpp parser.cpp predicates.cpp query.cpp
-                    transformation.cpp tree.cpp)
+set(PROJECT_SOURCES node.cpp parser.cpp predicates.cpp query.cpp tree.cpp
+                    tree_cursor.cpp)
 
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
 target_link_libraries(
@@ -21,6 +21,6 @@ target_link_libraries(
   TreeSitterQmlJs
   kdalgorithms
   knut-utils
-  Qt${QT_VERSION_MAJOR}::Core)
+  Qt::Core)
 target_include_directories(${PROJECT_NAME}
                            INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/..)

@@ -27,7 +27,7 @@ class Project : public QObject
 
     Q_PROPERTY(QString root READ root WRITE setRoot NOTIFY rootChanged)
     Q_PROPERTY(Core::Document *currentDocument READ currentDocument NOTIFY currentDocumentChanged)
-    Q_PROPERTY(QVector<Core::Document *> documents READ documents NOTIFY documentsChanged)
+    Q_PROPERTY(QList<Core::Document *> documents READ documents NOTIFY documentsChanged)
 
 public:
     enum PathType {
@@ -46,7 +46,7 @@ public:
 
     Core::Document *currentDocument() const;
 
-    const QVector<Document *> &documents() const;
+    const QList<Document *> &documents() const;
 
     Q_INVOKABLE QStringList allFiles(Core::Project::PathType type = RelativeToRoot) const;
     Q_INVOKABLE QStringList allFilesWithExtension(const QString &extension,
@@ -77,7 +77,7 @@ private:
     inline static Project *m_instance = nullptr;
 
     QString m_root;
-    QVector<Document *> m_documents;
+    QList<Document *> m_documents;
     Core::Document *m_current = nullptr;
     std::unordered_map<Core::Document::Type, Lsp::Client *> m_lspClients;
 };

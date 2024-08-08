@@ -22,23 +22,22 @@ namespace Core {
 /*!
  * \qmltype QtTsDocument
  * \brief Provides access to the content of a Ts file (Qt linguist).
- * \inqmlmodule Script
  * \ingroup QtTsDocument/@first
  */
 
 /*!
  * \qmlproperty array<QtUiMessage> QtTsDocument::messages
- * List of all translations in the ts file.
+ * List of all translations in the Qt ts file.
  */
 
 /*!
  * \qmlproperty string QtTsDocument::language
- * Return language name.
+ * Returns the language name.
  */
 
 /*!
  * \qmlproperty string QtTsDocument::sourceLanguage
- * Return source language name.
+ * Returns the source language name.
  */
 
 QtTsDocument::QtTsDocument(QObject *parent)
@@ -57,7 +56,7 @@ void QtTsDocument::initializeXml()
 
 /*!
  * \qmlmethod QtTsDocument::setLanguage(string lang)
- * Change language.
+ * Changes the language.
  */
 void QtTsDocument::setLanguage(const QString &lang)
 {
@@ -78,7 +77,7 @@ void QtTsDocument::setLanguage(const QString &lang)
 
 /*!
  * \qmlmethod QtTsDocument::setSourceLanguage(string lang)
- * Change source language.
+ * Changes the source language.
  */
 void QtTsDocument::setSourceLanguage(const QString &lang)
 {
@@ -120,7 +119,7 @@ void QtTsDocument::addMessage(pugi::xml_node contextChild, const QString &contex
 
 /*!
  * \qmlmethod QtTsDocument::addMessage(string context, string location, string source, string translation)
- * Add a new source text, its translation located in location within the given context.
+ * Adds a new `source` text, its `translation` located in `location` within the given `context`.
  */
 
 void QtTsDocument::addMessage(const QString &context, const QString &fileName, const QString &source,
@@ -158,6 +157,78 @@ void QtTsDocument::addMessage(const QString &context, const QString &fileName, c
     // m_document.save_file("foo.xml"); // Debug create foo.xml
     Q_EMIT messagesChanged();
     Q_EMIT fileUpdated();
+}
+
+/*!
+ * \qmlmethod QtTsDocument::setMessageContext(string context, string comment, string source, string newContext)
+ * Set a `newContext` for the message identified by the `context`, `comment` and `source` strings
+ */
+
+void QtTsDocument::setMessageContext(const QString &context, const QString &comment, const QString &source,
+                                     const QString &newContext)
+{
+    LOG("QtTsDocument::setContext", context, comment, source, newContext);
+
+    initializeXml();
+
+    const auto contexts = m_document.select_nodes("//context");
+    for (const auto &contextNode : contexts) {
+
+        const auto messages = contextNode.node().select_nodes("message");
+        for (const auto &messageNode : messages) {
+
+            pugi::xml_node commentNode = messageNode.node().child("comment");
+            pugi::xml_node sourceNode = messageNode.node().child("source");
+            auto commentsAreEqual = [&]() {
+                return QString::fromUtf8(commentNode.text().as_string()) == comment;
+            };
+            auto sourcesAreEqual = [&]() {
+                return QString::fromUtf8(sourceNode.text().as_string()) == source;
+            };
+            auto contextsAreEqual = [&]() {
+                return QString::fromUtf8(contextNode.node().child("name").text().as_string()) == context;
+            };
+            if (commentsAreEqual() && sourcesAreEqual() && contextsAreEqual()) {
+
+                pugi::xml_node targetContextNode = findOrCreateContext(newContext);
+                targetContextNode.append_move(messageNode.node());
+
+                setHasChanged(true);
+                Q_EMIT messagesChanged();
+                Q_EMIT fileUpdated();
+
+                return;
+            }
+        }
+    }
+}
+
+pugi::xml_node QtTsDocument::findOrCreateContext(const QString &context)
+{
+    pugi::xml_node contextNode = findContext(context);
+
+    if (contextNode == nullptr) {
+        pugi::xml_node tsNode = m_document.select_node("TS").node();
+        contextNode = tsNode.append_child("context");
+        contextNode.append_child("name").append_child(pugi::node_pcdata).set_value(context.toLatin1().constData());
+    }
+
+    return contextNode;
+}
+
+pugi::xml_node QtTsDocument::findContext(const QString &context) const
+{
+    pugi::xml_node contextNode;
+    const auto contexts = m_document.select_nodes("//context");
+    for (const auto &existingContext : contexts) {
+        pugi::xml_node nameNode = existingContext.node().child("name");
+        if (QString::fromLatin1(nameNode.text().as_string()) == context) {
+            contextNode = existingContext.node();
+            break;
+        }
+    }
+
+    return contextNode;
 }
 
 bool QtTsDocument::doSave(const QString &fileName)
@@ -208,7 +279,7 @@ QString QtTsDocument::language() const
     return QString::fromLatin1(ts.node().attribute("language").value());
 }
 
-QVector<QtTsMessage *> QtTsDocument::messages() const
+QList<QtTsMessage *> QtTsDocument::messages() const
 {
     return m_messages;
 }
@@ -216,34 +287,33 @@ QVector<QtTsMessage *> QtTsDocument::messages() const
 /*!
  * \qmltype QtTsMessage
  * \brief Provides access to message.
- * \inqmlmodule Script
  * \ingroup QtTsDocument
  * \sa QtTsDocument
  */
 
 /*!
  * \qmlproperty string QtTsMessage::fileName
- * FileName where come from translate string.
+ * Filename where the translation comes from.
  */
 
 /*!
  * \qmlproperty string QtTsMessage::source
- * Original string which must be translated.
+ * Original string to be translated.
  */
 
 /*!
  * \qmlproperty string QtTsMessage::translation
- * String translated in specific language.
+ * Translated string in the Qt ts specific language.
  */
 
 /*!
  * \qmlproperty string QtTsMessage::context
- * Translate context (read only).
+ * Context used for the translation (read only).
  */
 
 /*!
  * \qmlproperty string QtTsMessage::comment
- * Define comment.
+ * Comment added to the string to help translations.
  */
 
 QtTsMessage::QtTsMessage(QString context, pugi::xml_node message, QObject *parent)
@@ -264,6 +334,19 @@ void QtTsMessage::setFileName(const QString &file)
     m_message.child("location").attribute("filename").set_value(file.toLatin1().constData());
     qobject_cast<QtTsDocument *>(parent())->setHasChanged(true);
     Q_EMIT fileNameChanged();
+}
+
+int QtTsMessage::line() const
+{
+    return QByteArray(m_message.child("location").attribute("line").value()).toInt();
+}
+
+void QtTsMessage::setLine(int line)
+{
+    LOG("QtTsMessage::setLine", line);
+    m_message.child("location").attribute("line").set_value(QByteArray::number(line).constData());
+    qobject_cast<QtTsDocument *>(parent())->setHasChanged(true);
+    Q_EMIT lineChanged();
 }
 
 QString QtTsMessage::comment() const
@@ -297,10 +380,11 @@ QString QtTsMessage::translation() const
     return QString::fromUtf8(m_message.child("translation").text().as_string());
 }
 
-void QtTsMessage::setTranslation(const QString &translate)
+void QtTsMessage::setTranslation(const QString &translation)
 {
-    LOG("QtTsMessage::setTranslation", translate);
-    m_message.child("translation").set_value(translate.toUtf8().constData());
+    LOG("QtTsMessage::setTranslation", translation);
+    m_message.child("translation").remove_attribute("type");
+    m_message.child("translation").text().set(translation.toUtf8().constData());
     qobject_cast<QtTsDocument *>(parent())->setHasChanged(true);
     Q_EMIT translationChanged();
 }

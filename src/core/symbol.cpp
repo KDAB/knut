@@ -14,6 +14,7 @@
 #include "functionsymbol.h"
 #include "logger.h"
 #include "project.h"
+#include "typedsymbol.h"
 #include "utils/log.h"
 
 #include <kdalgorithms.h>
@@ -23,7 +24,6 @@ namespace Core {
 /*!
  * \qmltype Symbol
  * \brief Represent a symbol in the current file
- * \inqmlmodule Script
  * \ingroup CodeDocument
  */
 
@@ -70,14 +70,14 @@ namespace Core {
  */
 
 /*!
- * \qmlproperty TextRange Symbol::range
+ * \qmlproperty RangeMark Symbol::range
  * The range enclosing this symbol not including leading/trailing whitespace but everything else like comments. This
  * information is typically used to determine if the clients cursor is inside the symbol to reveal in the symbol in the
  * UI.
  */
 
 /*!
- * \qmlproperty TextRange Symbol::selectionRange
+ * \qmlproperty RangeMark Symbol::selectionRange
  * The range that should be selected and revealed when this symbol is being picked, e.g. the name of a function. Must be
  * contained by the `range`.
  */
@@ -86,8 +86,8 @@ Symbol::Symbol(QObject *parent, const QueryMatch &match, Kind kind)
     : QObject(parent)
     , m_name {match.get("name").text()}
     , m_kind {kind}
-    , m_range {match.get("range").toTextRange()}
-    , m_selectionRange {match.get("selectionRange").toTextRange()}
+    , m_range {match.get("range")}
+    , m_selectionRange {match.get("selectionRange")}
     , m_queryMatch {match}
 {
 }
@@ -101,10 +101,13 @@ Symbol *Symbol::makeSymbol(QObject *parent, const QueryMatch &match, Kind kind)
     if (kind == Class || kind == Struct) {
         return new ClassSymbol(parent, match, kind);
     }
+    if (kind == Field || kind == Variable) {
+        return new TypedSymbol(parent, match, kind);
+    }
     return new Symbol(parent, match, kind);
 }
 
-void Symbol::assignContext(const QVector<Symbol *> &contexts)
+void Symbol::assignContext(const QList<Symbol *> &contexts)
 {
     auto names = kdalgorithms::transformed<QStringList>(contexts, &Symbol::name);
     if (!names.isEmpty()) {
@@ -181,24 +184,24 @@ Symbol::Kind Symbol::kind() const
     return m_kind;
 }
 
-Core::TextRange Symbol::range() const
+Core::RangeMark Symbol::range() const
 {
     return m_range;
 }
 
-Core::TextRange Symbol::selectionRange() const
+Core::RangeMark Symbol::selectionRange() const
 {
     return m_selectionRange;
 }
 
-QVector<Core::TextLocation> Symbol::references() const
+RangeMarkList Symbol::references() const
 {
     LOG("Symbol::references");
 
     if (const auto codedocument = document()) {
-        auto references = codedocument->references(selectionRange().start);
-        kdalgorithms::erase_if(references, [this](const auto &reference) {
-            return reference.range == this->selectionRange();
+        auto references = codedocument->references(selectionRange().start());
+        kdalgorithms::erase_if(references, [this](const RangeMark &reference) {
+            return reference == m_selectionRange;
         });
         return references;
     }

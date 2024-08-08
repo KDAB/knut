@@ -8,13 +8,10 @@
   Contact KDAB at <info@kdab.com> for commercial licensing options.
 */
 
-import QtQuick 2.12
-import Script 1.0
-import Script.Test 1.0
+import QtQuick
+import Knut
 
-TestCase {
-    name: "Project"
-
+Script {
     function test_allFiles() {
         Project.root = Dir.currentScriptPath + "/projects/mfc-tutorial"
 
@@ -36,5 +33,4 @@ TestCase {
         var rcdoc = Project.open("MFC_UpdateGUI.rc")
         compare(rcdoc.type, Document.Rc)
     }
-
 }

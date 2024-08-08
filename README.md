@@ -1,5 +1,9 @@
 # Knut
 
+[![GitHub branch status](https://img.shields.io/github/checks-status/KDAB/knut/main?logo=github)](https://github.com/KDAB/knut/actions)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSES/GPL-3.0-only.txt)
+[![MkDocs](https://img.shields.io/badge/MkDocs-526CFE?logo=materialformkdocs&logoColor=fff)](https://kdab.github.io/knut/)
+
 Knut is an automation tool for code transformation using scripts. The main use case is for migration, but it could be used elsewhere.
 
 The scripts are written either in javascript or QML languages, the latter being able to display a user interface to customize some parts of the application.
@@ -66,6 +70,14 @@ e.g.:
 ```bash
 ./build-release/bin/knut
 ```
+
+# Documentation
+
+Visit our comprehensive documentation here: https://kdab.github.io/knut/contributing/getting-involved.html
+
+# Contributing
+
+For information about contributing to Knut, see the ["Contributing guide"](https://kdab.github.io/knut/contributing/getting-involved.html) in our documentation.
 
 # About KDAB
 

@@ -28,7 +28,7 @@ public:
                            bool isContainer = false);
 
     Status addWidgetProperty(pugi::xml_node widget, const QString &name, const QVariant &value,
-                             const QHash<QString, QString> &attributes = {});
+                             const QHash<QString, QString> &attributes = {}, bool userProperty = false);
 
     Status setWidgetName(pugi::xml_node widget, const QString &name, bool isRoot = false);
     Status setWidgetClassName(pugi::xml_node widget, const QString &className);

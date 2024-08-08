@@ -12,7 +12,7 @@
 
 #include "document.h"
 #include "mark.h"
-#include "textrange.h"
+#include "rangemark.h"
 
 #include <QPointer>
 #include <QRegularExpressionMatch>
@@ -135,7 +135,7 @@ public slots:
     void selectPreviousWord(int count = 1);
     void selectNextWord(int count = 1);
     void selectRegion(int from, int to);
-    void selectRange(const Core::TextRange &range);
+    void selectRange(const Core::RangeMark &range);
 
     // Copy & paste
     void copy();
@@ -149,7 +149,7 @@ public slots:
     void insertAtPosition(const QString &text, int pos);
     void replace(int length, const QString &text);
     void replace(int from, int to, const QString &text);
-    void replace(const Core::TextRange &range, const QString &text);
+    void replace(const Core::RangeMark &range, const QString &text);
 
     // Deletion
     void deleteLine(int line = -1);
@@ -161,7 +161,7 @@ public slots:
     void deletePreviousCharacter(int count = 1);
     void deleteNextCharacter(int count = 1);
     void deleteRegion(int from, int to);
-    void deleteRange(const Core::TextRange &range);
+    void deleteRange(const Core::RangeMark &range);
 
     // Mark
     Core::Mark createMark(int pos = -1);

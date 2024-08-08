@@ -14,6 +14,8 @@ set(PROJECT_SOURCES
     apiexecutorwidget.h
     apiexecutorwidget.cpp
     apiexecutorwidget.ui
+    codeview.cpp
+    codeview.h
     documentpalette.h
     documentpalette.cpp
     fileselector.h
@@ -43,9 +45,6 @@ set(PROJECT_SOURCES
     optionsdialog.h
     optionsdialog.cpp
     optionsdialog.ui
-    transformpreviewdialog.h
-    transformpreviewdialog.cpp
-    transformpreviewdialog.ui
     treesitterinspector.h
     treesitterinspector.cpp
     treesitterinspector.ui
@@ -89,9 +88,9 @@ set(PROJECT_SOURCES
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
 target_link_libraries(
   ${PROJECT_NAME}
-  PUBLIC Qt${QT_VERSION_MAJOR}::Core
-         Qt${QT_VERSION_MAJOR}::Widgets
-         Qt${QT_VERSION_MAJOR}::UiTools
+  PUBLIC Qt::Core
+         Qt::Widgets
+         Qt::UiTools
          knut-core
          knut-rcui
          knut-utils

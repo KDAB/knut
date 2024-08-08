@@ -55,10 +55,10 @@ private:
         QString statusTip;
         int line;
         bool isChecked;
-        QVector<Item> children;
+        QList<Item> children;
     };
 
-    void createTree(Item &item, const QVector<RcCore::MenuItem> &children, const RcCore::Data &data);
+    void createTree(Item &item, const QList<RcCore::MenuItem> &children, const RcCore::Data &data);
     Item *indexToItem(const QModelIndex &index) const;
 
     Item m_root;

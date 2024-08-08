@@ -56,9 +56,7 @@ add_subdirectory(ksyntaxhighlighting)
 
 # * Enable optimizations even in debug mode (in a portable way)
 function(enable_optimizations target)
-  if(MSVC)
-    target_compile_options(${target} PRIVATE /O2)
-  else()
+  if(NOT MSVC)
     target_compile_options(${target} PRIVATE -O3)
   endif()
 endfunction()
@@ -70,6 +68,7 @@ project(TreeSitter LANGUAGES C)
 
 add_library(${PROJECT_NAME} STATIC tree-sitter/lib/src/lib.c)
 target_include_directories(${PROJECT_NAME} PUBLIC tree-sitter/lib/include)
+target_include_directories(${PROJECT_NAME} PRIVATE tree-sitter/lib/src)
 # Always build tree-sitter with optimizations enabled. We shouldn't have to
 # debug it and it's performance critical.
 enable_optimizations(${PROJECT_NAME})

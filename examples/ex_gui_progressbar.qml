@@ -1,6 +1,15 @@
 // Example of an interactive GUI script
+/*
+  This file is part of Knut.
 
-import Script 1.0
+  SPDX-FileCopyrightText: 2024 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
+
+  SPDX-License-Identifier: BSD-3-Clause
+
+  Contact KDAB at <info@kdab.com> for commercial licensing options.
+*/
+
+import Knut
 
 ScriptDialog {
     id: root
@@ -41,7 +50,7 @@ ScriptDialog {
 
     // This is to test the script automatically, to be used with `knut --test ex-gui-interactive.qml`
     // It will run the script automatically without interaction
-    function test() {
+    function test_script() {
         showProgress();
         close();
     }

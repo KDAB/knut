@@ -181,8 +181,7 @@ std::optional<QString> Predicates::checkFilter_eq(const Predicates::PredicateArg
     }
     return {};
 }
-bool Predicates::filter_eq_with(const QueryMatch &match,
-                                const QVector<std::variant<Query::Capture, QString>> &arguments,
+bool Predicates::filter_eq_with(const QueryMatch &match, const QList<std::variant<Query::Capture, QString>> &arguments,
                                 const std::function<QString(const QString &)> &textTransform) const
 {
     std::set<QString> texts;
@@ -207,8 +206,7 @@ bool Predicates::filter_eq_with(const QueryMatch &match,
     return texts.size() == 1;
 }
 
-bool Predicates::filter_eq(const QueryMatch &match,
-                           const QVector<std::variant<Query::Capture, QString>> &arguments) const
+bool Predicates::filter_eq(const QueryMatch &match, const QList<std::variant<Query::Capture, QString>> &arguments) const
 {
     return filter_eq_with(match, arguments, QString_identity);
 }
@@ -240,12 +238,12 @@ std::optional<QString> Predicates::checkFilter_eq_except(const Predicates::Predi
 }
 
 bool Predicates::filter_like(const QueryMatch &match,
-                             const QVector<std::variant<Query::Capture, QString>> &arguments) const
+                             const QList<std::variant<Query::Capture, QString>> &arguments) const
 {
     return filter_eq_with(match, arguments, QString_no_whitespace);
 }
 bool Predicates::filter_eq_except_with(const QueryMatch &match,
-                                       const QVector<std::variant<Query::Capture, QString>> &arguments,
+                                       const QList<std::variant<Query::Capture, QString>> &arguments,
                                        const std::function<QString(const QString &)> &textTransform) const
 {
     auto args = arguments;
@@ -258,7 +256,7 @@ bool Predicates::filter_eq_except_with(const QueryMatch &match,
             auto capture = *rawCapture;
             args.pop_front();
 
-            auto types = QVector<QString>();
+            auto types = QList<QString>();
             for (const auto &arg : std::as_const(args)) {
                 if (const auto *type = std::get_if<QString>(&arg)) {
                     types.push_back(*type);
@@ -305,8 +303,8 @@ bool Predicates::filter_not_is(const QueryMatch &match, const PredicateArguments
 {
     const auto matched = matchArguments(match, arguments);
 
-    auto captures = QVector<QueryMatch::Capture>();
-    auto types = QVector<QString>();
+    auto captures = QList<QueryMatch::Capture>();
+    auto types = QList<QString>();
 
     for (const auto &arg : matched) {
         if (auto capture = std::get_if<QueryMatch::Capture>(&arg)) {
@@ -383,7 +381,7 @@ std::optional<QString> Predicates::checkFilter_not_is(const Predicates::Predicat
 }
 
 bool Predicates::filter_match(const QueryMatch &match,
-                              const QVector<std::variant<Query::Capture, QString>> &arguments) const
+                              const QList<std::variant<Query::Capture, QString>> &arguments) const
 {
     const auto matched = matchArguments(match, arguments);
 
@@ -528,10 +526,10 @@ bool Predicates::filter_in_message_map(const QueryMatch &match, const PredicateA
     }
 }
 
-QVector<std::variant<QString, QueryMatch::Capture, Predicates::MissingCapture>>
+QList<std::variant<QString, QueryMatch::Capture, Predicates::MissingCapture>>
 Predicates::matchArguments(const QueryMatch &match, const Predicates::PredicateArguments &arguments) const
 {
-    QVector<std::variant<QString, QueryMatch::Capture, Predicates::MissingCapture>> result;
+    QList<std::variant<QString, QueryMatch::Capture, Predicates::MissingCapture>> result;
 
     for (const auto &argument : arguments) {
         if (const auto string = std::get_if<QString>(&argument)) {

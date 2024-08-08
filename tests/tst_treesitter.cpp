@@ -13,7 +13,6 @@
 #include "treesitter/parser.h"
 #include "treesitter/predicates.h"
 #include "treesitter/query.h"
-#include "treesitter/transformation.h"
 #include "treesitter/tree.h"
 
 #include <QTest>
@@ -147,62 +146,6 @@ private slots:
 
         // The query should not match
         QVERIFY(!cursor.nextMatch().has_value());
-    }
-
-    void transformMemberAccess()
-    {
-        auto source = readTestFile("/tst_treesitter/main.cpp");
-
-        treesitter::Parser parser(tree_sitter_cpp());
-        auto tree = parser.parseString(source);
-        QVERIFY(tree.has_value());
-
-        auto query = std::make_shared<treesitter::Query>(tree_sitter_cpp(), R"EOF(
-        (field_expression
-            argument: (_) @arg
-            "."
-            field: (_) @field
-            ) @from
-                )EOF");
-
-        treesitter::Transformation transformation(source, std::move(parser), std::move(query), "@arg->@field");
-
-        auto result = transformation.run();
-        QCOMPARE(result, readTestFile("/tst_treesitter/main-arrow.cpp"));
-    }
-
-    void transformationErrors()
-    {
-        auto source = readTestFile("/tst_treesitter/main.cpp");
-
-        {
-            treesitter::Parser parser(tree_sitter_cpp());
-            auto query = std::make_shared<treesitter::Query>(tree_sitter_cpp(), R"EOF(
-                (field_expression
-                    argument: (_) @arg
-                    "."
-                    field: (_) @field
-                    )
-                )EOF");
-
-            treesitter::Transformation missingFromTransformation(source, std::move(parser), std::move(query),
-                                                                 "@arg->@field");
-            QVERIFY_THROWS_EXCEPTION(treesitter::Transformation::Error, missingFromTransformation.run());
-        }
-
-        {
-            treesitter::Parser parser(tree_sitter_cpp());
-            auto query = std::make_shared<treesitter::Query>(tree_sitter_cpp(), R"EOF(
-                (field_expression
-                    argument: (_) @arg
-                    field: (_) @field
-                    )
-                )EOF");
-
-            treesitter::Transformation recursiveTransformation(source, std::move(parser), std::move(query),
-                                                               "@arg->@field");
-            QVERIFY_THROWS_EXCEPTION(treesitter::Transformation::Error, recursiveTransformation.run());
-        }
     }
 
     void capture_quantifiers()

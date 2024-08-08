@@ -116,10 +116,10 @@ uint32_t Node::childCount() const
     return ts_node_child_count(m_node);
 }
 
-QVector<Node> Node::children() const
+QList<Node> Node::children() const
 {
     const auto count = childCount();
-    QVector<Node> result;
+    QList<Node> result;
     result.reserve(count);
 
     for (uint32_t i = 0; i < count; i++) {
@@ -129,10 +129,10 @@ QVector<Node> Node::children() const
     return result;
 }
 
-QVector<Node> Node::namedChildren() const
+QList<Node> Node::namedChildren() const
 {
     const auto count = namedChildCount();
-    QVector<Node> result;
+    QList<Node> result;
     result.reserve(count);
 
     for (uint32_t i = 0; i < count; i++) {
@@ -140,6 +140,26 @@ QVector<Node> Node::namedChildren() const
     }
 
     return result;
+}
+
+Node Node::nextSibling() const
+{
+    return Node(ts_node_next_sibling(m_node));
+}
+
+Node Node::previousSibling() const
+{
+    return Node(ts_node_prev_sibling(m_node));
+}
+
+Node Node::nextNamedSibling() const
+{
+    return Node(ts_node_next_named_sibling(m_node));
+}
+
+Node Node::previousNamedSibling() const
+{
+    return Node(ts_node_prev_named_sibling(m_node));
 }
 
 uint32_t Node::startPosition() const
@@ -195,7 +215,7 @@ QString Node::textIn(const QString &source) const
     return source.sliced(start, end - start);
 }
 
-QString Node::textExcept(const QString &source, const QVector<QString> &nodeTypes) const
+QString Node::textExcept(const QString &source, const QList<QString> &nodeTypes) const
 {
     auto text = textIn(source);
 
@@ -215,9 +235,9 @@ QString Node::textExcept(const QString &source, const QVector<QString> &nodeType
     return text;
 }
 
-QVector<Node> Node::allChildrenOfType(const QVector<QString> &nodeTypes) const
+QList<Node> Node::allChildrenOfType(const QList<QString> &nodeTypes) const
 {
-    auto result = QVector<Node>();
+    auto result = QList<Node>();
 
     const auto allChildren = children();
     for (const auto &child : allChildren) {

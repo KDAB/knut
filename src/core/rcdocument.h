@@ -20,10 +20,10 @@ class RcDocument : public Document
 {
     Q_OBJECT
     Q_PROPERTY(bool valid READ isValid NOTIFY fileNameChanged)
-    Q_PROPERTY(QVector<RcCore::Asset> assets READ assets NOTIFY dataChanged)
-    Q_PROPERTY(QVector<RcCore::Action> actions READ actions NOTIFY dataChanged)
-    Q_PROPERTY(QVector<RcCore::ToolBar> toolBars READ toolBars NOTIFY dataChanged)
-    Q_PROPERTY(QVector<RcCore::Menu> menus READ menus NOTIFY dataChanged)
+    Q_PROPERTY(QList<RcCore::Asset> assets READ assets NOTIFY dataChanged)
+    Q_PROPERTY(QList<RcCore::Action> actions READ actions NOTIFY dataChanged)
+    Q_PROPERTY(QList<RcCore::ToolBar> toolBars READ toolBars NOTIFY dataChanged)
+    Q_PROPERTY(QList<RcCore::Menu> menus READ menus NOTIFY dataChanged)
     Q_PROPERTY(QList<RcCore::String> strings READ strings NOTIFY dataChanged)
     Q_PROPERTY(QStringList dialogIds READ dialogIds NOTIFY dataChanged)
     Q_PROPERTY(QStringList menuIds READ menuIds NOTIFY dataChanged)
@@ -62,20 +62,20 @@ public:
 
     bool isValid() const;
 
-    QVector<RcCore::Asset> assets() const;
-    QVector<RcCore::Action> actions() const;
+    QList<RcCore::Asset> assets() const;
+    QList<RcCore::Action> actions() const;
     Q_INVOKABLE RcCore::Action action(const QString &id) const;
     Q_INVOKABLE RcCore::ActionList actionsFromMenu(const QString &menuId) const;
     Q_INVOKABLE RcCore::ActionList actionsFromToolbar(const QString &toolBarId) const;
 
-    QVector<RcCore::ToolBar> toolBars() const;
+    QList<RcCore::ToolBar> toolBars() const;
     Q_INVOKABLE RcCore::ToolBar toolBar(const QString &id) const;
 
     Q_INVOKABLE RcCore::Widget dialog(const QString &id, int flags = DEFAULT_VALUE(ConversionFlags, RcDialogFlags),
                                       double scaleX = DEFAULT_VALUE(double, RcDialogScaleX),
                                       double scaleY = DEFAULT_VALUE(double, RcDialogScaleY)) const;
 
-    QVector<RcCore::Menu> menus() const;
+    QList<RcCore::Menu> menus() const;
     Q_INVOKABLE RcCore::Menu menu(const QString &id) const;
 
     Q_INVOKABLE RcCore::Ribbon ribbon(const QString &id) const;
@@ -129,8 +129,8 @@ private:
 
     RcCore::RcFile m_rcFile;
     QString m_language;
-    QVector<RcCore::Asset> m_cacheAssets;
-    QVector<RcCore::Action> m_cacheActions;
+    QList<RcCore::Asset> m_cacheAssets;
+    QList<RcCore::Action> m_cacheActions;
 };
 
 NLOHMANN_JSON_SERIALIZE_ENUM(RcDocument::ConversionFlag,

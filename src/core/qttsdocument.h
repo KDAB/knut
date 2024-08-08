@@ -22,6 +22,7 @@ class QtTsMessage : public QObject
     Q_OBJECT
     Q_PROPERTY(QString fileName READ fileName WRITE setFileName NOTIFY fileNameChanged)
     Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(int line READ line WRITE setLine NOTIFY lineChanged)
     Q_PROPERTY(QString translation READ translation WRITE setTranslation NOTIFY translationChanged)
     Q_PROPERTY(QString comment READ comment WRITE setComment NOTIFY commentChanged)
     Q_PROPERTY(QString context READ context CONSTANT)
@@ -30,6 +31,9 @@ public:
 
     QString fileName() const;
     void setFileName(const QString &name);
+
+    int line() const;
+    void setLine(int line);
 
     QString source() const;
     void setSource(const QString &source);
@@ -44,6 +48,7 @@ public:
 
 signals:
     void fileNameChanged();
+    void lineChanged();
     void sourceChanged();
     void translationChanged();
     void commentChanged();
@@ -51,7 +56,7 @@ signals:
 
 private:
     friend QtTsDocument;
-    const QString m_context;
+    QString m_context;
     pugi::xml_node m_message;
 };
 
@@ -60,7 +65,7 @@ class QtTsDocument : public Document
     Q_OBJECT
     Q_PROPERTY(QString language READ language WRITE setLanguage NOTIFY languageChanged)
     Q_PROPERTY(QString sourceLanguage READ sourceLanguage WRITE setSourceLanguage NOTIFY sourceLanguageChanged)
-    Q_PROPERTY(QVector<Core::QtTsMessage *> messages READ messages NOTIFY messagesChanged)
+    Q_PROPERTY(QList<Core::QtTsMessage *> messages READ messages NOTIFY messagesChanged)
 public:
     explicit QtTsDocument(QObject *parent = nullptr);
 
@@ -68,10 +73,11 @@ public:
     Q_INVOKABLE void setLanguage(const QString &lang);
     Q_INVOKABLE void addMessage(const QString &context, const QString &fileName, const QString &source,
                                 const QString &translation, const QString &comment = QString());
-
+    Q_INVOKABLE void setMessageContext(const QString &context, const QString &comment, const QString &source,
+                                       const QString &newContext);
     QString language() const;
     QString sourceLanguage() const;
-    QVector<QtTsMessage *> messages() const;
+    QList<QtTsMessage *> messages() const;
 
 protected:
     bool doSave(const QString &fileName) override;
@@ -89,7 +95,10 @@ private:
     void initializeXml();
     pugi::xml_document m_document;
 
-    QVector<QtTsMessage *> m_messages;
+    pugi::xml_node findContext(const QString &context) const;
+    pugi::xml_node findOrCreateContext(const QString &context);
+
+    QList<QtTsMessage *> m_messages;
 };
 
 } // namespace Core

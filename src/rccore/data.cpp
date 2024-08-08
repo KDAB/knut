@@ -16,7 +16,6 @@ namespace RcCore {
 /*!
  * \qmltype Asset
  * \brief Description of a RC file asset.
- * \inqmlmodule Script
  * \ingroup RcDocument
  * \sa RcFile
  */
@@ -37,7 +36,6 @@ namespace RcCore {
 /*!
  * \qmltype ToolBarItem
  * \brief Description of a RC file toolbar item.
- * \inqmlmodule Script
  * \ingroup RcDocument
  * \sa RcFile
  */
@@ -53,7 +51,6 @@ namespace RcCore {
 /*!
  * \qmltype ToolBar
  * \brief Description of a RC file toolbar.
- * \inqmlmodule Script
  * \ingroup RcDocument
  * \sa RcFile
  */
@@ -77,7 +74,6 @@ namespace RcCore {
 /*!
  * \qmltype Widget
  * \brief Description of a RC file widget.
- * \inqmlmodule Script
  * \ingroup RcDocument
  * \sa RcFile
  */
@@ -109,7 +105,6 @@ namespace RcCore {
 /*!
  * \qmltype MenuItem
  * \brief Description of a RC file menu item.
- * \inqmlmodule Script
  * \ingroup RcDocument
  * \sa RcFile
  */
@@ -141,7 +136,6 @@ namespace RcCore {
 /*!
  * \qmltype Menu
  * \brief Description of a RC file menu.
- * \inqmlmodule Script
  * \ingroup RcDocument
  * \sa RcFile
  */
@@ -161,7 +155,6 @@ namespace RcCore {
 /*!
  * \qmltype Shortcut
  * \brief Description of a RC file shortcut.
- * \inqmlmodule Script
  * \ingroup RcDocument
  * \sa RcFile
  */
@@ -177,7 +170,6 @@ namespace RcCore {
 /*!
  * \qmltype Action
  * \brief Description of a RC file action.
- * \inqmlmodule Script
  * \ingroup RcDocument
  * \sa RcFile
  */
@@ -205,11 +197,18 @@ namespace RcCore {
  * \qmlproperty bool Action::checked
  * This property is `true` if the action is checkabled and checked by default.
  */
+/*!
+ * \qmlproperty string Action::title
+ * This property holds the title of the action.
+ */
+/*!
+ * \qmlproperty string Action::iconId
+ * This property holds the id of the icon, if any.
+ */
 
 /*!
  * \qmltype String
  * \brief Description of a RC file string.
- * \inqmlmodule Script
  * \ingroup RcDocument
  * \sa RcFile
  */
@@ -228,7 +227,7 @@ bool operator==(const ToolBarItem &left, const ToolBarItem &right)
 }
 
 template <typename T>
-const T *findById(const QVector<T> &collection, const QString &id)
+const T *findById(const QList<T> &collection, const QString &id)
 {
     auto it = std::find_if(collection.cbegin(), collection.cend(), [id](const auto &data) {
         return data.id == id;

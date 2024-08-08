@@ -75,13 +75,13 @@ void Query::swap(Query &other) noexcept
     std::swap(m_query, other.m_query);
 }
 
-QVector<Query::Predicate> Query::predicatesForPattern(uint32_t index) const
+QList<Query::Predicate> Query::predicatesForPattern(uint32_t index) const
 {
     uint32_t predicatesLength;
     const auto predicateSteps = ts_query_predicates_for_pattern(m_query, index, &predicatesLength);
 
-    QVector<Query::Predicate> predicates;
-    Predicate predicate {.name = QString(), .arguments = QVector<std::variant<Capture, QString>> {}};
+    QList<Query::Predicate> predicates;
+    Predicate predicate {.name = QString(), .arguments = QList<std::variant<Capture, QString>> {}};
     for (uint32_t predicateIndex = 0; predicateIndex < predicatesLength; ++predicateIndex) {
         const auto &step = predicateSteps[predicateIndex];
         // We don't really need the length here, but TreeSitter crashes if we give it a nullptr.
@@ -102,7 +102,7 @@ QVector<Query::Predicate> Query::predicatesForPattern(uint32_t index) const
             break;
         case TSQueryPredicateStepTypeDone:
             predicates.emplace_back(std::move(predicate));
-            predicate = Predicate {.name = QString(), .arguments = QVector<std::variant<Capture, QString>>()};
+            predicate = Predicate {.name = QString(), .arguments = QList<std::variant<Capture, QString>>()};
             break;
         }
     }
@@ -110,9 +110,9 @@ QVector<Query::Predicate> Query::predicatesForPattern(uint32_t index) const
     return predicates;
 }
 
-QVector<Query::Pattern> Query::patterns() const
+QList<Query::Pattern> Query::patterns() const
 {
-    QVector<Query::Pattern> result;
+    QList<Query::Pattern> result;
 
     auto count = ts_query_pattern_count(m_query);
     result.reserve(count);
@@ -125,11 +125,11 @@ QVector<Query::Pattern> Query::patterns() const
     return result;
 }
 
-QVector<Query::Capture> Query::captures() const
+QList<Query::Capture> Query::captures() const
 {
     uint32_t length = ts_query_capture_count(m_query);
 
-    QVector<Query::Capture> results;
+    QList<Query::Capture> results;
     for (uint32_t i = 0; i < length; i++) {
         results.emplace_back(captureAt(i));
     }
@@ -178,27 +178,27 @@ std::shared_ptr<Query> QueryMatch::query() const
     return m_query;
 }
 
-QVector<QueryMatch::Capture> QueryMatch::capturesNamed(const QString &name) const
+QList<QueryMatch::Capture> QueryMatch::capturesNamed(const QString &name) const
 {
     auto captures = this->captures();
-    QVector<Capture> result;
+    QList<Capture> result;
     std::ranges::copy_if(std::as_const(captures), std::back_inserter(result), [this, &name](const auto &capture) {
         return m_query->captureAt(capture.id).name == name;
     });
     return result;
 }
 
-void QueryMatch::setCaptures(QVector<Capture> &&captures)
+void QueryMatch::setCaptures(QList<Capture> &&captures)
 {
     m_captures = std::move(captures);
 }
 
-QVector<QueryMatch::Capture> QueryMatch::captures() const
+QList<QueryMatch::Capture> QueryMatch::captures() const
 {
     return m_captures;
 }
 
-QVector<QueryMatch::Capture> QueryMatch::capturesWithId(uint32_t id) const
+QList<QueryMatch::Capture> QueryMatch::capturesWithId(uint32_t id) const
 {
     return kdalgorithms::filtered(captures(), [id](const auto &capture) {
         return capture.id == id;
@@ -274,9 +274,9 @@ std::optional<QueryMatch> QueryCursor::nextMatch()
     return {};
 }
 
-QVector<QueryMatch> QueryCursor::allRemainingMatches()
+QList<QueryMatch> QueryCursor::allRemainingMatches()
 {
-    QVector<QueryMatch> matches;
+    QList<QueryMatch> matches;
     for (auto match = nextMatch(); match.has_value(); match = nextMatch()) {
         matches.emplace_back(match.value());
     }

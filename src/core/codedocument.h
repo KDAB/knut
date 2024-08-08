@@ -15,6 +15,7 @@
 #include "querymatch.h"
 #include "symbol.h"
 #include "textdocument.h"
+#include "treesitter/parser.h"
 #include "treesitter/query.h"
 
 #include <functional>
@@ -60,7 +61,7 @@ public:
     // It turns out that constructing Query instances is relatively expensive.
     // Therefore it's better to construct them once and reuse them.
     // So allow this for outside users.
-    QVector<Core::QueryMatch> query(const std::shared_ptr<treesitter::Query> &query);
+    QList<Core::QueryMatch> query(const std::shared_ptr<treesitter::Query> &query);
     Core::QueryMatch queryFirst(const std::shared_ptr<treesitter::Query> &query);
 
     bool hasLspClient() const;
@@ -73,17 +74,21 @@ public:
     // As they rely on the clangd LSP, they are not reliable enough to use for scripting.
     Core::Document *switchDeclarationDefinition();
     Core::Document *followSymbol();
-    Core::TextLocationList references(int position) const;
+    Core::RangeMarkList references(int position) const;
 
     QString hover(int position, std::function<void(const QString &)> asyncCallback = {}) const;
 
-    int toPos(const Lsp::Position &pos) const;
-    TextRange toRange(const Lsp::Range &range) const;
-
     Q_INVOKABLE Core::AstNode astNodeAt(int pos);
+
+    virtual QList<treesitter::Range> includedRanges() const;
 
 public slots:
     void selectSymbol(const QString &name, int options = NoFindFlags);
+
+    int selectLargerSyntaxNode(int count = 1);
+    int selectSmallerSyntaxNode(int count = 1);
+    int selectNextSyntaxNode(int count = 1);
+    int selectPreviousSyntaxNode(int count = 1);
 
 protected:
     explicit CodeDocument(Type type, QObject *parent = nullptr);
@@ -93,13 +98,14 @@ protected:
 
     Lsp::Client *client() const;
     std::string toUri() const;
-    Lsp::Position fromPos(int pos) const;
 
     int revision() const;
 
-    std::pair<QString, std::optional<TextRange>>
+    std::pair<QString, std::optional<RangeMark>>
     hoverWithRange(int position,
-                   std::function<void(const QString &, std::optional<TextRange>)> asyncCallback = {}) const;
+                   std::function<void(const QString &, std::optional<RangeMark>)> asyncCallback = {}) const;
+
+    std::unique_ptr<TreeSitterHelper> &helper();
 
 private:
     bool checkClient() const;

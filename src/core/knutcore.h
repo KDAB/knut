@@ -26,7 +26,7 @@ class KnutCore : public QObject
 public:
     explicit KnutCore(QObject *parent = nullptr);
 
-    void process(const QStringList &arguments);
+    bool process(const QStringList &arguments);
 
 protected:
     // Used to disambiguate the internal constructor

@@ -11,6 +11,7 @@
 #include "common/test_utils.h"
 #include "core/codedocument.h"
 #include "core/knutcore.h"
+#include "core/lsp_utils.h"
 #include "core/project.h"
 #include "core/querymatch.h"
 
@@ -20,6 +21,11 @@
 #include <QTemporaryFile>
 #include <QTest>
 #include <kdalgorithms.h>
+
+#define INIT_KNUT_PROJECT                                                                                              \
+    Core::KnutCore core;                                                                                               \
+    auto project = Core::Project::instance();                                                                          \
+    project->setRoot(Test::testDataPath() + "/projects/cpp-project")
 
 class TestCodeDocument : public QObject
 {
@@ -53,9 +59,7 @@ private slots:
     {
         CHECK_CLANGD_VERSION;
 
-        Core::KnutCore core;
-        auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/projects/cpp-project");
+        INIT_KNUT_PROJECT;
 
         auto cppDocument = qobject_cast<Core::CodeDocument *>(project->open("myobject.cpp"));
         const auto cppSymbols = cppDocument->symbols();
@@ -136,14 +140,12 @@ private slots:
         QFETCH(Core::Symbol::Kind, symbolKind);
         QFETCH(Lsp::Position, position);
 
-        Core::KnutCore core;
-        auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/projects/cpp-project");
+        INIT_KNUT_PROJECT;
 
         const auto document = qobject_cast<Core::CodeDocument *>(project->open(fileName));
 
         auto cursor = document->textEdit()->textCursor();
-        cursor.setPosition(document->toPos(position));
+        cursor.setPosition(Core::Utils::lspToPos(*document, position));
         document->textEdit()->setTextCursor(cursor);
 
         auto actual = document->symbolUnderCursor();
@@ -159,14 +161,12 @@ private slots:
 
     void symbolUnderCursorCache()
     {
-        Core::KnutCore core;
-        auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/projects/cpp-project");
+        INIT_KNUT_PROJECT;
 
         const auto document = qobject_cast<Core::CodeDocument *>(project->open("main.cpp"));
 
         auto cursor = document->textEdit()->textCursor();
-        cursor.setPosition(document->toPos(Lsp::Position {.line = 6 /*0-indexed*/, .character = 6}));
+        cursor.setPosition(Core::Utils::lspToPos(*document, Lsp::Position {.line = 6 /*0-indexed*/, .character = 6}));
         document->textEdit()->setTextCursor(cursor);
 
         auto symbol1 = document->symbolUnderCursor();
@@ -181,9 +181,7 @@ private slots:
     {
         CHECK_CLANGD_VERSION;
 
-        Core::KnutCore core;
-        auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/projects/cpp-project");
+        INIT_KNUT_PROJECT;
 
         auto headerDocument = qobject_cast<Core::CodeDocument *>(project->open("myobject.h"));
 
@@ -213,9 +211,7 @@ private slots:
     {
         CHECK_CLANGD_VERSION;
 
-        Core::KnutCore core;
-        auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/projects/cpp-project");
+        INIT_KNUT_PROJECT;
 
         auto codedocument = qobject_cast<Core::CodeDocument *>(project->open("main.cpp"));
 
@@ -270,9 +266,7 @@ private slots:
     {
         CHECK_CLANGD_VERSION;
 
-        Core::KnutCore core;
-        auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/projects/cpp-project");
+        INIT_KNUT_PROJECT;
 
         auto mainfile = qobject_cast<Core::CodeDocument *>(project->open("main.cpp"));
         auto cppfile = qobject_cast<Core::CodeDocument *>(project->open("myobject.cpp"));
@@ -319,16 +313,16 @@ private slots:
             QVERIFY(cppFile);
 
             const auto before = cppFile->findSymbol("Section::bar")->range();
-            QCOMPARE(before.start, 326);
-            QCOMPARE(before.end, 386);
+            QCOMPARE(before.start(), 326);
+            QCOMPARE(before.end(), 386);
 
             // Changing the code will cause the Language server to become out of sync with the
             // state in Knut. Therefore the next language server call will fail.
             cppFile->gotoStartOfDocument();
             cppFile->insert("\n");
             const auto after = cppFile->findSymbol("Section::bar")->range();
-            QCOMPARE(after.start, 327);
-            QCOMPARE(after.end, 387);
+            QCOMPARE(after.start(), 327);
+            QCOMPARE(after.end(), 387);
         }
     }
 
@@ -336,9 +330,7 @@ private slots:
     {
         CHECK_CLANGD;
 
-        Core::KnutCore core;
-        auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/projects/cpp-project");
+        INIT_KNUT_PROJECT;
 
         auto codedocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->get("myobject.h"));
 
@@ -347,7 +339,7 @@ private slots:
 
         QAction signalled;
 
-        codedocument->hover(symbol->selectionRange().start + 1, [&signalled](const auto &) {
+        codedocument->hover(symbol->selectionRange().start() + 1, [&signalled](const auto &) {
             signalled.trigger();
         });
 
@@ -357,16 +349,14 @@ private slots:
 
     void query()
     {
-        Core::KnutCore core;
-        auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/projects/cpp-project");
+        INIT_KNUT_PROJECT;
 
         auto codedocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->get("main.cpp"));
 
         Test::LogCounter counter;
         auto matches = codedocument->query(R"EOF(
                 (function_definition
-                  type: (_) @return-type
+                  type: (_) @return
                   declarator: (function_declarator
                     declarator: (identifier) @name (eq? @name "main")
                     parameters: (parameter_list
@@ -380,19 +370,17 @@ private slots:
         const auto &captures = match.captures();
         QCOMPARE(captures.size(), 4);
         QCOMPARE(match.getAll("name").size(), 1);
-        QCOMPARE(match.getAll("return-type").size(), 1);
+        QCOMPARE(match.getAll("return").size(), 1);
         QCOMPARE(match.getAll("param").size(), 2);
 
-        QCOMPARE(match.getAll("return-type").at(0).text(), "int");
+        QCOMPARE(match.getAll("return").at(0).text(), "int");
         QCOMPARE(match.getAll("param").at(0).text(), "int argc");
         QCOMPARE(match.getAll("param").at(1).text(), "char *argv[]");
     }
 
     void failedQuery()
     {
-        Core::KnutCore core;
-        auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/projects/cpp-project");
+        INIT_KNUT_PROJECT;
 
         auto codedocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->get("main.cpp"));
 
@@ -415,9 +403,7 @@ private slots:
 
     void queryInRange()
     {
-        Core::KnutCore core;
-        auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/projects/cpp-project");
+        INIT_KNUT_PROJECT;
 
         auto codedocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->get("main.cpp"));
 
@@ -494,6 +480,130 @@ private slots:
         QCOMPARE(foo.type(), "function_definition");
         QCOMPARE(foo.startPos(), 57);
         QCOMPARE(foo.endPos(), 111);
+    }
+
+    void selectLargerSyntaxNode()
+    {
+        INIT_KNUT_PROJECT;
+
+        auto codedocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->get("myobject.cpp"));
+
+        QVERIFY(codedocument->find("string&"));
+        QCOMPARE(codedocument->selectedText(), "string&");
+
+        auto result = codedocument->selectLargerSyntaxNode();
+        QCOMPARE(result, codedocument->position());
+        QCOMPARE(codedocument->selectedText(), "const std::string& message");
+
+        result = codedocument->selectLargerSyntaxNode();
+        QCOMPARE(result, codedocument->position());
+        QCOMPARE(codedocument->selectedText(), "(const std::string& message)");
+
+        result = codedocument->selectLargerSyntaxNode(2);
+        QCOMPARE(result, codedocument->position());
+        QCOMPARE(codedocument->selectedText(),
+                 "MyObject::MyObject(const std::string& message)\n"
+                 "    : m_message(message)\n"
+                 "{}");
+    }
+
+    // Regression test to ensure that certain unnamed nodes are handled correctly.
+    // For example the `const` qualifier has a `type_qualifier` in the AST, which covers the same span.
+    // Make sure that selectLargerSyntaxNode actually goes up far enough to actually expand the selection.
+    void selectLargerSyntaxNode_unnamed_nodes()
+    {
+        INIT_KNUT_PROJECT;
+
+        auto codedocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->get("myobject.cpp"));
+
+        QVERIFY(codedocument->find("const"));
+        QCOMPARE(codedocument->selectedText(), "const");
+
+        auto result = codedocument->selectLargerSyntaxNode();
+        QCOMPARE(result, codedocument->position());
+        QCOMPARE(codedocument->selectedText(), "const std::string& message");
+    }
+
+    void selectSmallerSyntaxNode()
+    {
+        INIT_KNUT_PROJECT;
+
+        auto codedocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->get("myobject.cpp"));
+        QVERIFY(codedocument->find("(const std::string& message)"));
+
+        // This should select the first **named** child, so skip the opening "("
+        auto result = codedocument->selectSmallerSyntaxNode();
+        QCOMPARE(result, codedocument->position());
+        QCOMPARE(codedocument->selectedText(), "const std::string& message");
+
+        result = codedocument->selectSmallerSyntaxNode();
+        QCOMPARE(result, codedocument->position());
+        QCOMPARE(codedocument->selectedText(), "const");
+
+        codedocument->selectLargerSyntaxNode(2);
+        QCOMPARE(codedocument->selectedText(), "(const std::string& message)");
+
+        result = codedocument->selectSmallerSyntaxNode(2);
+        QCOMPARE(result, codedocument->position());
+        QCOMPARE(codedocument->selectedText(), "const");
+    }
+
+    void selectNextSyntaxNode()
+    {
+        INIT_KNUT_PROJECT;
+
+        auto codedocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->get("main.cpp"));
+
+        // Test that a partial selection searches from the next larger syntax node.
+        QVERIFY(codedocument->find("gned int"));
+
+        auto result = codedocument->selectNextSyntaxNode();
+        QCOMPARE(result, codedocument->position());
+        QCOMPARE(codedocument->selectedText(), "long long");
+
+        // Skipping past the end of a node should select the next sibling from the parent.
+        result = codedocument->selectNextSyntaxNode(4);
+        QCOMPARE(result, codedocument->position());
+        QCOMPARE(codedocument->selectedText(), "{\n    return \"hello\";\n}");
+
+        auto lastFunction = "int freeFunction(unsigned, long long)\n"
+                            "{\n"
+                            "        return 5;\n"
+                            "}";
+        result = codedocument->selectNextSyntaxNode(2);
+        QCOMPARE(result, codedocument->position());
+        QCOMPARE(codedocument->selectedText(), lastFunction);
+
+        // No matter how far we go past the end, the selection should not change
+        QCOMPARE(codedocument->selectNextSyntaxNode(10), result);
+        QCOMPARE(codedocument->selectedText(), lastFunction);
+    }
+
+    void selectPreviousSyntaxNode()
+    {
+        INIT_KNUT_PROJECT;
+
+        auto codedocument = qobject_cast<Core::CodeDocument *>(Core::Project::instance()->get("main.cpp"));
+
+        // Test that a partial selection searches from the next larger syntax node.
+        QVERIFY(codedocument->find("ction(1,"));
+
+        auto result = codedocument->selectPreviousSyntaxNode();
+        QCOMPARE(codedocument->position(), result);
+        QCOMPARE(codedocument->selectedText(), "object.sayMessage(\"Another message\" /*a comment*/);");
+
+        // Skipping past the end of a node should select the previous sibling from the parent.
+        result = codedocument->selectPreviousSyntaxNode(3);
+        QCOMPARE(codedocument->position(), result);
+        QCOMPARE(codedocument->selectedText(), "main(int argc, char *argv[])");
+
+        // going past the end selects the last sibling
+        result = codedocument->selectPreviousSyntaxNode(10);
+        QCOMPARE(codedocument->position(), result);
+        QCOMPARE(codedocument->selectedText(), "#include <iostream>\n");
+
+        QCOMPARE(codedocument->selectPreviousSyntaxNode(10), result);
+        QCOMPARE(codedocument->selectedText(), "#include <iostream>\n");
     }
 };
 

@@ -17,6 +17,7 @@
 #include "menumodel.h"
 #include "rccore/rcfile.h"
 #include "rcviewer_global.h"
+#include "ribbonmodel.h"
 #include "stringmodel.h"
 #include "toolbarmodel.h"
 #include "ui_rcfileview.h"
@@ -185,6 +186,9 @@ void RcFileView::setData(int type, int index)
             m_contentProxyModel->setFilterKeyColumn(1);
             updateDialogProperty(index);
         }
+        break;
+    case RibbonData:
+        m_contentModel = new RibbonModel(data().ribbons, this);
         break;
     case NoData:
         break;

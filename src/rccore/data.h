@@ -14,10 +14,10 @@
 
 #include <QByteArray>
 #include <QHash>
+#include <QList>
 #include <QRect>
 #include <QString>
 #include <QVariant>
-#include <QVector>
 
 namespace RcCore {
 
@@ -77,13 +77,13 @@ struct ToolBar
 {
     Q_GADGET
     Q_PROPERTY(QString id MEMBER id)
-    Q_PROPERTY(QVector<RcCore::ToolBarItem> children MEMBER children)
+    Q_PROPERTY(QList<RcCore::ToolBarItem> children MEMBER children)
     Q_PROPERTY(QSize iconSize MEMBER iconSize)
     Q_PROPERTY(QStringList actionIds READ actionIds)
 public:
     QString id;
     QSize iconSize;
-    QVector<ToolBarItem> children;
+    QList<ToolBarItem> children;
     // Internal data
     int line = -1;
 
@@ -98,7 +98,7 @@ struct Widget
     Q_PROPERTY(QString className MEMBER className)
     Q_PROPERTY(QRect geometry MEMBER geometry)
     Q_PROPERTY(QVariantMap properties MEMBER properties)
-    Q_PROPERTY(QVector<RcCore::Widget> children MEMBER children)
+    Q_PROPERTY(QList<RcCore::Widget> children MEMBER children)
 public:
     enum ConversionFlag {
         NoFlags = 0x00,
@@ -114,7 +114,7 @@ public:
     QString className;
     QRect geometry;
     QVariantMap properties;
-    QVector<Widget> children;
+    QList<Widget> children;
 };
 bool operator==(const Widget &left, const Widget &right);
 
@@ -123,7 +123,7 @@ struct MenuItem
     Q_GADGET
     Q_PROPERTY(QString id MEMBER id)
     Q_PROPERTY(QString text MEMBER text)
-    Q_PROPERTY(QVector<RcCore::MenuItem> children MEMBER children)
+    Q_PROPERTY(QList<RcCore::MenuItem> children MEMBER children)
     Q_PROPERTY(bool isSeparator READ isSeparator)
     Q_PROPERTY(bool isAction READ isAction)
     Q_PROPERTY(bool isTopLevel MEMBER isTopLevel)
@@ -138,7 +138,7 @@ public:
     };
     QString id;
     QString text;
-    QVector<MenuItem> children;
+    QList<MenuItem> children;
     bool isSeparator() const { return id.isEmpty() && text.isEmpty(); }
     bool isAction() const { return !isSeparator() && children.isEmpty(); }
     bool isTopLevel = false;
@@ -153,11 +153,11 @@ struct Menu
 {
     Q_GADGET
     Q_PROPERTY(QString id MEMBER id)
-    Q_PROPERTY(QVector<RcCore::MenuItem> children MEMBER children)
+    Q_PROPERTY(QList<RcCore::MenuItem> children MEMBER children)
     Q_PROPERTY(QStringList actionIds READ actionIds)
 public:
     QString id;
-    QVector<MenuItem> children;
+    QList<MenuItem> children;
     // Internal data
     int line = -1;
 
@@ -181,7 +181,7 @@ struct Action
     Q_GADGET
     Q_PROPERTY(QString id MEMBER id)
     Q_PROPERTY(QString title MEMBER title)
-    Q_PROPERTY(QVector<RcCore::Shortcut> shortcuts MEMBER shortcuts)
+    Q_PROPERTY(QList<RcCore::Shortcut> shortcuts MEMBER shortcuts)
     Q_PROPERTY(QString toolTip MEMBER toolTip)
     Q_PROPERTY(QString statusTip MEMBER statusTip)
     Q_PROPERTY(QString iconPath MEMBER iconPath)
@@ -190,7 +190,7 @@ struct Action
 public:
     QString id;
     QString title;
-    QVector<Shortcut> shortcuts;
+    QList<Shortcut> shortcuts;
     QString toolTip;
     QString statusTip;
     QString iconPath;
@@ -242,7 +242,7 @@ struct Data
     {
         int line = -1;
         QString id;
-        QVector<Accelerator> accelerators;
+        QList<Accelerator> accelerators;
     };
     struct Control
     {
@@ -262,22 +262,22 @@ struct Data
         QString caption;
         QString menu;
         QStringList styles;
-        QVector<Control> controls;
+        QList<Control> controls;
     };
 
     QString fileName;
     QString language;
 
     // Resources
-    QVector<Asset> icons;
-    QVector<Asset> assets;
+    QList<Asset> icons;
+    QList<Asset> assets;
     QHash<QString, String> strings;
-    QVector<AcceleratorTable> acceleratorTables;
-    QVector<Menu> menus;
-    QVector<ToolBar> toolBars;
-    QVector<DialogData> dialogDataList;
-    QVector<Dialog> dialogs;
-    QVector<Ribbon> ribbons;
+    QList<AcceleratorTable> acceleratorTables;
+    QList<Menu> menus;
+    QList<ToolBar> toolBars;
+    QList<DialogData> dialogDataList;
+    QList<Dialog> dialogs;
+    QList<Ribbon> ribbons;
 
     // Accessors
     const Asset *asset(const QString &id) const;
@@ -294,21 +294,21 @@ struct Data
 Q_DECLARE_METATYPE(RcCore::Asset)
 Q_DECLARE_OPERATORS_FOR_FLAGS(RcCore::Asset::ConversionFlags)
 Q_DECLARE_OPERATORS_FOR_FLAGS(RcCore::Asset::TransparentColors)
-Q_DECLARE_METATYPE(QVector<RcCore::Asset>)
+Q_DECLARE_METATYPE(QList<RcCore::Asset>)
 Q_DECLARE_METATYPE(RcCore::ToolBarItem)
-Q_DECLARE_METATYPE(QVector<RcCore::ToolBarItem>)
+Q_DECLARE_METATYPE(QList<RcCore::ToolBarItem>)
 Q_DECLARE_METATYPE(RcCore::ToolBar)
-Q_DECLARE_METATYPE(QVector<RcCore::ToolBar>)
+Q_DECLARE_METATYPE(QList<RcCore::ToolBar>)
 Q_DECLARE_METATYPE(RcCore::Widget)
-Q_DECLARE_METATYPE(QVector<RcCore::Widget>)
+Q_DECLARE_METATYPE(QList<RcCore::Widget>)
 Q_DECLARE_OPERATORS_FOR_FLAGS(RcCore::Widget::ConversionFlags)
 Q_DECLARE_METATYPE(RcCore::MenuItem)
-Q_DECLARE_METATYPE(QVector<RcCore::MenuItem>)
+Q_DECLARE_METATYPE(QList<RcCore::MenuItem>)
 Q_DECLARE_METATYPE(RcCore::Menu)
-Q_DECLARE_METATYPE(QVector<RcCore::Menu>)
+Q_DECLARE_METATYPE(QList<RcCore::Menu>)
 Q_DECLARE_METATYPE(RcCore::Shortcut)
-Q_DECLARE_METATYPE(QVector<RcCore::Shortcut>)
+Q_DECLARE_METATYPE(QList<RcCore::Shortcut>)
 Q_DECLARE_METATYPE(RcCore::Action)
-Q_DECLARE_METATYPE(QVector<RcCore::Action>)
+Q_DECLARE_METATYPE(QList<RcCore::Action>)
 Q_DECLARE_METATYPE(RcCore::String)
 Q_DECLARE_METATYPE(QList<RcCore::String>)

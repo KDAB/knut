@@ -13,11 +13,11 @@
 #include "treesitter/parser.h"
 #include "treesittertreemodel.h"
 
+#include <KSyntaxHighlighting/SyntaxHighlighter>
 #include <QDialog>
 #include <QSyntaxHighlighter>
 
 namespace treesitter {
-class Transformation;
 class Predicates;
 }
 
@@ -31,7 +31,7 @@ namespace Ui {
     class TreeSitterInspector;
 }
 
-class QueryErrorHighlighter : public QSyntaxHighlighter
+class QueryErrorHighlighter : public KSyntaxHighlighting::SyntaxHighlighter
 {
     Q_OBJECT
 public:
@@ -61,9 +61,6 @@ private:
     void changeCursor();
     void changeQuery();
     void changeQueryState();
-    void previewTransformation();
-    void runTransformation();
-    void prepareTransformation(const std::function<void(treesitter::Transformation &transformation)> &runFunction);
 
     std::unique_ptr<treesitter::Predicates> makePredicates();
 

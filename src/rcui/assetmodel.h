@@ -27,7 +27,7 @@ public:
     };
 
 public:
-    explicit AssetModel(const QVector<RcCore::Asset> &assets, QObject *parent = nullptr);
+    explicit AssetModel(const QList<RcCore::Asset> &assets, QObject *parent = nullptr);
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -35,7 +35,7 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 
 private:
-    QVector<RcCore::Asset> m_assets;
+    QList<RcCore::Asset> m_assets;
 };
 
 } // namespace RcUi

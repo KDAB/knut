@@ -50,7 +50,6 @@ static constexpr char SettingsName[] = "knut.json";
 /*!
  * \qmltype Settings
  * \brief Singleton for accessing and editing persistent settings.
- * \inqmlmodule Script
  * \ingroup Utilities
  *
  * The settings are stored in a json file, and could be:
@@ -85,6 +84,7 @@ Settings::Settings(Mode mode, QObject *parent)
 
 Settings::~Settings()
 {
+    saveOnExit();
     m_instance = nullptr;
 }
 
@@ -175,10 +175,10 @@ QVariant Settings::value(QString path, const QVariant &defaultValue) const
 }
 
 /*!
- * \qmlmethod variant Settings::setValue(string path, variant value)
+ * \qmlmethod variant Settings::setValue(string path, var value)
  * Adds a new value `value` to the project settings at the given `path`. Returns `true` if the operation succeeded.
  */
-bool Settings::setValue(QString path, const QVariant &value)
+bool Settings::setValue(QString path, const QJSValue &value)
 {
     LOG("Settings::setValue", path, value);
 
@@ -190,34 +190,47 @@ bool Settings::setValue(QString path, const QVariant &value)
     if (!path.startsWith('/'))
         path.prepend('/');
 
-    auto jsonPath = nlohmann::json::json_pointer(path.toStdString());
-    switch (static_cast<QMetaType::Type>(value.typeId())) {
+    const auto jsonPath = nlohmann::json::json_pointer(path.toStdString());
+
+    const auto var = value.toVariant();
+
+    switch (static_cast<QMetaType::Type>(var.typeId())) {
     case QMetaType::Bool:
-        m_settings[jsonPath] = value.toBool();
-        m_projectSettings[jsonPath] = value.toBool();
+        m_settings[jsonPath] = var.toBool();
+        m_projectSettings[jsonPath] = var.toBool();
         break;
     case QMetaType::Int:
     case QMetaType::LongLong:
-        m_settings[jsonPath] = value.toInt();
-        m_projectSettings[jsonPath] = value.toInt();
+        m_settings[jsonPath] = var.toInt();
+        m_projectSettings[jsonPath] = var.toInt();
         break;
     case QMetaType::UInt:
     case QMetaType::ULongLong:
-        m_settings[jsonPath] = value.toUInt();
-        m_projectSettings[jsonPath] = value.toUInt();
+        m_settings[jsonPath] = var.toUInt();
+        m_projectSettings[jsonPath] = var.toUInt();
         break;
     case QMetaType::Double:
-        m_settings[jsonPath] = value.toDouble();
-        m_projectSettings[jsonPath] = value.toDouble();
+        m_settings[jsonPath] = var.toDouble();
+        m_projectSettings[jsonPath] = var.toDouble();
         break;
     case QMetaType::QString:
-        m_settings[jsonPath] = value.toString();
+        m_settings[jsonPath] = var.toString();
         m_projectSettings[jsonPath] = value.toString();
         break;
     case QMetaType::QStringList:
-        m_settings[jsonPath] = value.toStringList();
-        m_projectSettings[jsonPath] = value.toStringList();
+        m_settings[jsonPath] = var.toStringList();
+        m_projectSettings[jsonPath] = var.toStringList();
         break;
+    case QMetaType::QVariantList: {
+        // A stringlist from QML will have a QVariantList meta type
+        const QStringList list = var.toStringList();
+        if (list.size() == var.toList().size()) {
+            m_settings[jsonPath] = list;
+            m_projectSettings[jsonPath] = list;
+        } else {
+            spdlog::error("Settings::setValue {} in {} - only string lists are supported", value.toString(), path);
+        }
+    } break;
     default:
         spdlog::error("Settings::setValue {} in {} - value type not handled", value.toString(), path);
         return false;
@@ -231,6 +244,9 @@ bool Settings::setValue(QString path, const QVariant &value)
 
 QString Settings::userFilePath() const
 {
+    if (isTesting()) {
+        return QDir::tempPath() + '/' + SettingsName;
+    }
     return QDir::homePath() + '/' + SettingsName;
 }
 
@@ -268,10 +284,6 @@ void Settings::loadKnutSettings()
 
 void Settings::saveSettings()
 {
-    // Don't save settings if testing
-    if (isTesting())
-        return;
-
     const auto &settings = isUser() ? m_userSettings : m_projectSettings;
     const auto &filePath = isUser() ? userFilePath() : projectFilePath();
 
@@ -284,6 +296,13 @@ void Settings::saveSettings()
     QTextStream stream(&file);
     stream << QString::fromStdString(settings.dump(4, ' ', false));
     emit settingsSaved();
+}
+
+void Settings::saveOnExit()
+{
+    if (m_saveTimer->isActive()) {
+        saveSettings();
+    }
 }
 
 bool Settings::isUser() const

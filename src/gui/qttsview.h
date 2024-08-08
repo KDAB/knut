@@ -10,14 +10,18 @@
 
 #pragma once
 
-#include <QTableView>
-
+#include <QSortFilterProxyModel>
+#include <QWidget>
+class QTableView;
+class QLineEdit;
 namespace Core {
 class QtTsDocument;
 }
 
 namespace Gui {
-class QtTsView : public QTableView
+
+class QtTsProxy;
+class QtTsView : public QWidget
 {
     Q_OBJECT
 public:
@@ -27,6 +31,10 @@ public:
 
 private:
     void updateView();
+    QTableView *const m_tableView;
+    QLineEdit *const m_searchLineEdit;
     Core::QtTsDocument *m_document = nullptr;
+    QtTsProxy *const m_contentProxyModel;
+    QAbstractItemModel *m_contentModel = nullptr;
 };
 }

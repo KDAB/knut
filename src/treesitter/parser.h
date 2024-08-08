@@ -12,6 +12,8 @@
 
 #include "core/document.h"
 #include <QString>
+#include <tree_sitter/api.h>
+#include <vector>
 
 struct TSParser;
 struct TSLanguage;
@@ -19,6 +21,7 @@ struct TSLanguage;
 namespace treesitter {
 
 class Tree;
+using Range = TSRange;
 
 class Parser
 {
@@ -36,6 +39,21 @@ public:
     void swap(Parser &other) noexcept;
 
     std::optional<Tree> parseString(const QString &text, const Tree *old_tree = nullptr) const;
+
+    /**
+     * Parse only the given ranges.
+     * Note: if the ranges are empty, the entire document is parsed.
+     *
+     * From tree_sitter/api.h:
+     * [The] given ranges must be ordered from earliest to latest in the document,
+     * and they must not overlap. That is, the following must hold for all
+     * `i` < `length - 1`: ranges[i].end_byte <= ranges[i + 1].start_byte
+     *
+     * If this requirement is not satisfied, the operation will fail, the ranges
+     * will not be assigned, and this function will return `false`. On success,
+     * this function returns `true`
+     */
+    bool setIncludedRanges(const QList<Range> &ranges);
 
     const TSLanguage *language() const;
 

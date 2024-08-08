@@ -2,7 +2,7 @@
 <ui version="4.0">
     <class>IDD_CHARPANEL_ANIMATION</class>
     <widget class="QWidget" name="IDD_CHARPANEL_ANIMATION">
-        <property name="mfc_id">
+        <property name="mfc_id" stdset="0">
             <string notr="true">IDD_CHARPANEL_ANIMATION</string>
         </property>
         <property name="geometry">
@@ -14,7 +14,7 @@
             </rect>
         </property>
         <widget class="QLineEdit" name="IDC_PLAYBACK_SCALE_NUMBER">
-            <property name="mfc_id">
+            <property name="mfc_id" stdset="0">
                 <string notr="true">IDC_PLAYBACK_SCALE_NUMBER</string>
             </property>
             <property name="geometry">
@@ -30,7 +30,7 @@
             </property>
         </widget>
         <widget class="QLineEdit" name="IDC_POLARX_NUMBER">
-            <property name="mfc_id">
+            <property name="mfc_id" stdset="0">
                 <string notr="true">IDC_POLARX_NUMBER</string>
             </property>
             <property name="geometry">
@@ -46,7 +46,7 @@
             </property>
         </widget>
         <widget class="QLineEdit" name="IDC_POLARY_NUMBER">
-            <property name="mfc_id">
+            <property name="mfc_id" stdset="0">
                 <string notr="true">IDC_POLARY_NUMBER</string>
             </property>
             <property name="geometry">
@@ -62,7 +62,7 @@
             </property>
         </widget>
         <widget class="QCheckBox" name="IDC_ANIMATION_DRIVEN_MOTION">
-            <property name="mfc_id">
+            <property name="mfc_id" stdset="0">
                 <string notr="true">IDC_ANIMATION_DRIVEN_MOTION</string>
             </property>
             <property name="geometry">
@@ -78,7 +78,7 @@
             </property>
         </widget>
         <widget class="QCheckBox" name="IDC_VERTICAL_MOVEMENT">
-            <property name="mfc_id">
+            <property name="mfc_id" stdset="0">
                 <string notr="true">IDC_VERTICAL_MOVEMENT</string>
             </property>
             <property name="geometry">
@@ -94,7 +94,7 @@
             </property>
         </widget>
         <widget class="QPushButton" name="IDC_RESETANIMATIONS">
-            <property name="mfc_id">
+            <property name="mfc_id" stdset="0">
                 <string notr="true">IDC_RESETANIMATIONS</string>
             </property>
             <property name="geometry">
@@ -110,7 +110,7 @@
             </property>
         </widget>
         <widget class="QPushButton" name="IDC_RELOAD_ANIMATIONS">
-            <property name="mfc_id">
+            <property name="mfc_id" stdset="0">
                 <string notr="true">IDC_RELOAD_ANIMATIONS</string>
             </property>
             <property name="geometry">
@@ -126,7 +126,7 @@
             </property>
         </widget>
         <widget class="QPushButton" name="IDC_MATERIAL">
-            <property name="mfc_id">
+            <property name="mfc_id" stdset="0">
                 <string notr="true">IDC_MATERIAL</string>
             </property>
             <property name="geometry">
@@ -142,7 +142,7 @@
             </property>
         </widget>
         <widget class="QPushButton" name="IDC_STOP_ANIMATION_LAYER">
-            <property name="mfc_id">
+            <property name="mfc_id" stdset="0">
                 <string notr="true">IDC_STOP_ANIMATION_LAYER</string>
             </property>
             <property name="geometry">
@@ -158,7 +158,7 @@
             </property>
         </widget>
         <widget class="QPushButton" name="IDC_CHOOSE_BASE_CHARACTER">
-            <property name="mfc_id">
+            <property name="mfc_id" stdset="0">
                 <string notr="true">IDC_CHOOSE_BASE_CHARACTER</string>
             </property>
             <property name="geometry">
@@ -174,7 +174,7 @@
             </property>
         </widget>
         <widget class="QPushButton" name="IDC_START_SELECTED_ANIMATIONS">
-            <property name="mfc_id">
+            <property name="mfc_id" stdset="0">
                 <string notr="true">IDC_START_SELECTED_ANIMATIONS</string>
             </property>
             <property name="geometry">
@@ -190,7 +190,7 @@
             </property>
         </widget>
         <widget class="QPushButton" name="IDC_RESET_MODEL">
-            <property name="mfc_id">
+            <property name="mfc_id" stdset="0">
                 <string notr="true">IDC_RESET_MODEL</string>
             </property>
             <property name="geometry">
@@ -206,7 +206,7 @@
             </property>
         </widget>
         <widget class="QLabel" name="IDC_SPEED_MULTIPLYER">
-            <property name="mfc_id">
+            <property name="mfc_id" stdset="0">
                 <string notr="true">IDC_SPEED_MULTIPLYER</string>
             </property>
             <property name="geometry">
@@ -222,7 +222,7 @@
             </property>
         </widget>
         <widget class="QComboBox" name="IDC_LAYER">
-            <property name="mfc_id">
+            <property name="mfc_id" stdset="0">
                 <string notr="true">IDC_LAYER</string>
             </property>
             <property name="geometry">
@@ -315,7 +315,7 @@
             </item>
         </widget>
         <widget class="QCheckBox" name="IDC_USE_GAMEPAD">
-            <property name="mfc_id">
+            <property name="mfc_id" stdset="0">
                 <string notr="true">IDC_USE_GAMEPAD</string>
             </property>
             <property name="geometry">
@@ -331,7 +331,7 @@
             </property>
         </widget>
         <widget class="QCheckBox" name="IDC_USE_MORPHTARGETS">
-            <property name="mfc_id">
+            <property name="mfc_id" stdset="0">
                 <string notr="true">IDC_USE_MORPHTARGETS</string>
             </property>
             <property name="geometry">
@@ -347,7 +347,7 @@
             </property>
         </widget>
         <widget class="QSlider" name="IDC_POLARX_SLIDER">
-            <property name="mfc_id">
+            <property name="mfc_id" stdset="0">
                 <string notr="true">IDC_POLARX_SLIDER</string>
             </property>
             <property name="geometry">
@@ -366,7 +366,7 @@
             </property>
         </widget>
         <widget class="QSlider" name="IDC_POLARY_SLIDER">
-            <property name="mfc_id">
+            <property name="mfc_id" stdset="0">
                 <string notr="true">IDC_POLARY_SLIDER</string>
             </property>
             <property name="geometry">
@@ -385,7 +385,7 @@
             </property>
         </widget>
         <widget class="QSlider" name="IDC_PLAYBACK_SCALE_SLIDER">
-            <property name="mfc_id">
+            <property name="mfc_id" stdset="0">
                 <string notr="true">IDC_PLAYBACK_SCALE_SLIDER</string>
             </property>
             <property name="geometry">
@@ -404,7 +404,7 @@
             </property>
         </widget>
         <widget class="QLineEdit" name="IDC_FILE">
-            <property name="mfc_id">
+            <property name="mfc_id" stdset="0">
                 <string notr="true">IDC_FILE</string>
             </property>
             <property name="geometry">
@@ -420,7 +420,7 @@
             </property>
         </widget>
         <widget class="QPushButton" name="IDC_RELOAD_FILE">
-            <property name="mfc_id">
+            <property name="mfc_id" stdset="0">
                 <string notr="true">IDC_RELOAD_FILE</string>
             </property>
             <property name="geometry">
@@ -436,7 +436,7 @@
             </property>
         </widget>
         <widget class="QGroupBox" name="IDC_STATIC_4">
-            <property name="mfc_id">
+            <property name="mfc_id" stdset="0">
                 <string notr="true">IDC_STATIC_4</string>
             </property>
             <property name="geometry">
@@ -451,7 +451,7 @@
                 <string>Unit Test for Humans</string>
             </property>
             <widget class="QCheckBox" name="IDC_IDLE2MOVE">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_IDLE2MOVE</string>
                 </property>
                 <property name="geometry">
@@ -467,7 +467,7 @@
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_PLAYER_CONTROL">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_PLAYER_CONTROL</string>
                 </property>
                 <property name="geometry">
@@ -483,7 +483,7 @@
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_FIXED_CAMERA">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_FIXED_CAMERA</string>
                 </property>
                 <property name="geometry">
@@ -499,7 +499,7 @@
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_IDLESTEP">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_IDLESTEP</string>
                 </property>
                 <property name="geometry">
@@ -515,7 +515,7 @@
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_PATH_FOLLOWING">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_PATH_FOLLOWING</string>
                 </property>
                 <property name="geometry">
@@ -531,7 +531,7 @@
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_ATTACHED_CAM">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_ATTACHED_CAM</string>
                 </property>
                 <property name="geometry">
@@ -548,7 +548,7 @@
             </widget>
         </widget>
         <widget class="QGroupBox" name="IDC_STATIC_2">
-            <property name="mfc_id">
+            <property name="mfc_id" stdset="0">
                 <string notr="true">IDC_STATIC_2</string>
             </property>
             <property name="geometry">
@@ -563,7 +563,7 @@
                 <string>Post Processing</string>
             </property>
             <widget class="QCheckBox" name="IDC_RFOOTIK">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_RFOOTIK</string>
                 </property>
                 <property name="geometry">
@@ -579,7 +579,7 @@
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_LARMIK">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_LARMIK</string>
                 </property>
                 <property name="geometry">
@@ -595,7 +595,7 @@
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_RARMIK">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_RARMIK</string>
                 </property>
                 <property name="geometry">
@@ -611,7 +611,7 @@
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_LOOKIK">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_LOOKIK</string>
                 </property>
                 <property name="geometry">
@@ -627,7 +627,7 @@
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_AIMIK">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_AIMIK</string>
                 </property>
                 <property name="geometry">
@@ -643,7 +643,7 @@
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_LFOOTIK">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_LFOOTIK</string>
                 </property>
                 <property name="geometry">
@@ -659,7 +659,7 @@
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_GROUNDALIGN">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_GROUNDALIGN</string>
                 </property>
                 <property name="geometry">
@@ -675,7 +675,7 @@
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_FOOT_ANCHORING">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_FOOT_ANCHORING</string>
                 </property>
                 <property name="geometry">
@@ -692,7 +692,7 @@
             </widget>
         </widget>
         <widget class="QGroupBox" name="IDC_STATIC_3">
-            <property name="mfc_id">
+            <property name="mfc_id" stdset="0">
                 <string notr="true">IDC_STATIC_3</string>
             </property>
             <property name="geometry">
@@ -707,7 +707,7 @@
                 <string>Animation Flags</string>
             </property>
             <widget class="QLineEdit" name="IDC_ADDITIVE_WEIGHT">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_ADDITIVE_WEIGHT</string>
                 </property>
                 <property name="geometry">
@@ -723,7 +723,7 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_AIMIK_LAYER">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_AIMIK_LAYER</string>
                 </property>
                 <property name="geometry">
@@ -739,7 +739,7 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_LOOKIK_LAYER">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_LOOKIK_LAYER</string>
                 </property>
                 <property name="geometry">
@@ -755,7 +755,7 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_TRANSITION_TIME">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_TRANSITION_TIME</string>
                 </property>
                 <property name="geometry">
@@ -771,7 +771,7 @@
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_LOOP_ANIMATION">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_LOOP_ANIMATION</string>
                 </property>
                 <property name="geometry">
@@ -787,7 +787,7 @@
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_REPEAT_LAST_KEY">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_REPEAT_LAST_KEY</string>
                 </property>
                 <property name="geometry">
@@ -803,7 +803,7 @@
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_ALLOW_ANIMATION_RESTART">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_ALLOW_ANIMATION_RESTART</string>
                 </property>
                 <property name="geometry">
@@ -819,7 +819,7 @@
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_LAYERBLENDWEIGHT_TEXT">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_LAYERBLENDWEIGHT_TEXT</string>
                 </property>
                 <property name="geometry">
@@ -835,7 +835,7 @@
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_AIMIK_LAYER_TEXT">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_AIMIK_LAYER_TEXT</string>
                 </property>
                 <property name="geometry">
@@ -851,7 +851,7 @@
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_LOOKIK_LAYER_TEXT">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_LOOKIK_LAYER_TEXT</string>
                 </property>
                 <property name="geometry">
@@ -867,7 +867,7 @@
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_TRANSITION">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_TRANSITION</string>
                 </property>
                 <property name="geometry">
@@ -883,7 +883,7 @@
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_DISABLE_MULTILAYER_ANIMATION">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_DISABLE_MULTILAYER_ANIMATION</string>
                 </property>
                 <property name="geometry">
@@ -899,7 +899,7 @@
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_VTIME_WARPING">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_VTIME_WARPING</string>
                 </property>
                 <property name="geometry">
@@ -916,7 +916,7 @@
             </widget>
         </widget>
         <widget class="QGroupBox" name="IDC_STATIC">
-            <property name="mfc_id">
+            <property name="mfc_id" stdset="0">
                 <string notr="true">IDC_STATIC</string>
             </property>
             <property name="geometry">
@@ -931,7 +931,7 @@
                 <string>Blend-Space Control</string>
             </property>
             <widget class="QLineEdit" name="IDC_BLENDSPACENUMBER_Para3">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_BLENDSPACENUMBER_Para3</string>
                 </property>
                 <property name="geometry">
@@ -947,7 +947,7 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_BLENDSPACENUMBER_Para2">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_BLENDSPACENUMBER_Para2</string>
                 </property>
                 <property name="geometry">
@@ -963,7 +963,7 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_BLENDSPACENUMBER_Para1">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_BLENDSPACENUMBER_Para1</string>
                 </property>
                 <property name="geometry">
@@ -979,7 +979,7 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_BLENDSPACENUMBER_Para4">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_BLENDSPACENUMBER_Para4</string>
                 </property>
                 <property name="geometry">
@@ -995,7 +995,7 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_BLENDSPACENUMBER_Para5">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_BLENDSPACENUMBER_Para5</string>
                 </property>
                 <property name="geometry">
@@ -1011,7 +1011,7 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_BLENDSPACENUMBER_Para6">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_BLENDSPACENUMBER_Para6</string>
                 </property>
                 <property name="geometry">
@@ -1027,7 +1027,7 @@
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_BLENDSPACENUMBER_Para7">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_BLENDSPACENUMBER_Para7</string>
                 </property>
                 <property name="geometry">
@@ -1043,7 +1043,7 @@
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_P1_MoveSpeed">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_P1_MoveSpeed</string>
                 </property>
                 <property name="geometry">
@@ -1059,7 +1059,7 @@
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_P2_TurnSpeed">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_P2_TurnSpeed</string>
                 </property>
                 <property name="geometry">
@@ -1075,7 +1075,7 @@
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_P3_TravelAngle">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_P3_TravelAngle</string>
                 </property>
                 <property name="geometry">
@@ -1091,7 +1091,7 @@
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_P4_Slope">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_P4_Slope</string>
                 </property>
                 <property name="geometry">
@@ -1107,7 +1107,7 @@
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_P5_TurnAngle">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_P5_TurnAngle</string>
                 </property>
                 <property name="geometry">
@@ -1123,7 +1123,7 @@
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_P6_TravelDistance">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_P6_TravelDistance</string>
                 </property>
                 <property name="geometry">
@@ -1139,7 +1139,7 @@
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_P7_BlendWeight">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_P7_BlendWeight</string>
                 </property>
                 <property name="geometry">
@@ -1155,7 +1155,7 @@
                 </property>
             </widget>
             <widget class="QSlider" name="IDC_BLENDSPACESLIDER_Para3">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_BLENDSPACESLIDER_Para3</string>
                 </property>
                 <property name="geometry">
@@ -1174,7 +1174,7 @@
                 </property>
             </widget>
             <widget class="QSlider" name="IDC_BLENDSPACESLIDER_Para2">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_BLENDSPACESLIDER_Para2</string>
                 </property>
                 <property name="geometry">
@@ -1193,7 +1193,7 @@
                 </property>
             </widget>
             <widget class="QSlider" name="IDC_BLENDSPACESLIDER_Para1">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_BLENDSPACESLIDER_Para1</string>
                 </property>
                 <property name="geometry">
@@ -1212,7 +1212,7 @@
                 </property>
             </widget>
             <widget class="QSlider" name="IDC_BLENDSPACESLIDER_Para4">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_BLENDSPACESLIDER_Para4</string>
                 </property>
                 <property name="geometry">
@@ -1231,7 +1231,7 @@
                 </property>
             </widget>
             <widget class="QSlider" name="IDC_BLENDSPACESLIDER_Para5">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_BLENDSPACESLIDER_Para5</string>
                 </property>
                 <property name="geometry">
@@ -1250,7 +1250,7 @@
                 </property>
             </widget>
             <widget class="QSlider" name="IDC_BLENDSPACESLIDER_Para6">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_BLENDSPACESLIDER_Para6</string>
                 </property>
                 <property name="geometry">
@@ -1269,7 +1269,7 @@
                 </property>
             </widget>
             <widget class="QSlider" name="IDC_BLENDSPACESLIDER_Para7">
-                <property name="mfc_id">
+                <property name="mfc_id" stdset="0">
                     <string notr="true">IDC_BLENDSPACESLIDER_Para7</string>
                 </property>
                 <property name="geometry">

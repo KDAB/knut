@@ -27,7 +27,8 @@ int main(int argc, char *argv[])
     Q_INIT_RESOURCE(gui);
 
     Gui::KnutMain knut;
-    knut.process(app.arguments());
-
-    return app.exec();
+    if (knut.process(app.arguments()))
+        return app.exec();
+    else
+        return 1;
 }

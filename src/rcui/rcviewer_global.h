@@ -28,6 +28,7 @@ enum DataType {
     IconData,
     StringData,
     IncludeData,
+    RibbonData,
 };
 
 } // namespace RcUi
