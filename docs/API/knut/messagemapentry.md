@@ -12,7 +12,7 @@ import Knut
 |-|-|
 |bool|**[isValid](#isValid)**|
 |string|**[name](#name)**|
-|list<[RangeMark](../knut/rangemark.md)>|**[parameters](#parameters)**|
+|list&lt;[RangeMark](../knut/rangemark.md)>|**[parameters](#parameters)**|
 |[RangeMark](../knut/rangemark.md)|**[range](#range)**|
 
 ## Detailed Description
@@ -35,7 +35,7 @@ Please note that an entry that has been deleted may still be valid, but all its 
 
 The name of the entry.
 
-#### <a name="parameters"></a>list<[RangeMark](../knut/rangemark.md)> **parameters**
+#### <a name="parameters"></a>list&lt;[RangeMark](../knut/rangemark.md)> **parameters**
 
 A list of `RangeMark` instances referring to each parameter of the entry.
 

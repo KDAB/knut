@@ -18,8 +18,8 @@ import Knut
 | | Name |
 |-|-|
 |[RangeMark](../knut/rangemark.md) |**[get](#get)**(string name)|
-|vector<[RangeMark](../knut/rangemark.md)> |**[getAll](#getAll)**(string name)|
-|vector<[RangeMark](../knut/rangemark.md)> |**[getAllInRange](#getAllInRange)**(string name, [RangeMark](../knut/rangemark.md) range)|
+|vector&lt;[RangeMark](../knut/rangemark.md)> |**[getAll](#getAll)**(string name)|
+|vector&lt;[RangeMark](../knut/rangemark.md)> |**[getAllInRange](#getAllInRange)**(string name, [RangeMark](../knut/rangemark.md) range)|
 |[RangeMark](../knut/rangemark.md) |**[getAllJoined](#getAllJoined)**(string name)|
 |[RangeMark](../knut/rangemark.md) |**[getInRange](#getInRange)**(string name, [RangeMark](../knut/rangemark.md) range)|
 |array&lt;[QueryMatch](../knut/querymatch.md)> |**[queryIn](#queryIn)**(capture, query)|
@@ -79,11 +79,11 @@ match.get("parameter-list").replace("(int myParameter)");
 
 See the [RangeMark](rangemark.md) documentation for more information.
 
-#### <a name="getAll"></a>vector<[RangeMark](../knut/rangemark.md)> **getAll**(string name)
+#### <a name="getAll"></a>vector&lt;[RangeMark](../knut/rangemark.md)> **getAll**(string name)
 
 Returns all ranges that are covered by the captures of the given `name`
 
-#### <a name="getAllInRange"></a>vector<[RangeMark](../knut/rangemark.md)> **getAllInRange**(string name, [RangeMark](../knut/rangemark.md) range)
+#### <a name="getAllInRange"></a>vector&lt;[RangeMark](../knut/rangemark.md)> **getAllInRange**(string name, [RangeMark](../knut/rangemark.md) range)
 
 Returns all ranges that are covered by the captures of the given `name` in the given `range`.
 

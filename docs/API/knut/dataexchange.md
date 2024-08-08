@@ -11,7 +11,7 @@ import Knut
 | | Name |
 |-|-|
 |string|**[className](#className)**|
-|list<[DataExchangeEntry](../knut/dataexchangeentry.md)>|**[entries](#entries)**|
+|list&lt;[DataExchangeEntry](../knut/dataexchangeentry.md)>|**[entries](#entries)**|
 |[RangeMark](../knut/rangemark.md)|**[range](#range)**|
 
 ## Detailed Description
@@ -24,7 +24,7 @@ The `DataExchange` object represents the data contained in the MFC `DoDataExchan
 
 The name of the class this data exchange belongs to.
 
-#### <a name="entries"></a>list<[DataExchangeEntry](../knut/dataexchangeentry.md)> **entries**
+#### <a name="entries"></a>list&lt;[DataExchangeEntry](../knut/dataexchangeentry.md)> **entries**
 
 All entries found in the data exchange method as `DataExchangeEntry`.
 
