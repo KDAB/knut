@@ -11,7 +11,7 @@ import Knut
 | | Name |
 |-|-|
 |string|**[className](#className)**|
-|list<[MessageMapEntry](../knut/messagemapentry.md)>|**[entries](#entries)**|
+|list&lt;[MessageMapEntry](../knut/messagemapentry.md)>|**[entries](#entries)**|
 |bool|**[isValid](#isValid)**|
 |[RangeMark](../knut/rangemark.md)|**[range](#range)**|
 |string|**[superClass](#superClass)**|
@@ -21,7 +21,7 @@ import Knut
 | | Name |
 |-|-|
 |[MessageMapEntry](../knut/messagemapentry.md) |**[get](#get)**(string name)|
-|list<[MessageMapEntry](../knut/messagemapentry.md)> |**[getAll](#getAll)**(string name)|
+|list&lt;[MessageMapEntry](../knut/messagemapentry.md)> |**[getAll](#getAll)**(string name)|
 
 ## Detailed Description
 
@@ -33,7 +33,7 @@ The `MessageMap` object represents the data contained in the MFC MessageMap.
 
 The name of the class this message map belongs to.
 
-#### <a name="entries"></a>list<[MessageMapEntry](../knut/messagemapentry.md)> **entries**
+#### <a name="entries"></a>list&lt;[MessageMapEntry](../knut/messagemapentry.md)> **entries**
 
 All entries found in the MessageMap as `MessageMapEntry`.
 
@@ -58,6 +58,6 @@ The name of the super class this class inherits from.
 Gets the first entry with the given `name`.
 If no entry could be found, isValid will be false on the resulting MessageMapEntry.
 
-#### <a name="getAll"></a>list<[MessageMapEntry](../knut/messagemapentry.md)> **getAll**(string name)
+#### <a name="getAll"></a>list&lt;[MessageMapEntry](../knut/messagemapentry.md)> **getAll**(string name)
 
 Gets all entries with the given `name`.

@@ -14,10 +14,10 @@ import Knut
 
 | | Name |
 |-|-|
-|vector<[Symbol](../knut/symbol.md)>|**[members](#members)**|
+|vector&lt;[Symbol](../knut/symbol.md)>|**[members](#members)**|
 
 ## Property Documentation
 
-#### <a name="members"></a>vector<[Symbol](../knut/symbol.md)> **members**
+#### <a name="members"></a>vector&lt;[Symbol](../knut/symbol.md)> **members**
 
 Returns the list of members (both data and functions) of this class.
