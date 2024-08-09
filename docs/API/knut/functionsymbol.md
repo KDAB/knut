@@ -14,12 +14,12 @@ import Knut
 
 | | Name |
 |-|-|
-|vector<[FunctionArgument](../knut/functionargument.md)>|**[arguments](#arguments)**|
+|vector&lt;[FunctionArgument](../knut/functionargument.md)>|**[arguments](#arguments)**|
 |string|**[returnType](#returnType)**|
 
 ## Property Documentation
 
-#### <a name="arguments"></a>vector<[FunctionArgument](../knut/functionargument.md)> **arguments**
+#### <a name="arguments"></a>vector&lt;[FunctionArgument](../knut/functionargument.md)> **arguments**
 
 Returns the list of arguments being passed to this function.
 

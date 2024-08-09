@@ -229,7 +229,9 @@ void DocWriter::writeTypeFile(const Data::TypeBlock &type)
 
     if (!type.description.isEmpty()) {
         stream << "\n## Detailed Description\n\n";
-        stream << type.description;
+        QString description = type.description;
+        description.replace("<", "&lt;");
+        stream << description;
     }
 
     if (properties.size()) {
@@ -276,7 +278,6 @@ void DocWriter::writeTypeFile(const Data::TypeBlock &type)
 
     buffer.close();
     auto text = buffer.data();
-    text.replace("array<", "array&lt;");
     file.write(text);
 }
 
@@ -371,5 +372,6 @@ QString DocWriter::typeToString(QString type) const
             index = type.indexOf(key, index + key.length());
         }
     }
+    type.replace("<", "&lt;");
     return type;
 }
