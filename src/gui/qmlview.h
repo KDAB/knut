@@ -12,10 +12,6 @@
 
 #include "textview.h"
 
-namespace Core {
-class QmlDocument;
-}
-
 namespace Gui {
 
 class QmlView : public TextView

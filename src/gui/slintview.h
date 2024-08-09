@@ -12,10 +12,6 @@
 
 #include "textview.h"
 
-namespace Core {
-class SlintDocument;
-}
-
 class QProcess;
 
 namespace Gui {

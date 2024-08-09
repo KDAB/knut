@@ -33,7 +33,6 @@ class Query;
 
 namespace Core {
 
-class LspCache;
 class TreeSitterHelper;
 struct RegexpTransform;
 class AstNode;

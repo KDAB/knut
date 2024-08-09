@@ -12,15 +12,10 @@
 
 #include <QTreeView>
 
-namespace Core {
-class Document;
-}
 class QToolButton;
 class QLineEdit;
 
 namespace Gui {
-
-class IView;
 
 class ScriptListPanel : public QTreeView
 {

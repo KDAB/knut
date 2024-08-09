@@ -18,8 +18,6 @@ namespace treesitter {
 class Node;
 }
 
-class TestCodeDocument;
-
 namespace Core {
 
 class CodeDocument;

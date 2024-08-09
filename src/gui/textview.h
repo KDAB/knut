@@ -14,7 +14,6 @@
 
 #include <QWidget>
 
-class QRubberBand;
 class QToolButton;
 
 namespace Core {
