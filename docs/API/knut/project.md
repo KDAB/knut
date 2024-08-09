@@ -22,7 +22,9 @@ import Knut
 |array&lt;string> |**[allFilesWithExtension](#allFilesWithExtension)**(string extension, PathType type = RelativeToRoot)|
 |array&lt;string> |**[allFilesWithExtensions](#allFilesWithExtensions)**(array&lt;string> extensions, PathType type = RelativeToRoot)|
 ||**[closeAll](#closeAll)**()|
+|array&lt;object> |**[findInFiles](#findInFiles)**(const QString &pattern)|
 |[Document](../knut/document.md) |**[get](#get)**(string fileName)|
+|bool |**[isFindInFilesAvailable](#isFindInFilesAvailable)**()|
 |[Document](../knut/document.md) |**[open](#open)**(string fileName)|
 ||**[openPrevious](#openPrevious)**(int index = 1)|
 ||**[saveAllDocuments](#saveAllDocuments)**()|
@@ -75,6 +77,14 @@ Returns all files with an extension from `extensions` in the current project.
 
 Close all documents. If the document has some changes, save the changes.
 
+#### <a name="findInFiles"></a>array&lt;object> **findInFiles**(const QString &pattern)
+
+Search for a regex pattern in all files of the current project using ripgrep.
+Returns a list of results (QVariantMaps) with the document name and position ("file", "line", "column").
+
+Note: The method uses ripgrep (rg) for searching, which must be installed and accessible in PATH.
+The `pattern` parameter should be a valid regular expression.
+
 #### <a name="get"></a>[Document](../knut/document.md) **get**(string fileName)
 
 Gets the document for the given `fileName`. If the document is not opened yet, open it. If the document
@@ -85,6 +95,10 @@ If the document does not exist, creates a new document (but don't save it yet).
 
 !!! note
     This command does not change the current document.
+
+#### <a name="isFindInFilesAvailable"></a>bool **isFindInFilesAvailable**()
+
+Checks if the ripgrep (rg) command-line tool is available on the system.
 
 #### <a name="open"></a>[Document](../knut/document.md) **open**(string fileName)
 

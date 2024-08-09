@@ -28,6 +28,8 @@
 #include <QDirIterator>
 #include <QFileInfo>
 #include <QMetaEnum>
+#include <QProcess>
+#include <QStandardPaths>
 #include <algorithm>
 #include <kdalgorithms.h>
 #include <map>
@@ -378,6 +380,73 @@ Document *Project::openPrevious(int index)
     const QString &fileName = m_documents.at(index)->fileName();
 
     LOG_RETURN("document", open(fileName));
+}
+
+/*!
+ * \qmlmethod array<object> Project::findInFiles(const QString &pattern)
+ * Search for a regex pattern in all files of the current project using ripgrep.
+ * Returns a list of results (QVariantMaps) with the document name and position ("file", "line", "column").
+ *
+ * Note: The method uses ripgrep (rg) for searching, which must be installed and accessible in PATH.
+ * The `pattern` parameter should be a valid regular expression.
+ */
+QVariantList Project::findInFiles(const QString &pattern) const
+{
+    LOG("Project::findInFiles", pattern);
+
+    QVariantList result;
+
+    const QString path = QStandardPaths::findExecutable("rg");
+    if (path.isEmpty()) {
+        spdlog::error("Ripgrep (rg) executable not found. Please ensure that ripgrep is installed and its location is "
+                      "included in the PATH environment variable.");
+        return result;
+    }
+
+    QProcess process;
+
+    const QStringList arguments {"--vimgrep", "-U", "--multiline-dotall", pattern, m_root};
+
+    process.start(path, arguments);
+    if (!process.waitForFinished()) {
+        spdlog::error("The ripgrep process failed: {}", process.errorString());
+        return result;
+    }
+
+    const QString output = process.readAllStandardOutput();
+
+    const QString errorOutput = process.readAllStandardError();
+    if (!errorOutput.isEmpty()) {
+        spdlog::error("Ripgrep error: {}", errorOutput);
+    }
+
+    const auto lines = output.split('\n', Qt::SkipEmptyParts);
+    result.reserve(lines.count() * 3);
+    for (const QString &line : lines) {
+        const auto parts = line.split(':');
+        if (parts.size() >= 3) {
+            QVariantMap matchResult;
+            matchResult.insert("file", parts[0]);
+            matchResult.insert("line", parts[1].toInt());
+            matchResult.insert("column", parts[2].toInt());
+            result.append(matchResult);
+        }
+    }
+    return result;
+}
+
+/*!
+ * \qmlmethod bool Project::isFindInFilesAvailable()
+ * Checks if the ripgrep (rg) command-line tool is available on the system.
+ */
+bool Project::isFindInFilesAvailable() const
+{
+    QString rgPath = QStandardPaths::findExecutable("rg");
+    if (rgPath.isEmpty()) {
+        return false;
+    } else {
+        return true;
+    }
 }
 
 } // namespace Core
