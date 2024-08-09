@@ -380,12 +380,15 @@ QVariant ScriptRunner::runQml(const QString &fileName, nlohmann::json &&data, QQ
             for (const auto &method : methodToCalls) {
                 QMetaObject::invokeMethod(topLevel, qPrintable(method), Qt::DirectConnection);
                 if (m_hasError)
-                    return ErrorCode;
+                    break;
             }
 
             // Cleanup scripts if not a visual one
             if (!engine->property("scriptWindow").toBool())
                 engine->deleteLater();
+
+            if (m_hasError)
+                return ErrorCode;
 
             // Get the number of failed tests
             QVariant result = topLevel->property("failed");
