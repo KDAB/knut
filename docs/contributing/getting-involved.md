@@ -26,21 +26,36 @@ Some useful ctest options include:
 - `--output-on-failure`
 
 When building with `--preset=debug-asan` you will likely want to disable leak checking:
+
 ```bash
 ASAN_OPTIONS=detect_leaks=0 ctest -j$(nproc) --preset=debug-asan --output-on-failure
 ```
 
 ### Qt Creator compilation error on Windows
 
-On Windows, if you use Qt Creator, you will have a compilation error like that:
+On Windows, if you use Qt Creator, you will have a compilation error like this:
 
-```
+```console
 [140/402 21.9/sec] Update documentation
 FAILED: CMakeFiles/docs C:/dev/knut/knut/build-debug/CMakeFiles/docs
 cmd.exe /C "cd /D C:\dev\knut\knut\build-debug && C:\dev\knut\knut\build-debug\bin\cpp2doc.exe"
 ```
 
+or a similar error with `ksyntaxhighlighting` or another 3rd party dependency.
+
 This is due to a bug in Qt Creator: [QTCREATORBUG-29936](https://bugreports.qt.io/browse/QTCREATORBUG-29963).
+
+To resolve this, follow these steps:
+
+1. Open `x64 Native Tools Command Prompt for VS 2022`.
+2. Enter the command `set CMAKE_PREFIX_PATH=C:\Qt\6.5.2\msvc2019_64` (use whatever path is correct on your machine).
+3. Enter the command `set PATH=C:\Qt\6.5.2\msvc2019_64\bin;%PATH%` (use whatever path is correct on your machine).
+4. Navigate to the `knut` directory with `cd`.
+5. Use cmake to configure and build:
+   - `"C:\Qt\Tools\CMake_64\bin\cmake.exe" --preset debug`
+   - `"C:\Qt\Tools\CMake_64\bin\cmake.exe" --build build-debug`
+6. You may need to run `windeployqt.exe` to make the knut executable link to Qt libraries properly:
+   - `windeployqt build-debug\bin\knut.exe`
 
 ## Code contributions
 
@@ -50,7 +65,7 @@ In order to contribute code, make sure to read the following paragraphs.
 
 Make sure to install the pre-commit hooks. Those are installed using [`pre-commit`](https://pre-commit.com/):
 
-```
+```bash
 pip install pre-commit
 pre-commit install --hook-type commit-msg
 ```
@@ -94,7 +109,7 @@ For full documentation visit [mkdocs.org](https://www.mkdocs.org/).
 
 ### Installation
 
-```
+```bash
 pip install mkdocs
 pip install mkdocs-material
 pip install mkdocs-build-plantuml-plugin
