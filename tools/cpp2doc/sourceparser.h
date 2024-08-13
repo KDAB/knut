@@ -20,12 +20,14 @@ public:
     SourceParser(Data &data);
 
     void parseDirectory(const QString &directory);
+    void loadMappingFile(const QString &filePath);
 
 private:
     QString cleanupCommentLine(QString line);
     void parseFile(const QString &fileName);
 
     Data::TypeBlock parseType(QTextStream &stream, QString line);
+    void updateFileMap(const QString &fileName, const Data::TypeBlock &currentType);
     Data::PropertyBlock parseProperty(QTextStream &stream, QString line);
     Data::MethodBlock parseMethod(QTextStream &stream, QString line);
     Data::SignalBlock parseSignal(QTextStream &stream, QString line);

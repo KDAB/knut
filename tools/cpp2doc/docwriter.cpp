@@ -21,7 +21,24 @@ DocWriter::DocWriter(Data data)
 {
 }
 
-void DocWriter::saveDocumentation()
+void DocWriter::saveMappingFile(const QString &docsDirectory)
+{
+    QFile file(docsDirectory + "/mapping.txt");
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qWarning() << "Unable to open mapping.txt for writing.";
+        return;
+    }
+
+    QTextStream out(&file);
+
+    for (const auto &entry : m_data.mappedTypes) {
+        out << entry.typeName << "," << entry.sourceFile << "," << entry.docFile << "," << entry.qmlModule << ","
+            << entry.group << "," << static_cast<int>(entry.positionInGroup) << "\n";
+    }
+}
+
+void DocWriter::saveDocumentation(const QString &docsDirectory)
 {
     // Ensure API directory exists
     QDir apiDir(QString(KNUT_DOC_PATH "/API"));
@@ -31,18 +48,18 @@ void DocWriter::saveDocumentation()
     }
 
     // Fill the map between type and filename
-    for (const auto &type : m_data.types) {
-        const QString fileName = QString("../%1/%2.md").arg(type.qmlModule.toLower(), type.name.toLower());
-        m_typeFileMap[type.name] = fileName;
+    for (const auto &entry : m_data.mappedTypes) {
+        const QString fileName = QString("../%1/%2.md").arg(entry.qmlModule.toLower(), entry.typeName.toLower());
+        m_typeFileMap[entry.typeName] = fileName;
 
-        QDir dir(QString(KNUT_DOC_PATH "/API/%1").arg(type.qmlModule.toLower()));
+        QDir dir(QString(KNUT_DOC_PATH "/API/%1").arg(entry.qmlModule.toLower()));
         if (!dir.exists()) {
             dir.cdUp();
-            dir.mkdir(type.qmlModule.toLower());
+            dir.mkdir(entry.qmlModule.toLower());
         }
     }
 
-    auto byModuleAndGroupAndName = [](const Data::TypeBlock &t1, const Data::TypeBlock &t2) {
+    auto byModuleAndGroupAndName = [](const Data::MappedType &t1, const Data::MappedType &t2) {
         if (t1.qmlModule != t2.qmlModule)
             return t1.qmlModule < t2.qmlModule;
         if (t1.group != t2.group) {
@@ -58,13 +75,15 @@ void DocWriter::saveDocumentation()
         }
         if (t1.positionInGroup != t2.positionInGroup)
             return t1.positionInGroup < t2.positionInGroup;
-        return t1.name < t2.name;
+        return t1.typeName < t2.typeName;
     };
-    std::ranges::sort(m_data.types, byModuleAndGroupAndName);
+    std::ranges::sort(m_data.mappedTypes, byModuleAndGroupAndName);
     for (const auto &type : m_data.types)
         writeTypeFile(type);
 
     writeToc();
+
+    saveMappingFile(docsDirectory);
 }
 
 void DocWriter::writeToc()
@@ -73,19 +92,21 @@ void DocWriter::writeToc()
     QString currentModule;
     QString currentGroup;
     auto ident = QString(3 * 4, ' ');
-    for (const auto &type : m_data.types) {
-        if (type.qmlModule != currentModule) {
-            currentModule = type.qmlModule;
+
+    for (const auto &entry : m_data.mappedTypes) {
+        if (entry.qmlModule != currentModule) {
+            currentModule = entry.qmlModule;
             nav += QString("        - %1 Module:\n").arg(currentModule);
             currentGroup.clear();
             ident = QString(3 * 4, ' ');
         }
-        if (type.group != currentGroup && !type.group.isEmpty()) {
-            currentGroup = type.group;
+        if (entry.group != currentGroup && !entry.group.isEmpty()) {
+            currentGroup = entry.group;
             nav += QString("            - %1:\n").arg(currentGroup);
             ident = QString(4 * 4, ' ');
         }
-        nav += QString("%4- %1: API/%2/%3.md\n").arg(type.name, type.qmlModule.toLower(), type.name.toLower(), ident);
+        nav += QString("%4- %1: API/%2/%3.md\n")
+                   .arg(entry.typeName, entry.qmlModule.toLower(), entry.typeName.toLower(), ident);
     }
 
     QFile file(KNUT_MKDOCS_PATH);

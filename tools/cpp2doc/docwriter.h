@@ -19,11 +19,12 @@ class DocWriter
 public:
     DocWriter(Data data);
 
-    void saveDocumentation();
+    void saveDocumentation(const QString &docsDirectory);
 
 private:
     void writeToc();
     void writeTypeFile(const Data::TypeBlock &type);
+    void saveMappingFile(const QString &docsDirectory);
     std::vector<Data::PropertyBlock> propertyForType(const Data::TypeBlock &type) const;
     std::vector<Data::MethodBlock> methodForType(const Data::TypeBlock &type) const;
     std::vector<Data::SignalBlock> signalForType(const Data::TypeBlock &type) const;

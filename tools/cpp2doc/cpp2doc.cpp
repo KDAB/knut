@@ -19,9 +19,10 @@ int main(int argc, char *argv[])
 
     Data data;
     SourceParser parser(data);
+    parser.loadMappingFile(KNUT_DOC_PATH "/API");
     parser.parseDirectory(KNUT_SOURCE_PATH "/core");
     parser.parseDirectory(KNUT_SOURCE_PATH "/rccore");
 
     DocWriter writer(data);
-    writer.saveDocumentation();
+    writer.saveDocumentation(KNUT_DOC_PATH "/API");
 }

@@ -22,6 +22,16 @@ struct Data
         LastInGroup,
     };
 
+    struct MappedType
+    {
+        QString typeName;
+        QString sourceFile;
+        QString docFile;
+        QString qmlModule;
+        QString group;
+        PositionInGroup positionInGroup = InTheMiddle;
+    };
+
     struct Block
     {
         QString brief;
@@ -75,4 +85,5 @@ struct Data
     std::vector<PropertyBlock> properties;
     std::vector<MethodBlock> methods;
     std::vector<SignalBlock> qmlSignals;
+    std::vector<MappedType> mappedTypes;
 };
