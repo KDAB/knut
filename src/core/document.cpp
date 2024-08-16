@@ -73,7 +73,7 @@ const QString &Document::fileName() const
 
 void Document::setFileName(const QString &newFileName)
 {
-    LOG("Document::setFileName", newFileName);
+    LOG(newFileName);
     if (m_fileName == newFileName)
         return;
     load(newFileName);
@@ -144,9 +144,9 @@ void Document::reload()
  */
 bool Document::load(const QString &fileName)
 {
-    LOG("Document::load", fileName);
+    LOG(fileName);
     if (fileName.isEmpty()) {
-        spdlog::warn("Document::load - fileName is empty");
+        spdlog::warn("{}: fileName is empty", FUNCTION_NAME);
         return false;
     }
     if (m_fileName == fileName)
@@ -169,7 +169,7 @@ bool Document::load(const QString &fileName)
  */
 bool Document::save()
 {
-    LOG("Document::save");
+    LOG();
     return saveAs(m_fileName);
 }
 
@@ -180,9 +180,9 @@ bool Document::save()
  */
 bool Document::saveAs(const QString &fileName)
 {
-    LOG("Document::saveAs", fileName);
+    LOG(fileName);
     if (fileName.isEmpty()) {
-        spdlog::error("Document::saveAs - fileName is empty");
+        spdlog::error("{}: fileName is empty", FUNCTION_NAME);
         return false;
     }
 
@@ -217,7 +217,7 @@ bool Document::saveAs(const QString &fileName)
  */
 void Document::close()
 {
-    LOG("Document::close");
+    LOG();
     if (m_fileName.isEmpty())
         return;
     if (m_hasChanged)

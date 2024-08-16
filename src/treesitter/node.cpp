@@ -54,7 +54,7 @@ QString Node::fieldNameForChild(const Node &child) const
     //         result = name;
     //     }
     // } else {
-    //     spdlog::warn("Node::fieldNameForChild - given node is not a child!");
+    //     spdlog::warn("{}: given node is not a child!", FUNCTION_NAME);
     // }
     //
     // However, the code produces incorrect field names in a few cases.
@@ -105,7 +105,7 @@ QString Node::fieldNameForChild(const Node &child) const
     ts_tree_cursor_delete(&cursor);
 
     if (!found) {
-        spdlog::warn("Node::fieldNameForChild - given node is not a child!");
+        spdlog::warn("{}: given node is not a child!", FUNCTION_NAME);
     }
 
     return result;

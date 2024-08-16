@@ -288,7 +288,7 @@ void APIExecutorWidget::executeAPI(Core::Document *document, const QByteArray &n
                                              genericArgs.value(5), genericArgs.value(6), genericArgs.value(7),
                                              genericArgs.value(8), genericArgs.value(9));
     if (!success)
-        spdlog::error("Error trying to execute the function {}", name);
+        spdlog::error("{}: Error trying to execute the function {}", FUNCTION_NAME, name);
 }
 
 void APIExecutorWidget::open()

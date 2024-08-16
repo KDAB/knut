@@ -122,7 +122,7 @@ void Settings::triggerLog(const Utils::LoadJsonStatus &loadJsonStatus, const QSt
  */
 bool Settings::hasValue(const QString &path) const
 {
-    LOG("Settings::hasValue", path);
+    LOG(path);
     return Utils::hasJsonValue(m_settings, path);
 }
 
@@ -133,9 +133,9 @@ bool Settings::hasValue(const QString &path) const
 QVariant Settings::value(const QString &path, const QVariant &defaultValue) const
 {
     if (defaultValue.isValid())
-        LOG("Settings::value", path, defaultValue);
+        LOG(path, defaultValue);
     else
-        LOG("Settings::value", path);
+        LOG(path);
 
     // Special cases
     if (path == Settings::RcAssetColors || path == Settings::RcAssetFlags || path == Settings::RcDialogFlags) {
@@ -148,10 +148,10 @@ QVariant Settings::value(const QString &path, const QVariant &defaultValue) cons
     case Utils::JsonValueStatus::Success:
         return valueStatus.value;
     case Utils::JsonValueStatus::ValueUnknown:
-        spdlog::info("Settings::value {} - accessing non-existing value", path);
+        spdlog::info("{}: {} - accessing non-existing value", FUNCTION_NAME, path);
         break;
     case Utils::JsonValueStatus::ConversionUnknown:
-        spdlog::error("Settings::value {} - cannot convert", path);
+        spdlog::error("{}: {} - cannot convert", FUNCTION_NAME, path);
         break;
     }
     return defaultValue;
@@ -165,7 +165,7 @@ bool Settings::setValue(const QString &path, const QJSValue &value)
 {
     const auto var = value.toVariant();
 
-    LOG("Settings::setValue", path, var);
+    LOG(path, value);
 
     // Handle both settings and project settings
     Utils::SetJsonValueStatus status = Utils::setJsonValue(m_settings, path, var);
@@ -181,10 +181,10 @@ bool Settings::setValue(const QString &path, const QJSValue &value)
         return true;
     }
     case Utils::SetJsonValueStatus::NullValue:
-        spdlog::error("Settings::setValue {} in {} - value is null", value.toString(), path);
+        spdlog::error("{}: {} in {} - value is null", FUNCTION_NAME, value.toString(), path);
         break;
     case Utils::SetJsonValueStatus::ValueTypeNotHandled:
-        spdlog::error("Settings::setValue {} in {} - value type not handled", value.toString(), path);
+        spdlog::error("{}: {} in {} - value type not handled", FUNCTION_NAME, value.toString(), path);
         break;
     }
     return false;
@@ -237,7 +237,7 @@ void Settings::saveSettings()
 
     QFile file(filePath);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-        spdlog::error("Settings::saveSettings {}", filePath);
+        spdlog::error("{}: {}", FUNCTION_NAME, filePath);
         return;
     }
 

@@ -235,7 +235,7 @@ void OptionsDialog::initializeCppSettings()
             if (model->insertRows(0, 1)) {
                 model->setData(model->index(0), excludeMacro);
             } else {
-                spdlog::warn("OptionsDialog::excludeMacro: Failed to create new row!");
+                spdlog::warn("{}: OptionsDialog::excludeMacro: Failed to create new row!", FUNCTION_NAME);
             }
         }
     });

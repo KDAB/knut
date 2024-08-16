@@ -123,7 +123,7 @@ QList<RcCore::Action> RcDocument::actions() const
  */
 RcCore::Action RcDocument::action(const QString &id) const
 {
-    LOG("RcDocument::action", id);
+    LOG(id);
 
     // Make sure the action vector is populated by calling actions
     if (isDataValid() && !actions().isEmpty()) {
@@ -143,7 +143,7 @@ RcCore::Action RcDocument::action(const QString &id) const
  */
 RcCore::ActionList RcDocument::actionsFromMenu(const QString &menuId) const
 {
-    LOG("RcDocument::actionsFromMenu", menuId);
+    LOG(menuId);
 
     if (!isDataValid())
         return {};
@@ -163,7 +163,7 @@ RcCore::ActionList RcDocument::actionsFromMenu(const QString &menuId) const
  */
 RcCore::ActionList RcDocument::actionsFromToolbar(const QString &toolBarId) const
 {
-    LOG("RcDocument::actionsFromMenu", toolBarId);
+    LOG(toolBarId);
 
     if (!isDataValid())
         return {};
@@ -190,7 +190,7 @@ QList<RcCore::ToolBar> RcDocument::toolBars() const
  */
 RcCore::ToolBar RcDocument::toolBar(const QString &id) const
 {
-    LOG("RcDocument::toolBar", id);
+    LOG(id);
 
     if (isDataValid()) {
         if (auto tb = data().toolBar(id))
@@ -216,7 +216,7 @@ RcCore::ToolBar RcDocument::toolBar(const QString &id) const
  */
 RcCore::Widget RcDocument::dialog(const QString &id, int flags, double scaleX, double scaleY) const
 {
-    LOG("RcDocument::dialog", id, flags, scaleX, scaleY);
+    LOG(id, flags, scaleX, scaleY);
 
     SET_DEFAULT_VALUE(RcDialogFlags, static_cast<ConversionFlags>(flags));
     SET_DEFAULT_VALUE(RcDialogScaleX, scaleX);
@@ -235,7 +235,7 @@ RcCore::Widget RcDocument::dialog(const QString &id, int flags, double scaleX, d
  */
 RcCore::Menu RcDocument::menu(const QString &id) const
 {
-    LOG("RcDocument::menu", id);
+    LOG(id);
 
     if (isDataValid()) {
         if (auto menu = data().menu(id))
@@ -250,7 +250,7 @@ RcCore::Menu RcDocument::menu(const QString &id) const
  */
 RcCore::Ribbon RcDocument::ribbon(const QString &id) const
 {
-    LOG("RcDocument::ribbon", id);
+    LOG(id);
 
     if (isDataValid()) {
         if (auto ribbon = data().ribbon(id)) {
@@ -263,7 +263,7 @@ RcCore::Ribbon RcDocument::ribbon(const QString &id) const
 
 QStringList RcDocument::dialogIds() const
 {
-    LOG("RcDocument::dialogIds");
+    LOG();
     if (isDataValid()) {
         const auto &dialogs = data().dialogs;
         QStringList result;
@@ -279,7 +279,7 @@ QStringList RcDocument::dialogIds() const
 
 QStringList RcDocument::menuIds() const
 {
-    LOG("RcDocument::menuIds");
+    LOG();
     if (isDataValid()) {
         const auto &menus = data().menus;
         QStringList result;
@@ -295,7 +295,7 @@ QStringList RcDocument::menuIds() const
 
 QStringList RcDocument::acceleratorIds() const
 {
-    LOG("RcDocument::acceleratorIds");
+    LOG();
     if (isDataValid()) {
         const auto &accelerators = data().acceleratorTables;
         QStringList result;
@@ -311,7 +311,7 @@ QStringList RcDocument::acceleratorIds() const
 
 QStringList RcDocument::toolbarIds() const
 {
-    LOG("RcDocument::toolbarIds");
+    LOG();
     if (isDataValid()) {
         const auto &toolbars = data().toolBars;
         QStringList result;
@@ -327,7 +327,7 @@ QStringList RcDocument::toolbarIds() const
 
 QStringList RcDocument::stringIds() const
 {
-    LOG("RcDocument::stringIds");
+    LOG();
     if (isDataValid())
         return data().strings.keys();
     return {};
@@ -335,7 +335,7 @@ QStringList RcDocument::stringIds() const
 
 QStringList RcDocument::ribbonIds() const
 {
-    LOG("RcDocument::ribbonIds");
+    LOG();
     if (isDataValid()) {
         const auto &ribbons = data().ribbons;
         QStringList result;
@@ -355,7 +355,7 @@ QStringList RcDocument::ribbonIds() const
  */
 QList<RcCore::String> RcDocument::stringsForLanguage(const QString &language) const
 {
-    LOG("RcDocument::stringsForLanguage", language);
+    LOG(language);
     if (m_rcFile.isValid && m_rcFile.data.contains(language)) {
         const RcCore::Data data = const_cast<RcCore::RcFile *>(&m_rcFile)->data[language];
         const auto &strings = data.strings;
@@ -371,14 +371,14 @@ QList<RcCore::String> RcDocument::stringsForLanguage(const QString &language) co
  */
 QString RcDocument::stringForLanguage(const QString &language, const QString &id) const
 {
-    LOG("RcDocument::stringForLanguage", language, id);
+    LOG(language, id);
 
     if (m_rcFile.isValid && m_rcFile.data.contains(language)) {
         const RcCore::Data data = const_cast<RcCore::RcFile *>(&m_rcFile)->data[language];
         const auto &strings = data.strings;
         return strings.value(id).text;
     } else {
-        spdlog::warn("RcDocument::stringForLanguage: language {} does not exist in the rc file.", language);
+        spdlog::warn("{}: language {} does not exist in the rc file.", FUNCTION_NAME, language);
         return {};
     }
 }
@@ -398,7 +398,7 @@ QList<RcCore::String> RcDocument::strings() const
  */
 QString RcDocument::string(const QString &id) const
 {
-    LOG("RcDocument::string", id);
+    LOG(id);
 
     if (isDataValid())
         return data().strings.value(id).text;
@@ -422,13 +422,12 @@ QString extractStringForDialog(const RcCore::Data::Dialog *dialog, const QString
     if (dialog) {
         const auto control = findControlWithId(dialog, id);
         if (!control) {
-            spdlog::warn("RcDocument::stringForDialogAndLanguage: control from id {} does not exist in the rc file.",
-                         id);
+            spdlog::warn("{}: control from id {} does not exist in the rc file.", FUNCTION_NAME, id);
             return {};
         }
         return control.value().text;
     } else {
-        spdlog::warn("RcDocument::stringForDialogAndLanguage: id {} does not exist in the rc file.", id);
+        spdlog::warn("{}: id {} does not exist in the rc file.", FUNCTION_NAME, id);
         return {};
     }
 }
@@ -440,14 +439,14 @@ QString extractStringForDialog(const RcCore::Data::Dialog *dialog, const QString
 QString RcDocument::stringForDialogAndLanguage(const QString &language, const QString &dialogId,
                                                const QString &id) const
 {
-    LOG("RcDocument::stringForDialogAndLanguage", language, dialogId, id);
+    LOG(language, dialogId, id);
 
     if (m_rcFile.isValid && m_rcFile.data.contains(language)) {
         const RcCore::Data data = const_cast<RcCore::RcFile *>(&m_rcFile)->data[language];
         const auto dialog = data.dialog(dialogId);
         return extractStringForDialog(dialog, id);
     } else {
-        spdlog::warn("RcDocument::stringForDialogAndLanguage: language {} does not exist in the rc file.", language);
+        spdlog::warn("{}: language {} does not exist in the rc file.", FUNCTION_NAME, language);
         return {};
     }
 }
@@ -458,7 +457,7 @@ QString RcDocument::stringForDialogAndLanguage(const QString &language, const QS
  */
 QString RcDocument::stringForDialog(const QString &dialogId, const QString &id) const
 {
-    LOG("RcDocument::stringForDialog", dialogId, id);
+    LOG(dialogId, id);
     if (isDataValid()) {
         const auto dialog = data().dialog(dialogId);
         return extractStringForDialog(dialog, id);
@@ -474,16 +473,16 @@ const RcCore::Data &RcDocument::data() const
 
 QString RcDocument::language() const
 {
-    LOG("RcDocument::language");
+    LOG();
     LOG_RETURN("language", m_language);
 }
 
 void RcDocument::setLanguage(const QString &language)
 {
-    LOG("RcDocument::setLanguage", language);
+    LOG(language);
 
     if (!m_rcFile.data.contains(language)) {
-        spdlog::warn("RcDocument::setLanguage: language {} does not exist in the rc file.", language);
+        spdlog::warn("{}: language {} does not exist in the rc file.", FUNCTION_NAME, language);
         return;
     }
 
@@ -499,7 +498,7 @@ void RcDocument::setLanguage(const QString &language)
 
 QStringList RcDocument::languages() const
 {
-    LOG("RcDocument::languages");
+    LOG();
 
     QStringList langs;
     if (m_rcFile.isValid) {
@@ -535,7 +534,7 @@ QList<RcCore::Menu> RcDocument::menus() const
  */
 void RcDocument::convertAssets(int flags)
 {
-    LOG("RcDocument::convertAssets", flags);
+    LOG(flags);
 
     SET_DEFAULT_VALUE(RcAssetFlags, static_cast<ConversionFlags>(flags));
     if (isDataValid()) {
@@ -558,7 +557,7 @@ void RcDocument::convertAssets(int flags)
  */
 void RcDocument::convertActions(int flags)
 {
-    LOG("RcDocument::convertActions", flags);
+    LOG(flags);
 
     SET_DEFAULT_VALUE(RcAssetFlags, static_cast<ConversionFlags>(flags));
     if (isDataValid()) {
@@ -584,7 +583,7 @@ void RcDocument::convertActions(int flags)
  */
 bool RcDocument::writeAssetsToImage(int flags)
 {
-    LOG("RcDocument::writeAssetsToImage", flags);
+    LOG(flags);
 
     SET_DEFAULT_VALUE(RcAssetColors, static_cast<ConversionFlags>(flags));
     if (m_cacheAssets.isEmpty())
@@ -602,7 +601,7 @@ bool RcDocument::writeAssetsToImage(int flags)
  */
 bool RcDocument::writeAssetsToQrc(const QString &fileName)
 {
-    LOG("RcDocument::writeAssetsToQrc", fileName);
+    LOG(fileName);
 
     if (m_cacheAssets.isEmpty())
         convertAssets();
@@ -622,7 +621,7 @@ bool RcDocument::writeAssetsToQrc(const QString &fileName)
  */
 bool RcDocument::writeDialogToUi(const RcCore::Widget &dialog, const QString &fileName)
 {
-    LOG("RcDocument::writeDialogToUi", dialog.id, fileName);
+    LOG(dialog.id, fileName);
 
     QFile file(fileName);
     if (file.open(QIODevice::WriteOnly)) {
@@ -639,7 +638,7 @@ bool RcDocument::writeDialogToUi(const RcCore::Widget &dialog, const QString &fi
  */
 void RcDocument::previewDialog(const RcCore::Widget &dialog) const
 {
-    LOG("RcDocument::previewDialog", dialog.id);
+    LOG(dialog.id);
 
     QUiLoader loader;
 
@@ -662,7 +661,7 @@ void RcDocument::previewDialog(const RcCore::Widget &dialog) const
  */
 void RcDocument::mergeAllLanguages(const QString &language)
 {
-    LOG("RcDocument::mergeAllLanguages", language);
+    LOG(language);
 
     m_rcFile.mergeLanguages(m_rcFile.data.keys(), language);
     {
@@ -684,7 +683,7 @@ void RcDocument::mergeAllLanguages(const QString &language)
  */
 void RcDocument::mergeLanguages()
 {
-    LOG("RcDocument::mergeLanguages");
+    LOG();
 
     const auto languageMap = Settings::instance()->value<std::map<std::string, std::string>>(Settings::RcLanguageMap);
 
@@ -723,7 +722,7 @@ void RcDocument::mergeLanguages()
  */
 QString RcDocument::convertLanguageToCode(const QString &language)
 {
-    LOG("RcDocument::convertLanguageToCode", language);
+    LOG(language);
     if (language == DefaultLanguage) {
         return {};
     }

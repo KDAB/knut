@@ -44,7 +44,7 @@ QtUiDocument::~QtUiDocument() = default;
  */
 QtUiWidget *QtUiDocument::findWidget(const QString &name) const
 {
-    LOG("QtUiDocument::findWidget", name);
+    LOG(name);
 
     auto result = kdalgorithms::find_if(m_widgets, [name](QtUiWidget *widget) {
         return widget->name() == name;
@@ -62,10 +62,10 @@ QtUiWidget *QtUiDocument::findWidget(const QString &name) const
  */
 Core::QtUiWidget *QtUiDocument::addWidget(const QString &className, const QString &name, Core::QtUiWidget *parent)
 {
-    LOG("QtUiDocument::addWidget", className, name);
+    LOG(className, name);
 
     if (m_widgets.empty() && parent) {
-        spdlog::error("QtUiDocument::addWidget - adding a widget to a non-root widget is not supported yet.");
+        spdlog::error("{}: adding a widget to a non-root widget is not supported yet.", FUNCTION_NAME);
         return nullptr;
     }
 
@@ -92,7 +92,7 @@ Core::QtUiWidget *QtUiDocument::addWidget(const QString &className, const QStrin
 void QtUiDocument::addCustomWidget(const QString &className, const QString &baseClassName, const QString &header,
                                    bool isContainer)
 {
-    LOG("QtUiDocument::addCustomWidget", className, baseClassName, header, isContainer);
+    LOG(className, baseClassName, header, isContainer);
 
     const auto result = uiWriter()->addCustomWidget(className, baseClassName, header, isContainer);
 
@@ -101,12 +101,10 @@ void QtUiDocument::addCustomWidget(const QString &className, const QString &base
         setHasChanged(true);
         return;
     case Utils::QtUiWriter::AlreadyExists:
-        spdlog::info(R"(QtUiDocument::addCustomWidget - the custom widget '{}' already exists)", className);
+        spdlog::info(R"({}: the custom widget '{}' already exists)", FUNCTION_NAME, className);
         return;
     case Utils::QtUiWriter::InvalidHeader:
-        spdlog::error(
-            R"(QtUiDocument::addCustomWidget - the include '{}' is malformed, should be '<foo.h>' or '"foo.h"')",
-            header);
+        spdlog::error(R"({}: the include '{}' is malformed, should be '<foo.h>' or '"foo.h"')", FUNCTION_NAME, header);
         return;
     case Utils::QtUiWriter::InvalidProperty:
         Q_UNREACHABLE();
@@ -119,7 +117,7 @@ void QtUiDocument::addCustomWidget(const QString &className, const QString &base
  */
 void QtUiDocument::preview() const
 {
-    LOG("QtUiDocument::preview");
+    LOG();
 
     QUiLoader loader;
 
@@ -201,7 +199,7 @@ QString QtUiWidget::name() const
 
 void QtUiWidget::setName(const QString &newName)
 {
-    LOG("QtUiWidget::setName", newName);
+    LOG(newName);
 
     if (newName == name())
         return;
@@ -218,7 +216,7 @@ QString QtUiWidget::className() const
 
 void QtUiWidget::setClassName(const QString &newClassName)
 {
-    LOG("QtUiWidget::setClassName", newClassName);
+    LOG(newClassName);
 
     if (newClassName == className())
         return;
@@ -234,7 +232,7 @@ void QtUiWidget::setClassName(const QString &newClassName)
  */
 QVariant QtUiWidget::getProperty(const QString &name) const
 {
-    LOG("QtUiWidget::getProperty", name);
+    LOG(name);
 
     const QString propertyPath = "property[@name='" % name % "']/*[1]";
     const auto dataNode = m_widget.select_node(propertyPath.toLatin1().constData()).node();
@@ -256,7 +254,7 @@ QVariant QtUiWidget::getProperty(const QString &name) const
         return dataNode.text().as_string();
     }
 
-    spdlog::error(R"(QtUiWidget::property - unknown {} property)", name);
+    spdlog::error(R"({}: unknown {} property)", FUNCTION_NAME, name);
     return {};
 }
 
@@ -275,7 +273,7 @@ QVariant QtUiWidget::getProperty(const QString &name) const
 void QtUiWidget::addProperty(const QString &name, const QVariant &value, const QHash<QString, QString> &attributes,
                              bool userProperty)
 {
-    LOG("QtUiWidget::addProperty", name, value);
+    LOG(name, value);
 
     const auto result = qobject_cast<QtUiDocument *>(parent())->uiWriter()->addWidgetProperty(m_widget, name, value,
                                                                                               attributes, userProperty);
@@ -285,7 +283,7 @@ void QtUiWidget::addProperty(const QString &name, const QVariant &value, const Q
         qobject_cast<QtUiDocument *>(parent())->setHasChanged(true);
         return;
     case Utils::QtUiWriter::InvalidProperty:
-        spdlog::error(R"(QtUiWidget::addProperty - unknown {} type)", value.typeName());
+        spdlog::error(R"({}: unknown {} type)", FUNCTION_NAME, value.typeName());
         return;
     case Utils::QtUiWriter::AlreadyExists:
     case Utils::QtUiWriter::InvalidHeader:

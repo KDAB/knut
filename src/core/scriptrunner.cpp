@@ -196,7 +196,7 @@ QVariant ScriptRunner::runScript(const QString &fileName, nlohmann::json &&data,
         }
         // engine is deleted in runJavascript or runQml
     } else {
-        spdlog::error("File {} doesn't exist", fileName);
+        spdlog::error("{}: File {} doesn't exist", FUNCTION_NAME, fileName);
         return QVariant(ErrorCode);
     }
 

@@ -60,7 +60,7 @@ void QtTsDocument::initializeXml()
  */
 void QtTsDocument::setLanguage(const QString &lang)
 {
-    LOG("QtTsDocument::setLanguage", lang);
+    LOG(lang);
     initializeXml();
     auto ts = m_document.select_node("TS");
     const auto attributeName = "language";
@@ -81,7 +81,7 @@ void QtTsDocument::setLanguage(const QString &lang)
  */
 void QtTsDocument::setSourceLanguage(const QString &lang)
 {
-    LOG("QtTsDocument::setSourceLanguage", lang);
+    LOG(lang);
     initializeXml();
     auto ts = m_document.select_node("TS");
     const auto attributeName = "sourcelanguage";
@@ -125,9 +125,9 @@ void QtTsDocument::addMessage(pugi::xml_node contextChild, const QString &contex
 void QtTsDocument::addMessage(const QString &context, const QString &fileName, const QString &source,
                               const QString &translation, const QString &comment)
 {
-    LOG("QtTsDocument::addMessage", context, fileName, source, translation, comment);
+    LOG(context, fileName, source, translation, comment);
     if (fileName.isEmpty() || source.isEmpty() || context.isEmpty()) {
-        spdlog::error(R"(Location or context or source is empty)");
+        spdlog::error(R"({}: Location or context or source is empty)", FUNCTION_NAME);
     }
 
     initializeXml();
@@ -167,7 +167,7 @@ void QtTsDocument::addMessage(const QString &context, const QString &fileName, c
 void QtTsDocument::setMessageContext(const QString &context, const QString &comment, const QString &source,
                                      const QString &newContext)
 {
-    LOG("QtTsDocument::setContext", context, comment, source, newContext);
+    LOG(context, comment, source, newContext);
 
     initializeXml();
 
@@ -249,7 +249,7 @@ bool QtTsDocument::doLoad(const QString &fileName)
 
     const auto ts = m_document.select_nodes("TS");
     if (ts.empty()) {
-        spdlog::critical("invalid file {}", fileName);
+        spdlog::critical("{}: invalid file {}", FUNCTION_NAME, fileName);
         return false;
     }
 
@@ -330,7 +330,7 @@ QString QtTsMessage::fileName() const
 
 void QtTsMessage::setFileName(const QString &file)
 {
-    LOG("QtTsMessage::setFileName", file);
+    LOG(file);
     m_message.child("location").attribute("filename").set_value(file.toLatin1().constData());
     qobject_cast<QtTsDocument *>(parent())->setHasChanged(true);
     Q_EMIT fileNameChanged();
@@ -343,7 +343,7 @@ int QtTsMessage::line() const
 
 void QtTsMessage::setLine(int line)
 {
-    LOG("QtTsMessage::setLine", line);
+    LOG(line);
     m_message.child("location").attribute("line").set_value(QByteArray::number(line).constData());
     qobject_cast<QtTsDocument *>(parent())->setHasChanged(true);
     Q_EMIT lineChanged();
@@ -356,7 +356,7 @@ QString QtTsMessage::comment() const
 
 void QtTsMessage::setComment(const QString &comment)
 {
-    LOG("QtTsMessage::setComment", comment);
+    LOG(comment);
     m_message.child("comment").set_value(comment.toLatin1().constData());
     qobject_cast<QtTsDocument *>(parent())->setHasChanged(true);
     Q_EMIT commentChanged();
@@ -369,7 +369,7 @@ QString QtTsMessage::source() const
 
 void QtTsMessage::setSource(const QString &source)
 {
-    LOG("QtTsMessage::setSource", source);
+    LOG(source);
     m_message.child("source").set_value(source.toLatin1().constData());
     qobject_cast<QtTsDocument *>(parent())->setHasChanged(true);
     Q_EMIT sourceChanged();
@@ -382,7 +382,7 @@ QString QtTsMessage::translation() const
 
 void QtTsMessage::setTranslation(const QString &translation)
 {
-    LOG("QtTsMessage::setTranslation", translation);
+    LOG(translation);
     m_message.child("translation").remove_attribute("type");
     m_message.child("translation").text().set(translation.toUtf8().constData());
     qobject_cast<QtTsDocument *>(parent())->setHasChanged(true);

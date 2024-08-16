@@ -138,12 +138,12 @@ bool Symbol::isClass() const
 
 ClassSymbol *Symbol::toClass()
 {
-    LOG("Symbol::toClass");
+    LOG();
 
     auto clazz = qobject_cast<ClassSymbol *>(this);
 
     if (!clazz)
-        spdlog::warn("Symbol::toClass - {} should be a `Class`.", m_name);
+        spdlog::warn("{}: {} should be a `Class`.", FUNCTION_NAME, m_name);
 
     return clazz;
 }
@@ -164,7 +164,7 @@ FunctionSymbol *Symbol::toFunction()
     auto function = qobject_cast<FunctionSymbol *>(this);
 
     if (!function)
-        spdlog::warn("Symbol::toFunction - {} should be either a method or a function.", m_name);
+        spdlog::warn("{}: {} should be either a method or a function.", FUNCTION_NAME, m_name);
 
     return function;
 }
@@ -196,7 +196,7 @@ Core::RangeMark Symbol::selectionRange() const
 
 RangeMarkList Symbol::references() const
 {
-    LOG("Symbol::references");
+    LOG();
 
     if (const auto codedocument = document()) {
         auto references = codedocument->references(selectionRange().start());

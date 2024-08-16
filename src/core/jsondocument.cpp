@@ -56,7 +56,7 @@ bool JsonDocument::loadJsonData(const QString &fileName)
  */
 bool JsonDocument::hasValue(const QString &path) const
 {
-    LOG("JsonDocument::hasValue", path);
+    LOG(path);
     return Utils::hasJsonValue(m_jsonData, path);
 }
 
@@ -67,9 +67,9 @@ bool JsonDocument::hasValue(const QString &path) const
 QVariant JsonDocument::value(const QString &path, const QVariant &defaultValue) const
 {
     if (defaultValue.isValid())
-        LOG("JsonDocument::value", path, defaultValue);
+        LOG(path, defaultValue);
     else
-        LOG("JsonDocument::value", path);
+        LOG(path);
 
     // Special cases
     if (path == Settings::RcAssetColors || path == Settings::RcAssetFlags || path == Settings::RcDialogFlags) {
@@ -98,7 +98,7 @@ QVariant JsonDocument::value(const QString &path, const QVariant &defaultValue) 
  */
 bool JsonDocument::setValue(const QString &path, const QVariant &value)
 {
-    LOG("JsonDocument::setValue", path, value);
+    LOG(path, value);
 
     Utils::SetJsonValueStatus status = Utils::setJsonValue(m_jsonData, path, value);
     switch (status) {

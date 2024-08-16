@@ -56,7 +56,7 @@ Dir::~Dir() = default;
  */
 QString Dir::toNativeSeparators(const QString &pathName)
 {
-    LOG("Dir::toNativeSeparators", pathName);
+    LOG(pathName);
     return QDir::toNativeSeparators(pathName);
 }
 
@@ -65,7 +65,7 @@ QString Dir::toNativeSeparators(const QString &pathName)
  */
 QString Dir::fromNativeSeparators(const QString &pathName)
 {
-    LOG("Dir::fromNativeSeparators", pathName);
+    LOG(pathName);
     return QDir::fromNativeSeparators(pathName);
 }
 
@@ -74,7 +74,7 @@ QString Dir::fromNativeSeparators(const QString &pathName)
  */
 bool Dir::isRelativePath(const QString &path)
 {
-    LOG("Dir::isRelativePath", path);
+    LOG(path);
     return QDir::isRelativePath(path);
 }
 
@@ -83,7 +83,7 @@ bool Dir::isRelativePath(const QString &path)
  */
 bool Dir::isAbsolutePath(const QString &path)
 {
-    LOG("Dir::isAbsolutePath", path);
+    LOG(path);
     return !isRelativePath(path);
 }
 
@@ -94,7 +94,7 @@ QChar Dir::separator() const
 
 bool Dir::setCurrentPath(const QString &path)
 {
-    LOG("Dir::setCurrentPath", path);
+    LOG(path);
     if (path != QDir::currentPath()) {
         if (QDir::setCurrent(path)) {
             emit currentPathChanged(path);
@@ -150,13 +150,13 @@ QString Dir::tempPath() const
  */
 bool Dir::match(const QStringList &filters, const QString &fileName)
 {
-    LOG("Dir::match", filters, fileName);
+    LOG(filters, fileName);
     return QDir::match(filters, fileName);
 }
 
 bool Dir::match(const QString &filter, const QString &fileName)
 {
-    LOG("Dir::match", filter, fileName);
+    LOG(filter, fileName);
     return QDir::match(filter, fileName);
 }
 
@@ -165,7 +165,7 @@ bool Dir::match(const QString &filter, const QString &fileName)
  */
 QString Dir::cleanPath(const QString &path)
 {
-    LOG("Dir::cleanPath", path);
+    LOG(path);
     return QDir::cleanPath(path);
 }
 
@@ -174,7 +174,7 @@ QString Dir::cleanPath(const QString &path)
  */
 QDirValueType Dir::create(const QString &path)
 {
-    LOG("Dir::create", path);
+    LOG(path);
     return QDirValueType(path);
 }
 

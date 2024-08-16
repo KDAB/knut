@@ -36,7 +36,7 @@ FileInfo::~FileInfo() = default;
  */
 bool FileInfo::exists(const QString &file)
 {
-    LOG("FileInfo::exists", file);
+    LOG(file);
     return QFileInfo::exists(file);
 }
 
@@ -45,7 +45,7 @@ bool FileInfo::exists(const QString &file)
  */
 QFileInfoValueType FileInfo::create(const QString &file)
 {
-    LOG("FileInfo::create", file);
+    LOG(file);
     return QFileInfoValueType(file);
 }
 

@@ -173,7 +173,7 @@ void ScriptDialogItem::initialize(nlohmann::json &&jsonData)
         } else if (it.value().is_number_float()) {
             value = it.value().get<double>();
         } else {
-            spdlog::error("Unsupported data type for key '{}'", it.key());
+            spdlog::error("{}: Unsupported data type for key '{}'", FUNCTION_NAME, it.key());
             value = QString::fromStdString(it.value().dump());
         }
 
@@ -294,7 +294,7 @@ void ScriptDialogItem::continueScript()
 
 void ScriptDialogItem::abortScript()
 {
-    spdlog::info("Script aborted.");
+    spdlog::info("{}: Script aborted.", FUNCTION_NAME);
     finishScript();
 }
 
@@ -313,7 +313,7 @@ void ScriptDialogItem::runNextStep()
     const auto done = result.property("done").toBool();
     m_nextStepTitle = result.property("value").toString();
 
-    spdlog::info("{} done.", m_currentStepTitle);
+    spdlog::info("{}: {} done.", FUNCTION_NAME, m_currentStepTitle);
 
     if (done) {
         finishScript();
@@ -535,7 +535,7 @@ void ScriptDialogItem::setUiFile(const QString &fileName)
         setWindowTitle(internalWidget->windowTitle());
         createProperties(internalWidget);
     } else {
-        spdlog::error("Can't open {}", fileName);
+        spdlog::error("{}: Can't open {}", FUNCTION_NAME, fileName);
     }
 }
 
@@ -677,10 +677,10 @@ void ScriptDialogItem::changeValue(const QString &key, const QVariant &value)
     }
 
     if (!widget) {
-        spdlog::warn("No widget found for the key '{}'.", key.toStdString());
+        spdlog::warn("{}: No widget found for the key '{}'.", FUNCTION_NAME, key.toStdString());
     } else {
-        spdlog::warn("Unsupported widget type '{}' for the key '{}'.", widget->metaObject()->className(),
-                     key.toStdString());
+        spdlog::warn("{}: Unsupported widget type '{}' for the key '{}'.", FUNCTION_NAME,
+                     widget->metaObject()->className(), key.toStdString());
     }
 }
 
