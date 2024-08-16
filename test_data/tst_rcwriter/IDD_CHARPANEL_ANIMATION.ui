@@ -1,6 +1,25 @@
 <?xml version="1.0"?>
 <ui version="4.0">
     <class>IDD_CHARPANEL_ANIMATION</class>
+    <widget class="QLabel" name="IDC_SPEED_MULTIPLYER">
+        <property name="idString" stdset="0">
+            <string notr="true">IDC_SPEED_MULTIPLYER</string>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>18</x>
+                <y>862</y>
+                <width>114</width>
+                <height>19</height>
+            </rect>
+        </property>
+        <property name="alignment">
+            <set>Qt::AlignLeft | Qt::AlignVCenter</set>
+        </property>
+        <property name="wordWrap">
+            <bool>true</bool>
+        </property>
+    </widget>
     <widget class="QWidget" name="IDD_CHARPANEL_ANIMATION">
         <property name="mfc_id" stdset="0">
             <string notr="true">IDD_CHARPANEL_ANIMATION</string>
@@ -205,8 +224,8 @@
                 <string comment="IDC_RESET_MODEL">Reset Model</string>
             </property>
         </widget>
-        <widget class="QLabel" name="IDC_SPEED_MULTIPLYER">
-            <property name="mfc_id" stdset="0">
+        <widget class="QLabel" name="IDC_SPEED_MULTIPLYER2">
+            <property name="idString" stdset="0">
                 <string notr="true">IDC_SPEED_MULTIPLYER</string>
             </property>
             <property name="geometry">
@@ -217,8 +236,14 @@
                     <height>19</height>
                 </rect>
             </property>
+            <property name="alignment">
+                <number>129</number>
+            </property>
             <property name="text">
                 <string comment="IDC_SPEED_MULTIPLYER">Playback Scale</string>
+            </property>
+            <property name="wordWrap">
+                <bool>true</bool>
             </property>
         </widget>
         <widget class="QComboBox" name="IDC_LAYER">
@@ -830,8 +855,14 @@
                         <height>19</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_LAYERBLENDWEIGHT_TEXT">Layer Blend Weight</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_AIMIK_LAYER_TEXT">
@@ -846,8 +877,14 @@
                         <height>19</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_AIMIK_LAYER_TEXT">AimIK Layer</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_LOOKIK_LAYER_TEXT">
@@ -862,8 +899,14 @@
                         <height>19</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_LOOKIK_LAYER_TEXT">LookIK Layer</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_TRANSITION">
@@ -878,8 +921,14 @@
                         <height>19</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_TRANSITION">Transition Time</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_DISABLE_MULTILAYER_ANIMATION">
@@ -1054,8 +1103,14 @@
                         <height>19</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_P1_MoveSpeed">P1 - Move Speed</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_P2_TurnSpeed">
@@ -1070,8 +1125,14 @@
                         <height>19</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_P2_TurnSpeed">P2 - Turn Speed</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_P3_TravelAngle">
@@ -1086,8 +1147,14 @@
                         <height>19</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_P3_TravelAngle">P3 - Travel Angle</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_P4_Slope">
@@ -1102,8 +1169,14 @@
                         <height>19</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_P4_Slope">P4 - Slope</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_P5_TurnAngle">
@@ -1118,8 +1191,14 @@
                         <height>19</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_P5_TurnAngle">P5 - Turn Angle</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_P6_TravelDistance">
@@ -1134,8 +1213,14 @@
                         <height>19</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_P6_TravelDistance">P6 - Travel Distance</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_P7_BlendWeight">
@@ -1150,8 +1235,14 @@
                         <height>19</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_P7_BlendWeight">P7 - BlendWeight</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QSlider" name="IDC_BLENDSPACESLIDER_Para3">

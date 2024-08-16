@@ -126,8 +126,14 @@
                             <height>17</height>
                         </rect>
                     </property>
+                    <property name="alignment">
+                        <number>129</number>
+                    </property>
                     <property name="text">
                         <string comment="IDC_STATIC_26">Time:</string>
+                    </property>
+                    <property name="wordWrap">
+                        <bool>true</bool>
                     </property>
                 </widget>
                 <widget class="QLineEdit" name="IDC_TIME_OF_DAY_EDIT">
@@ -226,10 +232,13 @@
                         </rect>
                     </property>
                     <property name="alignment">
-                        <set>Qt::AlignHCenter</set>
+                        <number>130</number>
                     </property>
                     <property name="text">
                         <string comment="IDC_STATIC_3">NorthPole .. Equator .. SouthPole:</string>
+                    </property>
+                    <property name="wordWrap">
+                        <bool>true</bool>
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_2">
@@ -245,10 +254,13 @@
                         </rect>
                     </property>
                     <property name="alignment">
-                        <set>Qt::AlignRight</set>
+                        <number>130</number>
                     </property>
                     <property name="text">
                         <string comment="IDC_STATIC_2">Sun Direction (map orientation):</string>
+                    </property>
+                    <property name="wordWrap">
+                        <bool>true</bool>
                     </property>
                 </widget>
                 <widget class="QSlider" name="IDC_SUNMAPLONGITUDE">
@@ -317,8 +329,14 @@
                             <height>14</height>
                         </rect>
                     </property>
+                    <property name="alignment">
+                        <number>129</number>
+                    </property>
                     <property name="text">
                         <string comment="IDC_STATIC_10">Sky Terrain Occlusion Quality (low .. high):</string>
+                    </property>
+                    <property name="wordWrap">
+                        <bool>true</bool>
                     </property>
                 </widget>
                 <widget class="QSlider" name="IDC_HEMISAMPLEQ">
@@ -384,8 +402,14 @@
                             <height>14</height>
                         </rect>
                     </property>
+                    <property name="alignment">
+                        <number>129</number>
+                    </property>
                     <property name="text">
                         <string comment="IDC_STATIC_19">0</string>
+                    </property>
+                    <property name="wordWrap">
+                        <bool>true</bool>
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_20">
@@ -400,8 +424,14 @@
                             <height>14</height>
                         </rect>
                     </property>
+                    <property name="alignment">
+                        <number>129</number>
+                    </property>
                     <property name="text">
                         <string comment="IDC_STATIC_20">24</string>
+                    </property>
+                    <property name="wordWrap">
+                        <bool>true</bool>
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_21">
@@ -416,8 +446,14 @@
                             <height>14</height>
                         </rect>
                     </property>
+                    <property name="alignment">
+                        <number>129</number>
+                    </property>
                     <property name="text">
                         <string comment="IDC_STATIC_21">6</string>
+                    </property>
+                    <property name="wordWrap">
+                        <bool>true</bool>
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_22">
@@ -432,8 +468,14 @@
                             <height>14</height>
                         </rect>
                     </property>
+                    <property name="alignment">
+                        <number>129</number>
+                    </property>
                     <property name="text">
                         <string comment="IDC_STATIC_22">12</string>
+                    </property>
+                    <property name="wordWrap">
+                        <bool>true</bool>
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_23">
@@ -448,8 +490,14 @@
                             <height>14</height>
                         </rect>
                     </property>
+                    <property name="alignment">
+                        <number>129</number>
+                    </property>
                     <property name="text">
                         <string comment="IDC_STATIC_23">18</string>
+                    </property>
+                    <property name="wordWrap">
+                        <bool>true</bool>
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_6">
@@ -464,8 +512,14 @@
                             <height>14</height>
                         </rect>
                     </property>
+                    <property name="alignment">
+                        <number>129</number>
+                    </property>
                     <property name="text">
                         <string comment="IDC_STATIC_6">Noon</string>
+                    </property>
+                    <property name="wordWrap">
+                        <bool>true</bool>
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_7">
@@ -480,8 +534,14 @@
                             <height>14</height>
                         </rect>
                     </property>
+                    <property name="alignment">
+                        <number>129</number>
+                    </property>
                     <property name="text">
                         <string comment="IDC_STATIC_7">0 min</string>
+                    </property>
+                    <property name="wordWrap">
+                        <bool>true</bool>
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_17">
@@ -496,8 +556,14 @@
                             <height>14</height>
                         </rect>
                     </property>
+                    <property name="alignment">
+                        <number>129</number>
+                    </property>
                     <property name="text">
                         <string comment="IDC_STATIC_17">0 min</string>
+                    </property>
+                    <property name="wordWrap">
+                        <bool>true</bool>
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_8">
@@ -512,8 +578,14 @@
                             <height>14</height>
                         </rect>
                     </property>
+                    <property name="alignment">
+                        <number>129</number>
+                    </property>
                     <property name="text">
                         <string comment="IDC_STATIC_8">60 min</string>
+                    </property>
+                    <property name="wordWrap">
+                        <bool>true</bool>
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_18">
@@ -528,8 +600,14 @@
                             <height>14</height>
                         </rect>
                     </property>
+                    <property name="alignment">
+                        <number>129</number>
+                    </property>
                     <property name="text">
                         <string comment="IDC_STATIC_18">60 min</string>
+                    </property>
+                    <property name="wordWrap">
+                        <bool>true</bool>
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_16">
@@ -544,8 +622,14 @@
                             <height>14</height>
                         </rect>
                     </property>
+                    <property name="alignment">
+                        <number>129</number>
+                    </property>
                     <property name="text">
                         <string comment="IDC_STATIC_16">Midnight</string>
+                    </property>
+                    <property name="wordWrap">
+                        <bool>true</bool>
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_5">
@@ -560,8 +644,14 @@
                             <height>17</height>
                         </rect>
                     </property>
+                    <property name="alignment">
+                        <number>129</number>
+                    </property>
                     <property name="text">
                         <string comment="IDC_STATIC_5">Midnight</string>
+                    </property>
+                    <property name="wordWrap">
+                        <bool>true</bool>
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_15">
@@ -576,8 +666,14 @@
                             <height>17</height>
                         </rect>
                     </property>
+                    <property name="alignment">
+                        <number>129</number>
+                    </property>
                     <property name="text">
                         <string comment="IDC_STATIC_15">Noon</string>
+                    </property>
+                    <property name="wordWrap">
+                        <bool>true</bool>
                     </property>
                 </widget>
                 <widget class="QLineEdit" name="IDC_DAWN_INFO">
@@ -624,8 +720,14 @@
                             <height>14</height>
                         </rect>
                     </property>
+                    <property name="alignment">
+                        <number>129</number>
+                    </property>
                     <property name="text">
                         <string comment="IDC_STATIC_13">Dusk Time:</string>
+                    </property>
+                    <property name="wordWrap">
+                        <bool>true</bool>
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_11">
@@ -640,8 +742,14 @@
                             <height>14</height>
                         </rect>
                     </property>
+                    <property name="alignment">
+                        <number>129</number>
+                    </property>
                     <property name="text">
                         <string comment="IDC_STATIC_11">Dawn Time:</string>
+                    </property>
+                    <property name="wordWrap">
+                        <bool>true</bool>
                     </property>
                 </widget>
                 <widget class="QLineEdit" name="IDC_DAWN_DUR_INFO">
@@ -688,8 +796,14 @@
                             <height>14</height>
                         </rect>
                     </property>
+                    <property name="alignment">
+                        <number>129</number>
+                    </property>
                     <property name="text">
                         <string comment="IDC_STATIC_14">Dusk Duration:</string>
+                    </property>
+                    <property name="wordWrap">
+                        <bool>true</bool>
                     </property>
                 </widget>
                 <widget class="QLabel" name="IDC_STATIC_12">
@@ -704,8 +818,14 @@
                             <height>14</height>
                         </rect>
                     </property>
+                    <property name="alignment">
+                        <number>129</number>
+                    </property>
                     <property name="text">
                         <string comment="IDC_STATIC_12">Dawn Duration:</string>
+                    </property>
+                    <property name="wordWrap">
+                        <bool>true</bool>
                     </property>
                 </widget>
                 <widget class="QSlider" name="IDC_DAWN_SLIDER">

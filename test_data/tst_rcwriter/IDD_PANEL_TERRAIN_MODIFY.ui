@@ -72,8 +72,14 @@
                         <height>14</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_STATIC_5">Scale:</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC_6">
@@ -88,8 +94,14 @@
                         <height>14</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_STATIC_6">Frequency</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_NOISE_SCALE">
@@ -206,8 +218,14 @@
                         <height>14</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_STATIC_3">Type:</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC_2">
@@ -222,8 +240,14 @@
                         <height>14</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_STATIC_2">Height:</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC_4">
@@ -238,8 +262,14 @@
                         <height>14</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_STATIC_4">Hardness:</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC_7">
@@ -254,8 +284,14 @@
                         <height>14</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_STATIC_7">Inside Radius:</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC">
@@ -270,8 +306,14 @@
                         <height>14</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_STATIC">Outside Radius</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_BRUSH_RADIUS">
@@ -455,8 +497,14 @@
                         <height>66</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_BRUSH_PREVIEW"></string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
         </widget>

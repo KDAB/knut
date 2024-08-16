@@ -251,12 +251,33 @@ static Widget convertLabel(const Data &data, Data::Control &control, bool useIdF
     Widget widget;
     widget.className = "QLabel";
 
-    if (control.styles.removeOne("SS_RIGHT") || control.type == static_cast<int>(Keywords::RTEXT))
-        widget.properties["alignment"] = "Qt::AlignRight";
-    if (control.styles.removeOne("SS_CENTER") || control.styles.removeOne("SS_CENTERIMAGE")
-        || control.type == static_cast<int>(Keywords::CTEXT))
-        widget.properties["alignment"] = "Qt::AlignHCenter";
+    int alignment = Qt::AlignLeft | Qt::AlignVCenter; // Default alignment
 
+    if (control.styles.removeOne("SS_RIGHT") || control.type == static_cast<int>(Keywords::RTEXT))
+        alignment = Qt::AlignRight | Qt::AlignVCenter;
+    else if (control.styles.removeOne("SS_CENTER") || control.styles.removeOne("SS_CENTERIMAGE")
+             || control.type == static_cast<int>(Keywords::CTEXT))
+        alignment = Qt::AlignHCenter | Qt::AlignVCenter;
+
+    bool wordWrap = true; // Default to word wrap
+    if (control.styles.removeOne("SS_LEFTNOWORDWRAP")) {
+        wordWrap = false;
+    }
+    if (control.styles.removeOne("SS_WORDELLIPSIS")) {
+        alignment |= Qt::TextWordWrap;
+    }
+
+    widget.properties["alignment"] = alignment;
+    widget.properties["wordWrap"] = wordWrap;
+
+    if (control.styles.removeOne("SS_SUNKEN")) {
+        widget.properties["frameShape"] = "QFrame::Panel";
+        widget.properties["frameShadow"] = "QFrame::Sunken";
+    }
+    if (control.styles.removeOne("SS_BLACKFRAME")) {
+        widget.properties["frameShape"] = "QFrame::Box";
+        widget.properties["frameShadow"] = "QFrame::Plain";
+    }
     if (control.styles.removeOne("SS_REALSIZECONTROL"))
         widget.properties["scaledContents"] = true;
 
@@ -274,9 +295,6 @@ static Widget convertLabel(const Data &data, Data::Control &control, bool useIdF
     } else {
         widget.properties["text"] = control.text;
     }
-
-    if (control.styles.removeOne("SS_LEFTNOWORDWRAP"))
-        widget.properties["wordWrap"] = true;
 
     control.styles.removeOne("SS_LEFT");
     convertStyles(data, widget, control, true);
@@ -723,7 +741,13 @@ Widget convertDialog(const Data &data, const Data::Dialog &d, Widget::Conversion
     }
 
     for (const auto &control : std::as_const(dialog.controls)) {
-        widget.children.push_back(convertChildWidget(data, dialog.id, control, flags & Widget::UseIdForPixmap));
+        Widget childWidget = convertChildWidget(data, dialog.id, control, flags & Widget::UseIdForPixmap);
+
+        if (control.className == "STATIC") {
+            childWidget.className = "QLabel";
+        }
+
+        widget.children.push_back(childWidget);
     }
 
     if (flags & Widget::UpdateGeometry)

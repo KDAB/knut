@@ -78,8 +78,14 @@
                         <height>14</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_STATIC_6">Bone</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC_7">
@@ -94,8 +100,14 @@
                         <height>14</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_STATIC_7">Foley</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC_4">
@@ -110,8 +122,14 @@
                         <height>14</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_STATIC_4">Foley delay</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC_8">
@@ -126,8 +144,14 @@
                         <height>14</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_STATIC_8">Footstep height</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC_5">
@@ -142,8 +166,14 @@
                         <height>14</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_STATIC_5">Event Name</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC">
@@ -158,8 +188,14 @@
                         <height>14</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_STATIC">Left footstep</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC_2">
@@ -174,8 +210,14 @@
                         <height>14</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_STATIC_2">Right footstep</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QCheckBox" name="IDC_FOLEYS_CHECK">

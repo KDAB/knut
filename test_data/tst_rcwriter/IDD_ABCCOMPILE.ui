@@ -187,8 +187,14 @@
                         <height>14</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_STATIC_8">UV Max:</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_INDEXFRAMEDISTANCE">
@@ -219,8 +225,14 @@
                         <height>14</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_STATIC_6">Precision (mm):</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QLabel" name="IDC_STATIC_4">
@@ -235,8 +247,14 @@
                         <height>14</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_STATIC_4">Block Compression:</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QLineEdit" name="IDC_PRECISION">
@@ -267,8 +285,14 @@
                         <height>14</height>
                     </rect>
                 </property>
+                <property name="alignment">
+                    <number>129</number>
+                </property>
                 <property name="text">
                     <string comment="IDC_STATIC_3">Index Frame Distance:</string>
+                </property>
+                <property name="wordWrap">
+                    <bool>true</bool>
                 </property>
             </widget>
             <widget class="QComboBox" name="IDC_BLOCKCOMPRESSION">

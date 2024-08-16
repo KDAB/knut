@@ -1,0 +1,109 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United States) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ALIGNMENT_TEST DIALOGEX 0, 0, 309, 176
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Alignment Test Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Left Aligned Text",IDC_STATIC_LEFT,7,7,295,14,SS_LEFT
+    LTEXT           "Right Aligned Text",IDC_STATIC_RIGHT,7,25,295,14,SS_RIGHT
+    LTEXT           "Center Aligned Text",IDC_STATIC_CENTER,7,43,295,14,SS_CENTER
+    LTEXT           "Left No Word Wrap",IDC_STATIC_LEFT_NOWRAP,7,61,295,14,SS_LEFTNOWORDWRAP
+    CTEXT           "Center Text",IDC_STATIC_CENTER_TEXT,7,79,295,14,SS_CENTER
+    RTEXT           "Right Text",IDC_STATIC_RIGHT_TEXT,7,97,295,14,SS_RIGHT
+    LTEXT           "Word Ellipsis",IDC_STATIC_WORDELLIPSIS,7,115,295,14,SS_WORDELLIPSIS
+    LTEXT           "Center Image",IDC_STATIC_CENTER_IMAGE,7,133,295,14,SS_CENTERIMAGE
+    LTEXT           "Simple Left",IDC_STATIC,7,151,295,14
+END
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_ALIGNMENT_TEST, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 169
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_ALIGNMENT_TEST AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+#endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED

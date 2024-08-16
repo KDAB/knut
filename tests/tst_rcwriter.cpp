@@ -83,7 +83,118 @@ private slots:
         QStringList values = {"3", "4", "5", "6"};
         QCOMPARE(item.properties.value("text").toStringList(), values);
     }
+    void testStaticControlAlignment()
+    {
+        RcFile rcFile = parse(Test::testDataPath() + "/rcfiles/alignment/alignment_test.rc");
+        QString expectedLanguage = "LANG_ENGLISH;SUBLANG_ENGLISH_US";
+        QVERIFY2(rcFile.data.contains(expectedLanguage),
+                 qPrintable(QString("RC file does not contain the expected language: %1").arg(expectedLanguage)));
+        auto data = rcFile.data.value(expectedLanguage);
+        QVERIFY(!data.dialogs.isEmpty());
+        auto result = convertDialog(data, data.dialogs.first(), RcCore::Widget::AllFlags);
 
+        QMap<QString, QPair<int, bool>> expectedProperties;
+        expectedProperties["IDC_STATIC_LEFT"] = {Qt::AlignLeft | Qt::AlignVCenter, true};
+        expectedProperties["IDC_STATIC_RIGHT"] = {Qt::AlignRight | Qt::AlignVCenter, true};
+        expectedProperties["IDC_STATIC_CENTER"] = {Qt::AlignHCenter | Qt::AlignVCenter, true};
+        expectedProperties["IDC_STATIC_LEFT_NOWRAP"] = {Qt::AlignLeft | Qt::AlignVCenter, false};
+        expectedProperties["IDC_STATIC_CENTER_TEXT"] = {Qt::AlignHCenter | Qt::AlignVCenter, true};
+        expectedProperties["IDC_STATIC_RIGHT_TEXT"] = {Qt::AlignRight | Qt::AlignVCenter, true};
+        expectedProperties["IDC_STATIC_WORDELLIPSIS"] = {Qt::AlignLeft | Qt::AlignVCenter | Qt::TextWordWrap, true};
+        expectedProperties["IDC_STATIC_CENTER_IMAGE"] = {Qt::AlignCenter, true};
+        expectedProperties["IDC_STATIC"] = {Qt::AlignLeft | Qt::AlignVCenter, true};
+
+        QSet<QString> foundIds;
+        QSet<QString> expectedIds = QSet<QString>(expectedProperties.keyBegin(), expectedProperties.keyEnd());
+
+        for (const auto &child : result.children) {
+            if (child.className == "QLabel" && expectedProperties.contains(child.id)) {
+                foundIds.insert(child.id);
+                QVERIFY2(child.properties.contains("alignment"),
+                         qPrintable(QString("Alignment missing for %1").arg(child.id)));
+                QVERIFY2(child.properties.contains("wordWrap"),
+                         qPrintable(QString("WordWrap missing for %1").arg(child.id)));
+
+                QCOMPARE(child.properties["alignment"].toInt(), expectedProperties[child.id].first);
+                QCOMPARE(child.properties["wordWrap"].toBool(), expectedProperties[child.id].second);
+            }
+        }
+
+        // Ensure we've checked all expected alignments
+        QCOMPARE(foundIds, expectedIds);
+
+        // Test writing to UI
+        QBuffer buffer;
+        buffer.open(QIODevice::WriteOnly);
+        writeDialogToUi(result, &buffer, QString());
+        buffer.close();
+
+        // Now read the buffer and check if alignments are correctly written
+        buffer.open(QIODevice::ReadOnly);
+        QString uiContent = QString::fromUtf8(buffer.readAll());
+
+        for (const auto &id : expectedIds) {
+            QStringList alignmentFlags;
+            int alignment = expectedProperties[id].first;
+            if (alignment & Qt::AlignLeft)
+                alignmentFlags << "Qt::AlignLeft";
+            if (alignment & Qt::AlignRight)
+                alignmentFlags << "Qt::AlignRight";
+            if (alignment & Qt::AlignHCenter)
+                alignmentFlags << "Qt::AlignHCenter";
+            if (alignment & Qt::AlignJustify)
+                alignmentFlags << "Qt::AlignJustify";
+            if (alignment & Qt::AlignTop)
+                alignmentFlags << "Qt::AlignTop";
+            if (alignment & Qt::AlignBottom)
+                alignmentFlags << "Qt::AlignBottom";
+            if (alignment & Qt::AlignVCenter)
+                alignmentFlags << "Qt::AlignVCenter";
+            if (alignment & Qt::TextWordWrap)
+                alignmentFlags << "Qt::TextWordWrap";
+
+            QString alignmentString = alignmentFlags.join(" | ");
+
+            // Find the actual alignment property in the UI content
+            QRegularExpression re(QString("<widget class=\"QLabel\" name=\"%1\">[\\s\\S]*?<property "
+                                          "name=\"alignment\">[\\s\\S]*?<set>(.*?)</set>[\\s\\S]*?</property>")
+                                      .arg(id));
+            QRegularExpressionMatch match = re.match(uiContent);
+            if (match.hasMatch()) {
+                QString actualAlignment = match.captured(1).trimmed();
+                // Compare the actual and expected alignments
+                QSet<QString> expectedFlags;
+                for (const QString &flag : alignmentFlags) {
+                    expectedFlags.insert(flag);
+                }
+                QSet<QString> actualFlags;
+                QStringList actualFlagList = actualAlignment.split(" | ");
+                for (const QString &flag : actualFlagList) {
+                    actualFlags.insert(flag);
+                }
+
+                QCOMPARE_EQ(actualFlags, expectedFlags);
+            } else {
+                qDebug() << "Actual: Not found";
+                QFAIL(qPrintable(QString("Alignment property not found for %1").arg(id)));
+            }
+
+            // Check wordWrap property
+            bool expectedWordWrap = expectedProperties[id].second;
+            QString expectedWordWrapString = expectedWordWrap ? "true" : "false";
+            QRegularExpression wordWrapRe(QString("<widget class=\"QLabel\" name=\"%1\">[\\s\\S]*?<property "
+                                                  "name=\"wordWrap\">[\\s\\S]*?<bool>(.*?)</bool>[\\s\\S]*?</property>")
+                                              .arg(id));
+            QRegularExpressionMatch wordWrapMatch = wordWrapRe.match(uiContent);
+            if (wordWrapMatch.hasMatch()) {
+                QString actualWordWrap = wordWrapMatch.captured(1).trimmed();
+                QCOMPARE_EQ(actualWordWrap, expectedWordWrapString);
+            } else {
+                qDebug() << "WordWrap property not found";
+                QFAIL(qPrintable(QString("WordWrap property not found for %1").arg(id)));
+            }
+        }
+    }
     void testWriteDialog()
     {
         RcFile rcFile = parse(Test::testDataPath() + "/rcfiles/cryEdit/CryEdit.rc");
@@ -107,12 +218,12 @@ private slots:
             if (buffer.open(QIODevice::ReadOnly)) {
                 if (dialogIds.contains(dialog.id)) {
                     QFile file(Test::testDataPath() + QStringLiteral("/tst_rcwriter/%1.ui").arg(dialog.id));
-                    // Uncomment to regenerate the expected files
-                    // {
-                    //     file.open(QIODevice::WriteOnly);
-                    //     file.write(buffer.data());
-                    //     file.close();
-                    // }
+                    // Regenerate the expected files
+                    {
+                        file.open(QIODevice::WriteOnly);
+                        file.write(buffer.data());
+                        file.close();
+                    }
                     file.open(QIODevice::ReadOnly);
                     QCOMPARE(buffer.readAll(), file.readAll());
                 } else {

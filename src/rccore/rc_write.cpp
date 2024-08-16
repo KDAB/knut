@@ -147,7 +147,54 @@ void writeDialogToUi(const Widget &widget, QIODevice *device)
 
     writeWidget(writer, widget);
 
-    device->write(writer.dump().toUtf8());
+    QQmlEngine engine;
+    QObject::connect(&engine, &QQmlEngine::warnings, logWarnings);
+    engine.setOutputWarningsToStandardError(false);
+
+    QQmlComponent component(&engine);
+    component.setData(script.toLatin1(), {});
+    auto *result = qobject_cast<QObject *>(component.create());
+
+    if (component.isReady() && !component.isError()) {
+        UiWriter writer(device);
+        writer.setClassName(widget.id);
+        // Write properties for QLabel widgets
+        for (const auto &child : widget.children) {
+            if (child.className == "QLabel") {
+                writer.startWidget("QLabel", child);
+                if (child.properties.contains("alignment")) {
+                    int alignment = child.properties["alignment"].toInt();
+                    QStringList alignmentFlags;
+                    if (alignment & Qt::AlignLeft)
+                        alignmentFlags << "Qt::AlignLeft";
+                    if (alignment & Qt::AlignRight)
+                        alignmentFlags << "Qt::AlignRight";
+                    if (alignment & Qt::AlignHCenter)
+                        alignmentFlags << "Qt::AlignHCenter";
+                    if (alignment & Qt::AlignJustify)
+                        alignmentFlags << "Qt::AlignJustify";
+                    if (alignment & Qt::AlignTop)
+                        alignmentFlags << "Qt::AlignTop";
+                    if (alignment & Qt::AlignBottom)
+                        alignmentFlags << "Qt::AlignBottom";
+                    if (alignment & Qt::AlignVCenter)
+                        alignmentFlags << "Qt::AlignVCenter";
+                    if (alignment & Qt::TextWordWrap)
+                        alignmentFlags << "Qt::TextWordWrap";
+
+                    QString alignmentString = alignmentFlags.join(" | ");
+                    writer.addProperty("alignment", alignmentString);
+                }
+                if (child.properties.contains("wordWrap")) {
+                    writer.addProperty("wordWrap", child.properties["wordWrap"]);
+                }
+                writer.endWidget();
+            }
+        }
+        QMetaObject::invokeMethod(result, "runScript", Qt::DirectConnection,
+                                  Q_ARG(QVariant, QVariant::fromValue(widget)),
+                                  Q_ARG(QVariant, QVariant::fromValue(&writer)));
+    }
 }
 
 } // namespace RcCore

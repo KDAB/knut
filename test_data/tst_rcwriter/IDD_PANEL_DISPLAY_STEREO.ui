@@ -1,6 +1,101 @@
 <?xml version="1.0"?>
 <ui version="4.0">
     <class>IDD_PANEL_DISPLAY_STEREO</class>
+    <widget class="QLabel" name="IDC_STATIC">
+        <property name="idString" stdset="0">
+            <string notr="true">IDC_STATIC</string>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>13</x>
+                <y>4</y>
+                <width>86</width>
+                <height>17</height>
+            </rect>
+        </property>
+        <property name="alignment">
+            <set>Qt::AlignLeft | Qt::AlignVCenter</set>
+        </property>
+        <property name="wordWrap">
+            <bool>true</bool>
+        </property>
+    </widget>
+    <widget class="QLabel" name="IDC_STATIC2">
+        <property name="idString" stdset="0">
+            <string notr="true">IDC_STATIC</string>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>13</x>
+                <y>47</y>
+                <width>86</width>
+                <height>17</height>
+            </rect>
+        </property>
+        <property name="alignment">
+            <set>Qt::AlignLeft | Qt::AlignVCenter</set>
+        </property>
+        <property name="wordWrap">
+            <bool>true</bool>
+        </property>
+    </widget>
+    <widget class="QLabel" name="IDC_STATIC3">
+        <property name="idString" stdset="0">
+            <string notr="true">IDC_STATIC</string>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>13</x>
+                <y>95</y>
+                <width>86</width>
+                <height>17</height>
+            </rect>
+        </property>
+        <property name="alignment">
+            <set>Qt::AlignLeft | Qt::AlignVCenter</set>
+        </property>
+        <property name="wordWrap">
+            <bool>true</bool>
+        </property>
+    </widget>
+    <widget class="QLabel" name="IDC_STATIC4">
+        <property name="idString" stdset="0">
+            <string notr="true">IDC_STATIC</string>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>13</x>
+                <y>184</y>
+                <width>86</width>
+                <height>17</height>
+            </rect>
+        </property>
+        <property name="alignment">
+            <set>Qt::AlignLeft | Qt::AlignVCenter</set>
+        </property>
+        <property name="wordWrap">
+            <bool>true</bool>
+        </property>
+    </widget>
+    <widget class="QLabel" name="IDC_STATIC5">
+        <property name="idString" stdset="0">
+            <string notr="true">IDC_STATIC</string>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>13</x>
+                <y>141</y>
+                <width>101</width>
+                <height>17</height>
+            </rect>
+        </property>
+        <property name="alignment">
+            <set>Qt::AlignLeft | Qt::AlignVCenter</set>
+        </property>
+        <property name="wordWrap">
+            <bool>true</bool>
+        </property>
+    </widget>
     <widget class="QWidget" name="IDD_PANEL_DISPLAY_STEREO">
         <property name="mfc_id" stdset="0">
             <string notr="true">IDD_PANEL_DISPLAY_STEREO</string>
@@ -45,8 +140,8 @@
                 <set>Qt::AlignLeft|Qt::AlignVCenter</set>
             </property>
         </widget>
-        <widget class="QLabel" name="IDC_STATIC">
-            <property name="mfc_id" stdset="0">
+        <widget class="QLabel" name="IDC_STATIC6">
+            <property name="idString" stdset="0">
                 <string notr="true">IDC_STATIC</string>
             </property>
             <property name="geometry">
@@ -57,13 +152,19 @@
                     <height>17</height>
                 </rect>
             </property>
+            <property name="alignment">
+                <number>129</number>
+            </property>
             <property name="text">
                 <string comment="IDC_STATIC">Stereo Mode:</string>
             </property>
+            <property name="wordWrap">
+                <bool>true</bool>
+            </property>
         </widget>
-        <widget class="QLabel" name="IDC_STATIC_2">
-            <property name="mfc_id" stdset="0">
-                <string notr="true">IDC_STATIC_2</string>
+        <widget class="QLabel" name="IDC_STATIC7">
+            <property name="idString" stdset="0">
+                <string notr="true">IDC_STATIC</string>
             </property>
             <property name="geometry">
                 <rect>
@@ -73,13 +174,19 @@
                     <height>17</height>
                 </rect>
             </property>
+            <property name="alignment">
+                <number>129</number>
+            </property>
             <property name="text">
                 <string comment="IDC_STATIC_2">Stereo Output:</string>
             </property>
+            <property name="wordWrap">
+                <bool>true</bool>
+            </property>
         </widget>
-        <widget class="QLabel" name="IDC_STATIC_3">
-            <property name="mfc_id" stdset="0">
-                <string notr="true">IDC_STATIC_3</string>
+        <widget class="QLabel" name="IDC_STATIC8">
+            <property name="idString" stdset="0">
+                <string notr="true">IDC_STATIC</string>
             </property>
             <property name="geometry">
                 <rect>
@@ -89,13 +196,19 @@
                     <height>17</height>
                 </rect>
             </property>
+            <property name="alignment">
+                <number>129</number>
+            </property>
             <property name="text">
                 <string comment="IDC_STATIC_3">Stereo Eye Dist:</string>
             </property>
+            <property name="wordWrap">
+                <bool>true</bool>
+            </property>
         </widget>
-        <widget class="QLabel" name="IDC_STATIC_5">
-            <property name="mfc_id" stdset="0">
-                <string notr="true">IDC_STATIC_5</string>
+        <widget class="QLabel" name="IDC_STATIC9">
+            <property name="idString" stdset="0">
+                <string notr="true">IDC_STATIC</string>
             </property>
             <property name="geometry">
                 <rect>
@@ -105,8 +218,14 @@
                     <height>17</height>
                 </rect>
             </property>
+            <property name="alignment">
+                <number>129</number>
+            </property>
             <property name="text">
                 <string comment="IDC_STATIC_5">Stereo Flip Eyes:</string>
+            </property>
+            <property name="wordWrap">
+                <bool>true</bool>
             </property>
         </widget>
         <widget class="QRadioButton" name="IDC_STEREO_FLIPEYES_RADIO">
@@ -141,9 +260,9 @@
                 <string comment="IDC_STEREO_FLIPEYES_RADIO2">flip</string>
             </property>
         </widget>
-        <widget class="QLabel" name="IDC_STATIC_4">
-            <property name="mfc_id" stdset="0">
-                <string notr="true">IDC_STATIC_4</string>
+        <widget class="QLabel" name="IDC_STATIC10">
+            <property name="idString" stdset="0">
+                <string notr="true">IDC_STATIC</string>
             </property>
             <property name="geometry">
                 <rect>
@@ -153,8 +272,14 @@
                     <height>17</height>
                 </rect>
             </property>
+            <property name="alignment">
+                <number>129</number>
+            </property>
             <property name="text">
                 <string comment="IDC_STATIC_4">Stereo Screen Dist:</string>
+            </property>
+            <property name="wordWrap">
+                <bool>true</bool>
             </property>
         </widget>
         <widget class="QComboBox" name="IDC_STEREO_MODE_COMBO">
