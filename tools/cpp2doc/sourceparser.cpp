@@ -10,6 +10,7 @@
 
 #include "sourceparser.h"
 
+#include <QDateTime>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -37,11 +38,68 @@ static QStringList getAllSourceFiles(const QString &directory)
     return result;
 }
 
+void SourceParser::loadMappingFile(const QString &filePath)
+{
+    QFile mappingFile(filePath + "/mapping.txt");
+    if (!mappingFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qWarning() << "Unable to open file mapping.txt for reading.";
+        return;
+    }
+
+    QTextStream in(&mappingFile);
+
+    while (!in.atEnd()) {
+        const QString line = in.readLine();
+        const QStringList parts = line.split(',');
+
+        if (parts.size() == 6) {
+            Data::MappedType entry;
+            entry.typeName = parts[0];
+            entry.sourceFile = parts[1];
+            entry.docFile = parts[2];
+            entry.qmlModule = parts[3];
+            entry.group = parts[4];
+            entry.positionInGroup = static_cast<Data::PositionInGroup>(parts[5].toInt());
+
+            m_data.mappedTypes.push_back(std::move(entry));
+        } else {
+            qWarning() << "Invalid line format in mapping.txt: " << line;
+        }
+    }
+}
+
 void SourceParser::parseDirectory(const QString &directory)
 {
     const QStringList sourceFiles = getAllSourceFiles(directory);
-    for (const auto &sourceFile : sourceFiles)
-        parseFile(sourceFile);
+
+    for (const auto &sourceFile : sourceFiles) {
+        const QFileInfo sourceFileInfo(sourceFile);
+        const QDateTime sourceLastModified = sourceFileInfo.lastModified();
+
+        const QString relativeSourceFile = QDir(KNUT_SOURCE_PATH).relativeFilePath(sourceFileInfo.absoluteFilePath());
+
+        auto isMatchingSourceFile = [&relativeSourceFile](const Data::MappedType &entry) {
+            return entry.sourceFile == relativeSourceFile;
+        };
+
+        auto it = std::ranges::find_if(m_data.mappedTypes, isMatchingSourceFile);
+
+        if (it != m_data.mappedTypes.end()) {
+            const QFileInfo docFileInfo(QDir(KNUT_DOC_PATH).absoluteFilePath(it->docFile));
+            const QDateTime docLastModified = docFileInfo.lastModified();
+
+            if (sourceLastModified > docLastModified) {
+                std::erase_if(m_data.mappedTypes, isMatchingSourceFile);
+                parseFile(sourceFile);
+            }
+        } else
+            parseFile(sourceFile);
+    }
+    auto fileDoesNotExist = [](const Data::MappedType &entry) {
+        return !QFileInfo::exists(QDir(KNUT_SOURCE_PATH).absoluteFilePath(entry.sourceFile));
+    };
+
+    std::erase_if(m_data.mappedTypes, fileDoesNotExist);
 }
 
 QString SourceParser::cleanupCommentLine(QString line)
@@ -71,9 +129,11 @@ void SourceParser::parseFile(const QString &fileName)
             inDocumentation = true;
         if (inDocumentation) {
             line = cleanupCommentLine(line);
-            if (line.startsWith("\\qmltype"))
-                m_data.types.push_back(parseType(stream, line));
-            else if (line.startsWith("\\qmlproperty"))
+            if (line.startsWith("\\qmltype")) {
+                const Data::TypeBlock currentType = parseType(stream, line);
+                m_data.types.push_back(currentType);
+                updateFileMap(fileName, currentType);
+            } else if (line.startsWith("\\qmlproperty"))
                 m_data.properties.push_back(parseProperty(stream, line));
             else if (line.startsWith("\\qmlmethod"))
                 m_data.methods.push_back(parseMethod(stream, line));
@@ -108,6 +168,35 @@ Data::TypeBlock SourceParser::parseType(QTextStream &stream, QString line)
     }
 
     return currentType;
+}
+
+void SourceParser::updateFileMap(const QString &fileName, const Data::TypeBlock &currentType)
+{
+    const QString relativeSourceFileName = QDir(KNUT_SOURCE_PATH).relativeFilePath(fileName);
+    const QString relativeDocFileName =
+        QString("API/%1/%2.md").arg(currentType.qmlModule.toLower(), currentType.name.toLower());
+
+    auto isSameFile = [&currentType, &relativeSourceFileName](const Data::MappedType &entry) {
+        return entry.typeName == currentType.name && entry.sourceFile == relativeSourceFileName;
+    };
+    auto it = std::ranges::find_if(m_data.mappedTypes, isSameFile);
+
+    if (it == m_data.mappedTypes.end()) {
+        Data::MappedType entry;
+        entry.typeName = currentType.name;
+        entry.sourceFile = relativeSourceFileName;
+        entry.docFile = relativeDocFileName;
+        entry.qmlModule = currentType.qmlModule;
+        entry.group = currentType.group;
+        entry.positionInGroup = currentType.positionInGroup;
+
+        m_data.mappedTypes.push_back(std::move(entry));
+    } else {
+        it->qmlModule = currentType.qmlModule;
+        it->group = currentType.group;
+        it->positionInGroup = currentType.positionInGroup;
+        it->docFile = relativeDocFileName;
+    }
 }
 
 Data::PropertyBlock SourceParser::parseProperty(QTextStream &stream, QString line)
