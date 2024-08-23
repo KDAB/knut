@@ -11,8 +11,12 @@
 #include "findwidget.h"
 #include "core/logger.h"
 #include "core/project.h"
+#include "core/qttsdocument.h"
+#include "core/qtuidocument.h"
 #include "core/textdocument.h"
 #include "guisettings.h"
+#include "qttsview.h"
+#include "qtuiview.h"
 #include "ui_findwidget.h"
 
 #include <QAction>
@@ -86,11 +90,35 @@ QString FindWidget::findString()
 
 void FindWidget::findNext()
 {
+    auto qtUiDocument = qobject_cast<Core::QtUiDocument *>(Core::Project::instance()->currentDocument());
+    if (qtUiDocument) {
+        Q_EMIT findRequested(ui->findEdit->text(), Core::TextDocument::NoFindFlags);
+        return;
+    }
+
+    auto qtTsDocument = qobject_cast<Core::QtTsDocument *>(Core::Project::instance()->currentDocument());
+    if (qtTsDocument) {
+        Q_EMIT findRequested(ui->findEdit->text(), Core::TextDocument::NoFindFlags); // default is FindForward
+        return;
+    }
+
     find(findFlags());
 }
 
 void FindWidget::findPrevious()
 {
+    auto qtUiDocument = qobject_cast<Core::QtUiDocument *>(Core::Project::instance()->currentDocument());
+    if (qtUiDocument) {
+        Q_EMIT findRequested(ui->findEdit->text(), Core::TextDocument::FindBackward);
+        return;
+    }
+
+    auto qtTsDocument = qobject_cast<Core::QtTsDocument *>(Core::Project::instance()->currentDocument());
+    if (qtTsDocument) {
+        Q_EMIT findRequested(ui->findEdit->text(), Core::TextDocument::FindBackward);
+        return;
+    }
+
     find(findFlags() | Core::TextDocument::FindBackward);
 }
 
@@ -151,6 +179,21 @@ void FindWidget::replace(bool onlyOne)
         else
             textDocument->replaceAll(before, after, findFlags());
     }
+}
+
+void FindWidget::hideEvent(QHideEvent *event)
+{
+    Q_EMIT findWidgetClosed();
+    QWidget::hideEvent(event);
+}
+
+void FindWidget::showReplaceFeature(bool show)
+{
+    // We don't want to use a wrapping frame here due to layouting issues...
+    ui->replaceWithLabel->setVisible(show);
+    ui->replaceEdit->setVisible(show);
+    ui->replaceAllbutton->setVisible(show);
+    ui->replaceButton->setVisible(show);
 }
 
 } // namespace Gui
