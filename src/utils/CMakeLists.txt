@@ -12,6 +12,8 @@ project(knut-utils LANGUAGES CXX)
 
 set(PROJECT_SOURCES
     json.h
+    json_helper.h
+    json_helper.cpp
     qtuiwriter.h
     qtuiwriter.cpp
     qt_fmt_helpers.h
