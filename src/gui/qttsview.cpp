@@ -9,7 +9,9 @@
 */
 
 #include "qttsview.h"
-#include "core/qttsdocument.h"
+#include "core/textdocument.h"
+#include "highlightdelegate.h"
+#include "searchabletableview.h"
 
 #include <QAbstractTableModel>
 #include <QHeaderView>
@@ -19,6 +21,9 @@
 
 namespace Gui {
 
+//=============================================================================
+// Model with all the translations
+//=============================================================================
 class QtTsModelView : public QAbstractTableModel
 {
 public:
@@ -105,24 +110,50 @@ private:
     Core::QtTsDocument *const m_document;
 };
 
+//=============================================================================
+// Proxy model used to filter data
+//=============================================================================
 class QtTsProxy : public QSortFilterProxyModel
 {
-    Q_OBJECT
 public:
     using QSortFilterProxyModel::QSortFilterProxyModel;
 
-    void setFilterText(const QString &str);
+    void setFilterText(const QString &str)
+    {
+        m_filterText = str;
+        invalidateFilter();
+    }
 
 protected:
-    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
+    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
+    {
+        auto match = [&](int role) {
+            return m_filterText.isEmpty()
+                || sourceModel()
+                       ->index(source_row, role, source_parent)
+                       .data()
+                       .toString()
+                       .contains(m_filterText, Qt::CaseInsensitive);
+        };
+        if (!match(QtTsModelView::TsColumn::Comment) && !match(QtTsModelView::TsColumn::Source)
+            && !match(QtTsModelView::TsColumn::Translation) && !match(QtTsModelView::TsColumn::Context)) {
+            return false;
+        }
+
+        return true;
+    }
 
 private:
     QString m_filterText;
 };
 
+//=============================================================================
+// QtTsView
+//=============================================================================
 QtTsView::QtTsView(QWidget *parent)
     : QWidget(parent)
-    , m_tableView(new QTableView(this))
+    , FindInterface(FindInterface::CanSearch)
+    , m_tableView(new SearchableTableView(this))
     , m_searchLineEdit(new QLineEdit(this))
     , m_contentProxyModel(new QtTsProxy(this))
 {
@@ -147,10 +178,17 @@ void QtTsView::setTsDocument(Core::QtTsDocument *document)
         m_document->disconnect(this);
 
     m_document = document;
-    if (m_document)
+    if (m_document) {
         connect(m_document, &Core::QtTsDocument::fileUpdated, this, &QtTsView::updateView);
-
+    }
     updateView();
+}
+
+void QtTsView::cancelFind()
+{
+    find("", Core::TextDocument::NoFindFlags); // Reset delegate highlighting
+    m_tableView->viewport()->update();
+    m_tableView->clearSelection();
 }
 
 void QtTsView::updateView()
@@ -170,28 +208,9 @@ void QtTsView::updateView()
     m_tableView->horizontalHeader()->setStretchLastSection(true);
 }
 
-void QtTsProxy::setFilterText(const QString &str)
+void QtTsView::find(const QString &searchText, int options)
 {
-    m_filterText = str;
-    invalidateFilter();
+    m_tableView->find(searchText, options);
 }
 
-bool QtTsProxy::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
-{
-    auto match = [&](int role) {
-        return m_filterText.isEmpty()
-            || sourceModel()
-                   ->index(source_row, role, source_parent)
-                   .data()
-                   .toString()
-                   .contains(m_filterText, Qt::CaseInsensitive);
-    };
-    if (!match(QtTsModelView::TsColumn::Comment) && !match(QtTsModelView::TsColumn::Source)
-        && !match(QtTsModelView::TsColumn::Translation) && !match(QtTsModelView::TsColumn::Context)) {
-        return false;
-    }
-
-    return true;
-}
-}
-#include "qttsview.moc"
+} // namespace Gui

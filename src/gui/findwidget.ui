@@ -102,7 +102,7 @@
       </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacer_2">
+      <spacer name="replaceSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -117,14 +117,14 @@
     </layout>
    </item>
    <item row="1" column="0">
-    <widget class="QLabel" name="label_2">
+    <widget class="QLabel" name="replaceWithLabel">
      <property name="text">
       <string>Replace with:</string>
      </property>
     </widget>
    </item>
    <item row="0" column="0">
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="findLabel">
      <property name="text">
       <string>Find:</string>
      </property>

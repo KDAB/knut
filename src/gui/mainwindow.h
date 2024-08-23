@@ -101,6 +101,8 @@ private:
 
     void updateActions();
     void updateScriptActions();
+    void connectFindWidget();
+    void updateFindWidgetDisplay();
 
     void initProject(const QString &path);
     void openDocument(const QModelIndex &index);

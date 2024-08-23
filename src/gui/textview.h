@@ -11,6 +11,7 @@
 #pragma once
 
 #include "core/mark.h"
+#include "findinterface.h"
 
 #include <QWidget>
 
@@ -21,7 +22,7 @@ class TextDocument;
 }
 namespace Gui {
 
-class TextView : public QWidget
+class TextView : public QWidget, public FindInterface
 {
     Q_OBJECT
 public:
@@ -35,6 +36,9 @@ public:
     bool hasMark() const;
 
     bool eventFilter(QObject *obj, QEvent *event) override;
+
+    void find(const QString &text, int options) override;
+    void replace(const QString &before, const QString &after, int options, bool replaceAll) override;
 
 protected:
     Core::TextDocument *document() const;
