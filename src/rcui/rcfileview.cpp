@@ -1,4 +1,4 @@
-/*
+﻿/*
   This file is part of Knut.
 
   SPDX-FileCopyrightText: 2024 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
@@ -13,6 +13,7 @@
 #include "assetmodel.h"
 #include "datamodel.h"
 #include "dialogmodel.h"
+#include "gui/highlightsearchdelegate.h"
 #include "includemodel.h"
 #include "menumodel.h"
 #include "rccore/rcfile.h"
@@ -25,6 +26,7 @@
 #include <QBuffer>
 #include <QClipboard>
 #include <QMenu>
+#include <QPushButton>
 #include <QShortcut>
 #include <QSortFilterProxyModel>
 #include <QTextBlock>
@@ -56,11 +58,27 @@ RcFileView::RcFileView(QWidget *parent)
     ui->dataView->setSortingEnabled(true);
     ui->dataView->setContextMenuPolicy(Qt::CustomContextMenu);
     ui->dataView->setModel(m_dataProxyModel);
+    ui->dataView->setItemDelegate(new Gui::HighlightSearchDelegate(this));
     connect(ui->dataView, &QTreeView::customContextMenuRequested, this, [this](const QPoint &pos) {
         slotContextMenu(ui->dataView, pos);
     });
     connect(ui->dataView->selectionModel(), &QItemSelectionModel::currentChanged, this, &RcFileView::changeDataItem);
+    connect(ui->dataView->selectionModel(), &QItemSelectionModel::currentChanged, this, [this] {
+        searchView(View::Content);
+    });
     connect(ui->dataView, &QTreeView::doubleClicked, this, &RcFileView::previewData);
+    connect(ui->dataSearch, &QLineEdit::textChanged, this, [this] {
+        searchView(View::Data);
+    });
+    connect(ui->dataSearch, &QLineEdit::returnPressed, this, [this] {
+        viewFindNext(View::Data);
+    });
+    connect(ui->dataFindPrevious, &QPushButton::clicked, this, [this] {
+        viewFindPrevious(View::Data);
+    });
+    connect(ui->dataFindNext, &QPushButton::clicked, this, [this] {
+        viewFindNext(View::Data);
+    });
 
     m_dataProxyModel->setRecursiveFilteringEnabled(true);
     connect(ui->dataFilter, &QLineEdit::textChanged, m_dataProxyModel, &QSortFilterProxyModel::setFilterFixedString);
@@ -73,8 +91,22 @@ RcFileView::RcFileView(QWidget *parent)
 
     ui->contentView->setContextMenuPolicy(Qt::CustomContextMenu);
     ui->contentView->setModel(m_contentProxyModel);
+    ui->contentView->setItemDelegate(new Gui::HighlightSearchDelegate(this));
     connect(ui->contentView, &QTreeView::customContextMenuRequested, this, [this](const QPoint &pos) {
         slotContextMenu(ui->contentView, pos);
+    });
+
+    connect(ui->contentSearch, &QLineEdit::textChanged, this, [this] {
+        searchView(View::Content);
+    });
+    connect(ui->contentSearch, &QLineEdit::returnPressed, this, [this] {
+        viewFindNext(View::Content);
+    });
+    connect(ui->contentFindPrevious, &QPushButton::clicked, this, [this] {
+        viewFindPrevious(View::Content);
+    });
+    connect(ui->contentFindNext, &QPushButton::clicked, this, [this] {
+        viewFindNext(View::Content);
     });
 
     m_contentProxyModel->setRecursiveFilteringEnabled(true);
@@ -87,10 +119,12 @@ RcFileView::RcFileView(QWidget *parent)
     auto findNext = new QShortcut(QKeySequence(QKeySequence::FindNext), this);
     findNext->setContext(Qt::WidgetWithChildrenShortcut);
     connect(findNext, &QShortcut::activated, this, &RcFileView::slotSearchNext);
+    connect(ui->findNextText, &QPushButton::clicked, this, &RcFileView::slotSearchNext);
 
     auto findPrevious = new QShortcut(QKeySequence(QKeySequence::FindPrevious), this);
     findPrevious->setContext(Qt::WidgetWithChildrenShortcut);
     connect(findPrevious, &QShortcut::activated, this, &RcFileView::slotSearchPrevious);
+    connect(ui->findPreviousText, &QPushButton::clicked, this, &RcFileView::slotSearchPrevious);
 
     connect(ui->languageCombo, &QComboBox::currentTextChanged, this, &RcFileView::languageChanged);
 }
@@ -303,6 +337,191 @@ const RcCore::Data &RcFileView::data() const
 {
     Q_ASSERT(m_rcFile);
     return const_cast<RcCore::RcFile *>(m_rcFile)->data[ui->languageCombo->currentText()];
+}
+
+void RcFileView::searchView(View view)
+{
+    const ViewData data = viewData(view);
+    QModelIndexList currentSearchResult;
+    // Highlight results.
+    // offset: The flat representation of the content treeView model displays its data indented with offset value.
+    static_cast<Gui::HighlightSearchDelegate *>(data.treeView->itemDelegate())
+        ->setSearchText(data.searchText, data.offset);
+    // Update display.
+    data.treeView->viewport()->update();
+    // Search
+    currentSearchResult = searchModel(view);
+    if (view == View::Content) {
+        // Store the search result
+        m_viewSearchData.contentCurrentSearchResult = currentSearchResult;
+        // Update the search text
+        m_viewSearchData.contentCurrentSearchText = data.searchText;
+        // Reset the search index
+        m_viewSearchData.contentCurrentSearchIndex = 0;
+    } else { // View::Data
+        m_viewSearchData.dataCurrentSearchResult = currentSearchResult;
+        m_viewSearchData.dataCurrentSearchText = data.searchText;
+        m_viewSearchData.dataCurrentSearchIndex = 0;
+    }
+
+    // No hits
+    if (currentSearchResult.isEmpty())
+        return;
+
+    if (data.searchText.isEmpty()) {
+        // Do not select Empty results.
+        data.treeView->clearSelection();
+        return;
+    }
+
+    // Select the item that matched as the current index.
+    data.treeView->selectionModel()->select(QItemSelection(currentSearchResult[0], currentSearchResult[0]),
+                                            QItemSelectionModel::ClearAndSelect);
+    data.treeView->scrollTo(currentSearchResult[0], QAbstractItemView::EnsureVisible);
+    // Update view.
+    if (view == View::Data)
+        Q_EMIT data.treeView->selectionModel()->currentChanged(currentSearchResult[0], currentSearchResult[0]);
+}
+
+void RcFileView::viewFindPrevious(View view)
+{
+    const ViewData data = viewData(view);
+    int index = data.currentSearchIndex - 1;
+    if (data.currentSearchResult.isEmpty()) {
+        searchView(view);
+    } else {
+        // If the index point to the first match continue with the last match.
+        index = (index >= 0) ? index : data.currentSearchResult.count() - 1;
+        // Select the Item
+        data.treeView->selectionModel()->select(
+            QItemSelection(data.currentSearchResult[index], data.currentSearchResult[index]),
+            QItemSelectionModel::ClearAndSelect);
+        data.treeView->scrollTo(data.currentSearchResult[index], QAbstractItemView::EnsureVisible);
+
+        if (view == View::Content) {
+            // Update current index
+            m_viewSearchData.contentCurrentSearchIndex = index;
+        } else { // Data view.
+            // Update view.
+            Q_EMIT ui->dataView->selectionModel()->currentChanged(data.currentSearchResult[index],
+                                                                  data.currentSearchResult[index]);
+            // Update current index
+            m_viewSearchData.dataCurrentSearchIndex = index;
+        }
+    }
+}
+
+void RcFileView::viewFindNext(View view)
+{
+    const ViewData data = viewData(view);
+    int index = data.currentSearchIndex + 1;
+    if (data.currentSearchResult.isEmpty()) {
+        searchView(view);
+    } else {
+        // if it is last match continue with the first match.
+        index = (index < data.currentSearchResult.count()) ? index : 0;
+        // Select the item
+        data.treeView->selectionModel()->select(
+            QItemSelection(data.currentSearchResult[index], data.currentSearchResult[index]),
+            QItemSelectionModel::ClearAndSelect);
+        data.treeView->scrollTo(data.currentSearchResult[index], QAbstractItemView::EnsureVisible);
+        if (view == View::Content) {
+            // Update current index
+            m_viewSearchData.contentCurrentSearchIndex = index;
+        } else { // Data view.
+            // Update view.
+            Q_EMIT ui->dataView->selectionModel()->currentChanged(data.currentSearchResult[index],
+                                                                  data.currentSearchResult[index]);
+            // Update current index
+            m_viewSearchData.dataCurrentSearchIndex = index;
+        }
+    }
+}
+
+RcFileView::ViewData RcFileView::viewData(View view)
+{
+    QTreeView *treeView = nullptr;
+    QString searchText;
+    QModelIndexList currentSearchResult;
+    int currentSearchIndex = 0;
+    int offset = 0;
+
+    switch (view) {
+    case View::Content:
+        treeView = ui->contentView;
+        searchText = ui->contentSearch->text();
+        currentSearchResult = m_viewSearchData.contentCurrentSearchResult;
+        currentSearchIndex = m_viewSearchData.contentCurrentSearchIndex;
+        offset = 3;
+        break;
+    case View::Data:
+        treeView = ui->dataView;
+        searchText = ui->dataSearch->text();
+        currentSearchResult = m_viewSearchData.dataCurrentSearchResult;
+        currentSearchIndex = m_viewSearchData.dataCurrentSearchIndex;
+        offset = 3;
+    }
+
+    Q_ASSERT(treeView);
+
+    return ViewData {treeView, searchText, offset, currentSearchResult, currentSearchIndex};
+}
+
+QModelIndexList RcFileView::searchModel(const View &view) const
+{
+    const QAbstractItemModel *model = nullptr;
+    QString searchText;
+
+    switch (view) {
+    case View::Content:
+        model = ui->contentView->model();
+        searchText = ui->contentSearch->text();
+        break;
+    case View::Data:
+        model = ui->dataView->model();
+        searchText = ui->dataSearch->text();
+    }
+
+    Q_ASSERT(model);
+
+    // Retrieve and store the indexes which match the search (root and child indexes).
+    QModelIndexList searchResults;
+    for (int row = 0; row < model->rowCount(); ++row) {
+        const QModelIndex rootIndex = model->index(row, 0);
+        if (hasMatch(rootIndex, searchText)) {
+            searchResults.append(rootIndex);
+        }
+
+        // Iterate through the child indexes (tree model)
+        for (int childRow = 0; childRow < model->rowCount(rootIndex); ++childRow) {
+            for (int column = 0; column < model->columnCount(); ++column) {
+                const QModelIndex childIndex = model->index(childRow, column, rootIndex);
+                if (hasMatch(childIndex, searchText)) {
+                    searchResults.append(childIndex);
+                }
+            }
+        }
+        // Iterarate through the columns (flat model)
+        for (int column = 0; column < model->columnCount(); ++column) {
+            const QModelIndex index = model->index(row, column);
+            if (!searchResults.contains(index) && hasMatch(index, searchText)) {
+                searchResults.append(index);
+            }
+        }
+    }
+    return searchResults;
+}
+
+bool RcFileView::hasMatch(const QModelIndex &index, const QString &searchText) const
+{
+    if (index.isValid()) {
+        const QString data = index.data().toString();
+        if ((searchText.isEmpty() && data == searchText)
+            || (!searchText.isEmpty() && data.contains(searchText, Qt::CaseInsensitive))) {
+            return true;
+        }
+    }
+    return false;
 }
 
 } // namespace RcUi

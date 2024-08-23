@@ -31,6 +31,15 @@ public:
 
     void open();
 
+    void showReplaceFeature(bool show = true);
+
+signals:
+    void search(const QString &text, int options);
+    void findWidgetHiding();
+
+protected:
+    void hideEvent(QHideEvent *event) override;
+
 private:
     int findFlags() const;
     QString findString();

@@ -11,8 +11,12 @@
 #include "findwidget.h"
 #include "core/logger.h"
 #include "core/project.h"
+#include "core/qttsdocument.h"
+#include "core/qtuidocument.h"
 #include "core/textdocument.h"
 #include "guisettings.h"
+#include "qttsview.h"
+#include "qtuiview.h"
 #include "ui_findwidget.h"
 
 #include <QAction>
@@ -86,11 +90,35 @@ QString FindWidget::findString()
 
 void FindWidget::findNext()
 {
+    auto qtUiDocument = qobject_cast<Core::QtUiDocument *>(Core::Project::instance()->currentDocument());
+    if (qtUiDocument) {
+        Q_EMIT search(ui->findEdit->text(), QtUiView::FindForward);
+        return;
+    }
+
+    auto qtTsDocument = qobject_cast<Core::QtTsDocument *>(Core::Project::instance()->currentDocument());
+    if (qtTsDocument) {
+        Q_EMIT search(ui->findEdit->text(), QtTsView::FindForward);
+        return;
+    }
+
     find(findFlags());
 }
 
 void FindWidget::findPrevious()
 {
+    auto qtUiDocument = qobject_cast<Core::QtUiDocument *>(Core::Project::instance()->currentDocument());
+    if (qtUiDocument) {
+        Q_EMIT search(ui->findEdit->text(), QtUiView::FindBackward);
+        return;
+    }
+
+    auto qtTsDocument = qobject_cast<Core::QtTsDocument *>(Core::Project::instance()->currentDocument());
+    if (qtTsDocument) {
+        Q_EMIT search(ui->findEdit->text(), QtTsView::FindBackward);
+        return;
+    }
+
     find(findFlags() | Core::TextDocument::FindBackward);
 }
 
@@ -151,6 +179,17 @@ void FindWidget::replace(bool onlyOne)
         else
             textDocument->replaceAll(before, after, findFlags());
     }
+}
+
+void FindWidget::hideEvent(QHideEvent *event)
+{
+    Q_EMIT findWidgetHiding();
+    QWidget::hideEvent(event);
+}
+
+void FindWidget::showReplaceFeature(bool show)
+{
+    ui->replaceFrame->setVisible(show);
 }
 
 } // namespace Gui

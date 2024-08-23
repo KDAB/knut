@@ -28,6 +28,8 @@ set(PROJECT_SOURCES
     gui_constants.h
     guisettings.h
     guisettings.cpp
+    highlightsearchdelegate.h
+    highlightsearchdelegate.cpp
     historypanel.h
     historypanel.cpp
     imageview.h

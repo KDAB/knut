@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include <QModelIndex>
 #include <QWidget>
 #include <memory>
 
@@ -45,6 +46,28 @@ signals:
     void languageChanged(const QString &language);
 
 private:
+    enum class View { Content, Data };
+    struct ViewSearchData
+    {
+        // Content View
+        QModelIndexList contentCurrentSearchResult;
+        QString contentCurrentSearchText;
+        int contentCurrentSearchIndex = 0;
+        // Data View
+        QModelIndexList dataCurrentSearchResult;
+        QString dataCurrentSearchText;
+        int dataCurrentSearchIndex = 0;
+    };
+
+    struct ViewData
+    {
+        QTreeView *treeView;
+        QString searchText;
+        int offset = 0;
+        QModelIndexList currentSearchResult;
+        int currentSearchIndex = 0;
+    };
+
     void changeDataItem(const QModelIndex &current);
     void changeContentItem(const QModelIndex &current);
     void setData(int type, int index);
@@ -52,12 +75,22 @@ private:
     void previewData(const QModelIndex &index);
     void slotContextMenu(QTreeView *treeView, const QPoint &pos);
 
+    // Text view search.
     void highlightLine(int line);
     void slotSearchText(const QString &text);
     void slotSearchNext();
     void slotSearchPrevious();
+    // Views search (Content or Data view).
+    void searchView(View view);
+    void viewFindPrevious(View view);
+    void viewFindNext(View view);
 
     const RcCore::Data &data() const;
+    // Dearch content or data views model.
+    QModelIndexList searchModel(const View &view) const;
+    // Convenience functions (avoid code repetition)
+    bool hasMatch(const QModelIndex &index, const QString &searchText) const;
+    ViewData viewData(View view);
 
 private:
     std::unique_ptr<Ui::RcFileView> ui;
@@ -65,6 +98,8 @@ private:
     QSortFilterProxyModel *const m_dataProxyModel;
     QSortFilterProxyModel *const m_contentProxyModel;
     QAbstractItemModel *m_contentModel = nullptr;
+    // Search data members for both content and data views
+    ViewSearchData m_viewSearchData;
 };
 
 } // namespace RcUi

@@ -9,7 +9,8 @@
 */
 
 #include "qttsview.h"
-#include "core/qttsdocument.h"
+#include "findwidget.h"
+#include "highlightsearchdelegate.h"
 
 #include <QAbstractTableModel>
 #include <QHeaderView>
@@ -125,10 +126,13 @@ QtTsView::QtTsView(QWidget *parent)
     , m_tableView(new QTableView(this))
     , m_searchLineEdit(new QLineEdit(this))
     , m_contentProxyModel(new QtTsProxy(this))
+    , m_currentSearchText(QString())
 {
     auto mainWidgetLayout = new QVBoxLayout(this);
     m_tableView->verticalHeader()->hide();
     m_tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    // Set the delegate
+    m_tableView->setItemDelegate(new HighlightSearchDelegate(this));
     mainWidgetLayout->addWidget(m_tableView);
     mainWidgetLayout->addWidget(m_searchLineEdit);
     m_searchLineEdit->setPlaceholderText(tr("Filter..."));
@@ -147,10 +151,23 @@ void QtTsView::setTsDocument(Core::QtTsDocument *document)
         m_document->disconnect(this);
 
     m_document = document;
-    if (m_document)
+    if (m_document) {
         connect(m_document, &Core::QtTsDocument::fileUpdated, this, &QtTsView::updateView);
-
+    }
     updateView();
+}
+
+void QtTsView::setFindWidget(FindWidget *findWidget)
+{
+    Q_ASSERT(findWidget);
+    // Connections
+    connect(findWidget, &FindWidget::search, this, &QtTsView::search);
+    // Update display.
+    connect(findWidget, &FindWidget::findWidgetHiding, this, [this]() {
+        search(""); // Reset delegate highlighting
+        m_tableView->viewport()->update();
+        m_tableView->clearSelection();
+    });
 }
 
 void QtTsView::updateView()
@@ -168,6 +185,65 @@ void QtTsView::updateView()
     m_tableView->horizontalHeader()->setSectionResizeMode(QtTsModelView::TsColumn::Translation, QHeaderView::Fixed);
     m_tableView->horizontalHeader()->setSectionResizeMode(QtTsModelView::TsColumn::Context, QHeaderView::Interactive);
     m_tableView->horizontalHeader()->setStretchLastSection(true);
+}
+
+void QtTsView::search(const QString &searchText, int options)
+{
+    // Search only in case the search was not already processed (inclusive empty string search).
+    if (searchText != m_currentSearchText || !m_initialSearchProcessed) {
+        // Colorize search hits (This gives an overview over the search result)
+        static_cast<HighlightSearchDelegate *>(m_tableView->itemDelegate())->setSearchText(searchText);
+        // Update display.
+        m_tableView->viewport()->update();
+        // Search...
+        m_currentSearchResult = searchModel(searchText, m_tableView->model());
+        // Reset the search index.
+        m_currentSearchIndex = 0;
+        m_initialSearchProcessed = true;
+    } else { // Search was already processed. Handle options (Backward, Forward)
+        if (!m_currentSearchResult.isEmpty()) {
+            int index = m_currentSearchIndex;
+            switch (options) {
+            case QtTsView::FindForward: {
+                index = m_currentSearchIndex + 1;
+                // if it is last match continue with the first match.
+                index = (index < m_currentSearchResult.count()) ? index : 0;
+                break;
+            }
+            case QtTsView::FindBackward: {
+                index = m_currentSearchIndex - 1;
+                // if it is the first match continue with the last match.
+                index = (index >= 0) ? index : m_currentSearchResult.count() - 1;
+                break;
+            }
+            }
+            // Update the current search index
+            m_currentSearchIndex = index;
+        }
+    }
+    // Update the current search text
+    m_currentSearchText = searchText;
+    // Select (highlight) the cell that matched, as the current index.
+    if (!m_currentSearchResult.isEmpty()) {
+        m_tableView->selectionModel()->setCurrentIndex(m_currentSearchResult[m_currentSearchIndex],
+                                                       QItemSelectionModel::SelectCurrent);
+    }
+}
+
+QModelIndexList QtTsView::searchModel(const QString &searchText, const QAbstractItemModel *model) const
+{
+    QModelIndexList searchResults;
+    for (int row = 0; row < model->rowCount(); ++row) {
+        for (int column = 0; column < model->columnCount(); ++column) {
+            const QModelIndex index = model->index(row, column);
+            const QString data = model->data(index).toString();
+            if ((searchText.isEmpty() && data == searchText)
+                || (!searchText.isEmpty() && data.contains(searchText, Qt::CaseInsensitive))) {
+                searchResults.append(index);
+            }
+        }
+    }
+    return searchResults;
 }
 
 void QtTsProxy::setFilterText(const QString &str)

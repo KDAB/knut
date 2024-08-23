@@ -579,12 +579,17 @@ void MainWindow::updateActions()
 
     ui->actionCloseDocument->setEnabled(document != nullptr);
 
+    auto *qtTsDocument = qobject_cast<Core::QtTsDocument *>(document);
+    auto *qtUiDocument = qobject_cast<Core::QtUiDocument *>(document);
     auto *textDocument = qobject_cast<Core::TextDocument *>(document);
+
+    const bool enableFindWidgetFeatures =
+        (qtTsDocument != nullptr || qtUiDocument != nullptr || textDocument != nullptr);
     ui->actionSelectAll->setEnabled(textDocument != nullptr);
-    ui->actionFind->setEnabled(textDocument != nullptr);
+    ui->actionFind->setEnabled(enableFindWidgetFeatures);
     ui->actionReplace->setEnabled(textDocument != nullptr);
-    ui->actionFindNext->setEnabled(textDocument != nullptr);
-    ui->actionFindPrevious->setEnabled(textDocument != nullptr);
+    ui->actionFindNext->setEnabled(enableFindWidgetFeatures);
+    ui->actionFindPrevious->setEnabled(enableFindWidgetFeatures);
     ui->actionDeleteLine->setEnabled(textDocument != nullptr);
     ui->actionUndo->setEnabled(textDocument != nullptr);
     ui->actionRedo->setEnabled(textDocument != nullptr);
@@ -620,6 +625,22 @@ void MainWindow::updateActions()
     const bool rcEnabled = qobject_cast<Core::RcDocument *>(document);
     ui->actionCreateQrc->setEnabled(rcEnabled);
     ui->actionCreateUi->setEnabled(rcEnabled);
+}
+
+void MainWindow::updateFindWidgetDisplay()
+{
+    // Handle the 'FindWidget' display depending on the document type.
+    auto document = Core::Project::instance()->currentDocument();
+
+    auto *qtTsDocument = qobject_cast<Core::QtTsDocument *>(document);
+    auto *qtUiDocument = qobject_cast<Core::QtUiDocument *>(document);
+    auto *rcDocument = qobject_cast<Core::RcDocument *>(document);
+    // Hide the replace widgets frame.
+    const bool hideReplaceFeature = (qtTsDocument != nullptr || qtUiDocument != nullptr);
+    ui->findWidget->showReplaceFeature(!hideReplaceFeature);
+    // Do not show if the current document is a 'RcDocuments'. It has its own search widgets
+    if (rcDocument != nullptr)
+        ui->findWidget->hide();
 }
 
 void MainWindow::updateScriptActions()
@@ -701,6 +722,7 @@ QWidget *MainWindow::widgetForDocument(Core::Document *document)
     }
     case Core::Document::Type::QtUi: {
         auto uiview = new QtUiView();
+        uiview->setFindWidget(ui->findWidget);
         uiview->setUiDocument(qobject_cast<Core::QtUiDocument *>(document));
         return uiview;
     }
@@ -722,6 +744,7 @@ QWidget *MainWindow::widgetForDocument(Core::Document *document)
     }
     case Core::Document::Type::QtTs: {
         auto tsView = new QtTsView();
+        tsView->setFindWidget(ui->findWidget);
         tsView->setTsDocument(qobject_cast<Core::QtTsDocument *>(document));
         return tsView;
     }
@@ -799,6 +822,7 @@ void MainWindow::changeCurrentDocument()
     const QModelIndex &index = m_fileModel->index(fileName);
     m_projectView->setCurrentIndex(index);
     updateActions();
+    updateFindWidgetDisplay();
 }
 
 } // namespace Gui
