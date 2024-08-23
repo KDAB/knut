@@ -10,31 +10,40 @@
 
 #pragma once
 
+#include "core/qttsdocument.h"
+#include "findinterface.h"
+
 #include <QSortFilterProxyModel>
 #include <QWidget>
+
 class QTableView;
 class QLineEdit;
-namespace Core {
-class QtTsDocument;
-}
 
 namespace Gui {
 
 class QtTsProxy;
-class QtTsView : public QWidget
+class SearchableTableView;
+
+class QtTsView : public QWidget, public FindInterface
 {
     Q_OBJECT
+
 public:
     explicit QtTsView(QWidget *parent = nullptr);
 
     void setTsDocument(Core::QtTsDocument *document);
 
+    void find(const QString &text, int options) override;
+    void cancelFind() override;
+
 private:
     void updateView();
-    QTableView *const m_tableView;
+
+    SearchableTableView *const m_tableView;
     QLineEdit *const m_searchLineEdit;
     Core::QtTsDocument *m_document = nullptr;
     QtTsProxy *const m_contentProxyModel;
     QAbstractItemModel *m_contentModel = nullptr;
 };
-}
+
+} // namespace Gui

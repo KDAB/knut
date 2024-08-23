@@ -194,6 +194,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Edit
     ui->findWidget->hide();
     ui->findWidget->installEventFilter(this);
+    connectFindWidget();
     connect(ui->actionSelectAll, &QAction::triggered, this, &MainWindow::selectAll);
     connect(ui->actionFind, &QAction::triggered, ui->findWidget, &FindWidget::open);
     connect(ui->actionReplace, &QAction::triggered, ui->findWidget, &FindWidget::open);
@@ -578,51 +579,65 @@ static TextView *textViewForDocument(Core::Document *document)
 
 void MainWindow::updateActions()
 {
+    auto findInterface = dynamic_cast<FindInterface *>(ui->tabWidget->currentWidget());
+    const bool canSearch = findInterface && findInterface->findFlags() & FindInterface::CanSearch;
+    const bool canReplace = findInterface && findInterface->findFlags() & FindInterface::CanReplace;
+
     auto document = Core::Project::instance()->currentDocument();
-
-    ui->actionCloseDocument->setEnabled(document != nullptr);
-
     auto *textDocument = qobject_cast<Core::TextDocument *>(document);
-    ui->actionSelectAll->setEnabled(textDocument != nullptr);
-    ui->actionFind->setEnabled(textDocument != nullptr);
-    ui->actionReplace->setEnabled(textDocument != nullptr);
-    ui->actionFindNext->setEnabled(textDocument != nullptr);
-    ui->actionFindPrevious->setEnabled(textDocument != nullptr);
-    ui->actionDeleteLine->setEnabled(textDocument != nullptr);
-    ui->actionUndo->setEnabled(textDocument != nullptr);
-    ui->actionRedo->setEnabled(textDocument != nullptr);
+    const bool isTextDocument = textDocument != nullptr;
     auto *textView = textViewForDocument(textDocument);
-    ui->actionToggleMark->setEnabled(textDocument != nullptr);
-    ui->actionGotoMark->setEnabled(textDocument != nullptr && textView->hasMark());
-    ui->actionSelectToMark->setEnabled(textDocument != nullptr && textView->hasMark());
-    ui->actionExecuteAPI->setEnabled(textDocument != nullptr);
-
+    const bool hasMark = textView && textView->hasMark();
     auto *codeDocument = qobject_cast<Core::CodeDocument *>(document);
     const bool lspEnabled = codeDocument && codeDocument->hasLspClient();
+    const bool isCodeDocument = codeDocument != nullptr;
+    const bool isCppDocument = codeDocument && qobject_cast<Core::CppDocument *>(document);
+    const bool isRcDocument = qobject_cast<Core::RcDocument *>(document);
+
+    ui->actionCloseDocument->setEnabled(document != nullptr);
+    ui->actionExecuteAPI->setEnabled(document != nullptr);
+
+    ui->actionSelectAll->setEnabled(isTextDocument);
+    ui->actionFind->setEnabled(canSearch);
+    ui->actionReplace->setEnabled(canReplace);
+    ui->actionFindNext->setEnabled(canSearch);
+    ui->actionFindPrevious->setEnabled(canSearch);
+    ui->actionDeleteLine->setEnabled(isTextDocument);
+    ui->actionUndo->setEnabled(isTextDocument);
+    ui->actionRedo->setEnabled(isTextDocument);
+
+    ui->actionToggleMark->setEnabled(isTextDocument);
+    ui->actionGotoMark->setEnabled(hasMark);
+    ui->actionSelectToMark->setEnabled(hasMark);
+
     ui->actionFollowSymbol->setEnabled(lspEnabled);
     ui->actionSwitchDeclDef->setEnabled(lspEnabled);
 
-    const bool cppEnabled = codeDocument && qobject_cast<Core::CppDocument *>(document);
-    ui->actionSwitchHeaderSource->setEnabled(cppEnabled);
-    ui->actionCommentSelection->setEnabled(cppEnabled);
-    ui->actionToggleSection->setEnabled(cppEnabled);
-    ui->actionGotoBlockEnd->setEnabled(cppEnabled);
-    ui->actionGotoBlockStart->setEnabled(cppEnabled);
-    ui->actionSelectToBlockEnd->setEnabled(cppEnabled);
-    ui->actionSelectToBlockStart->setEnabled(cppEnabled);
-    ui->actionSelectBlockUp->setEnabled(cppEnabled);
-    ui->actionDeleteMethod->setEnabled(cppEnabled);
+    ui->actionSwitchHeaderSource->setEnabled(isCppDocument);
+    ui->actionCommentSelection->setEnabled(isCppDocument);
+    ui->actionToggleSection->setEnabled(isCppDocument);
+    ui->actionGotoBlockEnd->setEnabled(isCppDocument);
+    ui->actionGotoBlockStart->setEnabled(isCppDocument);
+    ui->actionSelectToBlockEnd->setEnabled(isCppDocument);
+    ui->actionSelectToBlockStart->setEnabled(isCppDocument);
+    ui->actionSelectBlockUp->setEnabled(isCppDocument);
+    ui->actionDeleteMethod->setEnabled(isCppDocument);
 
-    const bool isCodeDocument = codeDocument != nullptr;
     ui->actionSelectLargerSyntaxNode->setEnabled(isCodeDocument);
     ui->actionSelectSmallerSyntaxNode->setEnabled(isCodeDocument);
     ui->actionSelectNextSyntaxNode->setEnabled(isCodeDocument);
     ui->actionSelectPreviousSyntaxNode->setEnabled(isCodeDocument);
     ui->actionTreeSitterInspector->setEnabled(isCodeDocument);
 
-    const bool rcEnabled = qobject_cast<Core::RcDocument *>(document);
-    ui->actionCreateQrc->setEnabled(rcEnabled);
-    ui->actionCreateUi->setEnabled(rcEnabled);
+    ui->actionCreateQrc->setEnabled(isRcDocument);
+    ui->actionCreateUi->setEnabled(isRcDocument);
+}
+
+void MainWindow::updateFindWidgetDisplay()
+{
+    if (auto findInterface = dynamic_cast<FindInterface *>(ui->tabWidget->currentWidget())) {
+        ui->findWidget->setReplaceVisible(findInterface->findFlags() & FindInterface::CanReplace);
+    }
 }
 
 void MainWindow::updateScriptActions()
@@ -630,6 +645,27 @@ void MainWindow::updateScriptActions()
     ui->actionStartRecordingScript->setEnabled(!m_historyPanel->isRecording());
     ui->actionStopRecordingScript->setEnabled(m_historyPanel->isRecording());
     ui->actionPlayLastScript->setEnabled(!m_historyPanel->isRecording() && m_scriptPanel->hasScript());
+}
+
+void MainWindow::connectFindWidget()
+{
+    auto handleFindRequest = [this](const QString &text, int options) {
+        if (auto findInterface = dynamic_cast<FindInterface *>(ui->tabWidget->currentWidget()))
+            findInterface->find(text, options);
+    };
+    connect(ui->findWidget, &FindWidget::findRequested, this, handleFindRequest);
+
+    auto handleCloseRequest = [this]() {
+        if (auto findInterface = dynamic_cast<FindInterface *>(ui->tabWidget->currentWidget()))
+            findInterface->cancelFind();
+    };
+    connect(ui->findWidget, &FindWidget::widgetClosed, this, handleCloseRequest);
+
+    auto handleReplace = [this](const QString &before, const QString &after, int options, bool replaceAll) {
+        if (auto findInterface = dynamic_cast<FindInterface *>(ui->tabWidget->currentWidget()))
+            findInterface->replace(before, after, options, replaceAll);
+    };
+    connect(ui->findWidget, &FindWidget::replaceRequested, this, handleReplace);
 }
 
 void MainWindow::returnToEditor()
@@ -802,6 +838,7 @@ void MainWindow::changeCurrentDocument()
     const QModelIndex &index = m_fileModel->index(fileName);
     m_projectView->setCurrentIndex(index);
     updateActions();
+    updateFindWidgetDisplay();
 }
 
 } // namespace Gui

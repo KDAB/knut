@@ -31,6 +31,16 @@ public:
 
     void open();
 
+    void setReplaceVisible(bool show = true);
+
+signals:
+    void findRequested(const QString &text, int options);
+    void replaceRequested(const QString &before, const QString &after, int options, bool replaceAll);
+    void widgetClosed();
+
+protected:
+    void hideEvent(QHideEvent *event) override;
+
 private:
     int findFlags() const;
     QString findString();
@@ -38,7 +48,7 @@ private:
     void find(int options);
     void replaceOne();
     void replaceAll();
-    void replace(bool onlyOne);
+    void replace(bool replaceAll);
 
     std::unique_ptr<Ui::FindWidget> ui;
     QAction *m_matchCase = nullptr;

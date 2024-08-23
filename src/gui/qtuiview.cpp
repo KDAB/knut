@@ -10,6 +10,9 @@
 
 #include "qtuiview.h"
 #include "core/qtuidocument.h"
+#include "core/textdocument.h"
+#include "highlightdelegate.h"
+#include "searchabletableview.h"
 
 #include <QAbstractTableModel>
 #include <QFile>
@@ -100,7 +103,8 @@ private:
 
 QtUiView::QtUiView(QWidget *parent)
     : QSplitter(parent)
-    , m_tableView(new QTableView(this))
+    , FindInterface(FindInterface::CanSearch)
+    , m_tableView(new SearchableTableView(this))
     , m_previewArea(new QMdiArea(this))
 {
     addWidget(m_previewArea);
@@ -112,6 +116,11 @@ QtUiView::QtUiView(QWidget *parent)
     m_previewArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 }
 
+void QtUiView::find(const QString &searchText, int options)
+{
+    m_tableView->find(searchText, options);
+}
+
 void QtUiView::setUiDocument(Core::QtUiDocument *document)
 {
     Q_ASSERT(document);
@@ -120,10 +129,17 @@ void QtUiView::setUiDocument(Core::QtUiDocument *document)
         m_document->disconnect(this);
 
     m_document = document;
-    if (m_document)
+    if (m_document) {
         connect(m_document, &Core::QtUiDocument::fileUpdated, this, &QtUiView::updateView);
-
+    }
     updateView();
+}
+
+void QtUiView::cancelFind()
+{
+    find("", Core::TextDocument::NoFindFlags); // Reset delegate highlighting
+    m_tableView->viewport()->update();
+    m_tableView->clearSelection();
 }
 
 void QtUiView::updateView()

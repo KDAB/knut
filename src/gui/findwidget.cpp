@@ -11,8 +11,12 @@
 #include "findwidget.h"
 #include "core/logger.h"
 #include "core/project.h"
+#include "core/qttsdocument.h"
+#include "core/qtuidocument.h"
 #include "core/textdocument.h"
 #include "guisettings.h"
+#include "qttsview.h"
+#include "qtuiview.h"
 #include "ui_findwidget.h"
 
 #include <QAction>
@@ -122,35 +126,42 @@ void FindWidget::find(int options)
 {
     if (ui->findEdit->text().isEmpty())
         return;
-    auto document = Core::Project::instance()->currentDocument();
-    if (auto textDocument = qobject_cast<Core::TextDocument *>(document))
-        textDocument->find(findString(), options);
+    Q_EMIT findRequested(ui->findEdit->text(), options);
 }
 
 void FindWidget::replaceOne()
 {
-    replace(true);
+    replace(false);
 }
 
 void FindWidget::replaceAll()
 {
-    replace(false);
+    replace(true);
 }
 
-void FindWidget::replace(bool onlyOne)
+void FindWidget::replace(bool replaceAll)
 {
     const QString &before = findString();
     const QString &after = ui->replaceEdit->text();
     if (before.isEmpty())
         return;
 
-    auto document = Core::Project::instance()->currentDocument();
-    if (auto textDocument = qobject_cast<Core::TextDocument *>(document)) {
-        if (onlyOne)
-            textDocument->replaceOne(before, after, findFlags());
-        else
-            textDocument->replaceAll(before, after, findFlags());
-    }
+    Q_EMIT replaceRequested(before, after, findFlags(), replaceAll);
+}
+
+void FindWidget::hideEvent(QHideEvent *event)
+{
+    Q_EMIT widgetClosed();
+    QWidget::hideEvent(event);
+}
+
+void FindWidget::setReplaceVisible(bool show)
+{
+    // We don't want to use a wrapping frame here due to layouting issues...
+    ui->replaceWithLabel->setVisible(show);
+    ui->replaceEdit->setVisible(show);
+    ui->replaceAllbutton->setVisible(show);
+    ui->replaceButton->setVisible(show);
 }
 
 } // namespace Gui

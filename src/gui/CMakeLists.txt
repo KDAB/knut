@@ -20,6 +20,7 @@ set(PROJECT_SOURCES
     documentpalette.cpp
     fileselector.h
     fileselector.cpp
+    findinterface.h
     findwidget.h
     findinfilespanel.cpp
     findinfilespanel.h
@@ -28,6 +29,8 @@ set(PROJECT_SOURCES
     gui_constants.h
     guisettings.h
     guisettings.cpp
+    highlightdelegate.h
+    highlightdelegate.cpp
     historypanel.h
     historypanel.cpp
     imageview.h
@@ -68,6 +71,8 @@ set(PROJECT_SOURCES
     scriptpanel.cpp
     scriptlistpanel.cpp
     scriptlistpanel.h
+    searchabletableview.h
+    searchabletableview.cpp
     shortcutmanager.h
     shortcutmanager.cpp
     shortcutsettings.h

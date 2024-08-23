@@ -66,6 +66,7 @@ protected:
 
 TextView::TextView(QWidget *parent)
     : QWidget {parent}
+    , FindInterface(FindInterface::CanSearch | FindInterface::CanReplace)
     , m_quickActionButton(new QToolButton(this))
 {
     m_quickActionButton->hide();
@@ -165,6 +166,21 @@ bool TextView::eventFilter(QObject *obj, QEvent *event)
         }
     }
     return false;
+}
+
+void TextView::find(const QString &text, int options)
+{
+    document()->find(text, options);
+}
+
+void TextView::replace(const QString &before, const QString &after, int options, bool replaceAll)
+{
+    if (replaceAll) {
+        document()->replaceAll(before, after, options);
+
+    } else {
+        document()->replaceOne(before, after, options);
+    }
 }
 
 Core::TextDocument *TextView::document() const
