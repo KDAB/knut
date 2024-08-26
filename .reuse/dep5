@@ -9,7 +9,7 @@ Copyright: 2024 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.c
 License: BSD-3-Clause
 
 #misc documentation
-Files: *.md docs/**.png docs/**.puml docs/**.gif docs/**.svg docs/**.css
+Files: *.md docs/API/mapping.txt docs/**.png docs/**.puml docs/**.gif docs/**.svg docs/**.css
 Copyright: 2024 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
 License: GPL-3.0-only
 
