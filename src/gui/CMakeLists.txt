@@ -21,6 +21,8 @@ set(PROJECT_SOURCES
     fileselector.h
     fileselector.cpp
     findwidget.h
+    findinfilespanel.cpp
+    findinfilespanel.h
     findwidget.cpp
     findwidget.ui
     gui_constants.h

@@ -25,6 +25,7 @@
 #include "core/textdocument.h"
 #include "core/version.h"
 #include "documentpalette.h"
+#include "findinfilespanel.h"
 #include "guisettings.h"
 #include "historypanel.h"
 #include "imageview.h"
@@ -147,6 +148,8 @@ MainWindow::MainWindow(QWidget *parent)
     auto logPanel = new LogPanel(this);
     createDock(logPanel, Qt::BottomDockWidgetArea, logPanel->toolBar());
     createDock(m_historyPanel, Qt::BottomDockWidgetArea, m_historyPanel->toolBar());
+    auto findInFilesPanel = new FindInFilesPanel(this);
+    createDock(findInFilesPanel, Qt::BottomDockWidgetArea, findInFilesPanel->toolBar());
     auto scriptDock = createDock(m_scriptPanel, Qt::LeftDockWidgetArea, m_scriptPanel->toolBar());
     auto scriptListDock = createDock(m_scriptlistpanel, Qt::BottomDockWidgetArea, m_scriptlistpanel->toolBar());
     scriptListDock->setAllowedAreas(Qt::AllDockWidgetAreas);
