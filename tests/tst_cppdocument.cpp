@@ -12,6 +12,7 @@
 #include "common/test_utils.h"
 #include "core/cppdocument.h"
 #include "core/knutcore.h"
+#include "core/rangemark.h"
 #include "core/utils.h"
 
 #include <QFileInfo>
@@ -231,6 +232,33 @@ private slots:
             source->save();
         });
         QVERIFY(sourceFile.compare());
+    }
+
+    void removeLines()
+    {
+        Test::FileTester headerFile(Test::testDataPath() + "/tst_cppdocument/removeLines/myobject.h");
+
+        Test::testCppDocument("/tst_cppdocument/removeLines", headerFile.fileName(), [](auto *header) {
+            header->find("~MyObject();");
+            Core::RangeMark rangeMark = header->createRangeMark();
+            header->removeLines(rangeMark);
+
+            header->find("void sayMessage();");
+            rangeMark = header->createRangeMark();
+            header->removeLines(rangeMark);
+
+            header->find("void sayMessage(const std::string& test);");
+            rangeMark = header->createRangeMark();
+            header->removeLines(rangeMark);
+
+            header->find("void sayMessage(const std::string& test, int num);");
+            rangeMark = header->createRangeMark();
+            header->removeLines(rangeMark);
+
+            header->save();
+        });
+
+        QVERIFY(headerFile.compare());
     }
 
     void queryMethod()
