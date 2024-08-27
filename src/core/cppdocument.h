@@ -44,6 +44,8 @@ public:
 
     Q_INVOKABLE QString correspondingHeaderSource() const;
 
+    Q_INVOKABLE void removeLines(const Core::RangeMark &rangeMark);
+
     Q_INVOKABLE Core::QueryMatch queryClassDefinition(const QString &className);
     Q_INVOKABLE Core::QueryMatchList queryMethodDeclaration(const QString &className, const QString &functionName);
     Q_INVOKABLE Core::QueryMatch queryMember(const QString &className, const QString &memberName);

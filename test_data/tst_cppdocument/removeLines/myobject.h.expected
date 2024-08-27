@@ -1,0 +1,12 @@
+#pragma once
+
+#include <string>
+
+class MyObject {
+public:
+    MyObject(const std::string& message);
+    // this comment should stay
+
+private:
+    std::string m_message;
+};

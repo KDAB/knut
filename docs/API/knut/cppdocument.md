@@ -47,6 +47,7 @@ Inherited properties: [CodeDocument properties](../knut/codedocument.md#properti
 |array&lt;[QueryMatch](../knut/querymatch.md)> |**[queryMethodDeclaration](#queryMethodDeclaration)**(string className, string functionName)|
 |array&lt;[QueryMatch](../knut/querymatch.md)> |**[queryMethodDefinition](#queryMethodDefinition)**(string scope, string methodName)|
 ||**[removeInclude](#removeInclude)**(string include)|
+|void |**[removeLines](#removeLines)**(const [RangeMark](../knut/rangemark.md) &rangeMark)|
 |int |**[selectBlockEnd](#selectBlockEnd)**()|
 |int |**[selectBlockStart](#selectBlockStart)**()|
 |int |**[selectBlockUp](#selectBlockUp)**()|
@@ -331,6 +332,10 @@ Please note that the return type is not available, as TreeSitter is not able to 
 Remove `include` from the file. If the include is not in the file, do nothing (and returns true).
 
 The `include` string should be either `<foo.h>` or `"foo.h"`, it will returns false otherwise.
+
+#### <a name="removeLines"></a>void **removeLines**(const [RangeMark](../knut/rangemark.md) &rangeMark)
+
+Removes the line specified by the given RangeMark, including any comments attached to it.
 
 #### <a name="selectBlockEnd"></a>int **selectBlockEnd**()
 

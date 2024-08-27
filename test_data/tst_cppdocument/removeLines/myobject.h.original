@@ -1,0 +1,24 @@
+#pragma once
+
+#include <string>
+
+class MyObject {
+public:
+    MyObject(const std::string& message);
+    // this comment should stay
+
+    ~MyObject();// this comment should be removed
+
+    // this comment should be removed
+    void sayMessage();
+
+    /* this comment should be removed */
+    void sayMessage(const std::string& test);
+
+    // this comment should be removed
+    // this one too
+    void sayMessage(const std::string& test, int num);
+
+private:
+    std::string m_message;
+};

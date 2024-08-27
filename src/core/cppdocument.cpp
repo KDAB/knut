@@ -505,6 +505,40 @@ CppDocument *CppDocument::openHeaderSource()
 }
 
 /*!
+ * \qmlmethod void CppDocument::removeLines(const RangeMark &rangeMark)
+ * Removes the line specified by the given RangeMark, including any comments attached to it.
+ */
+void CppDocument::removeLines(const RangeMark &rangeMark)
+{
+    LOG("CppDocument::removeLines" + rangeMark.text());
+
+    QTextCursor cursor = textEdit()->textCursor();
+    cursor.setPosition(rangeMark.start());
+    cursor.movePosition(QTextCursor::StartOfBlock);
+    cursor.setPosition(rangeMark.end(), QTextCursor::KeepAnchor);
+    cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
+
+    cursor.removeSelectedText();
+    cursor.deleteChar();
+
+    while (cursor.movePosition(QTextCursor::PreviousBlock)) {
+        cursor.select(QTextCursor::LineUnderCursor);
+        const QString lineText = cursor.selectedText().trimmed();
+
+        if (lineText.isEmpty()) {
+            cursor.removeSelectedText();
+            cursor.deleteChar();
+            break;
+        } else if (lineText.startsWith("//") || lineText.startsWith("/*")) {
+            cursor.removeSelectedText();
+            cursor.deleteChar();
+        } else {
+            break;
+        }
+    }
+}
+
+/*!
  * \qmlmethod QueryMatch CppDocument::queryClassDefinition(string className)
  *
  * Returns the class or struct definition matching the given `className`.
