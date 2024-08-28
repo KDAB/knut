@@ -21,6 +21,7 @@ ScriptDialog {
         // This can be done using the `stepCount` property of ScriptDialog
         // Note: if you don't set the step count, a moving scrollbar will be displayed
         setStepCount(5);
+        setDisplayLogs("info");
 
         // 3) Initialize the first step using `firstStep` and run the different commands for this step
         firstStep("Step 1...");

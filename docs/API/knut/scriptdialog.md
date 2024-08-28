@@ -22,6 +22,7 @@ import Knut
 ||**[firstStep](#firstStep)**(string firstStep)|
 ||**[nextStep](#nextStep)**(string title)|
 ||**[runSteps](#runSteps)**(function generator)|
+||**[setDisplayLogs](#setDisplayLogs)**(const QString &level)|
 ||**[setStepCount](#setStepCount)**(int stepCount)|
 ||**[verify](#verify)**(bool value, string message = {})|
 
@@ -170,6 +171,11 @@ function convert() {
    runSteps(conversionSteps())
 }
 ```
+
+#### <a name="setDisplayLogs"></a>**setDisplayLogs**(const QString &level)
+
+This method enables real-time logging display in the progress dialog by configuring a QPlainTextEdit widget as a log
+output panel. It filters the logs to show only those that are of the specified log level or higher.
 
 #### <a name="setStepCount"></a>**setStepCount**(int stepCount)
 

@@ -15,6 +15,7 @@
 namespace Ui {
 class ScriptProgressDialog;
 }
+class QPlainTextEdit;
 
 class ScriptProgressDialog : public QDialog
 {
@@ -33,6 +34,8 @@ public:
     void setReadOnly(bool readOnly);
 
     int value() const;
+
+    QPlainTextEdit *logsWidget();
 
 signals:
     void apply();
