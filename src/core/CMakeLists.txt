@@ -47,6 +47,8 @@ set(PROJECT_SOURCES
     lsp_utils.cpp
     logger.h
     logger.cpp
+    loghighlighter.cpp
+    loghighlighter.h
     mark_p.h
     mark.h
     mark.cpp
