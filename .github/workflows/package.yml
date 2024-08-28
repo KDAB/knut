@@ -5,6 +5,7 @@
 name: package knut
 
 on:
+  workflow_dispatch:
   workflow_run:
     workflows:
       - knut tests
@@ -75,17 +76,12 @@ jobs:
       - name: Create package
         run: |
           mkdir deploy
-          cp build-${{ matrix.cmake_preset }}/AppxManifest.xml deploy
-          cp src/gui/gui/icons/knut-44.png deploy
-          cp src/gui/gui/icons/knut-50.png deploy
-          cp src/gui/gui/icons/knut-150.png deploy
           cp build-${{ matrix.cmake_preset }}/bin/knut.exe deploy
           windeployqt --release --dir deploy deploy/knut.exe
-          makeappx pack -o -d deploy -p knut-${{ matrix.os }}-${{ github.head_ref || github.ref_name }}.msix
 
       - name: Output the package as an artifact
         uses: actions/upload-artifact@v4
         with:
-          name: knut-msix-${{ matrix.os }}-${{ github.head_ref || github.ref_name }}
-          path: knut-${{ matrix.os }}-${{ github.head_ref || github.ref_name }}.msix
+          name: knut-${{ matrix.os }}-${{ github.sha }}
+          path: deploy/*
           overwrite: true
