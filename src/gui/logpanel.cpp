@@ -9,6 +9,7 @@
 */
 
 #include "logpanel.h"
+#include "core/loghighlighter.h"
 #include "guisettings.h"
 #include "utils/log.h"
 
@@ -26,47 +27,6 @@
 
 namespace Gui {
 
-class LogHighlighter : public QSyntaxHighlighter
-{
-public:
-    explicit LogHighlighter(QTextDocument *parent = nullptr)
-        : QSyntaxHighlighter(parent)
-    {
-        auto getFormat = [](const QColor &color, const QColor &background = {}) {
-            QTextCharFormat format;
-            format.setForeground(color);
-            if (background.isValid())
-                format.setBackground(background);
-            return format;
-        };
-        m_rules = {
-            {"[trace]", getFormat(QColor(128, 128, 128))},
-            {"[debug]", getFormat(Qt::cyan)},
-            {"[info]", getFormat(Qt::green)},
-            {"[warning]", getFormat(QColor(255, 220, 0))},
-            {"[error]", getFormat(Qt::red)},
-            {"[critical]", getFormat(Qt::white, Qt::red)},
-        };
-    }
-
-protected:
-    void highlightBlock(const QString &text) override
-    {
-        for (const auto &rule : std::as_const(m_rules)) {
-            if (int start = text.indexOf(rule.keyword); start != -1)
-                setFormat(start + 1, rule.keyword.length() - 2, rule.format);
-        }
-    }
-
-private:
-    struct HighlightingRule
-    {
-        QString keyword;
-        QTextCharFormat format;
-    };
-    QList<HighlightingRule> m_rules;
-};
-
 LogPanel::LogPanel(QWidget *parent)
     : QPlainTextEdit(parent)
     , m_toolBar(new QWidget)
@@ -79,7 +39,7 @@ LogPanel::LogPanel(QWidget *parent)
     logger->sinks().push_back(std::make_shared<spdlog::sinks::qt_sink_mt>(this, "appendPlainText"));
 
     // Setup text edit
-    new LogHighlighter(document());
+    new Core::LogHighlighter(document());
     setWordWrapMode(QTextOption::NoWrap);
     GuiSettings::setupTextEdit(this);
 
