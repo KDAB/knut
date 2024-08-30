@@ -661,18 +661,19 @@ void ScriptDialogItem::changeValue(const QString &key, const QVariant &value)
             comboBox->addItems(value.toStringList());
             if (comboBox->count())
                 comboBox->setCurrentIndex(0);
+            return;
         }
-        return;
     }
 
     // It may be a syntax rule
     if (key.endsWith("Syntax")) {
         if (auto textEdit = findChild<QTextEdit *>(key.left(key.length() - 6))) {
             applySyntaxHighlighting(textEdit->document(), value.toString());
+            return;
         } else if (auto plainTextEdit = findChild<QPlainTextEdit *>(key.left(key.length() - 6))) {
             applySyntaxHighlighting(plainTextEdit->document(), value.toString());
+            return;
         }
-        return;
     }
 
     if (!widget) {
