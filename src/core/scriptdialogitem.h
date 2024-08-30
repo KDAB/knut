@@ -62,6 +62,8 @@ public:
     Q_INVOKABLE void compare(const QJSValue &actual, const QJSValue &expected, QString message = {});
     Q_INVOKABLE void verify(bool value, QString message = {});
 
+    Q_INVOKABLE void setDisplayLogs(const QString &level);
+
 public slots:
     void setStepCount(int stepCount);
     void done(int code) override;

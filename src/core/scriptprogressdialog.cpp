@@ -21,6 +21,7 @@ ScriptProgressDialog::ScriptProgressDialog(QWidget *parent)
     setAttribute(Qt::WA_DeleteOnClose);
 
     ui->buttonBox->button(QDialogButtonBox::Yes)->setText(tr("Continue"));
+    ui->logsWidget->hide();
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &ScriptProgressDialog::apply);
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &ScriptProgressDialog::abort);
 }
@@ -62,4 +63,9 @@ int ScriptProgressDialog::value() const
 void ScriptProgressDialog::setReadOnly(bool readOnly)
 {
     ui->buttonBox->setEnabled(!readOnly);
+}
+
+QPlainTextEdit *ScriptProgressDialog::logsWidget()
+{
+    return ui->logsWidget;
 }

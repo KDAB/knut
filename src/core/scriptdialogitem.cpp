@@ -9,6 +9,7 @@
 */
 
 #include "scriptdialogitem.h"
+#include "loghighlighter.h"
 #include "scriptdialogitem_p.h"
 #include "scriptprogressdialog.h"
 #include "scriptrunner.h"
@@ -44,6 +45,7 @@
 #include <QToolButton>
 #include <QUiLoader>
 #include <QVBoxLayout>
+#include <spdlog/sinks/qt_sinks.h>
 
 namespace Core {
 
@@ -429,6 +431,42 @@ void ScriptDialogItem::compare(const QJSValue &actual, const QJSValue &expected,
 void ScriptDialogItem::verify(bool value, QString message)
 {
     ScriptRunner::verify(this, value, message);
+}
+
+/*!
+ * \qmlmethod ScriptDialog::setDisplayLogs(const QString &level)
+ * This method enables real-time logging display in the progress dialog by configuring a QPlainTextEdit widget as a log
+ * output panel. It filters the logs to show only those that are of the specified log level or higher.
+ */
+void ScriptDialogItem::setDisplayLogs(const QString &level)
+{
+    showProgressDialog();
+
+    if (!m_progressDialog)
+        return;
+
+    QPlainTextEdit *logPanel = m_progressDialog->logsWidget();
+    logPanel->show();
+    logPanel->setReadOnly(true);
+
+    new Core::LogHighlighter(logPanel->document());
+
+    const std::vector<QString> levels = {"trace", "debug", "info", "warn", "error", "critical"};
+    const auto it = std::find(levels.begin(), levels.end(), level);
+    const int index = (it != levels.end()) ? std::distance(levels.begin(), it) : 0;
+
+    spdlog::level::level_enum logLevel = static_cast<spdlog::level::level_enum>(index);
+
+    auto logger = spdlog::default_logger();
+
+    auto currentLogLevel = logger->level();
+    auto logLevelMin = static_cast<spdlog::level::level_enum>(std::min(static_cast<int>(currentLogLevel), index));
+
+    logger->set_level(logLevelMin);
+
+    auto sink = std::make_shared<spdlog::sinks::qt_sink_mt>(logPanel, "appendPlainText");
+    sink->set_level(logLevel);
+    logger->sinks().push_back(sink);
 }
 
 void ScriptDialogItem::showProgressDialog()
