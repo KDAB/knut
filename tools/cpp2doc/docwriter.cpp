@@ -378,9 +378,7 @@ QString DocWriter::methodToString(const Data::QmlMethod &method, bool summary) c
 
 QString DocWriter::typeToString(QString type) const
 {
-    // Note: inefficient, but good enough for now
-    const auto &keys = m_typeFileMap.keys();
-    for (const auto &key : keys) {
+    for (const auto &[key, value] : m_typeFileMap.asKeyValueRange()) {
         int index = type.indexOf(key);
         while (index != -1) {
             bool doContinue = false;
@@ -389,7 +387,7 @@ QString DocWriter::typeToString(QString type) const
             if (index + key.length() < type.length() && type[index + key.length()].isLetterOrNumber())
                 doContinue = true;
             if (!doContinue)
-                type.replace(index, key.length(), QString("[%1](%2)").arg(key, m_typeFileMap.value(key)));
+                type.replace(index, key.length(), QString("[%1](%2)").arg(key, value));
             index = type.indexOf(key, index + key.length());
         }
     }
