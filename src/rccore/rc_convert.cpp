@@ -276,7 +276,7 @@ static Widget convertLabel(const Data &data, Data::Control &control, bool useIdF
     }
 
     if (control.styles.removeOne("SS_LEFTNOWORDWRAP"))
-        widget.properties["wordWrap"] = true;
+        widget.properties["wordWrap"] = false;
 
     control.styles.removeOne("SS_LEFT");
     convertStyles(data, widget, control, true);
