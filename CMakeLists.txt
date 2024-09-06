@@ -96,7 +96,7 @@ set(CMAKE_AUTORCC ON)
 
 find_package(QT NAMES Qt6)
 find_package(
-  Qt6
+  Qt6 6.5
   COMPONENTS Widgets Qml Quick Test UiTools
   REQUIRED)
 
