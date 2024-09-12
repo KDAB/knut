@@ -208,7 +208,7 @@ void ScriptManager::doRunScript(const QString &fileName, nlohmann::json &&data, 
             spdlog::error("{}({}): {}", error.url().toLocalFile(), error.line(), error.description());
     } else {
         if (m_result.isValid())
-            spdlog::info("Script result is {}", m_result.toString());
+            spdlog::info("{}: Script result is {}", FUNCTION_NAME, m_result.toString());
     }
 }
 

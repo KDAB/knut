@@ -154,7 +154,7 @@ void ScriptPanel::openScript()
         QFileInfo fi(m_fileName);
         m_scriptName->setText(fi.fileName());
     } else {
-        spdlog::error("Error reading script - can't open the file for reading.");
+        spdlog::error("{}: Error reading script - can't open the file for reading.", FUNCTION_NAME);
     }
 }
 
@@ -207,7 +207,7 @@ void ScriptPanel::saveScript()
         if (isQml && text.contains("ScriptDialog"))
             createDialogFile();
     } else {
-        spdlog::error("Error saving script - can't open the file for writing.");
+        spdlog::error("{}: Error saving script - can't open the file for writing.", FUNCTION_NAME);
     }
 }
 
@@ -226,7 +226,7 @@ void ScriptPanel::editDialog()
     if (!QDesktopServices::openUrl(QString("file:///%1").arg(uiFileName))) {
         QMessageBox::information(this, "Script Dialog Edition",
                                  "In order to edit the dialog, you need to install the Qt Designer tool.");
-        spdlog::error("Error editing dialog - Qt Designer is not found.");
+        spdlog::error("{}: Error editing dialog - Qt Designer is not found.", FUNCTION_NAME);
     }
 }
 
@@ -244,7 +244,7 @@ QString ScriptPanel::createDialogFile()
     QString uiFileName = fi.absolutePath() + '/' + fi.baseName() + ".ui";
 
     if (!QFile::exists(uiFileName) && !QFile::copy(":/gui/default-dialog.ui", uiFileName)) {
-        spdlog::error("Error creating dialog - can't create the dialog file.");
+        spdlog::error("{}: Error creating dialog - can't create the dialog file.", FUNCTION_NAME);
         return {};
     }
     return uiFileName;
@@ -268,7 +268,7 @@ void ScriptPanel::runScript()
         file.close();
         Core::ScriptManager::instance()->runScript(file.fileName(), false, false);
     } else {
-        spdlog::error("Error running script - can't save to temporary file.");
+        spdlog::error("{}: Error running script - can't save to temporary file.", FUNCTION_NAME);
     }
 }
 

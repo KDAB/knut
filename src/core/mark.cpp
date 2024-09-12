@@ -51,7 +51,7 @@ namespace Core {
 bool MarkPrivate::checkEditor() const
 {
     if (!m_editor) {
-        spdlog::error("Mark::checkEditor - document does not exist anymore");
+        spdlog::error("{}: - document does not exist anymore", FUNCTION_NAME);
         return false;
     }
     return true;
@@ -139,7 +139,7 @@ TextDocument *Mark::document() const
  */
 void Mark::restore() const
 {
-    LOG("Mark::restore");
+    LOG();
     if (isValid()) {
         document()->gotoMark(*this);
     }

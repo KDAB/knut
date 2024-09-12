@@ -45,7 +45,7 @@ Utils::~Utils() = default;
  */
 QString Utils::getEnv(const QString &varName)
 {
-    LOG("Utils::getEnv", varName);
+    LOG(varName);
 
     return QString::fromUtf8(qgetenv(varName.toLatin1()));
 }
@@ -60,7 +60,7 @@ QString Utils::getEnv(const QString &varName)
  */
 QString Utils::getGlobal(const QString &varName)
 {
-    LOG("Utils::getGlobal", varName);
+    LOG(varName);
 
     return m_globals.value(varName);
 }
@@ -75,7 +75,7 @@ QString Utils::getGlobal(const QString &varName)
  */
 void Utils::setGlobal(const QString &varName, const QString &value)
 {
-    LOG("Utils::setGlobal", varName, value);
+    LOG(varName, value);
 
     m_globals.insert(varName, value);
 }
@@ -97,7 +97,7 @@ void Utils::setGlobal(const QString &varName, const QString &value)
  */
 void Utils::addScriptPath(const QString &path)
 {
-    LOG("Utils::addScriptPath", path);
+    LOG(path);
 
     ScriptManager::instance()->addDirectory(path);
 }
@@ -108,7 +108,7 @@ void Utils::addScriptPath(const QString &path)
  */
 void Utils::runScript(const QString &path, bool log)
 {
-    LOG("Utils::runScript", LOG_ARG("path", path), log);
+    LOG(LOG_ARG("path", path), log);
 
     // Run the script synchronously
     ScriptManager::instance()->runScript(path, nlohmann::json::object(), false, log);
@@ -120,7 +120,7 @@ void Utils::runScript(const QString &path, bool log)
  */
 void Utils::sleep(int msecs)
 {
-    LOG("Utils::sleep", msecs);
+    LOG(msecs);
 
     QElapsedTimer timer;
     timer.start();
@@ -136,7 +136,7 @@ void Utils::sleep(int msecs)
 // This function is copied from Qt Creator.
 QString Utils::mktemp(const QString &pattern)
 {
-    LOG("Utils::mktemp", pattern);
+    LOG(pattern);
 
     QString tmp = pattern;
     if (tmp.isEmpty())
@@ -155,7 +155,7 @@ QString Utils::mktemp(const QString &pattern)
         return {};
     file.close();
 
-    spdlog::debug("Utils::mktemp created {}", tmp);
+    spdlog::debug("{}: created {}", FUNCTION_NAME, tmp);
     return file.fileName();
 }
 
@@ -174,7 +174,7 @@ QString Utils::mktemp(const QString &pattern)
  */
 QString Utils::convertCase(const QString &str, Case from, Case to)
 {
-    LOG("Utils::convertCase", str, from, to);
+    LOG(str, from, to);
     return ::Utils::convertCase(str, static_cast<::Utils::Case>(from), static_cast<::Utils::Case>(to));
 }
 
@@ -184,7 +184,7 @@ QString Utils::convertCase(const QString &str, Case from, Case to)
  */
 void Utils::copyToClipboard(const QString &text)
 {
-    LOG("Utils::copyToClipboard", text);
+    LOG(text);
     auto clipboard = QApplication::clipboard();
     clipboard->setText(text);
 }
@@ -203,7 +203,7 @@ void Utils::copyToClipboard(const QString &text)
 // The readonly C++ attribute has the same functionality as the readonly MIDL attribute.
 QStringList Utils::cppKeywords()
 {
-    LOG("Utils::cppKeywords");
+    LOG();
     return QStringList {"alignas",
                         "alignof",
                         "and",
@@ -299,7 +299,7 @@ QStringList Utils::cppKeywords()
  */
 QStringList Utils::cppPrimitiveTypes()
 {
-    LOG("Utils::cppPrimitiveTypes");
+    LOG();
     return QStringList {"int",  "long",    "short",    "void",     "float",  "double",
                         "char", "char8_t", "char16_t", "char32_t", "wchar_t"};
 }

@@ -83,7 +83,7 @@ bool Client::initialize(const QString &rootPath)
     if (!m_backend->start())
         return false;
 
-    spdlog::debug("LSP server started in: {}", rootPath);
+    spdlog::debug("{}: LSP server started in: {}", FUNCTION_NAME, rootPath);
 
     InitializeRequest request;
     request.id = m_nextRequestId++;
@@ -254,14 +254,14 @@ void Client::setState(State newState)
 bool Client::initializeCallback(InitializeRequest::Response response)
 {
     if (!response.isValid() || response.error) {
-        spdlog::error("Error initializing the server");
+        spdlog::error("{}: Error initializing the server", FUNCTION_NAME);
         setState(Error);
         return false;
     }
 
     m_serverCapabilities = response.result->capabilities;
     m_backend->sendNotification(InitializedNotification());
-    spdlog::debug("LSP server initialized");
+    spdlog::debug("{}: LSP server initialized", FUNCTION_NAME);
     setState(Initialized);
     return true;
 }
@@ -269,13 +269,13 @@ bool Client::initializeCallback(InitializeRequest::Response response)
 bool Client::shutdownCallback(ShutdownRequest::Response response)
 {
     if (!response.isValid() || response.error) {
-        spdlog::error("Error shutting down the server");
+        spdlog::error("{}: Error shutting down the server", FUNCTION_NAME);
         setState(Error);
         return false;
     }
 
     m_backend->sendNotification(ExitNotification());
-    spdlog::debug("LSP server exited");
+    spdlog::debug("{}: LSP server exited", FUNCTION_NAME);
     setState(Shutdown);
     return true;
 }

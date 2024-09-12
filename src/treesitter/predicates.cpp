@@ -447,7 +447,7 @@ void Predicates::findMessageMap() const
     }
 
     if (!m_rootNode.has_value()) {
-        spdlog::warn("Predicates::findMessageMap: No rootNode!");
+        spdlog::warn("Predicate: #in_message_map? - No rootNode!");
         return;
     }
 

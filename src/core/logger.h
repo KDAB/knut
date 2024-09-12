@@ -1,4 +1,4 @@
-/*
+﻿/*
   This file is part of Knut.
 
   SPDX-FileCopyrightText: 2024 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
@@ -29,13 +29,17 @@
 /**
  * Log a method, with all its parameters.
  */
-#define LOG(name, ...) Core::LoggerObject __loggerObject(name, false, ##__VA_ARGS__)
+#define LOG(...)                                                                                                       \
+    Core::LoggerObject __loggerObject(Core::formatToClassNameFunctionName(std::source_location::current()), false,     \
+                                      ##__VA_ARGS__)
 
 /**
  * Log a method, with all its parameters. If the previous log is also the same method, it will be merged into one
  * operation
  */
-#define LOG_AND_MERGE(name, ...) Core::LoggerObject __loggerObject(name, true, ##__VA_ARGS__)
+#define LOG_AND_MERGE(...)                                                                                             \
+    Core::LoggerObject __loggerObject(Core::formatToClassNameFunctionName(std::source_location::current()), true,      \
+                                      ##__VA_ARGS__)
 
 /**
  * Macro to save the returned value in the historymodel
@@ -211,7 +215,7 @@ private:
 class LoggerObject
 {
 public:
-    explicit LoggerObject(QString name, bool /*unused*/)
+    explicit LoggerObject(QString location, bool /*unused*/)
         : LoggerObject()
     {
         if (!m_canLog)
@@ -226,22 +230,24 @@ public:
         ScriptDialogItem::updateProgress();
 
         if (m_model)
-            m_model->logData(name);
-        log(std::move(name));
+            m_model->logData(location);
+        log(std::move(location));
     }
 
     template <typename... Ts>
-    explicit LoggerObject(QString name, bool merge, Ts... params)
+    explicit LoggerObject(QString location, bool merge, Ts... params)
         : LoggerObject()
     {
         if (!m_canLog)
             return;
+
         if (m_model)
-            m_model->logData(name, merge, params...);
+            m_model->logData(location, merge, params...);
 
         QStringList paramList;
         (paramList.push_back(valueToString(params)), ...);
-        QString result = name + " - " + paramList.join(", ");
+
+        QString result = location + " - " + paramList.join(", ");
         log(std::move(result));
     }
 

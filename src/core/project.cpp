@@ -88,15 +88,15 @@ const QString &Project::root() const
 
 bool Project::setRoot(const QString &newRoot)
 {
-    LOG("Project::setRoot", newRoot);
+    LOG(newRoot);
     const QDir dir(newRoot);
     if (m_root == dir.absolutePath())
         return true;
 
     if (m_root.isEmpty()) {
-        spdlog::info("Project::setRoot {}", dir.absolutePath());
+        spdlog::info("{}: {}", FUNCTION_NAME, dir.absolutePath());
     } else {
-        spdlog::error("Project::setRoot - can't open a new project");
+        spdlog::error("{}: can't open a new project", FUNCTION_NAME);
         return false;
     }
 
@@ -122,7 +122,7 @@ QStringList Project::allFiles(PathType type) const
     if (m_root.isEmpty())
         return {};
 
-    LOG("Project::allFiles", type);
+    LOG(type);
 
     QDir dir(m_root);
     QDirIterator it(m_root, QDirIterator::Subdirectories);
@@ -150,7 +150,7 @@ QStringList Project::allFilesWithExtension(const QString &extension, PathType ty
     if (m_root.isEmpty())
         return {};
 
-    LOG("Project::allFilesWithExtension", extension, type);
+    LOG(extension, type);
 
     QDir dir(m_root);
     QDirIterator it(m_root, QDirIterator::Subdirectories);
@@ -178,7 +178,7 @@ QStringList Project::allFilesWithExtensions(const QStringList &extensions, PathT
     if (m_root.isEmpty())
         return {};
 
-    LOG("Project::allFilesWithExtensions", extensions, type);
+    LOG(extensions, type);
 
     QDir dir(m_root);
     QDirIterator it(m_root, QDirIterator::Subdirectories);
@@ -289,7 +289,7 @@ Document *Project::getDocument(QString fileName, bool moveToBack)
             m_documents.push_back(doc);
             emit documentsChanged();
         } else {
-            spdlog::error("Project::open {} - unknown document type", fi.suffix());
+            spdlog::error("{}: {} - unknown document type", FUNCTION_NAME, fi.suffix());
             return nullptr;
         }
     }
@@ -309,7 +309,7 @@ Document *Project::getDocument(QString fileName, bool moveToBack)
  */
 Document *Project::get(const QString &fileName)
 {
-    LOG("Project::get", LOG_ARG("path", fileName));
+    LOG(LOG_ARG("path", fileName));
 
     LOG_RETURN("document", getDocument(fileName, false));
 }
@@ -326,7 +326,7 @@ Document *Project::open(const QString &fileName)
     if (m_current && m_current->fileName() == fileName)
         return m_current;
 
-    LOG("Project::open", LOG_ARG("path", fileName));
+    LOG(LOG_ARG("path", fileName));
 
     m_current = getDocument(fileName, true);
     emit currentDocumentChanged(m_current);
@@ -340,7 +340,8 @@ Document *Project::open(const QString &fileName)
  */
 void Project::closeAll()
 {
-    LOG("Project::closeAll");
+    LOG();
+
     for (auto d : std::as_const(m_documents))
         d->close();
 }
@@ -356,7 +357,7 @@ Core::Document *Project::currentDocument() const
  */
 void Project::saveAllDocuments()
 {
-    LOG("Project::saveAllDocuments");
+    LOG();
 
     for (auto d : std::as_const(m_documents)) {
         if (d->hasChanged()) {
@@ -373,7 +374,7 @@ void Project::saveAllDocuments()
  */
 Document *Project::openPrevious(int index)
 {
-    LOG("Project::openPrevious", index);
+    LOG(index);
 
     Q_ASSERT(index < m_documents.size());
     index = m_documents.size() - index - 1;
@@ -403,7 +404,7 @@ Document *Project::openPrevious(int index)
  */
 QVariantList Project::findInFiles(const QString &pattern) const
 {
-    LOG("Project::findInFiles", pattern);
+    LOG(pattern);
 
     QVariantList result;
 

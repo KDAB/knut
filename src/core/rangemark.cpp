@@ -66,7 +66,7 @@ RangeMarkPrivate::RangeMarkPrivate(TextDocument *editor, int start, int end)
 bool RangeMarkPrivate::checkEditor() const
 {
     if (!m_editor) {
-        spdlog::error("RangeMark::checkEditor - document does not exist anymore");
+        spdlog::error("{}: document does not exist anymore", FUNCTION_NAME);
         return false;
     }
     return true;
@@ -75,7 +75,7 @@ bool RangeMarkPrivate::checkEditor() const
 void RangeMarkPrivate::ensureInvariant()
 {
     if (m_start > m_end) {
-        spdlog::warn("RangeMark::ensureInvariant: invariant violated: m_start > m_end ({} > {})", m_start, m_end);
+        spdlog::warn("{}: invariant violated: m_start > m_end ({} > {})", FUNCTION_NAME, m_start, m_end);
         std::swap(m_start, m_end);
     }
 }
@@ -199,15 +199,15 @@ RangeMark RangeMark::join(const RangeMark &other) const
 QString RangeMark::textExcept(const RangeMark &other) const
 {
     if (!isValid()) {
-        spdlog::error("RangeMark::textExcept: invalid range");
+        spdlog::error("{}: invalid range", FUNCTION_NAME);
         return "";
     }
     if (!other.isValid()) {
-        spdlog::debug("RangeMark::textExcept: invalid other range");
+        spdlog::debug("{}: invalid other range", FUNCTION_NAME);
         return text();
     }
     if (document() != other.document()) {
-        spdlog::error("RangeMark::textExcept: different documents");
+        spdlog::error("{}: different documents", FUNCTION_NAME);
         return text();
     }
 

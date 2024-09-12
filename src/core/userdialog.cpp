@@ -50,10 +50,10 @@ UserDialog::UserDialog(QQmlEngine *parent)
  */
 QJSValue UserDialog::getOpenFileName(const QString &caption, const QString &dir, const QString &filters)
 {
-    LOG("UserDialog::getOpenFileName", caption, dir, filters);
+    LOG(caption, dir, filters);
     const QString s = QFileDialog::getOpenFileName(dialogParent(), caption, dir, filters);
     if (!s.isEmpty()) {
-        spdlog::debug("UserDialog::getOpenFileName returns {}", s);
+        spdlog::debug("{} returns {}", FUNCTION_NAME, s);
         return s;
     }
     return QJSValue(QJSValue::NullValue);
@@ -68,10 +68,10 @@ QJSValue UserDialog::getOpenFileName(const QString &caption, const QString &dir,
  */
 QJSValue UserDialog::getSaveFileName(const QString &caption, const QString &dir, const QString &filters)
 {
-    LOG("UserDialog::getSaveFileName", caption, dir, filters);
+    LOG(caption, dir, filters);
     const QString s = QFileDialog::getSaveFileName(dialogParent(), caption, dir, filters);
     if (!s.isEmpty()) {
-        spdlog::debug("UserDialog::getSaveFileName returns {}", s);
+        spdlog::debug("{} returns {}", FUNCTION_NAME, s);
         return s;
     }
     return QJSValue(QJSValue::NullValue);
@@ -85,10 +85,10 @@ QJSValue UserDialog::getSaveFileName(const QString &caption, const QString &dir,
  */
 QJSValue UserDialog::getExistingDirectory(const QString &caption, const QString &dir)
 {
-    LOG("UserDialog::getExistingDirectory", caption, dir);
+    LOG(caption, dir);
     const QString s = QFileDialog::getExistingDirectory(dialogParent(), caption, dir);
     if (!s.isEmpty()) {
-        spdlog::debug("UserDialog::getExistingDirectory returns {}", s);
+        spdlog::debug("{} returns {}", FUNCTION_NAME, s);
         return s;
     }
     return QJSValue(QJSValue::NullValue);
@@ -107,11 +107,11 @@ QJSValue UserDialog::getExistingDirectory(const QString &caption, const QString 
 QJSValue UserDialog::getItem(const QString &title, const QString &label, const QStringList &items, int current,
                              bool editable)
 {
-    LOG("UserDialog::getItem", title, label, items, current, editable);
+    LOG(title, label, items, current, editable);
     bool ok;
     const QString ret = QInputDialog::getItem(dialogParent(), title, label, items, current, editable, &ok);
     if (ok) {
-        spdlog::debug("UserDialog::getItem returns {}", ret);
+        spdlog::debug("{} returns {}", FUNCTION_NAME, ret);
         return ret;
     }
     return QJSValue(QJSValue::NullValue);
@@ -131,12 +131,12 @@ QJSValue UserDialog::getItem(const QString &title, const QString &label, const Q
 QJSValue UserDialog::getDouble(const QString &title, const QString &label, double value, int decimals, double step,
                                double min, double max)
 {
-    LOG("UserDialog::getDouble", title, label, value, decimals, step, min, max);
+    LOG(title, label, value, decimals, step, min, max);
     bool ok;
     const double ret =
         QInputDialog::getDouble(dialogParent(), title, label, value, min, max, decimals, &ok, Qt::WindowFlags(), step);
     if (ok) {
-        spdlog::debug("UserDialog::getDouble returns {}", ret);
+        spdlog::debug("{} returns {}", FUNCTION_NAME, ret);
         return ret;
     }
     return QJSValue(QJSValue::NullValue);
@@ -154,11 +154,11 @@ QJSValue UserDialog::getDouble(const QString &title, const QString &label, doubl
 // clang-format on
 QJSValue UserDialog::getInt(const QString &title, const QString &label, int value, int step, int min, int max)
 {
-    LOG("UserDialog::getInt", title, label, value, step, min, max);
+    LOG(title, label, value, step, min, max);
     bool ok;
     const int ret = QInputDialog::getInt(dialogParent(), title, label, value, min, max, step, &ok);
     if (ok) {
-        spdlog::debug("UserDialog::getInt returns {}", ret);
+        spdlog::debug("{} returns {}", FUNCTION_NAME, ret);
         return ret;
     }
     return QJSValue(QJSValue::NullValue);
@@ -173,11 +173,11 @@ QJSValue UserDialog::getInt(const QString &title, const QString &label, int valu
  */
 QJSValue UserDialog::getText(const QString &title, const QString &label, const QString &text)
 {
-    LOG("UserDialog::getText", title, label, text);
+    LOG(title, label, text);
     bool ok;
     const QString ret = QInputDialog::getText(dialogParent(), title, label, QLineEdit::Normal, text, &ok);
     if (ok) {
-        spdlog::debug("UserDialog::getText returns {}", ret);
+        spdlog::debug("{} returns {}", FUNCTION_NAME, ret);
         return ret;
     }
     return QJSValue(QJSValue::NullValue);
@@ -189,7 +189,7 @@ QJSValue UserDialog::getText(const QString &title, const QString &label, const Q
  */
 void UserDialog::information(const QString &title, const QString &text)
 {
-    LOG("UserDialog::information", title, text);
+    LOG(title, text);
     QMessageBox::information(dialogParent(), title, text);
 }
 
@@ -199,7 +199,7 @@ void UserDialog::information(const QString &title, const QString &text)
  */
 void UserDialog::warning(const QString &title, const QString &text)
 {
-    LOG("UserDialog::warning", title, text);
+    LOG(title, text);
     QMessageBox::warning(dialogParent(), title, text);
 }
 
@@ -209,7 +209,7 @@ void UserDialog::warning(const QString &title, const QString &text)
  */
 void UserDialog::critical(const QString &title, const QString &text)
 {
-    LOG("UserDialog::critical", title, text);
+    LOG(title, text);
     QMessageBox::critical(dialogParent(), title, text);
 }
 

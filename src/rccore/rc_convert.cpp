@@ -915,7 +915,7 @@ QString convertLanguageToCode(const QString &name)
             }
         }
     }
-    spdlog::error("Unknown language name conversion {} ", name);
+    spdlog::error("{}: Unknown language name conversion {} ", FUNCTION_NAME, name);
     return "en";
 }
 

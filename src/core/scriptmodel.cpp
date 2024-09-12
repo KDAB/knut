@@ -71,7 +71,7 @@ QVariant ScriptModel::columnHeaderDisplayData(int column) const
     case DescriptionColumn:
         return tr("Description");
     default:
-        spdlog::error("SuggestedScripts::columnHeaderDisplayData: column out of range: {}", column);
+        spdlog::error("{}: column out of range: {}", FUNCTION_NAME, column);
         return {};
     }
 }
@@ -95,7 +95,7 @@ QVariant ScriptModel::data(const QModelIndex &index, int role) const
 
     const auto &scripts = scriptList();
     if (row < 0 || static_cast<size_t>(row) >= scripts.size()) {
-        spdlog::error("SuggestedScripts::data: row out of range: {}", row);
+        spdlog::error("{}: row out of range: {}", FUNCTION_NAME, row);
         return {};
     }
 
@@ -120,7 +120,7 @@ QVariant ScriptModel::displayData(const ScriptManager::Script &script, int colum
     case DescriptionColumn:
         return script.description;
     default:
-        spdlog::error("SuggestedScripts::displayData: column out of range: {}", column);
+        spdlog::error("{}: column out of range: {}", FUNCTION_NAME, column);
         return {};
     }
 }

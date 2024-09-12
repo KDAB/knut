@@ -100,7 +100,7 @@ bool KnutCore::process(const QStringList &arguments)
         if (pathDir.exists()) {
             Project::instance()->setRoot(rootDir);
         } else {
-            spdlog::error("KnutCore::process - Root directory: {}, does not exist. Cannot open a new project!",
+            spdlog::error("{} - Root directory: {}, does not exist. Cannot open a new project!", FUNCTION_NAME,
                           pathDir.absolutePath());
             return false;
         }
@@ -131,7 +131,7 @@ bool KnutCore::process(const QStringList &arguments)
         try {
             jsonData = json::parse(jsonDataStr.toStdString());
         } catch (const json::parse_error &ex) {
-            spdlog::error("JSON parsing error at byte {}: {}", ex.byte, ex.what());
+            spdlog::error("{}: JSON parsing error at byte {}: {}", FUNCTION_NAME, ex.byte, ex.what());
             return false;
         }
     }
