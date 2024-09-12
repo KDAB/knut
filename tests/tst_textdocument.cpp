@@ -278,7 +278,7 @@ private slots:
         // When replacing the text in the rangemark, the rangemark should span the new text afterwards.
         const auto newText = QString("Hello World");
         mark.replace(newText);
-        document.selectRangeMark(mark);
+        document.selectRange(mark);
         QCOMPARE(document.selectedText(), newText);
 
         // Delete everything in the range mark.

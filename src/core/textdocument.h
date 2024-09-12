@@ -142,16 +142,13 @@ public slots:
     void paste();
     void cut();
 
-    // Text handling
-    void remove(int length);
+    // Insertion
     void insert(const QString &text);
     void insertAtLine(const QString &text, int line = -1);
     void insertAtPosition(const QString &text, int pos);
-    void replace(int length, const QString &text);
-    void replace(int from, int to, const QString &text);
-    void replace(const Core::RangeMark &range, const QString &text);
 
     // Deletion
+    void remove(int length);
     void deleteLine(int line = -1);
     void deleteSelection();
     void deleteEndOfLine();
@@ -171,7 +168,6 @@ public slots:
     // RangeMark
     Core::RangeMark createRangeMark(int from, int to);
     Core::RangeMark createRangeMark();
-    void selectRangeMark(const Core::RangeMark &mark);
 
     // Find
     bool find(const QString &text, int options = NoFindFlags);
@@ -179,6 +175,9 @@ public slots:
     QString match(const QString &regexp, int options = NoFindFlags);
 
     // Replace
+    void replace(int length, const QString &text);
+    void replace(int from, int to, const QString &text);
+    void replace(const Core::RangeMark &range, const QString &text);
     bool replaceOne(const QString &before, const QString &after, int options = NoFindFlags);
     int replaceAll(const QString &before, const QString &after, int options = NoFindFlags);
     int replaceAllInRange(const QString &before, const QString &after, const Core::RangeMark &range,
