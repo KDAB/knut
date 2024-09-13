@@ -121,10 +121,16 @@ TreeSitterInspector::TreeSitterInspector(QWidget *parent)
 
     connect(ui->query, &QPlainTextEdit::textChanged, this, &TreeSitterInspector::changeQuery);
 
-    connect(ui->saveButton, &QPushButton::clicked, this, &TreeSitterInspector::saveToFile);
-    connect(ui->loadButton, &QPushButton::clicked, this, &TreeSitterInspector::loadFromFile);
+    connect(ui->saveButton, &QToolButton::clicked, this, &TreeSitterInspector::saveToFile);
+    connect(ui->loadButton, &QToolButton::clicked, this, &TreeSitterInspector::loadFromFile);
+    GuiSettings::setIcon(ui->saveButton, ":/gui/content-save.png");
+    GuiSettings::setIcon(ui->loadButton, ":/gui/folder-open.png");
 
     connect(ui->enableUnnamed, &QCheckBox::toggled, this, &TreeSitterInspector::showUnnamedChanged);
+
+    // Set a 2/3 - 1/3 repartition for the views
+    ui->splitter->setStretchFactor(0, 2);
+    ui->splitter->setStretchFactor(1, 1);
 
     changeCurrentDocument(Core::Project::instance()->currentDocument());
 }
