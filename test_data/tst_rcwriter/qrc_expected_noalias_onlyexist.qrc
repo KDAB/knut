@@ -1,39 +1,4 @@
 
 <RCC>
-    <qresource prefix="/">
-        <file alias="IDR_MAINFRAME_0">res/Toolbar_0.png</file>
-        <file alias="IDR_MAINFRAME_1">res/Toolbar_1.png</file>
-        <file alias="IDR_MAINFRAME_2">res/Toolbar_2.png</file>
-        <file alias="IDR_MAINFRAME_3">res/Toolbar_3.png</file>
-        <file alias="IDR_MAINFRAME_4">res/Toolbar_4.png</file>
-        <file alias="IDR_MAINFRAME_5">res/Toolbar_5.png</file>
-        <file alias="IDR_MAINFRAME_6">res/Toolbar_6.png</file>
-        <file alias="IDR_MAINFRAME_7">res/Toolbar_7.png</file>
-        <file alias="IDR_MAINFRAME_256_0">res/Toolbar256_0.png</file>
-        <file alias="IDR_MAINFRAME_256_1">res/Toolbar256_1.png</file>
-        <file alias="IDR_MAINFRAME_256_2">res/Toolbar256_2.png</file>
-        <file alias="IDR_MAINFRAME_256_3">res/Toolbar256_3.png</file>
-        <file alias="IDR_MAINFRAME_256_4">res/Toolbar256_4.png</file>
-        <file alias="IDR_MAINFRAME_256_5">res/Toolbar256_5.png</file>
-        <file alias="IDR_MAINFRAME_256_6">res/Toolbar256_6.png</file>
-        <file alias="IDR_MAINFRAME_256_7">res/Toolbar256_7.png</file>
-        <file alias="IDB_FILE_VIEW">res/fileview.png</file>
-        <file alias="IDB_FILE_VIEW_24">res/fileview_hc.png</file>
-        <file alias="IDB_CLASS_VIEW">res/classview.png</file>
-        <file alias="IDB_CLASS_VIEW_24">res/classview_hc.png</file>
-        <file alias="IDR_MENU_IMAGES_0">res/menuimages_0.png</file>
-        <file alias="IDR_MENU_IMAGES_1">res/menuimages_1.png</file>
-        <file alias="IDR_MENU_IMAGES_2">res/menuimages_2.png</file>
-        <file alias="IDR_MENU_IMAGES_3">res/menuimages_3.png</file>
-        <file alias="IDR_MENU_IMAGES_4">res/menuimages_4.png</file>
-        <file alias="IDR_MENU_IMAGES_5">res/menuimages_5.png</file>
-        <file alias="IDR_MENU_IMAGES_6">res/menuimages_6.png</file>
-        <file alias="IDR_MENU_IMAGES_7">res/menuimages_7.png</file>
-        <file alias="IDB_MENU_IMAGES_24">res/menuimages_hc.png</file>
-        <file alias="IDR_PROPERTIES_0">res/properties_0.png</file>
-        <file alias="IDR_PROPERTIES_1">res/properties_1.png</file>
-        <file alias="IDR_PROPERTIES_2">res/properties_2.png</file>
-        <file alias="IDR_PROPERTIES_3">res/properties_3.png</file>
-        <file alias="IDB_PROPERTIES_HC">res/properties_hc.png</file>
-    </qresource>
+    <qresource prefix="/"/>
 </RCC>

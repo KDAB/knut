@@ -75,7 +75,7 @@ static QHash<int, QString> loadResourceFile(const QString &resourceFile)
         if (!line.startsWith("#define"))
             continue;
 
-        QStringList fields = line.split(' ', Qt::SkipEmptyParts);
+        QStringList fields = line.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
         if (fields.size() < 3)
             continue;
         const auto &value = fields.at(1);

@@ -130,9 +130,9 @@ private slots:
         QCOMPARE(gotoFuncDialog.controls.at(2).styles, styles2);
     }
 
-    void test2048Game()
+    void testMainWindow()
     {
-        RcFile rcFile = parse(Test::testDataPath() + "/rcfiles/2048Game/2048Game.rc");
+        RcFile rcFile = parse(Test::testDataPath() + "/rcfiles/mainWindow/MainWindow.rc");
         QCOMPARE(rcFile.isValid, true);
     }
 
