@@ -10,8 +10,19 @@
 
 project(knut-treesitter LANGUAGES CXX)
 
-set(PROJECT_SOURCES node.cpp parser.cpp predicates.cpp query.cpp tree.cpp
-                    tree_cursor.cpp)
+set(PROJECT_SOURCES
+    node.cpp
+    parser.cpp
+    predicates.cpp
+    query.cpp
+    tree.cpp
+    tree_cursor.cpp
+    node.h
+    parser.h
+    predicates.h
+    query.h
+    tree.h
+    tree_cursor.h)
 
 add_library(${PROJECT_NAME} STATIC ${PROJECT_SOURCES})
 target_link_libraries(
