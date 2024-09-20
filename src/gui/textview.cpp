@@ -12,7 +12,6 @@
 #include "core/codedocument.h"
 #include "core/logger.h"
 #include "core/mark.h"
-#include "core/scriptmodel.h"
 #include "core/textdocument.h"
 #include "guisettings.h"
 

@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include "textdocument.h"
+#include "document.h"
 
 #include <pugixml.hpp>
 
