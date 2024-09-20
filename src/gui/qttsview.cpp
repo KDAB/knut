@@ -81,13 +81,13 @@ public:
             return false;
         auto widget = m_document->messages().at(index.row());
         switch (index.column()) {
-        case 0:
+        case TsColumn::Comment:
             widget->setComment(value.toString());
             break;
-        case 1:
+        case TsColumn::Source:
             widget->setSource(value.toString());
             break;
-        case 2:
+        case TsColumn::Translation:
             widget->setTranslation(value.toString());
             break;
         }
@@ -95,7 +95,7 @@ public:
     }
     Qt::ItemFlags flags(const QModelIndex &index) const override
     {
-        if (index.column() < 3) {
+        if (index.column() == TsColumn::Translation) {
             return QAbstractTableModel::flags(index) | Qt::ItemIsEditable;
         }
         return QAbstractTableModel::flags(index);

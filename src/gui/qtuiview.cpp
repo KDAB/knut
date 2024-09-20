@@ -10,7 +10,6 @@
 
 #include "qtuiview.h"
 #include "core/qtuidocument.h"
-#include "core/rcdocument.h"
 
 #include <QAbstractTableModel>
 #include <QFile>
