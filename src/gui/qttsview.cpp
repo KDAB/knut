@@ -81,13 +81,13 @@ public:
             return false;
         auto widget = m_document->messages().at(index.row());
         switch (index.column()) {
-        case 0:
+        case TsColumn::Comment:
             widget->setComment(value.toString());
             break;
-        case 1:
+        case TsColumn::Source:
             widget->setSource(value.toString());
             break;
-        case 2:
+        case TsColumn::Translation:
             widget->setTranslation(value.toString());
             break;
         }
