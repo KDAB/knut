@@ -95,7 +95,7 @@ public:
     }
     Qt::ItemFlags flags(const QModelIndex &index) const override
     {
-        if (index.column() < 3) {
+        if (index.column() == TsColumn::Translation) {
             return QAbstractTableModel::flags(index) | Qt::ItemIsEditable;
         }
         return QAbstractTableModel::flags(index);
