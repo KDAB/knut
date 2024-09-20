@@ -9,7 +9,7 @@
 */
 
 #include "qmlview.h"
-#include "core/qmldocument.h"
+#include "core/textdocument.h"
 #include "guisettings.h"
 
 #include <QAction>
