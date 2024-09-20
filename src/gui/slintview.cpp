@@ -9,7 +9,7 @@
 */
 
 #include "slintview.h"
-#include "core/slintdocument.h"
+#include "core/textdocument.h"
 #include "guisettings.h"
 #include "utils/log.h"
 
