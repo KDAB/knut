@@ -17,6 +17,7 @@
 #include <QImage>
 #include <algorithm>
 #include <cmath>
+#include <pugixml.hpp>
 
 using namespace Qt::Literals::StringLiterals;
 
@@ -141,16 +142,34 @@ static void convertStyles(const Data &data, Widget &widget, Data::Control &contr
                      control.styles.join(", "));
     }
 }
-
 // https://docs.microsoft.com/en-us/windows/desktop/menurc/defpushbutton-control
 // https://docs.microsoft.com/en-us/windows/desktop/menurc/pushbox-control
 // https://docs.microsoft.com/en-us/windows/desktop/menurc/pushbutton-control
 // https://docs.microsoft.com/en-us/windows/desktop/controls/button-styles
-static Widget convertPushButton(const Data &data, Data::Control &control)
+static Widget convertPushButton(const Data &data, const QString &dialogId, Data::Control &control)
 {
     Widget widget;
     widget.className = "QPushButton";
     widget.properties["text"] = control.text;
+
+    // Initialize the values if they exists
+    const auto it = std::ranges::find_if(data.dialogDataList, [dialogId](const auto &dialogData) {
+        return dialogData.id == dialogId;
+    });
+    if (it != data.dialogDataList.cend()) {
+        const auto &values = it->values.value(control.id);
+        if (values.count() == 1) {
+            pugi::xml_document document;
+            const pugi::xml_parse_result result = document.load_string(values.constFirst().toLatin1().constData(),
+                                                                       pugi::parse_default | pugi::parse_declaration);
+            if (result) {
+                const auto node = document.select_node("MFCButton_Tooltip");
+                if (!node.node().empty()) {
+                    widget.properties["toolTip"] = node.node().text().as_string();
+                }
+            }
+        }
+    }
 
     if (control.styles.removeOne("BS_AUTO3STATE") || control.styles.removeOne("BS_3STATE")
         || control.styles.removeOne("BS_CHECKBOX") || control.styles.removeOne("BS_RADIOBUTTON")
@@ -382,10 +401,10 @@ static Widget convertScrollBar(const Data &data, Data::Control &control)
     return widget;
 }
 
-static Widget convertButton(const Data &data, Data::Control &control)
+static Widget convertButton(const Data &data, const QString &dialogId, Data::Control &control)
 {
     if (control.styles.contains("BS_PUSHLIKE"))
-        return convertPushButton(data, control);
+        return convertPushButton(data, dialogId, control);
     if (control.styles.contains("BS_3STATE"))
         return convertCheckBox(data, control);
     if (control.styles.contains("BS_AUTO3STATE"))
@@ -399,12 +418,12 @@ static Widget convertButton(const Data &data, Data::Control &control)
     if (control.styles.contains("BS_GROUPBOX"))
         return convertGroupBox(data, control);
     if (control.styles.contains("BS_DEFPUSHBUTTON"))
-        return convertPushButton(data, control);
+        return convertPushButton(data, dialogId, control);
     if (control.styles.contains("BS_PUSHBUTTON"))
-        return convertPushButton(data, control);
+        return convertPushButton(data, dialogId, control);
     if (control.styles.contains("BS_RADIOBUTTON"))
         return convertRadioButton(data, control);
-    return convertPushButton(data, control);
+    return convertPushButton(data, dialogId, control);
 }
 
 static Widget convertSlider(const Data &data, Data::Control &control)
@@ -526,7 +545,7 @@ static Widget convertControl(const Data &data, const QString &dialogId, Data::Co
     if (control.className == "Static")
         return convertLabel(data, control, useIdForPixmap);
     if (control.className == "Button")
-        return convertButton(data, control);
+        return convertButton(data, dialogId, control);
     if (control.className == "ComboBox")
         return convertComboBox(data, dialogId, control);
     if (control.className == "ComboBoxEx32")
@@ -576,7 +595,7 @@ static Widget convertControl(const Data &data, const QString &dialogId, Data::Co
     if (control.className == "MfcPropertyGrid")
         return convertTreeWidget(data, control);
     if (control.className == "MfcButton")
-        return convertButton(data, control);
+        return convertButton(data, dialogId, control);
 
     spdlog::warn("{}({}): unknown CONTROL {} / {}", data.fileName, control.line, control.id, control.className);
 
@@ -594,7 +613,7 @@ static Widget convertChildWidget(const Data &data, const QString &dialogId, Data
     case Keywords::DEFPUSHBUTTON:
     case Keywords::PUSHBOX:
     case Keywords::PUSHBUTTON:
-        widget = convertPushButton(data, control);
+        widget = convertPushButton(data, dialogId, control);
         break;
     case Keywords::AUTORADIOBUTTON:
     case Keywords::RADIOBUTTON:
