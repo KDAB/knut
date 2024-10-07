@@ -5,7 +5,8 @@
 #pragma once
 
 
-// CTutorialDlg dialog
+/// Main dialog for the sample application. This is created and displayed in
+/// the CTutorialApp::InitInstance function.
 class CTutorialDlg : public CDialogEx
 {
 // Construction

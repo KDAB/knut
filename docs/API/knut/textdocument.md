@@ -91,7 +91,6 @@ Inherited properties: [Document properties](../knut/document.md#properties)
 ||**[selectPreviousLine](#selectPreviousLine)**(int count = 1)|
 ||**[selectPreviousWord](#selectPreviousWord)**(int count = 1)|
 ||**[selectRange](#selectRange)**([RangeMark](../knut/rangemark.md) range)|
-||**[selectRangeMark](#selectRangeMark)**([RangeMark](../knut/rangemark.md) mark)|
 ||**[selectRegion](#selectRegion)**(int from, int to)|
 ||**[selectStartOfLine](#selectStartOfLine)**(int count = 1)|
 ||**[selectStartOfWord](#selectStartOfWord)**()|
@@ -474,11 +473,6 @@ Selects the previous word, repeat the operation `count` times.
 #### <a name="selectRange"></a>**selectRange**([RangeMark](../knut/rangemark.md) range)
 
 Selects the range passed in parameter.
-
-#### <a name="selectRangeMark"></a>**selectRangeMark**([RangeMark](../knut/rangemark.md) mark)
-
-Selects the text defined by the range make `mark`.
-
 
 #### <a name="selectRegion"></a>**selectRegion**(int from, int to)
 

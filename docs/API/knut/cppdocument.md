@@ -29,7 +29,7 @@ Inherited properties: [CodeDocument properties](../knut/codedocument.md#properti
 |string |**[correspondingHeaderSource](#correspondingHeaderSource)**()|
 |void |**[deleteMethod](#deleteMethod)**()|
 |void |**[deleteMethod](#deleteMethod)**(string methodName)|
-|void |**[deleteMethod](#deleteMethod)**(string method, string signature)|
+|void |**[deleteMethod](#deleteMethod)**(string methodName, string signature)|
 |int |**[gotoBlockEnd](#gotoBlockEnd)**(int count)|
 |int |**[gotoBlockStart](#gotoBlockStart)**(int count)|
 ||**[insertCodeInMethod](#insertCodeInMethod)**(string methodName, string code, Position insertAt)|
@@ -142,9 +142,9 @@ Therefore, all overloads of the function will be deleted.
 
 Also see: CppDocument::deleteMethod(string methodName, string signature)
 
-#### <a name="deleteMethod"></a>void **deleteMethod**(string method, string signature)
+#### <a name="deleteMethod"></a>void **deleteMethod**(string methodName, string signature)
 
-Delete the method or function with the specified `method` and optional `signature`.
+Delete the method or function with the specified `methodName` and `signature`.
 The method definition/declaration will be deleted from the current file,
 as well as the corresponding header/source file.
 References to the method will not be deleted.
