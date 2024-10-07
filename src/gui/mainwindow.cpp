@@ -134,7 +134,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_documentPalette->hide();
 
     ui->setupUi(this);
-    setWindowTitle(QApplication::applicationName() + ' ' + QApplication::applicationVersion());
+    setWindowTitle(generateWindowTitle());
     ui->tabWidget->setCornerWidget(m_toolBar);
 
     setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
@@ -291,6 +291,15 @@ static void actionsFromMenu(QMenu *menu, QList<QAction *> &actions)
     }
 }
 
+QString MainWindow::generateWindowTitle(const QString &projectName) const
+{
+    QString title = QApplication::applicationName() + ' ' + QApplication::applicationVersion();
+    if (!projectName.isEmpty()) {
+        title += " (" + projectName + ")";
+    }
+    return title;
+}
+
 QList<QAction *> MainWindow::menuActions() const
 {
     QList<QAction *> actions;
@@ -369,6 +378,7 @@ void MainWindow::openProject()
 
 void MainWindow::initProject(const QString &path)
 {
+    setWindowTitle(generateWindowTitle(path));
     // Update recent list
     QSettings settings;
     QStringList projects = settings.value(RecentProjectKey).toStringList();
