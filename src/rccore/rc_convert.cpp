@@ -931,6 +931,42 @@ QString convertLanguageToCode(const QString &name)
                 return "en_US";
             } else if (subLang == "SUBLANG_ENGLISH_ZIMBABWE"_L1) {
                 return "en_ZW";
+            } else if (subLang == "SUBLANG_ENGLISH_NZ"_L1) {
+                return "en_NZ";
+            } else if (subLang == "SUBLANG_ENGLISH_PHILIPPINES"_L1) {
+                return "en_PH";
+            } else if (subLang == "SUBLANG_ENGLISH_SOUTH_AFRICA"_L1) {
+                return "en_ZA";
+            } else if (subLang == "SUBLANG_ENGLISH_UK"_L1) {
+                return "en_GB";
+            } else if (subLang == "SUBLANG_ENGLISH_EIRE"_L1) {
+                return "en_IE";
+            } else {
+                return "en"; // SUBLANG_NEUTRAL
+            }
+            // "SUBLANG_ENGLISH_CARIBBEAN" "SUBLANG_ENGLISH_JAMAICA" "SUBLANG_ENGLISH_TRINIDAD" is not defined in local
+            // https://lh.2xlibre.net/locales/
+        } else if (mainLang == "LANG_GERMAN"_L1) {
+            if (subLang == "SUBLANG_GERMAN"_L1) {
+                return "de_DE";
+            } else if (subLang == "SUBLANG_GERMAN_AUSTRIAN"_L1) {
+                return "de_AT";
+            } else if (subLang == "SUBLANG_GERMAN_AUSTRIAN"_L1) {
+                return "de_AT";
+            } else if (subLang == "SUBLANG_GERMAN_LIECHTENSTEIN"_L1) {
+                return "de_LI";
+            } else if (subLang == "SUBLANG_GERMAN_LUXEMBOURG"_L1) {
+                return "de_LU";
+            } else if (subLang == "SUBLANG_GERMAN_SWISS"_L1) {
+                return "de_CH";
+            } else {
+                return "de"; // SUBLANG_NEUTRAL
+            }
+        } else if (mainLang == "LANG_SPANISH"_L1) {
+            if (subLang == "SUBLANG_SPANISH"_L1) {
+                return "es_ES";
+            } else {
+                return "es"; // SUBLANG_NEUTRAL
             }
         }
     }
