@@ -36,6 +36,8 @@ public:
 
     QString className() const;
 
+    Q_INVOKABLE QString id() const;
+
     bool isRoot() const { return m_isRoot; }
 
     Q_INVOKABLE QVariant getProperty(const QString &name) const;

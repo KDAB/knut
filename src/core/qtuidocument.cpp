@@ -209,6 +209,18 @@ void QtUiWidget::setName(const QString &newName)
     emit nameChanged(newName);
 }
 
+QString QtUiWidget::id() const
+{
+    const QString propertyPath = "property[@name='mfc_id']/*[1]";
+    const auto dataNode = m_widget.select_node(propertyPath.toLatin1().constData()).node();
+    if (dataNode.empty())
+        return {};
+    if (dataNode.name() == QLatin1String("string")) {
+        return dataNode.text().as_string();
+    }
+    return {};
+}
+
 QString QtUiWidget::className() const
 {
     return QString::fromLatin1(m_widget.attribute("class").value());
