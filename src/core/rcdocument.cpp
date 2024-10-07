@@ -422,12 +422,12 @@ QString extractStringForDialog(const RcCore::Data::Dialog *dialog, const QString
     if (dialog) {
         const auto control = findControlWithId(dialog, id);
         if (!control) {
-            spdlog::warn("{}: control from id {} does not exist in the rc file.", FUNCTION_NAME, id);
+            spdlog::warn("{}: control from id \"{}\" does not exist in the rc file.", FUNCTION_NAME, id);
             return {};
         }
         return control.value().text;
     } else {
-        spdlog::warn("{}: id {} does not exist in the rc file.", FUNCTION_NAME, id);
+        spdlog::warn("{}: id \"{}\" does not exist in the rc file.", FUNCTION_NAME, id);
         return {};
     }
 }
