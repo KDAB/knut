@@ -275,7 +275,7 @@ MainWindow::MainWindow(QWidget *parent)
     updateActions();
     updateScriptActions();
 }
-  
+
 QString MainWindow::generateWindowTitle(const QString &projectName) const
 {
     QString title = QApplication::applicationName() + ' ' + QApplication::applicationVersion();
