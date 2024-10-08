@@ -1594,9 +1594,9 @@ void CppDocument::deleteMethodLocal(const QString &methodName, const QString &si
 }
 
 /*!
- * \qmlmethod void CppDocument::deleteMethod(string method, string signature)
+ * \qmlmethod void CppDocument::deleteMethod(string methodName, string signature)
  *
- * Delete the method or function with the specified `method` and optional `signature`.
+ * Delete the method or function with the specified `methodName` and `signature`.
  * The method definition/declaration will be deleted from the current file,
  * as well as the corresponding header/source file.
  * References to the method will not be deleted.
@@ -1618,16 +1618,16 @@ void CppDocument::deleteMethodLocal(const QString &methodName, const QString &si
  *
  * If an empty string is provided as the `signature`, all overloads of the function are deleted as well.
  */
-void CppDocument::deleteMethod(const QString &method, const QString &signature)
+void CppDocument::deleteMethod(const QString &methodName, const QString &signature)
 {
-    LOG(method, signature);
+    LOG(methodName, signature);
 
     QString headerSourceName = correspondingHeaderSource();
     if (!headerSourceName.isEmpty()) {
         auto headerSource = qobject_cast<CppDocument *>(Project::instance()->get(headerSourceName));
-        headerSource->deleteMethodLocal(method, signature);
+        headerSource->deleteMethodLocal(methodName, signature);
     }
-    deleteMethodLocal(method, signature);
+    deleteMethodLocal(methodName, signature);
 }
 
 /*!
