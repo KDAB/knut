@@ -568,6 +568,9 @@
           </item>
           <item row="1" column="0" rowspan="3">
            <widget class="QTreeWidget" name="languageMap">
+            <property name="rootIsDecorated">
+             <bool>false</bool>
+            </property>
             <property name="uniformRowHeights">
              <bool>true</bool>
             </property>
