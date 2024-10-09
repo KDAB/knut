@@ -26,7 +26,7 @@ class TestRcwriter : public QObject
 private slots:
     void testQrc()
     {
-        RcFile rcFile = parse(Test::testDataPath() + "/rcfiles/2048Game/2048Game.rc");
+        RcFile rcFile = parse(Test::testDataPath() + "/rcfiles/mainWindow/MainWindow.rc");
         auto data = rcFile.data.value("LANG_ENGLISH;SUBLANG_ENGLISH_US");
 
         // Default settings test
@@ -34,7 +34,7 @@ private slots:
             QBuffer buffer;
             if (buffer.open(QIODevice::WriteOnly)) {
                 auto assets = convertAssets(data, Asset::NoFlags);
-                writeAssetsToQrc(assets, &buffer, Test::testDataPath() + "/rcfiles/2048Game/2048Game.qrc");
+                writeAssetsToQrc(assets, &buffer, Test::testDataPath() + "/rcfiles/mainWindow/MainWindow.qrc");
                 buffer.close();
             }
             if (buffer.open(QIODevice::ReadOnly)) {
@@ -44,12 +44,12 @@ private slots:
             }
         }
 
-        // Don't add if asset does not exist, don't use aliases
+        // Don't add if asset does not exist, split toolbars
         {
-            QFile buffer;
+            QBuffer buffer;
             if (buffer.open(QIODevice::WriteOnly)) {
                 auto assets = convertAssets(data);
-                writeAssetsToQrc(assets, &buffer, Test::testDataPath() + "/rcfiles/2048Game/2048Game.qrc");
+                writeAssetsToQrc(assets, &buffer, Test::testDataPath() + "/rcfiles/mainWindow/MainWindow.qrc");
                 buffer.close();
             }
             if (buffer.open(QIODevice::ReadOnly)) {
@@ -62,26 +62,24 @@ private slots:
 
     void testConvertDialog()
     {
-        RcFile rcFile = parse(Test::testDataPath() + "/rcfiles/2048Game/2048Game.rc");
-        auto usData = rcFile.data.value("LANG_ENGLISH;SUBLANG_ENGLISH_US");
-        auto result = convertDialog(usData, usData.dialogs.first(), RcCore::Widget::AllFlags);
+        RcFile rcFile = parse(Test::testDataPath() + "/rcfiles/luaDebugger/LuaDebugger.rc");
+        auto data = rcFile.data.value("LANG_GERMAN;SUBLANG_GERMAN");
+        auto result = convertDialog(data, data.dialogs.at(1), RcCore::Widget::AllFlags);
 
-        QCOMPARE(result.id, "IDD_ABOUTBOX");
-        QCOMPARE(result.geometry, QRect(0, 0, 255, 103));
+        QCOMPARE(result.id, "IDD_GOTO");
+        QCOMPARE(result.geometry, QRect(0, 0, 273, 95));
         QCOMPARE(result.className, "QDialog");
-        QCOMPARE(result.properties["windowTitle"].toString(), "About 2048Game");
+        QCOMPARE(result.properties["windowTitle"].toString(), "Go To Line");
 
-        auto ukData = rcFile.data.value("LANG_UKRAINIAN;SUBLANG_DEFAULT");
-        result = convertDialog(ukData, ukData.dialogs.first(), RcCore::Widget::AllFlags);
-        QCOMPARE(result.children.size(), 6);
+        QCOMPARE(result.children.size(), 4);
         auto item = result.children.at(2);
         QCOMPARE(item.className, "QPushButton");
         QCOMPARE(item.properties.value("text").toString(), "OK");
-        QCOMPARE(item.geometry, QRect(96, 108, 75, 24));
+        QCOMPARE(item.geometry, QRect(96, 59, 75, 24));
+        item = result.children.at(0);
+        QCOMPARE(item.properties.value("text").toString(), "Line Number:");
         item = result.children.last();
-        QCOMPARE(item.className, "QComboBox");
-        QStringList values = {"3", "4", "5", "6"};
-        QCOMPARE(item.properties.value("text").toStringList(), values);
+        QCOMPARE(item.className, "QLineEdit");
     }
 
     void testWriteDialog()
@@ -126,37 +124,26 @@ private slots:
 
     void testConvertAction()
     {
-        RcFile rcFile = parse(Test::testDataPath() + "/rcfiles/2048Game/2048Game.rc");
+        RcFile rcFile = parse(Test::testDataPath() + "/rcfiles/cryEdit/CryEdit.rc");
         auto data = rcFile.data.value("LANG_ENGLISH;SUBLANG_ENGLISH_US");
 
         // MainFrame menu and shortcuts and toolbar
         auto result = convertActions(data);
 
-        QCOMPARE(result.size(), 51);
-        auto action = result.first();
-        QCOMPARE(action.id, "ID_FILE_NEW");
-        QCOMPARE(action.title, "&New");
-        QCOMPARE(action.toolTip, "New");
-        QCOMPARE(action.statusTip, "Create a new document");
+        QCOMPARE(result.size(), 690);
+        auto action = result.at(1);
+        QCOMPARE(action.id, "ID_FILE_OPEN_LEVEL");
+        QCOMPARE(action.title, "Open...");
+        QCOMPARE(action.toolTip, "Open");
+        QCOMPARE(action.statusTip, "Open an existing level");
         QCOMPARE(action.shortcuts.size(), 1);
-        QCOMPARE(action.shortcuts.first().event, "Ctrl+N");
-        QCOMPARE(action.shortcuts.last().event, "Ctrl+N");
-        QVERIFY(action.iconPath.endsWith("res/Toolbar_0.png"));
+        QCOMPARE(action.shortcuts.first().event, "Ctrl+O");
 
-        action = result.value(12);
-        QCOMPARE(action.id, "ID_EDIT_PASTE");
-        QCOMPARE(action.title, "&Paste");
-        QCOMPARE(action.shortcuts.size(), 2);
-        QCOMPARE(action.shortcuts.first().event, "Ctrl+V");
-        QCOMPARE(action.shortcuts.last().event, "Shift+Ins");
-        QVERIFY(action.iconPath.endsWith("res/Toolbar_5.png"));
-
-        action = result.at(40);
-        QCOMPARE(action.id, "ID_PREV_PANE");
-        QCOMPARE(action.toolTip, "Previous Pane");
-        QCOMPARE(action.statusTip, "Switch back to the previous window pane");
-        QCOMPARE(action.shortcuts.size(), 1);
-        QCOMPARE(action.shortcuts.first().event, "Shift+F6");
+        action = result.value(401);
+        QCOMPARE(action.id, "ID_VIEW_ERRORREPORT");
+        QCOMPARE(action.title, "&Error Report");
+        QCOMPARE(action.shortcuts.size(), 0);
+        QVERIFY(action.checked);
     }
 };
 

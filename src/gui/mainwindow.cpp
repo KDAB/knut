@@ -276,27 +276,20 @@ MainWindow::MainWindow(QWidget *parent)
     updateScriptActions();
 }
 
-static void actionsFromMenu(QMenu *menu, QList<QAction *> &actions)
-{
-    const auto &menuActions = menu->actions();
-    for (QAction *action : menuActions) {
-        if (action->isSeparator())
-            continue;
-        else if (action->menu()) {
-            if (action->menu()->objectName() == "recentProjectsMenu")
-                continue;
-            actionsFromMenu(action->menu(), actions);
-        } else
-            actions.push_back(action);
-    }
-}
-
 QList<QAction *> MainWindow::menuActions() const
 {
     QList<QAction *> actions;
-    const auto &menus = menuBar()->findChildren<QMenu *>();
-    for (QMenu *menu : menus)
-        actionsFromMenu(menu, actions);
+    const auto &actionMenus = menuBar()->actions();
+    for (auto action : actionMenus) {
+        if (action->menu()) {
+            const auto acts = action->menu()->actions();
+            for (const auto &currentAction : acts) {
+                if (!currentAction->text().isEmpty()) {
+                    actions.append(currentAction);
+                }
+            }
+        }
+    }
     actions.append(QMainWindow::actions());
     return actions;
 }

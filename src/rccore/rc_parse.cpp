@@ -70,12 +70,13 @@ static QHash<int, QString> loadResourceFile(const QString &resourceFile)
 
     QTextStream stream(&file);
     QHash<int, QString> resourceMap;
+    static QRegularExpression empty_spaces("\\s+");
     while (!stream.atEnd()) {
         const QString line = stream.readLine();
         if (!line.startsWith("#define"))
             continue;
 
-        QStringList fields = line.split(' ', Qt::SkipEmptyParts);
+        QStringList fields = line.split(empty_spaces, Qt::SkipEmptyParts);
         if (fields.size() < 3)
             continue;
         const auto &value = fields.at(1);

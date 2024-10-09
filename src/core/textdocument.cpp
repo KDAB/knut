@@ -833,7 +833,11 @@ void TextDocument::selectRegion(int from, int to)
 void TextDocument::selectRange(const RangeMark &range)
 {
     LOG(range);
-    selectRegion(range.start(), range.end());
+    if (range.document() != this) {
+        spdlog::error("{}: Can't use a range mark from another editor.", FUNCTION_NAME);
+        return;
+    }
+    range.select();
 }
 
 /*!
@@ -1017,11 +1021,11 @@ void TextDocument::deleteRegion(int from, int to)
 void TextDocument::deleteRange(const RangeMark &range)
 {
     LOG(range);
-    QTextCursor cursor(m_document->document());
-    cursor.setPosition(range.start(), QTextCursor::MoveAnchor);
-    cursor.setPosition(range.end(), QTextCursor::KeepAnchor);
-    cursor.removeSelectedText();
-    m_document->setTextCursor(cursor);
+    if (range.document() != this) {
+        spdlog::error("{}: Can't use a range mark from another editor.", FUNCTION_NAME);
+        return;
+    }
+    range.remove();
 }
 
 /*!
@@ -1183,25 +1187,6 @@ Core::RangeMark TextDocument::createRangeMark()
         spdlog::warn("{}: Creating a range mark with an empty range.", FUNCTION_NAME);
 
     LOG_RETURN("rangeMark", createRangeMark(start, end));
-}
-
-/**
- * \qmlmethod TextDocument::selectRangeMark(RangeMark mark)
- *
- * Selects the text defined by the range make `mark`.
- *
- * \sa RangeMark
- */
-void TextDocument::selectRangeMark(const Core::RangeMark &mark)
-{
-    LOG(LOG_ARG("mark", mark));
-
-    if (mark.document() != this) {
-        spdlog::error("{}: Can't use a range mark from another editor.", FUNCTION_NAME);
-        return;
-    }
-
-    mark.select();
 }
 
 /*!
