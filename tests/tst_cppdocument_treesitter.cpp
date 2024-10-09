@@ -25,7 +25,7 @@ private slots:
 
     void extractDataExchange()
     {
-        Test::testCppDocument("projects/mfc-tutorial", "TutorialDlg.cpp", [](Core::CppDocument *document) {
+        Test::testCppDocument("projects/mfc-dialog", "TutorialDlg.cpp", [](Core::CppDocument *document) {
             auto ddx = document->mfcExtractDDX("CTutorialDlg");
 
             QCOMPARE(ddx.className, "CTutorialDlg");
@@ -33,23 +33,23 @@ private slots:
             QVERIFY(ddx.range.text().startsWith("void CTutorialDlg::DoDataExchange(CDataExchange* pDX)"));
             QVERIFY(ddx.range.text().endsWith("}"));
 
-            QCOMPARE(ddx.entries.size(), 8);
-            QCOMPARE(ddx.entries.first().function, "DDX_Text");
-            QCOMPARE(ddx.entries.first().idc, "IDC_ECHO_AREA");
-            QCOMPARE(ddx.entries.first().member, "m_EchoText");
+            QCOMPARE(ddx.entries.size(), 5);
+            QCOMPARE(ddx.entries.first().function, "DDX_Check");
+            QCOMPARE(ddx.entries.first().idc, "IDC_CHECK1");
+            QCOMPARE(ddx.entries.first().member, "m_check");
 
             QCOMPARE(ddx.entries.at(3).function, "DDX_Control");
-            QCOMPARE(ddx.entries.at(3).idc, "IDC_V_SLIDER_BAR");
-            QCOMPARE(ddx.entries.at(3).member, "m_VSliderBar");
+            QCOMPARE(ddx.entries.at(3).idc, "IDC_SLIDER1");
+            QCOMPARE(ddx.entries.at(3).member, "m_slider");
 
-            QCOMPARE(ddx.entries.last().function, "DDX_Check");
-            QCOMPARE(ddx.entries.last().idc, "IDC_TIMER_CONTROL_SLIDERS");
-            QCOMPARE(ddx.entries.last().member, "m_TimerCtrlSliders");
+            QCOMPARE(ddx.entries.last().function, "DDX_Text");
+            QCOMPARE(ddx.entries.last().idc, "IDC_MESSAGE");
+            QCOMPARE(ddx.entries.last().member, "m_message");
 
             QCOMPARE(ddx.validators.size(), 1);
             const auto &validator = ddx.validators.first();
             QCOMPARE(validator.function, "DDV_MaxChars");
-            QCOMPARE(validator.member, "m_EchoText");
+            QCOMPARE(validator.member, "m_message");
             QCOMPARE(validator.arguments, QStringList({"3"}));
         });
     }
@@ -138,18 +138,15 @@ private:
 
         const QList<std::pair<QString, QStringList>> expectedEntries = {
             {"ON_WM_PAINT", {}},
+            {"ON_BN_CLICKED", {"IDC_CHECK1", "&CTutorialDlg::OnBnClickedCheck1"}},
+            {"ON_EN_CHANGE", {"IDC_EDIT1", "&CTutorialDlg::OnEnChangeEdit1"}},
+            {"ON_CBN_SELCHANGE", {"IDC_COMBO1", "&CTutorialDlg::OnCbnSelchangeCombo1"}},
             {"ON_WM_HSCROLL", {}},
-            {"ON_WM_VSCROLL", {}},
-            {"ON_WM_TIMER", {}},
-            {"ON_WM_LBUTTONDOWN", {}},
-            {"ON_WM_MOUSEMOVE", {}},
-            {"ON_WM_RBUTTONDOWN", {}},
-            {"ON_BN_CLICKED", {"ID_BTN_ADD", "OnBnClickedBtnAdd"}},
-            {"ON_BN_CLICKED", {"IDC_TIMER_CONTROL_SLIDERS", "OnBnClickedTimerControlSliders"}}};
+            {"ON_WM_TIMER", {}}};
 
         QVERIFY(messageMap.isValid());
         QCOMPARE(messageMap.className, QString("CTutorialDlg"));
-        QCOMPARE(messageMap.superClass, QString("CDialog"));
+        QCOMPARE(messageMap.superClass, QString("CDialogEx"));
         QCOMPARE(messageMap.entries.size(), expectedEntries.size());
 
         for (int i = 0; i < expectedEntries.size(); ++i) {
@@ -169,7 +166,7 @@ private slots:
     {
         Core::KnutCore core;
         auto project = Core::Project::instance();
-        project->setRoot(Test::testDataPath() + "/projects/mfc-tutorial");
+        project->setRoot(Test::testDataPath() + "/projects/mfc-dialog");
 
         auto cppdocument = qobject_cast<Core::CppDocument *>(Core::Project::instance()->get("TutorialDlg.cpp"));
 

@@ -226,7 +226,7 @@ static Widget convertCheckBox(const Data &data, Data::Control &control)
     return widget;
 }
 
-// TODO
+// https://learn.microsoft.com/en-us/windows/desktop/menurc/combobox-control
 static Widget convertComboBox(const Data &data, const QString &dialogId, Data::Control &control)
 {
     Widget widget;

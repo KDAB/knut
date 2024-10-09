@@ -294,7 +294,7 @@ private slots:
         cursor.execute(query, tree->rootNode(), std::make_unique<treesitter::Predicates>(source));
 
         auto matches = cursor.allRemainingMatches();
-        QCOMPARE(matches.size(), 2);
+        QCOMPARE(matches.size(), 3);
     }
 
     void eq_except_predicate_errors()
