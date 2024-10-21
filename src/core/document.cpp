@@ -207,6 +207,7 @@ bool Document::saveAs(const QString &fileName)
         const QFileInfo fi(m_fileName);
         m_lastModified = fi.lastModified();
     }
+    spdlog::info("{}: {}", FUNCTION_NAME, m_fileName);
     return saveDone;
 }
 
