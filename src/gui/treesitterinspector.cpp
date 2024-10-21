@@ -142,7 +142,10 @@ TreeSitterInspector::~TreeSitterInspector()
 
 void TreeSitterInspector::saveToFile()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save Query"), "", tr("Query Files (*.scm)"));
+    const QString fileName = QFileDialog::getSaveFileName(this, tr("Save Query"), "", tr("Query Files (*.scm)"));
+    if (fileName.isEmpty()) {
+        return;
+    }
 
     QFile file(fileName);
     // Note: at least on Linux, the file dialog will already warn if the file exists, so no need
