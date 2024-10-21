@@ -56,7 +56,7 @@ private:
         QVariant variant;
     };
 
-    QMetaObject *m_metaObject = nullptr;
+    const QMetaObject *m_metaObject = &QObject::staticMetaObject;
     std::vector<DynamicProperty> m_properties;
     DataChangedFunc m_dataChangedCallback;
 };
