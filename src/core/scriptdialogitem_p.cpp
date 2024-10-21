@@ -17,19 +17,20 @@ namespace Core {
 
 DynamicObject::~DynamicObject()
 {
-    free(m_metaObject);
+    if (m_metaObject != &QObject::staticMetaObject)
+        free(const_cast<QMetaObject *>(m_metaObject));
 }
 
 void DynamicObject::addProperty(const QByteArray &name, const QByteArray &type, QMetaType::Type typeId,
                                 const QVariant &value)
 {
-    Q_ASSERT_X(m_metaObject == nullptr, "addProperty", "Can't add property after calling ready()");
+    Q_ASSERT_X(m_metaObject == &QObject::staticMetaObject, "addProperty", "Can't add property after calling ready()");
     m_properties.emplace_back(DynamicProperty {name, type, typeId, value});
 }
 
 void DynamicObject::ready()
 {
-    Q_ASSERT_X(m_metaObject == nullptr, "ready", "ready() should be called only once.");
+    Q_ASSERT_X(m_metaObject == &QObject::staticMetaObject, "ready", "ready() should be called only once.");
 
     QMetaObjectBuilder builder;
     builder.setSuperClass(&QObject::staticMetaObject);
