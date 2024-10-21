@@ -110,6 +110,7 @@ private:
     void changeCurrentDocument();
     QDockWidget *createDock(QWidget *widget, Qt::DockWidgetArea area, QWidget *toolbar = nullptr);
     void reloadDocuments();
+    QString generateWindowTitle(const QString &projectName = {}) const;
 
     std::unique_ptr<Ui::MainWindow> ui;
     QMenu *m_recentProjects = nullptr;
