@@ -39,6 +39,12 @@ namespace Core {
  * - put an error in `errorString` if it can't be loaded
  * \sa Document::load
  */
+
+/*!
+ * \qmlproperty string Document::documentName
+ * Returns the name on the file system.
+ */
+
 /*!
  * \qmlproperty bool Document::exists
  * Returns true if the document is a file on the disk, otherwise returns false.
@@ -87,6 +93,15 @@ bool Document::exists() const
 Document::Type Document::type() const
 {
     return m_type;
+}
+
+const QString Document::documentName() const
+{
+    if (!exists()) {
+        return {};
+    }
+    const QFileInfo fi(m_fileName);
+    return fi.fileName();
 }
 
 const QString &Document::errorString() const
