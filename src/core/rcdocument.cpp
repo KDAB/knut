@@ -158,6 +158,41 @@ RcCore::ActionList RcDocument::actionsFromMenu(const QString &menuId) const
 }
 
 /*!
+ * \qmlmethod array<Action> RcDocument::actionsFromMenuForLanguage(string menuId, string language)
+ * Returns all actions used in the menu `menuId` for language `language`.
+ */
+RcCore::ActionList RcDocument::actionsFromMenuForLanguage(const QString &menuId, const QString &language) const
+{
+    LOG(menuId);
+
+    if (!isDataValid())
+        return {};
+
+    RcCore::ActionList actions;
+
+    if (m_rcFile.isValid && m_rcFile.data.contains(language)) {
+        const RcCore::Data data = const_cast<RcCore::RcFile *>(&m_rcFile)->data[language];
+        if (auto menu = data.menu(menuId)) {
+            const auto actionIds = menu->actionIds();
+            auto actionsForLanguages = RcCore::convertActions(
+                data, static_cast<RcCore::Asset::ConversionFlags>(DEFAULT_VALUE(ConversionFlag, RcAssetFlags)));
+            for (const auto &id : actionIds) {
+                // We can't use actions() as it uses m_cacheActions
+                auto result = kdalgorithms::find_if(actionsForLanguages, [id](const auto &data) {
+                    return data.id == id;
+                });
+                if (result) {
+                    actions.push_back(*result);
+                }
+            }
+        }
+    } else {
+        return {};
+    }
+    return actions;
+}
+
+/*!
  * \qmlmethod array<Action> RcDocument::actionsFromToolbar(string toolBarId)
  * Returns all actions used in the toolbar `toolBarId`.
  */

@@ -66,6 +66,7 @@ public:
     QList<RcCore::Action> actions() const;
     Q_INVOKABLE RcCore::Action action(const QString &id) const;
     Q_INVOKABLE RcCore::ActionList actionsFromMenu(const QString &menuId) const;
+    Q_INVOKABLE RcCore::ActionList actionsFromMenuForLanguage(const QString &menuId, const QString &language) const;
     Q_INVOKABLE RcCore::ActionList actionsFromToolbar(const QString &toolBarId) const;
 
     QList<RcCore::ToolBar> toolBars() const;
