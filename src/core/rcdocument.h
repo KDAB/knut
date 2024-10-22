@@ -81,6 +81,7 @@ public:
     Q_INVOKABLE RcCore::Menu menu(const QString &id) const;
 
     Q_INVOKABLE RcCore::Ribbon ribbon(const QString &id) const;
+    Q_INVOKABLE RcCore::Ribbon ribbonForLanguage(const QString &id, const QString &language) const;
 
     QStringList dialogIds() const;
     QStringList menuIds() const;
