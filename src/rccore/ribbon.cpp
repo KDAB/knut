@@ -10,6 +10,7 @@
 
 #include "ribbon.h"
 #include "utils/log.h"
+#include <kdalgorithms.h>
 
 #include <pugixml.hpp>
 
@@ -262,6 +263,30 @@ bool Ribbon::load()
     contexts = readItems<RibbonContext>(contextsNode, readContext);
 
     return true;
+}
+
+RibbonElement Ribbon::elementFromId(const QString &id) const
+{
+    const auto menuElements = menu.elements;
+    auto result = kdalgorithms::find_if(menuElements, [&id](const auto &item) {
+        return item.id == id;
+    });
+    if (result) {
+        return *result;
+    }
+
+    const auto categoriesElements = categories;
+    for (const auto &cat : categoriesElements) {
+        for (const auto &panel : cat.panels) {
+            auto result = kdalgorithms::find_if(panel.elements, [&id](const auto &item) {
+                return item.id == id;
+            });
+            if (result) {
+                return *result;
+            }
+        }
+    }
+    return {};
 }
 
 bool operator==(const RibbonElement &lhs, const RibbonElement &rhs)
