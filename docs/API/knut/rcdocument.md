@@ -31,6 +31,7 @@ import Knut
 |-|-|
 |[ToolBar](../knut/toolbar.md) |**[action](#action)**(string id)|
 |array&lt;[Action](../knut/action.md)> |**[actionsFromMenu](#actionsFromMenu)**(string menuId)|
+|array&lt;[Action](../knut/action.md)> |**[actionsFromMenuForLanguage](#actionsFromMenuForLanguage)**(string menuId, string language)|
 |array&lt;[Action](../knut/action.md)> |**[actionsFromToolbar](#actionsFromToolbar)**(string toolBarId)|
 |void |**[convertActions](#convertActions)**(int flags)|
 ||**[convertAssets](#convertAssets)**(int flags)|
@@ -41,6 +42,7 @@ import Knut
 |bool |**[mergeLanguages](#mergeLanguages)**()|
 |bool |**[previewDialog](#previewDialog)**([Widget](../knut/widget.md) dialog)|
 |[Menu](../knut/menu.md) |**[ribbon](#ribbon)**(string id)|
+|[Menu](../knut/menu.md) |**[ribbonForLanguage](#ribbonForLanguage)**(string id, string language)|
 |string |**[string](#string)**(string id)|
 |string |**[stringForDialog](#stringForDialog)**(string dialogId, string id)|
 |string |**[stringForDialogAndLanguage](#stringForDialogAndLanguage)**(string language, string dialogId, string id)|
@@ -122,6 +124,10 @@ Returns the action for the given `id`.
 
 Returns all actions used in the menu `menuId`.
 
+#### <a name="actionsFromMenuForLanguage"></a>array&lt;[Action](../knut/action.md)> **actionsFromMenuForLanguage**(string menuId, string language)
+
+Returns all actions used in the menu `menuId` for language `language`.
+
 #### <a name="actionsFromToolbar"></a>array&lt;[Action](../knut/action.md)> **actionsFromToolbar**(string toolBarId)
 
 Returns all actions used in the toolbar `toolBarId`.
@@ -190,6 +196,10 @@ Previews the result of the conversion RC->UI
 #### <a name="ribbon"></a>[Menu](../knut/menu.md) **ribbon**(string id)
 
 Returns the ribbon for the given `id`.
+
+#### <a name="ribbonForLanguage"></a>[Menu](../knut/menu.md) **ribbonForLanguage**(string id, string language)
+
+Returns the ribbon for the given `id` for specific `language`.
 
 #### <a name="string"></a>string **string**(string id)
 

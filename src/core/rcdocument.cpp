@@ -296,6 +296,24 @@ RcCore::Ribbon RcDocument::ribbon(const QString &id) const
     return {};
 }
 
+/*!
+ * \qmlmethod Menu RcDocument::ribbonForLanguage(string id, string language)
+ * Returns the ribbon for the given `id` for specific `language`.
+ */
+RcCore::Ribbon RcDocument::ribbonForLanguage(const QString &id, const QString &language) const
+{
+    LOG(id);
+
+    if (m_rcFile.isValid && m_rcFile.data.contains(language)) {
+        const RcCore::Data data = const_cast<RcCore::RcFile *>(&m_rcFile)->data[language];
+        if (auto ribbon = data.ribbon(id)) {
+            const_cast<RcCore::Ribbon *>(ribbon)->load();
+            return *ribbon;
+        }
+    }
+    return {};
+}
+
 QStringList RcDocument::dialogIds() const
 {
     LOG();
