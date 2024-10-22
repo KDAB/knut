@@ -125,6 +125,7 @@ public:
     QString fileName;
 
     bool load();
+    Q_INVOKABLE RcCore::RibbonElement elementFromId(const QString &id) const;
 };
 
 } // namespace RcCore
