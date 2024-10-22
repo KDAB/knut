@@ -41,6 +41,7 @@ import Knut
 |bool |**[mergeLanguages](#mergeLanguages)**()|
 |bool |**[previewDialog](#previewDialog)**([Widget](../knut/widget.md) dialog)|
 |[Menu](../knut/menu.md) |**[ribbon](#ribbon)**(string id)|
+|[Menu](../knut/menu.md) |**[ribbon](#ribbon)**(string id, string language)|
 |string |**[string](#string)**(string id)|
 |string |**[stringForDialog](#stringForDialog)**(string dialogId, string id)|
 |string |**[stringForDialogAndLanguage](#stringForDialogAndLanguage)**(string language, string dialogId, string id)|
@@ -190,6 +191,10 @@ Previews the result of the conversion RC->UI
 #### <a name="ribbon"></a>[Menu](../knut/menu.md) **ribbon**(string id)
 
 Returns the ribbon for the given `id`.
+
+#### <a name="ribbon"></a>[Menu](../knut/menu.md) **ribbon**(string id, string language)
+
+Returns the ribbon for the given `id` for specific `language`.
 
 #### <a name="string"></a>string **string**(string id)
 
