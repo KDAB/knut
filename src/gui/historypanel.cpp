@@ -31,6 +31,7 @@ HistoryPanel::HistoryPanel(QWidget *parent)
     setUniformRowHeights(true);
     setModel(m_model);
     header()->setStretchLastSection(true);
+    setRootIsDecorated(false);
 
     auto showLast = [this]() {
         scrollTo(m_model->index(m_model->rowCount() - 1, 0));
