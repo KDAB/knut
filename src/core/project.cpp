@@ -415,6 +415,10 @@ QVariantList Project::findInFiles(const QString &pattern) const
         return result;
     }
 
+    if (pattern.trimmed().isEmpty()) {
+        return result;
+    }
+
     QProcess process;
 
     const QStringList arguments {"--vimgrep", "-U", "--multiline-dotall", pattern, m_root};
