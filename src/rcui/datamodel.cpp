@@ -27,7 +27,9 @@ DataModel::DataModel(const RcCore::RcFile &rcFile, QString language, QObject *pa
     , m_rcFile(rcFile)
     , m_language(std::move(language))
 {
-    Q_ASSERT(m_rcFile.data.contains(m_language));
+    if (!m_language.isEmpty()) {
+        Q_ASSERT(m_rcFile.data.contains(m_language));
+    }
 }
 
 QModelIndex DataModel::index(int row, int column, const QModelIndex &parent) const
