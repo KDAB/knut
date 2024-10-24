@@ -487,6 +487,24 @@ QString RcDocument::stringForDialogAndLanguage(const QString &language, const QS
 }
 
 /*!
+ * \qmlmethod string RcDocument::captionDialogForLanguage(string language, string dialogId)
+ * Returns the string with `id` for the given `language`.
+ */
+QString RcDocument::captionDialogForLanguage(const QString &language, const QString &dialogId) const
+{
+    LOG(language, dialogId);
+
+    if (m_rcFile.isValid && m_rcFile.data.contains(language)) {
+        const RcCore::Data data = const_cast<RcCore::RcFile *>(&m_rcFile)->data[language];
+        const auto dialog = data.dialog(dialogId);
+        return dialog->caption;
+    } else {
+        spdlog::warn("{}: language {} does not exist in the rc file.", FUNCTION_NAME, language);
+        return {};
+    }
+}
+
+/*!
  * \qmlmethod string RcDocument::stringForDialog(string dialogId, string id)
  * Returns the string with `id` for the given `dialogid`.
  */
