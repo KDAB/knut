@@ -12,12 +12,27 @@ Contact KDAB at <info@kdab.com> for commercial licensing options.
 
 class QLineEdit;
 class QToolButton;
-class QTreeWidget;
 class QTreeWidgetItem;
 
-#include <QWidget>
+#include <QTreeWidget>
 
 namespace Gui {
+
+class FindInFilesTreeWidget : public QTreeWidget
+{
+    Q_OBJECT
+public:
+    explicit FindInFilesTreeWidget(QWidget *parent = nullptr);
+
+    bool findInFilesAvailable() const;
+    void setFindInFilesAvailable(bool newFindInFilesAvailable);
+
+protected:
+    void paintEvent(QPaintEvent *) override;
+
+private:
+    bool m_findInFilesAvailable = true;
+};
 
 class FindInFilesPanel : public QWidget
 {
@@ -35,7 +50,7 @@ private:
     void setupToolBar();
 
     QWidget *const m_toolBar;
-    QTreeWidget *m_resultsDisplay;
+    FindInFilesTreeWidget *m_resultsDisplay;
     QLineEdit *m_searchInput;
 };
 
