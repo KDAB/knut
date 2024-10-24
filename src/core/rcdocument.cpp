@@ -193,6 +193,29 @@ RcCore::ActionList RcDocument::actionsFromMenuForLanguage(const QString &menuId,
 }
 
 /*!
+ * \qmlmethod array<Action> RcDocument::actionsForLanguage(string language)
+ * Returns all actions used for language `language`.
+ */
+RcCore::ActionList RcDocument::actionsForLanguage(const QString &language) const
+{
+    LOG(language);
+
+    if (!isDataValid())
+        return {};
+
+    RcCore::ActionList actions;
+    if (m_rcFile.isValid && m_rcFile.data.contains(language)) {
+        const RcCore::Data data = const_cast<RcCore::RcFile *>(&m_rcFile)->data[language];
+        actions = RcCore::convertActions(
+            data, static_cast<RcCore::Asset::ConversionFlags>(DEFAULT_VALUE(ConversionFlag, RcAssetFlags)));
+
+    } else {
+        return {};
+    }
+    return actions;
+}
+
+/*!
  * \qmlmethod array<Action> RcDocument::actionsFromToolbar(string toolBarId)
  * Returns all actions used in the toolbar `toolBarId`.
  */
