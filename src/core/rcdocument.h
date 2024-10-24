@@ -104,6 +104,8 @@ public:
 
     const RcCore::RcFile &file() const;
 
+    Q_INVOKABLE QString captionDialogForLanguage(const QString &language, const QString &dialogId) const;
+
 public slots:
     void convertAssets(int flags = DEFAULT_VALUE(ConversionFlag, RcAssetFlags));
     void convertActions(int flags = DEFAULT_VALUE(ConversionFlags, RcAssetFlags));
