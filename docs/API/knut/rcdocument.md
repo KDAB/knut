@@ -30,7 +30,9 @@ import Knut
 | | Name |
 |-|-|
 |[ToolBar](../knut/toolbar.md) |**[action](#action)**(string id)|
+|array&lt;[Action](../knut/action.md)> |**[actionsForLanguage](#actionsForLanguage)**(string language)|
 |array&lt;[Action](../knut/action.md)> |**[actionsFromMenu](#actionsFromMenu)**(string menuId)|
+|array&lt;[Action](../knut/action.md)> |**[actionsFromMenuForLanguage](#actionsFromMenuForLanguage)**(string menuId, string language)|
 |array&lt;[Action](../knut/action.md)> |**[actionsFromToolbar](#actionsFromToolbar)**(string toolBarId)|
 |void |**[convertActions](#convertActions)**(int flags)|
 ||**[convertAssets](#convertAssets)**(int flags)|
@@ -118,9 +120,17 @@ Note that the RC file may be valid, and our parser needs to be updated.
 
 Returns the action for the given `id`.
 
+#### <a name="actionsForLanguage"></a>array&lt;[Action](../knut/action.md)> **actionsForLanguage**(string language)
+
+Returns all actions used for language `language`.
+
 #### <a name="actionsFromMenu"></a>array&lt;[Action](../knut/action.md)> **actionsFromMenu**(string menuId)
 
 Returns all actions used in the menu `menuId`.
+
+#### <a name="actionsFromMenuForLanguage"></a>array&lt;[Action](../knut/action.md)> **actionsFromMenuForLanguage**(string menuId, string language)
+
+Returns all actions used in the menu `menuId` for language `language`.
 
 #### <a name="actionsFromToolbar"></a>array&lt;[Action](../knut/action.md)> **actionsFromToolbar**(string toolBarId)
 
