@@ -34,6 +34,7 @@ import Knut
 |array&lt;[Action](../knut/action.md)> |**[actionsFromMenu](#actionsFromMenu)**(string menuId)|
 |array&lt;[Action](../knut/action.md)> |**[actionsFromMenuForLanguage](#actionsFromMenuForLanguage)**(string menuId, string language)|
 |array&lt;[Action](../knut/action.md)> |**[actionsFromToolbar](#actionsFromToolbar)**(string toolBarId)|
+|string |**[captionDialogForLanguage](#captionDialogForLanguage)**(string language, string dialogId)|
 |void |**[convertActions](#convertActions)**(int flags)|
 ||**[convertAssets](#convertAssets)**(int flags)|
 |string |**[convertLanguageToCode](#convertLanguageToCode)**(string language)|
@@ -135,6 +136,10 @@ Returns all actions used in the menu `menuId` for language `language`.
 #### <a name="actionsFromToolbar"></a>array&lt;[Action](../knut/action.md)> **actionsFromToolbar**(string toolBarId)
 
 Returns all actions used in the toolbar `toolBarId`.
+
+#### <a name="captionDialogForLanguage"></a>string **captionDialogForLanguage**(string language, string dialogId)
+
+Returns the string with `id` for the given `language`.
 
 #### <a name="convertActions"></a>void **convertActions**(int flags)
 

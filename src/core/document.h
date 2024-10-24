@@ -21,6 +21,7 @@ class Document : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString fileName READ fileName WRITE setFileName NOTIFY fileNameChanged)
+    Q_PROPERTY(QString documentName READ documentName NOTIFY fileNameChanged)
     Q_PROPERTY(bool exists READ exists NOTIFY existsChanged)
     Q_PROPERTY(Type type READ type CONSTANT)
     Q_PROPERTY(QString errorString READ errorString NOTIFY errorStringChanged)
@@ -49,6 +50,8 @@ public:
     bool exists() const;
 
     Type type() const;
+
+    const QString documentName() const;
 
     const QString &errorString() const;
 
