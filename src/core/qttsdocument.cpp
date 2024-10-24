@@ -125,6 +125,9 @@ void QtTsDocument::addMessage(pugi::xml_node contextChild, const QString &contex
 void QtTsDocument::addMessage(const QString &context, const QString &fileName, const QString &source,
                               const QString &translation, const QString &comment)
 {
+    if (source.isEmpty()) {
+        return;
+    }
     LOG(context, fileName, source, translation, comment);
     if (fileName.isEmpty() || source.isEmpty() || context.isEmpty()) {
         spdlog::error(R"({}: Location or context or source is empty)", FUNCTION_NAME);
