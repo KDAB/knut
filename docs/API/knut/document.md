@@ -10,6 +10,7 @@ import Knut
 
 | | Name |
 |-|-|
+|string|**[documentName](#documentName)**|
 |string|**[errorString](#errorString)**|
 |bool|**[exists](#exists)**|
 |string|**[fileName](#fileName)**|
@@ -31,6 +32,10 @@ The `Document` class is the base class for all documents.
 A document is a file loaded by Knut and that can be used in script (either to get data or to edit).
 
 ## Property Documentation
+
+#### <a name="documentName"></a>string **documentName**
+
+Returns the name on the file system.
 
 #### <a name="errorString"></a>string **errorString**
 
