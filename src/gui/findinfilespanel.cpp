@@ -15,6 +15,7 @@ Contact KDAB at <info@kdab.com> for commercial licensing options.
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QLineEdit>
+#include <QPainter>
 #include <QToolButton>
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
@@ -24,10 +25,23 @@ namespace Gui {
 
 enum { LineRole = Qt::UserRole + 1, ColumnRole };
 
+class FindInFilesTreeWidget : public QTreeWidget
+{
+    Q_OBJECT
+public:
+    explicit FindInFilesTreeWidget(QWidget *parent = nullptr);
+
+protected:
+    void paintEvent(QPaintEvent *) override;
+
+private:
+    const bool m_findInFilesAvailable;
+};
+
 FindInFilesPanel::FindInFilesPanel(QWidget *parent)
     : QWidget(parent)
     , m_toolBar(new QWidget(this))
-    , m_resultsDisplay(new QTreeWidget(this))
+    , m_resultsDisplay(new FindInFilesTreeWidget(this))
 {
     setWindowTitle(tr("Find in Files"));
     setObjectName("FindInFilesPanel");
@@ -45,6 +59,8 @@ FindInFilesPanel::FindInFilesPanel(QWidget *parent)
     connect(m_resultsDisplay, &QTreeWidget::itemActivated, this, [this](QTreeWidgetItem *item, int) {
         openFileAtItem(item);
     });
+    const bool available = Core::Project::instance()->isFindInFilesAvailable();
+    m_searchInput->setEnabled(available);
 }
 
 QWidget *FindInFilesPanel::toolBar() const
@@ -146,4 +162,28 @@ void FindInFilesPanel::openFileAtItem(QTreeWidgetItem *item)
     }
 }
 
+FindInFilesTreeWidget::FindInFilesTreeWidget(QWidget *parent)
+    : QTreeWidget(parent)
+    , m_findInFilesAvailable(Core::Project::instance()->isFindInFilesAvailable())
+{
+}
+
+void FindInFilesTreeWidget::paintEvent(QPaintEvent *event)
+{
+    if (!m_findInFilesAvailable) {
+        QPainter p(viewport());
+
+        QFont font = p.font();
+        font.setItalic(true);
+        p.setFont(font);
+
+        p.drawText(QRect(0, 0, width(), height()), Qt::AlignCenter,
+                   tr("Ripgrep (rg) executable not found.\nPlease ensure that ripgrep is installed and its location is "
+                      "included in the PATH environment variable."));
+    } else {
+        QTreeWidget::paintEvent(event);
+    }
+}
+
 } // namespace Gui
+#include "findinfilespanel.moc"

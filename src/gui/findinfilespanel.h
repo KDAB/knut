@@ -12,10 +12,9 @@ Contact KDAB at <info@kdab.com> for commercial licensing options.
 
 class QLineEdit;
 class QToolButton;
-class QTreeWidget;
 class QTreeWidgetItem;
 
-#include <QWidget>
+#include <QTreeWidget>
 
 namespace Gui {
 
@@ -35,7 +34,7 @@ private:
     void setupToolBar();
 
     QWidget *const m_toolBar;
-    QTreeWidget *m_resultsDisplay;
+    QTreeWidget *m_resultsDisplay = nullptr;
     QLineEdit *m_searchInput;
 };
 
