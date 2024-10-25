@@ -38,6 +38,7 @@ import Knut
 ||**[convertAssets](#convertAssets)**(int flags)|
 |string |**[convertLanguageToCode](#convertLanguageToCode)**(string language)|
 |[Widget](../knut/widget.md) |**[dialog](#dialog)**(string id, int flags, real scaleX, real scaleY)|
+|string |**[dialogTitleForLanguage](#dialogTitleForLanguage)**(string language, string dialogId)|
 |[Menu](../knut/menu.md) |**[menu](#menu)**(string id)|
 |bool |**[mergeAllLanguages](#mergeAllLanguages)**(string language = "[default]")|
 |bool |**[mergeLanguages](#mergeLanguages)**()|
@@ -177,6 +178,10 @@ Flags could be:
 - `RcDocument.UpdateGeometry`: use the scale factor to change the dialog size
 - `RcDocument.UseIdForPixmap`: use the id as a resource value for the pixmaps in labels
 - `RcDocument.AllFlags`: combination of all above
+
+#### <a name="dialogTitleForLanguage"></a>string **dialogTitleForLanguage**(string language, string dialogId)
+
+Returns the string with `id` for the given `language`.
 
 #### <a name="menu"></a>[Menu](../knut/menu.md) **menu**(string id)
 

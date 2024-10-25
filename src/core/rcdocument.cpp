@@ -811,6 +811,24 @@ bool RcDocument::isDataValid() const
 {
     return m_rcFile.isValid && m_rcFile.data.contains(m_language);
 }
+
+/*!
+ * \qmlmethod string RcDocument::dialogTitleForLanguage(string language, string dialogId)
+ * Returns the string with `id` for the given `language`.
+ */
+QString RcDocument::dialogTitleForLanguage(const QString &language, const QString &dialogId) const
+{
+    LOG(language, dialogId);
+    if (m_rcFile.isValid && m_rcFile.data.contains(language)) {
+        const RcCore::Data data = const_cast<RcCore::RcFile *>(&m_rcFile)->data[language];
+        const auto dialog = data.dialog(dialogId);
+        return dialog->caption;
+    } else {
+        spdlog::warn("{}: language {} does not exist in the rc file.", FUNCTION_NAME, language);
+        return {};
+    }
+}
+
 } // namespace Core
 
 #include "moc_rcdocument.cpp"
