@@ -99,6 +99,8 @@ public:
                                                    const QString &id) const;
     Q_INVOKABLE QString stringForDialog(const QString &dialogId, const QString &id) const;
 
+    Q_INVOKABLE QString dialogTitleForLanguage(const QString &language, const QString &dialogId) const;
+
     QString language() const;
     void setLanguage(const QString &language);
     QStringList languages() const;
