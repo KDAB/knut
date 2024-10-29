@@ -95,6 +95,18 @@ public:
         endResetModel();
     }
 
+    bool fileExists(const QString &filename)
+    {
+        if (Core::Project::instance()->root().isEmpty())
+            return false;
+        auto it = std::find_if(m_files.cbegin(), m_files.cend(), [filename](const auto &fi) {
+            return fi.fileName == filename;
+        });
+        if (it == m_files.cend())
+            return false;
+        return true;
+    }
+
 private:
     struct FileInfo
     {
@@ -480,8 +492,10 @@ void Palette::addFileSelector()
     auto resetFiles = [model = fileModel.get()]() {
         model->resetFileInfo();
     };
-    auto selectFile = [](const QVariant &path) {
-        Core::Project::instance()->open(path.toString());
+    auto selectFile = [model = fileModel.get()](const QVariant &path) {
+        if (model->fileExists(path.toString())) {
+            Core::Project::instance()->open(path.toString());
+        }
     };
     m_selectors.emplace_back("", std::move(fileModel), selectFile, resetFiles);
 }
