@@ -418,6 +418,9 @@ QVariantList Project::findInFiles(const QString &pattern) const
     if (pattern.trimmed().isEmpty()) {
         return result;
     }
+    if (m_root.isEmpty()) {
+        return result;
+    }
 
     QProcess process;
 
