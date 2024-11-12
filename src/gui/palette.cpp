@@ -444,7 +444,12 @@ void Palette::clickItem(const QModelIndex &index)
         const auto text = ui->lineEdit->text().mid(selector.prefix.length()).simplified();
         if (text.isEmpty())
             return;
-        selector.selectionFunc(text);
+        // If there is a source model (some don't have, like the line selector), we need a match with one item from the
+        // model. If there are no matches (=proxy model empty, no current index selected), then we do nothing.
+        if (m_proxyModel->sourceModel() && !ui->treeView->currentIndex().isValid())
+            return;
+        if (!selector.selectionFunc(text))
+            return;
     } else {
         m_selectors.at(m_currentSelector).selectionFunc(index.data(Qt::UserRole));
     }
@@ -482,6 +487,7 @@ void Palette::addFileSelector()
     };
     auto selectFile = [](const QVariant &path) {
         Core::Project::instance()->open(path.toString());
+        return true;
     };
     m_selectors.emplace_back("", std::move(fileModel), selectFile, resetFiles);
 }
@@ -497,7 +503,9 @@ void Palette::addLineSelector()
                 textDocument->textEdit()->setFocus(Qt::OtherFocusReason);
                 textDocument->textEdit()->centerCursor();
             }
+            return true;
         }
+        return false;
     };
     m_selectors.emplace_back(":", nullptr, gotoLine);
 }
@@ -506,6 +514,7 @@ void Palette::addScriptSelector()
 {
     auto runScript = [](const QVariant &fileName) {
         Core::Utils::runScript(fileName.toString(), true);
+        return true;
     };
     m_selectors.emplace_back(".", std::make_unique<ScriptModel>(), runScript);
 }
@@ -521,7 +530,9 @@ void Palette::addSymbolSelector()
             codeDocument->selectSymbol(symbolName.toString());
             codeDocument->textEdit()->setFocus(Qt::OtherFocusReason);
             codeDocument->textEdit()->centerCursor();
+            return true;
         }
+        return false;
     };
     m_selectors.emplace_back("@", std::move(symbolModel), gotoSymbol, resetSymbols);
 }
@@ -534,8 +545,11 @@ void Palette::addActionSelector()
 
     auto runAction = [](const QVariant &action) {
         auto val = action.value<QAction *>();
-        if (val && val->isEnabled())
+        if (val && val->isEnabled()) {
             val->trigger();
+            return false;
+        }
+        return true;
     };
     m_selectors.emplace_back(">", std::move(actionModel), runAction);
 }
