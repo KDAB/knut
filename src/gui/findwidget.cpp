@@ -160,8 +160,7 @@ void FindWidget::setReplaceVisible(bool show)
     // We don't want to use a wrapping frame here due to layouting issues...
     ui->replaceWithLabel->setVisible(show);
     ui->replaceEdit->setVisible(show);
-    ui->replaceAllbutton->setVisible(show);
-    ui->replaceButton->setVisible(show);
+    ui->replaceButtonWidget->setVisible(show);
 }
 
 } // namespace Gui
