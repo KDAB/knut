@@ -11,6 +11,28 @@
 project(knut-gui LANGUAGES CXX)
 
 set(PROJECT_SOURCES
+    rcui/menumodel.h
+    rcui/menumodel.cpp
+    rcui/stringmodel.cpp
+    rcui/stringmodel.h
+    rcui/toolbarmodel.cpp
+    rcui/toolbarmodel.h
+    rcui/acceleratormodel.cpp
+    rcui/acceleratormodel.h
+    rcui/assetmodel.cpp
+    rcui/ribbonmodel.cpp
+    rcui/assetmodel.h
+    rcui/ribbonmodel.h
+    rcui/datamodel.cpp
+    rcui/datamodel.h
+    rcui/dialogmodel.cpp
+    rcui/dialogmodel.h
+    rcui/includemodel.cpp
+    rcui/includemodel.h
+    rcui/rcviewer_global.h
+    rcui/rcfileview.h
+    rcui/rcfileview.cpp
+    rcui/rcfileview.ui
     apiexecutorwidget.h
     apiexecutorwidget.cpp
     apiexecutorwidget.ui
@@ -99,7 +121,7 @@ target_link_libraries(
          Qt::Widgets
          Qt::UiTools
          knut-core
-         knut-rcui
+         knut-rccore
          knut-utils
          KF5SyntaxHighlighting)
 
