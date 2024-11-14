@@ -11,13 +11,17 @@ If the first line is a comment, it will be used as the script description.
 !!! Note ""
     If you need to know more about QML, follow this link: [https://doc.qt.io/qt-6/qmlapplications.html](https://doc.qt.io/qt-6/qmlapplications.html)
 
+Both Javascript and QML scripts use the same API, see the [Knut API reference](../API/knut/document.md).
+
+For more advanced use cases, take a look at: [Syntax tree queries using Tree-sitter](./treesitter.md)
+
 ## Javascript script
 
 Javascript scripts **must** contain a main function, the entry point for the script:
 
 ```js
 // Script description
-function main {
+function main() {
     message.log("Hello World!")
 }
 ```
@@ -67,6 +71,9 @@ ScriptDialog {
 ```
 
 The `QLineEdit` (named `lineEdit`) in the ui file is accessed both in reading and writing via `data.lineEdit`.
+
+Note that the `init()` function in the root item (visual or not) will automatically be called at startup.
+In a visual script, the `init()` function usually should not start the code transformation, but should wait for the dialog to be accepted, or a button to be clicked, etc.
 
 ### Supported widgets
 
