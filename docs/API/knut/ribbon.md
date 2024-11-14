@@ -15,6 +15,12 @@ import Knut
 |string|**[id](#id)**|
 |[RibbonMenu](../knut/ribbonmenu.md)|**[menu](#menu)**|
 
+## Methods
+
+| | Name |
+|-|-|
+|[RibbonElement](../knut/ribbonelement.md) |**[elementFromId](#elementFromId)**(string id)|
+
 ## Detailed Description
 
 A ribbon is made of multiple items:
@@ -43,3 +49,9 @@ This property holds the id of the ribbon.
 #### <a name="menu"></a>[RibbonMenu](../knut/ribbonmenu.md) **menu**
 
 This property holds the menu of the ribbon.
+
+## Method Documentation
+
+#### <a name="elementFromId"></a>[RibbonElement](../knut/ribbonelement.md) **elementFromId**(string id)
+
+This method returns RibbonElement from identifier `id`.
