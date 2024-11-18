@@ -8,7 +8,7 @@
   Contact KDAB at <info@kdab.com> for commercial licensing options.
 */
 
-#include "FindAdapter.h"
+#include "findadapter.h"
 #include "core/textdocument.h"
 #include "highlightdelegate.h"
 
