@@ -10,6 +10,8 @@
 
 #pragma once
 
+#include "../findinterface.h"
+
 #include <QWidget>
 #include <memory>
 
@@ -23,13 +25,17 @@ struct Data;
 struct RcFile;
 }
 
+namespace Gui {
+class FindAdapter;
+}
+
 namespace RcUi {
 
 namespace Ui {
     class RcFileView;
 }
 
-class RcFileView : public QWidget
+class RcFileView : public QWidget, public Gui::FindInterface
 {
     Q_OBJECT
 
@@ -40,6 +46,8 @@ public:
     void setRcFile(const RcCore::RcFile &rcFile);
 
     QPlainTextEdit *textEdit() const;
+
+    void find(const QString &text, int options) override;
 
 signals:
     void languageChanged(const QString &language);
@@ -65,6 +73,7 @@ private:
     QSortFilterProxyModel *const m_dataProxyModel;
     QSortFilterProxyModel *const m_contentProxyModel;
     QAbstractItemModel *m_contentModel = nullptr;
+    Gui::FindAdapter *m_findAdapter = nullptr;
 };
 
 } // namespace RcUi

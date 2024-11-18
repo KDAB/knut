@@ -13,6 +13,7 @@
 #include "assetmodel.h"
 #include "datamodel.h"
 #include "dialogmodel.h"
+#include "gui/findadapter.h"
 #include "includemodel.h"
 #include "menumodel.h"
 #include "rccore/rcfile.h"
@@ -47,11 +48,14 @@ protected:
 
 RcFileView::RcFileView(QWidget *parent)
     : QWidget(parent)
+    , FindInterface(FindInterface::CanSearch)
     , ui(new Ui::RcFileView)
     , m_dataProxyModel(new DataProxy(this))
     , m_contentProxyModel(new QSortFilterProxyModel(this))
 {
     ui->setupUi(this);
+
+    m_findAdapter = new Gui::FindAdapter(ui->dataView);
 
     ui->dataView->setSortingEnabled(true);
     ui->dataView->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -125,6 +129,11 @@ void RcFileView::setRcFile(const RcCore::RcFile &rcFile)
 QPlainTextEdit *RcFileView::textEdit() const
 {
     return ui->textEdit;
+}
+
+void RcFileView::find(const QString &text, int options)
+{
+    m_findAdapter->find(text, options);
 }
 
 void RcFileView::changeDataItem(const QModelIndex &current)
