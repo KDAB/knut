@@ -42,6 +42,8 @@ set(PROJECT_SOURCES
     documentpalette.cpp
     fileselector.h
     fileselector.cpp
+    findadapter.h
+    findadapter.cpp
     findinterface.h
     findwidget.h
     findinfilespanel.cpp
@@ -93,8 +95,6 @@ set(PROJECT_SOURCES
     scriptpanel.cpp
     scriptlistpanel.cpp
     scriptlistpanel.h
-    searchabletableview.h
-    searchabletableview.cpp
     shortcutmanager.h
     shortcutmanager.cpp
     shortcutsettings.h

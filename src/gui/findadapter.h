@@ -10,23 +10,22 @@
 
 #pragma once
 
-#include <QTableWidget>
+#include <QAbstractItemView>
 
 namespace Gui {
 
-class SearchableTableView : public QTableView
+class FindAdapter
 {
-    Q_OBJECT
-
 public:
-    explicit SearchableTableView(QWidget *parent = nullptr);
-    ~SearchableTableView() override;
+    explicit FindAdapter(QAbstractItemView *view);
 
     void find(const QString &text, int options);
+    void updateItemDelegate();
 
 private:
-    QModelIndexList searchModel(const QString &text, int options) const;
+    QModelIndexList searchModel(const QString &text, int options, const QModelIndex &parent = {}) const;
 
+    QAbstractItemView *const m_view;
     QString m_highlightedText;
     int m_options = 0;
     QModelIndexList m_searchResults;
