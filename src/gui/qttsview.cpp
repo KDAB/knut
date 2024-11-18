@@ -10,8 +10,7 @@
 
 #include "qttsview.h"
 #include "core/textdocument.h"
-#include "highlightdelegate.h"
-#include "searchabletableview.h"
+#include "findadapter.h"
 
 #include <QAbstractTableModel>
 #include <QHeaderView>
@@ -39,6 +38,8 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override
     {
         Q_UNUSED(parent)
+        if (parent.isValid())
+            return 0;
         return m_document->messages().count();
     }
     int columnCount(const QModelIndex &parent = QModelIndex()) const override
@@ -153,13 +154,15 @@ private:
 QtTsView::QtTsView(QWidget *parent)
     : QWidget(parent)
     , FindInterface(FindInterface::CanSearch)
-    , m_tableView(new SearchableTableView(this))
+    , m_tableView(new QTableView(this))
+    , m_findAdapter(new FindAdapter(m_tableView))
     , m_searchLineEdit(new QLineEdit(this))
     , m_contentProxyModel(new QtTsProxy(this))
 {
     auto mainWidgetLayout = new QVBoxLayout(this);
     m_tableView->verticalHeader()->hide();
     m_tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_findAdapter->updateItemDelegate();
     mainWidgetLayout->addWidget(m_tableView);
     mainWidgetLayout->addWidget(m_searchLineEdit);
     m_searchLineEdit->setPlaceholderText(tr("Filter..."));
@@ -210,7 +213,7 @@ void QtTsView::updateView()
 
 void QtTsView::find(const QString &searchText, int options)
 {
-    m_tableView->find(searchText, options);
+    m_findAdapter->find(searchText, options);
 }
 
 } // namespace Gui
