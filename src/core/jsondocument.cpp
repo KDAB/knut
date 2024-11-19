@@ -103,6 +103,7 @@ bool JsonDocument::setValue(const QString &path, const QVariant &value)
     Utils::SetJsonValueStatus status = Utils::setJsonValue(m_jsonData, path, value);
     switch (status) {
     case Utils::SetJsonValueStatus::Success:
+        setText(QString::fromStdString(m_jsonData.dump(4, ' ', false)));
         return true;
     case Utils::SetJsonValueStatus::NullValue:
         spdlog::error("JsonDocument::setValue {} in {} - value is null", value.toString(), path);
@@ -117,22 +118,22 @@ bool JsonDocument::setValue(const QString &path, const QVariant &value)
 bool JsonDocument::doLoad(const QString &fileName)
 {
     Q_ASSERT(!fileName.isEmpty());
-    return loadJsonData(fileName);
+
+    if (TextDocument::doLoad(fileName)) {
+        return loadJsonData(fileName);
+    }
+    return false;
 }
 
 bool JsonDocument::doSave(const QString &fileName)
 {
     Q_ASSERT(!fileName.isEmpty());
 
-    QFile file(fileName);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-        spdlog::error("JsonDocument::doSave {}", fileName);
-        return false;
+    if (TextDocument::doSave(fileName)) {
+        loadJsonData(fileName);
+        return true;
     }
-
-    QTextStream stream(&file);
-    stream << QString::fromStdString(m_jsonData.dump(4, ' ', false));
-    return true;
+    return false;
 }
 
 } // namespace Core
