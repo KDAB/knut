@@ -10,6 +10,7 @@
 
 #include "lsp_utils.h"
 #include "codedocument.h"
+#include "logger.h"
 #include "project.h"
 #include "textdocument.h"
 
@@ -46,6 +47,7 @@ int lspToPos(const TextDocument &textDocument, const Lsp::Position &pos)
 
 RangeMark lspToRange(const TextDocument &textDocument, const Lsp::Range &range)
 {
+    LoggerDisabler disabler;
     // I know, ugly, but that's the easiest to do that here.
     auto document = const_cast<TextDocument *>(&textDocument);
     return document->createRangeMark(lspToPos(textDocument, range.start), lspToPos(textDocument, range.end));
