@@ -40,7 +40,7 @@
 #include "rctoqrcdialog.h"
 #include "rctouidialog.h"
 #include "rcui/rcfileview.h"
-#include "runscriptwidget.h"
+#include "runscriptdialog.h"
 #include "scriptlistpanel.h"
 #include "scriptpanel.h"
 #include "shortcutmanager.h"
@@ -181,11 +181,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionCloseDocument, &QAction::triggered, this, &MainWindow::closeDocument);
 
     // Script
-    ui->runScriptWidget->hide();
-    ui->runScriptWidget->installEventFilter(this);
     ui->apiExecutorWidget->hide();
     ui->apiExecutorWidget->installEventFilter(this);
-    connect(ui->actionRunScript, &QAction::triggered, ui->runScriptWidget, &RunScriptWidget::open);
+    connect(ui->actionRunScript, &QAction::triggered, this, &MainWindow::runScript);
     connect(ui->actionStartRecordingScript, &QAction::triggered, m_historyPanel, &HistoryPanel::startRecording);
     connect(ui->actionStopRecordingScript, &QAction::triggered, m_historyPanel, &HistoryPanel::stopRecording);
     connect(ui->actionPlayLastScript, &QAction::triggered, m_scriptPanel, &ScriptPanel::runScript);
@@ -312,16 +310,10 @@ ShortcutManager *MainWindow::shortcutManager() const
 bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 {
     if (event->type() == QEvent::Show) {
-        if (qobject_cast<FindWidget *>(watched)) {
+        if (qobject_cast<FindWidget *>(watched))
             ui->apiExecutorWidget->hide();
-            ui->runScriptWidget->hide();
-        } else if (qobject_cast<APIExecutorWidget *>(watched)) {
+        else if (qobject_cast<APIExecutorWidget *>(watched))
             ui->findWidget->hide();
-            ui->runScriptWidget->hide();
-        } else if (qobject_cast<RunScriptWidget *>(watched)) {
-            ui->apiExecutorWidget->hide();
-            ui->findWidget->hide();
-        }
     }
     return QMainWindow::eventFilter(watched, event);
 }
@@ -559,6 +551,12 @@ See Wikipedia article: <a href="https://en.wikipedia.org/wiki/Saint_Knut%27s_Day
                     .arg(core::knut_version(), core::knut_build_date());
     QMessageBox dialog(QMessageBox::Information, tr("About Knut"), text, QMessageBox::Ok, this);
     dialog.setIconPixmap(QPixmap(":/gui/icons/knut-64.png"));
+    dialog.exec();
+}
+
+void MainWindow::runScript()
+{
+    RunScriptDialog dialog(this);
     dialog.exec();
 }
 
