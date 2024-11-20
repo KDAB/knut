@@ -11,30 +11,31 @@
 #pragma once
 
 #include <QDialog>
+
 #include <memory>
 
 namespace Gui {
 
 namespace Ui {
-    class RunScriptWidget;
+    class RunScriptDialog;
 }
 
-class RunScriptWidget : public QWidget
+class RunScriptDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit RunScriptWidget(QWidget *parent = nullptr);
-    ~RunScriptWidget() override;
+    explicit RunScriptDialog(QWidget *parent = nullptr);
+    ~RunScriptDialog() override;
 
-    void open();
+public slots:
+    void accept() override;
 
 private:
     void chooseScript();
-    void run();
 
 private:
-    std::unique_ptr<Ui::RunScriptWidget> ui;
+    std::unique_ptr<Ui::RunScriptDialog> ui;
 };
 
 } // namespace Gui
