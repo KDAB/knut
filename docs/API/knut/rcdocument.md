@@ -34,10 +34,10 @@ import Knut
 |array&lt;[Action](../knut/action.md)> |**[actionsFromMenu](#actionsFromMenu)**(string menuId)|
 |array&lt;[Action](../knut/action.md)> |**[actionsFromMenuForLanguage](#actionsFromMenuForLanguage)**(string menuId, string language)|
 |array&lt;[Action](../knut/action.md)> |**[actionsFromToolbar](#actionsFromToolbar)**(string toolBarId)|
-|void |**[convertActions](#convertActions)**(int flags)|
-||**[convertAssets](#convertAssets)**(int flags)|
+|void |**[convertActions](#convertActions)**(ConversionFlags flags)|
+||**[convertAssets](#convertAssets)**(ConversionFlags flags)|
 |string |**[convertLanguageToCode](#convertLanguageToCode)**(string language)|
-|[Widget](../knut/widget.md) |**[dialog](#dialog)**(string id, int flags, real scaleX, real scaleY)|
+|[Widget](../knut/widget.md) |**[dialog](#dialog)**(string id, ConversionFlags flags, real scaleX, real scaleY)|
 |string |**[dialogTitleForLanguage](#dialogTitleForLanguage)**(string language, string dialogId)|
 |[Menu](../knut/menu.md) |**[menu](#menu)**(string id)|
 |bool |**[mergeAllLanguages](#mergeAllLanguages)**(string language = "[default]")|
@@ -51,7 +51,7 @@ import Knut
 |string |**[stringForLanguage](#stringForLanguage)**(string language, string id)|
 |array&lt;[String](../knut/string.md)> |**[stringsForLanguage](#stringsForLanguage)**(string language)|
 |[ToolBar](../knut/toolbar.md) |**[toolBar](#toolBar)**(string id)|
-|bool |**[writeAssetsToImage](#writeAssetsToImage)**(int flags)|
+|bool |**[writeAssetsToImage](#writeAssetsToImage)**(ConversionFlags flags)|
 |bool |**[writeAssetsToQrc](#writeAssetsToQrc)**(string fileName)|
 |bool |**[writeDialogToUi](#writeDialogToUi)**([Widget](../knut/widget.md) dialog, string fileName)|
 
@@ -138,7 +138,7 @@ Returns all actions used in the menu `menuId` for language `language`.
 
 Returns all actions used in the toolbar `toolBarId`.
 
-#### <a name="convertActions"></a>void **convertActions**(int flags)
+#### <a name="convertActions"></a>void **convertActions**(ConversionFlags flags)
 
 
 !!! Warning "Experimental API"
@@ -153,7 +153,7 @@ The `flags` are used to fill the iconPath of the action:
 - `RcDocument.ConvertToPng`: convert BMPs to PNGs, needed if we want to also change the transparency
 - `RcDocument.AllFlags`: combination of all above
 
-#### <a name="convertAssets"></a>**convertAssets**(int flags)
+#### <a name="convertAssets"></a>**convertAssets**(ConversionFlags flags)
 
 Converts all assets using the `flags`.
 
@@ -166,7 +166,7 @@ Converts all assets using the `flags`.
 
 Returns language code as defined by the ISO 639 for language name
 
-#### <a name="dialog"></a>[Widget](../knut/widget.md) **dialog**(string id, int flags, real scaleX, real scaleY)
+#### <a name="dialog"></a>[Widget](../knut/widget.md) **dialog**(string id, ConversionFlags flags, real scaleX, real scaleY)
 
 Returns the dialog for the given `id`.
 
@@ -235,7 +235,7 @@ Returns translated string for specific `language`.
 
 Returns the toolbar for the given `id`.
 
-#### <a name="writeAssetsToImage"></a>bool **writeAssetsToImage**(int flags)
+#### <a name="writeAssetsToImage"></a>bool **writeAssetsToImage**(ConversionFlags flags)
 
 Writes the assets to images, using `flags` for transparency settings. Returns `true` if no issues.
 

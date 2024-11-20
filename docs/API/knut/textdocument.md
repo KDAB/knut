@@ -44,8 +44,8 @@ Inherited properties: [Document properties](../knut/document.md#properties)
 ||**[deleteSelection](#deleteSelection)**()|
 ||**[deleteStartOfLine](#deleteStartOfLine)**()|
 ||**[deleteStartOfWord](#deleteStartOfWord)**()|
-|bool |**[find](#find)**(string text, int options = TextDocument.NoFindFlags)|
-|bool |**[findRegexp](#findRegexp)**(string regexp, int options = TextDocument.NoFindFlags)|
+|bool |**[find](#find)**(string text, FindFlags options = TextDocument.NoFindFlags)|
+|bool |**[findRegexp](#findRegexp)**(string regexp, FindFlags options = TextDocument.NoFindFlags)|
 ||**[gotoEndOfDocument](#gotoEndOfDocument)**()|
 ||**[gotoEndOfLine](#gotoEndOfLine)**()|
 ||**[gotoEndOfWord](#gotoEndOfWord)**()|
@@ -67,7 +67,7 @@ Inherited properties: [Document properties](../knut/document.md#properties)
 ||**[insertAtLine](#insertAtLine)**(string text, int line = -1)|
 ||**[insertAtPosition](#insertAtPosition)**(string text, int pos)|
 ||**[lineAtPosition](#lineAtPosition)**(int position)|
-|bool |**[match](#match)**(string regexp, int options = TextDocument.NoFindFlags)|
+|bool |**[match](#match)**(string regexp, FindFlags options = TextDocument.NoFindFlags)|
 ||**[paste](#paste)**()|
 ||**[positionAt](#positionAt)**(int line, int col)|
 ||**[redo](#redo)**(int count)|
@@ -76,11 +76,11 @@ Inherited properties: [Document properties](../knut/document.md#properties)
 ||**[replace](#replace)**(int length, string text)|
 ||**[replace](#replace)**([RangeMark](../knut/rangemark.md) range, string text)|
 ||**[replace](#replace)**(int from, int to, string text)|
-|bool |**[replaceAll](#replaceAll)**(string before, string after, int options = TextDocument.NoFindFlags)|
-|bool |**[replaceAllInRange](#replaceAllInRange)**(string before, string after, [RangeMark](../knut/rangemark.md) range, int options = TextDocument.NoFindFlags)|
-|bool |**[replaceAllRegexp](#replaceAllRegexp)**(string regexp, string after, int options = TextDocument.NoFindFlags)|
-|bool |**[replaceAllRegexpInRange](#replaceAllRegexpInRange)**(string regexp, string after, [RangeMark](../knut/rangemark.md) range, int options = TextDocument.NoFindFlags)|
-|bool |**[replaceOne](#replaceOne)**(string before, string after, int options = TextDocument.NoFindFlags)|
+|bool |**[replaceAll](#replaceAll)**(string before, string after, FindFlags options = TextDocument.NoFindFlags)|
+|bool |**[replaceAllInRange](#replaceAllInRange)**(string before, string after, [RangeMark](../knut/rangemark.md) range, FindFlags options = TextDocument.NoFindFlags)|
+|bool |**[replaceAllRegexp](#replaceAllRegexp)**(string regexp, string after, FindFlags options = TextDocument.NoFindFlags)|
+|bool |**[replaceAllRegexpInRange](#replaceAllRegexpInRange)**(string regexp, string after, [RangeMark](../knut/rangemark.md) range, FindFlags options = TextDocument.NoFindFlags)|
+|bool |**[replaceOne](#replaceOne)**(string before, string after, FindFlags options = TextDocument.NoFindFlags)|
 ||**[selectAll](#selectAll)**()|
 ||**[selectEndOfLine](#selectEndOfLine)**()|
 ||**[selectEndOfWord](#selectEndOfWord)**()|
@@ -224,7 +224,7 @@ Deletes from the cursor position to the start of the line.
 
 Deletes from the cursor position to the start of the word.
 
-#### <a name="find"></a>bool **find**(string text, int options = TextDocument.NoFindFlags)
+#### <a name="find"></a>bool **find**(string text, FindFlags options = TextDocument.NoFindFlags)
 
 Searches the string `text` in the editor. Options could be a combination of:
 
@@ -235,7 +235,7 @@ Searches the string `text` in the editor. Options could be a combination of:
 
 Selects the match and returns `true` if a match is found.
 
-#### <a name="findRegexp"></a>bool **findRegexp**(string regexp, int options = TextDocument.NoFindFlags)
+#### <a name="findRegexp"></a>bool **findRegexp**(string regexp, FindFlags options = TextDocument.NoFindFlags)
 
 Searches the string `regexp` in the editor using a regular expression. Options could be a combination of:
 
@@ -329,7 +329,7 @@ Inserts the string `text` at `pos`.
 
 Returns the line number for the given text cursor `position`. Or -1 if position is invalid
 
-#### <a name="match"></a>bool **match**(string regexp, int options = TextDocument.NoFindFlags)
+#### <a name="match"></a>bool **match**(string regexp, FindFlags options = TextDocument.NoFindFlags)
 
 Searches the string `regexp` in the editor using a regular expression. Options could be a combination of:
 
@@ -371,7 +371,7 @@ Replaces the text in the range `range` with the string `text`.
 
 Replaces the text from `from` to `to` with the string `text`.
 
-#### <a name="replaceAll"></a>bool **replaceAll**(string before, string after, int options = TextDocument.NoFindFlags)
+#### <a name="replaceAll"></a>bool **replaceAll**(string before, string after, FindFlags options = TextDocument.NoFindFlags)
 
 Replaces all occurrences of the string `before` with `after`. Options could be a combination of:
 
@@ -391,22 +391,23 @@ the occurrence only.
 
 Returns the number of changes done in the document.
 
-#### <a name="replaceAllInRange"></a>bool **replaceAllInRange**(string before, string after, [RangeMark](../knut/rangemark.md) range, int options = TextDocument.NoFindFlags)
+#### <a name="replaceAllInRange"></a>bool **replaceAllInRange**(string before, string after, [RangeMark](../knut/rangemark.md) range, FindFlags options = TextDocument.NoFindFlags)
 
 Replaces all occurrences of the string `before` with `after` in the given `range`. See the
 options from `replaceAll`.
 
 Returns the number of changes done in the document.
 
-#### <a name="replaceAllRegexp"></a>bool **replaceAllRegexp**(string regexp, string after, int options = TextDocument.NoFindFlags)
+#### <a name="replaceAllRegexp"></a>bool **replaceAllRegexp**(string regexp, string after, FindFlags options = TextDocument.NoFindFlags)
 
-Replaces all occurrences of the matches for the `regexp` with `after`. See the options from `replaceAll`.
+Replaces all occurrences of the matches for the `regexp` with `after`. See the options from
+`replaceAll`.
 
 The captures coming from the regexp can be used in the replacement text, using `\1`..`\n` or `$1`..`$n`.
 
 Returns the number of changes done in the document.
 
-#### <a name="replaceAllRegexpInRange"></a>bool **replaceAllRegexpInRange**(string regexp, string after, [RangeMark](../knut/rangemark.md) range, int options = TextDocument.NoFindFlags)
+#### <a name="replaceAllRegexpInRange"></a>bool **replaceAllRegexpInRange**(string regexp, string after, [RangeMark](../knut/rangemark.md) range, FindFlags options = TextDocument.NoFindFlags)
 
 Replaces all occurrences of the matches for the `regexp` with `after` in the given `range`. See the options from `replaceAll`.
 
@@ -414,7 +415,7 @@ The captures coming from the regexp can be used in the replacement text, using `
 
 Returns the number of changes done in the document.
 
-#### <a name="replaceOne"></a>bool **replaceOne**(string before, string after, int options = TextDocument.NoFindFlags)
+#### <a name="replaceOne"></a>bool **replaceOne**(string before, string after, FindFlags options = TextDocument.NoFindFlags)
 
 Replaces one occurrence of the string `before` with `after`. Options could be a combination of:
 

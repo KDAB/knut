@@ -1190,7 +1190,7 @@ Core::RangeMark TextDocument::createRangeMark()
 }
 
 /*!
- * \qmlmethod bool TextDocument::find(string text, int options = TextDocument.NoFindFlags)
+ * \qmlmethod bool TextDocument::find(string text, FindFlags options = TextDocument.NoFindFlags)
  * Searches the string `text` in the editor. Options could be a combination of:
  *
  * - `TextDocument.FindBackward`: search backward
@@ -1200,7 +1200,7 @@ Core::RangeMark TextDocument::createRangeMark()
  *
  * Selects the match and returns `true` if a match is found.
  */
-bool TextDocument::find(const QString &text, int options)
+bool TextDocument::find(const QString &text, FindFlags options)
 {
     LOG(LOG_ARG("text", text), options);
     if (options & FindRegexp)
@@ -1208,11 +1208,11 @@ bool TextDocument::find(const QString &text, int options)
     else if (options & FindWholeWords)
         return findRegexp(QRegularExpression::escape(text), options);
     else
-        return m_document->find(text, static_cast<QTextDocument::FindFlags>(options));
+        return m_document->find(text, static_cast<QTextDocument::FindFlags>(static_cast<int>(options)));
 }
 
 /*!
- * \qmlmethod bool TextDocument::findRegexp(string regexp, int options = TextDocument.NoFindFlags)
+ * \qmlmethod bool TextDocument::findRegexp(string regexp, FindFlags options = TextDocument.NoFindFlags)
  * Searches the string `regexp` in the editor using a regular expression. Options could be a combination of:
  *
  * - `TextDocument.FindBackward`: search backward
@@ -1221,7 +1221,7 @@ bool TextDocument::find(const QString &text, int options)
  *
  * Selects the match and returns `true` if a match is found.
  */
-bool TextDocument::findRegexp(const QString &regexp, int options)
+bool TextDocument::findRegexp(const QString &regexp, FindFlags options)
 {
     LOG(LOG_ARG("text", regexp), options);
 
@@ -1281,7 +1281,7 @@ auto TextDocument::selectRegexpMatch(
 }
 
 /*!
- * \qmlmethod bool TextDocument::match(string regexp, int options = TextDocument.NoFindFlags)
+ * \qmlmethod bool TextDocument::match(string regexp, FindFlags options = TextDocument.NoFindFlags)
  * Searches the string `regexp` in the editor using a regular expression. Options could be a combination of:
  *
  * - `TextDocument.FindBackward`: search backward
@@ -1290,7 +1290,7 @@ auto TextDocument::selectRegexpMatch(
  *
  * Selects the match and returns the named group if a match is found.
  */
-QString TextDocument::match(const QString &regexp, int options)
+QString TextDocument::match(const QString &regexp, FindFlags options)
 {
     LOG(regexp, options);
 
@@ -1311,7 +1311,7 @@ QString TextDocument::match(const QString &regexp, int options)
 }
 
 /*!
- * \qmlmethod bool TextDocument::replaceOne(string before, string after, int options = TextDocument.NoFindFlags)
+ * \qmlmethod bool TextDocument::replaceOne(string before, string after, FindFlags options = TextDocument.NoFindFlags)
  * Replaces one occurrence of the string `before` with `after`. Options could be a combination of:
  *
  * - `TextDocument.FindCaseSensitively`: match case
@@ -1330,7 +1330,7 @@ QString TextDocument::match(const QString &regexp, int options)
  *
  * Returns true if a change occurs in the document..
  */
-bool TextDocument::replaceOne(const QString &before, const QString &after, int options)
+bool TextDocument::replaceOne(const QString &before, const QString &after, FindFlags options)
 {
     LOG(LOG_ARG("text", before), after, options);
 
@@ -1363,7 +1363,7 @@ bool TextDocument::replaceOne(const QString &before, const QString &after, int o
 }
 
 /*!
- * \qmlmethod bool TextDocument::replaceAll(string before, string after, int options = TextDocument.NoFindFlags)
+ * \qmlmethod bool TextDocument::replaceAll(string before, string after, FindFlags options = TextDocument.NoFindFlags)
  * Replaces all occurrences of the string `before` with `after`. Options could be a combination of:
  *
  * - `TextDocument.FindCaseSensitively`: match case
@@ -1382,7 +1382,7 @@ bool TextDocument::replaceOne(const QString &before, const QString &after, int o
  *
  * Returns the number of changes done in the document.
  */
-int TextDocument::replaceAll(const QString &before, const QString &after, int options /* = NoFindFlags */)
+int TextDocument::replaceAll(const QString &before, const QString &after, FindFlags options /* = NoFindFlags */)
 {
     LOG(LOG_ARG("text", before), after, options);
     return replaceAll(before, after, options, [](auto) {
@@ -1392,7 +1392,7 @@ int TextDocument::replaceAll(const QString &before, const QString &after, int op
 
 // clang-format off
 /*!
- * \qmlmethod bool TextDocument::replaceAllInRange(string before, string after, RangeMark range, int options = TextDocument.NoFindFlags)
+ * \qmlmethod bool TextDocument::replaceAllInRange(string before, string after, RangeMark range, FindFlags options = TextDocument.NoFindFlags)
  * Replaces all occurrences of the string `before` with `after` in the given `range`. See the
  * options from `replaceAll`.
  *
@@ -1400,7 +1400,7 @@ int TextDocument::replaceAll(const QString &before, const QString &after, int op
  */
 // clang-format on
 int TextDocument::replaceAllInRange(const QString &before, const QString &after, const Core::RangeMark &range,
-                                    int options)
+                                    FindFlags options)
 {
     LOG(LOG_ARG("text", before), after, range, options);
     if (!range.isValid()) {
@@ -1419,7 +1419,7 @@ int TextDocument::replaceAllInRange(const QString &before, const QString &after,
     });
 }
 
-int TextDocument::replaceAll(const QString &before, const QString &after, int options,
+int TextDocument::replaceAll(const QString &before, const QString &after, FindFlags options,
                              const std::function<bool(QTextCursor)> &filterAcceptsCursor)
 {
     const bool backwards = options & FindBackward;
@@ -1456,15 +1456,18 @@ int TextDocument::replaceAll(const QString &before, const QString &after, int op
     return count;
 }
 
+// clang-format off
 /*!
- * \qmlmethod bool TextDocument::replaceAllRegexp(string regexp, string after, int options = TextDocument.NoFindFlags)
- * Replaces all occurrences of the matches for the `regexp` with `after`. See the options from `replaceAll`.
+ * \qmlmethod bool TextDocument::replaceAllRegexp(string regexp, string after, FindFlags options = TextDocument.NoFindFlags)
+ * Replaces all occurrences of the matches for the `regexp` with `after`. See the options from
+ * `replaceAll`.
  *
  * The captures coming from the regexp can be used in the replacement text, using `\1`..`\n` or `$1`..`$n`.
  *
  * Returns the number of changes done in the document.
  */
-int TextDocument::replaceAllRegexp(const QString &regexp, const QString &after, int options /* = NoFindFlags */)
+// clang-format on
+int TextDocument::replaceAllRegexp(const QString &regexp, const QString &after, FindFlags options /* = NoFindFlags */)
 {
     LOG(LOG_ARG("text", regexp), after, options);
     return replaceAllRegexp(regexp, after, options, [](auto) {
@@ -1474,7 +1477,7 @@ int TextDocument::replaceAllRegexp(const QString &regexp, const QString &after, 
 
 // clang-format off
 /*!
- * \qmlmethod bool TextDocument::replaceAllRegexpInRange(string regexp, string after, RangeMark range, int options = TextDocument.NoFindFlags)
+ * \qmlmethod bool TextDocument::replaceAllRegexpInRange(string regexp, string after, RangeMark range, FindFlags options = TextDocument.NoFindFlags)
  * Replaces all occurrences of the matches for the `regexp` with `after` in the given `range`. See the options from `replaceAll`.
  *
  * The captures coming from the regexp can be used in the replacement text, using `\1`..`\n` or `$1`..`$n`.
@@ -1483,7 +1486,7 @@ int TextDocument::replaceAllRegexp(const QString &regexp, const QString &after, 
  */
 // clang-format on
 int TextDocument::replaceAllRegexpInRange(const QString &regexp, const QString &after, const RangeMark &range,
-                                          int options /* = NoFindFlags*/)
+                                          FindFlags options /* = NoFindFlags*/)
 {
     LOG(LOG_ARG("text", regexp), after, range, options);
     if (!range.isValid()) {
@@ -1502,7 +1505,7 @@ int TextDocument::replaceAllRegexpInRange(const QString &regexp, const QString &
     });
 }
 
-int TextDocument::replaceAllRegexp(const QString &regexp, const QString &after, int options,
+int TextDocument::replaceAllRegexp(const QString &regexp, const QString &after, FindFlags options,
                                    const std::function<bool(QTextCursor)> &filterAcceptsCursor)
 {
     return replaceAll(regexp, after, options | FindRegexp, filterAcceptsCursor);

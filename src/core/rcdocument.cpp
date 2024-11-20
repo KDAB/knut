@@ -258,7 +258,7 @@ RcCore::ToolBar RcDocument::toolBar(const QString &id) const
 }
 
 /*!
- * \qmlmethod Widget RcDocument::dialog(string id, int flags, real scaleX, real scaleY)
+ * \qmlmethod Widget RcDocument::dialog(string id, ConversionFlags flags, real scaleX, real scaleY)
  * \sa RcDocument::writeDialogToUi
  * Returns the dialog for the given `id`.
  *
@@ -272,17 +272,17 @@ RcCore::ToolBar RcDocument::toolBar(const QString &id) const
  * - `RcDocument.UseIdForPixmap`: use the id as a resource value for the pixmaps in labels
  * - `RcDocument.AllFlags`: combination of all above
  */
-RcCore::Widget RcDocument::dialog(const QString &id, int flags, double scaleX, double scaleY) const
+RcCore::Widget RcDocument::dialog(const QString &id, ConversionFlags flags, double scaleX, double scaleY) const
 {
     LOG(id, flags, scaleX, scaleY);
 
-    SET_DEFAULT_VALUE(RcDialogFlags, static_cast<ConversionFlags>(flags));
+    SET_DEFAULT_VALUE(RcDialogFlags, flags);
     SET_DEFAULT_VALUE(RcDialogScaleX, scaleX);
     SET_DEFAULT_VALUE(RcDialogScaleY, scaleY);
     if (isDataValid()) {
         if (auto dialog = data().dialog(id))
-            return RcCore::convertDialog(data(), *dialog, static_cast<RcCore::Widget::ConversionFlags>(flags), scaleX,
-                                         scaleY);
+            return RcCore::convertDialog(
+                data(), *dialog, static_cast<RcCore::Widget::ConversionFlags>(static_cast<int>(flags)), scaleX, scaleY);
     }
     return {};
 }
@@ -597,7 +597,7 @@ QList<RcCore::Menu> RcDocument::menus() const
 }
 
 /*!
- * \qmlmethod RcDocument::convertAssets(int flags)
+ * \qmlmethod RcDocument::convertAssets(ConversionFlags flags)
  * \sa RcDocument::writeAssetsToImage
  * \sa RcDocument::writeAssetsToQrc
  *
@@ -608,19 +608,20 @@ QList<RcCore::Menu> RcDocument::menus() const
  * - `RcDocument.ConvertToPng`: convert BMPs to PNGs, needed if we want to also change the transparency
  * - `RcDocument.AllFlags`: combination of all above
  */
-void RcDocument::convertAssets(int flags)
+void RcDocument::convertAssets(ConversionFlags flags)
 {
     LOG(flags);
 
-    SET_DEFAULT_VALUE(RcAssetFlags, static_cast<ConversionFlags>(flags));
+    SET_DEFAULT_VALUE(RcAssetFlags, flags);
     if (isDataValid()) {
-        m_cacheAssets = RcCore::convertAssets(data(), static_cast<RcCore::Asset::ConversionFlags>(flags));
+        m_cacheAssets =
+            RcCore::convertAssets(data(), static_cast<RcCore::Asset::ConversionFlags>(static_cast<int>(flags)));
         emit fileNameChanged();
     }
 }
 
 /*!
- * \qmlmethod void RcDocument::convertActions(int flags)
+ * \qmlmethod void RcDocument::convertActions(ConversionFlags flags)
  * \todo
  * Converts all actions using the `flags`.
  *
@@ -631,19 +632,20 @@ void RcDocument::convertAssets(int flags)
  * - `RcDocument.ConvertToPng`: convert BMPs to PNGs, needed if we want to also change the transparency
  * - `RcDocument.AllFlags`: combination of all above
  */
-void RcDocument::convertActions(int flags)
+void RcDocument::convertActions(ConversionFlags flags)
 {
     LOG(flags);
 
-    SET_DEFAULT_VALUE(RcAssetFlags, static_cast<ConversionFlags>(flags));
+    SET_DEFAULT_VALUE(RcAssetFlags, flags);
     if (isDataValid()) {
-        m_cacheActions = RcCore::convertActions(data(), static_cast<RcCore::Asset::ConversionFlags>(flags));
+        m_cacheActions =
+            RcCore::convertActions(data(), static_cast<RcCore::Asset::ConversionFlags>(static_cast<int>(flags)));
         emit fileNameChanged();
     }
 }
 
 /*!
- * \qmlmethod bool RcDocument::writeAssetsToImage(int flags)
+ * \qmlmethod bool RcDocument::writeAssetsToImage(ConversionFlags flags)
  * \sa RcDocument::convertAssets
  * Writes the assets to images, using `flags` for transparency settings. Returns `true` if no issues.
  *
@@ -657,14 +659,14 @@ void RcDocument::convertActions(int flags)
  * - `RcDocument.BottomLeftPixel`: the color of the bottom left pixel is used as transparent
  * - `RcDocument.AllColors`: combination of all above
  */
-bool RcDocument::writeAssetsToImage(int flags)
+bool RcDocument::writeAssetsToImage(ConversionFlags flags)
 {
     LOG(flags);
 
-    SET_DEFAULT_VALUE(RcAssetColors, static_cast<ConversionFlags>(flags));
+    SET_DEFAULT_VALUE(RcAssetColors, flags);
     if (m_cacheAssets.isEmpty())
         convertAssets();
-    RcCore::writeAssetsToImage(m_cacheAssets, static_cast<RcCore::Asset::TransparentColors>(flags));
+    RcCore::writeAssetsToImage(m_cacheAssets, static_cast<RcCore::Asset::TransparentColors>(static_cast<int>(flags)));
     return true;
 }
 

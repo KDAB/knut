@@ -77,17 +77,41 @@ concept HasToString = requires(const T &t) { t.toString(); };
 template <typename T>
 concept HasPointerToString = requires(const T &t) { t->toString(); };
 
+template <class T>
+QString flagsToString(const QFlags<T> &flags)
+{
+    const auto metaEnum = QMetaEnum::fromType<T>();
+    QString className = QMetaType::fromType<T>().metaObject()->className();
+    // Remove potential namespace, we only want the class name
+    className = className.split("::").last();
+    QString text;
+    for (int i = 0; i < metaEnum.keyCount(); ++i) {
+        if (flags.testFlag(static_cast<T>(metaEnum.value(i)))) {
+            if (!text.isEmpty())
+                text += " | ";
+            text += QString("%1.%2").arg(className, metaEnum.key(i));
+        }
+    }
+    return text;
+}
+
 /**
  * @brief toString
  * Returns a string for any kind of data you can pass as a parameter.
  */
 template <class T>
-QString valueToString(const T &data)
+QString valueToString(const T &data, bool escape = false)
 {
     if constexpr (std::is_same_v<std::remove_cvref_t<T>, QString>) {
         QString text = data;
         text.replace('\n', "\\n");
         text.replace('\t', "\\t");
+        if (escape) {
+            text.replace('\\', R"(\\)");
+            text.replace('"', R"(\")");
+            text.append('"');
+            text.prepend('"');
+        }
         return text;
     } else if constexpr (std::is_same_v<std::remove_cvref_t<T>, bool>)
         return data ? "true" : "false";
@@ -105,7 +129,9 @@ QString valueToString(const T &data)
         return data.toString();
     else if constexpr (HasPointerToString<T>)
         return data->toString();
-    else
+    else if constexpr (std::is_same_v<std::remove_cvref_t<T>, QFlags<typename T::enum_type>>) {
+        return flagsToString(data);
+    } else
         Q_UNREACHABLE();
     return {};
 }
@@ -161,6 +187,12 @@ private:
     struct Arg
     {
         QString name;
+        QString value;
+        int type;
+    };
+    struct ReturnArg
+    {
+        QString name;
         QVariant value;
         bool isEmpty() const { return name.isEmpty(); }
     };
@@ -168,7 +200,7 @@ private:
     {
         QString name;
         std::vector<Arg> params;
-        Arg returnArg;
+        ReturnArg returnArg;
     };
 
     void logData(const QString &name);
@@ -194,9 +226,10 @@ private:
     void fillLogData(LogData &data, T param, Ts... params)
     {
         if constexpr (std::derived_from<T, LoggerArgBase>)
-            data.params.push_back({param.argName, QVariant::fromValue(param.value)});
+            data.params.push_back(
+                {param.argName, valueToString(param.value, true), qMetaTypeId<decltype(param.value)>()});
         else
-            data.params.push_back({"", QVariant::fromValue(param)});
+            data.params.push_back({"", valueToString(param, true), qMetaTypeId<T>()});
 
         fillLogData(data, params...);
     }
