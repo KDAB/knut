@@ -170,16 +170,16 @@ bool TextView::eventFilter(QObject *obj, QEvent *event)
 
 void TextView::find(const QString &text, int options)
 {
-    document()->find(text, options);
+    document()->find(text, static_cast<Core::TextDocument::FindFlags>(options));
 }
 
 void TextView::replace(const QString &before, const QString &after, int options, bool replaceAll)
 {
     if (replaceAll) {
-        document()->replaceAll(before, after, options);
+        document()->replaceAll(before, after, static_cast<Core::TextDocument::FindFlags>(options));
 
     } else {
-        document()->replaceOne(before, after, options);
+        document()->replaceOne(before, after, static_cast<Core::TextDocument::FindFlags>(options));
     }
 }
 

@@ -57,24 +57,6 @@ int HistoryModel::columnCount(const QModelIndex &parent) const
     return ColumnCount;
 }
 
-static QString variantToString(const QVariant &variant)
-{
-    QString text = variant.toString();
-    if (static_cast<QMetaType::Type>(variant.typeId()) == QMetaType::QString) {
-        text.replace('\\', R"(\\)");
-        text.replace('\n', R"(\n)");
-        text.replace('\t', R"(\t)");
-        text.replace('"', R"(\")");
-        text.append('"');
-        text.prepend('"');
-    } else if (variant.metaType().flags().testAnyFlag(QMetaType::IsEnumeration)) {
-        QString className = variant.metaType().metaObject()->className();
-        className = className.split("::").last();
-        text = className + '.' + text;
-    }
-    return text;
-}
-
 QVariant HistoryModel::data(const QModelIndex &index, int role) const
 {
     Q_ASSERT(checkIndex(index, CheckIndexOption::IndexIsValid));
@@ -87,7 +69,7 @@ QVariant HistoryModel::data(const QModelIndex &index, int role) const
             const auto &params = m_data.at(index.row()).params;
             QStringList paramStrings;
             for (const auto &param : params) {
-                QString text = variantToString(param.value);
+                QString text = param.value;
                 if (!param.name.isEmpty())
                     text.prepend(QString("%1: ").arg(param.name));
                 paramStrings.push_back(text);
@@ -164,8 +146,7 @@ QString HistoryModel::createScript(int start, int end)
                 continue;
             }
 
-            QString text = variantToString(param.value);
-            paramStrings.push_back(text);
+            paramStrings.push_back(param.value);
         }
 
         if (isProperty) {
@@ -208,15 +189,15 @@ void HistoryModel::addData(LogData &&data, bool merge)
     for (size_t i = 0; i < data.params.size(); ++i) {
         const auto &param = data.params[i];
         auto &lastParam = lastData.params[i];
-        switch (static_cast<QMetaType::Type>(param.value.typeId())) {
+        switch (static_cast<QMetaType::Type>(param.type)) {
         case QMetaType::Int:
-            lastParam.value = lastParam.value.toInt() + param.value.toInt();
+            lastParam.value = QString::number(lastParam.value.toInt() + param.value.toInt());
             break;
         case QMetaType::QString:
-            lastParam.value = lastParam.value.toString() + param.value.toString();
+            lastParam.value = lastParam.value.chopped(1) + param.value.sliced(1);
             break;
         case QMetaType::QStringList:
-            lastParam.value = lastParam.value.toStringList() + param.value.toStringList();
+            lastParam.value = lastParam.value.chopped(1) + ", " + param.value.sliced(1);
             break;
         default:
             Q_UNREACHABLE();

@@ -170,21 +170,22 @@ public slots:
     Core::RangeMark createRangeMark();
 
     // Find
-    bool find(const QString &text, int options = NoFindFlags);
-    bool findRegexp(const QString &regexp, int options = NoFindFlags);
-    QString match(const QString &regexp, int options = NoFindFlags);
+    bool find(const QString &text, Core::TextDocument::FindFlags options = NoFindFlags);
+    bool findRegexp(const QString &regexp, Core::TextDocument::FindFlags options = NoFindFlags);
+    QString match(const QString &regexp, Core::TextDocument::FindFlags options = NoFindFlags);
 
     // Replace
     void replace(int length, const QString &text);
     void replace(int from, int to, const QString &text);
     void replace(const Core::RangeMark &range, const QString &text);
-    bool replaceOne(const QString &before, const QString &after, int options = NoFindFlags);
-    int replaceAll(const QString &before, const QString &after, int options = NoFindFlags);
+    bool replaceOne(const QString &before, const QString &after, Core::TextDocument::FindFlags options = NoFindFlags);
+    int replaceAll(const QString &before, const QString &after, Core::TextDocument::FindFlags options = NoFindFlags);
     int replaceAllInRange(const QString &before, const QString &after, const Core::RangeMark &range,
-                          int options = NoFindFlags);
+                          Core::TextDocument::FindFlags options = NoFindFlags);
     int replaceAllRegexpInRange(const QString &regexp, const QString &after, const Core::RangeMark &range,
-                                int options = NoFindFlags);
-    int replaceAllRegexp(const QString &regexp, const QString &after, int options = NoFindFlags);
+                                Core::TextDocument::FindFlags options = NoFindFlags);
+    int replaceAllRegexp(const QString &regexp, const QString &after,
+                         Core::TextDocument::FindFlags options = NoFindFlags);
 
     // Indentation
     void indent(int count = 1);
@@ -207,9 +208,9 @@ protected:
     void convertPosition(int pos, int *line, int *column) const;
     int position(QTextCursor::MoveOperation operation, int pos) const;
 
-    int replaceAll(const QString &before, const QString &after, int options,
+    int replaceAll(const QString &before, const QString &after, FindFlags options,
                    const std::function<bool(QTextCursor)> &filterAcceptsCursor);
-    int replaceAllRegexp(const QString &regexp, const QString &after, int options,
+    int replaceAllRegexp(const QString &regexp, const QString &after, FindFlags options,
                          const std::function<bool(QTextCursor)> &filterAcceptsCursor);
 
 private:
