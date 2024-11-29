@@ -45,6 +45,7 @@ private:
     void openScript();
     void newScript();
     void newScriptDialog();
+    bool checkNeedToSaveScript();
     void saveScript();
     void editDialog();
     void checkEditDialogButton();
