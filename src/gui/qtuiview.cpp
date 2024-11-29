@@ -11,8 +11,7 @@
 #include "qtuiview.h"
 #include "core/qtuidocument.h"
 #include "core/textdocument.h"
-#include "highlightdelegate.h"
-#include "searchabletableview.h"
+#include "findadapter.h"
 
 #include <QAbstractTableModel>
 #include <QFile>
@@ -44,6 +43,8 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override
     {
         Q_UNUSED(parent)
+        if (parent.isValid())
+            return 0;
         return m_document->widgets().count();
     }
     int columnCount(const QModelIndex &parent = QModelIndex()) const override
@@ -104,7 +105,8 @@ private:
 QtUiView::QtUiView(QWidget *parent)
     : QSplitter(parent)
     , FindInterface(FindInterface::CanSearch)
-    , m_tableView(new SearchableTableView(this))
+    , m_tableView(new QTableView(this))
+    , m_findAdapter(new FindAdapter(m_tableView))
     , m_previewArea(new QMdiArea(this))
 {
     addWidget(m_previewArea);
@@ -112,13 +114,14 @@ QtUiView::QtUiView(QWidget *parent)
 
     m_tableView->verticalHeader()->hide();
     m_tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_findAdapter->updateItemDelegate();
     m_previewArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     m_previewArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 }
 
 void QtUiView::find(const QString &searchText, int options)
 {
-    m_tableView->find(searchText, options);
+    m_findAdapter->find(searchText, options);
 }
 
 void QtUiView::setUiDocument(Core::QtUiDocument *document)

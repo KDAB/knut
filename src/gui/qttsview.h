@@ -22,7 +22,7 @@ class QLineEdit;
 namespace Gui {
 
 class QtTsProxy;
-class SearchableTableView;
+class FindAdapter;
 
 class QtTsView : public QWidget, public FindInterface
 {
@@ -39,7 +39,8 @@ public:
 private:
     void updateView();
 
-    SearchableTableView *const m_tableView;
+    QTableView *const m_tableView;
+    FindAdapter *const m_findAdapter;
     QLineEdit *const m_searchLineEdit;
     Core::QtTsDocument *m_document = nullptr;
     QtTsProxy *const m_contentProxyModel;

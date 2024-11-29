@@ -8,40 +8,43 @@
   Contact KDAB at <info@kdab.com> for commercial licensing options.
 */
 
-#include "searchabletableview.h"
+#include "FindAdapter.h"
 #include "core/textdocument.h"
 #include "highlightdelegate.h"
 
 namespace Gui {
 
-SearchableTableView::SearchableTableView(QWidget *parent)
-    : QTableView(parent)
+FindAdapter::FindAdapter(QAbstractItemView *view)
+    : m_view(view)
 {
-    setItemDelegate(new HighlightDelegate(this));
+    Q_ASSERT(view);
 }
 
-SearchableTableView::~SearchableTableView() = default;
-
-void SearchableTableView::find(const QString &text, int options)
+void FindAdapter::find(const QString &text, int options)
 {
     if (text.isEmpty()) {
         // Clear the search results
-        static_cast<HighlightDelegate *>(itemDelegate())->setHighlightedText({}, Core::TextDocument::NoFindFlags);
+        if (auto delegate = dynamic_cast<HighlightDelegate *>(m_view->itemDelegate())) {
+            delegate->setHighlightedText({}, Core::TextDocument::NoFindFlags);
+            m_view->viewport()->update();
+        }
+
         m_searchResults.clear();
         m_currentResultIndex = 0;
         m_highlightedText.clear();
         m_options = 0;
-        viewport()->update();
         return;
     }
 
     // Search only in case the search was not already processed
     if (text != m_highlightedText || options != m_options) {
         // Update delegate with the search text
-        static_cast<HighlightDelegate *>(itemDelegate())->setHighlightedText(text, options);
-        viewport()->update();
+        if (auto delegate = dynamic_cast<HighlightDelegate *>(m_view->itemDelegate())) {
+            delegate->setHighlightedText(text, options);
+            m_view->viewport()->update();
+        }
 
-        m_searchResults = searchModel(text, options);
+        m_searchResults = text.isEmpty() ? QModelIndexList {} : searchModel(text, options);
         m_currentResultIndex = 0;
 
         // Update the current search text
@@ -59,30 +62,36 @@ void SearchableTableView::find(const QString &text, int options)
     }
 
     if (!m_searchResults.isEmpty()) {
-        selectionModel()->setCurrentIndex(m_searchResults.at(m_currentResultIndex), QItemSelectionModel::SelectCurrent);
+        m_view->selectionModel()->setCurrentIndex(m_searchResults.at(m_currentResultIndex),
+                                                  QItemSelectionModel::SelectCurrent);
     }
 }
 
-QModelIndexList SearchableTableView::searchModel(const QString &text, int options) const
+void FindAdapter::updateItemDelegate()
 {
-    if (text.isEmpty())
-        return {};
+    m_view->setItemDelegate(new HighlightDelegate(m_view));
+}
 
+QModelIndexList FindAdapter::searchModel(const QString &text, int options, const QModelIndex &parent) const
+{
     QModelIndexList searchResults;
-    for (int row = 0; row < model()->rowCount(); ++row) {
-        for (int column = 0; column < model()->columnCount(); ++column) {
-            const QModelIndex index = model()->index(row, column);
-            const QString data = model()->data(index).toString();
+    auto model = m_view->model();
+    for (int row = 0; row < model->rowCount(parent); ++row) {
+        const QModelIndex index = model->index(row, 0, parent);
+        for (int column = 0; column < model->columnCount(parent); ++column) {
+            auto columnIndex = index.siblingAtColumn(column);
+            const QString data = columnIndex.data().toString();
             if (options & Core::TextDocument::FindRegexp) {
                 QRegularExpression re(text);
                 if (data.contains(re))
-                    searchResults.append(index);
+                    searchResults.append(columnIndex);
             } else {
                 const bool caseSensitive = options & Core::TextDocument::FindCaseSensitively;
                 if (data.contains(text, caseSensitive ? Qt::CaseSensitive : Qt::CaseInsensitive))
-                    searchResults.append(index);
+                    searchResults.append(columnIndex);
             }
         }
+        searchResults.append(searchModel(text, options, index));
     }
     return searchResults;
 }
