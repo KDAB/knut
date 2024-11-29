@@ -172,14 +172,32 @@ void ScriptPanel::setupNewFile(const QString &scriptText, int cursorLeftMove)
 
 void ScriptPanel::newScript()
 {
+    if (!checkNeedToSaveScript())
+        return;
     setupNewFile(DefaultScript, 3);
     m_editDialogButton->hide();
 }
 
 void ScriptPanel::newScriptDialog()
 {
+    if (!checkNeedToSaveScript())
+        return;
     setupNewFile(DefaultScriptDialog, 9);
     m_editDialogButton->show();
+}
+
+bool ScriptPanel::checkNeedToSaveScript()
+{
+    const auto text = toPlainText();
+    if (text.isEmpty() || text == DefaultScript || text == DefaultScriptDialog)
+        return true;
+
+    const auto ret = QMessageBox::question(this, tr("Save Script"), tr("Do you want to save the script?"),
+                                           QMessageBox::Save | QMessageBox::No | QMessageBox::Cancel);
+
+    if (ret == QMessageBox::Save)
+        saveScript();
+    return ret != QMessageBox::Cancel;
 }
 
 void ScriptPanel::saveScript()
