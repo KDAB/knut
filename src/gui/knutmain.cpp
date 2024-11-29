@@ -11,7 +11,7 @@
 #include "knutmain.h"
 #include "mainwindow.h"
 #include "optionsdialog.h"
-#include "runscriptwidget.h"
+#include "runscriptdialog.h"
 
 namespace Gui {
 
@@ -33,7 +33,7 @@ void KnutMain::doParse(const QCommandLineParser &parser) const
 {
     const bool runDialog = parser.isSet("gui-run");
     if (runDialog) {
-        auto dialog = new RunScriptWidget;
+        auto dialog = new RunScriptDialog;
         dialog->show();
         return;
     }
