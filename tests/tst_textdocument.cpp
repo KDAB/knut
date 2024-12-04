@@ -359,9 +359,16 @@ private slots:
             Core::TextDocument document;
             document.load(file.fileName());
 
+            QCOMPARE(document.indentationAtLine(1), spaces(4));
+            QCOMPARE(document.indentationAtLine(7), "  \t\t\t\t");
+            QCOMPARE(document.indentationAtLine(23), spaces(2));
+            // If the line number is larger than the line count, an empty string is returned
+            QVERIFY(document.indentationAtLine(50).isEmpty());
+
             document.gotoLine(4);
             document.indent();
             QCOMPARE(document.indentationAtPosition(document.position()), spaces(4));
+            QCOMPARE(document.indentationAtLine(-1), spaces(4));
 
             // Test that we can correctly detect columns in mixed tabs and spaces.
             // In this test, the first column contains 2 spaces and a tab.
@@ -369,8 +376,10 @@ private slots:
             // When we remove 2 levels of indentation, that will result in 2 columns left (aka. 8 spaces).
             document.gotoLine(7, 4);
             QCOMPARE(document.indentationAtPosition(document.position()), "  \t\t\t\t");
+            QCOMPARE(document.indentationAtLine(-1), "  \t\t\t\t");
             document.removeIndent(2);
             QCOMPARE(document.indentationAtPosition(document.position()), spaces(8));
+            QCOMPARE(document.indentationAtLine(-1), spaces(8));
 
             document.gotoLine(10);
             document.selectNextLine();

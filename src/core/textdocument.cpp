@@ -1640,4 +1640,29 @@ QString TextDocument::indentationAtPosition(int pos)
     return line.left(line.indexOf(nonSpaces));
 }
 
+/*!
+ * \qmlmethod TextDocument::indentationAtLine(int line = -1)
+ * Returns the indentation at the given line.
+ *
+ * If `line` is -1 it will return the indentation at the current line.
+ * If `line` is larger than the number of lines in the document, it will return an empty string
+ */
+QString TextDocument::indentationAtLine(int line /* = -1 */)
+{
+    LOG(LOG_ARG("line", line));
+
+    if (line <= 0) {
+        line = this->line();
+    }
+
+    // API-wise the line numbers are 1-based, but internally they are 0-based
+    auto blockNumber = line - 1;
+
+    const QTextBlock &block = m_document->document()->findBlockByNumber(blockNumber);
+    if (block.isValid()) {
+        return indentationAtPosition(block.position());
+    }
+    return "";
+}
+
 } // namespace Core
