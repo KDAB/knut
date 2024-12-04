@@ -384,9 +384,15 @@ private slots:
             document.gotoLine(10);
             document.selectNextLine();
             document.indent();
+
             document.gotoLine(16);
             document.selectNextLine();
             document.removeIndent();
+
+            document.gotoLine(19);
+            document.selectNextLine();
+            document.setIndentation(1);
+
             document.save();
 
             QVERIFY(file.compare());

@@ -1534,7 +1534,7 @@ static int firstNonSpace(const QString &text)
     return i;
 }
 
-static int indentOneLine(QTextCursor &cursor, int tabCount, const TabSettings &settings)
+static int indentOneLine(QTextCursor &cursor, int tabCount, const TabSettings &settings, bool relative)
 {
     QString text = cursor.selectedText();
     cursor.removeSelectedText();
@@ -1542,7 +1542,8 @@ static int indentOneLine(QTextCursor &cursor, int tabCount, const TabSettings &s
     const int oldSize = text.size();
     const int firstChar = firstNonSpace(text);
     const int startColumn = columnAt(text, firstChar, settings.tabSize);
-    const int indentSize = qMax(startColumn / settings.tabSize + tabCount, 0);
+    const int currentIndent = startColumn / settings.tabSize;
+    const int indentSize = qMax(relative ? (currentIndent + tabCount) : tabCount, 0);
 
     text.remove(0, firstChar);
     if (settings.insertSpaces)
@@ -1554,7 +1555,7 @@ static int indentOneLine(QTextCursor &cursor, int tabCount, const TabSettings &s
     return text.size() - oldSize;
 }
 
-void indentTextInTextEdit(QPlainTextEdit *textEdit, int tabCount)
+void indentTextInTextEdit(QPlainTextEdit *textEdit, int tabCount, bool relative)
 {
     const auto settings = Core::Settings::instance()->value<Core::TabSettings>(Core::Settings::Tab);
 
@@ -1577,7 +1578,7 @@ void indentTextInTextEdit(QPlainTextEdit *textEdit, int tabCount)
     // Iterate through all line, and change the indentation
     for (int line = blockStart; line <= blockEnd; ++line) {
         cursor.select(QTextCursor::LineUnderCursor);
-        const int delta = indentOneLine(cursor, tabCount, settings);
+        const int delta = indentOneLine(cursor, tabCount, settings, relative);
         // update the position of the selection, depending on how much text was added/removed
         if (line == blockStart) {
             // the start position only changes for the text that was inserted in the first line of the selection
@@ -1598,6 +1599,8 @@ void indentTextInTextEdit(QPlainTextEdit *textEdit, int tabCount)
 /*!
  * \qmlmethod TextDocument::indent(int count)
  * Indents the current line `count` times. If there's a selection, indent all lines in the selection.
+ *
+ * See also: [`removeIndent`](#removeIndent), [`setIndentation`](#setIndentation).
  */
 void TextDocument::indent(int count)
 {
@@ -1607,12 +1610,29 @@ void TextDocument::indent(int count)
 
 /*!
  * \qmlmethod TextDocument::removeIndent(int count)
- * Indents the current line `count` times. If there's a selection, indent all lines in the selection.
+ * Reduce the indenation of the current line `count` times. If there's a selection, reduce indentation for all lines in
+ * the selection.
+ *
+ * See also: [`indent`](#indent), [`setIndentation`](#setIndentation).
  */
 void TextDocument::removeIndent(int count)
 {
     LOG_AND_MERGE(count);
     indentTextInTextEdit(m_document, -count);
+}
+
+/*!
+ * \qmlmethod TextDocument::setIndentation(int indent)
+ * Sets the absolute indentation of the current line to `indent` indentations.
+ * If there's a selection, sets the indentation of all lines in the selection.
+ *
+ * For relative indentation, see [`indent`](#indent) and [`removeIndent`](#removeIndent).
+ */
+void TextDocument::setIndentation(int indent)
+{
+    LOG(LOG_ARG("indent", indent));
+
+    indentTextInTextEdit(m_document, indent, false);
 }
 
 void TextDocument::setLineEnding(LineEnding newLineEnding)
