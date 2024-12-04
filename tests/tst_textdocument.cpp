@@ -349,6 +349,10 @@ private slots:
 
     void indent()
     {
+        auto spaces = [](int count) {
+            return QString(count, ' ');
+        };
+
         Test::FileTester file(Test::testDataPath() + "/tst_textdocument/indent/indent.txt");
         {
             Core::KnutCore core;
@@ -357,8 +361,17 @@ private slots:
 
             document.gotoLine(4);
             document.indent();
+            QCOMPARE(document.indentationAtPosition(document.position()), spaces(4));
+
+            // Test that we can correctly detect columns in mixed tabs and spaces.
+            // In this test, the first column contains 2 spaces and a tab.
+            // Because our tabsize is 4 spaces, the first 2 spaces and the tab combine into the first column.
+            // When we remove 2 levels of indentation, that will result in 2 columns left (aka. 8 spaces).
             document.gotoLine(7, 4);
+            QCOMPARE(document.indentationAtPosition(document.position()), "  \t\t\t\t");
             document.removeIndent(2);
+            QCOMPARE(document.indentationAtPosition(document.position()), spaces(8));
+
             document.gotoLine(10);
             document.selectNextLine();
             document.indent();
