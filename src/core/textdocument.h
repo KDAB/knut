@@ -191,6 +191,7 @@ public slots:
     void indent(int count = 1);
     void removeIndent(int count = 1);
     QString indentationAtPosition(int pos);
+    QString indentationAtLine(int line = -1);
 
 signals:
     void positionChanged();

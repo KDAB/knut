@@ -62,6 +62,7 @@ Inherited properties: [Document properties](../knut/document.md#properties)
 ||**[gotoStartOfWord](#gotoStartOfWord)**()|
 |bool |**[hasSelection](#hasSelection)**()|
 ||**[indent](#indent)**(int count)|
+||**[indentationAtLine](#indentationAtLine)**(int line = -1)|
 ||**[indentationAtPosition](#indentationAtPosition)**(int pos)|
 ||**[insert](#insert)**(string text)|
 ||**[insertAtLine](#insertAtLine)**(string text, int line = -1)|
@@ -308,6 +309,13 @@ Returns true if the editor has a selection.
 #### <a name="indent"></a>**indent**(int count)
 
 Indents the current line `count` times. If there's a selection, indent all lines in the selection.
+
+#### <a name="indentationAtLine"></a>**indentationAtLine**(int line = -1)
+
+Returns the indentation at the given line.
+
+If `line` is -1 it will return the indentation at the current line.
+If `line` is larger than the number of lines in the document, it will return an empty string
 
 #### <a name="indentationAtPosition"></a>**indentationAtPosition**(int pos)
 
