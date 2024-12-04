@@ -1559,39 +1559,39 @@ void indentTextInTextEdit(QPlainTextEdit *textEdit, int tabCount)
     const auto settings = Core::Settings::instance()->value<Core::TabSettings>(Core::Settings::Tab);
 
     QTextCursor cursor = textEdit->textCursor();
-    const bool hasSelection = cursor.hasSelection();
-    const int lineStart = textEdit->document()->findBlock(cursor.selectionStart()).blockNumber();
-    const int lineEnd = textEdit->document()->findBlock(cursor.selectionEnd()).blockNumber();
+    const int startPosition = cursor.selectionStart();
+    const int endPosition = cursor.selectionEnd();
+    auto startBlock = textEdit->document()->findBlock(startPosition);
+    const int blockStart = startBlock.blockNumber();
+    const int blockEnd = textEdit->document()->findBlock(endPosition).blockNumber();
+
+    // Make sure we don't move the cursor outside the first line it started on.
+    const int minStart = startBlock.position();
+    int newStart = startPosition;
+    int newEnd = endPosition;
 
     // Move the position to the beginning of the first line
-    int startPosition = cursor.position();
-    cursor.setPosition(cursor.selectionStart());
+    cursor.setPosition(startPosition);
 
     cursor.beginEditBlock();
-    if (hasSelection) {
-        startPosition = cursor.position();
-        // Iterate through all line, and change the indentation
-        for (int line = lineStart; line <= lineEnd; ++line) {
-            cursor.select(QTextCursor::LineUnderCursor);
-            const int delta = indentOneLine(cursor, tabCount, settings);
-            if (line == lineStart)
-                startPosition += delta;
-            cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor);
-        }
-        const int endPosition = cursor.position();
-        // Select whole the lines indented
-        cursor.setPosition(startPosition);
-        cursor.setPosition(endPosition - 1, QTextCursor::KeepAnchor);
-    } else {
+    // Iterate through all line, and change the indentation
+    for (int line = blockStart; line <= blockEnd; ++line) {
         cursor.select(QTextCursor::LineUnderCursor);
-        startPosition += indentOneLine(cursor, tabCount, settings);
-        const int finalLine = textEdit->document()->findBlock(startPosition).blockNumber();
-        if (finalLine != lineStart)
-            gotoLineInTextEdit(textEdit, lineStart + 1);
-        else
-            cursor.setPosition(startPosition);
+        const int delta = indentOneLine(cursor, tabCount, settings);
+        // update the position of the selection, depending on how much text was added/removed
+        if (line == blockStart) {
+            // the start position only changes for the text that was inserted in the first line of the selection
+            newStart += delta;
+        }
+        newEnd += delta;
+        cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor);
     }
     cursor.endEditBlock();
+
+    // Restore the selection, adjusted for the inserted/removed indentation
+    cursor.setPosition(qMax(minStart, newStart));
+    cursor.setPosition(qMax(minStart, newEnd), QTextCursor::KeepAnchor);
+
     textEdit->setTextCursor(cursor);
 }
 
@@ -1602,10 +1602,7 @@ void indentTextInTextEdit(QPlainTextEdit *textEdit, int tabCount)
 void TextDocument::indent(int count)
 {
     LOG_AND_MERGE(count);
-    while (count != 0) {
-        indentTextInTextEdit(m_document, 1);
-        --count;
-    }
+    indentTextInTextEdit(m_document, count);
 }
 
 /*!
@@ -1615,10 +1612,7 @@ void TextDocument::indent(int count)
 void TextDocument::removeIndent(int count)
 {
     LOG_AND_MERGE(count);
-    while (count != 0) {
-        indentTextInTextEdit(m_document, -1);
-        --count;
-    }
+    indentTextInTextEdit(m_document, -count);
 }
 
 void TextDocument::setLineEnding(LineEnding newLineEnding)
@@ -1637,7 +1631,7 @@ void TextDocument::setLineEnding(LineEnding newLineEnding)
  */
 QString TextDocument::indentationAtPosition(int pos)
 {
-    LOG(pos);
+    LOG(LOG_ARG("position", pos));
     auto cursor = m_document->textCursor();
     cursor.setPosition(pos);
     cursor.movePosition(QTextCursor::StartOfLine);
