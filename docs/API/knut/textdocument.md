@@ -97,6 +97,7 @@ Inherited properties: [Document properties](../knut/document.md#properties)
 ||**[selectStartOfWord](#selectStartOfWord)**()|
 ||**[selectTo](#selectTo)**(int pos)|
 ||**[selectToMark](#selectToMark)**([Mark](../knut/mark.md) mark)|
+||**[setIndentation](#setIndentation)**(int indent)|
 ||**[undo](#undo)**(int count)|
 ||**[unselect](#unselect)**()|
 
@@ -310,6 +311,8 @@ Returns true if the editor has a selection.
 
 Indents the current line `count` times. If there's a selection, indent all lines in the selection.
 
+See also: [`removeIndent`](#removeIndent), [`setIndentation`](#setIndentation).
+
 #### <a name="indentationAtLine"></a>**indentationAtLine**(int line = -1)
 
 Returns the indentation at the given line.
@@ -365,7 +368,10 @@ Remove `length` character from the current position.
 
 #### <a name="removeIndent"></a>**removeIndent**(int count)
 
-Indents the current line `count` times. If there's a selection, indent all lines in the selection.
+Reduce the indenation of the current line `count` times. If there's a selection, reduce indentation for all lines in
+the selection.
+
+See also: [`indent`](#indent), [`setIndentation`](#setIndentation).
 
 #### <a name="replace"></a>**replace**(int length, string text)
 
@@ -502,6 +508,13 @@ Selects the text from the current position to `pos`.
 #### <a name="selectToMark"></a>**selectToMark**([Mark](../knut/mark.md) mark)
 
 Selects the text from the cursor position to the `mark`.
+
+#### <a name="setIndentation"></a>**setIndentation**(int indent)
+
+Sets the absolute indentation of the current line to `indent` indentations.
+If there's a selection, sets the indentation of all lines in the selection.
+
+For relative indentation, see [`indent`](#indent) and [`removeIndent`](#removeIndent).
 
 #### <a name="undo"></a>**undo**(int count)
 
