@@ -1555,36 +1555,36 @@ static int indentOneLine(QTextCursor &cursor, int tabCount, const TabSettings &s
     return text.size() - oldSize;
 }
 
-void indentTextInTextEdit(QPlainTextEdit *textEdit, int tabCount, bool relative)
+static void indentBlocksInTextEdit(QPlainTextEdit *textEdit, int blockStart, int blockEnd, int tabCount, bool relative)
 {
     const auto settings = Core::Settings::instance()->value<Core::TabSettings>(Core::Settings::Tab);
-
     QTextCursor cursor = textEdit->textCursor();
-    const int startPosition = cursor.selectionStart();
-    const int endPosition = cursor.selectionEnd();
-    auto startBlock = textEdit->document()->findBlock(startPosition);
-    const int blockStart = startBlock.blockNumber();
-    const int blockEnd = textEdit->document()->findBlock(endPosition).blockNumber();
 
     // Make sure we don't move the cursor outside the first line it started on.
-    const int minStart = startBlock.position();
-    int newStart = startPosition;
-    int newEnd = endPosition;
+    const int minStart = textEdit->document()->findBlock(cursor.selectionStart()).position();
+    int newStart = cursor.selectionStart();
+    int newEnd = cursor.selectionEnd();
 
     // Move the position to the beginning of the first line
-    cursor.setPosition(startPosition);
+    cursor.setPosition(textEdit->document()->findBlockByNumber(blockStart).position());
 
     cursor.beginEditBlock();
     // Iterate through all line, and change the indentation
-    for (int line = blockStart; line <= blockEnd; ++line) {
+    for (int block = blockStart; block <= blockEnd; ++block) {
         cursor.select(QTextCursor::LineUnderCursor);
+        // We need to update the new selection if we're doing modifications at or before the selection.
+        const auto updateStart = cursor.selectionStart() <= newStart;
+        const auto updateEnd = cursor.selectionStart() <= newEnd;
+
         const int delta = indentOneLine(cursor, tabCount, settings, relative);
+
         // update the position of the selection, depending on how much text was added/removed
-        if (line == blockStart) {
-            // the start position only changes for the text that was inserted in the first line of the selection
+        if (updateStart) {
             newStart += delta;
         }
-        newEnd += delta;
+        if (updateEnd) {
+            newEnd += delta;
+        }
         cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor);
     }
     cursor.endEditBlock();
@@ -1594,6 +1594,15 @@ void indentTextInTextEdit(QPlainTextEdit *textEdit, int tabCount, bool relative)
     cursor.setPosition(qMax(minStart, newEnd), QTextCursor::KeepAnchor);
 
     textEdit->setTextCursor(cursor);
+}
+
+void indentTextInTextEdit(QPlainTextEdit *textEdit, int tabCount, bool relative)
+{
+    QTextCursor cursor = textEdit->textCursor();
+    const int blockStart = textEdit->document()->findBlock(cursor.selectionStart()).blockNumber();
+    const int blockEnd = textEdit->document()->findBlock(cursor.selectionEnd()).blockNumber();
+
+    indentBlocksInTextEdit(textEdit, blockStart, blockEnd, tabCount, relative);
 }
 
 /*!
@@ -1606,6 +1615,19 @@ void TextDocument::indent(int count)
 {
     LOG_AND_MERGE(count);
     indentTextInTextEdit(m_document, count);
+}
+
+/*!
+ * \qmlmethod TextDocument::indentLine(int count, int line)
+ * Indents the `line` `count` times.
+ *
+ * See also: [`indent`](#indent)
+ */
+void TextDocument::indentLine(int count, int line)
+{
+    LOG(LOG_ARG("count", count), LOG_ARG("line", line));
+
+    indentBlocksInTextEdit(m_document, line - 1, line - 1, count, true);
 }
 
 /*!
@@ -1622,6 +1644,19 @@ void TextDocument::removeIndent(int count)
 }
 
 /*!
+ * \qmlmethod TextDocument::removeIndentAtLine(int count, int line)
+ * Reduce the indentation of the `line` by `count` times.
+ *
+ * See also: [`removeIndent`](#removeIndent)
+ */
+void TextDocument::removeIndentAtLine(int count, int line)
+{
+    LOG(LOG_ARG("count", count), LOG_ARG("line", line));
+
+    indentBlocksInTextEdit(m_document, line - 1, line - 1, -count, true);
+}
+
+/*!
  * \qmlmethod TextDocument::setIndentation(int indent)
  * Sets the absolute indentation of the current line to `indent` indentations.
  * If there's a selection, sets the indentation of all lines in the selection.
@@ -1633,6 +1668,19 @@ void TextDocument::setIndentation(int indent)
     LOG(LOG_ARG("indent", indent));
 
     indentTextInTextEdit(m_document, indent, false);
+}
+
+/*!
+ * \qmlmethod TextDocument::setIndentationAtLine(int indent, int line)
+ * Sets the absolute indentation of the `line` to `indent` indentations.
+ *
+ * See also: [`setIndentation`](#setIndentation)
+ */
+void TextDocument::setIndentationAtLine(int indent, int line)
+{
+    LOG(LOG_ARG("indent", indent), LOG_ARG("line", line));
+
+    indentBlocksInTextEdit(m_document, line - 1, line - 1, indent, false);
 }
 
 void TextDocument::setLineEnding(LineEnding newLineEnding)

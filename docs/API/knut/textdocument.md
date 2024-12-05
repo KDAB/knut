@@ -62,6 +62,7 @@ Inherited properties: [Document properties](../knut/document.md#properties)
 ||**[gotoStartOfWord](#gotoStartOfWord)**()|
 |bool |**[hasSelection](#hasSelection)**()|
 ||**[indent](#indent)**(int count)|
+||**[indentLine](#indentLine)**(int count, int line)|
 ||**[indentationAtLine](#indentationAtLine)**(int line = -1)|
 ||**[indentationAtPosition](#indentationAtPosition)**(int pos)|
 ||**[insert](#insert)**(string text)|
@@ -74,6 +75,7 @@ Inherited properties: [Document properties](../knut/document.md#properties)
 ||**[redo](#redo)**(int count)|
 ||**[remove](#remove)**(int length)|
 ||**[removeIndent](#removeIndent)**(int count)|
+||**[removeIndentAtLine](#removeIndentAtLine)**(int count, int line)|
 ||**[replace](#replace)**(int length, string text)|
 ||**[replace](#replace)**([RangeMark](../knut/rangemark.md) range, string text)|
 ||**[replace](#replace)**(int from, int to, string text)|
@@ -98,6 +100,7 @@ Inherited properties: [Document properties](../knut/document.md#properties)
 ||**[selectTo](#selectTo)**(int pos)|
 ||**[selectToMark](#selectToMark)**([Mark](../knut/mark.md) mark)|
 ||**[setIndentation](#setIndentation)**(int indent)|
+||**[setIndentationAtLine](#setIndentationAtLine)**(int indent, int line)|
 ||**[undo](#undo)**(int count)|
 ||**[unselect](#unselect)**()|
 
@@ -313,6 +316,12 @@ Indents the current line `count` times. If there's a selection, indent all lines
 
 See also: [`removeIndent`](#removeIndent), [`setIndentation`](#setIndentation).
 
+#### <a name="indentLine"></a>**indentLine**(int count, int line)
+
+Indents the `line` `count` times.
+
+See also: [`indent`](#indent)
+
 #### <a name="indentationAtLine"></a>**indentationAtLine**(int line = -1)
 
 Returns the indentation at the given line.
@@ -372,6 +381,12 @@ Reduce the indenation of the current line `count` times. If there's a selection,
 the selection.
 
 See also: [`indent`](#indent), [`setIndentation`](#setIndentation).
+
+#### <a name="removeIndentAtLine"></a>**removeIndentAtLine**(int count, int line)
+
+Reduce the indentation of the `line` by `count` times.
+
+See also: [`removeIndent`](#removeIndent)
 
 #### <a name="replace"></a>**replace**(int length, string text)
 
@@ -515,6 +530,12 @@ Sets the absolute indentation of the current line to `indent` indentations.
 If there's a selection, sets the indentation of all lines in the selection.
 
 For relative indentation, see [`indent`](#indent) and [`removeIndent`](#removeIndent).
+
+#### <a name="setIndentationAtLine"></a>**setIndentationAtLine**(int indent, int line)
+
+Sets the absolute indentation of the `line` to `indent` indentations.
+
+See also: [`setIndentation`](#setIndentation)
 
 #### <a name="undo"></a>**undo**(int count)
 

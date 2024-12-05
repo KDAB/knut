@@ -18,7 +18,7 @@
 
 
 CTutorialDlg::CTutorialDlg(CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_TUTORIAL_DIALOG, pParent)
+    : CDialogEx(IDD_TUTORIAL_DIALOG, pParent)
 	, m_check(FALSE)
 	, m_message(_T(""))
 {

@@ -361,7 +361,7 @@ private slots:
 
             QCOMPARE(document.indentationAtLine(1), spaces(4));
             QCOMPARE(document.indentationAtLine(7), "  \t\t\t\t");
-            QCOMPARE(document.indentationAtLine(23), spaces(2));
+            QCOMPARE(document.indentationAtLine(29), spaces(2));
             // If the line number is larger than the line count, an empty string is returned
             QVERIFY(document.indentationAtLine(50).isEmpty());
 
@@ -392,6 +392,10 @@ private slots:
             document.gotoLine(19);
             document.selectNextLine();
             document.setIndentation(1);
+
+            document.indentLine(2, 25);
+            document.removeIndentAtLine(1, 26);
+            document.setIndentationAtLine(1, 28);
 
             document.save();
 
