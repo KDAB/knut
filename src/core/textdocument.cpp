@@ -194,7 +194,7 @@ bool TextDocument::eventFilter(QObject *watched, QEvent *event)
         else if (keyEvent == QKeySequence::MoveToPreviousPage)
             return false;
         else if ((keyEvent->key() == Qt::Key_Backtab))
-            removeIndent();
+            indent(-1);
         else if (keyEvent->key() == Qt::Key_Tab)
             indent();
         else if (keyEvent == QKeySequence::Undo)
@@ -1611,7 +1611,9 @@ void indentTextInTextEdit(QPlainTextEdit *textEdit, int tabCount, bool relative)
  * \qmlmethod TextDocument::indent(int count)
  * Indents the current line `count` times. If there's a selection, indent all lines in the selection.
  *
- * See also: [`removeIndent`](#removeIndent), [`setIndentation`](#setIndentation).
+ * The `count` can be negative to reduce the existing indentation.
+ *
+ * See also: [`setIndentation`](#setIndentation).
  */
 void TextDocument::indent(int count)
 {
@@ -1633,37 +1635,11 @@ void TextDocument::indentLine(int count, int line)
 }
 
 /*!
- * \qmlmethod TextDocument::removeIndent(int count)
- * Reduce the indenation of the current line `count` times. If there's a selection, reduce indentation for all lines in
- * the selection.
- *
- * See also: [`indent`](#indent), [`setIndentation`](#setIndentation).
- */
-void TextDocument::removeIndent(int count)
-{
-    LOG_AND_MERGE(count);
-    indentTextInTextEdit(m_document, -count);
-}
-
-/*!
- * \qmlmethod TextDocument::removeIndentAtLine(int count, int line)
- * Reduce the indentation of the `line` by `count` times.
- *
- * See also: [`removeIndent`](#removeIndent)
- */
-void TextDocument::removeIndentAtLine(int count, int line)
-{
-    LOG(LOG_ARG("count", count), LOG_ARG("line", line));
-
-    indentBlocksInTextEdit(m_document, line - 1, line - 1, -count, true);
-}
-
-/*!
  * \qmlmethod TextDocument::setIndentation(int indent)
  * Sets the absolute indentation of the current line to `indent` indentations.
  * If there's a selection, sets the indentation of all lines in the selection.
  *
- * For relative indentation, see [`indent`](#indent) and [`removeIndent`](#removeIndent).
+ * For relative indentation, see [`indent`](#indent) and [`indentLine`](#indentLine).
  */
 void TextDocument::setIndentation(int indent)
 {

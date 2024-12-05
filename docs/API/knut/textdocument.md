@@ -76,8 +76,6 @@ Inherited properties: [Document properties](../knut/document.md#properties)
 ||**[positionAt](#positionAt)**(int line, int col)|
 ||**[redo](#redo)**(int count)|
 ||**[remove](#remove)**(int length)|
-||**[removeIndent](#removeIndent)**(int count)|
-||**[removeIndentAtLine](#removeIndentAtLine)**(int count, int line)|
 ||**[replace](#replace)**(int length, string text)|
 ||**[replace](#replace)**([RangeMark](../knut/rangemark.md) range, string text)|
 ||**[replace](#replace)**(int from, int to, string text)|
@@ -316,7 +314,9 @@ Returns true if the editor has a selection.
 
 Indents the current line `count` times. If there's a selection, indent all lines in the selection.
 
-See also: [`removeIndent`](#removeIndent), [`setIndentation`](#setIndentation).
+The `count` can be negative to reduce the existing indentation.
+
+See also: [`setIndentation`](#setIndentation).
 
 #### <a name="indentLine"></a>**indentLine**(int count, int line)
 
@@ -391,19 +391,6 @@ Redo `count` times the last actions.
 #### <a name="remove"></a>**remove**(int length)
 
 Remove `length` character from the current position.
-
-#### <a name="removeIndent"></a>**removeIndent**(int count)
-
-Reduce the indenation of the current line `count` times. If there's a selection, reduce indentation for all lines in
-the selection.
-
-See also: [`indent`](#indent), [`setIndentation`](#setIndentation).
-
-#### <a name="removeIndentAtLine"></a>**removeIndentAtLine**(int count, int line)
-
-Reduce the indentation of the `line` by `count` times.
-
-See also: [`removeIndent`](#removeIndent)
 
 #### <a name="replace"></a>**replace**(int length, string text)
 
@@ -546,7 +533,7 @@ Selects the text from the cursor position to the `mark`.
 Sets the absolute indentation of the current line to `indent` indentations.
 If there's a selection, sets the indentation of all lines in the selection.
 
-For relative indentation, see [`indent`](#indent) and [`removeIndent`](#removeIndent).
+For relative indentation, see [`indent`](#indent) and [`indentLine`](#indentLine).
 
 #### <a name="setIndentationAtLine"></a>**setIndentationAtLine**(int indent, int line)
 
