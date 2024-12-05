@@ -384,7 +384,7 @@ private slots:
             // When we remove 2 levels of indentation, that will result in 2 columns left (aka. 8 spaces).
             document.gotoLine(7, 4);
             COMPARE_CURRENT_INDENT("  \t\t\t\t", 4)
-            document.removeIndent(2);
+            document.indent(-2);
             COMPARE_CURRENT_INDENT(spaces(8), 2)
 
             document.gotoLine(10);
@@ -393,14 +393,14 @@ private slots:
 
             document.gotoLine(16);
             document.selectNextLine();
-            document.removeIndent();
+            document.indent(-1);
 
             document.gotoLine(19);
             document.selectNextLine();
             document.setIndentation(1);
 
             document.indentLine(2, 25);
-            document.removeIndentAtLine(1, 26);
+            document.indentLine(-1, 26);
             document.setIndentationAtLine(1, 28);
 
             document.save();

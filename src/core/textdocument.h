@@ -190,8 +190,6 @@ public slots:
     // Indentation
     void indent(int count = 1);
     void indentLine(int count, int line);
-    void removeIndent(int count = 1);
-    void removeIndentAtLine(int count, int line);
     void setIndentation(int indent);
     void setIndentationAtLine(int indent, int line);
     int indentationAtPosition(int pos) const;
