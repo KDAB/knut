@@ -1534,6 +1534,11 @@ static int firstNonSpace(const QString &text)
     return i;
 }
 
+static QString indentToString(int indentSize, const TabSettings &settings)
+{
+    return settings.insertSpaces ? QString(indentSize * settings.tabSize, ' ') : QString(indentSize, '\t');
+}
+
 static int indentOneLine(QTextCursor &cursor, int tabCount, const TabSettings &settings, bool relative)
 {
     QString text = cursor.selectedText();
@@ -1546,10 +1551,7 @@ static int indentOneLine(QTextCursor &cursor, int tabCount, const TabSettings &s
     const int indentSize = qMax(relative ? (currentIndent + tabCount) : tabCount, 0);
 
     text.remove(0, firstChar);
-    if (settings.insertSpaces)
-        text = QString(indentSize * settings.tabSize, ' ') + text;
-    else
-        text = QString(indentSize, '\t') + text;
+    text = indentToString(indentSize, settings) + text;
 
     cursor.insertText(text);
     return text.size() - oldSize;
@@ -1694,12 +1696,15 @@ void TextDocument::setLineEnding(LineEnding newLineEnding)
 }
 
 /*!
- * \qmlmethod TextDocument::indentationAtPosition(int pos)
- * Returns the indentation at the given position.
+ * \qmlmethod string TextDocument::indentTextAtPosition(int pos)
+ * Returns the indentation text at the given position.
+ *
+ * Note: To get the level of indentation, use [`indentationAtPosition`](#indentationAtPosition).
  */
-QString TextDocument::indentationAtPosition(int pos)
+QString TextDocument::indentTextAtPosition(int pos) const
 {
     LOG(LOG_ARG("position", pos));
+
     auto cursor = m_document->textCursor();
     cursor.setPosition(pos);
     cursor.movePosition(QTextCursor::StartOfLine);
@@ -1709,13 +1714,15 @@ QString TextDocument::indentationAtPosition(int pos)
 }
 
 /*!
- * \qmlmethod TextDocument::indentationAtLine(int line = -1)
- * Returns the indentation at the given line.
+ * \qmlmethod string TextDocument::indentTextAtLine(int line = -1)
+ * Returns the indentation text at the given line.
  *
  * If `line` is -1 it will return the indentation at the current line.
  * If `line` is larger than the number of lines in the document, it will return an empty string
+ *
+ * Note: To get the level of indentation, use [`indentationAtLine`](#indentationAtLine).
  */
-QString TextDocument::indentationAtLine(int line /* = -1 */)
+QString TextDocument::indentTextAtLine(int line /* = -1 */) const
 {
     LOG(LOG_ARG("line", line));
 
@@ -1728,9 +1735,38 @@ QString TextDocument::indentationAtLine(int line /* = -1 */)
 
     const QTextBlock &block = m_document->document()->findBlockByNumber(blockNumber);
     if (block.isValid()) {
-        return indentationAtPosition(block.position());
+        return indentTextAtPosition(block.position());
     }
-    return "";
+    return 0;
+}
+
+/*!
+ * \qmlmethod int TextDocument::indentationAtPosition(int pos)
+ * Returns the indentation level at the given position.
+ */
+int TextDocument::indentationAtPosition(int pos) const
+{
+    LOG(LOG_ARG("position", pos));
+
+    const auto indentText = indentTextAtPosition(pos);
+    const auto settings = Core::Settings::instance()->value<Core::TabSettings>(Core::Settings::Tab);
+    return columnAt(indentText, indentText.size(), settings.tabSize) / settings.tabSize;
+}
+
+/*!
+ * \qmlmethod int TextDocument::indentationAtLine(int line = -1)
+ * Returns the indentation level at the given line.
+ *
+ * If `line` is -1 it will return the indentation at the current line.
+ * If `line` is larger than the number of lines in the document, it will return 0
+ */
+int TextDocument::indentationAtLine(int line /* = -1 */) const
+{
+    LOG(LOG_ARG("line", line));
+
+    const auto indentText = indentTextAtLine(line);
+    const auto settings = Core::Settings::instance()->value<Core::TabSettings>(Core::Settings::Tab);
+    return columnAt(indentText, indentText.size(), settings.tabSize) / settings.tabSize;
 }
 
 } // namespace Core
