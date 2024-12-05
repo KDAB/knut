@@ -25,7 +25,7 @@ struct TabSettings
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(TabSettings, insertSpaces, tabSize);
 
-void indentTextInTextEdit(QPlainTextEdit *textEdit, int tabCount);
+void indentTextInTextEdit(QPlainTextEdit *textEdit, int tabCount, bool relative = true);
 void gotoLineInTextEdit(QPlainTextEdit *textEdit, int line, int column = 1);
 
 } // namespace Core

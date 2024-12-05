@@ -349,26 +349,66 @@ private slots:
 
     void indent()
     {
+        auto spaces = [](int count) {
+            return QString(count, ' ');
+        };
+#define COMPARE_LINE_INDENT(LINE, TEXT, INDENT)                                                                        \
+    QCOMPARE(document.indentTextAtLine(LINE), TEXT);                                                                   \
+    QCOMPARE(document.indentationAtLine(LINE), INDENT);
+
+#define COMPARE_CURRENT_INDENT(TEXT, INDENT)                                                                           \
+    QCOMPARE(document.indentationAtPosition(document.position()), INDENT);                                             \
+    QCOMPARE(document.indentationAtLine(-1), INDENT);                                                                  \
+    QCOMPARE(document.indentTextAtPosition(document.position()), TEXT);                                                \
+    QCOMPARE(document.indentTextAtLine(-1), TEXT);
+
         Test::FileTester file(Test::testDataPath() + "/tst_textdocument/indent/indent.txt");
         {
             Core::KnutCore core;
             Core::TextDocument document;
             document.load(file.fileName());
 
+            COMPARE_LINE_INDENT(1, spaces(2), 0);
+            COMPARE_LINE_INDENT(7, "  \t\t\t\t", 4);
+            COMPARE_LINE_INDENT(29, spaces(4), 1);
+            // If the line number is larger than the line count, an empty string is returned
+            COMPARE_LINE_INDENT(50, "", 0);
+
             document.gotoLine(4);
             document.indent();
+            COMPARE_CURRENT_INDENT(spaces(4), 1)
+
+            // Test that we can correctly detect columns in mixed tabs and spaces.
+            // In this test, the first column contains 2 spaces and a tab.
+            // Because our tabsize is 4 spaces, the first 2 spaces and the tab combine into the first column.
+            // When we remove 2 levels of indentation, that will result in 2 columns left (aka. 8 spaces).
             document.gotoLine(7, 4);
-            document.removeIndent(2);
+            COMPARE_CURRENT_INDENT("  \t\t\t\t", 4)
+            document.indent(-2);
+            COMPARE_CURRENT_INDENT(spaces(8), 2)
+
             document.gotoLine(10);
             document.selectNextLine();
             document.indent();
+
             document.gotoLine(16);
             document.selectNextLine();
-            document.removeIndent();
+            document.indent(-1);
+
+            document.gotoLine(19);
+            document.selectNextLine();
+            document.setIndentation(1);
+
+            document.indentLine(2, 25);
+            document.indentLine(-1, 26);
+            document.setIndentationAtLine(1, 28);
+
             document.save();
 
             QVERIFY(file.compare());
         }
+#undef COMPARE_CURRENT_INDENT
+#undef COMPARE_LINE_INDENT
     }
 
     void findReplace()
