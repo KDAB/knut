@@ -194,8 +194,10 @@ public slots:
     void removeIndentAtLine(int count, int line);
     void setIndentation(int indent);
     void setIndentationAtLine(int indent, int line);
-    QString indentationAtPosition(int pos);
-    QString indentationAtLine(int line = -1);
+    int indentationAtPosition(int pos) const;
+    int indentationAtLine(int line = -1) const;
+    QString indentTextAtPosition(int pos) const;
+    QString indentTextAtLine(int line = -1) const;
 
 signals:
     void positionChanged();

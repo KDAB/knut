@@ -63,8 +63,10 @@ Inherited properties: [Document properties](../knut/document.md#properties)
 |bool |**[hasSelection](#hasSelection)**()|
 ||**[indent](#indent)**(int count)|
 ||**[indentLine](#indentLine)**(int count, int line)|
-||**[indentationAtLine](#indentationAtLine)**(int line = -1)|
-||**[indentationAtPosition](#indentationAtPosition)**(int pos)|
+|string |**[indentTextAtLine](#indentTextAtLine)**(int line = -1)|
+|string |**[indentTextAtPosition](#indentTextAtPosition)**(int pos)|
+|int |**[indentationAtLine](#indentationAtLine)**(int line = -1)|
+|int |**[indentationAtPosition](#indentationAtPosition)**(int pos)|
 ||**[insert](#insert)**(string text)|
 ||**[insertAtLine](#insertAtLine)**(string text, int line = -1)|
 ||**[insertAtPosition](#insertAtPosition)**(string text, int pos)|
@@ -322,16 +324,31 @@ Indents the `line` `count` times.
 
 See also: [`indent`](#indent)
 
-#### <a name="indentationAtLine"></a>**indentationAtLine**(int line = -1)
+#### <a name="indentTextAtLine"></a>string **indentTextAtLine**(int line = -1)
 
-Returns the indentation at the given line.
+Returns the indentation text at the given line.
 
 If `line` is -1 it will return the indentation at the current line.
 If `line` is larger than the number of lines in the document, it will return an empty string
 
-#### <a name="indentationAtPosition"></a>**indentationAtPosition**(int pos)
+Note: To get the level of indentation, use [`indentationAtLine`](#indentationAtLine).
 
-Returns the indentation at the given position.
+#### <a name="indentTextAtPosition"></a>string **indentTextAtPosition**(int pos)
+
+Returns the indentation text at the given position.
+
+Note: To get the level of indentation, use [`indentationAtPosition`](#indentationAtPosition).
+
+#### <a name="indentationAtLine"></a>int **indentationAtLine**(int line = -1)
+
+Returns the indentation level at the given line.
+
+If `line` is -1 it will return the indentation at the current line.
+If `line` is larger than the number of lines in the document, it will return 0
+
+#### <a name="indentationAtPosition"></a>int **indentationAtPosition**(int pos)
+
+Returns the indentation level at the given position.
 
 #### <a name="insert"></a>**insert**(string text)
 
