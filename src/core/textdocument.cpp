@@ -194,7 +194,7 @@ bool TextDocument::eventFilter(QObject *watched, QEvent *event)
         else if (keyEvent == QKeySequence::MoveToPreviousPage)
             return false;
         else if ((keyEvent->key() == Qt::Key_Backtab))
-            removeIndent();
+            indent(-1);
         else if (keyEvent->key() == Qt::Key_Tab)
             indent();
         else if (keyEvent == QKeySequence::Undo)
@@ -1534,7 +1534,12 @@ static int firstNonSpace(const QString &text)
     return i;
 }
 
-static int indentOneLine(QTextCursor &cursor, int tabCount, const TabSettings &settings)
+static QString indentToString(int indentSize, const TabSettings &settings)
+{
+    return settings.insertSpaces ? QString(indentSize * settings.tabSize, ' ') : QString(indentSize, '\t');
+}
+
+static int indentOneLine(QTextCursor &cursor, int tabCount, const TabSettings &settings, bool relative)
 {
     QString text = cursor.selectedText();
     cursor.removeSelectedText();
@@ -1542,83 +1547,118 @@ static int indentOneLine(QTextCursor &cursor, int tabCount, const TabSettings &s
     const int oldSize = text.size();
     const int firstChar = firstNonSpace(text);
     const int startColumn = columnAt(text, firstChar, settings.tabSize);
-    const int indentSize = qMax(startColumn / settings.tabSize + tabCount, 0);
+    const int currentIndent = startColumn / settings.tabSize;
+    const int indentSize = qMax(relative ? (currentIndent + tabCount) : tabCount, 0);
 
     text.remove(0, firstChar);
-    if (settings.insertSpaces)
-        text = QString(indentSize * settings.tabSize, ' ') + text;
-    else
-        text = QString(indentSize, '\t') + text;
+    text = indentToString(indentSize, settings) + text;
 
     cursor.insertText(text);
     return text.size() - oldSize;
 }
 
-void indentTextInTextEdit(QPlainTextEdit *textEdit, int tabCount)
+static void indentBlocksInTextEdit(QPlainTextEdit *textEdit, int blockStart, int blockEnd, int tabCount, bool relative)
 {
     const auto settings = Core::Settings::instance()->value<Core::TabSettings>(Core::Settings::Tab);
-
     QTextCursor cursor = textEdit->textCursor();
-    const bool hasSelection = cursor.hasSelection();
-    const int lineStart = textEdit->document()->findBlock(cursor.selectionStart()).blockNumber();
-    const int lineEnd = textEdit->document()->findBlock(cursor.selectionEnd()).blockNumber();
+
+    // Make sure we don't move the cursor outside the first line it started on.
+    const int minStart = textEdit->document()->findBlock(cursor.selectionStart()).position();
+    int newStart = cursor.selectionStart();
+    int newEnd = cursor.selectionEnd();
 
     // Move the position to the beginning of the first line
-    int startPosition = cursor.position();
-    cursor.setPosition(cursor.selectionStart());
+    cursor.setPosition(textEdit->document()->findBlockByNumber(blockStart).position());
 
     cursor.beginEditBlock();
-    if (hasSelection) {
-        startPosition = cursor.position();
-        // Iterate through all line, and change the indentation
-        for (int line = lineStart; line <= lineEnd; ++line) {
-            cursor.select(QTextCursor::LineUnderCursor);
-            const int delta = indentOneLine(cursor, tabCount, settings);
-            if (line == lineStart)
-                startPosition += delta;
-            cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor);
-        }
-        const int endPosition = cursor.position();
-        // Select whole the lines indented
-        cursor.setPosition(startPosition);
-        cursor.setPosition(endPosition - 1, QTextCursor::KeepAnchor);
-    } else {
+    // Iterate through all line, and change the indentation
+    for (int block = blockStart; block <= blockEnd; ++block) {
         cursor.select(QTextCursor::LineUnderCursor);
-        startPosition += indentOneLine(cursor, tabCount, settings);
-        const int finalLine = textEdit->document()->findBlock(startPosition).blockNumber();
-        if (finalLine != lineStart)
-            gotoLineInTextEdit(textEdit, lineStart + 1);
-        else
-            cursor.setPosition(startPosition);
+        // We need to update the new selection if we're doing modifications at or before the selection.
+        const auto updateStart = cursor.selectionStart() <= newStart;
+        const auto updateEnd = cursor.selectionStart() <= newEnd;
+
+        const int delta = indentOneLine(cursor, tabCount, settings, relative);
+
+        // update the position of the selection, depending on how much text was added/removed
+        if (updateStart) {
+            newStart += delta;
+        }
+        if (updateEnd) {
+            newEnd += delta;
+        }
+        cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor);
     }
     cursor.endEditBlock();
+
+    // Restore the selection, adjusted for the inserted/removed indentation
+    cursor.setPosition(qMax(minStart, newStart));
+    cursor.setPosition(qMax(minStart, newEnd), QTextCursor::KeepAnchor);
+
     textEdit->setTextCursor(cursor);
+}
+
+void indentTextInTextEdit(QPlainTextEdit *textEdit, int tabCount, bool relative)
+{
+    QTextCursor cursor = textEdit->textCursor();
+    const int blockStart = textEdit->document()->findBlock(cursor.selectionStart()).blockNumber();
+    const int blockEnd = textEdit->document()->findBlock(cursor.selectionEnd()).blockNumber();
+
+    indentBlocksInTextEdit(textEdit, blockStart, blockEnd, tabCount, relative);
 }
 
 /*!
  * \qmlmethod TextDocument::indent(int count)
  * Indents the current line `count` times. If there's a selection, indent all lines in the selection.
+ *
+ * The `count` can be negative to reduce the existing indentation.
+ *
+ * See also: [`setIndentation`](#setIndentation).
  */
 void TextDocument::indent(int count)
 {
     LOG_AND_MERGE(count);
-    while (count != 0) {
-        indentTextInTextEdit(m_document, 1);
-        --count;
-    }
+    indentTextInTextEdit(m_document, count);
 }
 
 /*!
- * \qmlmethod TextDocument::removeIndent(int count)
- * Indents the current line `count` times. If there's a selection, indent all lines in the selection.
+ * \qmlmethod TextDocument::indentLine(int count, int line)
+ * Indents the `line` `count` times.
+ *
+ * See also: [`indent`](#indent)
  */
-void TextDocument::removeIndent(int count)
+void TextDocument::indentLine(int count, int line)
 {
-    LOG_AND_MERGE(count);
-    while (count != 0) {
-        indentTextInTextEdit(m_document, -1);
-        --count;
-    }
+    LOG(LOG_ARG("count", count), LOG_ARG("line", line));
+
+    indentBlocksInTextEdit(m_document, line - 1, line - 1, count, true);
+}
+
+/*!
+ * \qmlmethod TextDocument::setIndentation(int indent)
+ * Sets the absolute indentation of the current line to `indent` indentations.
+ * If there's a selection, sets the indentation of all lines in the selection.
+ *
+ * For relative indentation, see [`indent`](#indent) and [`indentLine`](#indentLine).
+ */
+void TextDocument::setIndentation(int indent)
+{
+    LOG(LOG_ARG("indent", indent));
+
+    indentTextInTextEdit(m_document, indent, false);
+}
+
+/*!
+ * \qmlmethod TextDocument::setIndentationAtLine(int indent, int line)
+ * Sets the absolute indentation of the `line` to `indent` indentations.
+ *
+ * See also: [`setIndentation`](#setIndentation)
+ */
+void TextDocument::setIndentationAtLine(int indent, int line)
+{
+    LOG(LOG_ARG("indent", indent), LOG_ARG("line", line));
+
+    indentBlocksInTextEdit(m_document, line - 1, line - 1, indent, false);
 }
 
 void TextDocument::setLineEnding(LineEnding newLineEnding)
@@ -1632,18 +1672,77 @@ void TextDocument::setLineEnding(LineEnding newLineEnding)
 }
 
 /*!
- * \qmlmethod TextDocument::indentationAtPosition(int pos)
- * Returns the indentation at the given position.
+ * \qmlmethod string TextDocument::indentTextAtPosition(int pos)
+ * Returns the indentation text at the given position.
+ *
+ * Note: To get the level of indentation, use [`indentationAtPosition`](#indentationAtPosition).
  */
-QString TextDocument::indentationAtPosition(int pos)
+QString TextDocument::indentTextAtPosition(int pos) const
 {
-    LOG(pos);
+    LOG(LOG_ARG("position", pos));
+
     auto cursor = m_document->textCursor();
     cursor.setPosition(pos);
     cursor.movePosition(QTextCursor::StartOfLine);
     const QString line = cursor.block().text();
     static QRegularExpression nonSpaces("\\S");
     return line.left(line.indexOf(nonSpaces));
+}
+
+/*!
+ * \qmlmethod string TextDocument::indentTextAtLine(int line = -1)
+ * Returns the indentation text at the given line.
+ *
+ * If `line` is -1 it will return the indentation at the current line.
+ * If `line` is larger than the number of lines in the document, it will return an empty string
+ *
+ * Note: To get the level of indentation, use [`indentationAtLine`](#indentationAtLine).
+ */
+QString TextDocument::indentTextAtLine(int line /* = -1 */) const
+{
+    LOG(LOG_ARG("line", line));
+
+    if (line <= 0) {
+        line = this->line();
+    }
+
+    // API-wise the line numbers are 1-based, but internally they are 0-based
+    auto blockNumber = line - 1;
+
+    const QTextBlock &block = m_document->document()->findBlockByNumber(blockNumber);
+    if (block.isValid()) {
+        return indentTextAtPosition(block.position());
+    }
+    return 0;
+}
+
+/*!
+ * \qmlmethod int TextDocument::indentationAtPosition(int pos)
+ * Returns the indentation level at the given position.
+ */
+int TextDocument::indentationAtPosition(int pos) const
+{
+    LOG(LOG_ARG("position", pos));
+
+    const auto indentText = indentTextAtPosition(pos);
+    const auto settings = Core::Settings::instance()->value<Core::TabSettings>(Core::Settings::Tab);
+    return columnAt(indentText, indentText.size(), settings.tabSize) / settings.tabSize;
+}
+
+/*!
+ * \qmlmethod int TextDocument::indentationAtLine(int line = -1)
+ * Returns the indentation level at the given line.
+ *
+ * If `line` is -1 it will return the indentation at the current line.
+ * If `line` is larger than the number of lines in the document, it will return 0
+ */
+int TextDocument::indentationAtLine(int line /* = -1 */) const
+{
+    LOG(LOG_ARG("line", line));
+
+    const auto indentText = indentTextAtLine(line);
+    const auto settings = Core::Settings::instance()->value<Core::TabSettings>(Core::Settings::Tab);
+    return columnAt(indentText, indentText.size(), settings.tabSize) / settings.tabSize;
 }
 
 } // namespace Core

@@ -189,8 +189,15 @@ public slots:
 
     // Indentation
     void indent(int count = 1);
-    void removeIndent(int count = 1);
-    QString indentationAtPosition(int pos);
+    void indentLine(int count, int line);
+    void setIndentation(int indent);
+    void setIndentationAtLine(int indent, int line);
+
+public:
+    Q_INVOKABLE int indentationAtPosition(int pos) const;
+    Q_INVOKABLE int indentationAtLine(int line = -1) const;
+    Q_INVOKABLE QString indentTextAtPosition(int pos) const;
+    Q_INVOKABLE QString indentTextAtLine(int line = -1) const;
 
 signals:
     void positionChanged();

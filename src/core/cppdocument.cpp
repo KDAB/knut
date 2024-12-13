@@ -1339,12 +1339,12 @@ CppDocument::addMemberOrMethod(const QString &memberInfo, const QString &classNa
         const auto fields = match.getAll("field");
         if (!fields.isEmpty()) {
             const auto &pos = fields.last();
-            const auto indent = indentationAtPosition(pos.end());
+            const auto indent = indentTextAtPosition(pos.end());
             insertAtPosition("\n" + indent + memberText, pos.end());
         } else {
             const auto access = match.getAll("access");
             const auto &pos = access.last();
-            const auto indent = indentationAtPosition(pos.end());
+            const auto indent = indentTextAtPosition(pos.end());
             insertAtPosition("\n" + indent + memberText, pos.end());
         }
     } else {
@@ -1519,7 +1519,7 @@ bool CppDocument::addSpecifierSection(const QString &memberText, const QString &
     if (!result.isEmpty()) {
         const auto &match = result.last();
         const auto pos = match.get("pos");
-        const auto indent = indentationAtPosition(pos.end());
+        const auto indent = indentTextAtPosition(pos.end());
 
         const QString newSpecifier = QString("\n\n%1:").arg(accessSpecifierMap.value(specifier));
 
