@@ -11,6 +11,36 @@ The script API is available in this documentation, and ranges from normal text t
 
 Knut can be used via a command line interface or a user interface.
 
+## Supported programming languages
+
+Knut supports multiple programming languages and file types to different degrees.
+
+This table provides a basic overview of the current support.
+Please refer to the subclasses of [Document](https://kdab.github.io/knut/API/knut/document.html) for details on the supported functions of each class.
+
+<!-- NOTE: SYNC WITH docs/index.md! -->
+|                            | 🌳 TreeSitter | 🔣 Code Items | 🧑‍💻 LSP | 🖥️ File Viewer |
+|----------------------------|---------------|---------------|---------|---------------|
+| C/C++                      | ✅            | ✅            | ✅      |               |
+| C#                         | ✅            | ❌            | ❌      |               |
+| JSON                       | ❌            | ✔️             | ❌      |               |
+| [Qt Translate (.ts)][QtTs] | ❌            | ✔️             | ❌      |               |
+| [Qt Qml][Qml]              | ✅            | ✅            | ❌      | ✅             |
+| [Qt Ui files][QtUi]        | ❌            | ❌            | ❌      | ✅             |
+| [Slint][Slint]             | ❌            | ❌            | ❌      | ✅             |
+| [MFC rc files][MfcRc]      | ❌            | ✔️             | ❌      | ✔️             |
+
+> ✅ Fully Supported
+> ✔️  Partial Support
+> ❌ Unsupported
+
+[QtTs]: https://doc.qt.io/qt-6/linguist-ts-file-format.html
+[QtUi]: https://doc.qt.io/qt-6/designer-ui-file-format.html
+[Qml]: https://doc.qt.io/qt-6/qmlreference.html
+[Slint]: https://slint.dev/
+[MfcRc]: https://learn.microsoft.com/en-us/windows/win32/menurc/about-resource-files
+
+
 ## Requirements
 
 Knut is using [Language Server Protocol](https://microsoft.github.io/language-server-protocol/) servers for the GUI. It is not used for the scripts, so if you are using Knut with the command line interface, you don't need it.

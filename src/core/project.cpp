@@ -10,6 +10,7 @@
 
 #include "project.h"
 #include "cppdocument.h"
+#include "csharpdocument.h"
 #include "imagedocument.h"
 #include "jsondocument.h"
 #include "logger.h"
@@ -221,6 +222,8 @@ static Document *createDocument(const QString &suffix)
         return new QtTsDocument();
     case Document::Type::Qml:
         return new QmlDocument();
+    case Document::Type::CSharp:
+        return new CSharpDocument();
     case Document::Type::Json:
         return new JsonDocument();
     default:

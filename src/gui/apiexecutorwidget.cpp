@@ -10,6 +10,7 @@
 
 #include "apiexecutorwidget.h"
 #include "core/cppdocument.h"
+#include "core/csharpdocument.h"
 #include "core/imagedocument.h"
 #include "core/jsondocument.h"
 #include "core/logger.h"
@@ -76,6 +77,8 @@ static const QMetaObject *metaObjectFromType(Core::Document::Type type)
         return &Core::QtTsDocument::staticMetaObject;
     case Core::Document::Type::Json:
         return &Core::JsonDocument::staticMetaObject;
+    case Core::Document::Type::CSharp:
+        return &Core::CSharpDocument::staticMetaObject;
     }
     Q_UNREACHABLE();
 }

@@ -762,6 +762,7 @@ QWidget *MainWindow::widgetForDocument(Core::Document *document)
         tsView->setTsDocument(qobject_cast<Core::QtTsDocument *>(document));
         return tsView;
     }
+    case Core::Document::Type::CSharp:
     case Core::Document::Type::Cpp: {
         auto codeView = new CodeView();
         codeView->setDocument(qobject_cast<Core::CodeDocument *>(document));

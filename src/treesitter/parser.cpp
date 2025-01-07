@@ -75,6 +75,8 @@ TSLanguage *Parser::getLanguage(Core::Document::Type type)
         return tree_sitter_qmljs();
     case Core::Document::Type::Cpp:
         return tree_sitter_cpp();
+    case Core::Document::Type::CSharp:
+        return tree_sitter_c_sharp();
     default:
         Q_UNREACHABLE();
     }

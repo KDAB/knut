@@ -25,6 +25,8 @@ set(PROJECT_SOURCES
     cppdocument.cpp
     cppdocument_p.h
     cppdocument_p.cpp
+    csharpdocument.h
+    csharpdocument.cpp
     functionsymbol.h
     functionsymbol.cpp
     dataexchange.h
