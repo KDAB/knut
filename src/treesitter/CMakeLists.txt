@@ -30,6 +30,7 @@ target_link_libraries(
   TreeSitter
   TreeSitterCpp
   TreeSitterQmlJs
+  TreeSitterCSharp
   kdalgorithms
   knut-utils
   Qt::Core)

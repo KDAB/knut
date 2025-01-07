@@ -99,3 +99,15 @@ target_link_libraries(${PROJECT_NAME} PRIVATE TreeSitter)
 # Always build tree-sitter with optimizations enabled. We shouldn't have to
 # debug it and it's performance critical.
 enable_optimizations(${PROJECT_NAME})
+
+# TreeSitterCSharp
+# ##############################################################################
+check_submodule(tree-sitter tree-sitter-c-sharp)
+project(TreeSitterCSharp LANGUAGES C)
+
+add_library(${PROJECT_NAME} STATIC tree-sitter-c-sharp/src/parser.c
+                                   tree-sitter-c-sharp/src/scanner.c)
+target_link_libraries(${PROJECT_NAME} PRIVATE TreeSitter)
+# Always build tree-sitter with optimizations enabled. We shouldn't have to
+# debug it and it's performance critical.
+enable_optimizations(${PROJECT_NAME})

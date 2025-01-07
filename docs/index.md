@@ -3,9 +3,38 @@
 Knut is an automation tool for code transformation using scripts. The main use case is for migration, but it could be used elsewhere.
 
 The scripts are written either in javascript or QML languages, the latter being able to display a user interface to customize some parts of the application.
-The script API is available in this documentation, and ranges from normal text transformations (find and replace) to getting contextual information based on the file language (using [TreeSitter](https://tree-sitter.github.io/tree-sitter/).
+The script API is available in this documentation, and ranges from normal text transformations (find and replace) to getting contextual information based on the file language (using [TreeSitter](https://tree-sitter.github.io/tree-sitter/)).
 
 Knut can be used via a command line interface or a user interface.
+
+## Supported programming languages
+
+Knut supports multiple programming languages and file types to different degrees.
+
+This table provides a basic overview of the current support.
+Please refer to the subclasses of [Document](https://kdab.github.io/knut/API/knut/document.html) for details on the supported functions of each class.
+
+<!-- NOTE: SYNC WITH README.md! -->
+|                            | 🌳 TreeSitter | 🔣 Code Items | 🧑‍💻 LSP | 🖥️ File Viewer |
+|----------------------------|---------------|---------------|---------|---------------|
+| C/C++                      | ✅            | ✅            | ✅      |               |
+| C#                         | ✅            | ❌            | ❌      |               |
+| JSON                       | ❌            | ✔️             | ❌      |               |
+| [Qt Translate (.ts)][QtTs] | ❌            | ✔️             | ❌      |               |
+| [Qt Qml][Qml]              | ✅            | ✅            | ❌      | ✅             |
+| [Qt Ui files][QtUi]        | ❌            | ❌            | ❌      | ✅             |
+| [Slint][Slint]             | ❌            | ❌            | ❌      | ✅             |
+| [MFC rc files][MfcRc]      | ❌            | ✔️             | ❌      | ✔️             |
+
+> ✅ Fully Supported
+> ✔️  Partial Support
+> ❌ Unsupported
+
+[QtTs]: https://doc.qt.io/qt-6/linguist-ts-file-format.html
+[QtUi]: https://doc.qt.io/qt-6/designer-ui-file-format.html
+[Qml]: https://doc.qt.io/qt-6/qmlreference.html
+[Slint]: https://slint.dev/
+[MfcRc]: https://learn.microsoft.com/en-us/windows/win32/menurc/about-resource-files
 
 # Licensing
 

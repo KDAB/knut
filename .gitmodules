@@ -32,3 +32,6 @@
 [submodule "3rdparty/photonwidgets"]
 	path = 3rdparty-kdab/photonwidgets
 	url = ssh://codereview.kdab.com:29418/photonwidgets
+[submodule "3rdparty/tree-sitter-c-sharp"]
+	path = 3rdparty/tree-sitter-c-sharp
+	url = https://github.com/tree-sitter/tree-sitter-c-sharp.git

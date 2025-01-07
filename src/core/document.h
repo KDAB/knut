@@ -36,6 +36,7 @@ public:
         Image,
         Slint,
         Qml,
+        CSharp,
         QtTs,
         Json,
     };
@@ -105,6 +106,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(Document::Type,
                               {Document::Type::Slint, "slint_type"},
                               {Document::Type::QtTs, "qtts_type"},
                               {Document::Type::Qml, "qml_type"},
+                              {Document::Type::CSharp, "csharp_type"},
                               {Document::Type::Json, "json_type"}})
 
 } // namespace Core
