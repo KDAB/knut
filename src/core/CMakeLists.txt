@@ -27,6 +27,8 @@ set(PROJECT_SOURCES
     cppdocument_p.cpp
     csharpdocument.h
     csharpdocument.cpp
+    dartdocument.h
+    dartdocument.cpp
     functionsymbol.h
     functionsymbol.cpp
     dataexchange.h
