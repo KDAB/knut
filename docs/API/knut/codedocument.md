@@ -39,6 +39,8 @@ functionality.
 
 This class provides the language-independent basis of integration with Tree-sitter and the LSP.
 
+Currently supported languages are: C/C++, Rust, Qml and C#
+
 ## Method Documentation
 
 #### <a name="findSymbol"></a>[Symbol](../knut/symbol.md) **findSymbol**(string name, int options = TextDocument.NoFindFlags)

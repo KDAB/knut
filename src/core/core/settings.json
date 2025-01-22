@@ -55,7 +55,8 @@
         "slint": "slint_type",
         "qml": "qml_type",
         "cs": "csharp_type",
-        "ts": "qtts_type"
+        "ts": "qtts_type",
+        "rs": "rust_type"
     },
     "text_editor": {
         "tab": {
