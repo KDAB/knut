@@ -19,6 +19,7 @@
 #include "core/qttsdocument.h"
 #include "core/qtuidocument.h"
 #include "core/rcdocument.h"
+#include "core/rustdocument.h"
 #include "core/slintdocument.h"
 #include "guisettings.h"
 #include "ui_apiexecutorwidget.h"
@@ -79,6 +80,8 @@ static const QMetaObject *metaObjectFromType(Core::Document::Type type)
         return &Core::JsonDocument::staticMetaObject;
     case Core::Document::Type::CSharp:
         return &Core::CSharpDocument::staticMetaObject;
+    case Core::Document::Type::Rust:
+        return &Core::RustDocument::staticMetaObject;
     }
     Q_UNREACHABLE();
 }
