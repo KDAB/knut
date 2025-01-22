@@ -12,6 +12,7 @@
 #include "codeview.h"
 #include "core/codedocument.h"
 #include "core/cppdocument.h"
+#include "core/dartdocument.h"
 #include "core/document.h"
 #include "core/imagedocument.h"
 #include "core/jsondocument.h"
@@ -590,6 +591,7 @@ void MainWindow::updateActions()
     const bool lspEnabled = codeDocument && codeDocument->hasLspClient();
     const bool isCodeDocument = codeDocument != nullptr;
     const bool isCppDocument = codeDocument && qobject_cast<Core::CppDocument *>(document);
+    const bool isDartDocument = codeDocument && qobject_cast<Core::DartDocument *>(document);
     const bool isRcDocument = qobject_cast<Core::RcDocument *>(document);
 
     ui->actionCloseDocument->setEnabled(document != nullptr);
@@ -621,11 +623,11 @@ void MainWindow::updateActions()
     ui->actionSelectBlockUp->setEnabled(isCppDocument);
     ui->actionDeleteMethod->setEnabled(isCppDocument);
 
-    ui->actionSelectLargerSyntaxNode->setEnabled(isCodeDocument);
-    ui->actionSelectSmallerSyntaxNode->setEnabled(isCodeDocument);
-    ui->actionSelectNextSyntaxNode->setEnabled(isCodeDocument);
-    ui->actionSelectPreviousSyntaxNode->setEnabled(isCodeDocument);
-    ui->actionTreeSitterInspector->setEnabled(isCodeDocument);
+    ui->actionSelectLargerSyntaxNode->setEnabled(isCodeDocument && !isDartDocument);
+    ui->actionSelectSmallerSyntaxNode->setEnabled(isCodeDocument && !isDartDocument);
+    ui->actionSelectNextSyntaxNode->setEnabled(isCodeDocument && !isDartDocument);
+    ui->actionSelectPreviousSyntaxNode->setEnabled(isCodeDocument && !isDartDocument);
+    ui->actionTreeSitterInspector->setEnabled(isCodeDocument && !isDartDocument);
 
     ui->actionCreateQrc->setEnabled(isRcDocument);
     ui->actionCreateUi->setEnabled(isRcDocument);
@@ -761,6 +763,12 @@ QWidget *MainWindow::widgetForDocument(Core::Document *document)
         auto tsView = new QtTsView(this);
         tsView->setTsDocument(qobject_cast<Core::QtTsDocument *>(document));
         return tsView;
+    }
+    case Core::Document::Type::Dart: {
+        auto codeView = new CodeView();
+        // We don't have treeSitter support yet
+        codeView->setDocument(qobject_cast<Core::CodeDocument *>(document));
+        return codeView;
     }
     case Core::Document::Type::CSharp:
     case Core::Document::Type::Rust:
