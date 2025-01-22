@@ -11,6 +11,7 @@
 #include "apiexecutorwidget.h"
 #include "core/cppdocument.h"
 #include "core/csharpdocument.h"
+#include "core/dartdocument.h"
 #include "core/imagedocument.h"
 #include "core/jsondocument.h"
 #include "core/logger.h"
@@ -82,6 +83,8 @@ static const QMetaObject *metaObjectFromType(Core::Document::Type type)
         return &Core::CSharpDocument::staticMetaObject;
     case Core::Document::Type::Rust:
         return &Core::RustDocument::staticMetaObject;
+    case Core::Document::Type::Dart:
+        return &Core::DartDocument::staticMetaObject;
     }
     Q_UNREACHABLE();
 }

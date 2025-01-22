@@ -47,7 +47,7 @@ namespace Core {
  *
  * This class provides the language-independent basis of integration with Tree-sitter and the LSP.
  *
- * Currently supported languages are: C/C++, Rust, Qml and C#
+ * Currently supported languages are: C/C++, C#, Dart, Qml and Rust
  */
 
 CodeDocument::~CodeDocument() = default;

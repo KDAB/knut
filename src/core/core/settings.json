@@ -56,7 +56,8 @@
         "qml": "qml_type",
         "cs": "csharp_type",
         "ts": "qtts_type",
-        "rs": "rust_type"
+        "rs": "rust_type",
+        "dart": "dart_type"
     },
     "text_editor": {
         "tab": {
