@@ -18,7 +18,6 @@
 #include "rangemark.h"
 #include "symbol.h"
 #include "treesitter/predicates.h"
-#include "utils/json.h"
 #include "utils/log.h"
 #include "utils/string_helper.h"
 
