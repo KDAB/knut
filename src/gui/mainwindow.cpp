@@ -180,6 +180,7 @@ MainWindow::MainWindow(QWidget *parent)
         m_palette->showPalette();
     });
     connect(ui->actionCloseDocument, &QAction::triggered, this, &MainWindow::closeDocument);
+    connect(ui->tabWidget, &QTabWidget::tabCloseRequested, this, &MainWindow::closeDocument);
 
     // Script
     ui->apiExecutorWidget->hide();
@@ -514,12 +515,25 @@ void MainWindow::saveDocument()
         document->save();
 }
 
-void MainWindow::closeDocument()
+void MainWindow::closeDocument(int closeIndex)
 {
+    const int currentIndex = ui->tabWidget->currentIndex();
+    bool differentIndex = false;
+    if (closeIndex == 0)
+        closeIndex = currentIndex;
+    else
+        differentIndex = currentIndex != closeIndex;
+    if (differentIndex)
+        ui->tabWidget->setCurrentIndex(closeIndex);
+
     auto document = Core::Project::instance()->currentDocument();
-    if (document)
+    if (document) {
         document->close();
-    ui->tabWidget->removeTab(ui->tabWidget->currentIndex());
+        ui->tabWidget->removeTab(closeIndex);
+    }
+
+    if (differentIndex)
+        ui->tabWidget->setCurrentIndex(currentIndex - (closeIndex < currentIndex ? 1 : 0));
 }
 
 void MainWindow::createQrc()
