@@ -25,7 +25,7 @@ namespace Gui {
 QmlView::QmlView(QWidget *parent)
     : TextView(parent)
 {
-    auto *action = new QAction(tr("Run"));
+    auto *action = new QAction(tr("Run"), this);
     GuiSettings::setIcon(action, ":/gui/eye.png");
     connect(action, &QAction::triggered, this, &QmlView::runQml);
     addAction(action);
@@ -41,7 +41,7 @@ void QmlView::runQml()
 
     const QString qmlFilePath = document()->fileName();
 
-    auto *qmlView = new QQuickView();
+    auto *qmlView = new QQuickView(this->window()->windowHandle());
     qmlView->setSource(QUrl::fromLocalFile(qmlFilePath));
     qmlView->show();
 }
