@@ -123,7 +123,7 @@ target_link_libraries(
          knut-core
          knut-rccore
          knut-utils
-         KF5SyntaxHighlighting)
+         KF6SyntaxHighlighting)
 
 target_include_directories(${PROJECT_NAME}
                            INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/..)
