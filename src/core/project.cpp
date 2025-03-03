@@ -96,12 +96,11 @@ bool Project::setRoot(const QString &newRoot)
     if (m_root == dir.absolutePath())
         return true;
 
-    if (m_root.isEmpty()) {
-        spdlog::info("{}: {}", FUNCTION_NAME, dir.absolutePath());
-    } else {
-        spdlog::error("{}: can't open a new project", FUNCTION_NAME);
-        return false;
-    }
+    if (!m_root.isEmpty())
+        for (auto client : m_lspClients | std::views::values)
+            client->closeProject(m_root);
+
+    spdlog::info("{}: {}", FUNCTION_NAME, dir.absolutePath());
 
     m_root = dir.absolutePath();
     Settings::instance()->loadProjectSettings(m_root);
