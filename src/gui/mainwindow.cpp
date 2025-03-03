@@ -366,6 +366,10 @@ void MainWindow::openProject()
 
 void MainWindow::initProject(const QString &path)
 {
+    const int tabCount = ui->tabWidget->tabBar()->count();
+    for (int i = tabCount; i >= 0; i--)
+        closeDocument(i);
+
     setWindowTitle(generateWindowTitle(path));
     // Update recent list
     QSettings settings;
@@ -380,10 +384,6 @@ void MainWindow::initProject(const QString &path)
     auto index = m_fileModel->setRootPath(path);
     m_projectView->setRootIndex(index);
     connect(m_projectView->selectionModel(), &QItemSelectionModel::currentChanged, this, &MainWindow::openDocument);
-
-    // Disable menus, we can only load one project - restart Knut if needed
-    ui->actionOpen->setEnabled(false);
-    ui->actionRecentProjects->setEnabled(false);
 }
 
 void MainWindow::updateRecentProjects()
