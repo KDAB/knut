@@ -133,6 +133,7 @@ private:
 
     void loadKnutSettings();
     void loadUserSettings();
+    void loadBaseSettings();
     void updatePaths(const QString &path, const std::string &json_path, bool add);
     void saveSettings();
     void saveOnExit();
