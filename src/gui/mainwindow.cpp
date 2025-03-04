@@ -724,7 +724,7 @@ QWidget *MainWindow::widgetForDocument(Core::Document *document)
     switch (document->type()) {
     case Core::Document::Type::Rc: {
         auto rcDocument = qobject_cast<Core::RcDocument *>(document);
-        auto rcview = new RcUi::RcFileView();
+        auto rcview = new RcUi::RcFileView(this);
         rcview->setRcFile(rcDocument->file());
         QObject::connect(rcview, &RcUi::RcFileView::languageChanged, rcDocument, &Core::RcDocument::setLanguage);
         GuiSettings::setupDocumentTextEdit(rcview->textEdit(), document);
@@ -737,34 +737,34 @@ QWidget *MainWindow::widgetForDocument(Core::Document *document)
         return rcview;
     }
     case Core::Document::Type::QtUi: {
-        auto uiview = new QtUiView();
+        auto uiview = new QtUiView(this);
         uiview->setUiDocument(qobject_cast<Core::QtUiDocument *>(document));
         return uiview;
     }
     case Core::Document::Type::Image: {
-        auto imageview = new ImageView();
+        auto imageview = new ImageView(this);
         imageview->setImageDocument(qobject_cast<Core::ImageDocument *>(document));
         return imageview;
     }
     case Core::Document::Type::Slint: {
-        auto slintView = new SlintView();
+        auto slintView = new SlintView(this);
         slintView->setDocument(qobject_cast<Core::SlintDocument *>(document));
         return slintView;
     }
     case Core::Document::Type::Qml: {
 
-        auto qmlview = new QmlView();
+        auto qmlview = new QmlView(this);
         qmlview->setDocument(qobject_cast<Core::QmlDocument *>(document));
         return qmlview;
     }
     case Core::Document::Type::QtTs: {
-        auto tsView = new QtTsView();
+        auto tsView = new QtTsView(this);
         tsView->setTsDocument(qobject_cast<Core::QtTsDocument *>(document));
         return tsView;
     }
     case Core::Document::Type::CSharp:
     case Core::Document::Type::Cpp: {
-        auto codeView = new CodeView();
+        auto codeView = new CodeView(this);
         codeView->setDocument(qobject_cast<Core::CodeDocument *>(document));
         connect(codeView, &CodeView::treeSitterExplorerRequested, this, &MainWindow::inspectTreeSitter);
         return codeView;
@@ -772,7 +772,7 @@ QWidget *MainWindow::widgetForDocument(Core::Document *document)
     case Core::Document::Type::Json:
     case Core::Document::Type::Text:
     default: {
-        auto textView = new TextView();
+        auto textView = new TextView(this);
         textView->setDocument(qobject_cast<Core::TextDocument *>(document));
         return textView;
     }

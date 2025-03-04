@@ -25,13 +25,18 @@ namespace Gui {
 QmlView::QmlView(QWidget *parent)
     : TextView(parent)
 {
-    auto *action = new QAction(tr("Run"));
+    auto *action = new QAction(tr("Run"), this);
     GuiSettings::setIcon(action, ":/gui/eye.png");
-    connect(action, &QAction::triggered, this, &QmlView::runQml);
+    connect(action, &QAction::triggered, this, &QmlView::runQml, Qt::DirectConnection);
     addAction(action);
 }
 
-QmlView::~QmlView() = default;
+QmlView::~QmlView() {
+    for (auto qmlView : std::as_const(m_qmlViews)) {
+        qmlView->close();
+        delete qmlView;
+    }
+};
 
 void QmlView::runQml()
 {
@@ -41,9 +46,10 @@ void QmlView::runQml()
 
     const QString qmlFilePath = document()->fileName();
 
-    auto *qmlView = new QQuickView();
+    auto qmlView = new QQuickView();
     qmlView->setSource(QUrl::fromLocalFile(qmlFilePath));
     qmlView->show();
+    m_qmlViews.append(qmlView);
 }
 
 } // namespace Gui

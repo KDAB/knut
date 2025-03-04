@@ -61,7 +61,7 @@ ScriptDialog {
 
 ScriptPanel::ScriptPanel(QWidget *parent)
     : QPlainTextEdit {parent}
-    , m_toolBar(new QWidget)
+    , m_toolBar(new QWidget(this))
 {
     setWindowTitle(tr("Script Panel"));
     setObjectName("ScriptPanel");
