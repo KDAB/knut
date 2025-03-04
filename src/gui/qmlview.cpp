@@ -31,7 +31,8 @@ QmlView::QmlView(QWidget *parent)
     addAction(action);
 }
 
-QmlView::~QmlView() {
+QmlView::~QmlView()
+{
     for (auto qmlView : std::as_const(m_qmlViews)) {
         qmlView->close();
         delete qmlView;
