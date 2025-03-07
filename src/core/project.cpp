@@ -11,6 +11,7 @@
 #include "project.h"
 #include "cppdocument.h"
 #include "csharpdocument.h"
+#include "dartdocument.h"
 #include "imagedocument.h"
 #include "jsondocument.h"
 #include "logger.h"
@@ -20,6 +21,7 @@
 #include "qttsdocument.h"
 #include "qtuidocument.h"
 #include "rcdocument.h"
+#include "rustdocument.h"
 #include "settings.h"
 #include "slintdocument.h"
 #include "textdocument.h"
@@ -225,6 +227,10 @@ static Document *createDocument(const QString &suffix)
         return new CSharpDocument();
     case Document::Type::Json:
         return new JsonDocument();
+    case Document::Type::Rust:
+        return new RustDocument();
+    case Document::Type::Dart:
+        return new DartDocument();
     default:
         return new TextDocument();
     }

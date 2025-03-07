@@ -39,6 +39,8 @@ public:
         CSharp,
         QtTs,
         Json,
+        Rust,
+        Dart,
     };
     Q_ENUM(Type)
 
@@ -107,7 +109,9 @@ NLOHMANN_JSON_SERIALIZE_ENUM(Document::Type,
                               {Document::Type::QtTs, "qtts_type"},
                               {Document::Type::Qml, "qml_type"},
                               {Document::Type::CSharp, "csharp_type"},
-                              {Document::Type::Json, "json_type"}})
+                              {Document::Type::Json, "json_type"},
+                              {Document::Type::Rust, "rust_type"},
+                              {Document::Type::Dart, "dart_type"}})
 
 } // namespace Core
 

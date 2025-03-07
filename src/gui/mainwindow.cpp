@@ -12,6 +12,7 @@
 #include "codeview.h"
 #include "core/codedocument.h"
 #include "core/cppdocument.h"
+#include "core/dartdocument.h"
 #include "core/document.h"
 #include "core/imagedocument.h"
 #include "core/jsondocument.h"
@@ -603,6 +604,7 @@ void MainWindow::updateActions()
     const bool lspEnabled = codeDocument && codeDocument->hasLspClient();
     const bool isCodeDocument = codeDocument != nullptr;
     const bool isCppDocument = codeDocument && qobject_cast<Core::CppDocument *>(document);
+    const bool isDartDocument = codeDocument && qobject_cast<Core::DartDocument *>(document);
     const bool isRcDocument = qobject_cast<Core::RcDocument *>(document);
 
     ui->actionCloseDocument->setEnabled(document != nullptr);
@@ -634,11 +636,11 @@ void MainWindow::updateActions()
     ui->actionSelectBlockUp->setEnabled(isCppDocument);
     ui->actionDeleteMethod->setEnabled(isCppDocument);
 
-    ui->actionSelectLargerSyntaxNode->setEnabled(isCodeDocument);
-    ui->actionSelectSmallerSyntaxNode->setEnabled(isCodeDocument);
-    ui->actionSelectNextSyntaxNode->setEnabled(isCodeDocument);
-    ui->actionSelectPreviousSyntaxNode->setEnabled(isCodeDocument);
-    ui->actionTreeSitterInspector->setEnabled(isCodeDocument);
+    ui->actionSelectLargerSyntaxNode->setEnabled(isCodeDocument && !isDartDocument);
+    ui->actionSelectSmallerSyntaxNode->setEnabled(isCodeDocument && !isDartDocument);
+    ui->actionSelectNextSyntaxNode->setEnabled(isCodeDocument && !isDartDocument);
+    ui->actionSelectPreviousSyntaxNode->setEnabled(isCodeDocument && !isDartDocument);
+    ui->actionTreeSitterInspector->setEnabled(isCodeDocument && !isDartDocument);
 
     ui->actionCreateQrc->setEnabled(isRcDocument);
     ui->actionCreateUi->setEnabled(isRcDocument);
@@ -737,7 +739,7 @@ QWidget *MainWindow::widgetForDocument(Core::Document *document)
     switch (document->type()) {
     case Core::Document::Type::Rc: {
         auto rcDocument = qobject_cast<Core::RcDocument *>(document);
-        auto rcview = new RcUi::RcFileView();
+        auto rcview = new RcUi::RcFileView(this);
         rcview->setRcFile(rcDocument->file());
         QObject::connect(rcview, &RcUi::RcFileView::languageChanged, rcDocument, &Core::RcDocument::setLanguage);
         GuiSettings::setupDocumentTextEdit(rcview->textEdit(), document);
@@ -750,34 +752,41 @@ QWidget *MainWindow::widgetForDocument(Core::Document *document)
         return rcview;
     }
     case Core::Document::Type::QtUi: {
-        auto uiview = new QtUiView();
+        auto uiview = new QtUiView(this);
         uiview->setUiDocument(qobject_cast<Core::QtUiDocument *>(document));
         return uiview;
     }
     case Core::Document::Type::Image: {
-        auto imageview = new ImageView();
+        auto imageview = new ImageView(this);
         imageview->setImageDocument(qobject_cast<Core::ImageDocument *>(document));
         return imageview;
     }
     case Core::Document::Type::Slint: {
-        auto slintView = new SlintView();
+        auto slintView = new SlintView(this);
         slintView->setDocument(qobject_cast<Core::SlintDocument *>(document));
         return slintView;
     }
     case Core::Document::Type::Qml: {
 
-        auto qmlview = new QmlView();
+        auto qmlview = new QmlView(this);
         qmlview->setDocument(qobject_cast<Core::QmlDocument *>(document));
         return qmlview;
     }
     case Core::Document::Type::QtTs: {
-        auto tsView = new QtTsView();
+        auto tsView = new QtTsView(this);
         tsView->setTsDocument(qobject_cast<Core::QtTsDocument *>(document));
         return tsView;
     }
-    case Core::Document::Type::CSharp:
-    case Core::Document::Type::Cpp: {
+    case Core::Document::Type::Dart: {
         auto codeView = new CodeView();
+        // We don't have treeSitter support yet
+        codeView->setDocument(qobject_cast<Core::CodeDocument *>(document));
+        return codeView;
+    }
+    case Core::Document::Type::CSharp:
+    case Core::Document::Type::Rust:
+    case Core::Document::Type::Cpp: {
+        auto codeView = new CodeView(this);
         codeView->setDocument(qobject_cast<Core::CodeDocument *>(document));
         connect(codeView, &CodeView::treeSitterExplorerRequested, this, &MainWindow::inspectTreeSitter);
         return codeView;
@@ -785,7 +794,7 @@ QWidget *MainWindow::widgetForDocument(Core::Document *document)
     case Core::Document::Type::Json:
     case Core::Document::Type::Text:
     default: {
-        auto textView = new TextView();
+        auto textView = new TextView(this);
         textView->setDocument(qobject_cast<Core::TextDocument *>(document));
         return textView;
     }

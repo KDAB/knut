@@ -27,6 +27,8 @@ set(PROJECT_SOURCES
     cppdocument_p.cpp
     csharpdocument.h
     csharpdocument.cpp
+    dartdocument.h
+    dartdocument.cpp
     functionsymbol.h
     functionsymbol.cpp
     dataexchange.h
@@ -72,6 +74,8 @@ set(PROJECT_SOURCES
     rangemark.cpp
     rcdocument.h
     rcdocument.cpp
+    rustdocument.h
+    rustdocument.cpp
     scriptdialogitem.h
     scriptdialogitem.cpp
     scriptdialogitem_p.h
@@ -121,7 +125,7 @@ target_link_libraries(
   PUBLIC nlohmann_json::nlohmann_json
          pugixml::pugixml
          kdalgorithms
-         KF5SyntaxHighlighting
+         KF6SyntaxHighlighting
          Qt::Core
          Qt::CorePrivate
          Qt::Qml

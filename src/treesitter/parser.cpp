@@ -77,6 +77,8 @@ TSLanguage *Parser::getLanguage(Core::Document::Type type)
         return tree_sitter_cpp();
     case Core::Document::Type::CSharp:
         return tree_sitter_c_sharp();
+    case Core::Document::Type::Rust:
+        return tree_sitter_rust();
     default:
         Q_UNREACHABLE();
     }

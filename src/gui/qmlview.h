@@ -11,6 +11,7 @@
 #pragma once
 
 #include "textview.h"
+#include <QQuickView>
 
 namespace Gui {
 
@@ -21,7 +22,11 @@ public:
     explicit QmlView(QWidget *parent = nullptr);
     ~QmlView() override;
 
+signals:
+    void closePreview();
+
 private:
+    QList<QQuickView *> m_qmlViews;
     void runQml();
 };
 

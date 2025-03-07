@@ -111,3 +111,15 @@ target_link_libraries(${PROJECT_NAME} PRIVATE TreeSitter)
 # Always build tree-sitter with optimizations enabled. We shouldn't have to
 # debug it and it's performance critical.
 enable_optimizations(${PROJECT_NAME})
+
+# TreeSitterRust
+# ##############################################################################
+check_submodule(tree-sitter tree-sitter-rust)
+project(TreeSitterRust LANGUAGES C)
+
+add_library(${PROJECT_NAME} STATIC tree-sitter-rust/src/parser.c
+                                   tree-sitter-rust/src/scanner.c)
+target_link_libraries(${PROJECT_NAME} PRIVATE TreeSitter)
+# Always build tree-sitter with optimizations enabled. We shouldn't have to
+# debug it and it's performance critical.
+enable_optimizations(${PROJECT_NAME})

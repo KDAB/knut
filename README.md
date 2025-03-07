@@ -23,6 +23,8 @@ Please refer to the subclasses of [Document](https://kdab.github.io/knut/API/knu
 |----------------------------|---------------|---------------|---------|---------------|
 | C/C++                      | ✅            | ✅            | ✅      |               |
 | C#                         | ✅            | ❌            | ❌      |               |
+| Rust                       | ✅            | ❌            | ❌      |               |
+| Dart                       | ❌            | ❌            | ❌      |               |
 | JSON                       | ❌            | ✔️             | ❌      |               |
 | [Qt Translate (.ts)][QtTs] | ❌            | ✔️             | ❌      |               |
 | [Qt Qml][Qml]              | ✅            | ✅            | ❌      | ✅             |
