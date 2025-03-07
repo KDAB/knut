@@ -59,7 +59,7 @@ private:
     void openProject();
     void saveDocument();
     void saveAllDocuments();
-    void closeDocument();
+    void closeDocument(int);
     void openOptions();
     void returnToEditor();
 
