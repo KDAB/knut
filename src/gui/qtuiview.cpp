@@ -106,7 +106,7 @@ QtUiView::QtUiView(QWidget *parent)
     : QSplitter(parent)
     , FindInterface(FindInterface::CanSearch)
     , m_tableView(new QTableView(this))
-    , m_findAdapter(new FindAdapter(m_tableView))
+    , m_findAdapter(std::make_unique<FindAdapter>(m_tableView))
     , m_previewArea(new QMdiArea(this))
 {
     addWidget(m_previewArea);
@@ -118,6 +118,8 @@ QtUiView::QtUiView(QWidget *parent)
     m_previewArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     m_previewArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 }
+
+QtUiView::~QtUiView() = default;
 
 void QtUiView::find(const QString &searchText, int options)
 {

@@ -155,7 +155,7 @@ QtTsView::QtTsView(QWidget *parent)
     : QWidget(parent)
     , FindInterface(FindInterface::CanSearch)
     , m_tableView(new QTableView(this))
-    , m_findAdapter(new FindAdapter(m_tableView))
+    , m_findAdapter(std::make_unique<FindAdapter>(m_tableView))
     , m_searchLineEdit(new QLineEdit(this))
     , m_contentProxyModel(new QtTsProxy(this))
 {
@@ -172,6 +172,8 @@ QtTsView::QtTsView(QWidget *parent)
     m_tableView->setModel(m_contentProxyModel);
     connect(m_searchLineEdit, &QLineEdit::textChanged, m_contentProxyModel, &QtTsProxy::setFilterText);
 }
+
+QtTsView::~QtTsView() = default;
 
 void QtTsView::setTsDocument(Core::QtTsDocument *document)
 {

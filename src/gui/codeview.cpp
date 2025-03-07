@@ -16,7 +16,7 @@ namespace Gui {
 CodeView::CodeView(QWidget *parent)
     : TextView(parent)
 {
-    auto *action = new QAction(tr("Show TreeSitter Explorer"));
+    auto *action = new QAction(tr("Show TreeSitter Explorer"), this);
     GuiSettings::setIcon(action, ":/gui/file-tree.png");
     connect(action, &QAction::triggered, this, &CodeView::treeSitterExplorerRequested);
     addAction(action);
