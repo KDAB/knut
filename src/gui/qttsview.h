@@ -30,6 +30,7 @@ class QtTsView : public QWidget, public FindInterface
 
 public:
     explicit QtTsView(QWidget *parent = nullptr);
+    ~QtTsView();
 
     void setTsDocument(Core::QtTsDocument *document);
 
@@ -40,7 +41,7 @@ private:
     void updateView();
 
     QTableView *const m_tableView;
-    FindAdapter *const m_findAdapter;
+    std::unique_ptr<FindAdapter> m_findAdapter;
     QLineEdit *const m_searchLineEdit;
     Core::QtTsDocument *m_document = nullptr;
     QtTsProxy *const m_contentProxyModel;

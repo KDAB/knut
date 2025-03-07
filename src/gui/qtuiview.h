@@ -30,6 +30,7 @@ class QtUiView : public QSplitter, public FindInterface
 
 public:
     explicit QtUiView(QWidget *parent = nullptr);
+    ~QtUiView();
 
     void setUiDocument(Core::QtUiDocument *document);
 
@@ -40,7 +41,7 @@ private:
     void updateView();
 
     QTableView *const m_tableView;
-    FindAdapter *const m_findAdapter;
+    std::unique_ptr<FindAdapter> m_findAdapter;
     QMdiArea *const m_previewArea;
     Core::QtUiDocument *m_document = nullptr;
     QMdiSubWindow *m_previewWindow = nullptr;
