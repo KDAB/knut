@@ -49,9 +49,7 @@ Settings::Settings(Mode mode, QObject *parent)
     Q_ASSERT(m_instance == nullptr);
     m_instance = this;
 
-    loadKnutSettings();
-    if (!isTesting()) // Only load if not testing
-        loadUserSettings();
+    loadBaseSettings();
 
     m_saveTimer->callOnTimeout(this, &Settings::saveSettings);
     m_saveTimer->setSingleShot(true);
@@ -61,6 +59,13 @@ Settings::~Settings()
 {
     saveOnExit();
     m_instance = nullptr;
+}
+
+void Settings::loadBaseSettings()
+{
+    loadKnutSettings();
+    if (!isTesting()) // Only load if not testing
+        loadUserSettings();
 }
 
 Settings *Settings::instance()
@@ -85,6 +90,9 @@ void Settings::loadUserSettings()
 
 void Settings::loadProjectSettings(const QString &rootDir)
 {
+    saveOnExit();
+    loadBaseSettings();
+
     m_projectPath = rootDir;
 
     const QString fileName = projectFilePath();

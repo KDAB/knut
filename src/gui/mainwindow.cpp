@@ -365,6 +365,10 @@ void MainWindow::openProject()
 
 void MainWindow::initProject(const QString &path)
 {
+    const int tabCount = ui->tabWidget->tabBar()->count();
+    for (int i = tabCount; i >= 0; i--)
+        closeDocument(i);
+
     setWindowTitle(generateWindowTitle(path));
     // Update recent list
     QSettings settings;
@@ -379,10 +383,6 @@ void MainWindow::initProject(const QString &path)
     auto index = m_fileModel->setRootPath(path);
     m_projectView->setRootIndex(index);
     connect(m_projectView->selectionModel(), &QItemSelectionModel::currentChanged, this, &MainWindow::openDocument);
-
-    // Disable menus, we can only load one project - restart Knut if needed
-    ui->actionOpen->setEnabled(false);
-    ui->actionRecentProjects->setEnabled(false);
 }
 
 void MainWindow::updateRecentProjects()
@@ -514,12 +514,25 @@ void MainWindow::saveDocument()
         document->save();
 }
 
-void MainWindow::closeDocument()
+void MainWindow::closeDocument(int closeIndex)
 {
+    const int currentIndex = ui->tabWidget->currentIndex();
+    bool differentIndex = false;
+    if (closeIndex == 0)
+        closeIndex = currentIndex;
+    else
+        differentIndex = currentIndex != closeIndex;
+    if (differentIndex)
+        ui->tabWidget->setCurrentIndex(closeIndex);
+
     auto document = Core::Project::instance()->currentDocument();
-    if (document)
+    if (document) {
         document->close();
-    ui->tabWidget->removeTab(ui->tabWidget->currentIndex());
+        ui->tabWidget->removeTab(closeIndex);
+    }
+
+    if (differentIndex)
+        ui->tabWidget->setCurrentIndex(currentIndex - (closeIndex < currentIndex ? 1 : 0));
 }
 
 void MainWindow::createQrc()
