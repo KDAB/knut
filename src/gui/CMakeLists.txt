@@ -66,6 +66,8 @@ set(PROJECT_SOURCES
     knutmain.cpp
     knutstyle.h
     knutstyle.cpp
+    knuttabwidget.h
+    knuttabwidget.cpp
     logpanel.h
     logpanel.cpp
     mainwindow.h
