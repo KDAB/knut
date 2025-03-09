@@ -25,9 +25,6 @@ public:
 
 protected:
     bool event(QEvent *event);
-
-private:
-    QTimer *m_hideCloseTimer;
 };
 
 class KnutTabWidget : public QTabWidget
