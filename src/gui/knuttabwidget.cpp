@@ -18,27 +18,18 @@ namespace Gui {
 
 KnutTabBar::KnutTabBar(QWidget *parent)
     : QTabBar(parent)
-    , m_hideCloseTimer(new QTimer(this))
 {
-    // Human moment delay before hiding close buttons
-    m_hideCloseTimer->setInterval(2000);
-    connect(m_hideCloseTimer, &QTimer::timeout, this, [this]() {
-        setTabsClosable(false);
-    });
 }
 
 bool KnutTabBar::event(QEvent *event)
 {
     switch (event->type()) {
-    case QEvent::HoverEnter:
-        m_hideCloseTimer->stop();
-        setTabsClosable(true);
-        break;
-    case QEvent::HoverLeave:
-        m_hideCloseTimer->start();
-        break;
     case QEvent::Show:
+    case QEvent::HoverLeave:
         setTabsClosable(false);
+        break;
+    case QEvent::HoverEnter:
+        setTabsClosable(true);
         break;
     default:
         break;
