@@ -1,0 +1,30 @@
+{
+    "configurations": [
+        {
+            "name": "Current Target (VS)",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${command:cmake.launchTargetPath}",
+            "visualizerFile": "${env:QTDIR}/natvis/qt6.natvis",
+            "cwd": "${workspaceFolder}",
+            "sourceFileMap": {
+                "C:/work/build/qt5_workdir/w/s": "${env:QTDIR}/../Src",
+                "Q:/qt5_workdir/w/s": "${env:QTDIR}/../Src",
+                "C:/Users/qt/work/install": "${env:QTDIR}/../Src",
+                "C:/Users/qt/work/qt": "${env:QTDIR}/../Src"
+            },
+            "symbolOptions": {
+                "searchPaths": [
+                    "${env:QTDIR}/bin"
+                ],
+            }
+        },
+        {
+            "name": "Current Target (LLDB)",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${command:cmake.launchTargetPath}",
+            "cwd": "${command:cmake.buildDirectory}"
+        }
+    ]
+}
