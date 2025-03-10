@@ -234,8 +234,13 @@ bool Settings::hasLsp() const
 void Settings::loadKnutSettings()
 {
     QFile file(":/core/settings.json");
-    if (file.open(QIODevice::ReadOnly))
+    if (file.open(QIODevice::ReadOnly)) {
         m_settings = nlohmann::json::parse(file.readAll().constData());
+        return;
+    }
+    spdlog::error("{}: {} - is missing from Qt Resources and thus settings cannot be initialized", FUNCTION_NAME,
+                  file.fileName());
+    Q_UNREACHABLE();
 }
 
 void Settings::saveSettings()
