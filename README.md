@@ -20,20 +20,20 @@ Please refer to the subclasses of [Document](https://kdab.github.io/knut/API/knu
 
 <!-- NOTE: SYNC WITH docs/index.md! -->
 |                            | 🌳 TreeSitter | 🔣 Code Items | 🧑‍💻 LSP | 🖥️ File Viewer |
-|----------------------------|---------------|---------------|---------|---------------|
-| C/C++                      | ✅            | ✅            | ✅      |               |
-| C#                         | ✅            | ❌            | ❌      |               |
-| Rust                       | ✅            | ❌            | ❌      |               |
-| Dart                       | ❌            | ❌            | ❌      |               |
-| JSON                       | ❌            | ✔️             | ❌      |               |
-| [Qt Translate (.ts)][QtTs] | ❌            | ✔️             | ❌      |               |
-| [Qt Qml][Qml]              | ✅            | ✅            | ❌      | ✅             |
-| [Qt Ui files][QtUi]        | ❌            | ❌            | ❌      | ✅             |
-| [Slint][Slint]             | ❌            | ❌            | ❌      | ✅             |
-| [MFC rc files][MfcRc]      | ❌            | ✔️             | ❌      | ✔️             |
+| -------------------------- | -------------- | -------------- | ----------- | ----------------- |
+| C/C++                      | ✅             | ✅             | ✅          |                   |
+| C#                         | ✅             | ❌             | ❌          |                   |
+| Rust                       | ✅             | ❌             | ❌          |                   |
+| Dart                       | ❌             | ❌             | ❌          |                   |
+| JSON                       | ❌             | ✔️           | ❌          |                   |
+| [Qt Translate (.ts)][QtTs] | ❌             | ✔️           | ❌          |                   |
+| [Qt Qml][Qml]              | ✅             | ✅             | ❌          | ✅                |
+| [Qt Ui files][QtUi]        | ❌             | ❌             | ❌          | ✅                |
+| [Slint][Slint]             | ❌             | ❌             | ❌          | ✅                |
+| [MFC rc files][MfcRc]      | ❌             | ✔️           | ❌          | ✔️              |
 
 > ✅ Fully Supported
-> ✔️  Partial Support
+> ✔️ Partial Support
 > ❌ Unsupported
 
 [QtTs]: https://doc.qt.io/qt-6/linguist-ts-file-format.html
@@ -41,7 +41,6 @@ Please refer to the subclasses of [Document](https://kdab.github.io/knut/API/knu
 [Qml]: https://doc.qt.io/qt-6/qmlreference.html
 [Slint]: https://slint.dev/
 [MfcRc]: https://learn.microsoft.com/en-us/windows/win32/menurc/about-resource-files
-
 
 ## Requirements
 
@@ -64,6 +63,7 @@ This includes:
 
 - A recent C++ compiler (GCC 11+, Clang 15+, MSVC 19.40+)
 - [CMake](https://cmake.org) 3.15+
+- [Perl](https://www.perl.org/)
 - An installation of [Qt 6](https://www.qt.io/download-open-source)
 - (optional: [Ninja build system](https://ninja-build.org/))
 
@@ -72,24 +72,24 @@ This is a known issue, and the steps to resolve it are detailed in the link to t
 
 ### Download Knut
 
-To clone the code, simply run:
+To clone the code and download all dependencies, simply run:
 
 ```bash
 git clone https://github.com/KDAB/knut.git && cd knut
 ```
 
-If you are a member of KDAB and have access to our private repositories, you may then simply run:
+To download all dependencies, simply run:
 
-```bash
-git submodule update --init --recursive
-```
-
-to download all dependencies.
-
-If you are a contributor outside KDAB, you will need to download all submodules in the `3rdparty/` folder, without the private dependencies in the `3rdparty-kdab/` folder.
+- Contributor outside KDAB (download all submodules in `3rdparty/`)
 
 ```bash
 git submodule update --init --recursive -- 3rdparty/*
+```
+
+- Member of KDAB with access to our private repositories (download all submodules in `3rdparty/` and `3rdparty-kdab/`)
+
+```bash
+git submodule update --init --recursive
 ```
 
 ### Running CMake

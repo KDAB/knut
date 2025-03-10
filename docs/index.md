@@ -16,17 +16,17 @@ Please refer to the subclasses of [Document](https://kdab.github.io/knut/API/knu
 
 <!-- NOTE: SYNC WITH README.md! -->
 |                            | 🌳 TreeSitter | 🔣 Code Items | 🧑‍💻 LSP | 🖥️ File Viewer |
-|----------------------------|---------------|---------------|---------|---------------|
-| C/C++                      | ✅            | ✅            | ✅      |               |
-| C#                         | ✅            | ❌            | ❌      |               |
-| Rust                       | ✅            | ❌            | ❌      |               |
-| Dart                       | ❌            | ❌            | ❌      |               |
-| JSON                       | ❌            | ✔️             | ❌      |               |
-| [Qt Translate (.ts)][QtTs] | ❌            | ✔️             | ❌      |               |
-| [Qt Qml][Qml]              | ✅            | ✅            | ❌      | ✅             |
-| [Qt Ui files][QtUi]        | ❌            | ❌            | ❌      | ✅             |
-| [Slint][Slint]             | ❌            | ❌            | ❌      | ✅             |
-| [MFC rc files][MfcRc]      | ❌            | ✔️             | ❌      | ✔️             |
+| -------------------------- | -------------- | -------------- | ----------- | ----------------- |
+| C/C++                      | ✅             | ✅             | ✅          |                   |
+| C#                         | ✅             | ❌             | ❌          |                   |
+| Rust                       | ✅             | ❌             | ❌          |                   |
+| Dart                       | ❌             | ❌             | ❌          |                   |
+| JSON                       | ❌             | ✔️           | ❌          |                   |
+| [Qt Translate (.ts)][QtTs] | ❌             | ✔️           | ❌          |                   |
+| [Qt Qml][Qml]              | ✅             | ✅             | ❌          | ✅                |
+| [Qt Ui files][QtUi]        | ❌             | ❌             | ❌          | ✅                |
+| [Slint][Slint]             | ❌             | ❌             | ❌          | ✅                |
+| [MFC rc files][MfcRc]      | ❌             | ✔️           | ❌          | ✔️              |
 
 > ✅ Fully Supported
 > ✔️  Partial Support
