@@ -86,6 +86,8 @@ cpp_messages.log
 cpp_server.log
 docs/assets/*.svg
 
-.vscode
+# VSCode
+.vscode/settings.json
 
+# JetBrains
 .idea
