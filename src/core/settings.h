@@ -133,9 +133,10 @@ private:
 
     void loadKnutSettings();
     void loadUserSettings();
+    void loadBaseSettings();
     void updatePaths(const QString &path, const std::string &json_path, bool add);
     void saveSettings();
-    void saveOnExit();
+    void saveIfApplicable();
     bool isUser() const;
     void triggerLog(const Utils::LoadJsonStatus &loadJsonStatus, const QString &fileName, const QString &caller);
 
