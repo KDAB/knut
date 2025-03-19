@@ -354,26 +354,26 @@ void QtTsMessage::setLine(int line)
 
 QString QtTsMessage::comment() const
 {
-    return QString::fromLatin1(m_message.child("comment").text().as_string());
+    return QString::fromUtf8(m_message.child("comment").text().as_string());
 }
 
 void QtTsMessage::setComment(const QString &comment)
 {
     LOG(comment);
-    m_message.child("comment").set_value(comment.toLatin1().constData());
+    m_message.child("comment").set_value(comment.toUtf8().constData());
     qobject_cast<QtTsDocument *>(parent())->setHasChanged(true);
     Q_EMIT commentChanged();
 }
 
 QString QtTsMessage::source() const
 {
-    return QString::fromLatin1(m_message.child("source").text().as_string());
+    return QString::fromUtf8(m_message.child("source").text().as_string());
 }
 
 void QtTsMessage::setSource(const QString &source)
 {
     LOG(source);
-    m_message.child("source").set_value(source.toLatin1().constData());
+    m_message.child("source").set_value(source.toUtf8().constData());
     qobject_cast<QtTsDocument *>(parent())->setHasChanged(true);
     Q_EMIT sourceChanged();
 }
