@@ -204,9 +204,12 @@ void QtTsView::updateView()
 
     m_contentProxyModel->setSourceModel(m_contentModel);
     m_tableView->setModel(m_contentProxyModel);
-    m_tableView->horizontalHeader()->resizeSection(QtTsModelView::TsColumn::Source, 200);
-    m_tableView->horizontalHeader()->resizeSection(QtTsModelView::TsColumn::Translation, 200);
-    m_tableView->horizontalHeader()->resizeSection(QtTsModelView::TsColumn::Context, 200);
+    const int tableWidth = static_cast<QWidget *>(parent())->width(); // window width
+    const int contextWidth = 200;
+    const int splittedAvailableWidth = (tableWidth - contextWidth) / 4; // source, translation, comment, and sidebar
+    m_tableView->horizontalHeader()->resizeSection(QtTsModelView::TsColumn::Source, splittedAvailableWidth);
+    m_tableView->horizontalHeader()->resizeSection(QtTsModelView::TsColumn::Translation, splittedAvailableWidth);
+    m_tableView->horizontalHeader()->resizeSection(QtTsModelView::TsColumn::Context, contextWidth);
     m_tableView->horizontalHeader()->setSectionResizeMode(QtTsModelView::TsColumn::Source, QHeaderView::Interactive);
     m_tableView->horizontalHeader()->setSectionResizeMode(QtTsModelView::TsColumn::Translation,
                                                           QHeaderView::Interactive);
