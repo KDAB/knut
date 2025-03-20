@@ -207,8 +207,9 @@ void QtTsView::updateView()
     m_tableView->horizontalHeader()->resizeSection(QtTsModelView::TsColumn::Source, 200);
     m_tableView->horizontalHeader()->resizeSection(QtTsModelView::TsColumn::Translation, 200);
     m_tableView->horizontalHeader()->resizeSection(QtTsModelView::TsColumn::Context, 200);
-    m_tableView->horizontalHeader()->setSectionResizeMode(QtTsModelView::TsColumn::Source, QHeaderView::Fixed);
-    m_tableView->horizontalHeader()->setSectionResizeMode(QtTsModelView::TsColumn::Translation, QHeaderView::Fixed);
+    m_tableView->horizontalHeader()->setSectionResizeMode(QtTsModelView::TsColumn::Source, QHeaderView::Interactive);
+    m_tableView->horizontalHeader()->setSectionResizeMode(QtTsModelView::TsColumn::Translation,
+                                                          QHeaderView::Interactive);
     m_tableView->horizontalHeader()->setSectionResizeMode(QtTsModelView::TsColumn::Context, QHeaderView::Interactive);
     m_tableView->horizontalHeader()->setStretchLastSection(true);
 }
