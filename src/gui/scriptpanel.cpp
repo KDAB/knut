@@ -336,13 +336,100 @@ void ScriptPanel::mouseReleaseEvent(QMouseEvent *mouseEvent)
 
 void ScriptPanel::keyPressEvent(QKeyEvent *event)
 {
-    if ((event->key() == Qt::Key_Backtab)) {
+    switch (event->key()) {
+    case Qt::Key_Backtab:
         Core::indentTextInTextEdit(this, -1);
         return;
-    } else if (event->key() == Qt::Key_Tab) {
+    case Qt::Key_Tab:
         Core::indentTextInTextEdit(this, 1);
         return;
-    } else if (event->key() == Qt::Key_F1) {
+    case Qt::Key_BracketLeft: // '['
+    case Qt::Key_BraceLeft: { // '{'
+        // Auto add right brace
+        QPlainTextEdit::keyPressEvent(event);
+        QTextCursor cursor = textCursor();
+        const QString key = (static_cast<QChar>(event->key() + 2));
+        cursor.insertText(key);
+        cursor.movePosition(QTextCursor::PreviousCharacter);
+        setTextCursor(cursor);
+        return;
+    }
+    case Qt::Key_BracketRight: // ']'
+    case Qt::Key_BraceRight: { // '}'
+        // Prevent right brace from being added twice if it's already been added
+        QTextCursor cursor = textCursor();
+        cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+        const QString key = static_cast<QChar>(event->key());
+        if (cursor.selectedText() == key) {
+            cursor.clearSelection();
+            setTextCursor(cursor);
+            return;
+        }
+        break; // Exit switch and handle press
+    }
+    case Qt::Key_Return: {
+        QTextCursor cursor = textCursor();
+        const int initialPosition = cursor.position();
+        // Determine whether there's a right brace immediately after
+        cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+        const bool rightBraceIsPresent = cursor.selectedText() == "}";
+        cursor.setPosition(initialPosition); // Reset position in case we changed lines
+        // Auto indent line
+        cursor.movePosition(QTextCursor::StartOfLine);
+        const int startOfLine = cursor.position();
+        int indentationPosition = startOfLine;
+        bool newBlock = false;
+        // Ignore whitespace to the right and find indentation
+        cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+        while (cursor.selectedText() == " ") {
+            cursor.clearSelection();
+            indentationPosition = cursor.position();
+            cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+        }
+        // Determine whether this is a new block and needs one more indent:
+        // Start by checking for curly braces
+        cursor.setPosition(initialPosition); // Reset position in case we changed lines
+        cursor.movePosition(QTextCursor::EndOfLine);
+        // Ignore whitespace to the left
+        cursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
+        while (cursor.selectedText() == " ") {
+            cursor.clearSelection();
+            cursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
+        }
+        if (cursor.selectedText() == "}") {
+            cursor.clearSelection();
+            cursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
+        }
+        if (cursor.selectedText() == "{") {
+            if (initialPosition == cursor.anchor())
+                newBlock = true;
+        } else {
+            // Continue by checking for verbs that are usually followed by an indentation
+            cursor.setPosition(indentationPosition);
+            cursor.movePosition(QTextCursor::NextWord, QTextCursor::KeepAnchor);
+            QLatin1String verbs[] = {QLatin1String("if"),       QLatin1String("for"),  QLatin1String("while"),
+                                     QLatin1String("function"), QLatin1String("case"), QLatin1String("do")};
+            for (auto verb : verbs)
+                if (cursor.selectedText().startsWith(verb) && initialPosition >= indentationPosition + verb.length()) {
+                    newBlock = true;
+                    break;
+                }
+        }
+
+        const int indentations = ((indentationPosition - startOfLine) / 4) + (newBlock ? 1 : 0);
+        QPlainTextEdit::keyPressEvent(event);
+        Core::indentTextInTextEdit(this, indentations);
+        if (rightBraceIsPresent) {
+            QPlainTextEdit::keyPressEvent(event);
+            Core::indentTextInTextEdit(this, indentations - 1);
+            cursor.setPosition(indentationPosition);
+            cursor.movePosition(QTextCursor::Down);
+            cursor.movePosition(QTextCursor::EndOfLine);
+            setTextCursor(cursor);
+        }
+        return;
+    }
+    case Qt::Key_F1:
         interfaceSettings = new InterfaceSettings();
         QString documentationUrl;
         QString fileName;
