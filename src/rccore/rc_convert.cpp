@@ -160,12 +160,15 @@ static Widget convertPushButton(const Data &data, const QString &dialogId, Data:
         const auto &values = it->values.value(control.id);
         if (values.count() == 1) {
             pugi::xml_document document;
-            const pugi::xml_parse_result result = document.load_string(values.constFirst().toLatin1().constData(),
+            const pugi::xml_parse_result result = document.load_string(values.constFirst().toLocal8Bit().constData(),
                                                                        pugi::parse_default | pugi::parse_declaration);
             if (result) {
                 const auto node = document.select_node("MFCButton_Tooltip");
                 if (!node.node().empty()) {
-                    widget.properties["toolTip"] = node.node().text().as_string();
+                    const QString toolTip = QString::fromLatin1(node.node().text().as_string());
+                    if (!toolTip.isEmpty()) {
+                        widget.properties["toolTip"] = toolTip;
+                    }
                 }
             }
         }
