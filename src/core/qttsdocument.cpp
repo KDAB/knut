@@ -387,7 +387,13 @@ void QtTsMessage::setTranslation(const QString &translation)
 {
     LOG(translation);
     m_message.child("translation").remove_attribute("type");
-    m_message.child("translation").text().set(translation.toUtf8().constData());
+    // Singular
+    if (!m_message.attribute("numerus").as_bool())
+        m_message.child("translation").text().set(translation.toUtf8().constData());
+    // Plural
+    else
+        qWarning() << "stub: Cannot set plural translation, not implemented.";
+    // Mark change
     qobject_cast<QtTsDocument *>(parent())->setHasChanged(true);
     Q_EMIT translationChanged();
 }
