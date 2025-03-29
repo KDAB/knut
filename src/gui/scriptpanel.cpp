@@ -142,6 +142,9 @@ bool ScriptPanel::hasScript() const
 
 void ScriptPanel::openScript()
 {
+    if (!checkNeedToSaveScript())
+        return;
+
     const QString fileName = QFileDialog::getOpenFileName(this, tr("Open Script"), "", "Script files (*.qml *.js)");
     if (fileName.isEmpty())
         return;
