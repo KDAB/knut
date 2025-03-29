@@ -432,6 +432,12 @@ void ScriptPanel::keyPressEvent(QKeyEvent *event)
         }
         return;
     }
+    case Qt::Key_N:
+        if (event->modifiers() & Qt::ControlModifier) {
+            newScript();
+            return;
+        }
+        break;
     case Qt::Key_F1:
         interfaceSettings = new InterfaceSettings();
         QString documentationUrl;

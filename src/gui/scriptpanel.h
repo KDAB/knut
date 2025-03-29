@@ -32,6 +32,9 @@ public:
 
     bool hasScript() const;
     void runScript();
+    void openScript();
+    void newScriptDialog();
+    void saveScript();
 
 signals:
     void newScriptCreated();
@@ -42,11 +45,8 @@ protected:
     void mouseReleaseEvent(QMouseEvent *mouseEvent) override;
 
 private:
-    void openScript();
     void newScript();
-    void newScriptDialog();
     bool checkNeedToSaveScript();
-    void saveScript();
     void editDialog();
     void checkEditDialogButton();
     QString createDialogFile();
