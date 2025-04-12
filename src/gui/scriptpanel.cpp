@@ -142,6 +142,9 @@ bool ScriptPanel::hasScript() const
 
 void ScriptPanel::openScript()
 {
+    if (!checkNeedToSaveScript())
+        return;
+
     const QString fileName = QFileDialog::getOpenFileName(this, tr("Open Script"), "", "Script files (*.qml *.js)");
     if (fileName.isEmpty())
         return;
@@ -429,6 +432,12 @@ void ScriptPanel::keyPressEvent(QKeyEvent *event)
         }
         return;
     }
+    case Qt::Key_N:
+        if (event->modifiers() & Qt::ControlModifier) {
+            newScript();
+            return;
+        }
+        break;
     case Qt::Key_F1:
         interfaceSettings = new InterfaceSettings();
         QString documentationUrl;

@@ -357,10 +357,14 @@ void MainWindow::showEvent(QShowEvent *event)
 
 void MainWindow::openProject()
 {
-    auto path = QFileDialog::getExistingDirectory(this, tr("Open project"), QDir::currentPath());
-    if (!path.isEmpty()) {
-        Core::Project::instance()->setRoot(path);
-        initProject(path);
+    if (m_scriptPanel->hasFocus())
+        m_scriptPanel->openScript();
+    else {
+        auto path = QFileDialog::getExistingDirectory(this, tr("Open project"), QDir::currentPath());
+        if (!path.isEmpty()) {
+            Core::Project::instance()->setRoot(path);
+            initProject(path);
+        }
     }
 }
 
@@ -510,9 +514,13 @@ void MainWindow::reloadDocuments()
 
 void MainWindow::saveDocument()
 {
-    auto document = Core::Project::instance()->currentDocument();
-    if (document)
-        document->save();
+    if (m_scriptPanel->hasFocus())
+        m_scriptPanel->saveScript();
+    else {
+        auto document = Core::Project::instance()->currentDocument();
+        if (document)
+            document->save();
+    }
 }
 
 void MainWindow::closeDocument(int closeIndex)
