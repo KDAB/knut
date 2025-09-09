@@ -61,6 +61,7 @@ public:
     bool hasChanged() const;
 
     bool hasChangedOnDisk() const;
+    void clearChangedOnDisk();
     void reload();
 
 public slots:
