@@ -505,6 +505,9 @@ void MainWindow::reloadDocuments()
     if (result == QMessageBox::Yes) {
         for (auto *document : conflictDocs)
             document->reload();
+    } else {
+        for (auto *document : conflictDocs)
+            document->clearChangedOnDisk();
     }
 }
 

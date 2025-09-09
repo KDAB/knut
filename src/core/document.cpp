@@ -144,11 +144,16 @@ bool Document::hasChangedOnDisk() const
     return true;
 }
 
+void Document::clearChangedOnDisk()
+{
+    const QFileInfo fi(m_fileName);
+    m_lastModified = fi.lastModified();
+}
+
 void Document::reload()
 {
     doLoad(m_fileName);
-    const QFileInfo fi(m_fileName);
-    m_lastModified = fi.lastModified();
+    clearChangedOnDisk();
     emit fileUpdated();
 }
 
