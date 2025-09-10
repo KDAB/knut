@@ -48,7 +48,7 @@ public slots:
 
     static QString mktemp(const QString &pattern);
 
-    static QString convertCase(const QString &str, Case from, Case to);
+    static QString convertCase(const QString &str, Core::Utils::Case from, Core::Utils::Case to);
 
     static void copyToClipboard(const QString &text);
 
