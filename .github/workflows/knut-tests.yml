@@ -24,10 +24,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: Ubuntu (clang&clazy)
-            os: ubuntu-latest
-            compiler_cache_path: /home/runner/.cache/sccache
-            cmake_preset: clazy
+          # TODO: uncomment once we can make clazy compiles on the CI (pb with KSyntaxHighlighting)
+          # - name: Ubuntu (clang&clazy)
+          #   os: ubuntu-latest
+          #   compiler_cache_path: /home/runner/.cache/sccache
+          #   cmake_preset: clazy
           - name: Ubuntu (gcc)
             os: ubuntu-latest
             compiler_cache_path: /home/runner/.cache/sccache
@@ -121,23 +122,24 @@ jobs:
       - name: Run sccache-cache
         uses: mozilla-actions/sccache-action@v0.0.3
 
-      - name: Install recent clang
-        uses: KyleMayes/install-llvm-action@v2
-        if: ${{ matrix.cmake_preset == 'clazy' }}
-        with:
-          version: "17"
-          env: true
+      # TODO: uncomment once we can make clazy compiles on the CI (pb with KSyntaxHighlighting)
+      # - name: Install recent clang
+      #   uses: KyleMayes/install-llvm-action@v2
+      #   if: ${{ matrix.cmake_preset == 'clazy' }}
+      #   with:
+      #     version: "19"
+      #     env: true
 
-      - name: Build & Install clazy
-        if: ${{ matrix.cmake_preset == 'clazy' }}
-        run: |
-          git clone --depth=1 https://github.com/KDE/clazy.git
-          cd clazy/
-          cmake -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache -DLINK_CLAZY_TO_LLVM=OFF -DCMAKE_BUILD_TYPE=Release -G Ninja -DLLVM_ROOT=${{ env.LLVM_PATH }}
-          cmake --build .
-          sudo cmake --build . --target install
-          cd ..
-          echo "CLANGXX=${{ env.LLVM_PATH }}/bin/clang++" >> $GITHUB_ENV
+      # - name: Build & Install clazy
+      #   if: ${{ matrix.cmake_preset == 'clazy' }}
+      #   run: |
+      #     git clone --depth=1 https://github.com/KDE/clazy.git
+      #     cd clazy/
+      #     cmake -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache -DLINK_CLAZY_TO_LLVM=OFF -DCMAKE_BUILD_TYPE=Release -G Ninja -DLLVM_ROOT=${{ env.LLVM_PATH }}
+      #     cmake --build .
+      #     sudo cmake --build . --target install
+      #     cd ..
+      #     echo "CLANGXX=${{ env.LLVM_PATH }}/bin/clang++" >> $GITHUB_ENV
 
       - name: Configure project
         run: cmake -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache --preset=${{ matrix.cmake_preset }}

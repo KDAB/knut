@@ -9,7 +9,7 @@
 # Contact KDAB at <info@kdab.com> for commercial licensing options.
 #
 
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.27)
 # This enables the use of CMAKE_MSVC_DEBUG_INFORMATION_FORMAT as required by the
 # CI preset
 cmake_policy(SET CMP0141 NEW)
