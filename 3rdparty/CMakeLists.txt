@@ -53,6 +53,7 @@ set(DISABLE_ALL_OPTIONAL_SUBDIRECTORIES TRUE)
 set(BUILD_TESTING OFF)
 check_submodule(ksyntaxhighlighting ksyntaxhighlighting)
 add_subdirectory(ksyntaxhighlighting)
+set_target_properties(KF6SyntaxHighlighting PROPERTIES SYSTEM ON)
 
 # * Enable optimizations even in debug mode (in a portable way)
 function(enable_optimizations target)
