@@ -10,6 +10,7 @@
 
 #include "common/test_utils.h"
 #include "core/jsondocument.h"
+#include "core/knutcore.h"
 #include "core/utils.h"
 
 #include <QTest>
@@ -19,7 +20,17 @@ class TestJsonDocument : public QObject
     Q_OBJECT
 
 private slots:
-    void initTestCase() { Q_INIT_RESOURCE(core); }
+    void initTestCase()
+    {
+        Q_INIT_RESOURCE(core);
+        m_core = new Core::KnutCore();
+    }
+
+    void cleanupTestCase()
+    {
+        delete m_core;
+        m_core = nullptr;
+    }
 
     void load()
     {
@@ -136,6 +147,9 @@ private slots:
         QFile::remove(saveFileName);
         QFile::remove(saveAsFileName);
     }
+
+private:
+    Core::KnutCore *m_core = nullptr;
 };
 
 QTEST_MAIN(TestJsonDocument)

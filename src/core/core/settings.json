@@ -64,7 +64,8 @@
         "tab": {
             "insertSpaces": true,
             "tabSize": 4
-        }
+        },
+        "encoding": "utf8"
     },
     "toggle_section": {
         "tag": "KDAB_TEMPORARILY_REMOVED",

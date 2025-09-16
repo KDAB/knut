@@ -34,6 +34,13 @@ KnutCore::KnutCore(QObject *parent)
     initialize(Settings::Mode::Test);
 }
 
+KnutCore::~KnutCore()
+{
+    delete m_scriptManager;
+    delete m_project;
+    delete m_settings;
+}
+
 KnutCore::KnutCore(InternalTag, QObject *parent)
     : QObject(parent)
 {
@@ -188,10 +195,10 @@ void KnutCore::initialize(Settings::Mode mode)
     // If creating a KnutCore and then processing command line arguments
     if (m_initialized)
         return;
-    new Settings(mode, this);
-    new Project(this);
-    new ScriptManager(this);
-    if (Core::Settings::instance()->value<bool>(Core::Settings::SaveLogsToFile))
+    m_settings = new Settings(mode, this);
+    m_project = new Project(this);
+    m_scriptManager = new ScriptManager(this);
+    if (DEFAULT_VALUE(bool, SaveLogsToFile))
         initializeMultiSinkLogger();
     // auto flush when "info" or higher message is logged.
     spdlog::flush_on(spdlog::level::info);

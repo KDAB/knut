@@ -47,7 +47,17 @@ class TestTextDocument : public QObject
     Q_OBJECT
 
 private slots:
-    void initTestCase() { Q_INIT_RESOURCE(core); }
+    void initTestCase()
+    {
+        Q_INIT_RESOURCE(core);
+        m_core = new Core::KnutCore();
+    }
+
+    void cleanupTestCase()
+    {
+        delete m_core;
+        m_core = nullptr;
+    }
 
     void load()
     {
@@ -364,7 +374,6 @@ private slots:
 
         Test::FileTester file(Test::testDataPath() + "/tst_textdocument/indent/indent.txt");
         {
-            Core::KnutCore core;
             Core::TextDocument document;
             document.load(file.fileName());
 
@@ -684,6 +693,9 @@ private slots:
         document.setText("IDOK:");
         QVERIFY(document.find("IDOK", Core::TextDocument::FindWholeWords));
     }
+
+private:
+    Core::KnutCore *m_core = nullptr;
 };
 
 QTEST_MAIN(TestTextDocument)

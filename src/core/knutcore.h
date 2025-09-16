@@ -17,12 +17,17 @@
 
 namespace Core {
 
+class Settings;
+class Project;
+class ScriptManager;
+
 class KnutCore : public QObject
 {
     Q_OBJECT
 
 public:
     explicit KnutCore(QObject *parent = nullptr);
+    ~KnutCore() override;
 
     bool process(const QStringList &arguments);
 
@@ -41,6 +46,10 @@ private:
     void initializeMultiSinkLogger();
 
     bool m_initialized = false;
+
+    Settings *m_settings = nullptr;
+    Project *m_project = nullptr;
+    ScriptManager *m_scriptManager = nullptr;
 };
 
 } // namespace Core
