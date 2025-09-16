@@ -53,6 +53,7 @@ public:
     static inline constexpr char SaveLogsToFile[] = "/logs/saveToFile";
     static inline constexpr char ScriptPaths[] = "/script_paths";
     static inline constexpr char Tab[] = "/text_editor/tab";
+    static inline constexpr char Encoding[] = "/text_editor/encoding";
     static inline constexpr char ToggleSection[] = "/toggle_section";
 
 public:

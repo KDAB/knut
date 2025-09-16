@@ -13,6 +13,7 @@
 #include "document.h"
 #include "mark.h"
 #include "rangemark.h"
+#include "utils/json.h"
 
 #include <QPointer>
 #include <QRegularExpressionMatch>
@@ -63,6 +64,19 @@ public:
     };
     Q_DECLARE_FLAGS(FindFlags, FindFlag)
     Q_ENUM(FindFlag)
+
+    enum class Encoding {
+        Utf8 = QStringConverter::Utf8,
+        Utf16 = QStringConverter::Utf16,
+        Utf16BE = QStringConverter::Utf16BE,
+        Utf16LE = QStringConverter::Utf16LE,
+        Utf32 = QStringConverter::Utf32,
+        Utf32BE = QStringConverter::Utf32BE,
+        Utf32LE = QStringConverter::Utf32LE,
+        Latin1 = QStringConverter::Latin1,
+        System = QStringConverter::System,
+    };
+    Q_ENUM(Encoding)
 
     explicit TextDocument(QObject *parent = nullptr);
     ~TextDocument() override;
@@ -239,6 +253,17 @@ private:
     LineEnding m_lineEnding = NativeLineEnding;
     bool m_utf8Bom = false;
 };
+
+NLOHMANN_JSON_SERIALIZE_ENUM(TextDocument::Encoding,
+                             {{TextDocument::Encoding::Utf8, "utf8"},
+                              {TextDocument::Encoding::Utf16, "utf16"},
+                              {TextDocument::Encoding::Utf16BE, "utf16be"},
+                              {TextDocument::Encoding::Utf16LE, "utf16le"},
+                              {TextDocument::Encoding::Utf32, "utf32"},
+                              {TextDocument::Encoding::Utf32BE, "utf32be"},
+                              {TextDocument::Encoding::Utf32LE, "utf32le"},
+                              {TextDocument::Encoding::Latin1, "latin1"},
+                              {TextDocument::Encoding::System, "system"}})
 
 } // namespace Core
 

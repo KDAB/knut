@@ -255,6 +255,7 @@ bool TextDocument::doSave(const QString &fileName)
         plainText.replace('\n', "\r\n");
 
     QTextStream stream(&file);
+    stream.setEncoding(static_cast<QStringConverter::Encoding>(DEFAULT_VALUE(TextDocument::Encoding, Encoding)));
     stream << plainText;
     return true;
 }
@@ -273,6 +274,7 @@ bool TextDocument::doLoad(const QString &fileName)
     QByteArray data = file.readAll();
     detectFormat(data);
     QTextStream stream(data);
+    stream.setEncoding(static_cast<QStringConverter::Encoding>(DEFAULT_VALUE(TextDocument::Encoding, Encoding)));
     const QString text = stream.readAll();
 
     QSignalBlocker sb(m_document->document());

@@ -13,6 +13,7 @@
 #include "core/rcdocument.h"
 #include "core/scriptmanager.h"
 #include "core/settings.h"
+#include "core/textdocument.h"
 #include "core/textdocument_p.h"
 #include "ui_optionsdialog.h"
 
@@ -43,7 +44,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     connect(ui->listWidget, &QListWidget::currentItemChanged, this, &OptionsDialog::changePage);
 
     initializeScriptPathSettings();
-    initializeScriptBehaviorSettings();
+    initializeTextSettings();
     initializeRcSettings();
     initializeSaveToLogFileSetting();
     initializeEnableLSPSetting();
@@ -101,7 +102,7 @@ void OptionsDialog::initializeScriptPathSettings()
     ui->scriptsList->setModel(Core::ScriptManager::model());
 }
 
-void OptionsDialog::initializeScriptBehaviorSettings()
+void OptionsDialog::initializeTextSettings()
 {
     // Text editor settings
     ui->tabSize->setValidator(new QIntValidator(ui->tabSize));
@@ -109,14 +110,25 @@ void OptionsDialog::initializeScriptBehaviorSettings()
     ui->insertSpacesCheck->setChecked(settings.insertSpaces);
     ui->tabSize->setText(QString::number(settings.tabSize));
 
+    // Encoding combobox
+    const auto metaEnum = QMetaEnum::fromType<Core::TextDocument::Encoding>();
+    for (int i = 0; i < metaEnum.keyCount(); ++i) {
+        ui->encoding->addItem(QLatin1String(metaEnum.key(i)), metaEnum.value(i));
+    }
+    const auto encoding = DEFAULT_VALUE(Core::TextDocument::Encoding, Encoding);
+    ui->encoding->setCurrentIndex(ui->encoding->findData(QVariant::fromValue(encoding)));
+
     auto changeTextEditorSettings = [this]() {
         auto settings = DEFAULT_VALUE(Core::TabSettings, Tab);
         settings.insertSpaces = ui->insertSpacesCheck->isChecked();
         settings.tabSize = ui->tabSize->text().toInt();
         Core::Settings::instance()->setValue(Core::Settings::Tab, settings);
+        const auto encoding = ui->encoding->currentData().value<Core::TextDocument::Encoding>();
+        Core::Settings::instance()->setValue(Core::Settings::Encoding, encoding);
     };
     connect(ui->insertSpacesCheck, &QCheckBox::toggled, this, changeTextEditorSettings);
     connect(ui->tabSize, &QLineEdit::textEdited, this, changeTextEditorSettings);
+    connect(ui->encoding, &QComboBox::currentIndexChanged, this, changeTextEditorSettings);
 
     // Toggle section settings
     auto sectionSettings = DEFAULT_VALUE(Core::ToggleSectionSettings, ToggleSection);

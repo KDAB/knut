@@ -33,7 +33,7 @@ private:
     void initializeEnableLSPSetting();
     void initializeSaveToLogFileSetting();
     void initializeScriptPathSettings();
-    void initializeScriptBehaviorSettings();
+    void initializeTextSettings();
     void initializeRcSettings();
     void initializeCppSettings();
 
