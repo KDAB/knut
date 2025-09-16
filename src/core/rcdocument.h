@@ -57,6 +57,8 @@ public:
 
     static inline constexpr char DefaultLanguage[] = "[default]";
 
+    using LanguageMap = std::map<std::string, std::string>;
+
 public:
     explicit RcDocument(QObject *parent = nullptr);
 

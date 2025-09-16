@@ -105,7 +105,7 @@ void HistoryModel::clear()
 
 QString HistoryModel::createScript(int start, int end)
 {
-    const auto settings = Core::Settings::instance()->value<Core::TabSettings>(Core::Settings::Tab);
+    const auto settings = DEFAULT_VALUE(Core::TabSettings, Tab);
     const auto tab = settings.insertSpaces ? QString(settings.tabSize, ' ') : QString('\t');
 
     std::tie(start, end) = std::minmax(start, end);

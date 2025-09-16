@@ -1561,7 +1561,7 @@ static int indentOneLine(QTextCursor &cursor, int tabCount, const TabSettings &s
 
 static void indentBlocksInTextEdit(QPlainTextEdit *textEdit, int blockStart, int blockEnd, int tabCount, bool relative)
 {
-    const auto settings = Core::Settings::instance()->value<Core::TabSettings>(Core::Settings::Tab);
+    const auto settings = DEFAULT_VALUE(Core::TabSettings, Tab);
     QTextCursor cursor = textEdit->textCursor();
 
     // Make sure we don't move the cursor outside the first line it started on.
@@ -1727,7 +1727,7 @@ int TextDocument::indentationAtPosition(int pos) const
     LOG(LOG_ARG("position", pos));
 
     const auto indentText = indentTextAtPosition(pos);
-    const auto settings = Core::Settings::instance()->value<Core::TabSettings>(Core::Settings::Tab);
+    const auto settings = DEFAULT_VALUE(Core::TabSettings, Tab);
     return columnAt(indentText, indentText.size(), settings.tabSize) / settings.tabSize;
 }
 
@@ -1743,7 +1743,7 @@ int TextDocument::indentationAtLine(int line /* = -1 */) const
     LOG(LOG_ARG("line", line));
 
     const auto indentText = indentTextAtLine(line);
-    const auto settings = Core::Settings::instance()->value<Core::TabSettings>(Core::Settings::Tab);
+    const auto settings = DEFAULT_VALUE(Core::TabSettings, Tab);
     return columnAt(indentText, indentText.size(), settings.tabSize) / settings.tabSize;
 }
 

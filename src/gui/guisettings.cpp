@@ -314,7 +314,7 @@ GuiSettings::TextEditSettings GuiSettings::computeTextEditSettings() const
     f.setPointSize(m_fontSize);
 
     QFontMetrics fm(f);
-    const auto tabSettings = Core::Settings::instance()->value<Core::TabSettings>(Core::Settings::Tab);
+    const auto tabSettings = DEFAULT_VALUE(Core::TabSettings, Tab);
     return {f, tabSettings.tabSize * fm.horizontalAdvance(' ')};
 }
 
