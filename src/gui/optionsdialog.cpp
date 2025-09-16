@@ -64,14 +64,14 @@ OptionsDialog::~OptionsDialog() = default;
 void OptionsDialog::initializeSaveToLogFileSetting()
 {
     // Save Logs to file
-    ui->saveLogsToFile->setChecked(Core::Settings::instance()->value<bool>(Core::Settings::SaveLogsToFile));
+    ui->saveLogsToFile->setChecked(DEFAULT_VALUE(bool, SaveLogsToFile));
     connect(ui->saveLogsToFile, &QCheckBox::toggled, this, &OptionsDialog::changeSaveLogsToFileSetting);
 }
 
 void OptionsDialog::initializeEnableLSPSetting()
 {
     // Enable LSP when running in Gui mode
-    ui->enableLSP->setChecked(Core::Settings::instance()->value<bool>(Core::Settings::EnableLSP));
+    ui->enableLSP->setChecked(DEFAULT_VALUE(bool, EnableLSP));
     connect(ui->enableLSP, &QCheckBox::toggled, this, &OptionsDialog::changeEnableLSPSetting);
 }
 
@@ -122,9 +122,9 @@ void OptionsDialog::initializeTextSettings()
         auto settings = DEFAULT_VALUE(Core::TabSettings, Tab);
         settings.insertSpaces = ui->insertSpacesCheck->isChecked();
         settings.tabSize = ui->tabSize->text().toInt();
-        Core::Settings::instance()->setValue(Core::Settings::Tab, settings);
+        SET_DEFAULT_VALUE(Tab, settings);
         const auto encoding = ui->encoding->currentData().value<Core::TextDocument::Encoding>();
-        Core::Settings::instance()->setValue(Core::Settings::Encoding, encoding);
+        SET_DEFAULT_VALUE(Encoding, encoding);
     };
     connect(ui->insertSpacesCheck, &QCheckBox::toggled, this, changeTextEditorSettings);
     connect(ui->tabSize, &QLineEdit::textEdited, this, changeTextEditorSettings);
@@ -203,8 +203,7 @@ void OptionsDialog::initializeRcSettings()
         SET_DEFAULT_VALUE(RcDialogScaleY, value);
     });
 
-    auto languageMap =
-        Core::Settings::instance()->value<std::map<std::string, std::string>>(Core::Settings::RcLanguageMap);
+    auto languageMap = DEFAULT_VALUE(Core::RcDocument::LanguageMap, RcLanguageMap);
     for (const auto &[source, result] : languageMap) {
         auto item = new QTreeWidgetItem(ui->languageMap);
         item->setText(0, QString::fromStdString(source));
@@ -334,7 +333,7 @@ void OptionsDialog::changeToggleSectionSetting()
     sectionSettings.tag = ui->tagEdit->text();
     sectionSettings.debug = ui->debugEdit->text();
     sectionSettings.return_values = returnValues;
-    Core::Settings::instance()->setValue(Core::Settings::ToggleSection, sectionSettings);
+    SET_DEFAULT_VALUE(ToggleSection, sectionSettings);
 }
 
 void OptionsDialog::changeAssetFlagsSetting()
@@ -375,8 +374,7 @@ void OptionsDialog::changeDialogFlagsSetting()
 
 void OptionsDialog::changeLanguageMap()
 {
-    auto oldLanguageMap =
-        Core::Settings::instance()->value<std::map<std::string, std::string>>(Core::Settings::RcLanguageMap);
+    auto oldLanguageMap = DEFAULT_VALUE(Core::RcDocument::LanguageMap, RcLanguageMap);
     std::map<std::string, std::string> languageMap;
     for (int i = 0; i < ui->languageMap->topLevelItemCount(); ++i) {
         auto item = ui->languageMap->topLevelItem(i);
@@ -386,7 +384,7 @@ void OptionsDialog::changeLanguageMap()
             item->text(1).isEmpty() ? Core::RcDocument::DefaultLanguage : item->text(1).toStdString();
         languageMap[item->text(0).toStdString()] = result;
     }
-    Core::Settings::instance()->setValue(Core::Settings::RcLanguageMap, languageMap);
+    SET_DEFAULT_VALUE(RcLanguageMap, languageMap);
 }
 
 void OptionsDialog::changePage()
