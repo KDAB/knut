@@ -41,6 +41,7 @@
         "c": "cpp_type",
         "cpp": "cpp_type",
         "cxx": "cpp_type",
+        "cc": "cpp_type",
         "h": "cpp_type",
         "hpp": "cpp_type",
         "txt": "text_type",
