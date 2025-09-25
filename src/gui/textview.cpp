@@ -1,4 +1,4 @@
-/*
+﻿/*
   This file is part of Knut.
 
   SPDX-FileCopyrightText: 2024 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
@@ -24,6 +24,7 @@
 #include <QToolButton>
 #include <QToolTip>
 #include <QVBoxLayout>
+#include <core/settings.h>
 
 namespace Gui {
 
@@ -143,25 +144,27 @@ bool TextView::eventFilter(QObject *obj, QEvent *event)
     if (event->type() == QEvent::Paint)
         updateMarkRect();
     if (event->type() == QEvent::ToolTip) {
-        if (const auto *codedocument = qobject_cast<Core::CodeDocument *>(m_document)) {
-            if (const auto *helpEvent = dynamic_cast<QHelpEvent *>(event)) {
-                auto cursor = codedocument->textEdit()->cursorForPosition(helpEvent->pos());
+        if (DEFAULT_VALUE(bool, EnableLSP)) {
+            if (const auto *codedocument = qobject_cast<Core::CodeDocument *>(m_document)) {
+                if (const auto *helpEvent = dynamic_cast<QHelpEvent *>(event)) {
+                    auto cursor = codedocument->textEdit()->cursorForPosition(helpEvent->pos());
 
-                // Make the textEdit a guarded pointer, as it might have been destroyed once the hover
-                // callback returns.
-                QPointer<QPlainTextEdit> textEdit(codedocument->textEdit());
-                QPoint position(helpEvent->globalPos());
+                    // Make the textEdit a guarded pointer, as it might have been destroyed once the hover
+                    // callback returns.
+                    QPointer<QPlainTextEdit> textEdit(codedocument->textEdit());
+                    QPoint position(helpEvent->globalPos());
 
-                // Hover spams the log if it doesn't find anything.
-                // In our case, that's not a problem, so just disable the log.
-                Core::LoggerDisabler ld;
+                    // Hover spams the log if it doesn't find anything.
+                    // In our case, that's not a problem, so just disable the log.
+                    Core::LoggerDisabler ld;
 
-                codedocument->hover(cursor.position(), [textEdit, position](const auto &hoverText) {
-                    if (!textEdit.isNull() && textEdit->isVisible()) {
-                        QToolTip::showText(position, hoverText, textEdit);
-                    }
-                });
-                return true;
+                    codedocument->hover(cursor.position(), [textEdit, position](const auto &hoverText) {
+                        if (!textEdit.isNull() && textEdit->isVisible()) {
+                            QToolTip::showText(position, hoverText, textEdit);
+                        }
+                    });
+                    return true;
+                }
             }
         }
     }
