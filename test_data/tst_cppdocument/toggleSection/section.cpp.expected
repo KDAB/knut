@@ -64,3 +64,14 @@ Section *Section::create()
     return nullptr;
 #endif // KDAB_TEMPORARILY_REMOVED
 }
+
+Section &Section::reference()
+{
+#ifdef KDAB_TEMPORARILY_REMOVED
+    computeText();
+    return *m_pointer;
+#else // KDAB_TEMPORARILY_REMOVED
+    qDebug("Section::reference is commented out");
+    return {};
+#endif // KDAB_TEMPORARILY_REMOVED
+}

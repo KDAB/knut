@@ -44,3 +44,9 @@ Section *Section::create()
     computeText();
     return new Section;
 }
+
+Section &Section::reference()
+{
+    computeText();
+    return *m_pointer;
+}
