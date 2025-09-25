@@ -68,6 +68,8 @@ private slots:
             auto cppFile = qobject_cast<Core::CppDocument *>(Core::Project::instance()->get(file.fileName()));
 
             // Comment out full methods (start from the end)
+            cppFile->gotoLine(50);
+            cppFile->toggleSection();
             cppFile->gotoLine(42);
             cppFile->toggleSection();
             cppFile->gotoLine(35);

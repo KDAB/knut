@@ -1,4 +1,4 @@
-/*
+﻿/*
   This file is part of Knut.
 
   SPDX-FileCopyrightText: 2024 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
@@ -1223,26 +1223,39 @@ void CppDocument::toggleSection()
         gotoLine(line + 3);
 
     } else {
-        // Check that we are in a function
-        auto isFunction = [](const Symbol &symbol) {
-            return symbol.isFunction();
+        auto matches = query(QString(R"EOF(
+            (function_definition
+                (type_qualifier)? @return
+                type: (_)? @return
+                declarator: [
+                    (function_declarator
+                        declarator: (_) @name)
+                    (_
+                        (function_declarator
+                            declarator: (_) @name)) @full_name
+                ]
+                body: (compound_statement) @body)
+        )EOF"));
+        auto cursorPos = cursor.position();
+        auto isInBody = [cursorPos](const QueryMatch &match) {
+            return match.get("body").contains(cursorPos);
         };
-        auto symbol = currentSymbol(isFunction);
-        if (!symbol)
+        const auto functionMatch = kdalgorithms::find_if(matches, isInBody);
+        if (!functionMatch)
             return;
 
-        auto cursorPos = cursor.position();
+        const auto range = functionMatch->get("body");
 
         cursor.beginEditBlock();
         // Start from the end
-        cursor.setPosition(symbol->range().end());
+        cursor.setPosition(range.end());
         cursor.movePosition(QTextCursor::StartOfLine);
         cursor.movePosition(QTextCursor::Up, QTextCursor::KeepAnchor);
 
         if (cursor.selectedText().startsWith(endifString)) {
             // The function is already commented out, remove the comments
             int start = textEdit()->document()->find(elseString, cursor, QTextDocument::FindBackward).selectionStart();
-            if (start > symbol->range().start())
+            if (start > range.start())
                 cursor.setPosition(start, QTextCursor::KeepAnchor);
             cursor.removeSelectedText();
             cursor.setPosition(moveBlock(cursor.position(), QTextCursor::PreviousCharacter));
@@ -1252,14 +1265,17 @@ void CppDocument::toggleSection()
             cursor.removeSelectedText();
             cursorPos -= ifdefString.length() + 1;
         } else {
+            const auto name = functionMatch->get("name").text();
+            const auto returnType = functionMatch->get("return").text()
+                + (functionMatch->get("full_name").text().startsWith("*") ? "*" : "");
+
             // Comment out the function with #if/#def, make sure to return something if needed
-            cursor.setPosition(symbol->range().end());
+            cursor.setPosition(range.end());
             cursor.movePosition(QTextCursor::PreviousCharacter);
 
             QString text = elseString + newLine;
             if (!sectionSettings.debug.isEmpty())
-                text += tab() + sectionSettings.debug.arg(symbol->name()) + ";\n";
-            const QString returnType = symbol->toFunction()->returnType();
+                text += tab() + sectionSettings.debug.arg(name) + ";\n";
             auto it = sectionSettings.return_values.find(returnType.toStdString());
             if (it != sectionSettings.return_values.end())
                 text += tab() + QString("return %1;\n").arg(QString::fromStdString(it->second));

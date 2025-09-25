@@ -134,6 +134,9 @@ TextDocument *RangeMark::document() const
 
 QString RangeMark::text() const
 {
+    if (!isValid())
+        return {};
+
     auto text = temporaryDocumentText.isEmpty() ? document()->text() : temporaryDocumentText;
     // <= here instead of < because m_end is exclusive
     if (isValid() && end() <= text.size()) {
