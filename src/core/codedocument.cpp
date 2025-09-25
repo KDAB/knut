@@ -16,6 +16,7 @@
 #include "project.h"
 #include "querymatch.h"
 #include "rangemark.h"
+#include "settings.h"
 #include "symbol.h"
 #include "treesitter/predicates.h"
 #include "utils/log.h"
@@ -755,6 +756,8 @@ int CodeDocument::revision() const
 bool CodeDocument::checkClient() const
 {
     Q_ASSERT(textEdit());
+    if (!Settings::instance()->hasLsp())
+        return false;
     if (!client()) {
         spdlog::error("{}: CodeDocument {} has no LSP client - API not available", FUNCTION_NAME, fileName());
         return false;

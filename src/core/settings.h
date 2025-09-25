@@ -1,4 +1,4 @@
-/*
+﻿/*
   This file is part of Knut.
 
   SPDX-FileCopyrightText: 2024 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
@@ -139,7 +139,7 @@ private:
     void saveSettings();
     void saveIfApplicable();
     bool isUser() const;
-    void triggerLog(const Utils::LoadJsonStatus &loadJsonStatus, const QString &fileName, const QString &caller);
+    void triggerLog(const ::Utils::LoadJsonStatus &loadJsonStatus, const QString &fileName, const QString &caller);
 
     inline static Settings *m_instance = nullptr;
 
