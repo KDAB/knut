@@ -1,4 +1,4 @@
-/*
+﻿/*
   This file is part of Knut.
 
   SPDX-FileCopyrightText: 2024 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
@@ -134,9 +134,13 @@ TextDocument *RangeMark::document() const
 
 QString RangeMark::text() const
 {
+    auto text = temporaryDocumentText.isEmpty() ? document()->text() : temporaryDocumentText;
     // <= here instead of < because m_end is exclusive
-    if (isValid() && end() <= document()->text().size())
-        return document()->text().sliced(start(), end() - start());
+    if (isValid() && end() <= text.size()) {
+        text = text.sliced(start(), end() - start());
+        text.squeeze();
+        return text;
+    }
     return {};
 }
 
