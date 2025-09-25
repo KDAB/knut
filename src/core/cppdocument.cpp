@@ -1266,7 +1266,8 @@ void CppDocument::toggleSection()
             cursorPos -= ifdefString.length() + 1;
         } else {
             const auto name = functionMatch->get("name").text();
-            const auto returnType = functionMatch->get("return").text() + (functionMatch->get("full_name").text().startsWith("*") ? "*" : "");
+            const auto returnType = functionMatch->get("return").text()
+                + (functionMatch->get("full_name").text().startsWith("*") ? "*" : "");
 
             // Comment out the function with #if/#def, make sure to return something if needed
             cursor.setPosition(range.end());
