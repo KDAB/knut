@@ -1,4 +1,4 @@
-/*
+﻿/*
   This file is part of Knut.
 
   SPDX-FileCopyrightText: 2024 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
@@ -61,6 +61,11 @@ public:
     Q_INVOKABLE QString textExcept(const Core::RangeMark &other) const;
 
     bool operator==(const RangeMark &other) const;
+
+protected:
+    friend class CodeDocument;
+    // This is used to reduce memory allocations when extracting symbols
+    inline static QString temporaryDocumentText = {};
 
 private:
     std::shared_ptr<class RangeMarkPrivate> d = nullptr;

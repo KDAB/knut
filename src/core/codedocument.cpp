@@ -135,7 +135,10 @@ void CodeDocument::deleteSymbol(const Symbol &symbol)
 Core::SymbolList CodeDocument::symbols() const
 {
     LOG();
-    return m_treeSitterHelper->symbols();
+    RangeMark::temporaryDocumentText = text();
+    const auto &symbols = m_treeSitterHelper->symbols();
+    RangeMark::temporaryDocumentText.clear();
+    return symbols;
 }
 
 struct RegexpTransform

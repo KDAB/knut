@@ -10,4 +10,7 @@ public:
     int bar();
 
     static Section *create();
+    Section &reference();
+private:
+    Section *m_pointer;
 };

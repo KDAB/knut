@@ -30,25 +30,31 @@
  * Log a method, with all its parameters.
  */
 #define LOG(...)                                                                                                       \
-    Core::LoggerObject __loggerObject(Core::formatToClassNameFunctionName(std::source_location::current()), false,     \
-                                      ##__VA_ARGS__)
+    Core::LoggerObject __loggerObject(                                                                                 \
+        Core::LoggerObject::canLog() ? Core::formatToClassNameFunctionName(std::source_location::current()) : "",      \
+        false, ##__VA_ARGS__)
 
 /**
  * Log a method, with all its parameters. If the previous log is also the same method, it will be merged into one
  * operation
  */
 #define LOG_AND_MERGE(...)                                                                                             \
-    Core::LoggerObject __loggerObject(Core::formatToClassNameFunctionName(std::source_location::current()), true,      \
-                                      ##__VA_ARGS__)
+    Core::LoggerObject __loggerObject(                                                                                 \
+        Core::LoggerObject::canLog() ? Core::formatToClassNameFunctionName(std::source_location::current()) : "",      \
+        true, ##__VA_ARGS__)
 
 /**
  * Macro to save the returned value in the historymodel
  */
 #define LOG_RETURN(name, value)                                                                                        \
     do {                                                                                                               \
-        const auto &__value = value;                                                                                   \
-        __loggerObject.setReturnValue(name, __value);                                                                  \
-        return __value;                                                                                                \
+        if (Core::LoggerObject::canLog()) {                                                                            \
+            const auto &__value = value;                                                                               \
+            __loggerObject.setReturnValue(name, __value);                                                              \
+            return __value;                                                                                            \
+        } else {                                                                                                       \
+            return value;                                                                                              \
+        }                                                                                                              \
     } while (false)
 
 namespace Core {
@@ -292,6 +298,8 @@ public:
         if (m_firstLogger && m_model)
             m_model->setReturnValue(std::move(name), value);
     }
+
+    static bool canLog() { return m_canLog; }
 
 private:
     friend HistoryModel;

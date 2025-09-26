@@ -1,4 +1,4 @@
-/*
+﻿/*
   This file is part of Knut.
 
   SPDX-FileCopyrightText: 2024 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
@@ -428,7 +428,7 @@ int TextDocument::positionAt(int line, int column)
 QString TextDocument::text() const
 {
     LOG();
-    LOG_RETURN("text", m_document->toPlainText());
+    return m_document->toPlainText();
 }
 
 void TextDocument::setText(const QString &newText)
