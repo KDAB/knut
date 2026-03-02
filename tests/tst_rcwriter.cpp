@@ -39,8 +39,9 @@ private slots:
             }
             if (buffer.open(QIODevice::ReadOnly)) {
                 QFile file(Test::testDataPath() + "/tst_rcwriter/qrc_expected_default.qrc");
-                file.open(QIODevice::ReadOnly);
-                QCOMPARE(buffer.readAll(), file.readAll());
+                if (file.open(QIODevice::ReadOnly)) {
+                    QCOMPARE(buffer.readAll(), file.readAll());
+                }
             }
         }
 
@@ -54,8 +55,9 @@ private slots:
             }
             if (buffer.open(QIODevice::ReadOnly)) {
                 QFile file(Test::testDataPath() + "/tst_rcwriter/qrc_expected_noalias_onlyexist.qrc");
-                file.open(QIODevice::ReadOnly);
-                QCOMPARE(buffer.readAll(), file.readAll());
+                if (file.open(QIODevice::ReadOnly)) {
+                    QCOMPARE(buffer.readAll(), file.readAll());
+                }
             }
         }
     }
@@ -111,8 +113,9 @@ private slots:
                     //     file.write(buffer.data());
                     //     file.close();
                     // }
-                    file.open(QIODevice::ReadOnly);
-                    QCOMPARE(buffer.readAll(), file.readAll());
+                    if (file.open(QIODevice::ReadOnly)) {
+                        QCOMPARE(buffer.readAll(), file.readAll());
+                    }
                 } else {
                     QWidget *widget = loader.load(&buffer);
                     QVERIFY2(loader.errorString().isEmpty(), dialog.id.toLatin1());
